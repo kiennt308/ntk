@@ -34,6 +34,7 @@ An incident begins with detection. To keep your team alert and prevent alarm fat
 
 Here is a Prometheus alerting rule configuration sample:
 
+{% raw %}
 ```yaml
 groups:
 - name: payment-gateway-alerts
@@ -48,6 +49,7 @@ groups:
       summary: "High payment failure rates detected: {{ $value | printf \"%.2f\" }}%"
       runbook_url: "https://wiki.internal/sre/runbooks/payments-failure"
 ```
+{% endraw %}
 
 ---
 

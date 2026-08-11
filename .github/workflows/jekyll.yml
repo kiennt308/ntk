@@ -1,0 +1,64 @@
+# Workflow to build and deploy Jekyll site to GitHub Pages using modern Actions hosting
+name: Deploy Jekyll site to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Pages Settings
+        uses: actions/configure-pages@v4
+
+      - name: Setup Ruby Environment
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          
+      - name: Cache Bundler Gems
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      - name: Install Dependencies
+        run: |
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install
+
+      - name: Build Static Site with Jekyll
+        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload Static Web Assets Artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,161 @@
+---
+layout: default
+---
+<!-- Calculate Reading Time -->
+{% assign words = content | number_of_words %}
+{% if words < 360 %}
+  {% assign read_time = "1 min read" %}
+{% else %}
+  {% assign read_time = words | divided_by: 180 | append: " min read" %}
+{% endif %}
+
+<div class="container container--fluid">
+  <div class="article-layout">
+    
+    <!-- LEFT SIDEBAR: Table of Contents -->
+    <aside class="article-sidebar-left no-print">
+      {% include toc.html %}
+      
+      <!-- In-sidebar Ad Placeholder -->
+      <div style="margin-top: 2rem;">
+        {% include ads/sidebar.html %}
+      </div>
+    </aside>
+
+    <!-- CENTER COLUMN: Article Content -->
+    <article class="article-main">
+      <header class="article-header">
+        <div style="margin-bottom: 0.75rem;">
+          <a href="{{ '/categories.html' | relative_url }}#{{ page.categories | first | downcase }}" class="badge badge--primary">
+            {{ page.categories | first }}
+          </a>
+        </div>
+        <h1 class="article-title" style="font-size: 2.75rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem;">
+          {{ page.title }}
+        </h1>
+        
+        <div class="article-meta">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Published: {{ page.date | date: "%B %d, %Y" }}
+          </span>
+          {% if page.last_updated %}
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89" />
+            </svg>
+            Updated: {{ page.last_updated | date: "%B %d, %Y" }}
+          </span>
+          {% endif %}
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ read_time }}
+          </span>
+        </div>
+      </header>
+
+      <!-- In-Article Banner Ad Placement -->
+      <div class="no-print">
+        {% include ads/in-article.html %}
+      </div>
+
+      <div class="article-body">
+        {{ content }}
+      </div>
+
+      <!-- In-Article Banner Ad Placement -->
+      <div class="no-print" style="margin-top: 2rem;">
+        {% include ads/banner.html %}
+      </div>
+
+      <!-- Article Tags Cloud -->
+      <div class="article-tags" style="margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        {% for tag in page.tags %}
+          <a href="{{ '/tags.html' | relative_url }}#{{ tag | downcase }}" class="badge">#{{ tag }}</a>
+        {% endfor %}
+      </div>
+
+      <!-- Share Buttons Block -->
+      <div class="share-box no-print" style="margin-top: 3rem; padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--border-radius); background-color: var(--surface);">
+        <h4 style="margin-bottom: 1rem; font-size: 1rem;">Share this guide:</h4>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ site.url }}{{ page.url }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+            LinkedIn
+          </a>
+          <a href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&url={{ site.url }}{{ page.url }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+            Twitter/X
+          </a>
+          <a href="mailto:?subject={{ page.title }}&body=Check out this article: {{ site.url }}{{ page.url }}" class="btn btn--secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+            Email
+          </a>
+        </div>
+      </div>
+
+      <!-- Related Posts section -->
+      <div class="related-posts no-print">
+        <h2 style="font-size: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Related Articles</h2>
+        <div class="grid grid--2col">
+          {% assign count = 0 %}
+          {% for post in site.posts %}
+            {% if post.id != page.id and post.categories first == page.categories first %}
+              {% if count < 2 %}
+                {% include post-card.html post=post %}
+                {% assign count = count | plus: 1 %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% if count == 0 %}
+            <!-- Fallback to any recent posts -->
+            {% for post in site.posts limit:2 %}
+              {% if post.id != page.id %}
+                {% include post-card.html post=post %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Navigation links (Prev / Next Article) -->
+      <div class="post-navigation no-print">
+        {% if page.previous %}
+          <a class="post-nav-card" href="{{ page.previous.url | relative_url }}">
+            <span class="post-nav-label">Previous Article</span>
+            <span class="post-nav-title">{{ page.previous.title }}</span>
+          </a>
+        {% else %}
+          <div></div>
+        {% endif %}
+        
+        {% if page.next %}
+          <a class="post-nav-card post-nav-card--next" href="{{ page.next.url | relative_url }}">
+            <span class="post-nav-label">Next Article</span>
+            <span class="post-nav-title">{{ page.next.title }}</span>
+          </a>
+        {% else %}
+          <div></div>
+        {% endif %}
+      </div>
+    </article>
+
+    <!-- RIGHT SIDEBAR: Widgets and Share Actions -->
+    <aside class="article-sidebar-right no-print">
+      <div class="toc" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+        <h3 class="toc__title" style="font-size: 0.85rem; margin-bottom: 0.5rem;">Action Panel</h3>
+        <button class="btn btn--primary btn-print" onclick="window.print()" style="width: 100%; padding: 0.5rem; font-size: 0.85rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print Guide
+        </button>
+      </div>
+
+      <!-- In-sidebar Ads Slot 2 -->
+      {% include ads/sidebar.html %}
+    </aside>
+
+  </div>
+</div>

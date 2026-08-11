@@ -1,0 +1,26 @@
+- role: "Senior DevOps / Cloud Engineer"
+  company: "Apex Scale Technologies"
+  date: "2024 – Present"
+  bullets:
+    - "Designed and built an enterprise AWS Landing Zone using Control Tower and Terraform, reducing account provisioning times from days to minutes."
+    - "Architected a GitOps-based CD pipeline with ArgoCD on EKS, managing over 120 microservices with zero deployment downtime."
+    - "Implemented dynamic autoscaling using Karpenter on AWS EKS, resulting in a 40% reduction in monthly ec2 cluster compute costs."
+    - "Standardized application observability by deploying OpenTelemetry collectors to capture and forward traces and metrics to Grafana."
+
+- role: "Cloud Engineer"
+  company: "CloudBound Solutions"
+  date: "2023 – 2024"
+  bullets:
+    - "Automated provisioning of multi-region VPC and RDS infrastructures using Terraform and Terragrunt across dev, staging, and prod environments."
+    - "Migrated legacy Jenkins pipelines to GitHub Actions, improving continuous integration run speeds by 35% through caching optimizations."
+    - "Maintained and optimized Dockerized application configurations, container security scanning (Trivy), and private container registries."
+    - "Participated in SRE rotation, setting up Prometheus Alertmanager alerts to proactively notify on critical memory/disk usage spikes."
+
+- role: "System Administrator / System Integration Engineer"
+  company: "Vanguard Systems Integrators"
+  date: "2020 – 2023"
+  bullets:
+    - "Administered on-premise and hybrid Linux (Ubuntu, CentOS) and Windows server nodes, ensuring 99.9% host uptime."
+    - "Wrote custom Python and Bash automation scripts to schedule server backups, monitor system services, and clean temporary files."
+    - "Configured and maintained local network infrastructures including DNS (BIND), VPN endpoints, firewalls, and active directories."
+    - "Successfully executed physical-to-virtual (P2V) server migrations to AWS EC2, initializing on-prem legacy data migration tasks."

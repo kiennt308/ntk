@@ -1,0 +1,79 @@
+title: Kien Nguyen
+email: kiennt.sg@gmail.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Senior DevOps / SRE / Cloud Engineer sharing practical tutorials and deep dives
+  about AWS, Kubernetes, Terraform, Platform Engineering, Observability, and AI.
+baseurl: ""
+url: "https://showtech.vn"
+repository: "kiennt308/ntk"
+
+# Author information for SEO and footer
+author:
+  name: "Kien Nguyen"
+  email: "kiennt.sg@gmail.com"
+  twitter: "kiennt308"
+  github: "kiennt308"
+  linkedin: "kiennt308"
+
+# Social profile links
+social:
+  github: kiennt308
+  linkedin: kiennt308
+  twitter: kiennt308
+  email: kiennt.sg@gmail.com
+
+# Jekyll-SEO-Tag plugin metadata
+twitter:
+  username: kiennt308
+  card: summary_large_image
+facebook:
+  app_id: null
+  publisher: null
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+lsi: false
+excerpt_separator: "<!--more-->"
+incremental: false
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'highlight'
+
+# Directory exclusions
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - .github/
+  - README.md
+  - implementation_plan.md
+  - LICENSE
+  - task.md
+  - walkthrough.md
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+
+# Collections setup for Blog Posts permalinks
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"

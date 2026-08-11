@@ -1,0 +1,47 @@
+<div class="toc" id="toc-container" style="display: none;">
+  <h3 class="toc__title">Table of Contents</h3>
+  <ul id="toc-list"></ul>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tocContainer = document.getElementById('toc-container');
+    const tocList = document.getElementById('toc-list');
+    const articleBody = document.querySelector('.article-body');
+    
+    if (!articleBody || !tocContainer || !tocList) return;
+
+    const headers = articleBody.querySelectorAll('h2, h3');
+    
+    if (headers.length > 0) {
+      tocContainer.style.display = 'block';
+      headers.forEach((header, index) => {
+        // Generate an ID if one does not exist
+        if (!header.id) {
+          header.id = 'section-' + index;
+        }
+        
+        const li = document.createElement('li');
+        li.style.lineHeight = '1.4';
+        li.style.marginBottom = '0.5rem';
+        
+        if (header.tagName.toLowerCase() === 'h3') {
+          li.style.paddingLeft = '1rem';
+        }
+        
+        const a = document.createElement('a');
+        a.href = '#' + header.id;
+        a.textContent = header.textContent.replace('¶', '').trim(); // Strip any anchor link characters if present
+        a.style.fontSize = '0.85rem';
+        a.style.color = 'var(--text-secondary)';
+        a.style.transition = 'var(--transition)';
+        
+        a.addEventListener('mouseenter', () => a.style.color = 'var(--accent)');
+        a.addEventListener('mouseleave', () => a.style.color = 'var(--text-secondary)');
+        
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+    }
+  });
+</script>

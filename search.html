@@ -1,0 +1,25 @@
+---
+layout: default
+title: "Search Guides"
+permalink: /search.html
+---
+
+<div class="container container--narrow" style="margin-top: 2rem;">
+  <div style="margin-bottom: 3rem; text-align: center;">
+    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Search Guides</h1>
+    <p style="color: var(--text-muted);">Instantly search across titles, descriptions, categories, tags, and content bodies.</p>
+  </div>
+
+  <div class="search-container" style="margin-bottom: 3rem;">
+    <input type="text" id="search-input" placeholder="Type keywords (e.g. AWS, EKS, Terraform)..." class="search-input" autofocus>
+  </div>
+
+  <section>
+    <div id="search-results" class="grid grid--2col">
+      <p class="text-center" style="grid-column: 1/-1; color: var(--text-muted);">Start typing to search articles...</p>
+    </div>
+  </section>
+</div>
+
+<!-- Load Search Engine script -->
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>

@@ -1,0 +1,95 @@
+---
+layout: default
+title: "Technical Blog"
+permalink: /blog.html
+---
+
+<div class="container" style="margin-top: 2rem;">
+  
+  <div style="margin-bottom: 4rem; text-align: center;">
+    <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">Engineering Insights</h1>
+    <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+      Deep dives, tutorials, and field notes on building reliable platform systems.
+    </p>
+  </div>
+
+  <!-- Search redirection bar -->
+  <form action="{{ '/search.html' | relative_url }}" method="get" class="search-container no-print" style="max-width: 600px; margin: 0 auto 3rem auto; display: flex; gap: 0.5rem;">
+    <input type="text" name="q" placeholder="Search guides, systems, configuration..." class="search-input" required>
+    <button type="submit" class="btn btn--primary" style="padding: 0 1.5rem;">Search</button>
+  </form>
+
+  <!-- Categories quick-nav links -->
+  <div class="filter-bar no-print" style="justify-content: center; margin-bottom: 3rem;">
+    <a href="{{ '/blog.html' | relative_url }}" class="filter-btn active">All Articles</a>
+    {% assign sorted_cats = "AWS,Kubernetes,DevOps,SRE,Terraform,Linux,Docker,CI/CD,Security,Observability,AI,Cloud Architecture,Career,Tutorial" | split: "," %}
+    {% for cat in sorted_cats %}
+      <!-- Check if posts exist in this category to show it -->
+      {% if site.categories[cat].size > 0 %}
+        <a href="{{ '/categories.html' | relative_url }}#{{ cat | downcase }}" class="filter-btn">
+          {{ cat }} ({{ site.categories[cat] | size }})
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Featured Article Section -->
+  {% if site.posts.size > 0 %}
+    {% assign featured = site.posts | first %}
+    {% assign words = featured.content | number_of_words %}
+    {% if words < 360 %}
+      {% assign read_time = "1 min" %}
+    {% else %}
+      {% assign read_time = words | divided_by: 180 | append: " min" %}
+    {% endif %}
+    <section class="featured-post" style="margin-bottom: 4rem; border: 1px solid var(--border); border-radius: var(--border-radius); background-color: var(--surface); padding: 2.5rem; box-shadow: var(--card-shadow); transition: var(--transition);">
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div>
+          <span class="badge badge--accent" style="margin-bottom: 0.75rem;">FEATURED ARTICLE</span>
+          <h2 style="font-size: 2.25rem; margin-top: 0; line-height: 1.2;">
+            <a href="{{ featured.url | relative_url }}" style="color: var(--text-primary);">{{ featured.title }}</a>
+          </h2>
+          <div class="card__meta" style="margin: 0.5rem 0 1rem 0;">
+            <span class="badge badge--primary">{{ featured.categories | first }}</span>
+            <span>•</span>
+            <span>{{ read_time }} read</span>
+            <span>•</span>
+            <span>{{ featured.date | date: "%B %d, %Y" }}</span>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+            {{ featured.description | default: featured.excerpt | strip_html | strip_newlines | truncate: 220 }}
+          </p>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: space-between; align-items: center;">
+          <div class="card__tags">
+            {% for tag in featured.tags limit:6 %}
+              <a href="{{ '/tags.html' | relative_url }}#{{ tag | downcase }}" class="badge">#{{ tag }}</a>
+            {% endfor %}
+          </div>
+          <a href="{{ featured.url | relative_url }}" class="btn btn--accent" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">Read Guide</a>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- Blog Listing Grid -->
+  <section>
+    <h2 style="font-size: 1.75rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 2rem;">Recent Publications</h2>
+    
+    <div class="grid grid--3col">
+      <!-- Skip the featured post in the list to avoid duplication -->
+      {% if site.posts.size > 1 %}
+        {% for post in site.posts offset:1 %}
+          {% include post-card.html post=post %}
+        {% endfor %}
+      {% elsif site.posts.size == 1 %}
+        <!-- If only 1 post exists, show it here as well or show helper text -->
+        {% for post in site.posts %}
+          {% include post-card.html post=post %}
+        {% endfor %}
+      {% else %}
+        <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 4rem 0;">No articles written yet.</p>
+      {% endif %}
+    </div>
+  </section>
+</div>

@@ -1,0 +1,26 @@
+<article class="card">
+  <div class="card__meta">
+    <span class="badge badge--accent">{{ include.post.categories | first }}</span>
+    <span>•</span>
+    {% assign words = include.post.content | number_of_words %}
+    {% if words < 360 %}
+      {% assign read_time = "1 min" %}
+    {% else %}
+      {% assign read_time = words | divided_by: 180 | append: " min" %}
+    {% endif %}
+    <span>{{ read_time }} read</span>
+    <span>•</span>
+    <span>{{ include.post.date | date: "%b %d, %Y" }}</span>
+  </div>
+  <h3 class="card__title">
+    <a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
+  </h3>
+  <p class="card__description">
+    {{ include.post.description | default: include.post.excerpt | strip_html | strip_newlines | truncate: 120 }}
+  </p>
+  <div class="card__tags">
+    {% for tag in include.post.tags limit:4 %}
+      <a href="{{ '/tags.html' | relative_url }}#{{ tag | downcase }}" class="badge">#{{ tag }}</a>
+    {% endfor %}
+  </div>
+</article>

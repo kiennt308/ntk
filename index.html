@@ -1,0 +1,74 @@
+---
+layout: default
+title: "Cloud. DevOps. SRE. Engineering at Scale."
+permalink: /
+---
+
+<section class="hero">
+  <div class="container">
+    <h1 class="hero__title">
+      Cloud. DevOps. SRE.<br>
+      <span>Engineering at Scale.</span>
+    </h1>
+    <p class="hero__subtitle">
+      Sharing practical knowledge about AWS, Kubernetes, Terraform, Cloud Architecture, Observability, Automation and modern infrastructure.
+    </p>
+    <div class="hero__ctas">
+      <a href="{{ '/blog.html' | relative_url }}" class="btn btn--accent">Read My Blog</a>
+      <a href="{{ '/projects.html' | relative_url }}" class="btn btn--secondary">View My Projects</a>
+    </div>
+
+    <!-- Skills badging grid -->
+    <div class="skills-hero-grid">
+      <span class="badge badge--primary">AWS</span>
+      <span class="badge badge--primary">Kubernetes</span>
+      <span class="badge badge--primary">Terraform</span>
+      <span class="badge badge--primary">Docker</span>
+      <span class="badge badge--primary">Linux</span>
+      <span class="badge badge--primary">CI/CD</span>
+      <span class="badge badge--primary">GitOps</span>
+      <span class="badge badge--primary">Observability</span>
+      <span class="badge badge--primary">Infrastructure as Code</span>
+      <span class="badge badge--primary">Automation</span>
+    </div>
+  </div>
+</section>
+
+<!-- About Quick Section -->
+<section style="padding: 5rem 0; background-color: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container container--narrow text-center">
+    <h2 style="font-size: 2rem; margin-bottom: 1.5rem;">Automating Operations, Accelerating Innovation</h2>
+    <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 650px; margin: 0 auto 2.5rem auto;">
+      I design, build, and maintain secure, reliable, and scalable cloud-native architectures. By treating infrastructure as code and implementing continuous deployment practices, I bridge the gap between software development and platform operations.
+    </p>
+    <a href="{{ '/about.html' | relative_url }}" class="btn btn--primary">More About Me</a>
+  </div>
+</section>
+
+<!-- Recent Blog Posts Section -->
+<section style="padding: 5rem 0;">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+      <div>
+        <h2 style="margin-bottom: 0.5rem; font-size: 2rem;">Latest Technical Guides</h2>
+        <p style="color: var(--text-muted); margin-bottom: 0;">Practical walkthroughs and engineering case studies.</p>
+      </div>
+      <a href="{{ '/blog.html' | relative_url }}" class="no-print" style="font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
+        All Articles
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </a>
+    </div>
+
+    <div class="grid grid--3col">
+      {% if site.posts.size > 0 %}
+        {% for post in site.posts limit:3 %}
+          {% include post-card.html post=post %}
+        {% endfor %}
+      {% else %}
+        <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;">
+          No articles published yet. Check back soon!
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</section>

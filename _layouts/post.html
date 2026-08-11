@@ -17,9 +17,11 @@ layout: default
       {% include toc.html %}
       
       <!-- In-sidebar Ad Placeholder -->
+      {% if site.show_ads %}
       <div style="margin-top: 2rem;">
         {% include ads/sidebar.html %}
       </div>
+      {% endif %}
     </aside>
 
     <!-- CENTER COLUMN: Article Content -->
@@ -59,18 +61,22 @@ layout: default
       </header>
 
       <!-- In-Article Banner Ad Placement -->
+      {% if site.show_ads %}
       <div class="no-print">
         {% include ads/in-article.html %}
       </div>
+      {% endif %}
 
       <div class="article-body">
         {{ content }}
       </div>
 
       <!-- In-Article Banner Ad Placement -->
+      {% if site.show_ads %}
       <div class="no-print" style="margin-top: 2rem;">
         {% include ads/banner.html %}
       </div>
+      {% endif %}
 
       <!-- Article Tags Cloud -->
       <div class="article-tags" style="margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
@@ -154,7 +160,9 @@ layout: default
       </div>
 
       <!-- In-sidebar Ads Slot 2 -->
+      {% if site.show_ads %}
       {% include ads/sidebar.html %}
+      {% endif %}
     </aside>
 
   </div>

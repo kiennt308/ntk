@@ -6,6 +6,7 @@ description: >- # this means to ignore newlines until "baseurl:"
 baseurl: "/ntk"
 url: "https://kiennt308.github.io"
 repository: "kiennt308/ntk"
+show_ads: false
 
 # Author information for SEO and footer
 author:

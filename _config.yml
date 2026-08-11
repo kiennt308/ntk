@@ -3,8 +3,8 @@ email: kiennt.sg@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Senior DevOps / SRE / Cloud Engineer sharing practical tutorials and deep dives
   about AWS, Kubernetes, Terraform, Platform Engineering, Observability, and AI.
-baseurl: ""
-url: "https://showtech.vn"
+baseurl: "/ntk"
+url: "https://kiennt308.github.io"
 repository: "kiennt308/ntk"
 
 # Author information for SEO and footer

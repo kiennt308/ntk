@@ -936,23 +936,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 <details class="qa-card" markdown="1">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q02</span>
-    <span class="qa-question-text">Phân biệt cú pháp Jinja2 cặp ngoặc nhọn <code>{{ '{{' }} ... {{ '}}' }}</code> và ngoặc phần trăm <code>{% raw %}{% ... %}{% endraw %}</code>. Cho ví dụ.</span>
+    <span class="qa-question-text">Phân biệt cú pháp Jinja2 cặp ngoặc nhọn <code>{{ ... }}</code> và ngoặc phần trăm <code>{% ... %}</code>. Cho ví dụ.</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Phân biệt cú pháp Jinja2 cặp ngoặc nhọn <code>{{ '{{' }} ... {{ '}}' }}</code> và ngoặc phần trăm <code>{% raw %}{% ... %}{% endraw %}</code>. Cho ví dụ. <i>(Liên quan QT 4.2, QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Phân biệt cú pháp Jinja2 cặp ngoặc nhọn <code>{{ ... }}</code> và ngoặc phần trăm <code>{% ... %}</code>. Cho ví dụ. <i>(Liên quan QT 4.2, QT 4.3)</i></div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cú pháp <code>{{ '{{' }} ... {{ '}}' }}</code> (Variable Interpolation): Dùng để <b>IN GIÁ TRỊ</b> của một biến hoặc kết quả biểu thức ra tệp tin (ví dụ <code>listen {{ '{{' }} web_port {{ '}}' }};</code>).</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cú pháp <code>{% raw %}{% ... %}{% endraw %}</code> (Control Structure): Dùng để <b>THỰC THI LỆNH ĐIỀU KHIỂN LOGIC</b> như vòng lặp <code>{% raw %}{% for item in list %}{% endraw %}</code> hoặc rẽ nhánh <code>{% raw %}{% if condition %}{% endraw %}</code> (ví dụ <code>{% raw %}{% if ssl_enabled %}{% endraw %}</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cú pháp <code>{{ ... }}</code> (Variable Interpolation): Dùng để <b>IN GIÁ TRỊ</b> của một biến hoặc kết quả biểu thức ra tệp tin (ví dụ <code>listen {{ web_port }};</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cú pháp <code>{% ... %}</code> (Control Structure): Dùng để <b>THỰC THI LỆNH ĐIỀU KHIỂN LOGIC</b> như vòng lặp <code>{% for item in list %}</code> hoặc rẽ nhánh <code>{% if condition %}</code> (ví dụ <code>{% if ssl_enabled %}</code>).</div>
     <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Nhầm lẫn giữa <code>{{ '{{' }} {{ '}}' }}</code> và <code>{% raw %}{% %}{% endraw %}</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>{{ '{{' }} {{ '}}' }}</code> in biến nhưng không giải thích được cấu trúc điều khiển <code>{% raw %}{% %}{% endraw %}</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Nhầm lẫn giữa <code>{{ }}</code> và <code>{% %}</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>{{ }}</code> in biến nhưng không giải thích được cấu trúc điều khiển <code>{% %}</code>.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cú pháp và chức năng của từng loại cặp ngoặc.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã Jinja2 minh họa cả <code>{{ '{{' }} {{ '}}' }}</code> và <code>{% raw %}{% for %}{% endraw %}</code> sinh Virtual Hosts.</div>
-    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm thế nào để xóa bỏ các khoảng trắng dòng trống thừa do vòng lặp <code>{% raw %}{% for %}{% endraw %}</code> sinh ra? <i>(Sử dụng cú pháp ngắt khoảng trắng với dấu trừ <code>{% raw %}{%- for item in list -%}{% endraw %}</code>.)</i></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã Jinja2 minh họa cả <code>{{ }}</code> và <code>{% for %}</code> sinh Virtual Hosts.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm thế nào để xóa bỏ các khoảng trắng dòng trống thừa do vòng lặp <code>{% for %}</code> sinh ra? <i>(Sử dụng cú pháp ngắt khoảng trắng với dấu trừ <code>{%- for item in list -%}</code>.)</i></div>
   </div>
 </details>
 
@@ -1109,24 +1109,24 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 <details class="qa-card" markdown="1">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q10</span>
-    <span class="qa-question-text">Viết một đoạn mã Jinja2 Template sử dụng vòng lặp <code>{% raw %}{% for %}{% endraw %}</code> kết hợp filter <code>selectattr</code> để chỉ duyệt và in ra danh sách các Virtual Host có cờ <code>active == true</code>.</span>
+    <span class="qa-question-text">Viết một đoạn mã Jinja2 Template sử dụng vòng lặp <code>{% for %}</code> kết hợp filter <code>selectattr</code> để chỉ duyệt và in ra danh sách các Virtual Host có cờ <code>active == true</code>.</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Viết một đoạn mã Jinja2 Template sử dụng vòng lặp <code>{% raw %}{% for %}{% endraw %}</code> kết hợp filter <code>selectattr</code> để chỉ duyệt và in ra danh sách các Virtual Host có cờ <code>active == true</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Viết một đoạn mã Jinja2 Template sử dụng vòng lặp <code>{% for %}</code> kết hợp filter <code>selectattr</code> để chỉ duyệt và in ra danh sách các Virtual Host có cờ <code>active == true</code>.</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
-    <pre><code class="language-jinja2">{% raw %}{% for vhost in web_vhosts | selectattr('active', 'defined') | selectattr('active', 'equalto', true) %}
+    <pre><code class="language-jinja2">{% for vhost in web_vhosts | selectattr('active', 'defined') | selectattr('active', 'equalto', true) %}
 server {
     listen {{ vhost.port | default(80) }};
     server_name {{ vhost.domain }};
 }
-{% endfor %}{% endraw %}</code></pre>
+{% endfor %}</code></pre>
     <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không viết được kịch bản Jinja2 nâng cao.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Viết được <code>{% raw %}{% for %}{% endraw %}</code> nhưng không biết lọc mảng bằng <code>selectattr</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Viết được <code>{% for %}</code> nhưng không biết lọc mảng bằng <code>selectattr</code>.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò lọc phần tử mảng của filter <code>selectattr</code>.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã Jinja2 Template hoàn chỉnh lọc vhost active.</div>
     <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Filter <code>map(attribute='domain')</code> trong Jinja2 có tác dụng gì? <i>(Dùng để trích xuất mảng danh sách chỉ chứa thuộc tính domain từ danh sách từ điển.)</i></div>
@@ -1167,7 +1167,7 @@ server {
     <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng <code>template</code> và Jinja2 Filters hiệu quả, an toàn và chuẩn Idempotency nhất.</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Dùng module <code>template</code> cho tệp mẫu <code>.j2</code> và module <code>copy</code> cho tệp nhị phân/tĩnh.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Phân biệt rõ cú pháp <code>{{ '{{' }} {{ '}}' }}</code> (in giá trị) và <code>{% raw %}{% %}{% endraw %}</code> (vòng lặp/rẽ nhánh).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Phân biệt rõ cú pháp <code>{{ }}</code> (in giá trị) và <code>{% %}</code> (vòng lặp/rẽ nhánh).</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Luôn bọc filter <code>| default('val')</code> phòng thủ lỗi fatal undefined variable.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Khai báo thuộc tính <code>validate:</code> kiểm tra cú pháp tệp tin trước khi ghi đĩa.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Loại bỏ biến thời gian thực khỏi nội dung template, và kiểm thử Lần 2 <code>changed=0</code> qua <code>docker exec</code>.</div>
@@ -1186,7 +1186,7 @@ server {
 
 Khi nhà tuyển dụng phỏng vấn về kỹ năng tự động hóa sinh file cấu hình động bằng Ansible và Jinja2, học viên hãy đưa ra câu chốt tự tin sau:
 
-> **"Tôi chuyển đổi toàn bộ các tệp cấu hình tĩnh rườm rà thành các tệp mẫu sinh cấu hình động Jinja2 Template `.j2` thông minh. Tôi làm chủ cú pháp nội suy biến `{{ '{{' }} {{ '}}' }}`, vòng lặp `{% raw %}{% for %}{% endraw %}`, rẽ nhánh `{% raw %}{% if %}{% endraw %}`, và các bộ lọc Jinja2 Filters (`default`, `join`, `to_nice_yaml`) để xử lý an toàn mọi dữ liệu đầu vào. Để bảo vệ hạ tầng Production, tôi luôn sử dụng thuộc tính `validate:` kiểm tra cú pháp tệp tin trước khi ghi đĩa. Mọi tệp template của tôi đều được loại bỏ các biến trôi checksum, đảm bảo ở lượt chạy Lần hai đạt `changed=0` Idempotency tuyệt đối và đối soát sự thật thực tế trên máy đích bằng `docker exec`."**
+> **"Tôi chuyển đổi toàn bộ các tệp cấu hình tĩnh rườm rà thành các tệp mẫu sinh cấu hình động Jinja2 Template `.j2` thông minh. Tôi làm chủ cú pháp nội suy biến `{{ }}`, vòng lặp `{% for %}`, rẽ nhánh `{% if %}`, và các bộ lọc Jinja2 Filters (`default`, `join`, `to_nice_yaml`) để xử lý an toàn mọi dữ liệu đầu vào. Để bảo vệ hạ tầng Production, tôi luôn sử dụng thuộc tính `validate:` kiểm tra cú pháp tệp tin trước khi ghi đĩa. Mọi tệp template của tôi đều được loại bỏ các biến trôi checksum, đảm bảo ở lượt chạy Lần hai đạt `changed=0` Idempotency tuyệt đối và đối soát sự thật thực tế trên máy đích bằng `docker exec`."**
 
 ---
 

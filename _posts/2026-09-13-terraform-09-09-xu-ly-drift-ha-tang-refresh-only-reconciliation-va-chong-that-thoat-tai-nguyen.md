@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 09] Quản Trị Drift Hạ Tầng: Làm Chủ Refresh-Only, Chiến Lược Reconcile"
+title: "[Bài 09] Xử Lý Drift Hạ Tầng: Refresh-Only, Reconciliation & Chiến Lược Phòng Chống Thất Thoát Tài Nguyên"
 date: 2026-09-13 10:40:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 9
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80"
-summary: "Phân tích nguồn gốc sinh ra Configuration Drift, giải mã sự khác biệt giữa"
+summary: "Chiến lược nhận diện và xử lý triệt để hiện tượng State Drift: Cơ chế tự điều hòa Reconciliation, quy trình khắc phục Out-of-band changes và thiết lập tự động hóa phát hiện Drift trong pipeline CI/CD."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Drift Hạ Tầng: Làm Chủ Refresh-Only, Chiến Lược Reconcile."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Nguyên nhân gốc rễ của Drift: Can thiệp thủ công qua Cloud Console, tiến trình tự động hóa bên ngoài hoặc thay đổi ngầm từ Cloud Provider."
+  - "Chiến lược xử lý 2 ngã rẽ: Chấp nhận thay đổi thực tế với terraform apply -refresh-only hoặc cưỡng chế ghi đè lại theo mã nguồn với terraform apply."
+  - "Tự động hóa phát hiện Drift: Thiết lập lịch Cronjob chạy terraform plan -detailed-exitcode hàng ngày trong pipeline để cảnh báo sớm."
+  - "Nguyên tắc Immutability: Khóa quyền IAM sửa đổi thủ công trên Production, chỉ cho phép thay đổi hạ tầng duy nhất qua pipeline IaC."
 ---
 {% raw %}
 # Quản Trị Drift Hạ Tầng: Làm Chủ Refresh-Only, Chiến Lược Reconcile Hai Chiều & Tự Động Hóa Quét Lệch Cấu Hình
@@ -49,7 +49,9 @@ graph TD
     B <-.->|"Drift xuất hiện do ClickOps / Webhook / Auto-Scaling"| C
     A [--]|"Khoảng cách sai lệch cần Reconcile"| C
 
-
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style C fill:none,stroke:#0ea5e9,stroke-width:2px
+    style B fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 ---
@@ -80,7 +82,12 @@ flowchart TD
     Adopt --> Action2["Bước 1: Chạy 'terraform apply -refresh-only'<br/>• Đồng bộ giá trị Cloud vào State File"]
     Action2 --> Action3["Bước 2: Cập nhật mã nguồn HCL trong Git<br/>• Đảm bảo HCL khớp hoàn toàn với Live State"]
 
-
+    style Enforce fill:none,stroke:#3b82f6,stroke-width:2px
+    style Action2 fill:none,stroke:#0ea5e9,stroke-width:2px
+    style Action1 fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#f59e0b,stroke-width:2px
+    style Adopt fill:none,stroke:#8b5cf6,stroke-width:2px
+    style Action3 fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
 ---
@@ -224,7 +231,7 @@ jobs:
 ## 6. Phân Tích Cạm Bẫy Thực Chiến: Vòng Lặp Xung Đột Giữa Terraform & Cluster Autoscaler
 
 ### Tình Huống Sự Cố Thực Tế:
-Tại một công ty Fintech, cụm Kubernetes EKS sử dụng `aws_autoscaling_group` với `desired_capacity = 3`. Trong giờ cao điểm Flash Sale, lưu lượng truy cập tăng vọt, công cụ **Karpenter / Kubernetes Cluster Autoscaler** đã tự động gửi API tới AWS để nâng số lượng máy chủ từ 3 lên 12 nodes.
+Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Tại một công ty Fintech, cụm Kubernetes EKS sử dụng `aws_autoscaling_group` với `desired_capacity = 3`. Trong giờ cao điểm Flash Sale, lưu lượng truy cập tăng vọt, công cụ **Karpenter / Kubernetes Cluster Autoscaler** đã tự động gửi API tới AWS để nâng số lượng máy chủ từ 3 lên 12 nodes.
 
 Đúng lúc đó, một pipeline CI/CD chạy lệnh `terraform apply` để triển khai một thay đổi nhỏ về Security Group.
 
@@ -256,20 +263,36 @@ flowchart TD
     D --> E["Terraform cưỡng chế hạ số Nodes từ 12 về 3"]
     E --> F["THẢM HỌA: XÓA ĐỘT NGỘT 9 MÁY CHỦ & SẬP TOÀN BỘ THANH TOÁN!"]
 
-
+    style E fill:none,stroke:#3b82f6,stroke-width:2px
+    style A fill:none,stroke:#0ea5e9,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#f59e0b,stroke-width:2px
+    style B fill:none,stroke:#8b5cf6,stroke-width:2px
+    style F fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao 9 máy chủ đang xử lý giao dịch bị xóa?** $\rightarrow$ Vì Terraform cập nhật `desired_capacity` từ 12 xuống 3.
-2. **Tại sao Terraform lại hạ số lượng node?** $\rightarrow$ Vì trong code HCL, thuộc tính `desired_capacity` được hardcode cố định là `3`.
-3. **Tại sao Autoscaler và Terraform lại xung đột?** $\rightarrow$ Vì cả hai cùng sở hữu và cố gắng kiểm soát thuộc tính `desired_capacity`.
-4. **Tại sao kỹ sư không cấu hình bỏ qua thuộc tính này?** $\rightarrow$ Do thiếu sót không khai báo `lifecycle { ignore_changes = [desired_capacity] }`.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao 9 máy chủ đang xử lý giao dịch bị xóa?** $\rightarrow$ Vì Terraform cập nhật `desired_capacity` từ 12 xuống 3.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Terraform lại hạ số lượng node?** $\rightarrow$ Vì trong code HCL, thuộc tính `desired_capacity` được hardcode cố định là `3`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Autoscaler và Terraform lại xung đột?** $\rightarrow$ Vì cả hai cùng sở hữu và cố gắng kiểm soát thuộc tính `desired_capacity`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao kỹ sư không cấu hình bỏ qua thuộc tính này?** $\rightarrow$ Do thiếu sót không khai báo `lifecycle { ignore_changes = [desired_capacity] }`.
 5. **Biện pháp khắc phục triệt để:**
    - **Bắt buộc khai báo `ignore_changes = [desired_capacity]`** trên 100% các tài nguyên Auto Scaling Group và Launch Templates được điều khiển bởi K8s Autoscaler / Karpenter.
 
 ---
 
 ## 7. Hands-on Lab: Mô Phỏng & Xử Lý Drift Bằng `-detailed-exitcode` (8 Bước)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành |
+| <span class="badge badge--cyan">02</span> | `local_file` | Tạo một tài nguyên mẫu ban đầu bằng |
+| <span class="badge badge--indigo">03</span> | `Thao tác 3` | Kiểm tra Exit Code khi không có Drift |
+| <span class="badge badge--amber">04</span> | `Thao tác 4` | Giả lập hành vi ClickOps sửa đổi file ngoài luồng |
+| <span class="badge badge--emerald">05</span> | `-detailed-exitcode` | Chạy quét Drift với cờ |
+| <span class="badge badge--primary">06</span> | `Thao tác 6` | Hòa giải theo hướng Enforce Code (Đè bẹp Drift) |
+| <span class="badge badge--rose">07</span> | `ignore_changes` | Cấu hình  để bỏ qua sự thay đổi |
+| <span class="badge badge--emerald">08</span> | `ignore_changes` | Kiểm tra lại Exit Code sau khi đã gắn |
 
 ### Bước 1: Khởi tạo thư mục thực hành
 ```bash

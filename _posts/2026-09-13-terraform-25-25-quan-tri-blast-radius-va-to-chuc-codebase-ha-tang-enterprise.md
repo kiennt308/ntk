@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 25] Quản Trị Blast Radius và Tổ Chức Codebase Hạ Tầng Enterprise"
+title: "[Bài 25] Quản Trị Blast Radius & Tổ Chức Codebase Hạ Tầng Enterprise"
 date: 2026-09-13 08:00:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 25
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=format&fit=crop&w=1200&q=80"
-summary: "Kiểm soát và cô lập bán kính thiệt hại (Blast Radius) khi vận hành Terraform"
+summary: "Thiết kế kiến trúc quản trị bán kính ảnh hưởng (Blast Radius): Phân rã Monolithic State thành các Micro-States độc lập, tổ chức Repository theo Layer/Component và kiểm soát phân quyền tài khoản Cloud."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Blast Radius và Tổ Chức Codebase Hạ Tầng Enterprise."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Khái niệm Blast Radius: Giới hạn phạm vi thiệt hại tối đa khi một lỗi triển khai hoặc sự cố hạ tầng xảy ra trong hệ thống."
+  - "Phân rã Monolithic State: Tách rời tệp state khổng lồ thành các tầng độc lập (Core Network, Shared Services, Database, App Clusters)."
+  - "Mô hình Multi-Account AWS: Tách biệt tài khoản theo môi trường (Dev, Staging, Prod) và tài khoản bảo mật trung tâm (Security, Logging, Network)."
+  - "Tổ chức Codebase: Phân chia Repository theo mô hình Monorepo hoặc Multi-repo có cấu trúc thư mục rõ ràng theo Account/Region/Environment."
 ---
 {% raw %}
 # Quản Trị Blast Radius và Tổ Chức Codebase Hạ Tầng Enterprise

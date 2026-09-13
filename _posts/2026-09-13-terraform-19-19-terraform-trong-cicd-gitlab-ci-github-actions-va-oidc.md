@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 19] Terraform trong CI/CD: GitLab CI, GitHub Actions và OIDC Authentication"
+title: "[Bài 19] Terraform Trong CI/CD: Tự Động Hóa Pipeline Với GitLab CI, GitHub Actions & OIDC"
 date: 2026-09-13 09:00:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 19
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1200&q=80"
-summary: "Xây dựng Pipeline CI/CD tự động hóa toàn diện cho Terraform với GitHub Actions"
+summary: "Xây dựng Pipeline CI/CD tự động hóa hạ tầng chuẩn GitOps: Tích hợp xác thực không cần mật khẩu OpenID Connect (OIDC), cơ chế Plan Review Gate, tự động bình luận Pull Request và mã hóa State."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Terraform trong CI/CD: GitLab CI, GitHub Actions và OIDC Authentication."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Xác thực OIDC không mật khẩu: Loại bỏ hoàn toàn Long-lived AWS Secret Keys trên CI/CD, sử dụng Temporary JWT Tokens an toàn tuyệt đối."
+  - "Quy trình 2-Stage Pipeline: Phân tách rõ rệt Plan Stage (chạy trên Pull Request) và Apply Stage (chạy sau khi merge vào main kèm phê duyệt thủ công)."
+  - "Tự động Post Plan lên Pull Request: Sử dụng công cụ tfcmt hoặc GitHub Actions bot để hiển thị trực quan bản tóm tắt thay đổi hạ tầng cho Reviewer."
+  - "Concurrency & State Locking: Cấu hình resource_group trong GitLab CI hoặc concurrency trong GitHub Actions để chống xung đột pipeline chạy song song."
 ---
 {% raw %}
 # Terraform trong CI/CD: GitLab CI, GitHub Actions và OIDC Authentication

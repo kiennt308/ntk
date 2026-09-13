@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 05] Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation,"
+title: "[Bài 05] Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation, Precedence & Sensitive Masking"
 date: 2026-09-13 11:20:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 5
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
-summary: "Quy chuẩn thiết kế Input Variables có Custom Validation Rules bằng Regex,"
+summary: "Quy chuẩn thiết kế Input Variables có Custom Validation Rules bằng Regex, quản trị biến cục bộ Locals, che giấu dữ liệu nhạy cảm Sensitive và cơ chế nạp biến có thứ tự ưu tiên Precedence."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation,."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Hệ thống phân cấp thứ tự ưu tiên biến (Precedence): CLI flags > .tfvars > Environment variables (TF_VAR_*) > Default values."
+  - "Tùy biến luật kiểm định (Custom Validation Rules): Sử dụng hàm can(), regex(), length() để chặn dữ liệu sai định dạng ngay tại pha Plan."
+  - "Locals vs Variables: Dùng Variables cho tham số cấu hình bên ngoài; dùng Locals cho biểu thức tính toán nội bộ, tái sử dụng và bất biến."
+  - "Bảo mật dữ liệu nhạy cảm: Đánh dấu sensitive = true cho Variables/Outputs để ngăn chặn rò rỉ secret trên CI/CD logs và Terraform Console."
 ---
 {% raw %}
 # Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation, Precedence & Sensitive Masking
@@ -42,7 +42,11 @@ graph TD
     V3 --> V4["4. Tệp tự động *.auto.tfvars hoặc *.auto.tfvars.json"]
     V4 --> V5["5. Tham số dòng lệnh CLI: -var hoặc -var-file<br/>[ƯU TIÊN CAO NHẤT - GHI ĐÈ TẤT CẢ]"]
 
-
+    style V5 fill:none,stroke:#3b82f6,stroke-width:2px
+    style V3 fill:none,stroke:#0ea5e9,stroke-width:2px
+    style V2 fill:none,stroke:#10b981,stroke-width:2px
+    style V1 fill:none,stroke:#f59e0b,stroke-width:2px
+    style V4 fill:none,stroke:#8b5cf6,stroke-width:2px
 ```
 
 ### Bảng Chi Tiết Cơ Chế Nạp & Ghi Đè Biến:
@@ -161,7 +165,9 @@ flowchart LR
     MASK -->|BẬT (sensitive=true)| CLI_SAFE["Màn hình CLI / CI Logs: (sensitive value) [AN TOÀN]"]
     MASK -->|TẮT (sensitive=false)| CLI_DANGER["Màn hình CLI / CI Logs: 'SuperSecretPass123!' [NGUY HIỂM]"]
 
-
+    style CLI_SAFE fill:none,stroke:#3b82f6,stroke-width:2px
+    style SECRET fill:none,stroke:#0ea5e9,stroke-width:2px
+    style CLI_DANGER fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 ---
@@ -255,7 +261,7 @@ output "db_master_password" {
 ## 7. Phân Tích Cạm Bẫy Thực Chiến: Lỗi Rò Rỉ Secret & Validation Failure
 
 ### Tình Huống Sự Cố Thực Tế:
-Một nhóm kỹ sư phát triển triển khai hệ thống thông báo nội bộ. Kỹ sư đã xuất thông tin kết nối Database qua `output "connection_string"` mà quên không đánh dấu `sensitive = true`.
+Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Một nhóm kỹ sư phát triển triển khai hệ thống thông báo nội bộ. Kỹ sư đã xuất thông tin kết nối Database qua `output "connection_string"` mà quên không đánh dấu `sensitive = true`.
 
 Khi pipeline CI/CD chạy lệnh `terraform apply`, toàn bộ chuỗi kết nối chứa mật khẩu rõ ràng:
 ```log
@@ -268,11 +274,11 @@ connection_string = "postgresql://dbadmin:P%40ssw0rd99Enterprise%21@showtech-pay
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao mật khẩu quản trị bị lộ trên log CI/CD?** $\rightarrow$ Vì chuỗi `connection_string` được in ra màn hình ở phần Outputs sau khi apply.
-2. **Tại sao Terraform lại in ra màn hình?** $\rightarrow$ Vì trong khối `output "connection_string"`, kỹ sư không khai báo thuộc tính `sensitive = true`.
-3. **Tại sao Terraform không tự động phát hiện secret?** $\rightarrow$ Khi bạn ghép mật khẩu vào một chuỗi String mới (`"postgresql://${user}:${pass}@..."`), Terraform có thể mất dấu cờ sensitive nếu không gán cờ tường minh trên Output.
-4. **Tại sao việc này lại qua được bước Code Review?** $\rightarrow$ Do nhóm chưa tích hợp công cụ kiểm tra tĩnh (Static Analysis Linter) như `tflint` hoặc `tfsec` để quét lỗi thiếu sensitive flag.
-5. **Biện pháp khắc phục chuẩn SRE:**
+1. <span class="badge badge--primary">Why 1</span> **Tại sao mật khẩu quản trị bị lộ trên log CI/CD?** $\rightarrow$ Vì chuỗi `connection_string` được in ra màn hình ở phần Outputs sau khi apply.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Terraform lại in ra màn hình?** $\rightarrow$ Vì trong khối `output "connection_string"`, kỹ sư không khai báo thuộc tính `sensitive = true`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Terraform không tự động phát hiện secret?** $\rightarrow$ Khi bạn ghép mật khẩu vào một chuỗi String mới (`"postgresql://${user}:${pass}@..."`), Terraform có thể mất dấu cờ sensitive nếu không gán cờ tường minh trên Output.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao việc này lại qua được bước Code Review?** $\rightarrow$ Do nhóm chưa tích hợp công cụ kiểm tra tĩnh (Static Analysis Linter) như `tflint` hoặc `tfsec` để quét lỗi thiếu sensitive flag.
+5. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
    - **Gán `sensitive = true` cho mọi Output chứa secret.**
    - **Xoay vòng mật khẩu (Rotate Password) khẩn cấp** cho Database ngay lập tức.
    - **Tích hợp `tfsec` / `trivy` vào Pre-commit Hook** để tự động chặn các commit thiếu cờ sensitive.
@@ -280,6 +286,17 @@ connection_string = "postgresql://dbadmin:P%40ssw0rd99Enterprise%21@showtech-pay
 ---
 
 ## 8. Hands-on Lab: Thử Nghiệm Precedence, Validation & Sensitive Masking (8 Bước)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành |
+| <span class="badge badge--cyan">02</span> | `variables.tf` | Tạo tệp  có chứa Custom Validation |
+| <span class="badge badge--indigo">03</span> | `main.tf` | Tạo tệp  và |
+| <span class="badge badge--amber">04</span> | `Thao tác 4` | Thử nghiệm Validation Failure (Nhập sai môi trường) |
+| <span class="badge badge--emerald">05</span> | `TF_VAR_` | Thử nghiệm Variable Precedence Cấp Độ |
+| <span class="badge badge--primary">06</span> | `-var` | Thử nghiệm Ghi Đè Cấp Cao Hơn Bằng CLI |
+| <span class="badge badge--rose">07</span> | `Thao tác 7` | Quan sát cơ chế che giấu Sensitive Output |
+| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Truy xuất an toàn giá trị Sensitive khi cần thiết |
 
 ### Bước 1: Khởi tạo thư mục thực hành
 ```bash

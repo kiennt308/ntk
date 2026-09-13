@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 07] Xây Dựng Remote State Enterprise: AWS S3 Backend, DynamoDB State"
+title: "[Bài 07] Remote State Architecture: S3 Backend, DynamoDB State Locking & Di Trú Backend An Toàn"
 date: 2026-09-13 11:00:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 7
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
-summary: "Hướng dẫn thiết kế Remote Backend chuẩn Enterprise với AWS S3 (KMS Encryption,"
+summary: "Thiết kế kiến trúc lưu trữ Remote State chuẩn Enterprise trên AWS S3 Backend với mã hóa AES-256/KMS, khóa trạng thái chống xung đột với DynamoDB Lock Table và quy trình di trú Backend không downtime."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Xây Dựng Remote State Enterprise: AWS S3 Backend, DynamoDB State."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Kiến trúc Remote State: Tách biệt lưu trữ state khỏi máy cục bộ, kích hoạt SSE-KMS, Versioning và Bucket Policy chặn truy cập công khai."
+  - "DynamoDB State Locking: Sử dụng thuộc tính LockID để khóa quyền truy cập đồng thời, ngăn chặn Race Condition và hỏng hóc State File trong CI/CD."
+  - "Quy trình di trú Backend: Thực hiện terraform init -migrate-state an toàn, tự động chuyển đổi dữ liệu và xác thực Checksum giữa Local và Remote."
+  - "Tách nhỏ State theo Domain: Phân tách State theo môi trường và tầng hạ tầng (Network, DB, App) để giảm thiểu rủi ro Blast Radius."
 ---
 {% raw %}
 # Xây Dựng Remote State Enterprise: AWS S3 Backend, DynamoDB State Locking & Di Trú State An Toàn
@@ -227,7 +227,7 @@ terraform init -backend-config="env/prod-backend.hcl" -reconfigure
 ## 6. Phân Tích Cạm Bẫy Thực Chiến: Thảm Họa "State Lock Deadlock & Force-Unlock"
 
 ### Tình Huống Sự Cố Thực Tế:
-Trên một đường ống CI/CD GitLab, tiến trình `terraform apply` đang chạy thì Kubernetes Worker Node bị hết bộ nhớ (OOMKilled) khiến container bị tiêu diệt ngay lập tức.
+Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Trên một đường ống CI/CD GitLab, tiến trình `terraform apply` đang chạy thì Kubernetes Worker Node bị hết bộ nhớ (OOMKilled) khiến container bị tiêu diệt ngay lập tức.
 
 Bản ghi khóa trong DynamoDB vẫn còn lưu nguyên `LockID`. Khi các đợt chạy tiếp theo được kích hoạt, toàn bộ pipeline bị chặn đứng với thông báo lỗi:
 
@@ -250,10 +250,10 @@ by multiple users at the same time. Please resolve the issue above and try again
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao Terraform báo lỗi không acquire được lock?** $\rightarrow$ Vì bản ghi khóa của Lock ID `9a8b7c6d...` vẫn còn nằm trong DynamoDB Table.
-2. **Tại sao bản ghi khóa chưa được xóa?** $\rightarrow$ Vì container chạy Terraform trước đó bị OOMKilled và chết đột ngột trước khi bước `Release Lock` được thực thi.
-3. **Tại sao runner lại bị OOMKilled?** $\rightarrow$ Do pipeline không giới hạn bộ nhớ RAM cho Docker container runner khi chạy cùng lúc nhiều tool nặng.
-4. **Tại sao không thể chạy tiếp lệnh apply?** $\rightarrow$ Vì DynamoDB thực hiện cơ chế bảo vệ an toàn để ngăn chặn hai người cùng ghi đè state.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Terraform báo lỗi không acquire được lock?** $\rightarrow$ Vì bản ghi khóa của Lock ID `9a8b7c6d...` vẫn còn nằm trong DynamoDB Table.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao bản ghi khóa chưa được xóa?** $\rightarrow$ Vì container chạy Terraform trước đó bị OOMKilled và chết đột ngột trước khi bước `Release Lock` được thực thi.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao runner lại bị OOMKilled?** $\rightarrow$ Do pipeline không giới hạn bộ nhớ RAM cho Docker container runner khi chạy cùng lúc nhiều tool nặng.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao không thể chạy tiếp lệnh apply?** $\rightarrow$ Vì DynamoDB thực hiện cơ chế bảo vệ an toàn để ngăn chặn hai người cùng ghi đè state.
 5. **Quy trình cứu hộ chuẩn SRE:**
    - **Bước 1 (Xác minh an toàn):** Kiểm tra kỹ lưỡng danh sách pipeline đang chạy để chắc chắn 100% không còn tiến trình nào đang thao tác ngầm trên state đó.
    - **Bước 2 (Giải phóng khóa bằng ID):** Chạy lệnh mở khóa có chủ đích:
@@ -265,6 +265,17 @@ by multiple users at the same time. Please resolve the issue above and try again
 ---
 
 ## 7. Hands-on Lab: Khởi Tạo Remote Backend & Di Trú State (8 Bước)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `Thao tác 1` | Tạo tài nguyên cục bộ với Local State ban đầu |
+| <span class="badge badge--cyan">02</span> | `main.tf` | Bổ sung cấu hình Remote Backend S3 vào file |
+| <span class="badge badge--indigo">03</span> | `-migrate-state` | Thực hiện lệnh di trú State tự động () |
+| <span class="badge badge--amber">04</span> | `Thao tác 4` | Kiểm tra State File cục bộ đã được dọn dẹp |
+| <span class="badge badge--emerald">05</span> | `Thao tác 5` | Mô phỏng hành vi chiếm giữ khóa (State Lock Test) |
+| <span class="badge badge--primary">06</span> | `Thao tác 6` | Kiểm tra tệp Lock trực tiếp trên AWS DynamoDB bằng AWS CLI |
+| <span class="badge badge--rose">07</span> | `Thao tác 7` | Thực hiện khôi phục phiên bản State cũ từ S3 Versioning |
+| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Dọn dẹp tài nguyên thử nghiệm |
 
 ### Bước 1: Tạo tài nguyên cục bộ với Local State ban đầu
 ```bash

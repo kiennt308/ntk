@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 10] Tự Viết Module Terraform Chuẩn Enterprise: Cấu Trúc File, Hợp Đồng"
+title: "[Bài 10] Thiết Kế Module Chuẩn Enterprise: Đóng Gói, Tái Sử Dụng & Chuẩn Hóa Biến Số Hóa"
 date: 2026-09-13 10:30:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 10
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
-summary: "Hướng dẫn thiết kế Terraform Module chuẩn sản xuất theo quy chuẩn HashiCorp:"
+summary: "Nghệ thuật xây dựng và đóng gói Terraform Module chuẩn Enterprise: Cấu trúc thư mục tiêu chuẩn, thiết kế giao diện Inputs/Outputs, tài liệu hóa tự động với terraform-docs và semantic versioning."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tự Viết Module Terraform Chuẩn Enterprise: Cấu Trúc File, Hợp Đồng."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Cấu trúc Module chuẩn: Tách bạch rõ ràng main.tf, variables.tf, outputs.tf, versions.tf và thư mục examples/ hoàn chỉnh."
+  - "Nguyên tắc Single Responsibility: Mỗi module chỉ giải quyết một chức năng hạ tầng duy nhất (VPC, EKS, RDS) với độ phức tạp tối ưu."
+  - "Quản lý phiên bản Semantic Versioning: Gắn tag Git (v1.2.0) cho từng bản phát hành module, tuyệt đối không trỏ trực tiếp vào nhánh main."
+  - "Tự động hóa tài liệu: Tích hợp terraform-docs vào pre-commit hooks để tự động sinh bảng README mô tả Inputs, Outputs và Providers."
 ---
 {% raw %}
 # Tự Viết Module Terraform Chuẩn Enterprise: Cấu Trúc File, Hợp Đồng Giao Tiếp & Semantic Versioning
@@ -60,7 +60,11 @@ graph TD
     Logic --> Outputs["outputs.tf (Hợp Đồng Đầu Ra)"]
     Outputs -->|"2. Trả về Thuộc Tính An Toàn"| Consumer
 
-
+    style Consumer fill:none,stroke:#3b82f6,stroke-width:2px
+    style ProviderReq fill:none,stroke:#0ea5e9,stroke-width:2px
+    style Inputs fill:none,stroke:#10b981,stroke-width:2px
+    style Logic fill:none,stroke:#f59e0b,stroke-width:2px
+    style Outputs fill:none,stroke:#8b5cf6,stroke-width:2px
 ```
 
 ---
@@ -232,7 +236,10 @@ flowchart LR
     V --> M["MINOR (+0.1.0): v1.3.0<br/>• Thêm tính năng mới (Thêm biến mới có default)"]
     V --> MAJ["MAJOR (+1.0.0): v2.0.0<br/>• BREAKING CHANGE (Đổi tên biến bắt buộc, xóa output)"]
 
-
+    style P fill:none,stroke:#3b82f6,stroke-width:2px
+    style MAJ fill:none,stroke:#0ea5e9,stroke-width:2px
+    style M fill:none,stroke:#10b981,stroke-width:2px
+    style V fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ### Cách Gọi Module An Toàn Trong Root Module:
@@ -251,7 +258,7 @@ module "app_storage" {
 ## 7. Phân Tích Cạm Bẫy Thực Chiến: Lỗi "Provider Configuration In Child Module Blocks For_Each"
 
 ### Tình Huống Sự Cố Thực Tế:
-Một nhóm kỹ sư phát triển một Module RDS Database. Bên trong Module, kỹ sư đã khai báo trực tiếp:
+Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Một nhóm kỹ sư phát triển một Module RDS Database. Bên trong Module, kỹ sư đã khai báo trực tiếp:
 ```hcl
 # CODE SAI: Khai báo provider bên trong child module
 provider "aws" {
@@ -282,10 +289,10 @@ so it cannot be used with count, for_each, or depends_on.
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao Terraform từ chối chạy `for_each` trên module?** $\rightarrow$ Vì bên trong module con có chứa khối `provider "aws" {}`.
-2. **Tại sao có khối provider lại cấm `for_each`?** $\rightarrow$ Vì trong kiến trúc của Terraform Core, Provider Plugin được khởi tạo ở cấp độ toàn cục trước khi đồ thị DAG mở rộng các nhánh vòng lặp; một Child Module không thể tự ý sinh ra nhiều phiên bản Provider độc lập trong vòng lặp.
-3. **Tại sao kỹ sư lại viết provider vào trong module?** $\rightarrow$ Do thói quen sao chép từ Root Module cũ mà không hiểu nguyên lý Provider Inversion of Control.
-4. **Biện pháp khắc phục tận gốc:**
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Terraform từ chối chạy `for_each` trên module?** $\rightarrow$ Vì bên trong module con có chứa khối `provider "aws" {}`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao có khối provider lại cấm `for_each`?** $\rightarrow$ Vì trong kiến trúc của Terraform Core, Provider Plugin được khởi tạo ở cấp độ toàn cục trước khi đồ thị DAG mở rộng các nhánh vòng lặp; một Child Module không thể tự ý sinh ra nhiều phiên bản Provider độc lập trong vòng lặp.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại viết provider vào trong module?** $\rightarrow$ Do thói quen sao chép từ Root Module cũ mà không hiểu nguyên lý Provider Inversion of Control.
+4. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
    - **Xóa sạch toàn bộ khối `provider "aws" {}` ra khỏi Child Module.**
    - **Chuyển các yêu cầu phiên bản sang khối `required_providers` trong `versions.tf`.**
    - **Nếu cần truyền Region khác nhau, sử dụng kỹ thuật Provider Alias (`providers = { aws = aws.us_east }`).**
@@ -293,6 +300,17 @@ so it cannot be used with count, for_each, or depends_on.
 ---
 
 ## 8. Hands-on Lab: Đóng Gói, Kiểm Thử & Gọi Module (8 Bước)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `Thao tác 1` | Tạo cấu trúc thư mục Module hoàn chỉnh |
+| <span class="badge badge--cyan">02</span> | `variables.tf` | Viết tệp  cho Child Module |
+| <span class="badge badge--indigo">03</span> | `main.tf` | Viết tệp  cho Child Module |
+| <span class="badge badge--amber">04</span> | `outputs.tf` | Viết tệp  cho Child Module |
+| <span class="badge badge--emerald">05</span> | `for_each` | Viết tệp Root Module gọi Child Module với vòng lặp |
+| <span class="badge badge--primary">06</span> | `Thao tác 6` | Khởi tạo và kiểm tra tính hợp lệ |
+| <span class="badge badge--rose">07</span> | `Thao tác 7` | Thực thi triển khai Apply |
+| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Xác minh kết quả Output và dọn dẹp |
 
 ### Bước 1: Tạo cấu trúc thư mục Module hoàn chỉnh
 ```bash

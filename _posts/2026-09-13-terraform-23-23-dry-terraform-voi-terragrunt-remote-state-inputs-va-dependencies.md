@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 23] DRY Terraform Với Terragrunt: Remote State, Inputs và Dependencies"
+title: "[Bài 23] DRY Terraform Với Terragrunt: Remote State, Inputs & Dependencies Đa Tầng"
 date: 2026-09-13 08:20:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 23
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
-summary: "Làm chủ Terragrunt - Công cụ mỏng bọc ngoài (Thin Wrapper) tối thượng giúp"
+summary: "Làm chủ công cụ Terragrunt để giữ cấu hình hạ tầng luôn DRY: Tự động cấu hình Backend/Provider, chia sẻ dữ liệu liên module với dependency blocks và điều phối thực thi toàn bộ hệ sinh thái với terragrunt run-all."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về DRY Terraform Với Terragrunt: Remote State, Inputs và Dependencies."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Nguyên tắc DRY trong Terragrunt: Tự động sinh cấu hình Backend và Provider thông qua khối generate và remote_state mà không cần lặp lại code."
+  - "Khối dependency thông minh: Đọc trực tiếp Outputs của module khác (VPC, DB) và tự động xây dựng đồ thị phụ thuộc liên module hoàn hảo."
+  - "Lệnh terragrunt run-all: Tự động tính toán thứ tự triển khai topo và thực thi đồng loạt nhiều module với tham số --terragrunt-parallelism."
+  - "Phân tách cấu hình môi trường: Sử dụng các tệp env.hcl và region.hcl để kế thừa biến số hóa sạch sẽ cho từng tầng môi trường."
 ---
 {% raw %}
 # DRY Terraform Với Terragrunt: Remote State, Inputs và Dependencies
@@ -270,7 +270,11 @@ graph LR
     VPC_CONF -.-> MOD_VPC
     SG_CONF -.-> MOD_SG
 
-
+    style VPC_CONF fill:none,stroke:#3b82f6,stroke-width:2px
+    style SG_CONF fill:none,stroke:#0ea5e9,stroke-width:2px
+    style ROOT_CONF fill:none,stroke:#10b981,stroke-width:2px
+    style MOD_VPC fill:none,stroke:#f59e0b,stroke-width:2px
+    style MOD_SG fill:none,stroke:#8b5cf6,stroke-width:2px
 ```
 
 ### Bước 1: Khởi tạo cấu trúc thư mục

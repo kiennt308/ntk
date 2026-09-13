@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 31] Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu (30"
+title: "[Bài 31] Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu (30 Buổi)"
 date: 2026-09-13 07:00:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 31
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
-summary: "Kho tàng 100+ câu hỏi phỏng vấn tuyển chọn từ các kỳ phỏng vấn Senior Cloud"
+summary: "Kho tàng câu hỏi phỏng vấn Terraform & Infrastructure as Code chuyên sâu dành cho Senior Cloud/DevOps Engineer: Phân loại theo 4 cấp độ từ Cơ bản, Nâng cao đến Kiến trúc sư và Xử lý sự cố Outage thực tế."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu (30."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Bộ câu hỏi phân cấp 4 cấp độ: Đầy đủ từ Kiến trúc Core, Quản trị State, Module Design đến High Availability và Disaster Recovery."
+  - "Câu hỏi tình huống SRE thực chiến: Xử lý State Corruption, Deadlock State Lock, Index Shifting, API Throttling và giải cứu Production."
+  - "Tư duy trả lời chuẩn STAR: Cung cấp khung lập luận kỹ thuật vững chắc, giải thích nguyên lý ngầm (under-the-hood) và so sánh đa chiều."
+  - "Bộ tài liệu ôn tập tối thượng: Đúc kết toàn bộ kiến thức của 30 buổi học thành cẩm nang phỏng vấn thực chiến đỉnh cao."
 ---
 {% raw %}
 # Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu (30 Buổi)

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 21] Kiểm Thử Hạ Tầng: terraform test, TFLint, Trivy và Validate"
+title: "[Bài 21] Kiểm Thử Hạ Tầng: Làm Chủ terraform test, TFLint, Trivy & Static Code Analysis"
 date: 2026-09-13 08:40:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 21
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80"
-summary: "Làm chủ hệ sinh thái Kiểm thử Hạ tầng (Infrastructure Testing) toàn diện"
+summary: "Xây dựng quy trình kiểm thử hạ tầng đa tầng (Testing Pyramid for IaC): Kiểm tra tĩnh với TFLint, quét lỗ hổng bảo mật với Trivy/tfsec và viết Unit/Integration Tests với framework terraform test."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiểm Thử Hạ Tầng: terraform test, TFLint, Trivy và Validate."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Kiểm thử tĩnh (Static Analysis): Sử dụng TFLint để phát hiện lỗi logic đặc thù của Cloud Provider và Trivy/tfsec để quét lỗ hổng bảo mật."
+  - "Framework terraform test (TF 1.6+): Viết các tệp test .tftest.hcl để kiểm thử tự động các module với các lệnh run (plan hoặc apply)."
+  - "Mocking Providers: Sử dụng mock_provider trong terraform test để kiểm thử logic module nhanh chóng mà không cần kết nối thực tế lên Cloud."
+  - "Chặn lỗi trước khi commit: Cấu hình pre-commit hooks tự động chạy terraform fmt, terraform validate và tflint trước mỗi lượt git commit."
 ---
 {% raw %}
 # Kiểm Thử Hạ Tầng: terraform test, TFLint, Trivy và Validate

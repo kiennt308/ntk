@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 29] Tổng Ôn và Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)"
+title: "[Bài 29] Tổng Ôn & Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)"
 date: 2026-09-13 07:20:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 29
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=80"
-summary: "Cẩm nang toàn diện chinh phục chứng chỉ quốc tế HashiCorp Certified: Terraform"
+summary: "Cẩm nang tổng ôn toàn diện kỳ thi chứng chỉ HashiCorp Certified: Terraform Associate (003): Tổng hợp 9 chuyên đề trọng tâm, phân tích cạm bẫy câu hỏi trắc nghiệm và chiến thuật làm bài đạt điểm tối đa."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tổng Ôn và Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "9 Chuyên đề cốt lõi: Nắm vững IaC Concepts, Terraform CLI Workflow, State Management, Modules, Core Syntax và HCP Terraform Cloud."
+  - "Phân tích dạng câu hỏi: Làm chủ các câu hỏi trắc nghiệm một/nhiều đáp án, câu hỏi điền từ và các tình huống xử lý lệnh CLI thực tế."
+  - "Cạm bẫy thường gặp: Phân biệt rõ sự khác nhau giữa local-exec vs remote-exec, count vs for_each, taint vs replace và các mức độ Policy enforcement."
+  - "Chiến thuật làm bài: Quản lý thời gian 60 phút cho 57 câu hỏi, kỹ thuật loại trừ đáp án và đọc kỹ từ khóa điều kiện trong đề bài."
 ---
 {% raw %}
 # Tổng Ôn và Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)

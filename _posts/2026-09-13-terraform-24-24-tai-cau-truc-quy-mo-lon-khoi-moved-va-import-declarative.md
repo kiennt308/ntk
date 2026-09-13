@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 24] Tái Cấu Trúc Quy Mô Lớn: Khối moved và Import Declarative"
+title: "[Bài 24] Tái Cấu Trúc Quy Mô Lớn: Khối moved & Import Declarative Không Gây Downtime"
 date: 2026-09-13 08:10:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 24
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
-summary: "Làm chủ các cuộc đại phẫu thuật tái cấu trúc hạ tầng (Large-scale Infrastructure"
+summary: "Chiến lược Refactoring hạ tầng quy mô lớn: Di chuyển tài nguyên giữa các module bằng khối moved, chuẩn hóa quy trình Import hạ tầng sẵn có bằng khối import và bảo toàn 100% tính sẵn sàng của Production."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tái Cấu Trúc Quy Mô Lớn: Khối moved và Import Declarative."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Khối moved declarative: Khai báo moved { from = ... to = ... } trực tiếp trong code HCL, cho phép đổi tên module mà không tạo State Drift."
+  - "Khối import declarative (TF 1.5+): Khai báo import { to = ... id = ... } kèm cờ -generate-config-out giúp sinh tự động mã nguồn HCL tương ứng."
+  - "Refactoring theo từng bước nhỏ: Chia nhỏ các đợt tái cấu trúc thành từng Pull Request riêng biệt, chạy terraform plan kiểm tra zero diff trước khi merge."
+  - "Bảo toàn tính sẵn sàng dịch vụ: Tuyệt đối không xóa/tạo lại tài nguyên Stateful (Database, Storage) trong suốt quá trình tái cấu trúc."
 ---
 {% raw %}
 # Tái Cấu Trúc Quy Mô Lớn: Khối moved và Import Declarative

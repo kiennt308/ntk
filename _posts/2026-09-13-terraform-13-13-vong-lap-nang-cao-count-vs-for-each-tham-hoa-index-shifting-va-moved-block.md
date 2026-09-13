@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 13] Vòng Lặp Nâng Cao: Count vs For_Each, Thảm Họa Index Shifting & Kỹ"
+title: "[Bài 13] Vòng Lặp Nâng Cao: count vs for_each, Thảm Họa Index Shifting & Khối moved Cứu Hộ"
 date: 2026-09-13 10:00:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 13
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
-summary: "Phân tích bản chất hoạt động của count và for_each, giải mã thảm họa phá"
+summary: "Phân tích bản chất kỹ thuật của count và for_each: Nhận diện thảm họa Index Shifting khi xóa phần tử trong mảng count và kỹ thuật tái cấu trúc an toàn không downtime bằng khối moved."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Vòng Lặp Nâng Cao: Count vs For_Each, Thảm Họa Index Shifting & Kỹ."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Thảm họa Index Shifting với count: Xóa một phần tử ở giữa danh sách khiến Terraform đánh chỉ mục lại toàn bộ và xóa/tạo lại tài nguyên sai lệch."
+  - "Sức mạnh của for_each: Định danh tài nguyên bằng Key duy nhất (Map/Set), cho phép thêm/sửa/xóa độc lập mà không ảnh hưởng phần tử khác."
+  - "Khối moved (TF 1.1+): Tái cấu trúc chuyển đổi từ count sang for_each một cách mượt mà mà không làm phá hủy tài nguyên thực tế."
+  - "Quy tắc chọn lựa: Chỉ dùng count để bật/tắt tài nguyên (count = var.enabled ? 1 : 0); dùng for_each cho mọi trường hợp sinh tài nguyên hàng loạt."
 ---
 {% raw %}
 # Vòng Lặp Nâng Cao: Count vs For_Each, Thảm Họa Index Shifting & Kỹ Thuật Refactor Zero-Downtime Bằng Moved Block
@@ -74,7 +74,13 @@ flowchart TD
 
     STATE_BEFORE --> ACTION --> DISASTER
 
-
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style D0 fill:none,stroke:#0ea5e9,stroke-width:2px
+    style D1 fill:none,stroke:#10b981,stroke-width:2px
+    style D2 fill:none,stroke:#f59e0b,stroke-width:2px
+    style I2 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style I1 fill:none,stroke:#ec4899,stroke-width:2px
+    style I0 fill:none,stroke:#06b6d4,stroke-width:2px
 ```
 
 ### Tại Sao Thảm Họa Này Lại Diễn Ra?
@@ -188,7 +194,13 @@ flowchart LR
     M1 --> C["Mã Mới: aws_subnet.public['ap-southeast-1a']"]
     M2 --> D["Mã Mới: aws_subnet.public['ap-southeast-1b']"]
 
-
+    style public fill:none,stroke:#3b82f6,stroke-width:2px
+    style A fill:none,stroke:#0ea5e9,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style M2 fill:none,stroke:#f59e0b,stroke-width:2px
+    style D fill:none,stroke:#8b5cf6,stroke-width:2px
+    style B fill:none,stroke:#ec4899,stroke-width:2px
+    style M1 fill:none,stroke:#06b6d4,stroke-width:2px
 ```
 
 ### Mã Nguồn Khối `moved {}` Khai Báo Trong HCL:
@@ -216,7 +228,7 @@ Plan: 0 to add, 0 to change, 0 to destroy.
 ## 6. Phân Tích Cạm Bẫy Thực Chiến: Thảm Họa Mất EBS Volume Khi Xóa Subnet Bằng `count`
 
 ### Tình Huống Sự Cố Thực Tế:
-Một nhóm kỹ sư cấu hình danh sách Subnets bằng `count`:
+Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Một nhóm kỹ sư cấu hình danh sách Subnets bằng `count`:
 ```hcl
 variable "subnet_zones" {
   default = ["ap-southeast-1a", "ap-southeast-1b", "ap-southeast-1c"]
@@ -250,16 +262,27 @@ Plan: 2 to add, 0 to change, 3 to destroy.
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao ổ đĩa EBS bị xóa và tạo lại?** $\rightarrow$ Vì `availability_zone` của Subnet `[0]` bị đổi từ `1a` sang `1b`.
-2. **Tại sao `availability_zone` lại bị đổi?** $\rightarrow$ Do hiện tượng Index Shifting: Vùng `1b` nhảy lên chiếm vị trí index `[0]`.
-3. **Tại sao kỹ sư lại dùng `count` cho tài nguyên có trạng thái?** $\rightarrow$ Do thiếu hiểu biết về sự khác biệt giữa `count` và `for_each`.
-4. **Biện pháp khắc phục tận gốc:**
+1. <span class="badge badge--primary">Why 1</span> **Tại sao ổ đĩa EBS bị xóa và tạo lại?** $\rightarrow$ Vì `availability_zone` của Subnet `[0]` bị đổi từ `1a` sang `1b`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao `availability_zone` lại bị đổi?** $\rightarrow$ Do hiện tượng Index Shifting: Vùng `1b` nhảy lên chiếm vị trí index `[0]`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại dùng `count` cho tài nguyên có trạng thái?** $\rightarrow$ Do thiếu hiểu biết về sự khác biệt giữa `count` và `for_each`.
+4. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
    - **Chuyển đổi 100% tài nguyên mạng và lưu trữ sang `for_each = toset(var.subnet_zones)`.**
    - **Sử dụng khối `moved {}` để di trú an toàn không downtime.**
 
 ---
 
 ## 7. Hands-on Lab: Tái Hiện & Hóa Giải Index Shifting Bằng `moved {}` (8 Bước)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành |
+| <span class="badge badge--cyan">02</span> | `count` | Tạo tài nguyên bằng  ban đầu |
+| <span class="badge badge--indigo">03</span> | `Thao tác 3` | Xem địa chỉ State hiện tại dạng Integer Index |
+| <span class="badge badge--amber">04</span> | `Thao tác 4` | Tái hiện thảm họa Index Shifting (Xóa "auth" ở đầu danh sách) |
+| <span class="badge badge--emerald">05</span> | `for_each` | Khôi phục lại danh sách và chuyển đổi code sang |
+| <span class="badge badge--primary">06</span> | `moved {}` | Khai báo khối  để di trú State an toàn |
+| <span class="badge badge--rose">07</span> | `terraform plan` | Chạy  để kiểm chứng Zero-Downtime |
+| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Áp dụng và dọn dẹp môi trường |
 
 ### Bước 1: Khởi tạo thư mục thực hành
 ```bash

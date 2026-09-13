@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 20] Quản Lý Secrets và Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh"
+title: "[Bài 20] Quản Lý Secrets & Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh Nghiệp"
 date: 2026-09-13 08:50:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 20
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=format&fit=crop&w=1200&q=80"
-summary: "Giải quyết triệt để rủi ro rò rỉ mật khẩu và API Keys trong Terraform State."
+summary: "Chiến lược bảo mật Secrets và dữ liệu nhạy cảm trong Terraform: Tích hợp AWS Secrets Manager, HashiCorp Vault, kỹ thuật che giấu sensitive attributes và phòng chống lộ mật khẩu trong State File."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Lý Secrets và Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Bản chất Secrets trong State: Terraform State LUÔN lưu trữ plaintext mọi giá trị nhạy cảm; bảo vệ State là phòng tuyến bảo mật quan trọng nhất."
+  - "Tích hợp HashiCorp Vault & AWS Secrets Manager: Chỉ lưu tham chiếu ARN của secret trong code HCL; ứng dụng đọc trực tiếp secret tại runtime."
+  - "Thuộc tính sensitive = true: Che giấu giá trị nhạy cảm trên stdout console và CI/CD execution logs, tránh rò rỉ thông tin ra bên ngoài."
+  - "Ephemeral State & RBAC: Thiết lập quyền truy cập tối thiểu (Least Privilege) cho S3 Backend và audit truy vết toàn bộ các phiên đọc State."
 ---
 {% raw %}
 # Quản Lý Secrets và Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh Nghiệp

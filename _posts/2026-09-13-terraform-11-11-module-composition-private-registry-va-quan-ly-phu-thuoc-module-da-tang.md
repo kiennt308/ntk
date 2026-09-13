@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 11] Ghép Nối Module (Module Composition) & Kiến Trúc Phân Tầng Multi-Tier"
+title: "[Bài 11] Module Composition & Quản Lý Phụ Thuộc Module Đa Tầng Trong Private Registry"
 date: 2026-09-13 10:20:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 11
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
-summary: "Làm chủ nghệ thuật Module Composition: giải mã sự khác biệt giữa Flat Composition"
+summary: "Chiến lược kết hợp các Module (Module Composition): Phân biệt Flat vs Nested Modules, chia sẻ dữ liệu qua Data Source / Remote State, và xuất bản Module lên HashiCorp Private Registry."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Ghép Nối Module (Module Composition) & Kiến Trúc Phân Tầng Multi-Tier."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Module Composition (Flat Pattern): Ưu tiên kết hợp các module ngang hàng thay vì lồng ghép quá sâu (Nested Modules) gây khó bảo trì."
+  - "Chia sẻ dữ liệu liên module: Sử dụng Output của module này làm Input cho module khác hoặc truy vấn qua terraform_remote_state."
+  - "Private Module Registry: Đóng gói và lưu trữ module trong GitLab/GitHub Private Registry với tiền tố đặt tên chuẩn terraform-<provider>-<name>."
+  - "Quản lý Dependency Graph: Giảm thiểu coupling giữa các module, đảm bảo từng tầng hạ tầng có thể nâng cấp độc lập mà không gây downtime."
 ---
 {% raw %}
 # Ghép Nối Module (Module Composition) & Kiến Trúc Phân Tầng Multi-Tier Trên Terraform Registry
@@ -57,7 +57,17 @@ flowchart TD
         Note2["Ưu điểm: Từng module độc lập 100%, dễ kiểm thử đơn vị, tái sử dụng linh hoạt!"]
     end
 
-
+    style FDb fill:none,stroke:#3b82f6,stroke-width:2px
+    style FSec fill:none,stroke:#0ea5e9,stroke-width:2px
+    style Note2 fill:none,stroke:#10b981,stroke-width:2px
+    style FVpc fill:none,stroke:#f59e0b,stroke-width:2px
+    style FRoot fill:none,stroke:#8b5cf6,stroke-width:2px
+    style FApp fill:none,stroke:#ec4899,stroke-width:2px
+    style Note1 fill:none,stroke:#06b6d4,stroke-width:2px
+    style NApp fill:none,stroke:#3b82f6,stroke-width:2px
+    style NDb fill:none,stroke:#0ea5e9,stroke-width:2px
+    style NRoot fill:none,stroke:#10b981,stroke-width:2px
+    style NVpc fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
@@ -224,7 +234,7 @@ sequenceDiagram
 ## 6. Phân Tích Cạm Bẫy Thực Chiến: Vòng Lặp Phụ Thuộc Chéo Giữa Các Module
 
 ### Tình Huống Sự Cố Thực Tế:
-Một nhóm kỹ sư tách hệ thống thành 2 module: `module "network"` và `module "security"`.
+Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Một nhóm kỹ sư tách hệ thống thành 2 module: `module "network"` và `module "security"`.
 - Trong `module "network"`, kỹ sư muốn tạo VPC Flow Logs và cần truyền ID của Security Group từ `module.security.flow_logs_sg_id`.
 - Trong `module "security"`, kỹ sư lại cần `module.network.vpc_id` để tạo Security Group.
 
@@ -239,16 +249,27 @@ module.security depends on module.network
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao Terraform báo lỗi Cycle giữa 2 module?** $\rightarrow$ Vì Module Network cần output của Module Security, và Module Security lại cần output của Module Network.
-2. **Tại sao lại có sự phụ thuộc 2 chiều này?** $\rightarrow$ Do kỹ sư gộp tính năng VPC Flow Logs (vốn thuộc tầng Giám sát/Bảo mật) vào bên trong Module Network.
-3. **Tại sao việc gộp này lại sai?** $\rightarrow$ Vi phạm nguyên lý Single Responsibility Principle; Module Network chỉ nên thuần túy tạo hạ tầng mạng cơ sở (VPC, Subnet, Route Table).
-4. **Biện pháp khắc phục chuẩn SRE:**
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Terraform báo lỗi Cycle giữa 2 module?** $\rightarrow$ Vì Module Network cần output của Module Security, và Module Security lại cần output của Module Network.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lại có sự phụ thuộc 2 chiều này?** $\rightarrow$ Do kỹ sư gộp tính năng VPC Flow Logs (vốn thuộc tầng Giám sát/Bảo mật) vào bên trong Module Network.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao việc gộp này lại sai?** $\rightarrow$ Vi phạm nguyên lý Single Responsibility Principle; Module Network chỉ nên thuần túy tạo hạ tầng mạng cơ sở (VPC, Subnet, Route Table).
+4. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
    - **Tách rời tài nguyên phụ thuộc:** Đưa tài nguyên `aws_flow_log` ra khỏi Module Network và chuyển sang Module Security hoặc khai báo độc lập ở Root Module.
    - **Đảm bảo luồng dữ liệu 1 chiều (Unidirectional Data Flow):** Dữ liệu luôn chảy xuôi từ Network $\rightarrow$ Security $\rightarrow$ Data $\rightarrow$ Application, tuyệt đối không có mũi tên chảy ngược lại.
 
 ---
 
 ## 7. Hands-on Lab: Xây Dựng Dự Án Flat Composition Hoàn Chỉnh (8 Bước)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo cấu trúc thư mục Monorepo |
+| <span class="badge badge--cyan">02</span> | `Thao tác 2` | Viết Module Network độc lập |
+| <span class="badge badge--indigo">03</span> | `network_id` | Viết Module App độc lập (Nhận  làm input) |
+| <span class="badge badge--amber">04</span> | `Thao tác 4` | Viết Root Module điều phối Flat Composition |
+| <span class="badge badge--emerald">05</span> | `modules.json` | Khởi tạo và kiểm tra tệp kê khai |
+| <span class="badge badge--primary">06</span> | `Thao tác 6` | Kiểm tra tính hợp lệ của Đồ thị DAG |
+| <span class="badge badge--rose">07</span> | `Thao tác 7` | Thực thi triển khai toàn bộ hệ sinh thái |
+| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Xác minh kết quả Output và dọn dẹp |
 
 ### Bước 1: Khởi tạo cấu trúc thư mục Monorepo
 ```bash

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 26] Gỡ Rối State Lock, Apply Nửa Chừng và Cứu Hộ State Corruption"
+title: "[Bài 26] Gỡ Rối State Lock, Apply Nửa Chừng & Cứu Hộ State Corruption Thực Chiến"
 date: 2026-09-13 07:50:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 26
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
-summary: "Cẩm nang SRE Incident Response xử lý các sự cố nghiêm trọng nhất của Terraform:"
+summary: "Kỹ năng xử lý sự cố khẩn cấp bậc thầy: Gỡ khóa State Lock an toàn, xử lý tình trạng Apply bị đứt đoạn giữa chừng, phục hồi State bị hỏng từ Versioning và giải cứu hạ tầng Production."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Gỡ Rối State Lock, Apply Nửa Chừng và Cứu Hộ State Corruption."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Quy trình gỡ khóa State Lock: Xác minh kỹ tiến trình cũ đã dừng hoàn toàn trên CI/CD trước khi phát lệnh terraform force-unlock <Lock-ID>."
+  - "Xử lý Apply nửa chừng: Chạy terraform refresh hoặc apply -refresh-only để cập nhật các tài nguyên đã tạo dở dang vào State trước khi chạy tiếp."
+  - "Cứu hộ State Corruption: Kích hoạt S3 Bucket Versioning để khôi phục phiên bản state lành lặn gần nhất khi tệp JSON bị ghi đè hoặc hỏng hóc."
+  - "Nguyên tắc vàng SRE: Luôn tạo bản sao lưu state thủ công (terraform state pull > backup.json) trước khi thực hiện bất kỳ thao tác can thiệp nguy hiểm nào."
 ---
 {% raw %}
 # Gỡ Rối State Lock, Apply Nửa Chừng và Cứu Hộ State Corruption

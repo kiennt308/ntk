@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 22] Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest và Checkov"
+title: "[Bài 22] Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest & Checkov Chuẩn DevSecOps"
 date: 2026-09-13 08:30:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 22
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80"
-summary: "Thiết lập rào chắn bảo vệ hạ tầng tự động (Automated Guardrails) với Policy"
+summary: "Thực thi chính sách an toàn hạ tầng bằng mã (Policy as Code): Viết luật kiểm định OPA/Rego, phân tích Execution Plan với Conftest và tích hợp Checkov quét tuân thủ bảo mật CIS Benchmarks."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest và Checkov."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Khái niệm Policy as Code: Tự động hóa kiểm tra tuân thủ bảo mật, kiểm soát chi phí và ngăn chặn cấu hình sai trước khi hạ tầng được tạo."
+  - "Open Policy Agent (OPA) & Rego: Phân tích tệp terraform plan -out=plan.json để thực thi các luật chặn (như cấm mở port 22, bắt buộc mã hóa EBS)."
+  - "Tích hợp Conftest & Checkov: Quét hàng trăm quy tắc chuẩn CIS Benchmarks, PCI-DSS, HIPAA ngay trong quy trình Pull Request của lập trình viên."
+  - "Shift-Left Security: Phát hiện và xử lý sớm các rủi ro bảo mật ngay từ giai đoạn viết code HCL, giảm thiểu 90% chi phí khắc phục sự cố."
 ---
 {% raw %}
 # Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest và Checkov

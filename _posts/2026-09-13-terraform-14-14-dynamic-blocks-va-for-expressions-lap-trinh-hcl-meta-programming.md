@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 14] Lập Trình HCL Nâng Cao: Làm Chủ Dynamic Blocks, Biểu Thức For (For"
+title: "[Bài 14] Dynamic Blocks & For Expressions: Lập Trình HCL Meta-Programming Chuyên Sâu"
 date: 2026-09-13 09:50:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 14
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
-summary: "Hướng dẫn làm chủ tư duy lập trình meta trong HCL: giải mã cơ chế sinh lặp"
+summary: "Nâng cao trình độ HCL với Meta-Programming: Cấu hình khối lặp động dynamic blocks, chuyển đổi dữ liệu phức hợp với for expressions và toán tử nhóm Ellipsis (...) trong Security Groups."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Lập Trình HCL Nâng Cao: Làm Chủ Dynamic Blocks, Biểu Thức For (For."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Bản chất của dynamic blocks: Sinh động các khối lặp lồng nhau (nested blocks như ingress, egress, tag) từ một biến mảng hoặc map."
+  - "Cấu trúc dynamic iterator: Sử dụng content { ... } kết hợp con trỏ iterator để truy xuất các thuộc tính lặp một cách chuẩn xác."
+  - "For Expressions biến đổi đa chiều: Lọc điều kiện (if), chuyển đổi list-to-map và gom nhóm các phần tử trùng key bằng toán tử Ellipsis (...)."
+  - "Cảnh báo lạm dụng: Không dùng dynamic blocks cho các tài nguyên cấp cao (top-level resources); chỉ dùng cho các nested configuration blocks."
 ---
 {% raw %}
 # Lập Trình HCL Nâng Cao: Làm Chủ Dynamic Blocks, Biểu Thức For (For Expressions) & Toán Tử Ellipsis
@@ -55,7 +55,18 @@ graph TD
         Note2["Tạo ra 1 TÀI NGUYÊN DUY NHẤT chứa NHIỀU KHỐI LỒNG NHAU"]
     end
 
-
+    style B2 fill:none,stroke:#3b82f6,stroke-width:2px
+    style Note2 fill:none,stroke:#0ea5e9,stroke-width:2px
+    style R1 fill:none,stroke:#10b981,stroke-width:2px
+    style Note1 fill:none,stroke:#f59e0b,stroke-width:2px
+    style D1 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style B1 fill:none,stroke:#ec4899,stroke-width:2px
+    style server fill:none,stroke:#06b6d4,stroke-width:2px
+    style B3 fill:none,stroke:#3b82f6,stroke-width:2px
+    style R2 fill:none,stroke:#0ea5e9,stroke-width:2px
+    style F1 fill:none,stroke:#10b981,stroke-width:2px
+    style R3 fill:none,stroke:#f59e0b,stroke-width:2px
+    style RES_SINGLE fill:none,stroke:#8b5cf6,stroke-width:2px
 ```
 
 ---
@@ -250,7 +261,7 @@ Mặc dù `dynamic` block rất mạnh mẽ, nhưng việc lạm dụng quá m�
 ## 6. Phân Tích Cạm Bẫy Thực Chiến: Lỗi `dynamic` Block Xóa Sạch Outbound Rules
 
 ### Tình Huống Sự Cố Thực Tế:
-Một kỹ sư viết Security Group với `dynamic "egress"` dựa trên biến `var.egress_rules`. Trong môi trường Staging, biến này được truyền danh sách rỗng `[]` (với ý định là dùng cấu hình mặc định).
+Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Một kỹ sư viết Security Group với `dynamic "egress"` dựa trên biến `var.egress_rules`. Trong môi trường Staging, biến này được truyền danh sách rỗng `[]` (với ý định là dùng cấu hình mặc định).
 
 ```hcl
 resource "aws_security_group" "bad_sg" {
@@ -274,10 +285,10 @@ resource "aws_security_group" "bad_sg" {
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao máy chủ không thể kết nối ra ngoài Internet?** $\rightarrow$ Vì Security Group không có bất kỳ Egress Rule nào cho phép lưu lượng đi ra.
-2. **Tại sao lại không có Egress Rule?** $\rightarrow$ Vì trên AWS, khi bạn khai báo thủ công khối `egress` (dù là dynamic rỗng `for_each = []`), AWS sẽ xóa bỏ luật mặc định `0.0.0.0/0` (Allow All Egress).
-3. **Tại sao kỹ sư lại truyền mảng rỗng?** $\rightarrow$ Kỹ sư ngộ nhận rằng nếu không có rule nào trong mảng, AWS sẽ tự giữ lại luật mặc định.
-4. **Biện pháp khắc phục chuẩn SRE:**
+1. <span class="badge badge--primary">Why 1</span> **Tại sao máy chủ không thể kết nối ra ngoài Internet?** $\rightarrow$ Vì Security Group không có bất kỳ Egress Rule nào cho phép lưu lượng đi ra.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lại không có Egress Rule?** $\rightarrow$ Vì trên AWS, khi bạn khai báo thủ công khối `egress` (dù là dynamic rỗng `for_each = []`), AWS sẽ xóa bỏ luật mặc định `0.0.0.0/0` (Allow All Egress).
+3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại truyền mảng rỗng?** $\rightarrow$ Kỹ sư ngộ nhận rằng nếu không có rule nào trong mảng, AWS sẽ tự giữ lại luật mặc định.
+4. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
    - **Thêm luật mặc định nếu mảng rỗng:**
      ```hcl
      for_each = length(var.egress_rules) > 0 ? var.egress_rules : local.default_allow_all_egress
@@ -286,6 +297,17 @@ resource "aws_security_group" "bad_sg" {
 ---
 
 ## 7. Hands-on Lab: Thực Hành Dynamic Blocks & For Expressions (8 Bước)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành thử nghiệm |
+| <span class="badge badge--cyan">02</span> | `Thao tác 2` | Viết mã nguồn thử nghiệm For Expressions và Ellipsis |
+| <span class="badge badge--indigo">03</span> | `terraform apply` | Chạy  để kiểm tra kết quả |
+| <span class="badge badge--amber">04</span> | `terraform console` | Khởi động  để thử nghiệm trực tiếp |
+| <span class="badge badge--emerald">05</span> | `flatten` | Thử nghiệm hàm  trong console |
+| <span class="badge badge--primary">06</span> | `Thao tác 6` | Thử nghiệm biến đổi Map-to-List trong console |
+| <span class="badge badge--rose">07</span> | `Thao tác 7` | Thoát khỏi console |
+| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Dọn dẹp môi trường thử nghiệm |
 
 ### Bước 1: Khởi tạo thư mục thực hành thử nghiệm
 ```bash

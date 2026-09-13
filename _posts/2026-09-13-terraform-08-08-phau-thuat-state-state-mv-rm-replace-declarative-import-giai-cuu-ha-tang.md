@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 08] Phẫu Thuật State: Làm Chủ State Subcommands (mv, rm, replace) & Declarative"
+title: "[Bài 08] Phẫu Thuật State: Làm Chủ terraform state mv, rm, replace & Declarative Import Cứu Hộ Hạ Tầng"
 date: 2026-09-13 10:50:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 8
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
-summary: "Hướng dẫn thực chiến phẫu thuật Terraform State: làm chủ các lệnh ngoại"
+summary: "Hướng dẫn thực chiến làm chủ bộ công cụ phẫu thuật State: Di chuyển tài nguyên với state mv, tách tài nguyên với state rm, ép tạo lại với -replace và khối import declarative mới nhất."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Phẫu Thuật State: Làm Chủ State Subcommands (mv, rm, replace) & Declarative."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Lệnh terraform state mv: Đổi tên hoặc di chuyển tài nguyên giữa các module mà không làm kích hoạt chu trình Destroy/Recreate trên Cloud."
+  - "Lệnh terraform state rm: Xóa tài nguyên khỏi sự quản lý của State file nhưng vẫn giữ nguyên tài nguyên đang chạy trên hạ tầng thực tế."
+  - "Tùy chọn -replace: Thay thế cho lệnh taint cũ, buộc Terraform phải hủy và tạo mới lại một tài nguyên cụ thể có chủ đích."
+  - "Khối import declarative (TF 1.5+): Khai báo import { to = ... id = ... } trực tiếp trong code HCL, hỗ trợ tự sinh cấu hình với -generate-config-out."
 ---
 {% raw %}
 # Phẫu Thuật State: Làm Chủ State Subcommands (mv, rm, replace) & Declarative Import Block
@@ -49,7 +49,16 @@ graph TD
     ModDB --> SubStorage["module.storage"]
     SubStorage --> Vol["aws_ebs_volume.data['db-primary']"]
 
-
+    style public fill:none,stroke:#3b82f6,stroke-width:2px
+    style StandaloneRes fill:none,stroke:#0ea5e9,stroke-width:2px
+    style Subnet0 fill:none,stroke:#10b981,stroke-width:2px
+    style Vol fill:none,stroke:#f59e0b,stroke-width:2px
+    style ModDB fill:none,stroke:#8b5cf6,stroke-width:2px
+    style Root fill:none,stroke:#ec4899,stroke-width:2px
+    style SubStorage fill:none,stroke:#06b6d4,stroke-width:2px
+    style data fill:none,stroke:#3b82f6,stroke-width:2px
+    style ModVPC fill:none,stroke:#0ea5e9,stroke-width:2px
+    style Subnet1 fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 ---
@@ -87,7 +96,12 @@ flowchart LR
     C -->|"Cưỡng Chế Tạo Lại"| F["4. terraform plan -replace"]
     C -->|"Tiếp Nhận Hạ Tầng Cũ"| G["5. import block (Terraform &gt;= 1.5)"]
 
-
+    style E fill:none,stroke:#3b82f6,stroke-width:2px
+    style A fill:none,stroke:#0ea5e9,stroke-width:2px
+    style D fill:none,stroke:#10b981,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#8b5cf6,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
 ### 3.1. `terraform state list` & `terraform state show`
@@ -150,7 +164,11 @@ flowchart TD
     C --> D["4. SRE Review & Chuẩn hóa mã trong generated.tf"]
     D --> E["5. Chạy: terraform apply -&gt; Tài nguyên chính thức được quản lý qua IaC!"]
 
-
+    style E fill:none,stroke:#3b82f6,stroke-width:2px
+    style A fill:none,stroke:#0ea5e9,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#f59e0b,stroke-width:2px
+    style B fill:none,stroke:#8b5cf6,stroke-width:2px
 ```
 
 ### Bảng So Sánh Hai Phương Pháp Import:
@@ -204,7 +222,10 @@ flowchart LR
     C -->|~ Update in-place| D["An toàn -&gt; SRE Tiếp tục apply"]
     C -->|-/+ Forces Replacement| E["NGUY HIỂM: Thiếu thuộc tính gốc -&gt; Phải bổ sung HCL ngay!"]
 
-
+    style E fill:none,stroke:#3b82f6,stroke-width:2px
+    style A fill:none,stroke:#0ea5e9,stroke-width:2px
+    style D fill:none,stroke:#10b981,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 > [!CAUTION]
@@ -216,7 +237,7 @@ flowchart LR
 ## 7. Phân Tích Cạm Bẫy Thực Chiến: Thảm Họa "Đổi Tên Resource Làm Mất Dữ Liệu"
 
 ### Tình Huống Sự Cố Thực Tế:
-Tại một công ty tài chính, một kỹ sư muốn đổi tên định danh của cơ sở dữ liệu RDS trong file `main.tf` từ `resource "aws_db_instance" "database"` thành `resource "aws_db_instance" "postgres_primary"`.
+Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Tại một công ty tài chính, một kỹ sư muốn đổi tên định danh của cơ sở dữ liệu RDS trong file `main.tf` từ `resource "aws_db_instance" "database"` thành `resource "aws_db_instance" "postgres_primary"`.
 
 Kỹ sư đã sửa code trực tiếp và chạy ngay lệnh:
 ```bash
@@ -256,14 +277,19 @@ flowchart TD
     D --> E["Kỹ sư chạy apply -auto-approve không kiểm tra Plan"]
     E --> F["THẢM HỌA: XÓA SẠCH DATABASE SẢN XUẤT!"]
 
-
+    style E fill:none,stroke:#3b82f6,stroke-width:2px
+    style A fill:none,stroke:#0ea5e9,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#f59e0b,stroke-width:2px
+    style B fill:none,stroke:#8b5cf6,stroke-width:2px
+    style F fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao cơ sở dữ liệu sản xuất bị xóa?** $\rightarrow$ Vì Terraform thực thi hành động `Destroy` đối với tài nguyên `aws_db_instance.database`.
-2. **Tại sao Terraform lại xóa?** $\rightarrow$ Vì Terraform không hiểu khái niệm "đổi tên"; nó chỉ thấy tài nguyên cũ bị xóa khỏi code HCL và một tài nguyên mới xuất hiện.
-3. **Tại sao kỹ sư không dùng `state mv` trước?** $\rightarrow$ Do kỹ sư chủ quan không nắm được quy tắc: Đổi tên resource trong code bắt buộc phải đồng bộ đổi tên trong State bằng `terraform state mv`.
-4. **Tại sao lệnh apply vẫn chạy được khi đang xóa database?** $\rightarrow$ Do thiếu cấu hình an toàn `prevent_destroy = true` trong khối `lifecycle` của database và thiếu thuộc tính `deletion_protection = true` trên AWS.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao cơ sở dữ liệu sản xuất bị xóa?** $\rightarrow$ Vì Terraform thực thi hành động `Destroy` đối với tài nguyên `aws_db_instance.database`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Terraform lại xóa?** $\rightarrow$ Vì Terraform không hiểu khái niệm "đổi tên"; nó chỉ thấy tài nguyên cũ bị xóa khỏi code HCL và một tài nguyên mới xuất hiện.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư không dùng `state mv` trước?** $\rightarrow$ Do kỹ sư chủ quan không nắm được quy tắc: Đổi tên resource trong code bắt buộc phải đồng bộ đổi tên trong State bằng `terraform state mv`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao lệnh apply vẫn chạy được khi đang xóa database?** $\rightarrow$ Do thiếu cấu hình an toàn `prevent_destroy = true` trong khối `lifecycle` của database và thiếu thuộc tính `deletion_protection = true` trên AWS.
 5. **Quy trình chuẩn SRE để đổi tên an toàn:**
    - **Bước 1 (Đổi tên trong State trước):**
      ```bash
@@ -275,6 +301,17 @@ flowchart TD
 ---
 
 ## 7. Hands-on Lab: Thực Hành Phẫu Thuật State & Declarative Import (8 Bước)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành thử nghiệm |
+| <span class="badge badge--cyan">02</span> | `local_file` | Tạo một tài nguyên mẫu ban đầu bằng |
+| <span class="badge badge--indigo">03</span> | `state mv` | Đổi tên tài nguyên trong State bằng |
+| <span class="badge badge--amber">04</span> | `Thao tác 4` | Sửa code HCL để đồng bộ với tên mới trong State |
+| <span class="badge badge--emerald">05</span> | `terraform plan` | Chạy  để kiểm chứng Zero-Downtime |
+| <span class="badge badge--primary">06</span> | `state rm` | Hủy quyền quản lý bằng |
+| <span class="badge badge--rose">07</span> | `import {}` | Tiếp nhận lại tài nguyên bằng Declarative  Block |
+| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Xác minh tài nguyên đã quay trở lại quyền kiểm soát của State |
 
 ### Bước 1: Khởi tạo thư mục thực hành thử nghiệm
 ```bash

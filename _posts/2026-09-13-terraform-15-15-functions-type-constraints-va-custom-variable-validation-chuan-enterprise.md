@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 15] Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise"
+title: "[Bài 15] Built-in Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise"
 date: 2026-09-13 09:40:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 15
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80"
-summary: "Làm chủ hệ thống Built-in Functions mạnh mẽ trong HCL, xây dựng Type Constraints"
+summary: "Làm chủ kho tàng hàm tích hợp trong Terraform Core: Phân tích các nhóm hàm IP, String, Collection, Encoding và kỹ thuật viết Custom Validation Rules đa điều kiện kèm thông điệp báo lỗi rõ ràng."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Nhóm hàm xử lý mạng IP: Làm chủ cidrsubnet, cidrhost, cidrnetmask để tự động hóa phân bổ dải IP mạng Subnet không trùng lặp."
+  - "Nhóm hàm Collection & Encoding: Kết hợp merge, flatten, coalesce, jsonencode để xử lý cấu trúc dữ liệu đa tầng an toàn tuyệt đối."
+  - "Custom Variable Validation: Viết các khối validation { condition = ... error_message = ... } chặn đứng sai sót cấu hình ngay tại cửa ngõ."
+  - "Hàm kiểm tra an toàn: Sử dụng can() và try() để xử lý các thuộc tính tùy chọn hoặc có nguy cơ lỗi mà không làm sập tiến trình chạy."
 ---
 {% raw %}
 # Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise
@@ -280,7 +280,13 @@ flowchart LR
         C2 -->|Lỗi| C4["Trả về false"]
     end
 
-
+    style T6 fill:none,stroke:#3b82f6,stroke-width:2px
+    style C3 fill:none,stroke:#0ea5e9,stroke-width:2px
+    style C4 fill:none,stroke:#10b981,stroke-width:2px
+    style C1 fill:none,stroke:#f59e0b,stroke-width:2px
+    style T1 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style T5 fill:none,stroke:#ec4899,stroke-width:2px
+    style T3 fill:none,stroke:#06b6d4,stroke-width:2px
 ```
 
 ### 4.1. Bản Chất Kỹ Thuật
@@ -428,7 +434,12 @@ graph TD
     D -->|Quá giới hạn| ERR3["Lỗi Disk Size Limit"]
     E --> F["Sinh Cấu Hình aws_eks_node_group"]
 
-
+    style E fill:none,stroke:#3b82f6,stroke-width:2px
+    style A fill:none,stroke:#0ea5e9,stroke-width:2px
+    style ERR1 fill:none,stroke:#10b981,stroke-width:2px
+    style ERR3 fill:none,stroke:#f59e0b,stroke-width:2px
+    style ERR2 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style F fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
 ### Bước 1: Khởi tạo thư mục và cấu trúc file

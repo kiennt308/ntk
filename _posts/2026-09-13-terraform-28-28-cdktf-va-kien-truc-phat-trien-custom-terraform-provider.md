@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 28] CDKTF và Kiến Trúc Phát Triển Custom Terraform Provider"
+title: "[Bài 28] CDKTF & Kiến Trúc Phát Triển Custom Terraform Provider"
 date: 2026-09-13 07:30:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 28
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
-summary: "Bước ra khỏi giới hạn của HCL: Xây dựng hạ tầng bằng TypeScript/Python với"
+summary: "Mở rộng giới hạn của IaC với Cloud Development Kit for Terraform (CDKTF): Lập trình hạ tầng bằng TypeScript/Python và nguyên lý phát triển Custom Provider với HashiCorp Plugin Framework."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về CDKTF và Kiến Trúc Phát Triển Custom Terraform Provider."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Khái niệm CDKTF: Cho phép kỹ sư sử dụng các ngôn ngữ lập trình hướng đối tượng (TypeScript, Python, Go, C#) để tổng hợp ra tệp cấu hình HCL."
+  - "Lợi thế của CDKTF: Tận dụng trọn vẹn sức mạnh của IDE, Type Checking, Unit Testing và khả năng tái sử dụng thư viện OOP (Constructs)."
+  - "Kiến trúc Custom Provider: Xây dựng Provider bằng Golang với terraform-plugin-framework, định nghĩa Schema và triển khai CRUD Handlers."
+  - "Giao thức gRPC Plugin RPC: Cơ chế giao tiếp nội bộ giữa Terraform Core Engine và Custom Provider binary qua local Unix domain sockets."
 ---
 {% raw %}
 # CDKTF và Kiến Trúc Phát Triển Custom Terraform Provider

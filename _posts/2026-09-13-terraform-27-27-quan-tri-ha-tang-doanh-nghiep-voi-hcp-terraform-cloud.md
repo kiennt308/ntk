@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 27
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
-summary: "Khám phá toàn diện nền tảng SaaS quản trị hạ tầng doanh nghiệp HCP Terraform"
+summary: "Tự động hóa và quản trị hạ tầng trên nền tảng đám mây HCP Terraform: Cấu hình Remote Execution, quản lý Biến/Secrets tập trung, thiết lập Private Registry và tích hợp Cost Estimation."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Hạ Tầng Doanh Nghiệp Với HCP Terraform & Terraform Cloud."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Remote Execution Engine: Toàn bộ quá trình init, plan, apply được thực thi an toàn trong các container cô lập trên hạ tầng HCP Terraform."
+  - "Quản lý Workspaces tập trung: Phân quyền RBAC chi tiết cho các nhóm kỹ sư, lưu trữ biến số hóa và quản lý State an toàn tuyệt đối."
+  - "Cost Estimation & Run Triggers: Ước tính chi phí thay đổi hạ tầng trước khi apply và tự động kích hoạt pipeline liên module thông qua Run Triggers."
+  - "Tích hợp Sentinel Policy: Thực thi các chính sách kiểm soát tuân thủ bảo mật và ngân sách đa cấp độ (Advisory, Soft Mandatory, Hard Mandatory)."
 ---
 {% raw %}
 # Quản Trị Hạ Tầng Doanh Nghiệp Với HCP Terraform & Terraform Cloud

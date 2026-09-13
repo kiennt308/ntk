@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 17] Provisioners, terraform_data và Chuyển Đổi State Không Phá Hủy Hạ"
+title: "[Bài 17] Provisioners, terraform_data & Chuyển Đổi State Không Phá Hủy Hạ Tầng"
 date: 2026-09-13 09:20:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 17
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80"
-summary: "Giải mã bản chất của Terraform Provisioners (local-exec, remote-exec, file),"
+summary: "Đánh giá thực chiến Provisioners (local-exec, remote-exec) và tài nguyên thay thế chuẩn hiện đại terraform_data: Quản lý vòng đời hooks và kích hoạt tái thực thi linh hoạt."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Provisioners, terraform_data và Chuyển Đổi State Không Phá Hủy Hạ."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Cảnh báo về Provisioners: Chỉ là giải pháp tình thế cuối cùng (Last Resort); phá vỡ tư duy Declarative và không hỗ trợ Rollback khi lỗi."
+  - "Tài nguyên terraform_data (TF 1.4+): Thay thế hoàn toàn cho null_resource cũ, lưu trữ giá trị tùy ý trong state và kích hoạt triggers_replace."
+  - "Quản lý Failure Behavior: Cấu hình on_failure = continue hoặc on_failure = fail để kiểm soát luồng xử lý khi script provisioner gặp lỗi."
+  - "Giải pháp thay thế hiện đại: Sử dụng Cloud-Init, User Data scripts hoặc công cụ Configuration Management chuyên dụng (Ansible, SSM)."
 ---
 {% raw %}
 # Provisioners, terraform_data và Chuyển Đổi State Không Phá Hủy Hạ Tầng
@@ -83,7 +83,13 @@ graph LR
     R -->|Kết nối SSH / WinRM| R1["Remote Target Virtual Machine"]
     F -->|Copy file/folder| F1["Remote Target Virtual Machine"]
 
-
+    style R1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style R fill:none,stroke:#0ea5e9,stroke-width:2px
+    style L1 fill:none,stroke:#10b981,stroke-width:2px
+    style F fill:none,stroke:#f59e0b,stroke-width:2px
+    style P fill:none,stroke:#8b5cf6,stroke-width:2px
+    style F1 fill:none,stroke:#ec4899,stroke-width:2px
+    style L fill:none,stroke:#06b6d4,stroke-width:2px
 ```
 
 ### 2.1. `local-exec`: Thực Thi Lệnh Trên Máy Chạy Terraform

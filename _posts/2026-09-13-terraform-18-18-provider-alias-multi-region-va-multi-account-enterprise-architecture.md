@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 18] Provider Alias, Multi-Region và Multi-Account Enterprise Architecture"
+title: "[Bài 18] Provider Alias, Multi-Region & Multi-Account Enterprise Architecture"
 date: 2026-09-13 09:10:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 18
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
-summary: "Làm chủ kỹ thuật Provider Configuration, khai thác Provider Alias để quản"
+summary: "Thiết kế kiến trúc hạ tầng Multi-Region và Multi-Account: Cấu hình Provider Alias, kỹ thuật Assume Role qua IAM Cross-Account và điều phối triển khai mạng Transit Gateway toàn cầu."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Provider Alias, Multi-Region và Multi-Account Enterprise Architecture."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Provider Alias: Cho phép khởi tạo nhiều instance của cùng một Provider trong một cấu hình (triển khai đồng thời sang us-east-1 và ap-southeast-1)."
+  - "Cross-Account Assume Role: Cấu hình block assume_role bên trong provider để deploy tài nguyên an toàn vào các tài khoản AWS con từ CI/CD trung tâm."
+  - "Kế thừa Provider trong Module: Truyền provider alias vào module con thông qua khối providers = { aws = aws.secondary } chuẩn mực."
+  - "Kiến trúc Disaster Recovery: Triển khai hạ tầng Active-Passive đa vùng với cơ chế đồng bộ dữ liệu S3 Cross-Region Replication và Route53 Failover."
 ---
 {% raw %}
 # Provider Alias, Multi-Region và Multi-Account Enterprise Architecture

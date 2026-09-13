@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 30
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
-summary: "Đồ án tốt nghiệp Capstone Project đỉnh cao: Xây dựng toàn diện một nền tảng"
+summary: "Dự án thực chiến tổng hợp (Capstone Project): Thiết kế và triển khai toàn diện nền tảng hạ tầng Multi-Region, Multi-Tier (VPC, EKS, RDS Aurora, Redis, CloudFront) chuẩn Enterprise từ con số 0."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Capstone Project: Xây Dựng Nền Tảng Hạ Tầng Enterprise Đa Tầng End-to-End."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Kiến trúc hạ tầng End-to-End: Tích hợp hoàn chỉnh mạng VPC đa vùng, cụm Kubernetes EKS, cơ sở dữ liệu RDS Aurora và CDN CloudFront."
+  - "Áp dụng trọn bộ Best Practices: Phân tầng module chuẩn mực, quản lý State an toàn với S3/DynamoDB, kiểm định biến và che giấu Secrets tuyệt đối."
+  - "Tự động hóa CI/CD & Security: Tích hợp xác thực OIDC, quét lỗ hổng với Trivy/Checkov và thiết lập pipeline triển khai tự động với approval gate."
+  - "Sẵn sàng Production: Đạt chuẩn cao nhất về tính sẵn sàng (High Availability), khả năng phục hồi sau thảm họa (DR) và tối ưu hóa chi phí vận hành."
 ---
 {% raw %}
 # Capstone Project: Xây Dựng Nền Tảng Hạ Tầng Enterprise Đa Tầng End-to-End

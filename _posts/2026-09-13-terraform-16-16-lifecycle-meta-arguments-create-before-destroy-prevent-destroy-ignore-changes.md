@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 16] Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy,"
+title: "[Bài 16] Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy & ignore_changes Thực Chiến"
 date: 2026-09-13 09:30:00 +0700
 categories: [Terraform]
 tags:
@@ -13,12 +13,12 @@ series: "Terraform Enterprise Architecture"
 series_order: 16
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
-summary: "Làm chủ khối lifecycle trong Terraform để can thiệp vào vòng đời tài nguyên:"
+summary: "Kiểm soát vòng đời tài nguyên với Lifecycle Meta-Arguments: Triển khai Zero-Downtime với create_before_destroy, bảo vệ Database với prevent_destroy và chống xung đột với ignore_changes."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy,."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "create_before_destroy: Tạo phiên bản mới trước khi xóa bản cũ, loại bỏ downtime cho các dịch vụ quan trọng (ASG, SSL Certs, DNS)."
+  - "prevent_destroy: Ngăn chặn tuyệt đối hành vi xóa ngoài ý muốn đối với các tài nguyên cốt lõi (Production RDS, S3 Data Lake, KMS Keys)."
+  - "ignore_changes: Bỏ qua các thuộc tính thường xuyên bị thay đổi bởi Auto Scaling hoặc hệ thống bên ngoài (desired_count, tags, ami)."
+  - "replace_triggered_by (TF 1.2+): Tự động kích hoạt thay thế tài nguyên khi một tài nguyên phụ thuộc khác bị thay đổi thuộc tính."
 ---
 {% raw %}
 # Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy, ignore_changes

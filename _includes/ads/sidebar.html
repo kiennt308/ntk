@@ -1,7 +1,8 @@
 {% assign ads_on = site.ads.enabled | default: site.show_ads %}
 {% if ads_on %}
+  {% assign ad_cfg = site.ads.sidebar %}
   {% assign client_id = site.ads.client_id | default: "" %}
-  {% assign slot_id = site.ads.sidebar_slot | default: "" %}
+  {% assign slot_id = ad_cfg.slot_id | default: site.ads.sidebar_slot | default: "" %}
   {% assign ad_label = site.ads.ad_notice_text | default: "Advertisement" %}
 
   <div class="ad-wrapper ad-sidebar no-print">
@@ -16,10 +17,10 @@
       <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
-    {% else %}
-      <div class="ad-placeholder" style="min-height: 250px;">
-        <span>Sidebar Ad Slot (300x250 / 300x600)</span>
-      </div>
+    {% elsif ad_cfg.image and ad_cfg.image != "" %}
+      <a href="{{ ad_cfg.url | default: '/contact.html' | relative_url }}" class="ad-banner-link" {% if ad_cfg.target_blank %}target="_blank" rel="noopener noreferrer"{% endif %}>
+        <img src="{{ ad_cfg.image | relative_url }}" alt="{{ ad_cfg.alt | default: 'Advertisement' }}" class="ad-banner-img" loading="lazy" />
+      </a>
     {% endif %}
   </div>
 {% endif %}

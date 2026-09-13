@@ -10,18 +10,41 @@ baseurl: "/ntk"
 url: "https://kiennt308.github.io"
 repository: "kiennt308/ntk"
 favicon: "/assets/imgs/logo.jpg"
-show_ads: false                     # Cờ tương thích ngược cũ (khuyến nghị dùng mục ads bên dưới)
+show_ads: true                      # Cờ tương thích ngược cũ
 
 # ==============================================================================
-# 📢 CẤU HÌNH QUẢNG CÁO (ADS & MONETIZATION SETTINGS)
+# 📢 CẤU HÌNH QUẢNG CÁO & BANNER (ADS & MONETIZATION SETTINGS)
 # ==============================================================================
 ads:
-  enabled: false                    # CỜ CHÍNH: true để bật, false để tắt toàn bộ quảng cáo trên web
-  client_id: ""                     # Mã Google AdSense Client ID (ví dụ: "ca-pub-1234567890123456")
-  sidebar_slot: ""                  # Slot ID quảng cáo cho Sidebar (ví dụ: "1234567890")
-  in_article_slot: ""               # Slot ID quảng cáo trong thân bài viết
-  banner_slot: ""                   # Slot ID quảng cáo Banner ngang cuối bài viết
-  ad_notice_text: "Advertisement"   # Chữ nhãn tiêu đề khung quảng cáo
+  enabled: true                     # CỜ CHÍNH: true để bật hiển thị banner/quảng cáo, false để ẩn
+  ad_notice_text: "Advertisement"   # Chữ nhãn nhỏ phía trên banner quảng cáo
+
+  # 1. Quảng cáo Sidebar (Khung Vuông / Rectangle 300x250)
+  sidebar:
+    image: "/assets/imgs/ads/sidebar-ad.svg"     # Đường dẫn ảnh banner (hỗ trợ .svg, .png, .jpg hoặc URL)
+    url: "/contact.html"                        # Link chuyển đến khi bấm vào banner
+    alt: "Cloud Advisory & SRE Consulting"      # Thẻ alt mô tả ảnh
+    target_blank: false                         # Mở tab mới hay không (true / false)
+    slot_id: ""                                 # Mã Google AdSense slot ID (nếu dùng Google Ads thay vì ảnh)
+
+  # 2. Quảng cáo trong thân bài viết (In-Article Banner)
+  in_article:
+    image: "/assets/imgs/ads/in-article-ad.svg"
+    url: "/categories.html#kubernetes"
+    alt: "Production AWS & Kubernetes Blueprint Kit"
+    target_blank: false
+    slot_id: ""
+
+  # 3. Quảng cáo chân bài viết (Leaderboard Banner 728x90)
+  banner:
+    image: "/assets/imgs/ads/banner-ad.svg"
+    url: "/categories.html#terraform"
+    alt: "Zero-to-Hero Terraform & GitOps Playbooks"
+    target_blank: false
+    slot_id: ""
+
+  # Mã Google AdSense Client ID (nếu muốn dùng Google Ads tự động thay vì ảnh)
+  client_id: ""
 
 
 # ==============================================================================

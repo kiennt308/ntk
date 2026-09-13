@@ -1,8 +1,10 @@
 ---
 layout: default
-title: "Cloud. DevOps. SRE. Platform Engineering at Scale."
+title: "{{ site.homepage.title | default: site.title }}"
 permalink: /
 ---
+
+{% assign home = site.homepage %}
 
 <!-- Hero Section -->
 <section class="hero">
@@ -10,45 +12,43 @@ permalink: /
   <div class="container">
     <div class="hero-pill">
       <span class="hero-pill-dot"></span>
-      <span>{{ site.homepage.hero.pill_text | default: "Open for Cloud Architecture & SRE Consulting" }}</span>
+      <span>{{ home.hero.pill_text }}</span>
     </div>
 
     <h1 class="hero__title">
-      {{ site.homepage.hero.title_line1 | default: "Engineering Cloud & Platform" }}<br>
-      <span class="gradient-text">{{ site.homepage.hero.title_highlight | default: "Systems at Scale." }}</span>
+      {{ home.hero.title_line1 }}<br>
+      <span class="gradient-text">{{ home.hero.title_highlight }}</span>
     </h1>
 
     <p class="hero__subtitle">
-      {{ site.homepage.hero.subtitle | default: site.description }}
+      {{ home.hero.subtitle | default: site.description }}
     </p>
 
     <div class="hero__ctas">
-      <a href="{{ site.homepage.hero.primary_cta_url | default: '/blog.html' | relative_url }}" class="btn btn--accent">
-        {{ site.homepage.hero.primary_cta_text | default: "Explore All Guides" }}
+      <a href="{{ home.hero.primary_cta_url | default: '/blog.html' | relative_url }}" class="btn btn--accent">
+        {{ home.hero.primary_cta_text }}
       </a>
-      <a href="{{ site.homepage.hero.secondary_cta_url | default: '/categories.html' | relative_url }}" class="btn btn--secondary">
-        {{ site.homepage.hero.secondary_cta_text | default: "Browse Topic Hubs" }}
+      <a href="{{ home.hero.secondary_cta_url | default: '/categories.html' | relative_url }}" class="btn btn--secondary">
+        {{ home.hero.secondary_cta_text }}
       </a>
     </div>
 
     <!-- Quick Stats Grid -->
     <div class="hero-stats-grid">
-      <div class="hero-stat-card">
-        <div class="hero-stat-value">{{ site.topics.size | default: 5 }}</div>
-        <div class="hero-stat-label">Core Topic Pillars</div>
-      </div>
-      <div class="hero-stat-card">
-        <div class="hero-stat-value">{{ site.posts.size }}</div>
-        <div class="hero-stat-label">Production Guides</div>
-      </div>
-      <div class="hero-stat-card">
-        <div class="hero-stat-value">100%</div>
-        <div class="hero-stat-label">Real-World Tested</div>
-      </div>
-      <div class="hero-stat-card">
-        <div class="hero-stat-value">IaC</div>
-        <div class="hero-stat-label">GitOps Driven</div>
-      </div>
+      {% for stat in home.stats %}
+        <div class="hero-stat-card">
+          <div class="hero-stat-value">
+            {% if stat.type == "topics_count" %}
+              {{ site.topics.size | default: 5 }}
+            {% elsif stat.type == "posts_count" %}
+              {{ site.posts.size }}
+            {% else %}
+              {{ stat.value }}
+            {% endif %}
+          </div>
+          <div class="hero-stat-label">{{ stat.label }}</div>
+        </div>
+      {% endfor %}
     </div>
   </div>
 </section>
@@ -57,10 +57,10 @@ permalink: /
 <section style="padding: 4.5rem 0; background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
   <div class="container">
     <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem auto;">
-      <span class="badge badge--primary" style="margin-bottom: 0.75rem;">{{ site.homepage.pillars_section.badge | default: "STRUCTURED KNOWLEDGE" }}</span>
-      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem;">{{ site.homepage.pillars_section.title | default: "Core Engineering Pillars" }}</h2>
+      <span class="badge badge--primary" style="margin-bottom: 0.75rem;">{{ home.pillars_section.badge }}</span>
+      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem;">{{ home.pillars_section.title }}</h2>
       <p style="color: var(--text-secondary); font-size: 1.05rem;">
-        {{ site.homepage.pillars_section.subtitle | default: "Master cloud-native platform engineering through our categorized domains and step-by-step learning paths." }}
+        {{ home.pillars_section.subtitle }}
       </p>
     </div>
 
@@ -72,24 +72,24 @@ permalink: /
           <h3 class="pillar-title">{{ topic.title }}</h3>
           <p class="pillar-desc">{{ topic.description }}</p>
           <div class="pillar-footer">
-            <span>Explore Guides</span>
+            <span>{{ home.pillars_section.explore_btn_text | default: "Explore Guides" }}</span>
             <span>→</span>
           </div>
         </a>
       {% endfor %}
 
       <!-- Complete Topic Hub Link -->
-      <a href="{{ '/categories.html' | relative_url }}" class="pillar-card" style="background: var(--bg-subtle);">
-        <div class="pillar-icon">📚</div>
-        <h3 class="pillar-title">Complete Topic Hub</h3>
-        <p class="pillar-desc">
-          Browse all tags, topics, frameworks, and curated roadmaps across our full technical knowledge base.
-        </p>
-        <div class="pillar-footer">
-          <span>View All Categories</span>
-          <span>→</span>
-        </div>
-      </a>
+      {% if home.pillars_section.hub_card %}
+        <a href="{{ home.pillars_section.hub_card.url | relative_url }}" class="pillar-card" style="background: var(--bg-subtle);">
+          <div class="pillar-icon">{{ home.pillars_section.hub_card.icon }}</div>
+          <h3 class="pillar-title">{{ home.pillars_section.hub_card.title }}</h3>
+          <p class="pillar-desc">{{ home.pillars_section.hub_card.desc }}</p>
+          <div class="pillar-footer">
+            <span>{{ home.pillars_section.hub_card.btn_text }}</span>
+            <span>→</span>
+          </div>
+        </a>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -99,11 +99,11 @@ permalink: /
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
       <div>
-        <span class="badge badge--cyan" style="margin-bottom: 0.5rem;">{{ site.homepage.latest_posts_section.badge | default: "FRESH ARTICLES" }}</span>
-        <h2 style="margin: 0; font-size: 2.25rem;">{{ site.homepage.latest_posts_section.title | default: "Latest Technical Guides" }}</h2>
+        <span class="badge badge--cyan" style="margin-bottom: 0.5rem;">{{ home.latest_posts_section.badge }}</span>
+        <h2 style="margin: 0; font-size: 2.25rem;">{{ home.latest_posts_section.title }}</h2>
       </div>
-      <a href="{{ '/blog.html' | relative_url }}" class="btn btn--secondary btn--sm">
-        <span>View All Articles ({{ site.posts.size }})</span>
+      <a href="{{ home.latest_posts_section.view_all_url | default: '/blog.html' | relative_url }}" class="btn btn--secondary btn--sm">
+        <span>{{ home.latest_posts_section.view_all_text }} ({{ site.posts.size }})</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
       </a>
     </div>
@@ -115,7 +115,7 @@ permalink: /
         {% endfor %}
       {% else %}
         <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;">
-          No articles published yet. Check back soon!
+          {{ home.latest_posts_section.empty_message }}
         </p>
       {% endif %}
     </div>
@@ -125,17 +125,17 @@ permalink: /
 <!-- Engineering Mindset & Bio Callout -->
 <section style="padding: 4.5rem 0; background: var(--bg-surface); border-top: 1px solid var(--border-color);">
   <div class="container container--narrow text-center">
-    <span class="badge badge--emerald" style="margin-bottom: 1rem;">{{ site.homepage.cta_section.badge | default: "ENGINEERING EXCELLENCE" }}</span>
-    <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 1.25rem;">{{ site.homepage.cta_section.title }}</h2>
+    <span class="badge badge--emerald" style="margin-bottom: 1rem;">{{ home.cta_section.badge }}</span>
+    <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 1.25rem;">{{ home.cta_section.title }}</h2>
     <p style="font-size: 1.1rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 2.5rem;">
-      {{ site.homepage.cta_section.description }}
+      {{ home.cta_section.description }}
     </p>
     <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-      <a href="{{ site.homepage.cta_section.primary_btn_url | default: '/about.html' | relative_url }}" class="btn btn--primary">
-        {{ site.homepage.cta_section.primary_btn_text | default: "Read My Story" }}
+      <a href="{{ home.cta_section.primary_btn_url | default: '/about.html' | relative_url }}" class="btn btn--primary">
+        {{ home.cta_section.primary_btn_text }}
       </a>
-      <a href="{{ site.homepage.cta_section.secondary_btn_url | default: '/about.html#resume-download' | relative_url }}" class="btn btn--secondary">
-        {{ site.homepage.cta_section.secondary_btn_text | default: "View Experience & Resume" }}
+      <a href="{{ home.cta_section.secondary_btn_url | default: '/about.html#resume-download' | relative_url }}" class="btn btn--secondary">
+        {{ home.cta_section.secondary_btn_text }}
       </a>
     </div>
   </div>

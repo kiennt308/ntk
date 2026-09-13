@@ -100,6 +100,9 @@ topics:
 # 🚀 7. TEXT TRANG CHỦ (HOMEPAGE CONTENT)
 # ==============================================================================
 homepage:
+  title: "Cloud. DevOps. SRE. Platform Engineering at Scale."
+  
+  # Khối Hero đầu trang
   hero:
     pill_text: "Open for Cloud Architecture & SRE Consulting"
     title_line1: "Engineering Cloud & Platform"
@@ -110,15 +113,39 @@ homepage:
     secondary_cta_text: "Browse Topic Hubs"
     secondary_cta_url: "/categories.html"
   
+  # Các chỉ số thống kê (Stats Grid)
+  stats:
+    - type: "topics_count"
+      label: "Core Topic Pillars"
+    - type: "posts_count"
+      label: "Production Guides"
+    - value: "100%"
+      label: "Real-World Tested"
+    - value: "IaC"
+      label: "GitOps Driven"
+
+  # Khối Chuyên mục / Pillars Section
   pillars_section:
     badge: "STRUCTURED KNOWLEDGE"
     title: "Core Engineering Pillars"
     subtitle: "Master cloud-native platform engineering through our categorized domains and step-by-step learning paths."
+    explore_btn_text: "Explore Guides"
+    hub_card:
+      icon: "📚"
+      title: "Complete Topic Hub"
+      desc: "Browse all tags, topics, frameworks, and curated roadmaps across our full technical knowledge base."
+      btn_text: "View All Categories"
+      url: "/categories.html"
 
+  # Khối Bài viết mới nhất (Latest Guides Section)
   latest_posts_section:
     badge: "FRESH ARTICLES"
     title: "Latest Technical Guides"
+    view_all_text: "View All Articles"
+    view_all_url: "/blog.html"
+    empty_message: "No articles published yet. Check back soon!"
 
+  # Khối Kêu gọi hành động & Triết lý cuối trang
   cta_section:
     badge: "ENGINEERING EXCELLENCE"
     title: "Automating Operations, Accelerating Velocity"

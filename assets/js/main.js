@@ -183,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const postCountDisplay = document.getElementById('visible-post-count');
   const paginationWrapper = document.getElementById('blog-pagination');
   const paginationControls = document.getElementById('pagination-controls');
-  const paginationInfo = document.getElementById('pagination-info');
   const postsGrid = document.getElementById('posts-grid');
 
   if (postCards.length > 0) {
@@ -232,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         emptyNotice.style.display = totalPosts === 0 ? 'block' : 'none';
       }
 
-      if (!paginationWrapper || !paginationControls || !paginationInfo) return;
+      if (!paginationWrapper || !paginationControls) return;
 
       if (totalPosts <= POSTS_PER_PAGE) {
         paginationWrapper.style.display = 'none';
@@ -285,10 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       paginationControls.appendChild(nextBtn);
-
-      // Info text display
-      const displayedEnd = Math.min(endIndex, totalPosts);
-      paginationInfo.textContent = `Showing ${startIndex + 1}–${displayedEnd} of ${totalPosts} articles (Page ${currentPage} of ${totalPages})`;
     }
 
     function updateFilteredPosts() {

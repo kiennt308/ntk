@@ -4,14 +4,26 @@ title: "Page Not Found (404)"
 permalink: /404.html
 ---
 
-<div class="container container--narrow text-center" style="padding: 8rem 2rem;">
-  <div style="font-size: 6rem; font-weight: 800; color: var(--accent-primary); line-height: 1; margin-bottom: 2rem;">404</div>
-  <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-primary);">Lost in the Cloud?</h1>
-  <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+<div class="container container--narrow text-center" style="padding: 5rem 1.5rem;">
+  <div style="font-size: 5.5rem; font-weight: 800; color: var(--accent-primary); line-height: 1; margin-bottom: 1.5rem; font-family: var(--font-heading);">404</div>
+  <h1 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">Lost in the Cloud?</h1>
+  <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2.5rem; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.6;">
     The resource you are looking for might have been decommissioned, had its route updated, or is temporarily offline.
   </p>
-  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3.5rem;">
     <a href="{{ '/' | relative_url }}" class="btn btn--secondary">Back to Control Plane (Home)</a>
-    <a href="{{ '/blog.html' | relative_url }}" class="btn btn--primary">Search the Blog</a>
+    <a href="{{ '/search.html' | relative_url }}" class="btn btn--primary">Search Knowledge Base</a>
+  </div>
+
+  <div style="text-align: left; padding: 2rem; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+    <h3 style="font-size: 1.15rem; margin-top: 0; margin-bottom: 1rem; color: var(--text-primary);">Featured Technical Guides:</h3>
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      {% for post in site.posts limit:3 %}
+        <a href="{{ post.url | relative_url }}" style="display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 1rem; background: var(--bg-subtle); border-radius: var(--radius-md); text-decoration: none; color: var(--text-primary); font-weight: 600; font-size: 0.95rem;">
+          <span>{{ post.title }}</span>
+          <span style="color: var(--accent-primary);">→</span>
+        </a>
+      {% endfor %}
+    </div>
   </div>
 </div>

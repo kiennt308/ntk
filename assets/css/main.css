@@ -119,7 +119,8 @@ html.dark-theme {
 
 :focus-visible {
   outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(var(--accent-primary-rgb), 0.25);
 }
 
 .sr-only {
@@ -172,6 +173,24 @@ body {
   transition: background-color var(--transition-base), color var(--transition-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (forced-colors: active) {
+  .btn, .card, .badge, .hero-pill, .filter-btn, .page-btn {
+    border: 2px solid ButtonText !important;
+  }
 }
 
 /* Custom Scrollbar */
@@ -597,12 +616,23 @@ html.dark-theme .theme-toggle .moon-icon { display: none; }
   box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
 }
+.btn:active, .filter-btn:active, .page-btn:active, .social-link:active {
+  transform: scale(0.96);
+  transition: transform 0.08s ease;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
 .hero-pill-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: var(--accent-emerald);
-  box-shadow: 0 0 8px var(--accent-emerald);
+  animation: pulseRing 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 .hero__title {
@@ -1847,6 +1877,75 @@ footer.footer {
   border-radius: var(--radius-md);
 }
 
+/* Lightbox Image Zoom */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  cursor: zoom-out;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.lightbox-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lightbox-img {
+  max-width: 95vw;
+  max-height: 90vh;
+  border-radius: var(--radius-md);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  transform: scale(0.94);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.lightbox-overlay.active .lightbox-img {
+  transform: scale(1);
+}
+.article-body img {
+  cursor: zoom-in;
+}
+
+/* Mobile Nav Backdrop */
+.nav-backdrop {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 95;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+}
+.nav-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Search Term Highlighting */
+mark.search-highlight {
+  background-color: rgba(251, 191, 36, 0.25);
+  color: inherit;
+  padding: 0.1rem 0.25rem;
+  border-radius: 3px;
+  font-weight: 600;
+  border-bottom: 2px solid var(--accent-amber);
+}
+
 /* Print Styles */
 @media print {
   body {
@@ -1854,7 +1953,7 @@ footer.footer {
     color: #000000 !important;
     font-size: 11pt !important;
   }
-  header.navbar, footer.footer, .theme-toggle, .btn:not(.btn-print), .ad-wrapper, .post-navigation, .related-posts, .no-print, #reading-progress, .article-sidebar-left, .article-sidebar-right, #back-to-top, .skip-link, .search-wrapper {
+  header.navbar, footer.footer, .theme-toggle, .btn:not(.btn-print), .ad-wrapper, .post-navigation, .related-posts, .no-print, #reading-progress, .article-sidebar-left, .article-sidebar-right, #back-to-top, .skip-link, .search-wrapper, .lightbox-overlay {
     display: none !important;
   }
   main {
@@ -1874,6 +1973,12 @@ footer.footer {
     color: #0f172a !important;
     border: 1px solid #cbd5e1 !important;
     box-shadow: none !important;
+  }
+  .article-body a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    font-weight: normal;
+    color: #475569 !important;
   }
 }
 @media (max-width: 360px) {

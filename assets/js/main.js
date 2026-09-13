@@ -84,22 +84,40 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     5. Mobile Hamburger Menu (ARIA Sync & Closest Delegation: BUG-06, BUG-58)
+     5. Mobile Hamburger Menu (Backdrop, Focus Trap & ARIA: BUG-58, BUG-141, BUG-185)
      ========================================================================== */
   const hamburger = document.querySelector('.hamburger');
   const navMenu = document.querySelector('.nav-menu');
 
   if (hamburger && navMenu) {
+    let backdrop = document.querySelector('.nav-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+    }
+
     function toggleMenu(openState) {
       const isOpen = openState !== undefined ? openState : !navMenu.classList.contains('open');
       hamburger.classList.toggle('open', isOpen);
       navMenu.classList.toggle('open', isOpen);
+      backdrop.classList.toggle('open', isOpen);
       hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+
+      if (isOpen) {
+        const firstLink = navMenu.querySelector('a');
+        if (firstLink) firstLink.focus();
+      }
     }
 
     hamburger.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleMenu();
+    });
+
+    backdrop.addEventListener('click', () => {
+      toggleMenu(false);
     });
 
     // Close mobile menu when clicking outside safely
@@ -114,6 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
       link.addEventListener('click', () => {
         toggleMenu(false);
       });
+    });
+
+    // Keyboard focus trap inside mobile nav
+    navMenu.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleMenu(false);
+        hamburger.focus();
+      }
     });
   }
 
@@ -487,4 +513,60 @@ document.addEventListener('DOMContentLoaded', () => {
       updateFilteredPosts();
     }
   }
+
+  /* ==========================================================================
+     10. Technical Diagram Image Lightbox Zoom (BUG-193)
+     ========================================================================== */
+  const articleImages = document.querySelectorAll('.article-body img');
+  if (articleImages.length > 0) {
+    let lightboxOverlay = document.getElementById('lightbox-overlay');
+    if (!lightboxOverlay) {
+      lightboxOverlay = document.createElement('div');
+      lightboxOverlay.id = 'lightbox-overlay';
+      lightboxOverlay.className = 'lightbox-overlay';
+      lightboxOverlay.setAttribute('role', 'dialog');
+      lightboxOverlay.setAttribute('aria-modal', 'true');
+      lightboxOverlay.setAttribute('aria-label', 'Image preview');
+      lightboxOverlay.innerHTML = '<img class="lightbox-img" src="" alt="Enlarged architecture diagram" />';
+      document.body.appendChild(lightboxOverlay);
+    }
+    const lightboxImg = lightboxOverlay.querySelector('.lightbox-img');
+
+    articleImages.forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt || 'Enlarged technical diagram';
+        lightboxOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    lightboxOverlay.addEventListener('click', () => {
+      lightboxOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) {
+        lightboxOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  /* ==========================================================================
+     11. Native Web Share API Support (BUG-198)
+     ========================================================================== */
+  const nativeShareButtons = document.querySelectorAll('.btn-native-share');
+  nativeShareButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      if (navigator.share) {
+        e.preventDefault();
+        navigator.share({
+          title: document.title,
+          url: window.location.href
+        }).catch(() => {});
+      }
+    });
+  });
 });

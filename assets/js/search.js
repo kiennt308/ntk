@@ -89,26 +89,47 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    renderResults(matches);
+    renderResults(matches, keywords);
   }
 
-  function renderResults(results) {
+  // Helper: Highlight matching search keywords (BUG-152)
+  function highlightText(text, keywords) {
+    if (!text || !keywords || keywords.length === 0) return escapeHTML(text);
+    let escaped = escapeHTML(text);
+    keywords.forEach(kw => {
+      if (!kw) return;
+      const regex = new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      escaped = escaped.replace(regex, '<mark class="search-highlight">$1</mark>');
+    });
+    return escaped;
+  }
+
+  function renderResults(results, keywords) {
     if (results.length === 0) {
       searchResults.innerHTML = `
-        <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg);">
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1.5rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg);">
           <div style="margin-bottom: 0.75rem; color: var(--text-muted); display: flex; justify-content: center;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           </div>
-          <h3 style="margin: 0 0 0.5rem 0;">No matching articles found</h3>
-          <p style="color: var(--text-secondary);">Try broader keywords or browse by topics on the home page.</p>
+          <h3 style="margin: 0 0 0.5rem 0; font-size: 1.35rem;">No matching articles found</h3>
+          <p style="color: var(--text-secondary); max-width: 480px; margin: 0 auto 1.5rem auto; font-size: 0.95rem;">We couldn't find anything matching your search. Try checking for typos or searching by technology keyword.</p>
+          <button type="button" id="clear-search-btn" class="btn btn--secondary btn--sm" style="margin: 0 auto;">Clear Search Query</button>
         </div>
       `;
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          performSearch('');
+          searchInput.focus();
+        });
+      }
       return;
     }
 
     searchResults.innerHTML = results.map(post => {
-      const escapedTitle = escapeHTML(post.title);
-      const escapedDesc = escapeHTML(post.description);
+      const highlightedTitle = highlightText(post.title, keywords);
+      const highlightedDesc = highlightText(post.description, keywords);
       const escapedCat = escapeHTML(post.category || 'Guide');
       const escapedDate = escapeHTML(post.date);
       const escapedUrl = escapeHTML(post.url);
@@ -119,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
       return `
         <article class="card">
-          <div class="card__top">
+          <header class="card__top">
             <div class="card__badges">
               <span class="badge badge--primary">${escapedCat}</span>
             </div>
@@ -129,9 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>${escapedDate}</span>
               </span>
             </div>
-          </div>
-          <h3 class="card__title"><a href="${escapedUrl}">${escapedTitle}</a></h3>
-          <p class="card__description">${escapedDesc}</p>
+          </header>
+          <h3 class="card__title"><a href="${escapedUrl}">${highlightedTitle}</a></h3>
+          <p class="card__description">${highlightedDesc}</p>
           <div class="card__tags">
             ${tagsMarkup}
           </div>

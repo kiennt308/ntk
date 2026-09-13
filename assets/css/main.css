@@ -184,6 +184,9 @@ code, kbd, samp, pre {
   margin: 0 auto;
   padding: 0 1.5rem;
 }
+.container--wide {
+  max-width: 1360px;
+}
 .container--narrow {
   max-width: 860px;
 }
@@ -846,6 +849,7 @@ html.dark-theme .theme-toggle .moon-icon { display: none; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
@@ -854,15 +858,17 @@ html.dark-theme .theme-toggle .moon-icon { display: none; }
   }
   .blog-sidebar {
     position: sticky;
-    top: calc(var(--header-height) + 2rem);
+    top: calc(var(--header-height) + 1.5rem);
     height: fit-content;
-    max-height: calc(100vh - var(--header-height) - 3rem);
+    max-height: calc(100vh - var(--header-height) - 2.5rem);
     overflow-y: auto;
+    padding-bottom: 2rem;
   }
 }
 
 .blog-main {
   min-width: 0;
+  width: 100%;
 }
 
 .blog-sidebar-widget {

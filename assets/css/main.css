@@ -560,6 +560,11 @@ html.dark-theme .theme-toggle .moon-icon { display: none; }
   color: var(--accent-rose);
   border-color: rgba(225, 29, 72, 0.2);
 }
+.badge--purple, .badge--violet {
+  background-color: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+  border-color: rgba(168, 85, 247, 0.25);
+}
 
 /* Brand Technology Badges (BUG-221) */
 .badge--aws {

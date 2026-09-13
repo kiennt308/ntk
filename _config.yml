@@ -105,6 +105,12 @@ footer:
 # Dùng để tự động tạo bộ lọc trên Blog, Sidebar, Topic Hubs và Trang chủ
 # ==============================================================================
 topics:
+  - id: "eeg"
+    category_name: "EEG"
+    title: "EEG & Emotion Recognition AI"
+    icon: "brain"
+    badge_class: "badge--purple"
+    description: "Nghiên cứu & xử lý tín hiệu điện não (EEG), trích xuất đặc trưng (Feature Extraction), phân loại nhận diện cảm xúc (Emotion Recognition) và ứng dụng Brain-Computer Interface (BCI) với Deep Learning."
   - id: "aws"
     category_name: "AWS"
     title: "AWS & Cloud Architecture"

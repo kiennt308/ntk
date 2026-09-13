@@ -20,7 +20,7 @@ permalink: /
 
     <!-- Author Profile Spotlight Chip -->
     <div>
-      <a href="{{ '/about.html' | relative_url }}" class="hero-author-chip" title="View Kien Nguyen's Full Profile">
+      <a href="{{ '/about.html' | relative_url }}" class="hero-author-chip" title="View Kien Nguyen's Full Profile & Experience">
         {% if site.author.avatar %}
           <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}" class="hero-author-avatar">
         {% else %}
@@ -33,7 +33,7 @@ permalink: /
             <span>{{ site.author.name }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#38bdf8" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z"/></svg>
           </div>
-          <div class="hero-author-title">{{ site.author.title | default: "Senior DevOps Engineer" }} · {{ site.author.location | default: "Ho Chi Minh City" }}</div>
+          <div class="hero-author-title">{{ site.author.title | default: "Senior DevOps Engineer" }} · {{ site.author.location | default: "Ho Chi Minh City, Vietnam" }}</div>
         </div>
       </a>
     </div>
@@ -48,21 +48,14 @@ permalink: /
       {{ home.hero.subtitle | default: site.description }}
     </p>
 
-    <!-- CTAs -->
-    <div class="hero__ctas" style="flex-wrap: wrap; gap: 0.85rem;">
-      <a href="{{ home.hero.primary_cta_url | default: '/blog.html' | relative_url }}" class="btn btn--accent" style="padding: 0.75rem 1.6rem; font-size: 1rem;">
+    <!-- Clean CTAs -->
+    <div class="hero__ctas" style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <a href="{{ home.hero.primary_cta_url | default: '/blog.html' | relative_url }}" class="btn btn--accent" style="padding: 0.8rem 1.8rem; font-size: 1.05rem;">
         {{ home.hero.primary_cta_text | default: "Explore All Guides" }} →
       </a>
-      <a href="{{ '/about.html' | relative_url }}" class="btn btn--secondary" style="padding: 0.75rem 1.4rem; font-size: 1rem;">
-        {% include icon.html name="book" size=16 %}
-        <span>About Me & CV</span>
+      <a href="{{ home.hero.secondary_cta_url | default: '/categories.html' | relative_url }}" class="btn btn--secondary" style="padding: 0.8rem 1.6rem; font-size: 1.05rem;">
+        {{ home.hero.secondary_cta_text | default: "Browse Topic Hubs" }}
       </a>
-      {% if site.social.linkedin %}
-        <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary" style="padding: 0.75rem 1.25rem; font-size: 1rem;">
-          {% include icon.html name="briefcase" size=16 %}
-          <span>LinkedIn</span>
-        </a>
-      {% endif %}
     </div>
 
     <!-- Quick Stats Grid -->

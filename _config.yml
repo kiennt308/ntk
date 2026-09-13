@@ -147,7 +147,7 @@ homepage:
     pill_text: "Open for Cloud Architecture & SRE Consulting"
     title_line1: "Engineering Cloud & DevOps"
     title_highlight: "Systems at Scale."
-    subtitle: "Practical guides, architecture deep-dives, and production playbooks covering AWS, Kubernetes, Terraform, Observability, and Modern DevOps."
+    subtitle: "Battle-tested production blueprints, multi-account AWS architectures, Kubernetes playbooks, and Terraform automation crafted by Kien Nguyen."
     primary_cta_text: "Explore All Guides"
     primary_cta_url: "/blog.html"
     secondary_cta_text: "Browse Topic Hubs"

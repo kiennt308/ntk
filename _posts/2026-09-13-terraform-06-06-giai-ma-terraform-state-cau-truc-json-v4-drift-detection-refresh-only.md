@@ -268,7 +268,7 @@ terraform apply -var-file="staging.tfvars"
 ```
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 Error: State lineage mismatch!
 
 The given state file has lineage "d8a1c2e3-4f5a-6b7c-8d9e-0123456789ab", but the 

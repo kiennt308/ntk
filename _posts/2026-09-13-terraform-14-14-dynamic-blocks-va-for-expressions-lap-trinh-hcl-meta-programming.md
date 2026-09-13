@@ -276,7 +276,7 @@ resource "aws_security_group" "bad_sg" {
 ```
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 # Khi apply với var.egress_rules = [], Terraform tạo ra một Security Group
 # KHÔNG CÓ BẤT KỲ EGRESS RULE NÀO! (DEFAULT DENY ALL OUTBOUND TRAFFIC)
 

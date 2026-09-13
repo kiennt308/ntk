@@ -239,7 +239,7 @@ Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Một nhóm kỹ
 - Trong `module "security"`, kỹ sư lại cần `module.network.vpc_id` để tạo Security Group.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 Error: Cycle: module.network (expand), module.security (expand), module.network (expand)
 
 A cycle was detected in the dependency graph between the modules:

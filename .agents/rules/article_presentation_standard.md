@@ -172,7 +172,8 @@ Mỗi bài viết phân tích sự cố / cạm bẫy thực chiến bắt buộ
    - Khởi đầu bằng timeline badge mốc thời gian rõ ràng (`<span class="badge badge--rose">🕒 02:00 AM</span>` hoặc `<span class="badge badge--rose">🕒 10:30 AM</span>`).
    - Nêu rõ bối cảnh thao tác sai sót (ví dụ: ClickOps trên Console, copy State file, sai workspace, thiếu cờ sensitive, dùng count thay vì for_each...).
 2. **Hậu Quả & Log Lỗi Thực Tế (`### Hậu Quả & Log Lỗi Thực Tế:`)**:
-   - **BẮT BUỘC ĐƯỢC CHỨA TRONG FENCED CODE BLOCK** (như ```` ```diff ````, ```` ```log ````, ```` ```json ````, hoặc ```` ```bash ````).
+   - **BẮT BUỘC ĐƯỢC CHỨA TRONG FENCED CODE BLOCK** (như ```` ```diff ````, ```` ```text ````, ```` ```json ````, hoặc ```` ```bash ````).
+   - **TUYỆT ĐỐI KHÔNG DÙNG** tag ```` ```log ```` vì trình biên dịch Rouge / Jekyll không hỗ trợ lexer `log` (gây lỗi hiển thị / mất định dạng trên website). Luôn dùng ````text```` cho log lỗi / CLI output thô và ````diff```` cho diff hạ tầng.
    - **TUYỆT ĐỐI KHÔNG** mô tả log lỗi hoặc hậu quả bằng văn bản thường (plain text) hoặc danh sách gạch đầu dòng thô sơ.
    - Nội dung code block phải mô phỏng chân thực và sống động log lỗi từ Terraform Engine CLI, AWS API error response, stack trace, hoặc bản diff kế hoạch hủy diệt hạ tầng (với ký tự `+`, `-`, `~`, `!` và ghi chú outage rõ ràng).
    - Đi kèm sơ đồ Mermaid trực quan hóa chuỗi phản ứng dây chuyền từ sai lầm ban đầu đến hậu quả sập hệ thống / gián đoạn dịch vụ.
@@ -224,11 +225,15 @@ Tất cả 10 câu hỏi trắc nghiệm / tự luận chuyên sâu ở cuối b
 
 ---
 
-## 9. Chuẩn Hóa Khối Mã Nguồn (Code Blocks)
+## 9. Chuẩn Hóa Khối Mã Nguồn (Code Blocks & Syntax Highlighting)
 
-- **Định danh ngôn ngữ**: Mọi code block đều phải khai báo định danh ngôn ngữ (`hcl`, `bash`, `yaml`, `diff`, `json`, `python`, `typescript`).
+- **Định danh ngôn ngữ chuẩn (Rouge Compatible)**:
+  - Mọi code block đều bắt buộc phải khai báo định danh ngôn ngữ chuẩn được Rouge / Chroma hỗ trợ: `hcl`, `bash`, `yaml`, `diff`, `text`, `json`, `python`, `typescript`, `go`, `rego`, `sentinel`.
+  - **CLI / Terminal Commands**: Luôn dùng ````bash```` để kích hoạt hệ thống tô màu lệnh (`terraform`, `aws`, `git`, `export`), tham số (`-v`, `--profile`), biến môi trường (`$VAR`), chuỗi và prompts (`$ `).
+  - **Terminal Output, CLI Logs, Stack Traces, State Raw Dumps**: **TUYỆT ĐỐI KHÔNG DÙNG** ```` ```log ````. Phải dùng ```` ```text ```` (hoặc ```` ```diff ```` nếu chứa ký tự diff `+`, `-`, `~`).
+  - **Nghiêm cấm để trống**: Tuyệt đối không dùng code block trơ trọi ```` ``` ```` không có định danh ngôn ngữ.
 - **Header và Nút Thao Tác (Wrap & Copy Buttons)**:
-  - Tất cả các khối code block đều tự động được gắn thanh tiêu đề hiển thị macOS Dots, tên ngôn ngữ (`HCL`, `BASH`, `YAML`...) và nhóm nút điều khiển (`Wrap` và `Copy`).
+  - Tất cả các khối code block đều tự động được gắn thanh tiêu đề hiển thị macOS Dots, tên ngôn ngữ (`HCL`, `BASH`, `YAML`, `TXT`, `DIFF`...) và nhóm nút điều khiển (`Wrap` và `Copy`).
   - **Mặc định Word Wrap (BẬT)**: Toàn bộ code block được kích hoạt chế độ **tự động xuống dòng mềm mại (`white-space: pre-wrap`)** để người đọc có thể theo dõi trọn vẹn source code mà không cần phải cuộn ngang (scrollbar). Người dùng có thể bấm nút `Wrap` trên thanh header để chuyển qua lại giữa chế độ Wrap và Scroll mode truyền thống.
 - **Header chú thích tệp**: Các file cấu hình lớn phải có header chú thích tệp rõ ràng:
   ```hcl

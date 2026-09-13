@@ -278,7 +278,7 @@ data:
 ### Tình Huống Sự Cố Thực Tế:
 Tại một công ty tài chính với 800 Microservices quản lý qua Argo CD. Sau khi nâng cấp lên phiên bản mới, Kubernetes API Server của cụm Production liên tục bị nghẽn (CPU 100%, etcd timeout), khiến toàn bộ cụm rơi vào tình trạng mất kiểm soát.
 
-```log
+```text
 # Trích đoạn log từ kube-apiserver và argocd-application-controller
 2026-04-11T14:22:01.328Z [ERROR] kube-apiserver: etcdserver: request timed out, dropped 1420 requests
 2026-04-11T14:22:02.102Z [WARN]  argocd-application-controller: Rate limit exceeded for client argocd-controller (QPS: 50, Burst: 100)

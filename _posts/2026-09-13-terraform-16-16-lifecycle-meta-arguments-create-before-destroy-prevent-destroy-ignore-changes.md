@@ -305,7 +305,7 @@ Khi bạn sửa đổi Security Group buộc phải thay thế:
 - `aws_security_group` mới lại không thể tạo trước vì nó có `create_before_destroy = false` (nó phải đợi xóa cái cũ trước).
 - Nhưng `aws_security_group` cũ lại không thể xóa vì `aws_instance` cũ vẫn đang dùng nó!
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 Error: Cycle: aws_instance.app, aws_security_group.app_sg
 
 A cycle occurred between the resources during plan creation.

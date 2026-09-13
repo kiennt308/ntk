@@ -810,7 +810,7 @@ rm -f /tmp/fqdn-res.txt /tmp/pod-resolv.txt /tmp/custom-resolv.txt /tmp/coredns-
 
 1. **BT1 — Thử nghiệm cờ `dnsPolicy: None` kết hợp `dnsConfig`:** Tự định nghĩa hoàn toàn danh sách `nameservers` và `searches` thủ công cho Pod bằng `dnsPolicy: None`.
 2. **BT2 — Phân tích bản ghi SRV record của Headless Service:** Sử dụng `nslookup -type=SRV` từ Pod test để soi các thông số cổng và hostname của Headless Service.
-3. **BT3 — Thêm plugin `log` vào tệp `Corefile`:** Sửa ConfigMap `coredns` bật plugin `log` để CoreDNS in ra 100% các truy vấn DNS request lên console log.
+3. **BT3 — Thêm plugin `text` vào tệp `Corefile`:** Sửa ConfigMap `coredns` bật plugin `text` để CoreDNS in ra 100% các truy vấn DNS request lên console log.
 4. **BT4 — Đo thời gian truy vấn DNS bằng công cụ `dig`:** Chạy `dig api.google.com` vs `dig api.google.com.` để đo thời gian phản hồi miligiây.
 5. **BT5 — Khảo sát plugin `autopath` của CoreDNS:** Tìm hiểu cơ chế plugin `autopath` trong CoreDNS giúp giải quyết bài toán `ndots:5` từ phía Server side.
 6. **BT6 — Thử nghiệm xóa Service `kube-dns` tạm thời:** Xóa Service `kube-dns` trong test cluster và quan sát 100% các Pods bị liệt khả năng phân giải tên miền.

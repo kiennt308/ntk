@@ -223,7 +223,7 @@ terraform destroy -auto-approve
 ```
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 # Trích đoạn log kinh hoàng từ Terraform CLI
 aws_route53_zone.production_primary: Destroying... [id=Z0123456789ABCDEF]
 aws_eks_cluster.prod_cluster: Destroying... [id=showtech-prod-eks]

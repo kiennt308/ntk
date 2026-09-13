@@ -1150,7 +1150,7 @@ Tạo Pod tên là `app-health` trong Namespace `prod` chạy ảnh `nginx:alpin
 Tạo Pod đa container tên là `logger-pod` trong Namespace `prod`:
 - Container 1 tên `app` chạy ảnh `busybox:1.36` thực thi lệnh: `sh -c "while true; do date >> /var/log/app.log; sleep 1; done"`.
 - Container 2 tên `sidecar` chạy ảnh `busybox:1.36` thực thi lệnh: `sh -c "tail -n+1 -f /var/log/app.log"`.
-- Cả 2 container dùng chung Volume tên `log-vol` kiểu `emptyDir` mount vào `/var/log`.
+- Cả 2 container dùng chung Volume tên `text-vol` kiểu `emptyDir` mount vào `/var/log`.
 
 ---
 

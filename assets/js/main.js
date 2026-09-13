@@ -225,7 +225,14 @@ document.addEventListener('DOMContentLoaded', () => {
     'GO': 'GOLANG',
     'PYTHON': 'PYTHON',
     'PY': 'PYTHON',
-    'TEXT': 'TXT'
+    'TEXT': 'TXT',
+    'TXT': 'TXT',
+    'PLAINTEXT': 'TXT',
+    'LOG': 'LOG / OUTPUT',
+    'DIFF': 'DIFF',
+    'HCL': 'HCL / TERRAFORM',
+    'TERRAFORM': 'TERRAFORM',
+    'TF': 'TERRAFORM'
   };
 
   const codeBlocks = document.querySelectorAll('div.highlighter-rouge, figure.highlight');

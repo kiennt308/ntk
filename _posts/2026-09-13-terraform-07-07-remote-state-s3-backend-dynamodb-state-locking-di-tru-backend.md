@@ -230,7 +230,7 @@ terraform init -backend-config="env/prod-backend.hcl" -reconfigure
 Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Trên một đường ống CI/CD GitLab, tiến trình `terraform apply` đang chạy thì Kubernetes Worker Node bị hết bộ nhớ (OOMKilled) khiến container bị tiêu diệt ngay lập tức.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 # Trích đoạn log lỗi từ Terraform CLI
 Acquiring state lock. This may take a few moments...
 Error: Error acquiring the state lock

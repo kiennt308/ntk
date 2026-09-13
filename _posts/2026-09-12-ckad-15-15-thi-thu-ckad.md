@@ -1280,9 +1280,9 @@ Khối luyện đề giúp học viên rèn luyện phản xạ gõ lệnh tốc
 
 ### Câu T2.1 — CKAD · Application Design — 300 giây
 Tạo Pod `logger-pod` trong Namespace `prod`:
-- Main container `web` (ảnh `nginx:alpine`), mount volume `log-vol` vào `/var/log/nginx`
+- Main container `web` (ảnh `nginx:alpine`), mount volume `text-vol` vào `/var/log/nginx`
 - Sidecar container `adapter` (ảnh `busybox:1.36`), command `sh -c "tail -f /var/log/nginx/access.log"`
-- Volume `log-vol` kiểu `emptyDir`
+- Volume `text-vol` kiểu `emptyDir`
 
 ### Câu T2.2 — CKAD · Application Deployment — 300 giây
 Tạo Deployment `api-deploy` trong Namespace `prod`:

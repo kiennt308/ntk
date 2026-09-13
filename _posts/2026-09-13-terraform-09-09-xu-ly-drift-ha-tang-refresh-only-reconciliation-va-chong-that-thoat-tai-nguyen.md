@@ -236,7 +236,7 @@ Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Tại một côn
 Đúng lúc đó, một pipeline CI/CD chạy lệnh `terraform apply` để triển khai một thay đổi nhỏ về Security Group.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 # Trích đoạn log nguy hiểm từ Terraform CLI
 Terraform will perform the following actions:
 

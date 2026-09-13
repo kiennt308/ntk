@@ -1135,7 +1135,7 @@ Khối luyện đề giúp học viên rèn luyện phản xạ gõ lệnh tốc
 Tạo Pod Sidecar tên là `sidecar-pod` trong Namespace `prod`:
 - Container 1 tên `app` chạy ảnh `busybox:1.36`, lệnh `sh -c "while true; do date >> /var/log/app.log; sleep 1; done"`
 - Container 2 tên `sidecar` chạy ảnh `busybox:1.36`, lệnh `sh -c "tail -n+1 -f /var/log/app.log"`
-- Cả 2 container dùng chung Volume `log-vol` kiểu `emptyDir` mount vào `/var/log`.
+- Cả 2 container dùng chung Volume `text-vol` kiểu `emptyDir` mount vào `/var/log`.
 
 ### Câu T2.2 — CKAD · Application Design — 300 giây
 Tạo Pod Adapter tên là `adapter-pod` trong Namespace `prod`:

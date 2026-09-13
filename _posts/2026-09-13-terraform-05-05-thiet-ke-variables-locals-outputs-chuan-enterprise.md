@@ -261,7 +261,7 @@ output "db_master_password" {
 Một nhóm kỹ sư phát triển triển khai hệ thống thông báo nội bộ. Kỹ sư đã xuất thông tin kết nối Database qua `output "connection_string"` mà quên không đánh dấu `sensitive = true`.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 # Trích đoạn log nguy hiểm bị rò rỉ trên GitLab CI Runner công khai
 Outputs:
 

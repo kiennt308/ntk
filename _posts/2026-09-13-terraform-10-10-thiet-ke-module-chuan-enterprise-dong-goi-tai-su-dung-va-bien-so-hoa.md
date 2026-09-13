@@ -278,7 +278,7 @@ module "databases" {
 ```
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```log
+```text
 Error: Module is incompatible with count, for_each, and depends_on
 
   on main.tf line 12, in module "databases":

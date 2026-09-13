@@ -1896,15 +1896,25 @@ figure.highlight:not(.code-wrapped) pre {
   overflow-x: auto !important;
 }
 
-/* Syntax Highlight Colors (Rouge) */
-.highlight .c, .highlight .c1, .highlight .cm { color: #64748b; font-style: italic; }
-.highlight .k, .highlight .kd, .highlight .kn { color: #f43f5e; font-weight: 600; }
-.highlight .s, .highlight .s1, .highlight .s2 { color: #34d399; }
+/* Syntax Highlight Colors (Rouge & Chroma Highlighting) */
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .ch, .highlight .cp, .highlight .cs { color: #64748b; font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt, .highlight .kv { color: #f43f5e; font-weight: 600; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .se, .highlight .sh, .highlight .si, .highlight .sx, .highlight .sr, .highlight .ss, .highlight .sa, .highlight .dl { color: #34d399; }
+.highlight .nb, .highlight .nf, .highlight .nc, .highlight .nn, .highlight .bp { color: #38bdf8; font-weight: 500; }
 .highlight .nt { color: #38bdf8; font-weight: 600; }
-.highlight .nv, .highlight .vc { color: #818cf8; }
-.highlight .m, .highlight .mi, .highlight .mf { color: #fb923c; }
-.highlight .na { color: #fbbf24; }
-.highlight .o { color: #94a3b8; }
+.highlight .nv, .highlight .vc, .highlight .vg, .highlight .vi, .highlight .vm, .highlight .v { color: #c084fc; }
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh, .highlight .il, .highlight .mo, .highlight .mb, .highlight .mx { color: #fb923c; }
+.highlight .na, .highlight .no, .highlight .nd, .highlight .nl, .highlight .py { color: #fbbf24; }
+.highlight .o, .highlight .ow { color: #94a3b8; }
+.highlight .gp { color: #f59e0b; font-weight: 700; user-select: none; }
+.highlight .go { color: #cbd5e1; }
+.highlight .gd { color: #f43f5e; background-color: rgba(244, 63, 94, 0.12); }
+.highlight .gi { color: #10b981; background-color: rgba(16, 185, 129, 0.12); }
+.highlight .gh, .highlight .gu { color: #38bdf8; font-weight: 600; }
+.highlight .ge { font-style: italic; }
+.highlight .gs { font-weight: 700; }
+.highlight .gr, .highlight .gt, .highlight .ne, .highlight .err { color: #ef4444; font-weight: 600; }
+
 
 /* Table of Contents (TOC) Component */
 .toc {

@@ -24,9 +24,9 @@ tldr:
 {% raw %}
 # Tư Duy Declarative IaC & So Sánh Thực Chiến: Terraform vs Ansible vs Pulumi vs CloudFormation
 
-Khi hạ tầng đám mây (**Cloud Infrastructure**) mở rộng từ vài chục lên hàng ngàn máy chủ ảo, cụm Kubernetes phân tán, mạng VPC đa vùng và cơ sở dữ liệu quy mô Petabyte, việc cấu hình thủ công qua giao diện đồ họa (**ClickOps**) hoặc các kịch bản Shell/Python tuần tự trở thành nguyên nhân hàng đầu gây ra hiện tượng **Configuration Drift** (lệch cấu hình ngầm) cùng các sự cố gián đoạn dịch vụ nghiêm trọng.
+Khi hạ tầng đám mây (**Cloud Infrastructure**) mở rộng từ vài chục lên hàng ngàn máy chủ ảo, cụm Kubernetes phân tán, mạng VPC đa vùng và cơ sở dữ liệu quy mô Petabyte, việc cấu hình thủ công qua giao diện đồ họa (<span class="badge badge--amber">ClickOps</span>) hoặc các kịch bản Shell/Python tuần tự trở thành nguyên nhân hàng đầu gây ra hiện tượng <strong style="color: var(--accent-rose);">Configuration Drift</strong> (lệch cấu hình ngầm) cùng các sự cố gián đoạn dịch vụ nghiêm trọng.
 
-Để giải quyết triệt để bài toán này, **Infrastructure as Code (IaC)** ra đời như một tiêu chuẩn bắt buộc cho mọi kỹ sư Cloud Native, DevOps và Platform SRE hiện đại. Tuy nhiên, việc nắm vững tư duy cốt lõi **Declarative (Khai báo trạng thái mong muốn)** thay vì **Imperative (Chỉ định từng bước thực thi)** chính là ranh giới sống còn giữa một hệ thống tự phục hồi vững chắc và một đống mã nguồn bảo trì đầy rủi ro.
+Để giải quyết triệt để bài toán này, **Infrastructure as Code (IaC)** ra đời như một tiêu chuẩn bắt buộc cho mọi kỹ sư Cloud Native, DevOps và Platform SRE hiện đại. Tuy nhiên, việc nắm vững tư duy cốt lõi <span class="badge badge--emerald">Declarative (Khai báo trạng thái)</span> thay vì <span class="badge badge--rose">Imperative (Mệnh lệnh từng bước)</span> chính là ranh giới sống còn giữa một hệ thống tự phục hồi vững chắc và một đống mã nguồn bảo trì đầy rủi ro.
 
 ---
 
@@ -68,11 +68,11 @@ flowchart TB
 ```
 
 ### 1.1. Bản Chất của Phương Pháp Imperative (Mệnh Lệnh)
-Trong mô hình **Imperative** (điển hình như Bash Script, Python SDK Boto3, hoặc Ansible khi không thiết kế chặt chẽ tính Idempotency), kỹ sư phải mô tả **từng bước tuần tự** để đạt được kết quả:
-* **Bước 1:** Gửi API kiểm tra xem S3 Bucket `enterprise-prod-data` đã tồn tại trên AWS hay chưa.
-* **Bước 2:** Nếu chưa có, gửi API tạo Bucket với region `ap-southeast-1`.
-* **Bước 3:** Nếu đã có, kiểm tra cấu hình Encryption và gán KMS Key.
-* **Bước 4:** Nếu quá trình tạo bị lỗi giữa chừng, lập trình viên phải tự viết hàm Rollback thủ công để dọn dẹp tài nguyên rác.
+Trong mô hình <span class="badge badge--rose">Imperative</span> (điển hình như Bash Script, Python SDK Boto3, hoặc Ansible khi không thiết kế chặt chẽ tính Idempotency), kỹ sư phải mô tả **từng bước tuần tự** để đạt được kết quả:
+* <span class="badge badge--primary">Bước 1</span> Gửi API kiểm tra xem S3 Bucket `enterprise-prod-data` đã tồn tại trên AWS hay chưa.
+* <span class="badge badge--amber">Bước 2</span> Nếu chưa có, gửi API tạo Bucket với region `ap-southeast-1`.
+* <span class="badge badge--cyan">Bước 3</span> Nếu đã có, kiểm tra cấu hình Encryption và gán KMS Key.
+* <span class="badge badge--rose">Bước 4</span> Nếu quá trình tạo bị lỗi giữa chừng, lập trình viên phải tự viết hàm Rollback thủ công để dọn dẹp tài nguyên rác.
 
 > [!WARNING]
 > **RỦI RO LỚN NHẤT CỦA IMPERATIVE:**
@@ -81,12 +81,12 @@ Trong mô hình **Imperative** (điển hình như Bash Script, Python SDK Boto3
 ---
 
 ### 1.2. Tư Duy Declarative của Terraform (Khai Báo Trạng Thái Mong Muốn)
-Với mô hình **Declarative** của Terraform, kỹ sư **chỉ cần mô tả trạng thái cuối cùng mong muốn ($S_{desired}$)** trong các tệp mã nguồn HCL.
+Với mô hình <span class="badge badge--emerald">Declarative</span> của Terraform, kỹ sư **chỉ cần mô tả trạng thái cuối cùng mong muốn ($S_{desired}$)** trong các tệp mã nguồn HCL.
 
 Terraform Engine sẽ tự động thực hiện phép so sánh 3 ngôi giữa:
-1. **$S_{desired}$ (Desired State):** Trạng thái khai báo trong code `.tf`.
-2. **$S_{recorded}$ (Last Known State):** Trạng thái được lưu trong tệp `terraform.tfstate`.
-3. **$S_{actual}$ (Actual State):** Trạng thái thực tế đang chạy trên Cloud API (AWS/GCP/Azure).
+1. <strong style="color: var(--accent-primary);">$S_{desired}$ (Desired State):</strong> Trạng thái khai báo trong code `.tf`.
+2. <strong style="color: var(--accent-amber);">$S_{recorded}$ (Last Known State):</strong> Trạng thái được lưu trong tệp `terraform.tfstate`.
+3. <strong style="color: var(--accent-cyan);">$S_{actual}$ (Actual State):</strong> Trạng thái thực tế đang chạy trên Cloud API (AWS/GCP/Azure).
 
 ```mermaid
 flowchart TD
@@ -143,9 +143,9 @@ Chu trình tính toán của Terraform tuân theo công thức tập hợp:
 
 $$\Delta = S_{desired} \setminus S_{actual}$$
 
-* **Hành động: CREATE (+)** $\Longleftrightarrow$ Thuộc tính $x \in S_{desired}$ nhưng $x \notin S_{actual}$.
-* **Hành động: UPDATE (~)** $\Longleftrightarrow$ Thuộc tính $x \in S_{desired}$ và $x \in S_{actual}$ nhưng $Value_{desired}(x) \neq Value_{actual}(x)$.
-* **Hành động: DESTROY (-)** $\Longleftrightarrow$ Thuộc tính $x \in S_{actual}$ nhưng $x \notin S_{desired}$ (đối với tài nguyên được Terraform quản lý).
+* <strong style="color: var(--accent-emerald);">🟢 Hành động: CREATE (+)</strong> $\Longleftrightarrow$ Thuộc tính $x \in S_{desired}$ nhưng $x \notin S_{actual}$.
+* <strong style="color: var(--accent-amber);">🟡 Hành động: UPDATE (~)</strong> $\Longleftrightarrow$ Thuộc tính $x \in S_{desired}$ và $x \in S_{actual}$ nhưng $Value_{desired}(x) \neq Value_{actual}(x)$.
+* <strong style="color: var(--accent-rose);">🔴 Hành động: DESTROY (-)</strong> $\Longleftrightarrow$ Thuộc tính $x \in S_{actual}$ nhưng $x \notin S_{desired}$ (đối với tài nguyên được Terraform quản lý).
 
 ---
 
@@ -319,18 +319,18 @@ output "kms_key_arn" {
 ```
 
 ### Phân Tích Kỹ Thuật Từng Dòng (Line-by-Line Breakdown):
-* **`prevent_destroy = true`**: Rào chắn sinh tử trong khối `lifecycle`. Khi kỹ sư vô tình chạy `terraform destroy`, Terraform sẽ lập tức dừng thực thi và báo lỗi, bảo vệ an toàn cho dữ liệu Production.
-* **`bucket_key_enabled = true`**: Giảm số lượng request gửi tới dịch vụ AWS KMS bằng cách sử dụng Bucket Key ở cấp độ S3, giúp tiết kiệm hàng ngàn USD chi phí vận hành cho các bucket có hàng triệu lượt đọc/ghi mỗi ngày.
-* **`default_tags`**: Tự động gắn tag đồng bộ cho 100% tài nguyên được sinh ra từ AWS Provider, phục vụ việc phân bổ chi phí (**Cost Allocation**) và kiểm toán tuân thủ (**Audit Compliance**).
+* <span class="badge badge--rose"><code>prevent_destroy = true</code></span>: Rào chắn sinh tử trong khối `lifecycle`. Khi kỹ sư vô tình chạy `terraform destroy`, Terraform sẽ <b style="color: var(--accent-rose);">lập tức dừng thực thi và báo lỗi</b>, bảo vệ an toàn tuyệt đối cho dữ liệu Production.
+* <span class="badge badge--emerald"><code>bucket_key_enabled = true</code></span>: Giảm số lượng request gửi tới dịch vụ AWS KMS bằng cách sử dụng Bucket Key ở cấp độ S3, giúp <b style="color: var(--accent-emerald);">tiết kiệm tới 99% chi phí KMS API calls</b> cho các bucket có hàng triệu lượt đọc/ghi mỗi ngày.
+* <span class="badge badge--primary"><code>default_tags</code></span>: Tự động gắn tag đồng bộ cho <b style="color: var(--accent-primary);">100% tài nguyên</b> được sinh ra từ AWS Provider, phục vụ việc phân bổ chi phí (<b style="color: var(--accent-amber);">Cost Allocation</b>) và kiểm toán tuân thủ (<b style="color: var(--accent-cyan);">Audit Compliance</b>).
 
 ---
 
 ## 4. Phân Tích Cạm Bẫy Thực Chiến: Thảm Họa "ClickOps Drift" & Mất Dữ Liệu
 
 ### Tình Huống Sự Cố Thực Tế Tại Doanh Nghiệp:
-Vào lúc **02:00 sáng**, trong một đợt khắc phục sự cố khẩn cấp, một kỹ sư vận hành đã đăng nhập vào AWS Management Console và trực tiếp sửa tham số `Instance Type` của một máy chủ cơ sở dữ liệu RDS từ `db.r6g.xlarge` lên `db.r6g.2xlarge`.
+Vào lúc <span class="badge badge--rose">🕒 02:00 AM</span>, trong một đợt khắc phục sự cố khẩn cấp, một kỹ sư vận hành đã đăng nhập vào AWS Management Console và trực tiếp sửa tham số `Instance Type` của một máy chủ cơ sở dữ liệu RDS từ `<code style="color: var(--accent-amber); font-weight: 700;">db.r6g.xlarge</code>` lên `<code style="color: var(--accent-rose); font-weight: 700;">db.r6g.2xlarge</code>`.
 
-Sáng hôm sau, một kỹ sư DevOps khác thực hiện việc cập nhật mã nguồn Terraform (thêm một tag giám sát) và chạy lệnh:
+Sáng hôm sau vào lúc <span class="badge badge--cyan">🕘 09:00 AM</span>, một kỹ sư DevOps khác thực hiện việc cập nhật mã nguồn Terraform (thêm một tag giám sát) và chạy lệnh:
 ```bash
 terraform apply -auto-approve
 ```
@@ -379,14 +379,14 @@ flowchart TD
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao cơ sở dữ liệu bị hạ cấu hình và restart?** $\rightarrow$ Vì Terraform thực thi kế hoạch đưa `instance_class` từ `db.r6g.2xlarge` về lại `db.r6g.xlarge`.
-2. **Tại sao Terraform lại đưa về giá trị cũ?** $\rightarrow$ Vì trong tệp HCL, biến `instance_class` vẫn đang khai báo là `db.r6g.xlarge` (chưa được cập nhật sau sự cố đêm qua).
-3. **Tại sao kỹ sư không nhìn thấy cảnh báo này trước khi apply?** $\rightarrow$ Vì lệnh áp dụng được chạy kèm cờ nguy hiểm `-auto-approve` trong pipeline mà không qua bước kiểm duyệt Execution Plan.
-4. **Tại sao có sự sai lệch giữa Cloud và HCL?** $\rightarrow$ Do quy trình quản trị cho phép kỹ sư chỉnh sửa trực tiếp trên AWS Console (ClickOps) mà không đồng bộ ngược lại vào Git.
-5. **Biện pháp khắc phục tận gốc (Root Cause Remedy):**
-   * **Cấm hoàn toàn quyền ghi trực tiếp trên AWS Console (Enforce IaC-Only):** Thu hồi quyền chỉnh sửa thủ công của kỹ sư trên môi trường Staging/Production, chỉ cho phép thực thi thông qua CI/CD Pipeline.
-   * **Chạy định kỳ kiểm tra Drift:** Sử dụng lệnh `terraform plan -refresh-only` trên pipeline tự động mỗi 30 phút để phát hiện sớm các thay đổi trái phép.
-   * **Loại bỏ cờ `-auto-approve` trên Production:** Bắt buộc phải có bước kiểm duyệt Plan Review từ Tech Lead trước khi Apply.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao cơ sở dữ liệu bị hạ cấu hình và restart?** $\rightarrow$ Vì Terraform thực thi kế hoạch đưa `instance_class` từ `db.r6g.2xlarge` về lại `db.r6g.xlarge`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Terraform lại đưa về giá trị cũ?** $\rightarrow$ Vì trong tệp HCL, biến `instance_class` vẫn đang khai báo là `db.r6g.xlarge` (chưa được cập nhật sau sự cố đêm qua).
+3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư không nhìn thấy cảnh báo này trước khi apply?** $\rightarrow$ Vì lệnh áp dụng được chạy kèm cờ nguy hiểm `<code style="color: var(--accent-rose); font-weight: 700;">-auto-approve</code>` trong pipeline mà không qua bước kiểm duyệt Execution Plan.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao có sự sai lệch giữa Cloud và HCL?** $\rightarrow$ Do quy trình quản trị cho phép kỹ sư chỉnh sửa trực tiếp trên AWS Console (<b style="color: var(--accent-rose);">ClickOps</b>) mà không đồng bộ ngược lại vào Git.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục tận gốc:**
+   * <span class="badge badge--rose">Enforce IaC-Only</span> **Cấm hoàn toàn quyền ghi trực tiếp trên AWS Console:** Thu hồi quyền chỉnh sửa thủ công của kỹ sư trên môi trường Staging/Production, <b style="color: var(--accent-emerald);">chỉ cho phép thực thi thông qua CI/CD Pipeline</b>.
+   * <span class="badge badge--cyan">Drift Detection</span> **Chạy định kỳ kiểm tra Drift:** Sử dụng lệnh `<code style="color: var(--accent-cyan); font-weight: 700;">terraform plan -refresh-only</code>` trên pipeline tự động mỗi 30 phút để phát hiện sớm các thay đổi trái phép.
+   * <span class="badge badge--amber">Plan Review Gate</span> **Loại bỏ cờ `-auto-approve` trên Production:** Bắt buộc phải có bước kiểm duyệt <b style="color: var(--accent-amber);">Plan Review từ Tech Lead</b> trước khi Apply.
 
 ---
 
@@ -394,14 +394,14 @@ flowchart TD
 
 | Bước | Lệnh CLI | Mục Đích Thực Thi |
 | :---: | :--- | :--- |
-| **01** | `tfswitch 1.7.5` | Quản lý và kích hoạt chính xác phiên bản Terraform yêu cầu |
-| **02** | `aws sts get-caller-identity` | Xác thực thông tin danh tính IAM với AWS Cloud |
-| **03** | `terraform init` | Tải Provider Plugins và khởi tạo kết nối S3 Remote Backend |
-| **04** | `terraform fmt -recursive && terraform validate` | Chuẩn hóa cú pháp và kiểm tra tính hợp lệ của biến/khối lệnh |
-| **05** | `terraform plan -out=tfplan.binary` | Tạo bản kế hoạch thay đổi nhị phân độc lập an toàn |
-| **06** | `terraform show -json tfplan.binary \| jq` | Phân tích tệp Plan dưới dạng JSON để kiểm thử an ninh tự động |
-| **07** | `terraform apply tfplan.binary` | Áp dụng chính xác bản kế hoạch đã qua phê duyệt |
-| **08** | `terraform state list && terraform output` | Kiểm tra danh mục tài nguyên và truy xuất các giá trị đầu ra |
+| <span class="badge badge--primary">01</span> | `tfswitch 1.7.5` | Quản lý và kích hoạt chính xác phiên bản Terraform yêu cầu |
+| <span class="badge badge--cyan">02</span> | `aws sts get-caller-identity` | Xác thực thông tin danh tính IAM với AWS Cloud |
+| <span class="badge badge--indigo">03</span> | `terraform init` | Tải Provider Plugins và khởi tạo kết nối S3 Remote Backend |
+| <span class="badge badge--amber">04</span> | `terraform fmt -recursive && terraform validate` | Chuẩn hóa cú pháp và kiểm tra tính hợp lệ của biến/khối lệnh |
+| <span class="badge badge--emerald">05</span> | `terraform plan -out=tfplan.binary` | Tạo bản kế hoạch thay đổi nhị phân độc lập an toàn |
+| <span class="badge badge--primary">06</span> | `terraform show -json tfplan.binary \| jq` | Phân tích tệp Plan dưới dạng JSON để kiểm thử an ninh tự động |
+| <span class="badge badge--rose">07</span> | `terraform apply tfplan.binary` | Áp dụng chính xác bản kế hoạch đã qua phê duyệt |
+| <span class="badge badge--emerald">08</span> | `terraform state list && terraform output` | Kiểm tra danh mục tài nguyên và truy xuất các giá trị đầu ra |
 
 ```bash
 # 1. Kích hoạt phiên bản Terraform và kiểm tra danh tính
@@ -443,7 +443,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  Declarative tập trung vào <b>"Cái gì" (Desired State)</b> — kỹ sư chỉ khai báo trạng thái mong muốn cuối cùng và engine tự tính toán hành động để đạt được trạng thái đó. Trong khi Imperative tập trung vào <b>"Làm như thế nào" (Step-by-Step)</b> — kỹ sư phải tự lập trình từng bước tuần tự và tự xử lý các trường hợp lỗi hoặc điều kiện rẽ nhánh.
+  Declarative tập trung vào <b style="color: var(--accent-primary);">"Cái gì" (Desired State)</b> — kỹ sư chỉ khai báo trạng thái mong muốn cuối cùng và engine tự tính toán hành động để đạt được trạng thái đó. Trong khi Imperative tập trung vào <b style="color: var(--accent-amber);">"Làm như thế nào" (Step-by-Step)</b> — kỹ sư phải tự lập trình từng bước tuần tự và tự xử lý các trường hợp lỗi hoặc điều kiện rẽ nhánh.
 </div>
 </details>
 
@@ -462,7 +462,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  State file đóng vai trò là <b>"Bản đồ ánh xạ" (Mapping Metadata)</b> giữa các tài nguyên được khai báo trong code HCL với các tài nguyên thực tế trên Cloud (Resource ID, ARN, Attributes). Không có State, Terraform không thể biết tài nguyên nào đã được tạo trước đó để thực hiện update hay destroy, dẫn đến việc tạo trùng lặp.
+  State file đóng vai trò là <b style="color: var(--accent-emerald);">"Bản đồ ánh xạ" (Mapping Metadata)</b> giữa các tài nguyên được khai báo trong code HCL với các tài nguyên thực tế trên Cloud (Resource ID, ARN, Attributes). Không có State, Terraform không thể biết tài nguyên nào đã được tạo trước đó để thực hiện update hay destroy, dẫn đến việc tạo trùng lặp.
 </div>
 </details>
 
@@ -481,7 +481,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ <code>-auto-approve</code> bỏ qua bước xem xét Execution Plan của con người. Nếu trên hạ tầng thực tế đã có ai đó sửa đổi thủ công (Drift) hoặc việc đổi tên resource làm kích hoạt hành vi <b>Destroy and Recreate</b>, lệnh apply tự động có thể xóa sạch cơ sở dữ liệu hoặc cụm máy chủ quan trọng mà không có cơ hội ngăn chặn.
+  Cờ <code>-auto-approve</code> bỏ qua bước xem xét Execution Plan của con người. Nếu trên hạ tầng thực tế đã có ai đó sửa đổi thủ công (<b style="color: var(--accent-rose);">Drift</b>) hoặc việc đổi tên resource làm kích hoạt hành vi <b style="color: var(--accent-rose);">Destroy and Recreate</b>, lệnh apply tự động có thể xóa sạch cơ sở dữ liệu hoặc cụm máy chủ quan trọng mà không có cơ hội ngăn chặn.
 </div>
 </details>
 
@@ -500,7 +500,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  Đây là một cơ chế an toàn cấp độ engine. Nếu một kế hoạch thực thi (Plan) dẫn tới việc xóa tài nguyên có khai báo <code>prevent_destroy = true</code> (dù là do lệnh <code>terraform destroy</code> trực tiếp hay do thay đổi một thuộc tính bắt buộc phải Re-create), Terraform sẽ lập tức dừng lại và báo lỗi, từ chối tạo Plan.
+  Đây là một cơ chế an toàn cấp độ engine. Nếu một kế hoạch thực thi (Plan) dẫn tới việc xóa tài nguyên có khai báo <code style="color: var(--accent-rose); font-weight: 700;">prevent_destroy = true</code> (dù là do lệnh <code>terraform destroy</code> trực tiếp hay do thay đổi một thuộc tính bắt buộc phải Re-create), Terraform sẽ lập tức dừng lại và báo lỗi, từ chối tạo Plan.
 </div>
 </details>
 
@@ -519,7 +519,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  <code>terraform plan -refresh-only</code> chỉ thực hiện việc truy vấn Cloud API để cập nhật trạng thái thực tế vào State mà <b>không đề xuất bất kỳ thay đổi nào lên hạ tầng thực tế</b>. Lệnh này được dùng chuyên biệt để phát hiện và đồng bộ Drift do ClickOps gây ra.
+  <code>terraform plan -refresh-only</code> chỉ thực hiện việc truy vấn Cloud API để cập nhật trạng thái thực tế vào State mà <b style="color: var(--accent-cyan);">không đề xuất bất kỳ thay đổi nào lên hạ tầng thực tế</b>. Lệnh này được dùng chuyên biệt để phát hiện và đồng bộ Drift do ClickOps gây ra.
 </div>
 </details>
 
@@ -538,7 +538,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  Thuộc tính này giảm tần suất gọi API tới AWS KMS bằng cách sử dụng một khóa cấp bucket ngắn hạn thay vì gọi KMS cho từng đối tượng riêng lẻ. Điều này giúp giảm chi phí dịch vụ KMS tới <b>99%</b> đối với các hệ thống có khối lượng đọc/ghi tệp lớn.
+  Thuộc tính này giảm tần suất gọi API tới AWS KMS bằng cách sử dụng một khóa cấp bucket ngắn hạn thay vì gọi KMS cho từng đối tượng riêng lẻ. Điều này giúp <b style="color: var(--accent-emerald);">giảm chi phí dịch vụ KMS tới 99%</b> đối với các hệ thống có khối lượng đọc/ghi tệp lớn.
 </div>
 </details>
 
@@ -557,7 +557,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  Nên cân nhắc Pulumi khi hạ tầng đòi hỏi các thuật toán điều kiện phức tạp, xử lý chuỗi dữ liệu động nâng cao, tích hợp sâu vào mã nguồn ứng dụng (viết bằng TypeScript/Python/Go), hoặc khi đội ngũ kỹ sư phần mềm muốn sử dụng chung ngôn ngữ và bộ công cụ kiểm thử đơn vị (Unit Test) của ngôn ngữ lập trình đa năng.
+  Nên cân nhắc Pulumi khi hạ tầng đòi hỏi các thuật toán điều kiện phức tạp, xử lý chuỗi dữ liệu động nâng cao, tích hợp sâu vào mã nguồn ứng dụng (viết bằng <b style="color: var(--accent-primary);">TypeScript / Python / Go</b>), hoặc khi đội ngũ kỹ sư phần mềm muốn sử dụng chung ngôn ngữ và bộ công cụ kiểm thử đơn vị (Unit Test) của ngôn ngữ lập trình đa năng.
 </div>
 </details>
 
@@ -576,7 +576,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  Index Shifting xảy ra khi sử dụng <code>count</code> để tạo danh sách tài nguyên dựa trên chỉ số mảng <code>[0, 1, 2]</code>. Khi xóa một phần tử ở giữa danh sách, toàn bộ các phần tử phía sau bị dịch chuyển index, khiến Terraform hiểu nhầm là phải destroy và recreate lại hàng loạt tài nguyên. Giải pháp là chuyển sang dùng <code>for_each</code> với cấu trúc Map/Set.
+  <b style="color: var(--accent-rose);">Index Shifting</b> xảy ra khi sử dụng <code>count</code> để tạo danh sách tài nguyên dựa trên chỉ số mảng <code>[0, 1, 2]</code>. Khi xóa một phần tử ở giữa danh sách, toàn bộ các phần tử phía sau bị dịch chuyển index, khiến Terraform hiểu nhầm là phải destroy và recreate lại hàng loạt tài nguyên. Giải pháp là chuyển sang dùng <code style="color: var(--accent-emerald); font-weight: 700;">for_each</code> với cấu trúc Map/Set.
 </div>
 </details>
 
@@ -595,7 +595,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  <code>terraform validate</code> chỉ kiểm tra tính hợp lệ về mặt cú pháp HCL, tính nhất quán của các khối khai báo, các kiểu dữ liệu biến và tham số nội bộ. Lệnh này <b>hoàn toàn không gọi tới Cloud API</b> và không kiểm tra xem tài nguyên thực tế có tồn tại hay không.
+  <code>terraform validate</code> chỉ kiểm tra tính hợp lệ về mặt cú pháp HCL, tính nhất quán của các khối khai báo, các kiểu dữ liệu biến và tham số nội bộ. Lệnh này <b style="color: var(--accent-amber);">hoàn toàn không gọi tới Cloud API</b> và không kiểm tra xem tài nguyên thực tế có tồn tại hay không.
 </div>
 </details>
 
@@ -614,7 +614,7 @@ terraform output
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích & Lời Giải Kỹ Thuật</span>
   </div>
-  Khi một kỹ sư phát lệnh <code>plan</code> hoặc <code>apply</code>, Terraform sẽ tạo một bản ghi khóa (Lock Record) trên cơ chế khóa của Backend (ví dụ DynamoDB Lock Table hoặc GCS Lock). Mọi lệnh khác chạy đồng thời sẽ bị chặn lại với thông báo <code>Error acquiring the state lock</code> cho đến khi tiến trình đầu tiên hoàn tất và nhả khóa, ngăn chặn nguy cơ làm hỏng (Corrupt) State File.
+  Khi một kỹ sư phát lệnh <code>plan</code> hoặc <code>apply</code>, Terraform sẽ tạo một bản ghi khóa (<b style="color: var(--accent-primary);">Lock Record</b>) trên cơ chế khóa của Backend (ví dụ DynamoDB Lock Table hoặc GCS Lock). Mọi lệnh khác chạy đồng thời sẽ bị chặn lại với thông báo <code style="color: var(--accent-rose); font-weight: 700;">Error acquiring the state lock</code> cho đến khi tiến trình đầu tiên hoàn tất và nhả khóa, ngăn chặn nguy cơ làm hỏng (Corrupt) State File.
 </div>
 </details>
 
@@ -622,7 +622,7 @@ terraform output
 
 ## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-Tư duy **Declarative Desired State** là nền móng tư tưởng quan trọng nhất giúp bạn làm chủ toàn bộ hệ sinh thái Terraform. Hiểu rõ chu trình Reconcile Loop và mối liên hệ giữa Code HCL, State File và Cloud Actual State sẽ giúp bạn luôn tự tin trước mọi thay đổi hạ tầng phức tạp.
+Tư duy <b style="color: var(--accent-primary);">Declarative Desired State</b> là nền móng tư tưởng quan trọng nhất giúp bạn làm chủ toàn bộ hệ sinh thái Terraform. Hiểu rõ chu trình <b style="color: var(--accent-emerald);">Reconcile Loop</b> và mối liên hệ giữa <b style="color: var(--accent-primary);">Code HCL</b>, <b style="color: var(--accent-amber);">State File</b> và <b style="color: var(--accent-cyan);">Cloud Actual State</b> sẽ giúp bạn luôn tự tin trước mọi thay đổi hạ tầng phức tạp.
 
 > [!TIP]
 > **BÀI HỌC TIẾP THEO:**

@@ -1625,32 +1625,70 @@ blockquote cite::before {
 
 /* TL;DR Summary Callout (BUG-201) */
 .tldr-box {
-  background: rgba(var(--accent-primary-rgb), 0.05);
-  border: 1px solid rgba(var(--accent-primary-rgb), 0.2);
-  border-left: 4px solid var(--accent-cyan);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-primary);
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
+  padding: 1.35rem 1.6rem;
   margin: 2.25rem 0;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
 }
+
+.tldr-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(var(--accent-primary-rgb), 0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
 .tldr-box__title {
   font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.85rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  letter-spacing: -0.01em;
 }
+
+.tldr-box__title svg {
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+
 .tldr-box ul {
-  margin-bottom: 0;
-  padding-left: 1.25rem;
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
+
 .tldr-box li {
   font-size: 0.95rem;
+  line-height: 1.6;
   color: var(--text-secondary);
-  margin-bottom: 0.35rem;
+  position: relative;
+  padding-left: 1.4rem;
+}
+
+.tldr-box li::before {
+  content: "✦";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent-primary);
+  font-size: 0.85rem;
+  line-height: 1.6;
 }
 
 /* Pros & Cons Comparison Matrix (BUG-210) */

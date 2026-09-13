@@ -334,7 +334,22 @@ contact_page:
       is_external: false
 
 # ==============================================================================
-# ⚙️ 10. JEKYLL PLUGINS & BUILD SETTINGS
+# 📂 10. NỘI DUNG TRANG CHUYÊN MỤC / CATEGORIES (TOPIC HUBS)
+# ==============================================================================
+categories_page:
+  title: "Topic Hubs & Categorized Roadmaps"
+  badge: "CURATED DOMAINS"
+  heading: "Topic Hubs"
+  subtitle: "Explore our specialized engineering knowledge base grouped by technological pillars."
+  unit_guide_single: "Guide"
+  unit_guide_plural: "Guides"
+  series_prefix: "Series:"
+  part_prefix: "Part"
+  read_time_suffix: "min read"
+  date_format: "%b %d, %Y"
+
+# ==============================================================================
+# ⚙️ 11. JEKYLL PLUGINS & BUILD SETTINGS
 # ==============================================================================
 twitter:
   username: kiennt308

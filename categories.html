@@ -1,15 +1,17 @@
 ---
 layout: default
-title: "Topic Hubs & Categorized Roadmaps"
+title: "{{ site.categories_page.title | default: 'Topic Hubs & Categorized Roadmaps' }}"
 permalink: /categories.html
 ---
 
+{% assign page_cfg = site.categories_page %}
+
 <div class="container container--narrow" style="margin-top: 1rem;">
   <div style="margin-bottom: 3rem; text-align: center;">
-    <span class="badge badge--primary" style="margin-bottom: 0.75rem;">CURATED DOMAINS</span>
-    <h1 style="font-size: 2.75rem; font-weight: 800; margin-top: 0; margin-bottom: 0.75rem; letter-spacing: -0.03em;">Topic Hubs</h1>
+    <span class="badge badge--primary" style="margin-bottom: 0.75rem;">{{ page_cfg.badge }}</span>
+    <h1 style="font-size: 2.75rem; font-weight: 800; margin-top: 0; margin-bottom: 0.75rem; letter-spacing: -0.03em;">{{ page_cfg.heading }}</h1>
     <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
-      Explore our specialized engineering knowledge base grouped by technological pillars.
+      {{ page_cfg.subtitle }}
     </p>
   </div>
   
@@ -30,7 +32,7 @@ permalink: /categories.html
           <span>{{ category[0] }}</span>
         </h2>
         <span class="badge badge--primary">
-          {{ category[1] | size }} {% if category[1].size == 1 %}Guide{% else %}Guides{% endif %}
+          {{ category[1] | size }} {% if category[1].size == 1 %}{{ page_cfg.unit_guide_single | default: "Guide" }}{% else %}{{ page_cfg.unit_guide_plural | default: "Guides" }}{% endif %}
         </span>
       </div>
       
@@ -38,10 +40,11 @@ permalink: /categories.html
         {% for post in category[1] %}
           {% assign words = post.content | number_of_words %}
           {% if words < 360 %}
-            {% assign read_time = "1 min read" %}
+            {% assign read_time_num = 1 %}
           {% else %}
-            {% assign read_time = words | divided_by: 180 | append: " min read" %}
+            {% assign read_time_num = words | divided_by: 180 %}
           {% endif %}
+          {% assign read_time = read_time_num | append: " " | append: page_cfg.read_time_suffix %}
 
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border-color); padding-bottom: 1rem; gap: 1.25rem; flex-wrap: wrap;">
             <div style="display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 260px;">
@@ -50,7 +53,7 @@ permalink: /categories.html
               </a>
               {% if post.series %}
                 <span style="font-size: 0.775rem; color: var(--accent-amber); font-weight: 600;">
-                  📚 Series: {{ post.series }}{% if post.series_order %} (Part {{ post.series_order }}){% endif %}
+                  📚 {{ page_cfg.series_prefix | default: "Series:" }} {{ post.series }}{% if post.series_order %} ({{ page_cfg.part_prefix | default: "Part" }} {{ post.series_order }}){% endif %}
                 </span>
               {% endif %}
             </div>
@@ -63,7 +66,7 @@ permalink: /categories.html
                 {{ read_time }}
               </span>
               <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
-                {{ post.date | date: "%b %d, %Y" }}
+                {{ post.date | date: page_cfg.date_format }}
               </span>
             </div>
           </div>

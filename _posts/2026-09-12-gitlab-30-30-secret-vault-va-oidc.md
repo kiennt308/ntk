@@ -55,7 +55,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ```mermaid
 graph TD
-    A[GitLab CI Runner Job Triggered] --> B{Xác thực không mật khẩu qua OIDC}
+    A[GitLab CI Runner Job Triggered] --> B{"Xác thực không mật khẩu qua OIDC"}
     B --> C[1. GitLab CI cấp phát JWT id_tokens với claims aud=vault.example.com]
     
     subgraph Vault_OIDC_Authentication [Khối HashiCorp Vault & Secret động]
@@ -66,7 +66,7 @@ graph TD
     
     subgraph Secret_Scanning_and_Gate [Khối Quét Secret Gitleaks & Quality Gate]
         A --> E1[Gitleaks Secret Scan: Quét Git commit diff tìm Hardcoded Secrets]
-        E1 --> E2{Gitleaks Quality Gate Check}
+        E1 --> E2{"Gitleaks Quality Gate Check"}
         E2 -- Phát hiện Secret lộ --> F[FAIL PIPELINE exit code 1<br/>Chặn commit chứa Secret]
         E2 -- 0 Secret lộ --> G[PASS PIPELINE<br/>Sử dụng Dynamic Secret ngắn hạn từ Vault]
     end
@@ -716,11 +716,11 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Merge Request commit code] --> B{GitLab CI Pipeline Stage Test}
+    A[Merge Request commit code] --> B{"GitLab CI Pipeline Stage Test"}
     
     subgraph Gitleaks_Secret_Detection [Bước 1 & 2: Gitleaks Scanning]
         B --> C1[gitleaks detect --source . --verbose --report-path gl-secret-detection-report.json]
-        C1 --> C2{Gitleaks Quality Gate Check}
+        C1 --> C2{"Gitleaks Quality Gate Check"}
         C2 -- Lộ Hardcoded Secret --> C3[FAIL PIPELINE exit code 1<br/>Chặn commit rò rỉ Secret]
     end
 

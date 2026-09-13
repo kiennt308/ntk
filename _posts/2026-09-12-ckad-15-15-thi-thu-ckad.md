@@ -522,7 +522,7 @@ graph TD
         Observability[Câu 10 & 11: Broken-pod fix & kubectl top metrics]
     end
     
-    Script[Script tự chấm check-ckad-exam.sh] -->|Chấm điểm 100%| exam-ckad
+    Script[Script tự chấm check-ckad-exam.sh] -->|"Chấm điểm 100%"| exam-ckad
 ```
 
 ---

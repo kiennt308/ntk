@@ -297,7 +297,7 @@ flowchart TD
     D["Thư mục host_vars/"] --> B
     B --> E["Bộ nhớ biến Ansible (In-Memory Inventory)"]
     E --> F{"Áp dụng Host Pattern (CLI / Playbook)"}
-    F -->|Pattern: web:!db| G["Tập hợp Target Hosts chính xác"]
+    F -->|"Pattern: web:!db"| G["Tập hợp Target Hosts chính xác"]
     G --> H["Thực thi Module / Task an toàn"]
 ```
 
@@ -414,17 +414,17 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (Ansible CLI)"] --> |Lọc Host Pattern| PATTERN{"Biểu thức Host Pattern"}
-    PATTERN --> |1. pattern: web:!db| T1["Target Container 1 (target1 - Web Node)"]
-    PATTERN --> |2. pattern: db| T2["Target Container 2 (target2 - DB Node)"]
+    SubGraph1["Control Node (Ansible CLI)"] -->|"Lọc Host Pattern"| PATTERN{"Biểu thức Host Pattern"}
+    PATTERN -->|"1. pattern: web:!db"| T1["Target Container 1 (target1 - Web Node)"]
+    PATTERN -->|"2. pattern: db"| T2["Target Container 2 (target2 - DB Node)"]
     
-    VARS["Biến nạp tự động"] --> |group_vars/web.yml| T1
-    VARS --> |host_vars/target1.yml (Ghi đè)| T1
-    VARS --> |group_vars/db.yml| T2
+    VARS["Biến nạp tự động"] -->|"group_vars/web.yml"| T1
+    VARS -->|"host_vars/target1.yml (Ghi đè)"| T1
+    VARS -->|"group_vars/db.yml"| T2
     
-    DEV["Học viên (Tester)"] --> |A. Khai báo Inventory & Vars| SubGraph1
-    DEV --> |B. Đối soát trực tiếp bằng docker exec| T1
-    DEV --> |C. Đối soát trực tiếp bằng docker exec| T2
+    DEV["Học viên (Tester)"] -->|"A. Khai báo Inventory & Vars"| SubGraph1
+    DEV -->|"B. Đối soát trực tiếp bằng docker exec"| T1
+    DEV -->|"C. Đối soát trực tiếp bằng docker exec"| T2
 ```
 
 ---

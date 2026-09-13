@@ -117,9 +117,9 @@ Mô hình Hạn mức Thẻ Tín dụng gia đình và Quy định Khẩu phần
 
 ```mermaid
 graph TD
-    ResourceQuota[ResourceQuota: hard requests.cpu 2, memory 2Gi] --> Check{Tài nguyên còn lại?}
-    Check -->|Đủ hạn ngạch| Accept[API Server chấp nhận tạo Pod]
-    Check -->|Vượt hạn ngạch hard| Reject[API Server từ chối: exceeded quota]
+    ResourceQuota[ResourceQuota: hard requests.cpu 2, memory 2Gi] --> Check{"Tài nguyên còn lại?"}
+    Check -->|"Đủ hạn ngạch"| Accept[API Server chấp nhận tạo Pod]
+    Check -->|"Vượt hạn ngạch hard"| Reject[API Server từ chối: exceeded quota]
 ```
 
 **Nguyên lý cốt lõi:** Ngay khi một Namespace có áp dụng `ResourceQuota` cho CPU/RAM, BẮT BUỘC tất cả các Pod triển khai vào Namespace đó phải khai báo đầy đủ `requests` và `limits` (hoặc phải có `LimitRange` tự động bổ sung), nếu không API Server sẽ chặn ngay lập tức.

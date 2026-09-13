@@ -110,32 +110,32 @@ Bài học này giúp bạn trở thành Kiến trúc sư Tuân thủ Bảo mậ
 ```mermaid
 flowchart TD
     subgraph Developer Workspace
-        A[Developer pushes Commit] -->|1. Git Push Command| B{Secret Push Protection}
+        A[Developer pushes Commit] -->|"1. Git Push Command"| B{"Secret Push Protection"}
     end
 
     subgraph Gate 1: Secret Scan
-        B -->|Contains AWS Key| C[REJECT PUSH Immediately]
-        B -->|Clean Code| D{Check GPG Commit Signature}
+        B -->|"Contains AWS Key"| C[REJECT PUSH Immediately]
+        B -->|"Clean Code"| D{"Check GPG Commit Signature"}
     end
 
     subgraph Gate 2 & 3: Signature & Protected Branch
-        D -->|Unsigned Commit| E[REJECT: Unsigned Commit]
-        D -->|Valid GPG Signature| F{Protected Branch Check}
-        F -->|Direct Push to Main| G[REJECT: Direct Push Forbidden]
-        F -->|Create Merge Request| H[Merge Request Engine]
+        D -->|"Unsigned Commit"| E[REJECT: Unsigned Commit]
+        D -->|"Valid GPG Signature"| F{"Protected Branch Check"}
+        F -->|"Direct Push to Main"| G[REJECT: Direct Push Forbidden]
+        F -->|"Create Merge Request"| H[Merge Request Engine]
     end
 
     subgraph Gate 4 & 5: CODEOWNERS & Four-Eye Approvals
-        H -->|Check Paths modified| I[CODEOWNERS Evaluation]
-        I -->|Triggers @security-team| J{Min 2 Approvals Check}
-        J -->|Only 1 Approval or Author Approved| K[BLOCKED: Waiting for Approvals]
-        J -->|Author pushes new commit| L[RESET all previous approvals!]
-        J -->|2 Independent Approvals OK| M[PASS ALL GATES]
+        H -->|"Check Paths modified"| I[CODEOWNERS Evaluation]
+        I -->|"Triggers @security-team"| J{"Min 2 Approvals Check"}
+        J -->|"Only 1 Approval or Author Approved"| K[BLOCKED: Waiting for Approvals]
+        J -->|"Author pushes new commit"| L[RESET all previous approvals!]
+        J -->|"2 Independent Approvals OK"| M[PASS ALL GATES]
     end
 
     subgraph Gate 6: Audit Logging & Deployment
-        M -->|Merge to Main| N[Trigger Production Deployment]
-        N -->|Stream Event Log| O[SIEM / Splunk Dashboard]
+        M -->|"Merge to Main"| N[Trigger Production Deployment]
+        N -->|"Stream Event Log"| O[SIEM / Splunk Dashboard]
     end
 ```
 
@@ -420,25 +420,25 @@ Mặc dù Compliance và Approval Rules là sống còn cho Production, nhưng K
 ```mermaid
 flowchart TD
     subgraph Developer Push Gateway
-        A[Git Push Request] -->|Secret Push Protection| B{Check Secrets & Signatures}
-        B -->|AWS Key Detected| C[REJECT PUSH]
-        B -->|Unsigned Commit| D[REJECT UNSIGNED]
-        B -->|Passed| E[Merge Request Engine]
+        A[Git Push Request] -->|"Secret Push Protection"| B{"Check Secrets & Signatures"}
+        B -->|"AWS Key Detected"| C[REJECT PUSH]
+        B -->|"Unsigned Commit"| D[REJECT UNSIGNED]
+        B -->|"Passed"| E[Merge Request Engine]
     end
 
     subgraph Governance & Authorization Layer
-        E -->|Read .gitlab/CODEOWNERS| F[Identify Code Owners]
-        F -->|Require Min 2 Approvals| G{Four-Eye Rule Check}
-        G -->|Author Tries Self-Approve| H[BLOCKED: Author Approval Forbidden]
-        G -->|Push New Commit| I[RESET All Previous Approvals!]
-        G -->|2 Independent Approvals OK| J[MERGE APPROVED]
+        E -->|"Read .gitlab/CODEOWNERS"| F[Identify Code Owners]
+        F -->|"Require Min 2 Approvals"| G{"Four-Eye Rule Check"}
+        G -->|"Author Tries Self-Approve"| H[BLOCKED: Author Approval Forbidden]
+        G -->|"Push New Commit"| I[RESET All Previous Approvals!]
+        G -->|"2 Independent Approvals OK"| J[MERGE APPROVED]
     end
 
     subgraph Audit & Enforcement Infrastructure
-        J -->|Trigger Pipeline| K[Compliance Framework Pipeline]
-        K -->|Deploy to Production| L[Production Cluster]
-        E -.->|Stream Audit Event| M[SIEM / Splunk Dashboard]
-        J -.->|Stream Audit Event| M
+        J -->|"Trigger Pipeline"| K[Compliance Framework Pipeline]
+        K -->|"Deploy to Production"| L[Production Cluster]
+        E -.->|"Stream Audit Event"| M[SIEM / Splunk Dashboard]
+        J -.->|"Stream Audit Event"| M
     end
 ```
 
@@ -544,27 +544,27 @@ Trong bài lab này, học viên sẽ trực tiếp cấu hình hệ thống qu�
 ```mermaid
 graph TD
     subgraph Phase 1: Branch Protection & Secret Scanning
-        A[Git Push Request] -->|1. Secret Push Protection Engine| B{Scan Payload}
-        B -->|AWS Key Found| C[REJECT PUSH Immediately]
-        B -->|Clean| D{GPG Signature Check}
-        D -->|Unsigned| E[REJECT: Unsigned Commit]
-        D -->|Valid| F[Protected Branch Verification]
+        A[Git Push Request] -->|"1. Secret Push Protection Engine"| B{"Scan Payload"}
+        B -->|"AWS Key Found"| C[REJECT PUSH Immediately]
+        B -->|"Clean"| D{"GPG Signature Check"}
+        D -->|"Unsigned"| E[REJECT: Unsigned Commit]
+        D -->|"Valid"| F[Protected Branch Verification]
     end
 
     subgraph Phase 2: CODEOWNERS & Four-Eye Approvals
-        F -->|Direct Push to Main| G[REJECT: Direct Push Forbidden]
-        F -->|Create Merge Request| H[MR Approval Engine]
-        H -->|Check Paths modified| I[Evaluate CODEOWNERS Rules]
-        I -->|Requires @security-team| J{Min 2 Approvals & Reset on Push}
-        J -->|Author tries to approve| K[BLOCKED: Author Approval Forbidden]
-        J -->|New Commit Pushed| L[RESET All Approvals!]
-        J -->|2 Independent Approvals OK| M[MERGE APPROVED]
+        F -->|"Direct Push to Main"| G[REJECT: Direct Push Forbidden]
+        F -->|"Create Merge Request"| H[MR Approval Engine]
+        H -->|"Check Paths modified"| I[Evaluate CODEOWNERS Rules]
+        I -->|"Requires @security-team"| J{"Min 2 Approvals & Reset on Push"}
+        J -->|"Author tries to approve"| K[BLOCKED: Author Approval Forbidden]
+        J -->|"New Commit Pushed"| L[RESET All Approvals!]
+        J -->|"2 Independent Approvals OK"| M[MERGE APPROVED]
     end
 
     subgraph Phase 3: Compliance & Audit Logging
-        M -->|Execute Merge| N[Compliance Framework Pipeline]
-        N -->|Deploy Production| O[Production App]
-        P[Audit Engine] -.->|Stream Events API| Q[SIEM / Splunk Dashboard]
+        M -->|"Execute Merge"| N[Compliance Framework Pipeline]
+        N -->|"Deploy Production"| O[Production App]
+        P[Audit Engine] -.->|"Stream Events API"| Q[SIEM / Splunk Dashboard]
     end
 ```
 

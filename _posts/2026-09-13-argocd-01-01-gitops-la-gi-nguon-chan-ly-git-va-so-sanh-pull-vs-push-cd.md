@@ -87,28 +87,28 @@ Nếu phát hiện sai lệch (Drift), hệ thống sẽ cảnh báo hoặc tự
 ```mermaid
 flowchart TD
     subgraph PUSH_MODEL["MÔ HÌNH PUSH-BASED CD (Jenkins, GitLab CI, GitHub Actions)"]
-        DEV1["Developer"] -->|Push Code| CI_RUNNER["CI/CD Runner (Bên Ngoài Cụm)"]
-        CI_RUNNER -->|Nắm giữ quyền cluster-admin<br/>Bắn lệnh qua cổng 6443 mở ra ngoài| K8S_API1["Kubernetes API Server"]
+        DEV1["Developer"] -->|"Push Code"| CI_RUNNER["CI/CD Runner (Bên Ngoài Cụm)"]
+        CI_RUNNER -->|"Nắm giữ quyền cluster-admin<br/>Bắn lệnh qua cổng 6443 mở ra ngoài"| K8S_API1["Kubernetes API Server"]
         K8S_API1 --> PODS1["Workloads"]
         
-        DRIFT1["Sửa trực tiếp bằng kubectl edit"] -.->|Gây lệch cấu hình âm thầm| PODS1
-        CI_RUNNER -.->|KHÔNG BIẾT CÓ DRIFT| DRIFT1
+        DRIFT1["Sửa trực tiếp bằng kubectl edit"] -.->|"Gây lệch cấu hình âm thầm"| PODS1
+        CI_RUNNER -.->|"KHÔNG BIẾT CÓ DRIFT"| DRIFT1
     end
 
     subgraph PULL_MODEL["MÔ HÌNH PULL-BASED GITOPS (Argo CD)"]
-        DEV2["Developer"] -->|Push / PR Merge| GIT_REPO["Git Repository (Single Source of Truth)"]
+        DEV2["Developer"] -->|"Push / PR Merge"| GIT_REPO["Git Repository (Single Source of Truth)"]
         
         subgraph K8S_CLUSTER["Kubernetes Cluster (An Toàn Tuyệt Đối)"]
             ARGO["Argo CD Controller (Agent Nội Bộ)"]
             K8S_API2["Internal K8s API"]
             PODS2["Workloads"]
             
-            ARGO -->|1. Pull Manifests| GIT_REPO
+            ARGO -->|"1. Pull Manifests"| GIT_REPO
             ARGO -->|"2. Reconcile Loop (180s)"| K8S_API2
             K8S_API2 --> PODS2
             
-            DRIFT2["Sửa trực tiếp bằng kubectl edit"] -.->|Bị phát hiện ngay lập tức| PODS2
-            ARGO -->|3. Self-Heal Overwrite| K8S_API2
+            DRIFT2["Sửa trực tiếp bằng kubectl edit"] -.->|"Bị phát hiện ngay lập tức"| PODS2
+            ARGO -->|"3. Self-Heal Overwrite"| K8S_API2
         end
     end
 
@@ -178,8 +178,8 @@ graph TD
         APP_REPO["App Source Code Repo<br/>(payment-service.git)<br/>- Go code<br/>- Dockerfile<br/>- CI Pipeline"]
         CONFIG_REPO["GitOps Config Repo<br/>(k8s-infra-gitops.git)<br/>- Kustomize Base/Overlays<br/>- Helm Values<br/>- Argo CD Apps"]
         
-        APP_REPO -->|CI Build & Push Image<br/>v1.2.0| REGISTRY["Container Registry"]
-        APP_REPO -->|CI tự động commit update tag v1.2.0| CONFIG_REPO
+        APP_REPO -->|"CI Build & Push Image<br/>v1.2.0"| REGISTRY["Container Registry"]
+        APP_REPO -->|"CI tự động commit update tag v1.2.0"| CONFIG_REPO
     end
 
 

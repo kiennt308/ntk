@@ -61,10 +61,10 @@ Buổi 11 giới thiệu **CI/CD Components và GitLab CI/CD Catalog** — giả
 
 ```mermaid
 graph TD
-    Inc["Include Tĩnh (Buổi 10)"] -->|Thêm spec:inputs| Spec["Giao diện Tham số cựu cứng"]
-    Spec -->|Thêm Tag & Release| Comp["CI/CD Component"]
-    Comp -->|Xuất bản| Cat["GitLab CI/CD Catalog Nội bộ"]
-    Cat -->|Tái sử dụng an toàn| Devs["Hàng trăm Repo Microservice"]
+    Inc["Include Tĩnh (Buổi 10)"] -->|"Thêm spec:inputs"| Spec["Giao diện Tham số cựu cứng"]
+    Spec -->|"Thêm Tag & Release"| Comp["CI/CD Component"]
+    Comp -->|"Xuất bản"| Cat["GitLab CI/CD Catalog Nội bộ"]
+    Cat -->|"Tái sử dụng an toàn"| Devs["Hàng trăm Repo Microservice"]
 ```
 
 ---

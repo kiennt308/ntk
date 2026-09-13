@@ -174,13 +174,13 @@ Con số chốt: **2** kiểu định tuyến Layer 7 chính trong Ingress spec 
 ```mermaid
 graph TD
     subgraph External_World ["Ngoài Internet (Mã hoá HTTPS)"]
-        CLIENT["Client / Web Browser"] -->|HTTPS / Port 443| TLS_ING["Ingress Controller (Public IP)"]
+        CLIENT["Client / Web Browser"] -->|"HTTPS / Port 443"| TLS_ING["Ingress Controller (Public IP)"]
     end
 
     subgraph Cluster_Internal ["Nội bộ Cụm (Giải mã HTTP)"]
-        TLS_ING -->|1. Giải mã bằng Secret tls-secret| DECRYPT["SSL/TLS Termination"]
-        DECRYPT -->|2. Cleartext HTTP / Port 80| SVC_API["Service: api-svc"]
-        DECRYPT -->|2. Cleartext HTTP / Port 80| SVC_WEB["Service: web-svc"]
+        TLS_ING -->|"1. Giải mã bằng Secret tls-secret"| DECRYPT["SSL/TLS Termination"]
+        DECRYPT -->|"2. Cleartext HTTP / Port 80"| SVC_API["Service: api-svc"]
+        DECRYPT -->|"2. Cleartext HTTP / Port 80"| SVC_WEB["Service: web-svc"]
         SVC_API --> POD_API["Pod API (containerPort: 8080)"]
         SVC_WEB --> POD_WEB["Pod Web (containerPort: 80)"]
     end
@@ -528,9 +528,9 @@ kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUO
 ```mermaid
 graph TD
     subgraph Client_Requests ["Chặng 1: Client HTTP/HTTPS Requests"]
-        CLIENT1["Client (curl /api)"] -->|HTTP / Path /api| ING_PATH["Ingress: path-ingress"]
-        CLIENT2["Client (curl app.example.com)"] -->|HTTPS / Host app.example.com| ING_HOST["Ingress: host-ingress (TLS)"]
-        CLIENT3["Client (Gateway API)"] -->|HTTP / HTTPRoute| GWAY["HTTPRoute: app-route"]
+        CLIENT1["Client (curl /api)"] -->|"HTTP / Path /api"| ING_PATH["Ingress: path-ingress"]
+        CLIENT2["Client (curl app.example.com)"] -->|"HTTPS / Host app.example.com"| ING_HOST["Ingress: host-ingress (TLS)"]
+        CLIENT3["Client (Gateway API)"] -->|"HTTP / HTTPRoute"| GWAY["HTTPRoute: app-route"]
     end
 
     subgraph Backend_Routing ["Chặng 2: Service ClusterIP Routing"]

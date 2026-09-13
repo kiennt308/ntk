@@ -55,7 +55,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ```mermaid
 graph TD
-    A[Bắt đầu Đóng gói Container Image trong CI] --> B{Hạ tầng Runner hỗ trợ Đặc quyền nào?}
+    A[Bắt đầu Đóng gói Container Image trong CI] --> B{"Hạ tầng Runner hỗ trợ Đặc quyền nào?"}
     
     B -- "Runner có privileged = true / Mount Docker Socket" --> C[DIND hoặc BUILDKIT<br/>Yêu cầu quyền root/privileged<br/>Rủi ro Container Escape cao]
     
@@ -731,7 +731,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Git Push Event to repo-build-image] --> B{GitLab CI Pipeline}
+    A[Git Push Event to repo-build-image] --> B{"GitLab CI Pipeline"}
     
     subgraph Step1_Dind [Bước 1: Docker-in-Docker & Socket Audit]
         B --> C1[Job: docker-dind-build]

@@ -81,7 +81,7 @@ Bứt phá tốc độ thi hành kịch bản trên hạ tầng hàng ngàn máy
 
 ```mermaid
 graph TD
-    A["Ansible Control Node (ansible-playbook)"] --> |1. ansible.cfg: forks = 10 & pipelining = True| B{"Lựa chọn Chiến lược Thực thi Strategy"}
+    A["Ansible Control Node (ansible-playbook)"] -->|"1. ansible.cfg: forks = 10 & pipelining = True"| B{"Lựa chọn Chiến lược Thực thi Strategy"}
     
     B -- "strategy: linear (Mặc định)" --> C["Chạy Task 1 đồng bước trên ALL Hosts"]
     C --> D["Chờ 100% Hosts xong Task 1 mới sang Task 2"]
@@ -90,9 +90,9 @@ graph TD
     E --> F["Host nhanh xong trước, không chờ Host chậm"]
     
     subgraph "Nâng cấp Cuốn chiếu Rolling Update (serial: 1)"
-        G["Batch 1: Target 1"] --> |Deploy & Test| H["Batch 1 OK"]
-        H --> |Nâng cấp tiếp| I["Batch 2: Target 2"]
-        I --> |Deploy & Test| J["Batch 2 OK (Giữ hệ thống Zero Downtime)"]
+        G["Batch 1: Target 1"] -->|"Deploy & Test"| H["Batch 1 OK"]
+        H -->|"Nâng cấp tiếp"| I["Batch 2: Target 2"]
+        I -->|"Deploy & Test"| J["Batch 2 OK (Giữ hệ thống Zero Downtime)"]
     end
     
     D --> G
@@ -325,10 +325,10 @@ Khi tối ưu hóa hệ thống tự động hóa cho cụm Data Center quy mô 
 flowchart TD
     A["Tối ưu hóa Hiệu năng và Strategy trong Ansible"] --> B{"Phân loại Mục tiêu Tối ưu"}
     
-    B -->|Tăng tốc toàn cục ansible.cfg| C["forks = 10 & pipelining = True & ControlPersist=60s"]
-    B -->|Tối ưu luồng thi hành Playbook| D["strategy: free (Tự do theo host, không đứng chờ)"]
-    B -->|Quản lý Rolling Update an toàn| E["serial: ['1', '50%', '100%'] (Zero Downtime)"]
-    B -->|Xử lý Task nặng bất đồng bộ| F["async: 60 & poll: 0 -> ansible.builtin.async_status"]
+    B -->|"Tăng tốc toàn cục ansible.cfg"| C["forks = 10 & pipelining = True & ControlPersist=60s"]
+    B -->|"Tối ưu luồng thi hành Playbook"| D["strategy: free (Tự do theo host, không đứng chờ)"]
+    B -->|"Quản lý Rolling Update an toàn"| E["serial: ['1', '50%', '100%'] (Zero Downtime)"]
+    B -->|"Xử lý Task nặng bất đồng bộ"| F["async: 60 & poll: 0 -> ansible.builtin.async_status"]
     
     C --> G["Playbook chính: site-performance.yml"]
     D --> G
@@ -489,28 +489,28 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. ansible.cfg: forks = 10 & pipelining = True| CFG["ansible.cfg"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. ansible.cfg: forks = 10 & pipelining = True"| CFG["ansible.cfg"]
     
     subgraph "Tự động hóa Hiệu năng và Strategy"
-        CFG --> |2. Strategy: free| STRAT["Tự do thi hành theo Host"]
-        CFG --> |3. Rolling Update: serial: 1| SER["Lô nâng cấp cuốn chiếu 1 host"]
-        CFG --> |4. Task async: 30 poll: 0| ASY["Task bất đồng bộ ngầm"]
-        ASY --> |5. async_status poll| STAT["ansible.builtin.async_status until finished"]
+        CFG -->|"2. Strategy: free"| STRAT["Tự do thi hành theo Host"]
+        CFG -->|"3. Rolling Update: serial: 1"| SER["Lô nâng cấp cuốn chiếu 1 host"]
+        CFG -->|"4. Task async: 30 poll: 0"| ASY["Task bất đồng bộ ngầm"]
+        ASY -->|"5. async_status poll"| STAT["ansible.builtin.async_status until finished"]
     end
     
-    SubGraph1 --> |6. Thi hành Playbook: site-performance.yml| PB["Playbook: site-performance.yml"]
+    SubGraph1 -->|"6. Thi hành Playbook: site-performance.yml"| PB["Playbook: site-performance.yml"]
     STRAT --> PB
     SER --> PB
     STAT --> PB
     
-    PB --> |7. Gửi cấu hình tối ưu hiệu năng| T1["Target Container 1 (target1)"]
+    PB -->|"7. Gửi cấu hình tối ưu hiệu năng"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=5, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook site-performance.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-performance.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

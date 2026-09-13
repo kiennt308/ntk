@@ -55,7 +55,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ```mermaid
 graph TD
-    A[Bắt đầu Pipeline Monorepo Đa Ngôn Ngữ] --> B{Chọn cơ chế phát hiện thay đổi}
+    A[Bắt đầu Pipeline Monorepo Đa Ngôn Ngữ] --> B{"Chọn cơ chế phát hiện thay đổi"}
     
     B -- "Dùng rules:changes tĩnh" --> C[HỎNG IM LẶNG<br/>1. Thừa/thiếu Job ở MR Pipeline<br/>2. Sửa shared/ không trigger service<br/>3. Phình to file .gitlab-ci.yml]
     
@@ -766,7 +766,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Git Push Event to repo-monorepo] --> B{Parent Pipeline .gitlab-ci.yml}
+    A[Git Push Event to repo-monorepo] --> B{"Parent Pipeline .gitlab-ci.yml"}
     
     subgraph Step1_Pre [Stage .pre: Dynamic Generation]
         B --> C1[Job: generate-dynamic-pipeline]

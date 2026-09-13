@@ -347,12 +347,12 @@ Khi quản trị cụm máy chủ Web Server Nginx / HAProxy trong Production:
 ```mermaid
 flowchart TD
     A["Task Cấu hình (copy/template)"] --> B{"Kết quả Task: changed?"}
-    B -->|FALSE (ok)| C["Bỏ qua notify -> Hàng chờ Handler RỖNG"]
-    B -->|TRUE (changed)| D["Ghi nhận thông báo vào Hàng chờ Handler"]
+    B -->|"FALSE (ok)"| C["Bỏ qua notify -> Hàng chờ Handler RỖNG"]
+    B -->|"TRUE (changed)"| D["Ghi nhận thông báo vào Hàng chờ Handler"]
     
     D --> E{"Có gọi meta: flush_handlers?"}
-    E -->|CÓ| F["Thực thi Handler NGAY LẬP TỨC"]
-    E -->|KHÔNG| G["Chờ thi hành hết toàn bộ Tasks trong Play"]
+    E -->|"CÓ"| F["Thực thi Handler NGAY LẬP TỨC"]
+    E -->|"KHÔNG"| G["Chờ thi hành hết toàn bộ Tasks trong Play"]
     
     G --> H["Khử trùng lặp (Deduplication) -> Thực thi Handler 1 LẦN duy nhất"]
     
@@ -497,19 +497,19 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Task 1: copy app.conf (notify: restart app)| T1["Target Container 1 (target1)"]
-    SubGraph1 --> |2. Task 2: meta: flush_handlers| T1
-    SubGraph1 --> |3. Task 3: copy site.conf (notify: reload web stack)| T1
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Task 1: copy app.conf (notify: restart app)"| T1["Target Container 1 (target1)"]
+    SubGraph1 -->|"2. Task 2: meta: flush_handlers"| T1
+    SubGraph1 -->|"3. Task 3: copy site.conf (notify: reload web stack)"| T1
     
-    T1 --> |Execution: RUNNING HANDLER Restart App (Ngay tại Step 2)| T1
-    T1 --> |Execution: RUNNING HANDLER Reload Web Stack (Cuối Play)| T1
+    T1 -->|"Execution: RUNNING HANDLER Restart App (Ngay tại Step 2)"| T1
+    T1 -->|"Execution: RUNNING HANDLER Reload Web Stack (Cuối Play)"| T1
     
     T1 -. "RECAP Lần 1: ok=5, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=3, changed=0 (No Handler -> IDEMPOTENT)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook handlers-site.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook handlers-site.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

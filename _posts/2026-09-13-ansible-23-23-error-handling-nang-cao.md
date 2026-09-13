@@ -341,10 +341,10 @@ Khi xây dựng bộ kịch bản triển khai ứng dụng Doanh nghiệp:
 flowchart TD
     A["Kiến trúc Xử lý Lỗi Nâng cao Error Handling"] --> B{"Lựa chọn Cơ chế Bảo vệ"}
     
-    B -->|Bảo vệ Handler khi có lỗi| C["force_handlers: true (Bắt buộc chạy Handler đã notify)"]
-    B -->|Bảo vệ Toàn cụm Cluster| D["any_errors_fatal: true (Dừng toàn bộ hosts khi 1 host lỗi)"]
-    B -->|Tự phục hồi lỗi mạng| E["until: res is succeeded & retries: 5 & delay: 2"]
-    B -->|Giao dịch Rollback an toàn| F["block - rescue - always (Khôi phục phiên bản cũ khi lỗi)"]
+    B -->|"Bảo vệ Handler khi có lỗi"| C["force_handlers: true (Bắt buộc chạy Handler đã notify)"]
+    B -->|"Bảo vệ Toàn cụm Cluster"| D["any_errors_fatal: true (Dừng toàn bộ hosts khi 1 host lỗi)"]
+    B -->|"Tự phục hồi lỗi mạng"| E["until: res is succeeded & retries: 5 & delay: 2"]
+    B -->|"Giao dịch Rollback an toàn"| F["block - rescue - always (Khôi phục phiên bản cũ khi lỗi)"]
     
     C --> G["Playbook chính: site-error-handling.yml"]
     D --> G
@@ -509,29 +509,29 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. ansible.cfg: force_handlers = True| CFG["ansible.cfg"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. ansible.cfg: force_handlers = True"| CFG["ansible.cfg"]
     
     subgraph "Kiến trúc Xử lý Lỗi Nâng cao Error Handling"
-        CFG --> |2. any_errors_fatal: true| FATAL["Ngắt toàn bộ hosts khi 1 host lỗi"]
-        CFG --> |3. ignore_errors: true| IGN["Bỏ qua lỗi task dọn dẹp phụ"]
-        CFG --> |4. until & retries: 5| RETRY["Tự động Retry thử lại 5 lần khi đứt mạng"]
-        CFG --> |5. block - rescue - always| RESC["Rollback khôi phục bản cũ khi lỗi"]
+        CFG -->|"2. any_errors_fatal: true"| FATAL["Ngắt toàn bộ hosts khi 1 host lỗi"]
+        CFG -->|"3. ignore_errors: true"| IGN["Bỏ qua lỗi task dọn dẹp phụ"]
+        CFG -->|"4. until & retries: 5"| RETRY["Tự động Retry thử lại 5 lần khi đứt mạng"]
+        CFG -->|"5. block - rescue - always"| RESC["Rollback khôi phục bản cũ khi lỗi"]
     end
     
-    SubGraph1 --> |6. Thi hành Playbook: site-error-handling.yml| PB["Playbook: site-error-handling.yml"]
+    SubGraph1 -->|"6. Thi hành Playbook: site-error-handling.yml"| PB["Playbook: site-error-handling.yml"]
     FATAL --> PB
     IGN --> PB
     RETRY --> PB
     RESC --> PB
     
-    PB --> |7. Gửi cấu hình xử lý lỗi an toàn| T1["Target Container 1 (target1)"]
+    PB -->|"7. Gửi cấu hình xử lý lỗi an toàn"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=6, changed=3" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=6, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook site-error-handling.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-error-handling.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

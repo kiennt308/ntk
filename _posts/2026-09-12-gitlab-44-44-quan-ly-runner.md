@@ -110,23 +110,23 @@ Bài học này sẽ giúp bạn trở thành Chuyên gia Vận hành Hạ tần
 ```mermaid
 flowchart TD
     subgraph GitLab SaaS / Self-Managed Server
-        A[GitLab Server / API] -->|1. Long Polling HTTP/2| B[GitLab Runner Manager]
+        A[GitLab Server / API] -->|"1. Long Polling HTTP/2"| B[GitLab Runner Manager]
     end
 
     subgraph Runner Manager Host (config.toml)
-        B -->|2. Read config.toml| C{Check Concurrent & Limit}
-        C -->|Available Slots| D[Spawn Executor Environment]
+        B -->|"2. Read config.toml"| C{"Check Concurrent & Limit"}
+        C -->|"Available Slots"| D[Spawn Executor Environment]
     end
 
     subgraph Execution Environments (Executors)
-        D -->|Option A: Shell| E[Execute Bash directly on Host]
-        D -->|Option B: Docker| F[Spin up Temporary Container]
-        D -->|Option C: Kubernetes| G[Create Temporary Pod on K8s Cluster]
+        D -->|"Option A: Shell"| E[Execute Bash directly on Host]
+        D -->|"Option B: Docker"| F[Spin up Temporary Container]
+        D -->|"Option C: Kubernetes"| G[Create Temporary Pod on K8s Cluster]
     end
 
     subgraph Shared Cache Storage
-        F -.->|Upload/Download Cache| H[S3 / MinIO Storage]
-        G -.->|Upload/Download Cache| H
+        F -.->|"Upload/Download Cache"| H[S3 / MinIO Storage]
+        G -.->|"Upload/Download Cache"| H
     end
 ```
 
@@ -483,26 +483,26 @@ Mặc dù Docker và Kubernetes Executor là chuẩn mực cao nhất, nhưng KH
 ```mermaid
 flowchart TD
     subgraph Control Plane: GitLab Server
-        A[GitLab SaaS / Self-Managed] -->|Authentication Token v16+| B[Runner Manager]
+        A[GitLab SaaS / Self-Managed] -->|"Authentication Token v16+"| B[Runner Manager]
     end
 
     subgraph Infrastructure: Auto-scaling Runner Cluster
-        B -->|Read config.toml concurrent=20| C{Check Queue Load}
-        C -->|Scale Up| D[Kubernetes Executor / Karpenter]
-        D -->|Spawn Pod 1| E[Job A: Docker Container]
-        D -->|Spawn Pod 2| F[Job B: Docker Container]
-        D -->|Scale Down to 0 when idle| D
+        B -->|"Read config.toml concurrent=20"| C{"Check Queue Load"}
+        C -->|"Scale Up"| D[Kubernetes Executor / Karpenter]
+        D -->|"Spawn Pod 1"| E[Job A: Docker Container]
+        D -->|"Spawn Pod 2"| F[Job B: Docker Container]
+        D -->|"Scale Down to 0 when idle"| D
     end
 
     subgraph Storage & Security Layer
-        E -.->|Fetch/Upload Shared Cache| G[MinIO / S3 Object Storage]
-        F -.->|Fetch/Upload Shared Cache| G
-        E -->|privileged = false| H[Host OS Protected]
+        E -.->|"Fetch/Upload Shared Cache"| G[MinIO / S3 Object Storage]
+        F -.->|"Fetch/Upload Shared Cache"| G
+        E -->|"privileged = false"| H[Host OS Protected]
     end
 
     subgraph Maintenance & Observability
-        I[Cron Job 2:00 AM] -->|docker system prune| B
-        J[Prometheus Port 9252] -->|Scrape Metrics| K[Grafana Dashboard]
+        I[Cron Job 2:00 AM] -->|"docker system prune"| B
+        J[Prometheus Port 9252] -->|"Scrape Metrics"| K[Grafana Dashboard]
     end
 ```
 
@@ -608,27 +608,27 @@ Trong bài lab này, học viên sẽ trực tiếp xây dựng và làm chủ h
 ```mermaid
 graph TD
     subgraph Phase 1: Runner Registration & Configuration
-        A[GitLab SaaS / Self-Managed Server] -->|1. Authentication Token v16+| B[Runner Manager Host]
-        B -->|2. Generate config.toml| C[Docker Executor Config]
-        C -->|3. Concurrent Limit = 10| D[Job Scheduler Engine]
+        A[GitLab SaaS / Self-Managed Server] -->|"1. Authentication Token v16+"| B[Runner Manager Host]
+        B -->|"2. Generate config.toml"| C[Docker Executor Config]
+        C -->|"3. Concurrent Limit = 10"| D[Job Scheduler Engine]
     end
 
     subgraph Phase 2: Execution & Security Isolation
-        D -->|4. Job Request| E[Container A: Runner Prod Tag]
-        D -->|5. Job Request| F[Container B: Runner Dev Tag]
-        E -->|privileged = false| G[Host Kernel Protected]
-        F -->|privileged = false| G
+        D -->|"4. Job Request"| E[Container A: Runner Prod Tag]
+        D -->|"5. Job Request"| F[Container B: Runner Dev Tag]
+        E -->|"privileged = false"| G[Host Kernel Protected]
+        F -->|"privileged = false"| G
     end
 
     subgraph Phase 3: Shared Caching & Garbage Collection
-        E -.->|6. Push/Pull Cache| H[MinIO S3 Bucket]
-        F -.->|6. Push/Pull Cache| H
-        I[Cron Job 2:00 AM] -->|7. docker system prune| B
+        E -.->|"6. Push/Pull Cache"| H[MinIO S3 Bucket]
+        F -.->|"6. Push/Pull Cache"| H
+        I[Cron Job 2:00 AM] -->|"7. docker system prune"| B
     end
 
     subgraph Phase 4: Observability & Maintenance
-        B -->|8. Expose Metrics :9252| J[Prometheus Scraper]
-        K[Maintenance Trigger] -->|9. gitlab-runner stop| L[Graceful Shutdown]
+        B -->|"8. Expose Metrics :9252"| J[Prometheus Scraper]
+        K[Maintenance Trigger] -->|"9. gitlab-runner stop"| L[Graceful Shutdown]
     end
 ```
 

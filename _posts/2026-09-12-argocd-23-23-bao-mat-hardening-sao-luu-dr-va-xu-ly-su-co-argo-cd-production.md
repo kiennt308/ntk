@@ -201,10 +201,10 @@ flowchart LR
         CL4["Cluster 04 (Prod-West)"]
     end
 
-    C0 -->|Phụ trách Shard 0| CL1
-    C0 -->|Phụ trách Shard 0| CL2
-    C1 -->|Phụ trách Shard 1| CL3
-    C1 -->|Phụ trách Shard 1| CL4
+    C0 -->|"Phụ trách Shard 0"| CL1
+    C0 -->|"Phụ trách Shard 0"| CL2
+    C1 -->|"Phụ trách Shard 1"| CL3
+    C1 -->|"Phụ trách Shard 1"| CL4
 
 
 ```

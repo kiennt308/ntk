@@ -54,8 +54,8 @@ flowchart TD
         M4["Ad-hoc hotfix sửa resource limits trực tiếp trên etcd"]
     end
 
-    DRIFT -->|Cần bỏ qua qua ignoreDifferences| BENIGN
-    DRIFT -->|Cần Self-Heal dập tắt ngay lập tức| MALICIOUS
+    DRIFT -->|"Cần bỏ qua qua ignoreDifferences"| BENIGN
+    DRIFT -->|"Cần Self-Heal dập tắt ngay lập tức"| MALICIOUS
 
 
 ```
@@ -92,10 +92,10 @@ flowchart LR
     LIVE --> NORM
     LAST --> NORM
     NORM --> STRAT
-    STRAT -->|Client-Side Three-Way| IGNORE
-    STRAT -->|Server-Side Apply Diff| IGNORE
-    IGNORE -->|Không còn sai lệch| SYNCED
-    IGNORE -->|Còn sai lệch chưa ignore| OUT
+    STRAT -->|"Client-Side Three-Way"| IGNORE
+    STRAT -->|"Server-Side Apply Diff"| IGNORE
+    IGNORE -->|"Không còn sai lệch"| SYNCED
+    IGNORE -->|"Còn sai lệch chưa ignore"| OUT
 
 
 ```

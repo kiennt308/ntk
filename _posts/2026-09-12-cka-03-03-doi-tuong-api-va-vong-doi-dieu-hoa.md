@@ -201,8 +201,8 @@ Con số chốt: **1** mảng `ownerReferences` chứa `apiVersion`, `kind`, `na
 graph TD
     A["1. Read Spec (Đọc trạng thái mong muốn từ etcd)"] --> B["2. Read Status (Đọc trạng thái thực tế từ cụm)"]
     B --> C{"3. Compare (So sánh Spec vs Status)"}
-    C -->|Bằng nhau| D["Không làm gì (No Drift)"]
-    C -->|Khác nhau| E["4. Observe & Act (Thực hiện hành động sửa lỗi)"]
+    C -->|"Bằng nhau"| D["Không làm gì (No Drift)"]
+    C -->|"Khác nhau"| E["4. Observe & Act (Thực hiện hành động sửa lỗi)"]
     E --> F["5. Update Status (Ghi nhận trạng thái mới vào etcd)"]
     F --> A
 
@@ -423,10 +423,10 @@ Con số chốt: Độ trễ điều hoà trung bình qua Watch Stream là dư�
 graph TD
     A["Mô hình Khai báo (Declarative)"] --> B["Bản thiết kế spec (Mong muốn)"]
     B --> C["kube-apiserver & etcd Store"]
-    C -->|Watch Stream| D["Controller Reconciliation Loop"]
-    D -->|Read Status| E["Quan sát thực tế status"]
-    D -->|Compare & Act| F["Sửa lỗi Lệch trạng thái (Drift)"]
-    F -->|Cập nhật| E
+    C -->|"Watch Stream"| D["Controller Reconciliation Loop"]
+    D -->|"Read Status"| E["Quan sát thực tế status"]
+    D -->|"Compare & Act"| F["Sửa lỗi Lệch trạng thái (Drift)"]
+    F -->|"Cập nhật"| E
 
     style A fill:none,stroke:#333,stroke-width:2px
     style B fill:none,stroke:#333,stroke-width:2px
@@ -566,9 +566,9 @@ graph TD
     end
 
     API <--> ETCD
-    DEPLOY_CTRL <-->|Watch Spec| API
-    RS_CTRL <-->|Watch RS Spec| API
-    KLET <-->|Watch Pod Spec & Update Status| API
+    DEPLOY_CTRL <-->|"Watch Spec"| API
+    RS_CTRL <-->|"Watch RS Spec"| API
+    KLET <-->|"Watch Pod Spec & Update Status"| API
     KLET --> PODS
 
     style Kube_API_Server fill:none,stroke:#0288d1,stroke-width:2px

@@ -39,9 +39,9 @@ Nhiều lập trình viên mới bắt đầu thường nhầm lẫn rằng vi�
 ```mermaid
 flowchart TD
     subgraph S1["1. BITNAMI SEALED SECRETS (Mã Hóa Bất Đối Xứng Phía Client)"]
-        PLAIN_1["Kube Secret Gốc"] -->|kubeseal + Public Key| SEALED_CRD["SealedSecret CRD (An toàn đẩy lên Git)"]
-        SEALED_CRD -->|Argo CD Deploy| K8S_1["Cụm K8s (Controller giữ Private Key)"]
-        K8S_1 -->|Giải mã| NATIVE_SEC1["Native Kubernetes Secret"]
+        PLAIN_1["Kube Secret Gốc"] -->|"kubeseal + Public Key"| SEALED_CRD["SealedSecret CRD (An toàn đẩy lên Git)"]
+        SEALED_CRD -->|"Argo CD Deploy"| K8S_1["Cụm K8s (Controller giữ Private Key)"]
+        K8S_1 -->|"Giải mã"| NATIVE_SEC1["Native Kubernetes Secret"]
     end
 
     subgraph S2["2. EXTERNAL SECRETS OPERATOR - ESO (Đồng Bộ Từ Vault / Cloud KMS)"]
@@ -49,17 +49,17 @@ flowchart TD
         EXT_CRD["ExternalSecret CRD (Lưu trên Git, chỉ chứa tham chiếu Key)"]
         ESO_CTRL["ESO Controller trong cụm"]
         
-        EXT_CRD -->|Argo CD Deploy| ESO_CTRL
+        EXT_CRD -->|"Argo CD Deploy"| ESO_CTRL
         ESO_CTRL [--]|Kéo Secret qua IAM Role / Token| VAULT
-        ESO_CTRL -->|Sinh ra| NATIVE_SEC2["Native Kubernetes Secret"]
+        ESO_CTRL -->|"Sinh ra"| NATIVE_SEC2["Native Kubernetes Secret"]
     end
 
     subgraph S3["3. MOZILLA SOPS (Mã Hóa Từng Trường Bằng Khóa KMS)"]
         SOPS_FILE["secrets.enc.yaml (Mã hóa từng value qua AWS KMS / PGP)"]
         CMP_PLUGIN["Argo CD CMP Plugin (Giải mã trong bộ nhớ RAM lúc render)"]
         
-        SOPS_FILE -->|Lưu trên Git| CMP_PLUGIN
-        CMP_PLUGIN ==>|Render trực tiếp| NATIVE_SEC3["Native Kubernetes Secret trên cụm"]
+        SOPS_FILE -->|"Lưu trên Git"| CMP_PLUGIN
+        CMP_PLUGIN ==>|"Render trực tiếp"| NATIVE_SEC3["Native Kubernetes Secret trên cụm"]
     end
 
 
@@ -146,7 +146,7 @@ flowchart LR
     ES --> SS
     SS --> CTRL
     CTRL [--]|Đồng bộ mỗi 1 giờ| VAULT_STORE
-    CTRL -->|Tự động sinh ra| KUBE_SEC
+    CTRL -->|"Tự động sinh ra"| KUBE_SEC
 
 
 ```

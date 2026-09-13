@@ -167,9 +167,9 @@ graph TD
         NA_PREF["nodeAffinity preferred: Luật mềm (Ưu tiên theo weight 1-100)"]
     end
 
-    NS -->|Match Label| NODE["Worker Node (disktype=ssd)"]
-    NA_REQ -->|Match Expression| NODE
-    NA_PREF -->|Highest Score| NODE
+    NS -->|"Match Label"| NODE["Worker Node (disktype=ssd)"]
+    NA_REQ -->|"Match Expression"| NODE
+    NA_PREF -->|"Highest Score"| NODE
 
     style NS fill:none,stroke:#f57c00,stroke-width:2px
     style NA_REQ fill:none,stroke:#0288d1,stroke-width:2px

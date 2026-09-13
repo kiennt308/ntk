@@ -57,11 +57,11 @@ flowchart TD
 
     APP["Application: frontend-app (Thuộc AppProject này)"]
     
-    APP -->|Bị kiểm soát bởi| R1
-    APP -->|Bị kiểm soát bởi| R2
-    APP -->|Bị kiểm soát bởi| R3
-    APP -->|Bị kiểm soát bởi| R4
-    APP -->|Bị kiểm soát bởi| R5
+    APP -->|"Bị kiểm soát bởi"| R1
+    APP -->|"Bị kiểm soát bởi"| R2
+    APP -->|"Bị kiểm soát bởi"| R3
+    APP -->|"Bị kiểm soát bởi"| R4
+    APP -->|"Bị kiểm soát bởi"| R5
 
 
 ```
@@ -254,8 +254,8 @@ flowchart LR
     DEV_PUSH["Developer Merge PR vào 11h30 trưa (Khung giờ Cao Điểm)"] --> ARGO_CTRL["Argo CD Controller"]
     ARGO_CTRL --> WINDOW_CHECK{"Kiểm tra Sync Windows"}
     
-    WINDOW_CHECK -->|Trong khung giờ DENY (11h-13h)| BLOCK["CHẶN ĐỒNG BỘ!<br/>Trạng thái: Sync Blocked by Window"]
-    WINDOW_CHECK -->|Ngoài khung giờ DENY| PASS["Cho phép Đồng Bộ & Deploy Bình Thường"]
+    WINDOW_CHECK -->|"Trong khung giờ DENY (11h-13h)"| BLOCK["CHẶN ĐỒNG BỘ!<br/>Trạng thái: Sync Blocked by Window"]
+    WINDOW_CHECK -->|"Ngoài khung giờ DENY"| PASS["Cho phép Đồng Bộ & Deploy Bình Thường"]
 
 
 ```

@@ -142,8 +142,8 @@ flowchart LR
         B_DST["resource aws_s3_bucket.destination \n (provider = aws.dst)"]
     end
 
-    PA1 -->|Gán vào aws.src| MOD
-    PA2 -->|Gán vào aws.dst| MOD
+    PA1 -->|"Gán vào aws.src"| MOD
+    PA2 -->|"Gán vào aws.dst"| MOD
     MOD --> REQ
     REQ --> B_SRC
     REQ --> B_DST
@@ -285,7 +285,7 @@ graph LR
         D_BUCKET["Destination S3 Bucket: Versioning Enabled"]
     end
 
-    S_BUCKET -->|AWS Real-time Replication via IAM| D_BUCKET
+    S_BUCKET -->|"AWS Real-time Replication via IAM"| D_BUCKET
     IAM --> S_BUCKET
     IAM --> D_BUCKET
 

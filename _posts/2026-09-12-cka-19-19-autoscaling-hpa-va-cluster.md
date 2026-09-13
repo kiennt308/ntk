@@ -159,9 +159,9 @@ Con số chốt: **15** giây là chu kỳ vòng lặp kiểm tra HPA mặc đ�
 ```mermaid
 graph TD
     subgraph HPA_Workflow ["Quy trình hoạt động của HPA Controller"]
-        MS["Metrics Server (Metrics API)"] -->|Chỉ số CPU/RAM thực tế| HPA_CTRL["HPA Controller (Vòng lặp 15s)"]
-        HPA_CTRL -->|Áp dụng công thức| FORMULA["desiredReplicas = ceil[ current * (currentMetric / targetMetric) ]"]
-        FORMULA -->|Update spec.replicas| DEPLOY["Deployment (scale out / scale in)"]
+        MS["Metrics Server (Metrics API)"] -->|"Chỉ số CPU/RAM thực tế"| HPA_CTRL["HPA Controller (Vòng lặp 15s)"]
+        HPA_CTRL -->|"Áp dụng công thức"| FORMULA["desiredReplicas = ceil[ current * (currentMetric / targetMetric) ]"]
+        FORMULA -->|"Update spec.replicas"| DEPLOY["Deployment (scale out / scale in)"]
     end
 
     style HPA_CTRL fill:none,stroke:#388e3c,stroke-width:2px

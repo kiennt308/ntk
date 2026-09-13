@@ -83,9 +83,9 @@ Chủ đề xuyên suốt khóa học (I-10) được cụ thể hóa trong Bu�
 ```mermaid
 graph TD
     A["Yêu cầu quản trị từ Control Node"] --> B{"Chọn Module thích hợp"}
-    B -->|Gói phần mềm| C["ansible.builtin.package"]
-    B -->|Dịch vụ Systemd| D["ansible.builtin.service"]
-    B -->|Tệp tin & Phân quyền| E["ansible.builtin.file"]
+    B -->|"Gói phần mềm"| C["ansible.builtin.package"]
+    B -->|"Dịch vụ Systemd"| D["ansible.builtin.service"]
+    B -->|"Tệp tin & Phân quyền"| E["ansible.builtin.file"]
     
     C --> C1["Kiểm tra gói -> Nếu chưa có -> Cài -> Changed=true"]
     C --> C2["Nếu đã có -> Bỏ qua -> Changed=false"]
@@ -267,15 +267,15 @@ Khi chuẩn hóa hạ tầng bảo mật cho 100 máy chủ Linux:
 ```mermaid
 flowchart TD
     A["Quản trị viên (Control Node)"] --> B{"Tác vụ cần thực hiện?"}
-    B -->|Gói phần mềm| C["package (state=present)"]
-    B -->|Dịch vụ Daemon| D["service (state=started enabled=yes)"]
-    B -->|File / Directory| E["file (mode=0644/0755)"]
-    B -->|Chép File + Backup| F["copy (backup=yes)"]
-    B -->|Sửa 1 Dòng Config| G["lineinfile (regexp=...)"]
-    B -->|Chèn Khối Văn Bản| H["blockinfile (marker=...)"]
-    B -->|User / Group| I["user / group"]
-    B -->|Lịch Crontab| J["cron (name=...)"]
-    B -->|Đọc Thuộc Tính File| K["stat (path=...)"]
+    B -->|"Gói phần mềm"| C["package (state=present)"]
+    B -->|"Dịch vụ Daemon"| D["service (state=started enabled=yes)"]
+    B -->|"File / Directory"| E["file (mode=0644/0755)"]
+    B -->|"Chép File + Backup"| F["copy (backup=yes)"]
+    B -->|"Sửa 1 Dòng Config"| G["lineinfile (regexp=...)"]
+    B -->|"Chèn Khối Văn Bản"| H["blockinfile (marker=...)"]
+    B -->|"User / Group"| I["user / group"]
+    B -->|"Lịch Crontab"| J["cron (name=...)"]
+    B -->|"Đọc Thuộc Tính File"| K["stat (path=...)"]
     
     C & D & E & F & G & H & I & J & K --> L["Tự kiểm tra trạng thái máy đích"]
     L --> M{"Đã đúng trạng thái?"}
@@ -395,14 +395,14 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (Ansible CLI)"] --> |1. package / service| T1["Target Container 1 (target1)"]
-    SubGraph1 --> |2. copy / lineinfile / blockinfile| T1
-    SubGraph1 --> |3. user / group / cron| T1
-    SubGraph1 --> |4. stat| T1
+    SubGraph1["Control Node (Ansible CLI)"] -->|"1. package / service"| T1["Target Container 1 (target1)"]
+    SubGraph1 -->|"2. copy / lineinfile / blockinfile"| T1
+    SubGraph1 -->|"3. user / group / cron"| T1
+    SubGraph1 -->|"4. stat"| T1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy lệnh ad-hoc module| SubGraph1
-    DEV --> |B. Kiểm tra Idempotency lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy lệnh ad-hoc module"| SubGraph1
+    DEV -->|"B. Kiểm tra Idempotency lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
     
     T1 -. "docker exec: Kiểm tra gói / service / file / cron" .-> DEV
 ```

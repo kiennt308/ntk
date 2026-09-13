@@ -55,7 +55,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ```mermaid
 graph TD
-    A[Merge Request commit tệp .gitlab-ci.yml, Dockerfile, K8s] --> B{Stage Test: Compliance Enforcement}
+    A[Merge Request commit tệp .gitlab-ci.yml, Dockerfile, K8s] --> B{"Stage Test: Compliance Enforcement"}
     
     subgraph OPA_Rego_Policy_Evaluation [Khối 1: Đánh giá Chính sách Rego bằng Conftest]
         B --> C1[conftest test --policy policy/ .gitlab-ci.yml Dockerfile deployment.yaml]
@@ -65,7 +65,7 @@ graph TD
     end
 
     subgraph Compliance_Quality_Gate [Khối 2: Evaluation & Compliance Quality Gate]
-        C2 & C3 & C4 --> D{Compliance Quality Gate Check}
+        C2 & C3 & C4 --> D{"Compliance Quality Gate Check"}
         D -- Vi phạm bất kỳ điều khoản Rego deny[msg] --> E[FAIL PIPELINE exit code 1<br/>Chặn không cho phép Merge MR]
         D -- Tuân thủ 100% luật Rego --> F[PASS PIPELINE<br/>Cho phép chạy các Stage tiếp theo]
         F --> G[Xuất báo cáo gl-compliance-report.json & Cập nhật dòng 6 TSV]
@@ -773,7 +773,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Merge Request commit tệp .gitlab-ci.yml, Dockerfile, K8s] --> B{Stage Test: Compliance Enforcement}
+    A[Merge Request commit tệp .gitlab-ci.yml, Dockerfile, K8s] --> B{"Stage Test: Compliance Enforcement"}
     
     subgraph Rego_Policy_Evaluation [Bước 1 & 2: Viết & Thực thi Luật Rego bằng Conftest]
         B --> C1[conftest test --policy policy/ .gitlab-ci.yml Dockerfile deployment.yaml]
@@ -783,7 +783,7 @@ graph TD
     end
 
     subgraph Compliance_Quality_Gate [Bước 3 & 4: Quality Gate & Remediation]
-        C2 & C3 & C4 --> D{Compliance Quality Gate Check}
+        C2 & C3 & C4 --> D{"Compliance Quality Gate Check"}
         D -- Vi phạm bất kỳ luật deny[msg] --> E[FAIL PIPELINE exit code 1<br/>Chặn không cho phép Merge MR]
         E --> F1[Sửa lỗi Remediation: Bổ sung Job Security, USER appuser, K8s Non-root]
         D -- Tuân thủ 100% luật Rego --> F2[PASS PIPELINE xanh 100%<br/>Cho phép Merge MR & Push Production]

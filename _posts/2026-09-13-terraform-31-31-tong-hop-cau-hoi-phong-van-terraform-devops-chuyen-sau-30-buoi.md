@@ -369,9 +369,9 @@ GitHub Actions Runner gửi yêu cầu tới GitHub OIDC Provider để nhận m
 ```mermaid
 flowchart LR
     INCIDENT["Sự Cố P0: State Bị Kẹt Khóa Hoặc Hỏng"] --> CHECK["Điều Tra: Who & Timestamp"]
-    CHECK --> PROC{Tiến trình cũ còn chạy?}
-    PROC -->|Không| UNLOCK["terraform force-unlock [ID]"]
-    PROC -->|Có| WAIT["Chờ hoàn tất / Terminate an toàn"]
+    CHECK --> PROC{"Tiến trình cũ còn chạy?"}
+    PROC -->|"Không"| UNLOCK["terraform force-unlock [ID]"]
+    PROC -->|"Có"| WAIT["Chờ hoàn tất / Terminate an toàn"]
     UNLOCK --> RESTORE["Khôi phục Last Known Good State từ S3 Versioning"]
     RESTORE --> SERIAL["Tăng Serial Number +1 trong JSON"]
     SERIAL --> DRIFT["terraform plan -refresh-only"]

@@ -117,10 +117,10 @@ Mô hình Hệ thống Camera Giám sát Chuyển động và Cảm biến Rung 
 
 ```mermaid
 graph TD
-    Container[Pod Container] -->|1. Phát sinh System Call execve/openat| Kernel[Linux Kernel]
-    Kernel -->|2. eBPF Probe / Kernel Module| FalcoEngine[Falco Threat Engine]
-    FalcoEngine -->|3. Đối soát rules| Rules{falco_rules.local.yaml}
-    Rules -->|Match Rule| Alert[In Cảnh báo vào journalctl / Syslog]
+    Container[Pod Container] -->|"1. Phát sinh System Call execve/openat"| Kernel[Linux Kernel]
+    Kernel -->|"2. eBPF Probe / Kernel Module"| FalcoEngine[Falco Threat Engine]
+    FalcoEngine -->|"3. Đối soát rules"| Rules{"falco_rules.local.yaml"}
+    Rules -->|"Match Rule"| Alert[In Cảnh báo vào journalctl / Syslog]
 ```
 
 **Nguyên lý cốt lõi:** Mọi tệp luật Falco Rule chuẩn CKS bắt buộc phải chứa đủ 5 trường thuộc tính: `rule` (tên luật), `desc` (mô tả), `condition` (điều kiện lọc), `output` (định dạng thông điệp cảnh báo), và `priority` (mức ưu tiên).
@@ -520,11 +520,11 @@ Vì thư mục <code>/etc</code> chứa tệp cấu hình hệ thống; ứng d�
 
 ```mermaid
 graph TD
-    User[Hacker gõ kubectl exec] -->|Lệnh execve /bin/sh| PodApp[Pod test-app in Namespace lab49]
-    PodApp -->|System Call execve| Kernel[Linux Kernel]
-    Kernel -->|eBPF / Syscall Probe| FalcoEngine[Falco Threat Engine]
-    FalcoEngine -->|Match Local Rule| LocalRule[/etc/falco/falco_rules.local.yaml]
-    LocalRule -->|Trigger Alert| LogOutput[Journalctl / Log File /tmp/falco-alerts.txt]
+    User[Hacker gõ kubectl exec] -->|"Lệnh execve /bin/sh"| PodApp[Pod test-app in Namespace lab49]
+    PodApp -->|"System Call execve"| Kernel[Linux Kernel]
+    Kernel -->|"eBPF / Syscall Probe"| FalcoEngine[Falco Threat Engine]
+    FalcoEngine -->|"Match Local Rule"| LocalRule[/etc/falco/falco_rules.local.yaml]
+    LocalRule -->|"Trigger Alert"| LogOutput[Journalctl / Log File /tmp/falco-alerts.txt]
 ```
 
 ---

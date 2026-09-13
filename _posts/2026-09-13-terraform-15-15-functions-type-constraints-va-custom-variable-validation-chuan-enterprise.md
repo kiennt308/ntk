@@ -38,12 +38,12 @@ Khi bạn chạy lệnh `terraform plan`, HCL Engine thực hiện quy trình ki
 ```mermaid
 flowchart TD
     A["Root Input: terraform.tfvars / CLI Args"] --> B["Tầng 1: Type Constraint Check"]
-    B -->|Sai Type / Thiếu Required Attributes| ERR1["Lỗi Biến Dịch: Invalid Type Error"]
-    B -->|Đúng Type / Gán Default cho Optional| C["Tầng 2: Custom Validation Rules"]
-    C -->|Condition == false| ERR2["Lỗi Logic: Custom Error Message"]
-    C -->|Condition == true| D["Tầng 3: Dynamic Evaluation & Functions Execution"]
-    D -->|Hàm lỗi runtime| ERR3["Lỗi Runtime: Function Call Failure"]
-    D -->|Thành công| E["Tầng 4: Precondition / Postcondition Checks"]
+    B -->|"Sai Type / Thiếu Required Attributes"| ERR1["Lỗi Biến Dịch: Invalid Type Error"]
+    B -->|"Đúng Type / Gán Default cho Optional"| C["Tầng 2: Custom Validation Rules"]
+    C -->|"Condition == false"| ERR2["Lỗi Logic: Custom Error Message"]
+    C -->|"Condition == true"| D["Tầng 3: Dynamic Evaluation & Functions Execution"]
+    D -->|"Hàm lỗi runtime"| ERR3["Lỗi Runtime: Function Call Failure"]
+    D -->|"Thành công"| E["Tầng 4: Precondition / Postcondition Checks"]
     E --> F["Graph Node Ready: Tính Toán Resource Change"]
 
     style A fill:none,stroke:#333,stroke-width:2px
@@ -267,17 +267,17 @@ Trong HCL, việc truy cập một thuộc tính không tồn tại hoặc gọi
 ```mermaid
 flowchart LR
     subgraph try_mechanism ["Cơ Chế try"]
-        T1["try(expr1, expr2, fallback)"] --> T2{expr1 hợp lệ?}
-        T2 -->|Có| T3["Trả về giá trị expr1"]
-        T2 -->|Lỗi| T4{expr2 hợp lệ?}
-        T4 -->|Có| T5["Trả về giá trị expr2"]
-        T4 -->|Lỗi| T6["Trả về fallback"]
+        T1["try(expr1, expr2, fallback)"] --> T2{"expr1 hợp lệ?"}
+        T2 -->|"Có"| T3["Trả về giá trị expr1"]
+        T2 -->|"Lỗi"| T4{"expr2 hợp lệ?"}
+        T4 -->|"Có"| T5["Trả về giá trị expr2"]
+        T4 -->|"Lỗi"| T6["Trả về fallback"]
     end
 
     subgraph can_mechanism ["Cơ Chế can"]
-        C1["can(expression)"] --> C2{expression hợp lệ?}
-        C2 -->|Có| C3["Trả về true"]
-        C2 -->|Lỗi| C4["Trả về false"]
+        C1["can(expression)"] --> C2{"expression hợp lệ?"}
+        C2 -->|"Có"| C3["Trả về true"]
+        C2 -->|"Lỗi"| C4["Trả về false"]
     end
 
     style T6 fill:none,stroke:#3b82f6,stroke-width:2px
@@ -425,13 +425,13 @@ Trong bài thực hành này, chúng ta sẽ xây dựng một module khởi t�
 
 ```mermaid
 graph TD
-    A["Node Pool Input Config"] --> B{Validation 1: Node Count Check}
-    B -->|min <= desired <= max| C{Validation 2: Instance Type Allowlist}
-    B -->|Sai logic| ERR1["Lỗi Min/Desired/Max"]
-    C -->|Hợp lệ| D{Validation 3: Disk Size Limit}
-    C -->|Instance không hợp lệ| ERR2["Lỗi Unauthorized Instance"]
-    D -->|20GB <= disk <= 500GB| E["Tính Toán Labels & Taints bằng HCL Functions"]
-    D -->|Quá giới hạn| ERR3["Lỗi Disk Size Limit"]
+    A["Node Pool Input Config"] --> B{"Validation 1: Node Count Check"}
+    B -->|"min <= desired <= max"| C{"Validation 2: Instance Type Allowlist"}
+    B -->|"Sai logic"| ERR1["Lỗi Min/Desired/Max"]
+    C -->|"Hợp lệ"| D{"Validation 3: Disk Size Limit"}
+    C -->|"Instance không hợp lệ"| ERR2["Lỗi Unauthorized Instance"]
+    D -->|"20GB <= disk <= 500GB"| E["Tính Toán Labels & Taints bằng HCL Functions"]
+    D -->|"Quá giới hạn"| ERR3["Lỗi Disk Size Limit"]
     E --> F["Sinh Cấu Hình aws_eks_node_group"]
 
     style E fill:none,stroke:#3b82f6,stroke-width:2px

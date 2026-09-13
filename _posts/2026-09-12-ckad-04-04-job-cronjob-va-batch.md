@@ -249,10 +249,10 @@ spec:
 
 ```mermaid
 graph TD
-    CronTrigger[Đến giờ CronJob kích hoạt lần mới] --> PolicyCheck{concurrencyPolicy là gì?}
-    PolicyCheck -->|Allow| RunBoth[Chạy cả tác vụ cũ và tác vụ mới song song]
-    PolicyCheck -->|Forbid| SkipNew[Bỏ qua lần mới, tiếp tục chạy tác vụ cũ]
-    PolicyCheck -->|Replace| KillOld[Tiêu diệt tác vụ cũ, bật ngay tác vụ mới]
+    CronTrigger[Đến giờ CronJob kích hoạt lần mới] --> PolicyCheck{"concurrencyPolicy là gì?"}
+    PolicyCheck -->|"Allow"| RunBoth[Chạy cả tác vụ cũ và tác vụ mới song song]
+    PolicyCheck -->|"Forbid"| SkipNew[Bỏ qua lần mới, tiếp tục chạy tác vụ cũ]
+    PolicyCheck -->|"Replace"| KillOld[Tiêu diệt tác vụ cũ, bật ngay tác vụ mới]
 ```
 
 ---

@@ -51,7 +51,7 @@ flowchart TD
         end
     end
 
-    GENERATORS ==>|Bơm tham số vào biến mẫu| TEMPLATE
+    GENERATORS ==>|"Bơm tham số vào biến mẫu"| TEMPLATE
     
     subgraph GENERATED_APPS["DANH SÁCH ỨNG DỤNG ĐƯỢC TỰ ĐỘNG SINH RA"]
         APP1["Application: payment-cluster-dev"]
@@ -60,10 +60,10 @@ flowchart TD
         APP4["Application: order-cluster-prod"]
     end
 
-    TEMPLATE -->|Tự động tạo| APP1
-    TEMPLATE -->|Tự động tạo| APP2
-    TEMPLATE -->|Tự động tạo| APP3
-    TEMPLATE -->|Tự động tạo| APP4
+    TEMPLATE -->|"Tự động tạo"| APP1
+    TEMPLATE -->|"Tự động tạo"| APP2
+    TEMPLATE -->|"Tự động tạo"| APP3
+    TEMPLATE -->|"Tự động tạo"| APP4
 
 
 ```
@@ -159,9 +159,9 @@ flowchart LR
 
     APPSET["ApplicationSet (Cluster Generator)<br/>selector: matchLabels: { env: production }"]
     
-    SECRETS -->|Quét & lọc nhãn| APPSET
-    APPSET -->|Sinh App 1| PROD_US["App: infra-prod-us (Deploy tới US Cluster)"]
-    APPSET -->|Sinh App 2| PROD_EU["App: infra-prod-eu (Deploy tới EU Cluster)"]
+    SECRETS -->|"Quét & lọc nhãn"| APPSET
+    APPSET -->|"Sinh App 1"| PROD_US["App: infra-prod-us (Deploy tới US Cluster)"]
+    APPSET -->|"Sinh App 2"| PROD_EU["App: infra-prod-eu (Deploy tới EU Cluster)"]
 
 
 ```

@@ -117,12 +117,12 @@ Mô hình Tháp Chuông Báo Động và Cảm Biến Chuyển Động Hồng Ng
 
 ```mermaid
 graph TD
-    AppContainer[Application Container in Pod] -->|1. Triggers Syscall: execve /bin/bash| Kernel[Linux Kernel]
-    Kernel -->|2. Tap Syscalls| FalcoDriver[Falco Driver: Kernel Module / eBPF Probe]
-    FalcoDriver -->|3. Pass Raw Events| FalcoEngine[Falco Userspace Engine]
-    FalcoEngine -->|4. Enrich Metadata| K8sAPI[Kubernetes API Server: Pod Name, Namespace]
-    FalcoEngine -->|5. Match Rules| FalcoRules[falco_rules.local.yaml]
-    FalcoRules -->|6. Trigger Alert| Syslog[/var/log/syslog / Output Notification]
+    AppContainer[Application Container in Pod] -->|"1. Triggers Syscall: execve /bin/bash"| Kernel[Linux Kernel]
+    Kernel -->|"2. Tap Syscalls"| FalcoDriver[Falco Driver: Kernel Module / eBPF Probe]
+    FalcoDriver -->|"3. Pass Raw Events"| FalcoEngine[Falco Userspace Engine]
+    FalcoEngine -->|"4. Enrich Metadata"| K8sAPI[Kubernetes API Server: Pod Name, Namespace]
+    FalcoEngine -->|"5. Match Rules"| FalcoRules[falco_rules.local.yaml]
+    FalcoRules -->|"6. Trigger Alert"| Syslog[/var/log/syslog / Output Notification]
 ```
 
 **Nguyên lý cốt lõi:** Hiểu rõ kiến trúc Falco: bắt các lời gọi hệ thống (Linux Syscalls) qua Kernel Module hoặc eBPF Probe, bổ sung Kubernetes Metadata (`container.name`, `k8s.pod.name`), và đối soát với bộ quy tắc `falco_rules.yaml`.
@@ -523,13 +523,13 @@ Seccomp <b style="color: var(--accent-primary);">ngăn chặn trực tiếp (blo
 
 ```mermaid
 graph TD
-    Attacker[Attacker / Malicious User] -->|1. Exec Shell in Pod| PodContainer[Pod Container in lab64]
-    PodContainer -->|2. Trigger Syscall execve /bin/bash| Kernel[Linux Kernel]
-    Kernel -->|3. Capture Syscall Event| FalcoDriver[Falco eBPF / Kernel Driver]
-    FalcoDriver -->|4. Match Custom Rules| FalcoRules[/tmp/falco-config/rules.yaml]
+    Attacker[Attacker / Malicious User] -->|"1. Exec Shell in Pod"| PodContainer[Pod Container in lab64]
+    PodContainer -->|"2. Trigger Syscall execve /bin/bash"| Kernel[Linux Kernel]
+    Kernel -->|"3. Capture Syscall Event"| FalcoDriver[Falco eBPF / Kernel Driver]
+    FalcoDriver -->|"4. Match Custom Rules"| FalcoRules[/tmp/falco-config/rules.yaml]
     
-    FalcoRules -->|5. Output Alert Level: CRITICAL| Syslog[/tmp/falco-config/syslog.log]
-    Analyst[Security Analyst] -->|6. Query Log via grep| Syslog
+    FalcoRules -->|"5. Output Alert Level: CRITICAL"| Syslog[/tmp/falco-config/syslog.log]
+    Analyst[Security Analyst] -->|"6. Query Log via grep"| Syslog
 ```
 
 ---

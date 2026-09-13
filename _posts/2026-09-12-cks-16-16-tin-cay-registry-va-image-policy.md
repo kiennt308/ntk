@@ -118,14 +118,14 @@ Mô hình Cửa Hải Quan Kiểm Soát Hàng Nhập Khẩu và Giấy Phép C�
 ```mermaid
 graph TD
     subgraph Public Untrusted Registries
-        PublicReg[Public Docker Hub / Untrusted Registries] -->|Pull Image| UntrustedPod[Pod Untrusted: Risk of Backdoors & Malware!]
+        PublicReg[Public Docker Hub / Untrusted Registries] -->|"Pull Image"| UntrustedPod[Pod Untrusted: Risk of Backdoors & Malware!]
     end
 
     subgraph Allowed Registries Whitelisting
-        PrivateReg[Enterprise Registry: harbor.internal] -->|Kyverno / OPA Policy Check| Admission[Admission Controller]
-        Admission -->|Match Allowed Domain| TrustedPod[Pod Approved: Running Safely]
-        PublicReg -.->|Mismatch Allowed Domain| Admission
-        Admission -.->|Block Connection| Reject[REJECT 403 Forbidden!]
+        PrivateReg[Enterprise Registry: harbor.internal] -->|"Kyverno / OPA Policy Check"| Admission[Admission Controller]
+        Admission -->|"Match Allowed Domain"| TrustedPod[Pod Approved: Running Safely]
+        PublicReg -.->|"Mismatch Allowed Domain"| Admission
+        Admission -.->|"Block Connection"| Reject[REJECT 403 Forbidden!]
     end
 ```
 
@@ -572,16 +572,16 @@ Sử dụng mẫu pattern <code>image: "*@sha256:*"</code> trong tệp <code>Clu
 
 ```mermaid
 graph TD
-    Dev[Security Engineer] -->|1. Apply Policy| Kyverno[Kyverno / Admission Controller]
-    Kyverno -->|2. Enforce Rules| Policy[ClusterPolicy check-allowed-registries]
+    Dev[Security Engineer] -->|"1. Apply Policy"| Kyverno[Kyverno / Admission Controller]
+    Kyverno -->|"2. Enforce Rules"| Policy[ClusterPolicy check-allowed-registries]
     
-    Dev -->|3. Create Pod docker.io/nginx:latest| APIServer[kube-apiserver]
-    APIServer -->|4. Validate Image Domain| Kyverno
-    Kyverno -.->|Public Registry: REJECT| Block[REJECT 403 Forbidden!]
+    Dev -->|"3. Create Pod docker.io/nginx:latest"| APIServer[kube-apiserver]
+    APIServer -->|"4. Validate Image Domain"| Kyverno
+    Kyverno -.->|"Public Registry: REJECT"| Block[REJECT 403 Forbidden!]
     
-    Dev -->|5. Create Pod harbor.internal/app@sha256:...| APIServer
-    APIServer -->|6. Validate Image Domain| Kyverno
-    Kyverno -->|Trusted Registry & Digest: PASS| Approve[Pod Created in lab61]
+    Dev -->|"5. Create Pod harbor.internal/app@sha256:..."| APIServer
+    APIServer -->|"6. Validate Image Domain"| Kyverno
+    Kyverno -->|"Trusted Registry & Digest: PASS"| Approve[Pod Created in lab61]
 ```
 
 ---

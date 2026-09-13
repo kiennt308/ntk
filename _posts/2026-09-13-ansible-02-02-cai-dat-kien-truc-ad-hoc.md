@@ -277,10 +277,10 @@ Khi tiếp nhận một hạ tầng gồm 50 máy chủ chưa có công cụ qu�
 
 ```mermaid
 flowchart LR
-    A["Quản trị viên (Control Node)"] -->|1. Đọc ansible.cfg & Inventory| B["Ansible CLI (Lệnh Ad-hoc)"]
-    B -->|2. Đẩy Python Module qua SSH| C["Target Node 1 (Linux/Container)"]
-    B -->|3. Đẩy Python Module qua SSH| D["Target Node 2 (Linux/Container)"]
-    C -->|4. Thực thi & Kiểm tra trạng thái| C1{"Cần thay đổi?"}
+    A["Quản trị viên (Control Node)"] -->|"1. Đọc ansible.cfg & Inventory"| B["Ansible CLI (Lệnh Ad-hoc)"]
+    B -->|"2. Đẩy Python Module qua SSH"| C["Target Node 1 (Linux/Container)"]
+    B -->|"3. Đẩy Python Module qua SSH"| D["Target Node 2 (Linux/Container)"]
+    C -->|"4. Thực thi & Kiểm tra trạng thái"| C1{"Cần thay đổi?"}
     C1 -- Có --> C2["Thực hiện thay đổi -> Báo CHANGED"]
     C1 -- Không --> C3["Giữ nguyên -> Báo OK (changed=false)"]
     C2 --> E["Tổng hợp kết quả hiển thị trên Terminal"]
@@ -400,13 +400,13 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (Máy quản trị)"] --> |1. Đọc ./ansible.cfg & inventory.ini| CLI["Ansible CLI (Lệnh Ad-hoc)"]
-    CLI --> |2. SSH Key-based Auth (Port 22)| T1["Target Container 1 (target1)"]
-    CLI --> |3. SSH Key-based Auth (Port 22)| T2["Target Container 2 (target2)"]
+    SubGraph1["Control Node (Máy quản trị)"] -->|"1. Đọc ./ansible.cfg & inventory.ini"| CLI["Ansible CLI (Lệnh Ad-hoc)"]
+    CLI -->|"2. SSH Key-based Auth (Port 22)"| T1["Target Container 1 (target1)"]
+    CLI -->|"3. SSH Key-based Auth (Port 22)"| T2["Target Container 2 (target2)"]
     
-    DEV["Học viên (Tester)"] --> |A. Chạy lệnh ad-hoc| CLI
-    DEV --> |B. Kiểm tra thực tế bằng docker exec| T1
-    DEV --> |C. Kiểm tra thực tế bằng docker exec| T2
+    DEV["Học viên (Tester)"] -->|"A. Chạy lệnh ad-hoc"| CLI
+    DEV -->|"B. Kiểm tra thực tế bằng docker exec"| T1
+    DEV -->|"C. Kiểm tra thực tế bằng docker exec"| T2
 ```
 
 ---

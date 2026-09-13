@@ -522,14 +522,14 @@ Lệnh <code>kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key -
 
 ```mermaid
 graph TD
-    CapArch[Enterprise Capstone Architect] -->|1. Setup Namespace & Dir| CapEnv[Capstone Environment: capstone-prod & /tmp/capstone]
-    CapEnv -->|2. Layer 1 CKA| CKA[etcd Snapshot Backup & RBAC Isolation]
-    CapEnv -->|3. Layer 2 CKAD| CKAD[Quotas, LimitRange, Probes & Ingress TLS]
-    CapEnv -->|4. Layer 3 CKS| CKS[Kyverno Enforce, Seccomp, Audit & Falco Rules]
+    CapArch[Enterprise Capstone Architect] -->|"1. Setup Namespace & Dir"| CapEnv[Capstone Environment: capstone-prod & /tmp/capstone]
+    CapEnv -->|"2. Layer 1 CKA"| CKA[etcd Snapshot Backup & RBAC Isolation]
+    CapEnv -->|"3. Layer 2 CKAD"| CKAD[Quotas, LimitRange, Probes & Ingress TLS]
+    CapEnv -->|"4. Layer 3 CKS"| CKS[Kyverno Enforce, Seccomp, Audit & Falco Rules]
     
-    CKA & CKAD & CKS -->|5. Defense Doc| DefDoc[/tmp/capstone-defense.md]
-    DefDoc -->|6. Auto-Grading Script| GradeScript[Script Chấm Điểm Capstone]
-    GradeScript -->|Score >= 80%: PASS| MasterArchitect[Master K8s Architect Certified!]
+    CKA & CKAD & CKS -->|"5. Defense Doc"| DefDoc[/tmp/capstone-defense.md]
+    DefDoc -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Capstone]
+    GradeScript -->|"Score >= 80%: PASS"| MasterArchitect[Master K8s Architect Certified!]
 ```
 
 ---

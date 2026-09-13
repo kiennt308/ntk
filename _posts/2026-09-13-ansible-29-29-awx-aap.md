@@ -81,22 +81,22 @@ Bước tiến hóa quy mô Enterprise — Từ câu lệnh CLI cá nhân tới 
 
 ```mermaid
 graph TD
-    A["Web UI / REST API / Git Webhook Event"] --> |1. Yêu cầu thi hành| B["AWX / AAP Control Plane Manager"]
+    A["Web UI / REST API / Git Webhook Event"] -->|"1. Yêu cầu thi hành"| B["AWX / AAP Control Plane Manager"]
     
     subgraph "Nền tảng Tập trung Enterprise AWX / AAP"
-        B --> |2. Kiểm tra Phân quyền RBAC| C{"User/Team có quyền Execute?"}
+        B -->|"2. Kiểm tra Phân quyền RBAC"| C{"User/Team có quyền Execute?"}
         C -- Không --> D["TỪ CHỐI: 403 Forbidden"]
         C -- Có --> E["3. Nạp mã nguồn Project Git & Inventory"]
-        E --> |4. Tiêm Credentials mã hóa AES| F["SSH Key & Vault Pass Injection"]
-        F --> |5. Khởi chạy Container cách ly| G["Execution Environment Container (EE)"]
+        E -->|"4. Tiêm Credentials mã hóa AES"| F["SSH Key & Vault Pass Injection"]
+        F -->|"5. Khởi chạy Container cách ly"| G["Execution Environment Container (EE)"]
     end
     
-    G --> |6. Thi hành ansible-playbook site-awx.yml| T1["Target Container 1 (target1)"]
+    G -->|"6. Thi hành ansible-playbook site-awx.yml"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> B
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> B
     
-    B --> |7. Ghi nhật ký Audit tập trung| LOGS["Centralized Audit Logs & Slack Notification"]
+    B -->|"7. Ghi nhật ký Audit tập trung"| LOGS["Centralized Audit Logs & Slack Notification"]
 ```
 
 **Nguyên lý cốt lõi:** AWX và Red Hat Ansible Automation Platform (AAP) chuyển đổi quy mô quản trị Ansible từ việc chạy lệnh CLI cá nhân phân tán sang nền tảng tập trung quản lý qua Web UI, REST API và mô hình phân quyền RBAC Enterprise.
@@ -319,17 +319,17 @@ Khi triển khai nền tảng AWX / AAP cho Doanh nghiệp:
 flowchart TD
     A["Nhu cầu Quản trị Tập trung Enterprise AWX / AAP"] --> B{"4 Thành phần Core AWX"}
     
-    B -->|1. Mã nguồn Git & Inventory| C["Project (scm_update_on_launch) & Inventory"]
-    B -->|2. Bảo mật Mật khẩu| D["Credentials (Mã hóa AES-256 SSH & Vault Keys)"]
-    B -->|3. Container Đồng nhất| E["Execution Environments (EE container image)"]
-    B -->|4. Phân quyền An toàn| F["Mô hình RBAC (Admin, Execute, Read)"]
+    B -->|"1. Mã nguồn Git & Inventory"| C["Project (scm_update_on_launch) & Inventory"]
+    B -->|"2. Bảo mật Mật khẩu"| D["Credentials (Mã hóa AES-256 SSH & Vault Keys)"]
+    B -->|"3. Container Đồng nhất"| E["Execution Environments (EE container image)"]
+    B -->|"4. Phân quyền An toàn"| F["Mô hình RBAC (Admin, Execute, Read)"]
     
     C --> G["Job Template & Workflow Job Template (On Success / On Failure)"]
     D --> G
     E --> G
     F --> G
     
-    G -->|Tự động hóa| H["REST API (/api/v2/) & Event Webhook Triggers"]
+    G -->|"Tự động hóa"| H["REST API (/api/v2/) & Event Webhook Triggers"]
     
     H --> I["LƯỢT CHẠY LẦN 2 (Re-launch Job Template)"]
     I --> J{"PLAY RECAP Lần 2: changed=0?"}
@@ -472,26 +472,26 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (AWX Platform Simulation & REST API Runner)"] --> |1. Nạp khai báo: awx/job-template.yml| JT["AWX Job Template: Deploy Enterprise App"]
+    SubGraph1["Control Node (AWX Platform Simulation & REST API Runner)"] -->|"1. Nạp khai báo: awx/job-template.yml"| JT["AWX Job Template: Deploy Enterprise App"]
     
     subgraph "Nền tảng Tự động hóa AWX / AAP Enterprise"
-        JT --> |2. Nạp EE Container| EE["Execution Environment: execution-environment.yml"]
-        JT --> |3. Tiêm Credentials mã hóa| CRED["AWX Machine Credential (AES Encrypted)"]
-        JT --> |4. Kích hoạt Workflow| WF["Workflow Template (On Success / On Failure)"]
-        WF --> |5. REST API Trigger| API["REST API Endpoint: /api/v2/job_templates/42/launch/"]
+        JT -->|"2. Nạp EE Container"| EE["Execution Environment: execution-environment.yml"]
+        JT -->|"3. Tiêm Credentials mã hóa"| CRED["AWX Machine Credential (AES Encrypted)"]
+        JT -->|"4. Kích hoạt Workflow"| WF["Workflow Template (On Success / On Failure)"]
+        WF -->|"5. REST API Trigger"| API["REST API Endpoint: /api/v2/job_templates/42/launch/"]
     end
     
-    SubGraph1 --> |6. Thi hành Playbook chính: site-awx.yml| PB["Playbook: site-awx.yml"]
+    SubGraph1 -->|"6. Thi hành Playbook chính: site-awx.yml"| PB["Playbook: site-awx.yml"]
     API --> PB
     
-    PB --> |7. Gửi cấu hình triển khai tập trung| T1["Target Container 1 (target1)"]
+    PB -->|"7. Gửi cấu hình triển khai tập trung"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Giả lập REST API launch Job Template| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Giả lập REST API launch Job Template"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

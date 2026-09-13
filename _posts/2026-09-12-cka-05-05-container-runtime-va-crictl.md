@@ -118,11 +118,11 @@ Ba câu bài tập về nhà BTVN 4 của buổi 04 đã chuẩn bị sẵn dữ
 
 ```mermaid
 graph TD
-    A["Kubelet Daemon (Worker Node)"] -->|gRPC /run/containerd/containerd.sock| B["containerd (High-Level Runtime)"]
-    B -->|Tạo shim process| C["containerd-shim (Process Monitor)"]
-    C -->|Gọi runc đúc container| D["runc (Low-Level OCI Runtime)"]
-    D -->|Tạo Kernel Namespaces & Cgroups| E["Linux Kernel (Container Process)"]
-    D -->|Thoát ngay sau khi đúc xong| C
+    A["Kubelet Daemon (Worker Node)"] -->|"gRPC /run/containerd/containerd.sock"| B["containerd (High-Level Runtime)"]
+    B -->|"Tạo shim process"| C["containerd-shim (Process Monitor)"]
+    C -->|"Gọi runc đúc container"| D["runc (Low-Level OCI Runtime)"]
+    D -->|"Tạo Kernel Namespaces & Cgroups"| E["Linux Kernel (Container Process)"]
+    D -->|"Thoát ngay sau khi đúc xong"| C
 
     style A fill:none,stroke:#0288d1,stroke-width:2px
     style B fill:none,stroke:#fbc02d,stroke-width:2px
@@ -368,10 +368,10 @@ Con số chốt: **1** cgroup driver duy nhất (`systemd`) được thống nh�
 
 ```mermaid
 graph TD
-    A["Kubelet Daemon"] -->|CRI gRPC Socket| B["containerd Runtime"]
-    B -->|Tạo shim| C["containerd-shim"]
-    C -->|Gọi runc| D["Pause Container (Pod Sandbox IP)"]
-    C -->|Gọi runc| E["App Container (Share NetNS)"]
+    A["Kubelet Daemon"] -->|"CRI gRPC Socket"| B["containerd Runtime"]
+    B -->|"Tạo shim"| C["containerd-shim"]
+    C -->|"Gọi runc"| D["Pause Container (Pod Sandbox IP)"]
+    C -->|"Gọi runc"| E["App Container (Share NetNS)"]
 
     style A fill:none,stroke:#333,stroke-width:2px
     style B fill:none,stroke:#333,stroke-width:2px
@@ -508,8 +508,8 @@ graph TD
         APP["Nginx App Container"]
     end
 
-    API <-->|HTTP RESTful| KLET
-    KLET <-->|gRPC CRI| SOCKET
+    API <-->|"HTTP RESTful"| KLET
+    KLET <-->|"gRPC CRI"| SOCKET
     SOCKET <--> CTRD
     CTRD --> SHIM
     SHIM --> PAUSE

@@ -118,14 +118,14 @@ Mô hình Thư Thường Trống Không và Phong Bì Bảo Mật Có Hai Con D�
 ```mermaid
 graph TD
     subgraph Plaintext Network Exposure
-        PodA[Client Pod A] -->|1. Plaintext HTTP Request| PodB[Server Pod B]
-        Attacker[Attacker Container on Same Node] -.->|2. Packet Sniffing tcpdump| PlaintextLogs[Exposed Tokens & Credit Cards!]
+        PodA[Client Pod A] -->|"1. Plaintext HTTP Request"| PodB[Server Pod B]
+        Attacker[Attacker Container on Same Node] -.->|"2. Packet Sniffing tcpdump"| PlaintextLogs[Exposed Tokens & Credit Cards!]
     end
 
     subgraph Mutual TLS Protected Network
-        PodC[Client Pod C] -->|1. Client Cert + TLS 1.3 Encrypted| PodD[Server Pod D]
-        PodD -->|2. Verify Client Cert X.509| TLSHandshake[Handshake SUCCESS]
-        Attacker2[Attacker Container] -.->|3. Packet Sniffing| EncryptedJunk[Encrypted TLS Data Only!]
+        PodC[Client Pod C] -->|"1. Client Cert + TLS 1.3 Encrypted"| PodD[Server Pod D]
+        PodD -->|"2. Verify Client Cert X.509"| TLSHandshake[Handshake SUCCESS]
+        Attacker2[Attacker Container] -.->|"3. Packet Sniffing"| EncryptedJunk[Encrypted TLS Data Only!]
     end
 ```
 
@@ -531,11 +531,11 @@ Vì mTLS chỉ mã hóa và xác thực căn cước đường truyền, còn <c
 
 ```mermaid
 graph TD
-    ClientPod[Client Pod http-client in lab58] -->|1. Client Cert X.509 + TLS 1.3| EnvoyClient[Client Sidecar Proxy]
-    EnvoyClient -->|2. mTLS Encrypted Tunnel| EnvoyServer[Server Sidecar Proxy]
-    EnvoyServer -->|3. Verify & Decrypt| ServerPod[Server Pod http-server in lab58]
+    ClientPod[Client Pod http-client in lab58] -->|"1. Client Cert X.509 + TLS 1.3"| EnvoyClient[Client Sidecar Proxy]
+    EnvoyClient -->|"2. mTLS Encrypted Tunnel"| EnvoyServer[Server Sidecar Proxy]
+    EnvoyServer -->|"3. Verify & Decrypt"| ServerPod[Server Pod http-server in lab58]
     
-    PeerAuth[PeerAuthentication Mode STRICT] -.->|Enforce mTLS| EnvoyServer
+    PeerAuth[PeerAuthentication Mode STRICT] -.->|"Enforce mTLS"| EnvoyServer
 ```
 
 ---

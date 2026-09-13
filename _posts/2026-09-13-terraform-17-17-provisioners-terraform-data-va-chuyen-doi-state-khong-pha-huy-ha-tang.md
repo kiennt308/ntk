@@ -47,9 +47,9 @@ flowchart TD
     subgraph Provisioner_Model ["Mô Hình Imperative: Provisioners Phá Vỡ Luồng"]
         P1["Tạo Xong Resource Thô"] --> P2["Mở Kết Nối SSH / WinRM / Local Subprocess"]
         P2 --> P3["Chạy Shell Script Mệnh Lệnh"]
-        P3 -->|Nếu Mất Mạng Hoặc Script Lỗi| P4["Terraform Đánh Dấu Resource Là TAINTED"]
+        P3 -->|"Nếu Mất Mạng Hoặc Script Lỗi"| P4["Terraform Đánh Dấu Resource Là TAINTED"]
         P4 --> P5["Lần Chạy Sau: BẮT BUỘC HỦY & TẠO LẠI TOÀN BỘ MÁY CHỦ!"]
-        P3 -->|Thành công| P6["Không Lưu Lại Lịch Sử Script Vào State"]
+        P3 -->|"Thành công"| P6["Không Lưu Lại Lịch Sử Script Vào State"]
     end
 
     style D4 fill:none,stroke:#28a745,stroke-width:2px
@@ -79,9 +79,9 @@ graph LR
     P --> R["remote-exec"]
     P --> F["file"]
 
-    L -->|Chạy subprocess| L1["Local Machine / CI Runner OS"]
-    R -->|Kết nối SSH / WinRM| R1["Remote Target Virtual Machine"]
-    F -->|Copy file/folder| F1["Remote Target Virtual Machine"]
+    L -->|"Chạy subprocess"| L1["Local Machine / CI Runner OS"]
+    R -->|"Kết nối SSH / WinRM"| R1["Remote Target Virtual Machine"]
+    F -->|"Copy file/folder"| F1["Remote Target Virtual Machine"]
 
     style R1 fill:none,stroke:#3b82f6,stroke-width:2px
     style R fill:none,stroke:#0ea5e9,stroke-width:2px

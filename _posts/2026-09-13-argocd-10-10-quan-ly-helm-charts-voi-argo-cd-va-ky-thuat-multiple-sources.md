@@ -46,7 +46,7 @@ flowchart TD
         HELM_ENGINE --> K8S_1["Kubernetes API Server"]
         HELM_ENGINE --> HELM_SEC["Tạo Kubernetes Secret: sh.helm.release.v1.my-redis (Lưu Release State)"]
         
-        DRIFT_1["Ai đó sửa kubectl edit Pod"] -.->|Helm không phát hiện được| K8S_1
+        DRIFT_1["Ai đó sửa kubectl edit Pod"] -.->|"Helm không phát hiện được"| K8S_1
     end
 
     subgraph ARGO_HELM["2. MÔ HÌNH GITOPS: ARGO CD (helm template Engine)"]
@@ -56,10 +56,10 @@ flowchart TD
         K8S_2["Kubernetes API Server (Live State)"]
         
         GIT_CHART --> ARGO_REPO
-        ARGO_REPO -->|Trả về Raw YAML| ARGO_CTRL
-        ARGO_CTRL -->|Reconcile Loop & Self-Healing| K8S_2
+        ARGO_REPO -->|"Trả về Raw YAML"| ARGO_CTRL
+        ARGO_CTRL -->|"Reconcile Loop & Self-Healing"| K8S_2
         
-        DRIFT_2["Ai đó sửa kubectl edit Pod"] ==>|Bị phát hiện và dập tắt ngay| ARGO_CTRL
+        DRIFT_2["Ai đó sửa kubectl edit Pod"] ==>|"Bị phát hiện và dập tắt ngay"| ARGO_CTRL
     end
 
 
@@ -88,9 +88,9 @@ flowchart LR
     REPO_SRV["argocd-repo-server<br/>(helm registry login & pull)"]
     K8S["Kubernetes Cluster"]
 
-    REG -->|1. Xác thực bằng OCI Secret Token| REPO_SRV
-    REPO_SRV -->|2. Render raw manifest| REPO_SRV
-    REPO_SRV -->|3. Apply| K8S
+    REG -->|"1. Xác thực bằng OCI Secret Token"| REPO_SRV
+    REPO_SRV -->|"2. Render raw manifest"| REPO_SRV
+    REPO_SRV -->|"3. Apply"| K8S
 
 
 ```

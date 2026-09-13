@@ -81,13 +81,13 @@ Thành lũy cứng hóa an toàn mạng cấp Enterprise (I-10):
 
 ```mermaid
 graph TD
-    A["Mã nguồn Playbook Tường lửa (site-firewall.yml)"] --> |1. ansible.posix.firewalld| B["Bảo vệ Cổng SSH 22 (Lockout Protection First)"]
+    A["Mã nguồn Playbook Tường lửa (site-firewall.yml)"] -->|"1. ansible.posix.firewalld"| B["Bảo vệ Cổng SSH 22 (Lockout Protection First)"]
     
     subgraph "Tự động hóa Cứng hóa Tường lửa Network Hardening"
-        B --> |2. Mở Dịch vụ HTTP/HTTPS| C["service: http, https (zone: public)"]
-        B --> |3. Mở Cổng TCP Tùy chỉnh| D["port: 8080/tcp (zone: public)"]
-        B --> |4. Áp dụng Thuộc tính Kép| E["permanent: yes (lưu vĩnh viễn) & immediate: yes (áp dụng ngay)"]
-        B --> |5. Cấu hình Rich Rule nâng cao| F["rich_rule: accept source address 192.168.1.0/24 port 5432"]
+        B -->|"2. Mở Dịch vụ HTTP/HTTPS"| C["service: http, https (zone: public)"]
+        B -->|"3. Mở Cổng TCP Tùy chỉnh"| D["port: 8080/tcp (zone: public)"]
+        B -->|"4. Áp dụng Thuộc tính Kép"| E["permanent: yes (lưu vĩnh viễn) & immediate: yes (áp dụng ngay)"]
+        B -->|"5. Cấu hình Rich Rule nâng cao"| F["rich_rule: accept source address 192.168.1.0/24 port 5432"]
     end
     
     E --> G["6. firewall-cmd --list-all (Khẳng định trạng thái mạng)"]
@@ -334,12 +334,12 @@ Khi xây dựng chiến lược an toàn mạng (Network Hardening) cho Doanh ng
 flowchart TD
     A["Nhu cầu Cứng hóa Tường lửa Network Hardening"] --> B{"Tự động hóa bằng Ansible Collection"}
     
-    B -->|1. BẮT BUỘC ĐẦU TIÊN| C["ansible.posix.firewalld: service: ssh (Lockout Protection First)"]
+    B -->|"1. BẮT BUỘC ĐẦU TIÊN"| C["ansible.posix.firewalld: service: ssh (Lockout Protection First)"]
     
-    C -->|2. Mở Dịch vụ & Cổng| D["service: http, https & port: 8080/tcp (zone: public)"]
-    D -->|3. Áp dụng Thuộc tính Kép| E["permanent: true & immediate: true"]
+    C -->|"2. Mở Dịch vụ & Cổng"| D["service: http, https & port: 8080/tcp (zone: public)"]
+    D -->|"3. Áp dụng Thuộc tính Kép"| E["permanent: true & immediate: true"]
     
-    E -->|4. Lọc IP Nguồn Nâng cao| F["rich_rule: accept source address 192.168.1.0/24 port 5432"]
+    E -->|"4. Lọc IP Nguồn Nâng cao"| F["rich_rule: accept source address 192.168.1.0/24 port 5432"]
     
     F --> G["5. Đối soát trực quan: firewall-cmd --list-all"]
     
@@ -496,26 +496,26 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (Ansible Posix Collection & Playbook)"] --> |1. BẮT BUỘC ĐẦU TIÊN| SSH["Task 1: Open SSH 22 (Lockout Protection)"]
+    SubGraph1["Control Node (Ansible Posix Collection & Playbook)"] -->|"1. BẮT BUỘC ĐẦU TIÊN"| SSH["Task 1: Open SSH 22 (Lockout Protection)"]
     
     subgraph "Hệ thống Quản lý Tường lửa Firewalld & Iptables Hardening"
-        SSH --> |2. Open Services| HTTP["service: http, https (permanent: true, immediate: true)"]
-        HTTP --> |3. Open Ports| PORT8080["port: 8080/tcp (zone: public)"]
-        PORT8080 --> |4. Apply Rich Rules| RICH["rich_rule: accept 192.168.1.0/24 port 5432"]
-        RICH --> |5. Kernel Iptables| IPT["ansible.builtin.iptables (chain: INPUT, port 80)"]
+        SSH -->|"2. Open Services"| HTTP["service: http, https (permanent: true, immediate: true)"]
+        HTTP -->|"3. Open Ports"| PORT8080["port: 8080/tcp (zone: public)"]
+        PORT8080 -->|"4. Apply Rich Rules"| RICH["rich_rule: accept 192.168.1.0/24 port 5432"]
+        RICH -->|"5. Kernel Iptables"| IPT["ansible.builtin.iptables (chain: INPUT, port 80)"]
     end
     
-    SubGraph1 --> |6. Thi hành Playbook chính: site-firewall.yml| PB["Playbook: site-firewall.yml"]
+    SubGraph1 -->|"6. Thi hành Playbook chính: site-firewall.yml"| PB["Playbook: site-firewall.yml"]
     IPT --> PB
     
-    PB --> |7. Gửi quy tắc tường lửa| T1["Target Container 1 (target1)"]
+    PB -->|"7. Gửi quy tắc tường lửa"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=6, changed=4" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=6, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Tra cứu firewall-cmd --list-all| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Tra cứu firewall-cmd --list-all"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

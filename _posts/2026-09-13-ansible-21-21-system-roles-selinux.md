@@ -81,18 +81,18 @@ Làm chủ an toàn hệ thống và chuẩn hóa cấu hình hệ điều hành
 
 ```mermaid
 graph TD
-    A["Ansible Control Node (ansible-playbook)"] --> |1. Kết nối SSH qua User thường: ansible| B["Managed Node (target1)"]
+    A["Ansible Control Node (ansible-playbook)"] -->|"1. Kết nối SSH qua User thường: ansible"| B["Managed Node (target1)"]
     
     subgraph "Cơ chế Nâng quyền Privilege Escalation (become)"
-        B --> |2. Kích hoạt become: true| C["Lệnh Sudo: sudo -u root /bin/sh"]
-        C --> |3. Đọc tệp cấu hình /etc/sudoers| D["Quyền NOPASSWD: ALL cho user ansible"]
-        D --> |4. Thực thi Task với quyền root| E["Root Execution (sở hữu UID 0)"]
+        B -->|"2. Kích hoạt become: true"| C["Lệnh Sudo: sudo -u root /bin/sh"]
+        C -->|"3. Đọc tệp cấu hình /etc/sudoers"| D["Quyền NOPASSWD: ALL cho user ansible"]
+        D -->|"4. Thực thi Task với quyền root"| E["Root Execution (sở hữu UID 0)"]
     end
     
     subgraph "Tự động hóa Bảo mật với RHEL System Roles"
-        E --> |5. Module ansible.posix.selinux| F["Quản lý SELinux State: Enforcing"]
-        E --> |6. Module ansible.posix.sefcontext| G["Gán nhãn File Context: httpd_sys_content_t"]
-        E --> |7. Module ansible.posix.seport| H["Gán nhãn Port Type: http_port_t (8080)"]
+        E -->|"5. Module ansible.posix.selinux"| F["Quản lý SELinux State: Enforcing"]
+        E -->|"6. Module ansible.posix.sefcontext"| G["Gán nhãn File Context: httpd_sys_content_t"]
+        E -->|"7. Module ansible.posix.seport"| H["Gán nhãn Port Type: http_port_t (8080)"]
     end
     
     F --> I["Máy đích ở đúng trạng thái bảo mật & changed=0 ở Lần 2"]
@@ -481,18 +481,18 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Nạp cấu hình: become = True trong ansible.cfg| CFG["ansible.cfg"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp cấu hình: become = True trong ansible.cfg"| CFG["ansible.cfg"]
     
     subgraph "Tự động hóa Nâng quyền và Bảo mật RHEL"
-        CFG --> |2. Task 1: Sudoers configuration| SUDO["/etc/sudoers.d/ansible (NOPASSWD: ALL)"]
-        CFG --> |3. Task 2: User & Group Management| USER["sys_admin user & sysops group"]
-        CFG --> |4. Task 3: SELinux State| SEL["ansible.posix.selinux (enforcing)"]
-        CFG --> |5. Task 4: SELinux File Context| FCTX["ansible.posix.sefcontext (/webdata)"]
-        CFG --> |6. Task 5: SELinux Port Type| PORT["ansible.posix.seport (8080 -> http_port_t)"]
-        CFG --> |7. Task 6: RHEL System Role| ROLE["redhat.rhel_system_roles.selinux"]
+        CFG -->|"2. Task 1: Sudoers configuration"| SUDO["/etc/sudoers.d/ansible (NOPASSWD: ALL)"]
+        CFG -->|"3. Task 2: User & Group Management"| USER["sys_admin user & sysops group"]
+        CFG -->|"4. Task 3: SELinux State"| SEL["ansible.posix.selinux (enforcing)"]
+        CFG -->|"5. Task 4: SELinux File Context"| FCTX["ansible.posix.sefcontext (/webdata)"]
+        CFG -->|"6. Task 5: SELinux Port Type"| PORT["ansible.posix.seport (8080 -> http_port_t)"]
+        CFG -->|"7. Task 6: RHEL System Role"| ROLE["redhat.rhel_system_roles.selinux"]
     end
     
-    SubGraph1 --> |8. Thi hành Playbook: site-selinux.yml| PB["Playbook: site-selinux.yml"]
+    SubGraph1 -->|"8. Thi hành Playbook: site-selinux.yml"| PB["Playbook: site-selinux.yml"]
     SUDO --> PB
     USER --> PB
     SEL --> PB
@@ -500,14 +500,14 @@ graph TD
     PORT --> PB
     ROLE --> PB
     
-    PB --> |9. Gửi cấu hình bảo mật RHEL| T1["Target Container 1 (target1)"]
+    PB -->|"9. Gửi cấu hình bảo mật RHEL"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=7, changed=4" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=7, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook site-selinux.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-selinux.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

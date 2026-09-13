@@ -445,21 +445,21 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-galaxy CLI)"] --> |1. Nạp tệp phụ thuộc: requirements.yml| GLX["ansible-galaxy install -r requirements.yml"]
+    SubGraph1["Control Node (ansible-galaxy CLI)"] -->|"1. Nạp tệp phụ thuộc: requirements.yml"| GLX["ansible-galaxy install -r requirements.yml"]
     
-    GLX --> |2. Cài đặt Role nén / Local tarball| RDIR["Thư mục cô lập: ./roles/galaxy_nginx"]
+    GLX -->|"2. Cài đặt Role nén / Local tarball"| RDIR["Thư mục cô lập: ./roles/galaxy_nginx"]
     
-    SubGraph1 --> |3. Thi hành Playbook: site-galaxy.yml| PB["Playbook: site-galaxy.yml"]
-    PB --> |4. Gọi Role: galaxy_nginx| RDIR
+    SubGraph1 -->|"3. Thi hành Playbook: site-galaxy.yml"| PB["Playbook: site-galaxy.yml"]
+    PB -->|"4. Gọi Role: galaxy_nginx"| RDIR
     
-    RDIR --> |5. Gửi cấu hình đã render| T1["Target Container 1 (target1)"]
+    RDIR -->|"5. Gửi cấu hình đã render"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook site-galaxy.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-galaxy.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

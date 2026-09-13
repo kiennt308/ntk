@@ -134,15 +134,15 @@ spec:
 ```mermaid
 flowchart TD
     EVENT["Sự kiện Commit / Webhook / Timer"] --> QUEUE["Rate-Limiting WorkQueue"]
-    QUEUE -->|Bucket Token Rate Limiter| PROCESSOR["Status Processors (Workers: 50)"]
-    PROCESSOR -->|Tính toán Three-Way Diff| K8S_API["Kubernetes API Server"]
+    QUEUE -->|"Bucket Token Rate Limiter"| PROCESSOR["Status Processors (Workers: 50)"]
+    PROCESSOR -->|"Tính toán Three-Way Diff"| K8S_API["Kubernetes API Server"]
     
     subgraph RETRY_LOGIC["Exponential Backoff with Jitter"]
         FAIL["Sync Thất Bại"] --> BACKOFF["Tính toán thời gian chờ:<br/>T = duration * (factor ^ attempt) + Jitter"]
         BACKOFF --> QUEUE
     end
     
-    PROCESSOR -.->|Thất bại| FAIL
+    PROCESSOR -.->|"Thất bại"| FAIL
 
 
 ```
@@ -195,12 +195,12 @@ Một số công cụ như **Istio Service Mesh**, **Linkerd**, hoặc **HashiCo
 ```mermaid
 flowchart TD
     ARGO["1. Argo CD apply Deployment (Không có Sidecar trong Git)"] --> K8S["2. K8s API Server tiếp nhận"]
-    WEBHOOK["3. Istio Mutating Webhook"] -->|Tự động chèn istio-proxy container| K8S
+    WEBHOOK["3. Istio Mutating Webhook"] -->|"Tự động chèn istio-proxy container"| K8S
     K8S --> PODS["4. Pod chạy với 2 Containers (App + Istio)"]
     
-    PODS -.->|5. Live State có 2 containers, Git chỉ có 1 container| DIFF["Phát hiện SAI LỆCH (Drift)!"]
-    DIFF ==>|6. Argo CD Self-Heal cố xóa Istio Container| ARGO
-    ARGO -->|7. Lặp lại vô tận| WEBHOOK
+    PODS -.->|"5. Live State có 2 containers, Git chỉ có 1 container"| DIFF["Phát hiện SAI LỆCH (Drift)!"]
+    DIFF ==>|"6. Argo CD Self-Heal cố xóa Istio Container"| ARGO
+    ARGO -->|"7. Lặp lại vô tận"| WEBHOOK
 
 
 ```

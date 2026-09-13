@@ -48,9 +48,9 @@ flowchart TD
         WAVE_1["Wave 1: Dịch Vụ Ứng Dụng<br/>(Deployments, Pods, Services)"]
         WAVE_2["Wave 2: Cửa Ngõ Mạng<br/>(Ingress, VirtualServices, NetworkPolicies)"]
         
-        WAVE_NEG -->|Wave Barrier: Chờ Healthy| WAVE_0
-        WAVE_0 -->|Wave Barrier: Chờ Healthy| WAVE_1
-        WAVE_1 -->|Wave Barrier: Chờ Healthy| WAVE_2
+        WAVE_NEG -->|"Wave Barrier: Chờ Healthy"| WAVE_0
+        WAVE_0 -->|"Wave Barrier: Chờ Healthy"| WAVE_1
+        WAVE_1 -->|"Wave Barrier: Chờ Healthy"| WAVE_2
     end
 
     subgraph PHASE3["GIAI ĐOẠN 3: POST-SYNC HOẶC SYNC-FAIL"]
@@ -58,10 +58,10 @@ flowchart TD
         FAIL_HOOK["SyncFail Hooks<br/>(Gửi cảnh báo PagerDuty khi có lỗi xảy ra)"]
     end
 
-    PHASE1 -->|Hook Succeeded| PHASE2
-    PHASE2 -->|Toàn bộ Waves Healthy| POST_HOOK
-    PHASE2 -.->|Bất kỳ Wave nào lỗi| FAIL_HOOK
-    PHASE1 -.->|PreSync Lỗi| FAIL_HOOK
+    PHASE1 -->|"Hook Succeeded"| PHASE2
+    PHASE2 -->|"Toàn bộ Waves Healthy"| POST_HOOK
+    PHASE2 -.->|"Bất kỳ Wave nào lỗi"| FAIL_HOOK
+    PHASE1 -.->|"PreSync Lỗi"| FAIL_HOOK
 
 
 ```

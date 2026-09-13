@@ -227,9 +227,9 @@ deny[msg] {
 graph LR
     A["tfplan.json"] --> B["Conftest CLI Engine"]
     C["Thư mục chính sách: policy/*.rego"] --> B
-    B -->|Đánh giá Rule deny[...] | D{Có thông báo vi phạm?}
-    D -->|Có| E["Exit Code 1: In danh sách vi phạm & Dừng Pipeline"]
-    D -->|Không| F["Exit Code 0: In 'All policies passed successfully'"]
+    B -->|"Đánh giá Rule deny[...]"| D{"Có thông báo vi phạm?"}
+    D -->|"Có"| E["Exit Code 1: In danh sách vi phạm & Dừng Pipeline"]
+    D -->|"Không"| F["Exit Code 0: In 'All policies passed successfully'"]
 
     style B fill:none,stroke:#0288d1,stroke-width:2px
     style E fill:none,stroke:#ff0000,stroke-width:2px

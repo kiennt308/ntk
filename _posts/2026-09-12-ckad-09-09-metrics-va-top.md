@@ -117,11 +117,11 @@ Mô hình Đồng hồ Công-tơ-mét Ô tô so với Hệ thống Hộp đen H�
 
 ```mermaid
 graph TD
-    Kubelet1[cAdvisor / Kubelet Node 1] -->|Pull metrics định kỳ 15s| MS[Metrics Server Addon]
-    Kubelet2[cAdvisor / Kubelet Node 2] -->|Pull metrics định kỳ 15s| MS
-    MS -->|Register API| APIServer[Kubernetes API Server: metrics.k8s.io]
-    APIServer -->|Query| CLI[kubectl top node / pod]
-    APIServer -->|Trigger| HPA[Horizontal Pod Autoscaler]
+    Kubelet1[cAdvisor / Kubelet Node 1] -->|"Pull metrics định kỳ 15s"| MS[Metrics Server Addon]
+    Kubelet2[cAdvisor / Kubelet Node 2] -->|"Pull metrics định kỳ 15s"| MS
+    MS -->|"Register API"| APIServer[Kubernetes API Server: metrics.k8s.io]
+    APIServer -->|"Query"| CLI[kubectl top node / pod]
+    APIServer -->|"Trigger"| HPA[Horizontal Pod Autoscaler]
 ```
 
 **Nguyên lý cốt lõi:** Metrics Server KHÔNG lưu trữ dữ liệu lịch sử vào đĩa đĩa; tất cả chỉ số thu thập được chỉ được giữ tạm thời trong bộ nhớ RAM của Metrics Server và bị ghi đè sau mỗi 15–60 giây.
@@ -524,12 +524,12 @@ graph TD
     end
     
     subgraph Cluster Monitoring Addon
-        MS[Metrics Server in kube-system] -->|Scrap cAdvisor| PodCPU
-        MS -->|Scrap cAdvisor| PodMEM
-        MS -->|Scrap cAdvisor| PodMulti
+        MS[Metrics Server in kube-system] -->|"Scrap cAdvisor"| PodCPU
+        MS -->|"Scrap cAdvisor"| PodMEM
+        MS -->|"Scrap cAdvisor"| PodMulti
     end
     
-    MS -->|metrics.k8s.io| CLI[kubectl top node & kubectl top pod]
+    MS -->|"metrics.k8s.io"| CLI[kubectl top node & kubectl top pod]
 ```
 
 ---

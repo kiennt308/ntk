@@ -159,10 +159,10 @@ Con số chốt: **137** là exit code đặc trưng của sự cố OOMKilled (
 ```mermaid
 graph TD
     A["Kubelet khởi tạo Pod"] --> B["Chạy initContainer 1 (Ví dụ: Chờ DB ready)"]
-    B -->|Thành công Exit 0| C["Chạy initContainer 2 (Ví dụ: Tải file cấu hình)"]
-    C -->|Thành công Exit 0| D["Tất cả initContainers hoàn thành 100%"]
+    B -->|"Thành công Exit 0"| C["Chạy initContainer 2 (Ví dụ: Tải file cấu hình)"]
+    C -->|"Thành công Exit 0"| D["Tất cả initContainers hoàn thành 100%"]
     D --> E["Khởi chạy đồng thời các main containers"]
-    B -->|Thất bại Exit 1| F["Restart initContainer 1 theo restartPolicy (Pod Pending)"]
+    B -->|"Thất bại Exit 1"| F["Restart initContainer 1 theo restartPolicy (Pod Pending)"]
 
     style A fill:none,stroke:#f57c00,stroke-width:2px
     style D fill:none,stroke:#0288d1,stroke-width:2px

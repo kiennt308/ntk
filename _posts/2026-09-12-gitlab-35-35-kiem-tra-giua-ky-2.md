@@ -423,9 +423,9 @@ flowchart TD
     E --> F[Layer 5: Supply Chain Security\nSyft SBOM + Cosign Keyless Sign]
     F --> G[Layer 6: Policy & Quality Gate\nOPA Rego Audit + Gate Parser]
     
-    G -->|CRITICAL > 0 / Expiration Passed| H[FAIL-FAST: Block MR & Auto-Create JIRA Ticket]
-    G -->|Emergency Bypass = true| I[WARNING: Allow Deployment & Send SIEM Alert]
-    G -->|All Checks PASSED| J[SUCCESS: Approve Merge & Deploy to Prod K8s]
+    G -->|"CRITICAL > 0 / Expiration Passed"| H[FAIL-FAST: Block MR & Auto-Create JIRA Ticket]
+    G -->|"Emergency Bypass = true"| I[WARNING: Allow Deployment & Send SIEM Alert]
+    G -->|"All Checks PASSED"| J[SUCCESS: Approve Merge & Deploy to Prod K8s]
 ```
 
 ### 9.2. Năm điều phải nhớ thuộc lòng
@@ -561,9 +561,9 @@ graph TD
         G --> K[Artifact: security-audit.log]
     end
 
-    G -->|CRITICAL > 0| L[HARD-FAIL: Block Merge Request & Fail Pipeline]
-    G -->|EMERGENCY_BYPASS = true| M[WARNING: Allow Deployment & Audit SIEM Alert]
-    G -->|ALL PASS| N[SUCCESS: Deploy Container to Kubernetes Prod]
+    G -->|"CRITICAL > 0"| L[HARD-FAIL: Block Merge Request & Fail Pipeline]
+    G -->|"EMERGENCY_BYPASS = true"| M[WARNING: Allow Deployment & Audit SIEM Alert]
+    G -->|"ALL PASS"| N[SUCCESS: Deploy Container to Kubernetes Prod]
 ```
 
 ---

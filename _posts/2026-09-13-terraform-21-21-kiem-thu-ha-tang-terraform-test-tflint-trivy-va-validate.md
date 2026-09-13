@@ -81,11 +81,11 @@ Khung kiểm thử `terraform test` hoạt động dựa trên các tệp kịch
 flowchart LR
     A["Chạy lệnh terraform test"] --> B["Tìm các file *.tftest.hcl trong tests/"]
     B --> C["Khởi tạo Run Block 1: Unit Test với command = plan"]
-    C -->|Kiểm tra assertions| D{Assert == true?}
-    D -->|Fail| ERR1["Báo Lỗi Test Block 1 & Dừng/Tiếp tục"]
-    D -->|Pass| E["Khởi tạo Run Block 2: Integration Test với command = apply"]
-    E -->|Tạo tài nguyên thực trên Sandbox| F{Assert == true?}
-    F -->|Pass| G["Tự động Destroy tài nguyên Sandbox (Teardown)"]
+    C -->|"Kiểm tra assertions"| D{"Assert == true?"}
+    D -->|"Fail"| ERR1["Báo Lỗi Test Block 1 & Dừng/Tiếp tục"]
+    D -->|"Pass"| E["Khởi tạo Run Block 2: Integration Test với command = apply"]
+    E -->|"Tạo tài nguyên thực trên Sandbox"| F{"Assert == true?"}
+    F -->|"Pass"| G["Tự động Destroy tài nguyên Sandbox (Teardown)"]
     G --> H["In Báo Cáo Tổng Thể: ALL TESTS PASSED"]
 
     style ERR1 fill:none,stroke:#ff0000,stroke-width:2px
@@ -158,9 +158,9 @@ Một trong những tính năng đột phá nhất của **Terraform 1.7+** là 
 flowchart TD
     subgraph Mock_Test_Engine ["Terraform Test Engine với Mocking"]
         TC["Test Case: verify_ec2_tags"] --> MP["Mock Provider: aws"]
-        MP -->|Trả về Data Giả Lập| TF["Terraform Evaluation"]
-        TF -->|Tính toán Tags & Security Group| ASS["Khối Assert: Kiểm tra Tags"]
-        ASS -->|Thành công| OUT["Pass: 0.12 giây - Không Tốn Chi Phí"]
+        MP -->|"Trả về Data Giả Lập"| TF["Terraform Evaluation"]
+        TF -->|"Tính toán Tags & Security Group"| ASS["Khối Assert: Kiểm tra Tags"]
+        ASS -->|"Thành công"| OUT["Pass: 0.12 giây - Không Tốn Chi Phí"]
     end
 
     style Mock_Test_Engine fill:none,stroke:#2e7d32,stroke-width:2px
@@ -267,10 +267,10 @@ rule "terraform_deprecated_interpolation" {
 ```mermaid
 flowchart TD
     TF_CODE["Mã Nguồn Terraform: S3, SG, RDS, IAM"] --> TRIVY["Trivy IaC Scanner Engine"]
-    TRIVY -->|Quét Cơ Sở Dữ Liệu Lỗ Hổng DefSec| SCAN{Đánh Giá Mức Độ Rủi Ro}
-    SCAN -->|HIGH / CRITICAL: S3 Public / SG 0.0.0.0/0 Port 22| FAIL["Chặn Pipeline Ngay Lập Tức: Exit Code 1"]
-    SCAN -->|LOW / MEDIUM| WARN["Cảnh Báo & Ghi Log Audit"]
-    SCAN -->|Clean: 0 Lỗ Hổng| PASS["Cho Phép Tiếp Tục Bước Plan"]
+    TRIVY -->|"Quét Cơ Sở Dữ Liệu Lỗ Hổng DefSec"| SCAN{"Đánh Giá Mức Độ Rủi Ro"}
+    SCAN -->|"HIGH / CRITICAL: S3 Public / SG 0.0.0.0/0 Port 22"| FAIL["Chặn Pipeline Ngay Lập Tức: Exit Code 1"]
+    SCAN -->|"LOW / MEDIUM"| WARN["Cảnh Báo & Ghi Log Audit"]
+    SCAN -->|"Clean: 0 Lỗ Hổng"| PASS["Cho Phép Tiếp Tục Bước Plan"]
 
     style FAIL fill:none,stroke:#ff0000,stroke-width:2px
     style PASS fill:none,stroke:#28a745,stroke-width:2px

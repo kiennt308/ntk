@@ -64,16 +64,16 @@ flowchart TD
         NS_PROD["Namespace: ecommerce-prod"]
     end
 
-    ROOT_FILE ==>|Khởi tạo 1 lần duy nhất| ROOT_APP
-    ROOT_APP -->|Tự động quét & sinh ra| CHILD_1
-    ROOT_APP -->|Tự động quét & sinh ra| CHILD_2
-    ROOT_APP -->|Tự động quét & sinh ra| CHILD_3
-    ROOT_APP -->|Tự động quét & sinh ra| CHILD_4
+    ROOT_FILE ==>|"Khởi tạo 1 lần duy nhất"| ROOT_APP
+    ROOT_APP -->|"Tự động quét & sinh ra"| CHILD_1
+    ROOT_APP -->|"Tự động quét & sinh ra"| CHILD_2
+    ROOT_APP -->|"Tự động quét & sinh ra"| CHILD_3
+    ROOT_APP -->|"Tự động quét & sinh ra"| CHILD_4
 
-    CHILD_1 -->|Deploy| NS_INFRA
-    CHILD_2 -->|Deploy| NS_MON
-    CHILD_3 -->|Deploy| NS_PROD
-    CHILD_4 -->|Deploy| NS_PROD
+    CHILD_1 -->|"Deploy"| NS_INFRA
+    CHILD_2 -->|"Deploy"| NS_MON
+    CHILD_3 -->|"Deploy"| NS_PROD
+    CHILD_4 -->|"Deploy"| NS_PROD
 
 
 ```
@@ -131,9 +131,9 @@ flowchart LR
         D3["apps/03-business-services/"]
     end
 
-    SRE -->|Chỉ duyệt PR| D1
-    PLAT -->|Chỉ duyệt PR| D2
-    DEV -->|Chỉ duyệt PR| D3
+    SRE -->|"Chỉ duyệt PR"| D1
+    PLAT -->|"Chỉ duyệt PR"| D2
+    DEV -->|"Chỉ duyệt PR"| D3
 
 
 ```
@@ -255,8 +255,8 @@ Mối quan hệ giữa Root App và Child Apps được gắn kết chặt chẽ
 flowchart TD
     subgraph CASCADE_DELETE["HIỆU ỨNG THÁC ĐỔ: CASCADE DELETION (Khi có Finalizer)"]
         DEL_ROOT["1. Xóa Root Application: root-ecommerce"]
-        DEL_ROOT -->|Argo CD quét toàn bộ con| DEL_CHILD["2. Tự động XÓA toàn bộ Child Applications:<br/>payment-service, order-service, ingress..."]
-        DEL_CHILD -->|Mỗi Child App kích hoạt xóa| DEL_PODS["3. XÓA SẠCH toàn bộ Pods, Services, Ingress<br/>trên toàn bộ cụm Kubernetes!"]
+        DEL_ROOT -->|"Argo CD quét toàn bộ con"| DEL_CHILD["2. Tự động XÓA toàn bộ Child Applications:<br/>payment-service, order-service, ingress..."]
+        DEL_CHILD -->|"Mỗi Child App kích hoạt xóa"| DEL_PODS["3. XÓA SẠCH toàn bộ Pods, Services, Ingress<br/>trên toàn bộ cụm Kubernetes!"]
     end
 
 

@@ -56,8 +56,8 @@ flowchart TD
     USER --> GROUPS
     GROUPS --> MAPPING
     MAPPING --> POLICIES
-    POLICIES -->|Alice yêu cầu Sync payment-api| ALLOW
-    POLICIES -->|Alice yêu cầu sửa Cluster Secret| DENY
+    POLICIES -->|"Alice yêu cầu Sync payment-api"| ALLOW
+    POLICIES -->|"Alice yêu cầu sửa Cluster Secret"| DENY
 
 
 ```
@@ -259,10 +259,10 @@ Trong Argo CD, quyền hạn có thể được thiết lập ở 2 tầng độ
 ```mermaid
 flowchart TD
     REQ["Yêu cầu API từ Client: Sync Application 'payment-api'"] --> GLOBAL_CHECK{"1. Kiểm tra Global RBAC (argocd-rbac-cm)"}
-    GLOBAL_CHECK -->|Deny| REJ1["403 Forbidden: Global Denied"]
-    GLOBAL_CHECK -->|Allow| PROJ_CHECK{"2. Kiểm tra AppProject RBAC & Boundaries"}
-    PROJ_CHECK -->|Destination / Source Không Khớp| REJ2["403 Forbidden: Project Boundary Violation"]
-    PROJ_CHECK -->|Allow| SUCCESS["200 OK: Thực thi đồng bộ thành công!"]
+    GLOBAL_CHECK -->|"Deny"| REJ1["403 Forbidden: Global Denied"]
+    GLOBAL_CHECK -->|"Allow"| PROJ_CHECK{"2. Kiểm tra AppProject RBAC & Boundaries"}
+    PROJ_CHECK -->|"Destination / Source Không Khớp"| REJ2["403 Forbidden: Project Boundary Violation"]
+    PROJ_CHECK -->|"Allow"| SUCCESS["200 OK: Thực thi đồng bộ thành công!"]
 
 
 ```
@@ -291,14 +291,14 @@ Nhờ có cấu trúc log này, đội ngũ SIEM/SOC có thể thiết lập c�
 
 ```mermaid
 flowchart LR
-    DEV["Alice (role:payment-dev)"] -->|Bấm nút Terminal trên UI| ARGO_SERVER["argocd-server"]
+    DEV["Alice (role:payment-dev)"] -->|"Bấm nút Terminal trên UI"| ARGO_SERVER["argocd-server"]
     ARGO_SERVER --> CHECK_RBAC{"Kiểm tra quyền:<br/>exec, create, payment-proj/*"}
     
-    CHECK_RBAC -->|Quy tắc: deny| REJECT["403 FORBIDDEN:<br/>Chặn truy cập Terminal ngay lập tức!"]
+    CHECK_RBAC -->|"Quy tắc: deny"| REJECT["403 FORBIDDEN:<br/>Chặn truy cập Terminal ngay lập tức!"]
     
-    SRE["Bob (role:sre-lead)"] -->|Bấm nút Terminal trên UI| ARGO_SERVER
+    SRE["Bob (role:sre-lead)"] -->|"Bấm nút Terminal trên UI"| ARGO_SERVER
     ARGO_SERVER --> CHECK_SRE{"Kiểm tra quyền:<br/>exec, create, */*"}
-    CHECK_SRE -->|Quy tắc: allow| OPEN_TERM["Mở Web Socket Terminal an toàn có ghi Audit Log!"]
+    CHECK_SRE -->|"Quy tắc: allow"| OPEN_TERM["Mở Web Socket Terminal an toàn có ghi Audit Log!"]
 
 
 ```

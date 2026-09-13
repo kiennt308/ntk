@@ -160,17 +160,17 @@ Con số chốt: **3** thành phần ngôi bắt buộc trong mô hình RBAC.
 ```mermaid
 graph TD
     subgraph Namespace_Scope ["1. Namespace Scope (default)"]
-        ROLE["Role: pod-reader"] -->|gán bằng| RB["RoleBinding: john-rb"]
+        ROLE["Role: pod-reader"] -->|"gán bằng"| RB["RoleBinding: john-rb"]
         RB --> USER1["User: john"]
     end
 
     subgraph Cluster_Scope ["2. Cluster Scope (Toàn Cụm & Non-namespaced)"]
-        CROLE["ClusterRole: node-reader"] -->|gán bằng| CRB["ClusterRoleBinding: admin-crb"]
+        CROLE["ClusterRole: node-reader"] -->|"gán bằng"| CRB["ClusterRoleBinding: admin-crb"]
         CRB --> USER2["User: alice"]
     end
 
     subgraph Cross_Scope ["3. Ghép lai (ClusterRole in Namespace)"]
-        CROLE2["ClusterRole: view"] -->|gán bằng| RB2["RoleBinding: dev-rb (in ns dev)"]
+        CROLE2["ClusterRole: view"] -->|"gán bằng"| RB2["RoleBinding: dev-rb (in ns dev)"]
         RB2 --> USER3["User: bob"]
     end
 
@@ -498,15 +498,15 @@ kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUO
 ```mermaid
 graph TD
     subgraph Dev_NS ["Namespace: dev"]
-        ROLE_DEV["Role: pod-reader (verbs: get, list, watch)"] -->|RoleBinding: dev-user-binding| USER1["User: dev-user"]
+        ROLE_DEV["Role: pod-reader (verbs: get, list, watch)"] -->|"RoleBinding: dev-user-binding"| USER1["User: dev-user"]
     end
 
     subgraph Prod_NS ["Namespace: prod"]
-        CROLE_VIEW["ClusterRole chuẩn: view"] -->|RoleBinding: dev-prod-view| USER1
+        CROLE_VIEW["ClusterRole chuẩn: view"] -->|"RoleBinding: dev-prod-view"| USER1
     end
 
     subgraph Cluster_Scope ["Cluster Scope (Non-namespaced)"]
-        CROLE_NODE["ClusterRole: node-viewer (verbs: get, list)"] -->|ClusterRoleBinding: dev-node-binding| USER1
+        CROLE_NODE["ClusterRole: node-viewer (verbs: get, list)"] -->|"ClusterRoleBinding: dev-node-binding"| USER1
     end
 
     style Dev_NS fill:none,stroke:#f57c00,stroke-width:2px

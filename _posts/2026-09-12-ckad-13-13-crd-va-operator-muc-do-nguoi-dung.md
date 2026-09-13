@@ -117,9 +117,9 @@ Mô hình Bản thiết kế Khuôn mẫu và Nhân viên Vận hành tự độ
 
 ```mermaid
 graph TD
-    CRD[CustomResourceDefinition: AppConfig] -->|Apply vào cụm| APIServer[Kubernetes API Server]
-    APIServer -->|Đăng ký API mới| NewAPI[/apis/stable.example.com/v1/appconfigs/]
-    User[Lập trình viên] -->|kubectl apply CR| NewAPI
+    CRD[CustomResourceDefinition: AppConfig] -->|"Apply vào cụm"| APIServer[Kubernetes API Server]
+    APIServer -->|"Đăng ký API mới"| NewAPI[/apis/stable.example.com/v1/appconfigs/]
+    User[Lập trình viên] -->|"kubectl apply CR"| NewAPI
 ```
 
 **Nguyên lý cốt lõi:** Bản kê khai CRD spec bắt buộc phải thuộc `apiVersion: apiextensions.k8s.io/v1` và `kind: CustomResourceDefinition`, chỉ định rõ `group`, `names` (plural, singular, kind, shortNames) và `scope` (`Namespaced` hoặc `Cluster`).
@@ -229,9 +229,9 @@ schema:
 
 ```mermaid
 graph LR
-    User[Lập trình viên] -->|1. Tạo Custom Resource| CR[PostgreSQL CR]
-    CR -->|2. Event watch| Operator[Postgres Operator Controller]
-    Operator -->|3. Reconciliation Loop| Infra[Tự động tạo PVC, Pods, Master-Replica Sync]
+    User[Lập trình viên] -->|"1. Tạo Custom Resource"| CR[PostgreSQL CR]
+    CR -->|"2. Event watch"| Operator[Postgres Operator Controller]
+    Operator -->|"3. Reconciliation Loop"| Infra[Tự động tạo PVC, Pods, Master-Replica Sync]
 ```
 
 **Nguyên lý cốt lõi:** Custom Controller trong Operator liên tục chạy một vòng lặp hòa giải trạng thái (`Reconciliation Loop`) để đối sánh giữa trạng thái mong muốn (`spec` của CR) và trạng thái thực tế (`status`), tự động thực hiện hành động khắc phục nếu có sai lệch.
@@ -551,8 +551,8 @@ graph TD
         CR1[CR AppConfig: my-app-config - appName: payments-service, replicas: 3]
     end
     
-    CRD1 -->|Sinh kind mới| CR1
-    CRD2 -->|Sinh kind mới| CR2
+    CRD1 -->|"Sinh kind mới"| CR1
+    CRD2 -->|"Sinh kind mới"| CR2
 ```
 
 ---

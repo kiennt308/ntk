@@ -758,7 +758,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Git Push to repo-minimal-image] --> B{GitLab CI Pipeline}
+    A[Git Push to repo-minimal-image] --> B{"GitLab CI Pipeline"}
     
     subgraph Step1_Minimal_Distroless [Bước 1: Dockerfile Multi-stage & Distroless]
         B --> C1[Build Single-stage -> 850 MB]

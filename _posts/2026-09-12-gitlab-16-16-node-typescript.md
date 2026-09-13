@@ -497,7 +497,7 @@ test_matrix:
 
 ```mermaid
 graph TD
-    A[Commit Code Node.js/TS] --> B{Kiểm tra Lockfile}
+    A[Commit Code Node.js/TS] --> B{"Kiểm tra Lockfile"}
     B -- npm ci --> C[Nạp Cache ~/.npm-cache]
     C --> D[Cài đặt sạch Phụ thuộc]
     D --> E[Job Typecheck: tsc --noEmit]

@@ -165,9 +165,9 @@ graph TD
     ROOT --> RDS
     ROOT --> APP
 
-    RDS -->|dependency: Đọc vpc_id, database_subnets| VPC
-    APP -->|dependency: Đọc vpc_id, private_subnets| VPC
-    APP -->|dependency: Đọc db_endpoint| RDS
+    RDS -->|"dependency: Đọc vpc_id, database_subnets"| VPC
+    APP -->|"dependency: Đọc vpc_id, private_subnets"| VPC
+    APP -->|"dependency: Đọc db_endpoint"| RDS
 
     style ROOT fill:none,stroke:#333,stroke-width:2px
     style VPC fill:none,stroke:#0288d1,stroke-width:2px
@@ -259,7 +259,7 @@ graph LR
     subgraph Terragrunt_Lab_Execution
         ROOT_CONF["terragrunt.hcl: Root Include"] --> VPC_CONF["live/vpc/terragrunt.hcl"]
         ROOT_CONF --> SG_CONF["live/app-sg/terragrunt.hcl"]
-        SG_CONF -->|dependency: vpc_id| VPC_CONF
+        SG_CONF -->|"dependency: vpc_id"| VPC_CONF
     end
 
     subgraph Module_Source

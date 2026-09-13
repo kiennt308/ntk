@@ -309,12 +309,12 @@ Khi triển khai ứng dụng đa môi trường (Dev, Staging, Prod):
 flowchart TD
     A["Nhu cầu sử dụng Biến (Variables)"] --> B{"Phân định Tầng ưu tiên (Precedence)"}
     
-    B -->|Tầng 22: Thắng tuyệt đối| C["Extra Vars: CLI -e 'key=val'"]
-    B -->|Tầng 19: Runtime động| D["Module set_fact / Register"]
-    B -->|Tầng 12: Phạm vi Play| E["Playbook vars: / vars_files:"]
-    B -->|Tầng 9: Phạm vi Host| F["Thư mục host_vars/hostname.yml"]
-    B -->|Tầng 5: Phạm vi Group| G["Thư mục group_vars/group.yml"]
-    B -->|Tầng 1: Mặc định thấp nhất| H["Role defaults/main.yml"]
+    B -->|"Tầng 22: Thắng tuyệt đối"| C["Extra Vars: CLI -e 'key=val'"]
+    B -->|"Tầng 19: Runtime động"| D["Module set_fact / Register"]
+    B -->|"Tầng 12: Phạm vi Play"| E["Playbook vars: / vars_files:"]
+    B -->|"Tầng 9: Phạm vi Host"| F["Thư mục host_vars/hostname.yml"]
+    B -->|"Tầng 5: Phạm vi Group"| G["Thư mục group_vars/group.yml"]
+    B -->|"Tầng 1: Mặc định thấp nhất"| H["Role defaults/main.yml"]
     
     C & D & E & F & G & H --> I["Jinja2 Interpolation: {{ variable_name }}"]
     I --> J["Gỡ lỗi bằng ansible.builtin.debug"]
@@ -447,20 +447,20 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Nạp Extra Vars: -e app_port=9999| PB["Playbook: vars-site.yml"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Extra Vars: -e app_port=9999"| PB["Playbook: vars-site.yml"]
     
-    PB --> |2. Override Play vars: app_port=9090| N1["Tầng 12: Play Vars"]
-    N1 --> |3. Override host_vars: app_port=8080| N2["Tầng 9: host_vars/target1.yml"]
-    N2 --> |4. Override group_vars: app_port=80| N3["Tầng 5: group_vars/web.yml"]
+    PB -->|"2. Override Play vars: app_port=9090"| N1["Tầng 12: Play Vars"]
+    N1 -->|"3. Override host_vars: app_port=8080"| N2["Tầng 9: host_vars/target1.yml"]
+    N2 -->|"4. Override group_vars: app_port=80"| N3["Tầng 5: group_vars/web.yml"]
     
-    PB --> |5. Đã chốt biến: app_port=9999| T1["Target Container 1 (target1)"]
+    PB -->|"5. Đã chốt biến: app_port=9999"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=5, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy CLI với -e app_port=9999| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy CLI với -e app_port=9999"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

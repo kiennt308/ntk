@@ -74,9 +74,9 @@ Trước khi cấu hình CI/CD Pipeline, chúng ta cần dùng Terraform để t
 
 ```mermaid
 graph TD
-    GH["GitHub Actions Workflow"] -->|Gửi Claim: repo:corp/infra-repo:ref:refs/heads/main| TP{Trust Policy Evaluation}
-    TP -->|Khớp Repo & Branch| ALLOW["Cho phép AssumeRole -&gt; Cấp quyền Administrator/IaC"]
-    TP -->|Không khớp: Hacker Fork Repo| DENY["Từ chối Truy Cập: Access Denied"]
+    GH["GitHub Actions Workflow"] -->|"Gửi Claim: repo:corp/infra-repo:ref:refs/heads/main"| TP{"Trust Policy Evaluation"}
+    TP -->|"Khớp Repo & Branch"| ALLOW["Cho phép AssumeRole -&gt; Cấp quyền Administrator/IaC"]
+    TP -->|"Không khớp: Hacker Fork Repo"| DENY["Từ chối Truy Cập: Access Denied"]
 
     style GH fill:none,stroke:#0288d1,stroke-width:2px
     style ALLOW fill:none,stroke:#28a745,stroke-width:2px

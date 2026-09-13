@@ -117,9 +117,9 @@ Mô hình Thẻ Giới hạn Quyền Hạn Nhân viên và Danh sách Cổng Gia
 
 ```mermaid
 graph TD
-    Pod[Container Application] -->|Gửi Syscall reboot/kexec| Seccomp{Seccomp Filter: RuntimeDefault}
-    Seccomp -->|Syscall An toàn read/write| Kernel[Linux Kernel ACCEPT]
-    Seccomp -.->|Syscall Nguy hiểm reboot| Blocked[Kernel DENY: Operation not permitted]
+    Pod[Container Application] -->|"Gửi Syscall reboot/kexec"| Seccomp{"Seccomp Filter: RuntimeDefault"}
+    Seccomp -->|"Syscall An toàn read/write"| Kernel[Linux Kernel ACCEPT]
+    Seccomp -.->|"Syscall Nguy hiểm reboot"| Blocked[Kernel DENY: Operation not permitted]
 ```
 
 **Nguyên lý cốt lõi:** Khi sử dụng Seccomp kiểu `Localhost`, thuộc tính `localhostProfile` bắt buộc phải là đường dẫn TƯƠNG ĐỐI so với thư mục gốc Kubelet `/var/lib/kubelet/seccomp/` (ví dụ: file tại `/var/lib/kubelet/seccomp/profiles/fine.json` thì điền `localhostProfile: "profiles/fine.json"`).
@@ -566,8 +566,8 @@ graph TD
         Pod2[Pod seccomp-pod: localhostProfile profiles/deny-mkdir.json]
     end
     
-    Pod1 -->|Touch File| AppArmorEngine -->|DENIED: Permission denied| Block1[Blocked Write]
-    Pod2 -->|Mkdir Syscall| SeccompEngine -->|ERRNO: Operation not permitted| Block2[Blocked Syscall]
+    Pod1 -->|"Touch File"| AppArmorEngine -->|"DENIED: Permission denied"| Block1[Blocked Write]
+    Pod2 -->|"Mkdir Syscall"| SeccompEngine -->|"ERRNO: Operation not permitted"| Block2[Blocked Syscall]
 ```
 
 ---

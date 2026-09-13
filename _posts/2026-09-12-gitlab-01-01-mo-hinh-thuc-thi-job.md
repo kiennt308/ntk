@@ -913,10 +913,10 @@ Kết quả phải có ít nhất một dòng `online=true  run_untagged=true`. 
 ```mermaid
 graph TD
     HV["Học viên<br/>máy chủ lab"]
-    HV -->|git push| PRJ["Project lab01-mo-hinh<br/>trên GitLab CE"]
+    HV -->|"git push"| PRJ["Project lab01-mo-hinh<br/>trên GitLab CE"]
     HV -->|"curl + jq (mọi checkpoint)"| API["API GitLab v4<br/>pipelines · jobs · trace · runners"]
 
-    PRJ -->|giao job| RN["Runner lab-runner<br/>executor: docker"]
+    PRJ -->|"giao job"| RN["Runner lab-runner<br/>executor: docker"]
     RN -->|"tạo container ANH EM<br/>qua Docker socket"| JOB["Container của job<br/>image alpine/node<br/>XOÁ khi job xong"]
 
     JOB -->|"đường ra 1"| ART["artifacts<br/>lưu trên GitLab"]

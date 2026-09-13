@@ -117,14 +117,14 @@ Mô hình Tem Kiểm Định Chất Lượng Hàng Hóa và Danh Mục Thành Ph
 
 ```mermaid
 graph TD
-    Build[CI/CD Build Image] -->|1. Generate Key Pair| KeyGen[cosign generate-key-pair]
-    Build -->|2. Sign Image Digest| CosignSign[cosign sign --key cosign.key image@sha256:...]
-    CosignSign -->|3. Push Signature| Registry[OCI Container Registry]
+    Build[CI/CD Build Image] -->|"1. Generate Key Pair"| KeyGen[cosign generate-key-pair]
+    Build -->|"2. Sign Image Digest"| CosignSign[cosign sign --key cosign.key image@sha256:...]
+    CosignSign -->|"3. Push Signature"| Registry[OCI Container Registry]
     
-    Registry -->|4. Deploy Pod| K8sCluster[Kubernetes Cluster Admission]
-    K8sCluster -->|5. Verify Signature| CosignVerify[cosign verify --key cosign.pub image@sha256:...]
-    CosignVerify -->|Match Signature| PodRunning[Pod Started Successfully]
-    CosignVerify -.->|No Match| BlockPod[REJECT Pod Creation!]
+    Registry -->|"4. Deploy Pod"| K8sCluster[Kubernetes Cluster Admission]
+    K8sCluster -->|"5. Verify Signature"| CosignVerify[cosign verify --key cosign.pub image@sha256:...]
+    CosignVerify -->|"Match Signature"| PodRunning[Pod Started Successfully]
+    CosignVerify -.->|"No Match"| BlockPod[REJECT Pod Creation!]
 ```
 
 **Nguyên lý cốt lõi:** Khi thực hiện ký số hoặc xác minh chữ ký Cosign, LUÔN LUÔN sử dụng cờ Image Digest bất biến (`@sha256:...`) thay vì dùng Image Tag (như `:latest`) để phòng chống tấn công tráo đổi ảnh.
@@ -506,14 +506,14 @@ Lệnh trả về lỗi <b style="color: var(--accent-primary);"><code>Error: no
 
 ```mermaid
 graph TD
-    Dev[CI/CD Build Pipeline] -->|1. Generate Key Pair| Keys[cosign.key & cosign.pub]
-    Dev -->|2. Generate SBOM| Syft[Syft Generator -> sbom.spdx.json]
-    Dev -->|3. Cosign Sign Image| CosignSign[cosign sign image@sha256:...]
-    Dev -->|4. Attach & Attest SBOM| CosignAttach[cosign attach sbom]
+    Dev[CI/CD Build Pipeline] -->|"1. Generate Key Pair"| Keys[cosign.key & cosign.pub]
+    Dev -->|"2. Generate SBOM"| Syft[Syft Generator -> sbom.spdx.json]
+    Dev -->|"3. Cosign Sign Image"| CosignSign[cosign sign image@sha256:...]
+    Dev -->|"4. Attach & Attest SBOM"| CosignAttach[cosign attach sbom]
     
-    CosignSign -->|5. Verify Signature| K8sAdmission[Admission Controller / CLI Verify]
-    Keys -->|Public Key| K8sAdmission
-    K8sAdmission -->|Match: SUCCESS| Deploy[Pod Deployed in lab59]
+    CosignSign -->|"5. Verify Signature"| K8sAdmission[Admission Controller / CLI Verify]
+    Keys -->|"Public Key"| K8sAdmission
+    K8sAdmission -->|"Match: SUCCESS"| Deploy[Pod Deployed in lab59]
 ```
 
 ---

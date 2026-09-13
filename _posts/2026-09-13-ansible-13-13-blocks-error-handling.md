@@ -315,8 +315,8 @@ Khi triển khai nâng cấp ứng dụng Web/Database trong môi trường Prod
 ```mermaid
 flowchart TD
     A["Bắt đầu Thực thi Khối block:"] --> B{"Task trong block có Failed?"}
-    B -->|KHÔNG (Thành công)| C["Bỏ qua rescue -> Chuyển sang always:"]
-    B -->|CÓ (Thất bại)| D["Chuyển hướng sang Khối rescue:"]
+    B -->|"KHÔNG (Thành công)"| C["Bỏ qua rescue -> Chuyển sang always:"]
+    B -->|"CÓ (Thất bại)"| D["Chuyển hướng sang Khối rescue:"]
     
     D --> E["Thực thi Task Cứu hộ / Rollback trong rescue"]
     E --> C
@@ -456,19 +456,19 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Task 1: block -> Command /bin/false FAILED| T1["Target Container 1 (target1)"]
-    T1 --> |2. Execution: rescue -> Copy fallback config| T1
-    T1 --> |3. Execution: always -> Remove lock file| T1
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Task 1: block -> Command /bin/false FAILED"| T1["Target Container 1 (target1)"]
+    T1 -->|"2. Execution: rescue -> Copy fallback config"| T1
+    T1 -->|"3. Execution: always -> Remove lock file"| T1
     
-    SubGraph1 --> |4. Task 2: command date (changed_when: false)| T1
-    SubGraph1 --> |5. Task 3: command check (failed_when: FATAL)| T1
+    SubGraph1 -->|"4. Task 2: command date (changed_when: false)"| T1
+    SubGraph1 -->|"5. Task 3: command check (failed_when: FATAL)"| T1
     
     T1 -. "RECAP Lần 1: ok=5, changed=2, rescued=1" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook error-handling-site.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook error-handling-site.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

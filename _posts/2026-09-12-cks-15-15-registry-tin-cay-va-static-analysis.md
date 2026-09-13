@@ -553,16 +553,16 @@ Khôi phục lại tệp sao lưu <code>kube-apiserver.yaml.bak</code> hoặc x�
 
 ```mermaid
 graph TD
-    User[Dev / Security Engineer] -->|1. Static Analysis| Linter[Kube-linter / Trivy Config]
-    Linter -->|Passed Linting| K8sClient[kubectl apply -f pod-digest.yaml]
+    User[Dev / Security Engineer] -->|"1. Static Analysis"| Linter[Kube-linter / Trivy Config]
+    Linter -->|"Passed Linting"| K8sClient[kubectl apply -f pod-digest.yaml]
     
-    K8sClient -->|2. Admission Request| APIServer[kube-apiserver Control Plane]
-    APIServer -->|3. Check Plugin| Plugin[ImagePolicyWebhook Plugin]
-    Plugin -->|4. Read Config| Config[/etc/kubernetes/admission/admission-config.yaml]
-    Plugin -->|5. POST Image Info| WebhookServer[Image Verification Webhook Server]
+    K8sClient -->|"2. Admission Request"| APIServer[kube-apiserver Control Plane]
+    APIServer -->|"3. Check Plugin"| Plugin[ImagePolicyWebhook Plugin]
+    Plugin -->|"4. Read Config"| Config[/etc/kubernetes/admission/admission-config.yaml]
+    Plugin -->|"5. POST Image Info"| WebhookServer[Image Verification Webhook Server]
     
-    WebhookServer -->|Image Digest Valid| Approve[Pod Created in lab60]
-    WebhookServer -.->|Mutable Tag :latest| Reject[REJECT 403 Forbidden]
+    WebhookServer -->|"Image Digest Valid"| Approve[Pod Created in lab60]
+    WebhookServer -.->|"Mutable Tag :latest"| Reject[REJECT 403 Forbidden]
 ```
 
 ---

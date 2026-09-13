@@ -117,9 +117,9 @@ Mô hình Két Sắt Mã Hóa Hồ Sơ và Lớp Vỏ Bọc Bảo Mật etcd: C�
 
 ```mermaid
 graph TD
-    User[Kubectl / Client] -->|1. Post Secret JSON| APIServer[Kube-APIServer]
-    APIServer -->|2. Encrypt with aescbc key| EncEngine[Encryption Engine]
-    EncEngine -->|3. Write Encrypted Data k8s:enc:aescbc:v1| ETCD[etcd Database Disk]
+    User[Kubectl / Client] -->|"1. Post Secret JSON"| APIServer[Kube-APIServer]
+    APIServer -->|"2. Encrypt with aescbc key"| EncEngine[Encryption Engine]
+    EncEngine -->|"3. Write Encrypted Data k8s:enc:aescbc:v1"| ETCD[etcd Database Disk]
 ```
 
 **Nguyên lý cốt lõi:** Trong mảng `providers` của tệp `EncryptionConfiguration`, provider dùng để MÃ HÓA (như `aescbc`) bắt buộc phải đứng Ở VỊ TRÍ ĐẦU TIÊN (Index 0); provider `identity` đứng ở vị trí sau để cho phép ĐỌC các Secret chưa mã hóa cũ.
@@ -537,12 +537,12 @@ Thêm khóa mới vào vị trí 1 -> Giữ khóa cũ ở vị trí 2 -> Chạy 
 
 ```mermaid
 graph TD
-    Client[Kubectl / Client] -->|1. Write Secret| APIServer[Kube-APIServer]
-    APIServer -->|2. Check EncryptionConfiguration /etc/kubernetes/enc/enc.yaml| Provider{Provider Check}
-    Provider -->|Index 0: aescbc| Encrypt[Encrypt with 32-byte Base64 key]
-    Encrypt -->|3. Save Encrypted k8s:enc:aescbc:v1| ETCD[etcd Database Disk]
+    Client[Kubectl / Client] -->|"1. Write Secret"| APIServer[Kube-APIServer]
+    APIServer -->|"2. Check EncryptionConfiguration /etc/kubernetes/enc/enc.yaml"| Provider{"Provider Check"}
+    Provider -->|"Index 0: aescbc"| Encrypt[Encrypt with 32-byte Base64 key]
+    Encrypt -->|"3. Save Encrypted k8s:enc:aescbc:v1"| ETCD[etcd Database Disk]
     
-    ETCDCTL[etcdctl CLI with mTLS Certs] -->|4. Read etcd directly| Audit[Verify Header k8s:enc:aescbc:v1]
+    ETCDCTL[etcdctl CLI with mTLS Certs] -->|"4. Read etcd directly"| Audit[Verify Header k8s:enc:aescbc:v1]
 ```
 
 ---

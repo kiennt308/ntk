@@ -90,7 +90,7 @@ graph TD
 ```mermaid
 flowchart LR
     A["1. Liệt Kê & Xem Chi Tiết"] --> B["state list / state show"]
-    B --> C{Mục Đích Phẫu Thuật?}
+    B --> C{"Mục Đích Phẫu Thuật?"}
     C -->|"Đổi Tên / Chuyển Module"| D["2. terraform state mv"]
     C -->|"Hủy Quản Lý (Untrack)"| E["3. terraform state rm"]
     C -->|"Cưỡng Chế Tạo Lại"| F["4. terraform plan -replace"]
@@ -219,8 +219,8 @@ Một trong những sự cố phổ biến nhất khi import tài nguyên cũ l�
 flowchart LR
     A["Import thành công vào State"] --> B["terraform plan"]
     B --> C{"Plan báo '~ update in-place' hay '-/+ destroy and recreate'?"}
-    C -->|~ Update in-place| D["An toàn -&gt; SRE Tiếp tục apply"]
-    C -->|-/+ Forces Replacement| E["NGUY HIỂM: Thiếu thuộc tính gốc -&gt; Phải bổ sung HCL ngay!"]
+    C -->|"~ Update in-place"| D["An toàn -&gt; SRE Tiếp tục apply"]
+    C -->|"-/+ Forces Replacement"| E["NGUY HIỂM: Thiếu thuộc tính gốc -&gt; Phải bổ sung HCL ngay!"]
 
     style E fill:none,stroke:#3b82f6,stroke-width:2px
     style A fill:none,stroke:#0ea5e9,stroke-width:2px

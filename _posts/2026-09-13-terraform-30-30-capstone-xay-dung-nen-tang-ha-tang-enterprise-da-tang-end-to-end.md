@@ -64,7 +64,7 @@ flowchart TD
 
     Layer1_Network --> Layer2_Data
     Layer1_Network --> Layer3_Compute
-    Layer2_Data -.->|Cung cấp Endpoint & Credentials| Layer3_Compute
+    Layer2_Data -.->|"Cung cấp Endpoint & Credentials"| Layer3_Compute
 
     Automation_Security --> Layer1_Network
     Automation_Security --> Layer2_Data

@@ -117,10 +117,10 @@ Mô hình Gia Cố Pháo Đài và Rà Soát Danh Mục An Ninh: Hệ điều h�
 
 ```mermaid
 graph TD
-    Node[Host Linux Node] -->|1. Run kube-bench| KubeBench[kube-bench Scanner]
-    KubeBench -->|2. Audit Permissions & Flags| Rules{CIS Benchmark Rules}
-    Rules -->|3. Report Output| Results[PASS / WARN / FAIL List]
-    Results -->|4. Fix FAIL Items| Fix[chmod / chown / apiserver flags]
+    Node[Host Linux Node] -->|"1. Run kube-bench"| KubeBench[kube-bench Scanner]
+    KubeBench -->|"2. Audit Permissions & Flags"| Rules{"CIS Benchmark Rules"}
+    Rules -->|"3. Report Output"| Results[PASS / WARN / FAIL List]
+    Results -->|"4. Fix FAIL Items"| Fix[chmod / chown / apiserver flags]
 ```
 
 **Nguyên lý cốt lõi:** Mọi tệp manifest Static Pod tại `/etc/kubernetes/manifests/` bắt buộc phải được phân quyền `chmod 600` (hoặc `644`) và gán quyền sở hữu `chown root:root`.
@@ -520,13 +520,13 @@ Phân quyền <b style="color: var(--accent-primary);"><code>chmod 600</code></b
 
 ```mermaid
 graph TD
-    CPNode[Control Plane Node cp-01] -->|1. Run kube-bench| KubeBenchScanner[kube-bench Scanner]
-    KubeBenchScanner -->|2. Audit Permission Violations| Report[/tmp/kubebench-master.txt]
+    CPNode[Control Plane Node cp-01] -->|"1. Run kube-bench"| KubeBenchScanner[kube-bench Scanner]
+    KubeBenchScanner -->|"2. Audit Permission Violations"| Report[/tmp/kubebench-master.txt]
     
-    Report -->|3. Fix Permissions| FixPerms[chmod 600 /etc/kubernetes/admin.conf & manifests/*]
+    Report -->|"3. Fix Permissions"| FixPerms[chmod 600 /etc/kubernetes/admin.conf & manifests/*]
     
-    PodApp[Pod test-pod in Namespace lab54] -->|4. Egress Request| NetPol{NetworkPolicy block-metadata-egress}
-    NetPol -.->|Block 169.254.169.254/32| Drop[Egress Traffic Dropped]
+    PodApp[Pod test-pod in Namespace lab54] -->|"4. Egress Request"| NetPol{"NetworkPolicy block-metadata-egress"}
+    NetPol -.->|"Block 169.254.169.254/32"| Drop[Egress Traffic Dropped]
 ```
 
 ---

@@ -67,12 +67,12 @@ flowchart TD
         APPS3["Production APAC Microservices"]
     end
 
-    GIT_LAYER ==>|Declarative Sync| ARGO_CP
+    GIT_LAYER ==>|"Declarative Sync"| ARGO_CP
     ARGO_CP [--]|Đọc cấu hình kết nối| SECRETS_LIST
 
-    ARGO_CP -->|mTLS gRPC / Kube API :6443| SA1
-    ARGO_CP -->|mTLS gRPC / Kube API :6443| SA2
-    ARGO_CP -->|mTLS gRPC / Kube API :6443| SA3
+    ARGO_CP -->|"mTLS gRPC / Kube API :6443"| SA1
+    ARGO_CP -->|"mTLS gRPC / Kube API :6443"| SA2
+    ARGO_CP -->|"mTLS gRPC / Kube API :6443"| SA3
 
     SA1 --> APPS1
     SA2 --> APPS2

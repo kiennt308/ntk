@@ -111,16 +111,16 @@ Bài học này sẽ giúp bạn làm chủ 3 vũ khí phát hành phần mềm 
 flowchart TD
     subgraph Scenario 1: Blue-Green Deployment (100% Swap)
         A1[User Request] --> B1[Ingress Controller Switch]
-        B1 -->|Active 100%| C1[Blue Environment: v1.0.0]
-        B1 -.->|Standby 0%| D1[Green Environment: v2.0.0]
-        B1 -->|Instant 100% Swap| D1
+        B1 -->|"Active 100%"| C1[Blue Environment: v1.0.0]
+        B1 -.->|"Standby 0%"| D1[Green Environment: v2.0.0]
+        B1 -->|"Instant 100% Swap"| D1
     end
 
     subgraph Scenario 2: Canary Deployment (Weighted Split)
         A2[User Request] --> B2[Ingress Controller Traffic Splitter]
-        B2 -->|90% Traffic| C2[Production Stable Pods: v1.0.0]
-        B2 -->|10% Traffic| D2[Canary Test Pods: v2.0.0]
-        D2 -->|Error Rate > 1%| E2[Auto Rollback: Cut 10% Traffic]
+        B2 -->|"90% Traffic"| C2[Production Stable Pods: v1.0.0]
+        B2 -->|"10% Traffic"| D2[Canary Test Pods: v2.0.0]
+        D2 -->|"Error Rate > 1%"| E2[Auto Rollback: Cut 10% Traffic]
     end
 ```
 
@@ -460,9 +460,9 @@ flowchart TD
     end
 
     subgraph Stage 3: Automated Health Decision
-        F --> G{HTTP 5xx > 1% or Latency > 500ms?}
-        G -->|YES: Error Alert| H[Auto Rollback Webhook: Cut Canary to 0%]
-        G -->|NO: Healthy| I[Promote Production: Set Weight 100%]
+        F --> G{"HTTP 5xx > 1% or Latency > 500ms?"}
+        G -->|"YES: Error Alert"| H[Auto Rollback Webhook: Cut Canary to 0%]
+        G -->|"NO: Healthy"| I[Promote Production: Set Weight 100%]
     end
 
     subgraph Stage 4: Feature Release
@@ -573,23 +573,23 @@ Trong bài lab này, học viên sẽ trực tiếp triển khai và làm chủ 
 ```mermaid
 graph TD
     subgraph Phase 1: Blue-Green Deployment (100% Swap)
-        A[GitLab CI Job] -->|1. helm upgrade blue/green| B[Kubernetes Deployments]
-        B -->|Active: 100% Traffic| C[Blue Service v1.0.0]
-        B -->|Standby: 0% Traffic| D[Green Service v2.0.0]
-        E[kubectl patch ingress] -->|2. Instant 100% Swap| D
+        A[GitLab CI Job] -->|"1. helm upgrade blue/green"| B[Kubernetes Deployments]
+        B -->|"Active: 100% Traffic"| C[Blue Service v1.0.0]
+        B -->|"Standby: 0% Traffic"| D[Green Service v2.0.0]
+        E[kubectl patch ingress] -->|"2. Instant 100% Swap"| D
     end
 
     subgraph Phase 2: Canary Deployment (Weighted Traffic Split)
-        F[GitLab CI Job] -->|3. helm upgrade canary| G[Canary Deployment v2.0.0]
-        H[NGINX Ingress] -->|4. canary-weight: 10| G
-        I[Prometheus Alert] -->|5. HTTP 5xx > 1%| J[Auto Rollback Webhook]
-        J -->|6. Cut 10% Traffic| H
+        F[GitLab CI Job] -->|"3. helm upgrade canary"| G[Canary Deployment v2.0.0]
+        H[NGINX Ingress] -->|"4. canary-weight: 10"| G
+        I[Prometheus Alert] -->|"5. HTTP 5xx > 1%"| J[Auto Rollback Webhook]
+        J -->|"6. Cut 10% Traffic"| H
     end
 
     subgraph Phase 3: GitLab Feature Flags (Unleash Engine)
-        K[Microservice App] -->|7. Poll Flag API 50ms| L[GitLab Feature Engine]
-        M[Product Manager UI Click] -->|8. Flag ON/OFF| L
-        L -->|9. Toggle Feature Route| K
+        K[Microservice App] -->|"7. Poll Flag API 50ms"| L[GitLab Feature Engine]
+        M[Product Manager UI Click] -->|"8. Flag ON/OFF"| L
+        L -->|"9. Toggle Feature Route"| K
     end
 ```
 

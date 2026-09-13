@@ -761,7 +761,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Git Push to repo-helm-oci] --> B{GitLab CI Pipeline}
+    A[Git Push to repo-helm-oci] --> B{"GitLab CI Pipeline"}
     
     subgraph Step1_Helm_Structure [Bước 1 & 2: Cấu trúc, Linting & Dry-run]
         B --> C1[helm lint my-app-chart/ --strict]

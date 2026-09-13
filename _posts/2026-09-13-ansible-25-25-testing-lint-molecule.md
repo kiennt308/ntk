@@ -81,17 +81,17 @@ Thiết lập lá chắn kiểm thử đa tầng bảo vệ mã nguồn tự đ�
 
 ```mermaid
 graph TD
-    A["Mã nguồn Playbook / Role YAML"] --> |1. Lớp 1: ansible-playbook --syntax-check| B{"Cú pháp Static YAML OK?"}
+    A["Mã nguồn Playbook / Role YAML"] -->|"1. Lớp 1: ansible-playbook --syntax-check"| B{"Cú pháp Static YAML OK?"}
     
     B -- Không --> C["LỖI: Sửa lỗi cú pháp khoảng trắng indent"]
     B -- Có --> D["2. Lớp 2: ansible-lint"]
     
-    D --> |Phân tích Best Practices & Security Smells| E{"Đạt chuẩn Linter?"}
+    D -->|"Phân tích Best Practices & Security Smells"| E{"Đạt chuẩn Linter?"}
     E -- Không --> F["LỖI: Chuẩn hóa FQCN & tên Task"]
     E -- Có --> G["3. Lớp 3: ansible-playbook --check --diff"]
     
-    G --> |Chạy mô phỏng Dry-run không sửa đĩa| H["Xem dòng khác biệt +/- trên đĩa"]
-    H --> |4. Lớp 4: molecule test (Docker)| I["Chạy thực tế trong Container cách ly"]
+    G -->|"Chạy mô phỏng Dry-run không sửa đĩa"| H["Xem dòng khác biệt +/- trên đĩa"]
+    H -->|"4. Lớp 4: molecule test (Docker)"| I["Chạy thực tế trong Container cách ly"]
     
     I --> J["Triệt tiêu 99% sự cố - ĐẠT IDEMPOTENCY 100% ở Lần 2"]
 ```
@@ -295,10 +295,10 @@ Khi xây dựng bộ tiêu chuẩn chất lượng mã nguồn tự động hóa
 flowchart TD
     A["Quy trình Kiểm thử Chất lượng Mã nguồn IaC"] --> B{"4 Lớp Kiểm thử Tiêu chuẩn"}
     
-    B -->|Lớp 1: Kiểm tra Cú pháp Static| C["ansible-playbook --syntax-check site.yml"]
-    B -->|Lớp 2: Phân tích Chất lượng Mã| D["ansible-lint (Kiểm tra Best Practices & FQCN)"]
-    B -->|Lớp 3: Thử nghiệm Mô phỏng| E["ansible-playbook --check --diff (Dry-run)"]
-    B -->|Lớp 4: Kiểm thử Role Cách ly| F["molecule test (Docker Container & Idempotence)"]
+    B -->|"Lớp 1: Kiểm tra Cú pháp Static"| C["ansible-playbook --syntax-check site.yml"]
+    B -->|"Lớp 2: Phân tích Chất lượng Mã"| D["ansible-lint (Kiểm tra Best Practices & FQCN)"]
+    B -->|"Lớp 3: Thử nghiệm Mô phỏng"| E["ansible-playbook --check --diff (Dry-run)"]
+    B -->|"Lớp 4: Kiểm thử Role Cách ly"| F["molecule test (Docker Container & Idempotence)"]
     
     C --> G["Playbook chính: site-testing.yml"]
     D --> G
@@ -444,26 +444,26 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (Testing Tools & ansible-playbook)"] --> |1. Lớp 1: --syntax-check| SYN["ansible-playbook --syntax-check"]
+    SubGraph1["Control Node (Testing Tools & ansible-playbook)"] -->|"1. Lớp 1: --syntax-check"| SYN["ansible-playbook --syntax-check"]
     
     subgraph "Hệ thống Kiểm thử Đa tầng Quality Assurance"
-        SYN --> |2. Lớp 2: .ansible-lint & ansible-lint| LINT["ansible-lint (.ansible-lint config)"]
-        LINT --> |3. Lớp 3: --check --diff| DRY["ansible-playbook --check --diff (Dry-run)"]
-        DRY --> |4. Lớp 4: Molecule verify.yml| MOL["Molecule verification framework"]
+        SYN -->|"2. Lớp 2: .ansible-lint & ansible-lint"| LINT["ansible-lint (.ansible-lint config)"]
+        LINT -->|"3. Lớp 3: --check --diff"| DRY["ansible-playbook --check --diff (Dry-run)"]
+        DRY -->|"4. Lớp 4: Molecule verify.yml"| MOL["Molecule verification framework"]
     end
     
-    SubGraph1 --> |5. Thi hành Playbook chính: site-testing.yml| PB["Playbook: site-testing.yml"]
+    SubGraph1 -->|"5. Thi hành Playbook chính: site-testing.yml"| PB["Playbook: site-testing.yml"]
     DRY --> PB
     MOL --> PB
     
-    PB --> |6. Gửi cấu hình đã qua kiểm thử| T1["Target Container 1 (target1)"]
+    PB -->|"6. Gửi cấu hình đã qua kiểm thử"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=5, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy chuỗi lệnh --syntax-check & ansible-lint| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy chuỗi lệnh --syntax-check & ansible-lint"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

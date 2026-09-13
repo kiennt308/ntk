@@ -117,10 +117,10 @@ Mô hình Kiểm định An toàn Vệ sinh Thực phẩm và Dây chuyền Đó
 
 ```mermaid
 graph TD
-    Image[Ảnh Container Image] -->|1. Scanned by| Trivy[Trivy Vulnerability Scanner]
-    Trivy -->|2. Filter| Filter{Severity Check}
-    Filter -->|CRITICAL / HIGH| Report[Trích xuất danh sách CVEs nguy hiểm]
-    Filter -->|LOW / MEDIUM| Ignore[Bỏ qua các cảnh báo nhẹ]
+    Image[Ảnh Container Image] -->|"1. Scanned by"| Trivy[Trivy Vulnerability Scanner]
+    Trivy -->|"2. Filter"| Filter{"Severity Check"}
+    Filter -->|"CRITICAL / HIGH"| Report[Trích xuất danh sách CVEs nguy hiểm]
+    Filter -->|"LOW / MEDIUM"| Ignore[Bỏ qua các cảnh báo nhẹ]
 ```
 
 **Nguyên lý cốt lõi:** Thêm cờ `--ignore-unfixed` trong lệnh Trivy (`trivy image --severity CRITICAL --ignore-unfixed <image>`) để loại bỏ các lỗ hổng CVEs chưa có bản vá chính thức, tránh làm báo cáo bị nhiễu.
@@ -519,10 +519,10 @@ Cú pháp <code>COPY --chown=10001:10001 --from=builder /app /app</code>.
 
 ```mermaid
 graph TD
-    Vulnerable[Dockerfile.vulnerable: Ubuntu 18.04 + Root] -->|Build & Scan| TrivyBad[Trivy Scan: Dính N lỗ hổng CRITICAL]
-    TrivyBad -->|Refactor Dockerfile| Hardened[Dockerfile.hardened: Multi-stage + Distroless + USER 10001]
-    Hardened -->|Build & Scan| TrivyGood[Trivy Scan: Total 0 CRITICAL CVEs]
-    TrivyGood -->|Deploy| PodHardened[Pod hardened-pod in Namespace lab48]
+    Vulnerable[Dockerfile.vulnerable: Ubuntu 18.04 + Root] -->|"Build & Scan"| TrivyBad[Trivy Scan: Dính N lỗ hổng CRITICAL]
+    TrivyBad -->|"Refactor Dockerfile"| Hardened[Dockerfile.hardened: Multi-stage + Distroless + USER 10001]
+    Hardened -->|"Build & Scan"| TrivyGood[Trivy Scan: Total 0 CRITICAL CVEs]
+    TrivyGood -->|"Deploy"| PodHardened[Pod hardened-pod in Namespace lab48]
 ```
 
 ---

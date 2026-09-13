@@ -292,12 +292,12 @@ Khi quản lý 500 máy chủ chạy kịch bản tự động hóa hàng đêm 
 ```mermaid
 flowchart TD
     A["Thiết kế Task trong Playbook"] --> B{"Dùng Module chuyên dụng hay Command/Shell?"}
-    B -->|Module chuyên dụng| C["Tự động đạt Idempotency -> Lần 2 changed=false"]
-    B -->|Command / Shell| D{"Có thuộc tính điều khiển?"}
+    B -->|"Module chuyên dụng"| C["Tự động đạt Idempotency -> Lần 2 changed=false"]
+    B -->|"Command / Shell"| D{"Có thuộc tính điều khiển?"}
     
-    D -->|Có creates / removes| E["Kiểm tra file điều kiện -> Đạt Idempotency"]
-    D -->|Có changed_when| F["Đánh giá biểu thức logic -> Báo changed đúng bản chất"]
-    D -->|Không có gì| G["LỖI: Luôn changed=true lần 2 (Non-idempotent)"]
+    D -->|"Có creates / removes"| E["Kiểm tra file điều kiện -> Đạt Idempotency"]
+    D -->|"Có changed_when"| F["Đánh giá biểu thức logic -> Báo changed đúng bản chất"]
+    D -->|"Không có gì"| G["LỖI: Luôn changed=true lần 2 (Non-idempotent)"]
     
     C & E & F --> H["CHẠY THỬ LẦN 2"]
     H --> I{"PLAY RECAP changed=0?"}
@@ -424,20 +424,20 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Lần 1: Thực thi Kịch bản Chốt Cấu hình| PB["Playbook: idempotent-site.yml"]
-    SubGraph1 --> |2. Lần 2: Thực thi Phép thử Idempotency| PB
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Lần 1: Thực thi Kịch bản Chốt Cấu hình"| PB["Playbook: idempotent-site.yml"]
+    SubGraph1 -->|"2. Lần 2: Thực thi Phép thử Idempotency"| PB
     
-    PB --> |Task 1: package state=present| T1["Target Container 1 (target1)"]
-    PB --> |Task 2: command args: creates=/file| T1
-    PB --> |Task 3: command changed_when: false| T1
-    PB --> |Task 4: lineinfile regexp=...| T1
+    PB -->|"Task 1: package state=present"| T1["Target Container 1 (target1)"]
+    PB -->|"Task 2: command args: creates=/file"| T1
+    PB -->|"Task 3: command changed_when: false"| T1
+    PB -->|"Task 4: lineinfile regexp=..."| T1
     
     T1 -. "RECAP Lần 1: ok=4, changed=3" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook Lần 1 & Lần 2| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook Lần 1 & Lần 2"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

@@ -558,14 +558,14 @@ Vì giúp <b style="color: var(--accent-primary);">kiểm duyệt kỹ các tệ
 
 ```mermaid
 graph TD
-    EnterpriseAdmin[Multi-Tenant Operator] -->|1. Setup Namespaces| NS[Namespaces: team-alpha, team-beta, team-secops]
-    NS -->|2. Resource Governance| Quota[ResourceQuota & LimitRange Config]
-    NS -->|3. Access Isolation| RBAC[RBAC Role & RoleBinding Scoping]
-    NS -->|4. Network Isolation| NetPol[NetworkPolicy Cross-Team Block]
-    NS -->|5. Change Governance| GitOps[Kyverno Mutation & Change Management PR]
+    EnterpriseAdmin[Multi-Tenant Operator] -->|"1. Setup Namespaces"| NS[Namespaces: team-alpha, team-beta, team-secops]
+    NS -->|"2. Resource Governance"| Quota[ResourceQuota & LimitRange Config]
+    NS -->|"3. Access Isolation"| RBAC[RBAC Role & RoleBinding Scoping]
+    NS -->|"4. Network Isolation"| NetPol[NetworkPolicy Cross-Team Block]
+    NS -->|"5. Change Governance"| GitOps[Kyverno Mutation & Change Management PR]
     
-    Quota & RBAC & NetPol & GitOps -->|6. Auto-Grading Script| GradeScript[Script Chấm Điểm Vận Hành]
-    GradeScript -->|Score >= 80%: PASS| OpsReady[Enterprise Operations Certified!]
+    Quota & RBAC & NetPol & GitOps -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Vận Hành]
+    GradeScript -->|"Score >= 80%: PASS"| OpsReady[Enterprise Operations Certified!]
 ```
 
 ---

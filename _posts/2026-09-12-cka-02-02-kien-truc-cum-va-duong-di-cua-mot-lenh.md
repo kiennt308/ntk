@@ -470,14 +470,14 @@ Con số chốt: Mức verbose **`-v=8`** (soi header + body JSON) và **`-v=9`*
 
 ```mermaid
 graph TD
-    A["Lệnh kubectl (HTTP Client)"] -->|Chặng 1: Kubeconfig| B["kube-apiserver"]
-    B -->|Chặng 2: AuthN 401| C{"Xác thực?"}
-    C -->|Đúng| D{"Chặng 3: AuthZ 403"}
-    D -->|Đúng| E["Chặng 4: Admission Control"]
-    E -->|Valid| F["Chặng 5: etcd Persistence (201 Created)"]
-    F -->|Watch Event| G["Chặng 6: Controller Manager (Tạo RS & Pod)"]
-    G -->|Watch Event| H["Chặng 7a: Scheduler (Filtering/Scoring & Binding nodeName)"]
-    H -->|Watch Event| I["Chặng 7b: Kubelet & CRI (Kéo ảnh & Run container)"]
+    A["Lệnh kubectl (HTTP Client)"] -->|"Chặng 1: Kubeconfig"| B["kube-apiserver"]
+    B -->|"Chặng 2: AuthN 401"| C{"Xác thực?"}
+    C -->|"Đúng"| D{"Chặng 3: AuthZ 403"}
+    D -->|"Đúng"| E["Chặng 4: Admission Control"]
+    E -->|"Valid"| F["Chặng 5: etcd Persistence (201 Created)"]
+    F -->|"Watch Event"| G["Chặng 6: Controller Manager (Tạo RS & Pod)"]
+    G -->|"Watch Event"| H["Chặng 7a: Scheduler (Filtering/Scoring & Binding nodeName)"]
+    H -->|"Watch Event"| I["Chặng 7b: Kubelet & CRI (Kéo ảnh & Run container)"]
     
     style A fill:none,stroke:#333,stroke-width:2px
     style B fill:none,stroke:#333,stroke-width:2px

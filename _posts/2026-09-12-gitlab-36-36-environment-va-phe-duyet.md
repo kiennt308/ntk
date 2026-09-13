@@ -410,10 +410,10 @@ flowchart TD
     D --> F[Job deploy-staging: Auto Deploy to Staging Env]
     F --> G[Run Automated Integration & E2E Tests]
     
-    G -->|Tests PASSED| H[Job deploy-prod: Waiting for Manual Approval]
-    H -->|TechLead Approves when:manual| I[Deploy Immutable Image SHA to Production]
+    G -->|"Tests PASSED"| H[Job deploy-prod: Waiting for Manual Approval]
+    H -->|"TechLead Approves when:manual"| I[Deploy Immutable Image SHA to Production]
     
-    I -->|Production Incident Detected| J[1-Click Rollback: Re-deploy Previous Green Deployment]
+    I -->|"Production Incident Detected"| J[1-Click Rollback: Re-deploy Previous Green Deployment]
 ```
 
 ### 9.2. Năm điều phải nhớ thuộc lòng
@@ -519,20 +519,20 @@ graph TD
     subgraph GitLab CI/CD Pipeline
         A[Git Commit / MR Created] --> B[Stage: Build & Test]
         
-        B -->|Merge Request Event| C[Job deploy-review: Dynamic Environment review/mr-slug]
+        B -->|"Merge Request Event"| C[Job deploy-review: Dynamic Environment review/mr-slug]
         C --> D[Job stop-review: Teardown Environment via on_stop]
         
-        B -->|Main Branch Push| E[Job deploy-staging: Auto Deploy to Staging]
+        B -->|"Main Branch Push"| E[Job deploy-staging: Auto Deploy to Staging]
         E --> F[Job deploy-production: Manual Approval Gate]
     end
 
     subgraph Infrastructure Environments
         C --> G[Review App Cluster Namespace]
         E --> H[Staging Cluster Namespace]
-        F -->|Manual Trigger by Maintainer| I[Production Cluster Namespace]
+        F -->|"Manual Trigger by Maintainer"| I[Production Cluster Namespace]
     end
 
-    I -->|Production Failure Incident| J[Rollback Action: Re-deploy Previous Green Image Tag]
+    I -->|"Production Failure Incident"| J[Rollback Action: Re-deploy Previous Green Image Tag]
 ```
 
 ---

@@ -337,7 +337,7 @@ spec:
 flowchart TD
     SCRIPT["Script trong generate command:<br/>echo 'Bắt đầu giải mã...'<br/>sops -d secrets.yaml"] --> STDOUT["Dữ liệu in ra STDOUT:<br/>Bắt đầu giải mã...<br/>apiVersion: v1<br/>kind: Secret..."]
     STDOUT --> ARGO_PARSER["Argo CD YAML/JSON AST Parser"]
-    ARGO_PARSER -->|Không thể parse dòng chữ 'Bắt đầu giải mã...'| FAIL["LỖI NGHIÊM TRỌNG: Invalid YAML Document!"]
+    ARGO_PARSER -->|"Không thể parse dòng chữ 'Bắt đầu giải mã...'"| FAIL["LỖI NGHIÊM TRỌNG: Invalid YAML Document!"]
     FAIL ==> TRAP["BẪY: Toàn bộ quá trình đồng bộ bị ĐÁNH SẬP!"]
 
 

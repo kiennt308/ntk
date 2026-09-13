@@ -316,9 +316,9 @@ Khi xây dựng bộ kịch bản quản trị hệ thống Doanh nghiệp lớn
 flowchart TD
     A["Nhu cầu Chia nhỏ Kịch bản Playbook"] --> B{"Phân loại Đối tượng Nạp"}
     
-    B -->|Tệp Playbook chứa hosts:| C["ansible.builtin.import_playbook: site_web.yml"]
-    B -->|Tệp Task con tĩnh Parse-time| D["ansible.builtin.import_tasks: tasks/common.yml"]
-    B -->|Tệp Task con động Runtime| E["ansible.builtin.include_tasks: tasks/web.yml"]
+    B -->|"Tệp Playbook chứa hosts:"| C["ansible.builtin.import_playbook: site_web.yml"]
+    B -->|"Tệp Task con tĩnh Parse-time"| D["ansible.builtin.import_tasks: tasks/common.yml"]
+    B -->|"Tệp Task con động Runtime"| E["ansible.builtin.include_tasks: tasks/web.yml"]
     
     D --> F["Hòa trộn phẳng -> Hỗ trợ Tags & Handlers trực tiếp"]
     E --> G["Đánh giá Runtime -> Hỗ trợ loop: và when: (dùng apply: cho tags)"]
@@ -466,25 +466,25 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Nạp Playbook chính: site-include-import.yml| PB["Playbook: site-include-import.yml"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Playbook chính: site-include-import.yml"| PB["Playbook: site-include-import.yml"]
     
     subgraph "Tự động hóa Nạp Tệp Task Con"
-        PB --> |2. import_tasks (Parse-time Static)| T1["tasks/common_tasks.yml: /etc/common-import.conf"]
-        PB --> |3. include_tasks (Runtime Dynamic when: prod)| T2["tasks/web_tasks.yml: /etc/include-import-app.conf"]
-        PB --> |4. include_tasks with loop:| T3["tasks/vhost_tasks.yml: Loop render vhosts"]
+        PB -->|"2. import_tasks (Parse-time Static)"| T1["tasks/common_tasks.yml: /etc/common-import.conf"]
+        PB -->|"3. include_tasks (Runtime Dynamic when: prod)"| T2["tasks/web_tasks.yml: /etc/include-import-app.conf"]
+        PB -->|"4. include_tasks with loop:"| T3["tasks/vhost_tasks.yml: Loop render vhosts"]
     end
     
-    SubGraph1 --> |5. import_playbook: playbooks/sub_playbook.yml| SUB["Playbook Con: sub_playbook.yml"]
+    SubGraph1 -->|"5. import_playbook: playbooks/sub_playbook.yml"| SUB["Playbook Con: sub_playbook.yml"]
     
-    T1 --> |6. Gửi cấu hình tĩnh| TARGET1["Target Container 1 (target1)"]
-    T2 --> |7. Gửi cấu hình động| TARGET1
+    T1 -->|"6. Gửi cấu hình tĩnh"| TARGET1["Target Container 1 (target1)"]
+    T2 -->|"7. Gửi cấu hình động"| TARGET1
     
     TARGET1 -. "RECAP Lần 1: ok=6, changed=3" .-> SubGraph1
     TARGET1 -. "RECAP Lần 2: ok=6, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook site-include-import.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| TARGET1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-include-import.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| TARGET1
 ```
 
 ---

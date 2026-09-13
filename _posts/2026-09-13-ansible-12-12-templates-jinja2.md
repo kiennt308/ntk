@@ -305,8 +305,8 @@ flowchart TD
     
     D --> E["Gọi module ansible.builtin.template"]
     E --> F{"Khai báo validate: 'nginx -t -c %s'?"}
-    F -->|CÓ| G["Kiểm tra Syntax an toàn -> Chép file"]
-    F -->|KHÔNG| H["Rủi ro ghi đè file lỗi syntax"]
+    F -->|"CÓ"| G["Kiểm tra Syntax an toàn -> Chép file"]
+    F -->|"KHÔNG"| H["Rủi ro ghi đè file lỗi syntax"]
     
     G --> I["LƯỢT CHẠY LẦN 2"]
     I --> J{"PLAY RECAP Lần 2: changed=0?"}
@@ -445,18 +445,18 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Nạp Template: templates/nginx.conf.j2 & app.ini.j2| PB["Playbook: template-site.yml"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Template: templates/nginx.conf.j2 & app.ini.j2"| PB["Playbook: template-site.yml"]
     
-    PB --> |2. Compute Jinja2: facts + filters default/join/to_nice_yaml| PB
-    PB --> |3. Validate Syntax: validate: 'cat %s'| PB
-    PB --> |4. Deploy rendered files: /etc/nginx-demo.conf, /etc/app.ini| T1["Target Container 1 (target1)"]
+    PB -->|"2. Compute Jinja2: facts + filters default/join/to_nice_yaml"| PB
+    PB -->|"3. Validate Syntax: validate: 'cat %s'"| PB
+    PB -->|"4. Deploy rendered files: /etc/nginx-demo.conf, /etc/app.ini"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=3, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=3, changed=0 (Checksum Identical -> IDEMPOTENT)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook template-site.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook template-site.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

@@ -46,10 +46,10 @@ flowchart TD
         H5["5. Missing (Màu Xám)<br/>Tài nguyên có trong Git nhưng chưa tồn tại trên Kubernetes"]
     end
 
-    H5 -->|Bắt đầu Sync| H2
-    H2 -->|Sẵn sàng hoàn tất| H1
-    H2 -.->|Gặp lỗi nghiêm trọng| H3
-    H1 -.->|Tạm dừng chiến lược| H4
+    H5 -->|"Bắt đầu Sync"| H2
+    H2 -->|"Sẵn sàng hoàn tất"| H1
+    H2 -.->|"Gặp lỗi nghiêm trọng"| H3
+    H1 -.->|"Tạm dừng chiến lược"| H4
 
 
 ```
@@ -84,7 +84,7 @@ flowchart TD
         GATE["Điều phối rào chắn Sync Waves Barrier"]
     end
 
-    K8S_PROBE -->|Cập nhật Pod Status| ARGO_HEALTH
+    K8S_PROBE -->|"Cập nhật Pod Status"| ARGO_HEALTH
 
 
 ```

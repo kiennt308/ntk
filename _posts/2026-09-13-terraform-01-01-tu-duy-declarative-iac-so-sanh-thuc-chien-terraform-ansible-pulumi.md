@@ -36,12 +36,12 @@ flowchart TB
     subgraph IMP["⚠️ MÔ HÌNH IMPERATIVE (MỆNH LỆNH - Ansible / Bash)"]
         direction TB
         I1["1. Gửi API kiểm tra S3 Bucket"] --> I2{"Kiểm tra tồn tại"}
-        I2 -->|Chưa có| I3["2. Gửi API tạo mới S3 Bucket"]
-        I2 -->|Đã có| I4["3. Cấu hình mã hóa KMS & Policy"]
+        I2 -->|"Chưa có"| I3["2. Gửi API tạo mới S3 Bucket"]
+        I2 -->|"Đã có"| I4["3. Cấu hình mã hóa KMS & Policy"]
         I3 --> I4
         I4 --> I5{"Kiểm tra kết nối"}
-        I5 -->|Đứt mạng / Crash| I_ERR["❌ Rơi vào Partial State (Treo tài nguyên)"]
-        I5 -->|Thành công| I_OK["✅ Hoàn tất tuần tự"]
+        I5 -->|"Đứt mạng / Crash"| I_ERR["❌ Rơi vào Partial State (Treo tài nguyên)"]
+        I5 -->|"Thành công"| I_OK["✅ Hoàn tất tuần tự"]
     end
 
     subgraph DEC["✨ MÔ HÌNH DECLARATIVE (KHAI BÁO - Terraform Desired State)"]
@@ -107,10 +107,10 @@ flowchart TD
         NEW_STATE["💾 Ghi đè bản ghi mới vào State Backend"]
     end
 
-    CLOUD -->|1. Đọc thực tế| REFRESH
-    STATE -->|2. Đọc bản lưu| REFRESH
+    CLOUD -->|"1. Đọc thực tế"| REFRESH
+    STATE -->|"2. Đọc bản lưu"| REFRESH
     REFRESH --> DIFF
-    HCL -->|3. Đọc mã HCL| DIFF
+    HCL -->|"3. Đọc mã HCL"| DIFF
     DIFF --> DAG
     DAG --> PLAN
     PLAN --> APPLY

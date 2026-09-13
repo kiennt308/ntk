@@ -292,12 +292,12 @@ Một trong những tính năng mạnh mẽ nhất nhưng cũng nguy hiểm nh�
 flowchart TD
     subgraph SCENARIO_A["KỊCH BẢN A: CÓ FINALIZER (Cascade Deletion = TRUE)"]
         APP_A["Xóa Application: ecommerce-app<br/>(Có finalizer: resources-finalizer)"]
-        APP_A -->|Argo CD quét toàn bộ Tracking ID| DEL_K8S["XÓA SẠCH SẼ TOÀN BỘ TÀI NGUYÊN:<br/>Deployments, Services, PVCs, Secrets!"]
+        APP_A -->|"Argo CD quét toàn bộ Tracking ID"| DEL_K8S["XÓA SẠCH SẼ TOÀN BỘ TÀI NGUYÊN:<br/>Deployments, Services, PVCs, Secrets!"]
     end
 
     subgraph SCENARIO_B["KỊCH BẢN B: KHÔNG CÓ FINALIZER (Orphan Deletion = TRUE)"]
         APP_B["Xóa Application: ecommerce-app<br/>(finalizers: null)"]
-        APP_B -->|Chỉ xóa đối tượng Application trên Argo CD| KEEP_K8S["GIỮ NGUYÊN TOÀN BỘ TÀI NGUYÊN<br/>Đang chạy trên cụm Kubernetes!"]
+        APP_B -->|"Chỉ xóa đối tượng Application trên Argo CD"| KEEP_K8S["GIỮ NGUYÊN TOÀN BỘ TÀI NGUYÊN<br/>Đang chạy trên cụm Kubernetes!"]
     end
 
 

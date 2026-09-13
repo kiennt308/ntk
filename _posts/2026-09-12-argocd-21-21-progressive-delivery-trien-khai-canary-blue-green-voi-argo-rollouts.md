@@ -41,7 +41,7 @@ Bài viết này sẽ hướng dẫn bạn làm chủ toàn diện Argo Rollouts
 ```mermaid
 flowchart TD
     subgraph S1["1. ROLLING UPDATE (K8s Deployment Truyền Thống)"]
-        R_OLD["Pods Cũ (v1.0)"] -->|Thay thế dần không kiểm soát| R_NEW["Pods Mới (v2.0)"]
+        R_OLD["Pods Cũ (v1.0)"] -->|"Thay thế dần không kiểm soát"| R_NEW["Pods Mới (v2.0)"]
         R_FAIL["Nếu v2.0 có lỗi -&gt; 100% Người Dùng Chịu Ảnh Hưởng!"]
     end
 
@@ -58,8 +58,8 @@ flowchart TD
         C_ANALYSIS["Prometheus AnalysisRun (Đo tỷ lệ lỗi HTTP 5xx)"]
         
         C_CANARY --> C_ANALYSIS
-        C_ANALYSIS -->|Lỗi < 1%| C_PROMOTE["Tự động tăng traffic: 20% -&gt; 50% -&gt; 100%"]
-        C_ANALYSIS -->|Lỗi > 1%| C_ROLLBACK["TỰ ĐỘNG ROLLBACK VỀ v1.0 TRONG 1 GIÂY!"]
+        C_ANALYSIS -->|"Lỗi < 1%"| C_PROMOTE["Tự động tăng traffic: 20% -&gt; 50% -&gt; 100%"]
+        C_ANALYSIS -->|"Lỗi > 1%"| C_ROLLBACK["TỰ ĐỘNG ROLLBACK VỀ v1.0 TRONG 1 GIÂY!"]
     end
 
 

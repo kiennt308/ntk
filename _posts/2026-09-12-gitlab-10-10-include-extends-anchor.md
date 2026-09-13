@@ -44,9 +44,9 @@ Buổi 10 giải quyết bài toán tái sử dụng cấu hình tĩnh trong Git
 
 ```mermaid
 graph TD
-    t0["Thời điểm 1 (t0): YAML Parser"] -->|Hợp nhất YAML Anchor & Alias| t1["Thời điểm 2 (t1): GitLab Includer"]
-    t1 -->|Gộp local, project, remote, template| t2["Thời điểm 3 (t2): GitLab Resolver"]
-    t2 -->|Xử lý extends & !reference| MY["merged_yaml (Bức tranh sự thật)"]
+    t0["Thời điểm 1 (t0): YAML Parser"] -->|"Hợp nhất YAML Anchor & Alias"| t1["Thời điểm 2 (t1): GitLab Includer"]
+    t1 -->|"Gộp local, project, remote, template"| t2["Thời điểm 3 (t2): GitLab Resolver"]
+    t2 -->|"Xử lý extends & !reference"| MY["merged_yaml (Bức tranh sự thật)"]
 ```
 
 ---
@@ -691,11 +691,11 @@ Thông qua khối lý thuyết Buổi 10, học viên đã được trang bị n
 
 ```mermaid
 graph TD
-    MainRepo["Project Main: lab10-include (.gitlab-ci.yml)"] -->|include: local| LocalFile["ci/templates/local-build.yml"]
-    MainRepo -->|include: project ref: v1.1.0| SharedRepo["Project Shared: lab10-cau-hinh-chung"]
-    MainRepo -->|include: template| GitLabTemplate["Getting-Started.gitlab-ci.yml"]
-    MainRepo -->|POST /ci/lint| APIEngine["GitLab POST /ci/lint Engine"]
-    APIEngine -->|Trả về| MergedYAML["merged_yaml (Bức tranh sự thật)"]
+    MainRepo["Project Main: lab10-include (.gitlab-ci.yml)"] -->|"include: local"| LocalFile["ci/templates/local-build.yml"]
+    MainRepo -->|"include: project ref: v1.1.0"| SharedRepo["Project Shared: lab10-cau-hinh-chung"]
+    MainRepo -->|"include: template"| GitLabTemplate["Getting-Started.gitlab-ci.yml"]
+    MainRepo -->|"POST /ci/lint"| APIEngine["GitLab POST /ci/lint Engine"]
+    APIEngine -->|"Trả về"| MergedYAML["merged_yaml (Bức tranh sự thật)"]
 ```
 
 ```

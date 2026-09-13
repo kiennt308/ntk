@@ -95,8 +95,8 @@ graph TD
         F --> H["inventory/production/group_vars/web.yml (db_host: prod-db-cluster)"]
     end
     
-    I["Playbook Duy nhất: site-env.yml"] --> |Chạy Staging: -i inventory/staging| C
-    I --> |Chạy Production: -i inventory/production| F
+    I["Playbook Duy nhất: site-env.yml"] -->|"Chạy Staging: -i inventory/staging"| C
+    I -->|"Chạy Production: -i inventory/production"| F
     
     D --> J["Target Staging Container (target1)"]
     G --> K["Target Production Server"]
@@ -465,11 +465,11 @@ cd labs && make up && make key
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-inventory & ansible-playbook)"] --> |1. ansible.cfg safe default: inventory = ./inventory/staging| CFG["ansible.cfg"]
+    SubGraph1["Control Node (ansible-inventory & ansible-playbook)"] -->|"1. ansible.cfg safe default: inventory = ./inventory/staging"| CFG["ansible.cfg"]
     
     subgraph "Cấu trúc Thư mục Inventory Cô lập"
-        CFG --> |2. Môi trường Staging| STG_DIR["inventory/staging/"]
-        CFG --> |3. Môi trường Production| PRD_DIR["inventory/production/"]
+        CFG -->|"2. Môi trường Staging"| STG_DIR["inventory/staging/"]
+        CFG -->|"3. Môi trường Production"| PRD_DIR["inventory/production/"]
         
         STG_DIR --> STG_H["hosts.ini (target1)"]
         STG_DIR --> STG_GV["group_vars/all.yml & web.yml (env: staging, port: 8080)"]
@@ -478,17 +478,17 @@ graph TD
         PRD_DIR --> PRD_GV["group_vars/all.yml & web.yml (env: production, port: 443)"]
     end
     
-    SubGraph1 --> |4. Playbook Duy nhất: site-env.yml| PB["Playbook: site-env.yml"]
+    SubGraph1 -->|"4. Playbook Duy nhất: site-env.yml"| PB["Playbook: site-env.yml"]
     
-    PB --> |5. Run Staging: -i inventory/staging| T1["Target Container 1 (target1 - Staging)"]
-    PB --> |6. Run Prod: -i inventory/production| T2["Target Container 2 (target2 - Production)"]
+    PB -->|"5. Run Staging: -i inventory/staging"| T1["Target Container 1 (target1 - Staging)"]
+    PB -->|"6. Run Prod: -i inventory/production"| T2["Target Container 2 (target2 - Production)"]
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook với cờ -i| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook với cờ -i"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

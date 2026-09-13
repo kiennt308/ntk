@@ -118,10 +118,10 @@ Mô hình Ban Nhạc Rock 3 Người: Container chính là Ca sĩ hát chính; S
 ```mermaid
 graph LR
     subgraph Multi-Container Pod - Sidecar Pattern
-        App[Main Container: Nginx] -->|Ghi log| Vol[(Shared Volume emptyDir)]
-        Sidecar[Sidecar Container: Log Collector] -->|Đọc log| Vol
+        App[Main Container: Nginx] -->|"Ghi log"| Vol[(Shared Volume emptyDir)]
+        Sidecar[Sidecar Container: Log Collector] -->|"Đọc log"| Vol
     end
-    Sidecar -->|Stream log| Elastic[Elasticsearch / CloudWatch]
+    Sidecar -->|"Stream log"| Elastic[Elasticsearch / CloudWatch]
 ```
 
 **Nguyên lý cốt lõi:** Sử dụng Adapter Pattern khi muốn chuẩn hóa định dạng dữ liệu đầu ra (như biến đổi file log dị biệt thành chuẩn JSON hoặc chuyển đổi metrics thành chuẩn Prometheus) trước khi xuất ra ngoài.
@@ -167,10 +167,10 @@ spec:
 ```mermaid
 graph LR
     subgraph Pod
-        Main[Main App Container] -->|Connect| Localhost["localhost:6379"]
+        Main[Main App Container] -->|"Connect"| Localhost["localhost:6379"]
         Ambassador[Ambassador Container Proxy] --- Localhost
     end
-    Ambassador -->|Forward Traffic| ExtDB[(External Redis Cluster)]
+    Ambassador -->|"Forward Traffic"| ExtDB[(External Redis Cluster)]
 ```
 
 ---

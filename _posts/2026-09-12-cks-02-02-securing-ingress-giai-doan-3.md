@@ -117,9 +117,9 @@ Mô hình Cổng An ninh Sân bay Quốc tế và Máy Quét X-Ray WAF: Ingress 
 
 ```mermaid
 graph LR
-    Client[Khách gửi HTTP port 80] -->|1. SSL Redirect| Ingress[Ingress Controller: SSL Redirect 301]
-    Ingress -->|2. Chuyển hướng HTTPS port 443| HTTPSClient[Khách kết nối HTTPS TLS 1.3]
-    HTTPSClient -->|3. Mã hóa an toàn| PodBackend[Pod Backend]
+    Client[Khách gửi HTTP port 80] -->|"1. SSL Redirect"| Ingress[Ingress Controller: SSL Redirect 301]
+    Ingress -->|"2. Chuyển hướng HTTPS port 443"| HTTPSClient[Khách kết nối HTTPS TLS 1.3]
+    HTTPSClient -->|"3. Mã hóa an toàn"| PodBackend[Pod Backend]
 ```
 
 **Nguyên lý cốt lõi:** Khi cấu hình mTLS end-to-end từ Ingress Controller vào Pod backend, khai báo annotation `nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"` để đảm bảo gói tin được mã hóa liên tục trên toàn bộ đường truyền nội bộ.
@@ -193,9 +193,9 @@ metadata:
 ```mermaid
 graph TD
     Attacker[Hacker gửi SQLi: ?id=1' OR '1'='1] --> Ingress[Nginx Ingress Controller]
-    Ingress --> WAF{ModSecurity WAF + OWASP CRS}
-    WAF -->|Phát hiện mẫu SQLi| Block[CHẶN THẲNG: Trả về HTTP 403 Forbidden]
-    WAF -.->|Packet sạch| PodApp[Pod Application]
+    Ingress --> WAF{"ModSecurity WAF + OWASP CRS"}
+    WAF -->|"Phát hiện mẫu SQLi"| Block[CHẶN THẲNG: Trả về HTTP 403 Forbidden]
+    WAF -.->|"Packet sạch"| PodApp[Pod Application]
 ```
 
 **Nguyên lý cốt lõi:** Đặt cờ `modsecurity-snippet` với luật `SecRuleEngine On` để WAF chủ động CHẶN (Block) gói tin độc hại thay vì chỉ ghi log cảnh báo (`SecRuleEngine DetectionOnly`).
@@ -533,13 +533,13 @@ Tránh việc chặn nhầm (False Positive) các thao tác duy trì kết nối
 
 ```mermaid
 graph TD
-    User[Khách truy cập] -->|1. HTTP/HTTPS Traffic| Ingress[Ingress Controller: SSL Redirect & Rate Limit]
-    Ingress -->|2. Kiểm tra IP Whitelist| IPFilter{IP Whitelist: 127.0.0.1/32}
-    IPFilter -->|Match IP| WAF{ModSecurity WAF: SecRuleEngine On}
-    IPFilter -.->|Mismatch IP| Block403[Trả về HTTP 403 Forbidden]
+    User[Khách truy cập] -->|"1. HTTP/HTTPS Traffic"| Ingress[Ingress Controller: SSL Redirect & Rate Limit]
+    Ingress -->|"2. Kiểm tra IP Whitelist"| IPFilter{"IP Whitelist: 127.0.0.1/32"}
+    IPFilter -->|"Match IP"| WAF{"ModSecurity WAF: SecRuleEngine On"}
+    IPFilter -.->|"Mismatch IP"| Block403[Trả về HTTP 403 Forbidden]
     
-    WAF -->|Packet Sạch| PodWeb[Pod secure-web Backend]
-    WAF -.->|Phát hiện SQLi/XSS| BlockWAF[CHẶN THẲNG: Trả về HTTP 403]
+    WAF -->|"Packet Sạch"| PodWeb[Pod secure-web Backend]
+    WAF -.->|"Phát hiện SQLi/XSS"| BlockWAF[CHẶN THẲNG: Trả về HTTP 403]
 ```
 
 ---

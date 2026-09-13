@@ -81,15 +81,15 @@ Mở màn Giai đoạn 5 — Làm chủ hệ thống dịch vụ ngầm cấp En
 
 ```mermaid
 graph TD
-    A["Mã nguồn Ứng dụng & Template Unit File (my-app.service.j2)"] --> |1. ansible.builtin.template| B["Deploy vào /etc/systemd/system/my-app.service"]
+    A["Mã nguồn Ứng dụng & Template Unit File (my-app.service.j2)"] -->|"1. ansible.builtin.template"| B["Deploy vào /etc/systemd/system/my-app.service"]
     
     subgraph "Cấu trúc 3 Phần Systemd Unit File & Vòng đời Service"
-        B --> |2. [Unit]: Mô tả & Phụ thuộc| C["Description=My App & After=network.target"]
-        B --> |3. [Service]: Thực thi & Tự khôi phục| D["ExecStart=/usr/bin/python3 app.py, User=sysops, Restart=always"]
-        B --> |4. [Install]: Target khởi động| E["WantedBy=multi-user.target"]
+        B -->|"2. [Unit]: Mô tả & Phụ thuộc"| C["Description=My App & After=network.target"]
+        B -->|"3. [Service]: Thực thi & Tự khôi phục"| D["ExecStart=/usr/bin/python3 app.py, User=sysops, Restart=always"]
+        B -->|"4. [Install]: Target khởi động"| E["WantedBy=multi-user.target"]
     end
     
-    B --> |5. Thông báo Handler| F["Handler: daemon_reload: yes & state: restarted"]
+    B -->|"5. Thông báo Handler"| F["Handler: daemon_reload: yes & state: restarted"]
     F --> G["6. ansible.builtin.systemd: enabled=yes & state=started"]
     
     G --> H["Ứng dụng chạy Daemon hạ đặc quyền, Tự khôi phục Crash & Idempotent 100% ở Lần 2"]
@@ -318,10 +318,10 @@ Khi đóng gói và quản lý các ứng dụng tự phát triển trong Doanh 
 flowchart TD
     A["Nhu cầu Đóng gói & Quản lý Dịch vụ Tùy chỉnh"] --> B{"Tự động hóa bằng Ansible"}
     
-    B -->|1. Biến đổi Jinja2 Template| C["templates/my-app.service.j2 ([Unit], [Service], [Install])"]
-    C -->|2. ansible.builtin.template| D["Deploy vào /etc/systemd/system/my-app.service (0644)"]
+    B -->|"1. Biến đổi Jinja2 Template"| C["templates/my-app.service.j2 ([Unit], [Service], [Install])"]
+    C -->|"2. ansible.builtin.template"| D["Deploy vào /etc/systemd/system/my-app.service (0644)"]
     
-    D -->|3. Gọi Handler thông báo| E["Handler: daemon_reload: yes & state: restarted"]
+    D -->|"3. Gọi Handler thông báo"| E["Handler: daemon_reload: yes & state: restarted"]
     
     E --> F["4. ansible.builtin.systemd: enabled=yes & state=started"]
     
@@ -480,25 +480,25 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (Ansible Core & Playbook)"] --> |1. Nạp Template: templates/my-app.service.j2| TMPL["Template: my-app.service.j2"]
+    SubGraph1["Control Node (Ansible Core & Playbook)"] -->|"1. Nạp Template: templates/my-app.service.j2"| TMPL["Template: my-app.service.j2"]
     
     subgraph "Hệ thống Quản lý Systemd Service & Daemon Lifecycle"
-        TMPL --> |2. Render Unit File (mode: 0644)| UF["/etc/systemd/system/my-app.service"]
-        UF --> |3. Gọi Handler| HND["Handler: daemon_reload: yes & state: restarted"]
-        HND --> |4. Quản lý trạng thái Daemon| SYS["ansible.builtin.systemd (enabled: yes, state: started)"]
+        TMPL -->|"2. Render Unit File (mode: 0644)"| UF["/etc/systemd/system/my-app.service"]
+        UF -->|"3. Gọi Handler"| HND["Handler: daemon_reload: yes & state: restarted"]
+        HND -->|"4. Quản lý trạng thái Daemon"| SYS["ansible.builtin.systemd (enabled: yes, state: started)"]
     end
     
-    SubGraph1 --> |5. Thi hành Playbook chính: site-systemd.yml| PB["Playbook: site-systemd.yml"]
+    SubGraph1 -->|"5. Thi hành Playbook chính: site-systemd.yml"| PB["Playbook: site-systemd.yml"]
     SYS --> PB
     
-    PB --> |6. Gửi dịch vụ Systemd| T1["Target Container 1 (target1)"]
+    PB -->|"6. Gửi dịch vụ Systemd"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=5, changed=3" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Kiểm tra journalctl -u my-app.service| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Kiểm tra journalctl -u my-app.service"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

@@ -69,12 +69,12 @@ graph TD
 
     subgraph "Sau Tối Ưu: Khung Chuẩn Tái Sử Dụng (204 Dòng - Giảm 64%)"
         B0["Tệp Trung Tâm: khung.yml (120 dòng)<br/>(Chứa 9 khóa dùng chung + 4 Job ẩn)"]
-        B1["Node.js (14 dòng)"] -->|extends & !reference| B0
-        B2["Java (14 dòng)"] -->|extends & !reference| B0
-        B3["Python (14 dòng)"] -->|extends & !reference| B0
-        B4["Go (14 dòng)"] -->|extends & !reference| B0
-        B5[".NET (14 dòng)"] -->|extends & !reference| B0
-        B6["PHP (14 dòng)"] -->|extends & !reference| B0
+        B1["Node.js (14 dòng)"] -->|"extends & !reference"| B0
+        B2["Java (14 dòng)"] -->|"extends & !reference"| B0
+        B3["Python (14 dòng)"] -->|"extends & !reference"| B0
+        B4["Go (14 dòng)"] -->|"extends & !reference"| B0
+        B5[".NET (14 dòng)"] -->|"extends & !reference"| B0
+        B6["PHP (14 dòng)"] -->|"extends & !reference"| B0
     end
 ```
 
@@ -237,7 +237,7 @@ graph LR
         L5["2 Dòng extends: .build & !reference [khung_check]"]
     end
 
-    L1 & L2 & L3 & L4 & L5 -->|Hợp nhất phân giải| D1 & D2 & D3 & D4
+    L1 & L2 & L3 & L4 & L5 -->|"Hợp nhất phân giải"| D1 & D2 & D3 & D4
 ```
 
 **Nguyên lý cốt lõi:** Khung chuẩn gồm đúng **ba** thứ: (1) tệp `.gitlab-ci/khung.yml` chứa **bốn** job ẩn `.build`, `.test`, `.dong-goi`, `.bao-cao` (**Buổi 03 QT 4.2**, lần thứ 3); (2) khối `default` mang `interruptible`, `retry:when`, `timeout`; (3) **quy ước tên** job và artifact. Mỗi ngôn ngữ vào khung bằng **một** khối **14 dòng** khai đúng ba trục và **không khai gì khác**.
@@ -670,14 +670,14 @@ graph TD
     subgraph "Môi Trường Lab: lab15-khung và 6 Repo Mẫu"
         R0["Project Khung: devops/lab15-khung<br/>(Tệp .gitlab-ci/khung.yml)"]
         
-        R1["lab15-node (Node.js)"] -->|include & extends| R0
-        R2["lab15-java (Java Maven)"] -->|include & extends| R0
-        R3["lab15-python (Python)"] -->|include & extends| R0
-        R4["lab15-go (Golang)"] -->|include & extends| R0
-        R5["lab15-dotnet (.NET 8)"] -->|include & extends| R0
-        R6["lab15-php (PHP Composer)"] -->|include & extends| R0
+        R1["lab15-node (Node.js)"] -->|"include & extends"| R0
+        R2["lab15-java (Java Maven)"] -->|"include & extends"| R0
+        R3["lab15-python (Python)"] -->|"include & extends"| R0
+        R4["lab15-go (Golang)"] -->|"include & extends"| R0
+        R5["lab15-dotnet (.NET 8)"] -->|"include & extends"| R0
+        R6["lab15-php (PHP Composer)"] -->|"include & extends"| R0
 
-        R0 -->|Self-Testing Pipeline| R1 & R2 & R3 & R4 & R5 & R6
+        R0 -->|"Self-Testing Pipeline"| R1 & R2 & R3 & R4 & R5 & R6
     end
 ```
 

@@ -43,7 +43,7 @@ Mô hình cũ (Imperative) và Mô hình mới (Declarative) thể hiện sự k
 flowchart TD
     subgraph Imperative_Old ["Mô Hình Cũ: Lệnh CLI terraform state mv"]
         O1["Sửa Code .tf"] --> O2["Kỹ Sư Gõ Thủ Công Lệnh CLI: terraform state mv ..."]
-        O2 -->|Nguy Cơ: Gõ Sai Tên Node Trong Terminal| O3["Hỏng State / Không Có Peer Review"]
+        O2 -->|"Nguy Cơ: Gõ Sai Tên Node Trong Terminal"| O3["Hỏng State / Không Có Peer Review"]
         O3 --> O4["Chạy terraform apply Trong Lo Sợ"]
     end
 
@@ -114,8 +114,8 @@ graph LR
         MS["module.network.aws_subnet.public"]
     end
 
-    V1 -->|moved block| MV
-    S1 -->|moved block| MS
+    V1 -->|"moved block"| MV
+    S1 -->|"moved block"| MS
 
     style State_Cu fill:none,stroke:#f57c00,stroke-width:2px
     style State_Moi fill:none,stroke:#28a745,stroke-width:2px
@@ -236,7 +236,7 @@ Trong bài lab này, chúng ta sẽ thực hiện 2 nhiệm vụ:
 ```mermaid
 graph TD
     subgraph Step1_Moved ["Nhiệm Vụ 1: Refactor với moved"]
-        OLD_R["terraform_data.old_server"] -->|moved block| NEW_R["module.compute.terraform_data.instance"]
+        OLD_R["terraform_data.old_server"] -->|"moved block"| NEW_R["module.compute.terraform_data.instance"]
     end
 
     subgraph Step2_Import ["Nhiệm Vụ 2: Declarative Import"]

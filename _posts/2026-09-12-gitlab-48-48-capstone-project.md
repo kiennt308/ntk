@@ -145,10 +145,10 @@ flowchart TD
     subgraph Tier4 ["4. Container Build & Progressive Release"]
         TFApply --> KanikoBuild[Rootless Kaniko Build & Cache Layering]
         KanikoBuild --> SignImage[Cosign Supply-Chain Image Signing]
-        SignImage --> DeployStrategy{Progressive Deployment Strategy}
-        DeployStrategy -->|Canary 10%| CanaryRollout[Canary Deployment & Prometheus Health Check]
-        CanaryRollout -->|Error Rate < 0.1%| FullDeploy[Helm Production Upgrade 100%]
-        CanaryRollout -->|Error Rate > 1.0%| AutoRollback[Automated Immediate Rollback]
+        SignImage --> DeployStrategy{"Progressive Deployment Strategy"}
+        DeployStrategy -->|"Canary 10%"| CanaryRollout[Canary Deployment & Prometheus Health Check]
+        CanaryRollout -->|"Error Rate < 0.1%"| FullDeploy[Helm Production Upgrade 100%]
+        CanaryRollout -->|"Error Rate > 1.0%"| AutoRollback[Automated Immediate Rollback]
     end
 
     subgraph Tier5 ["5. Fleet Management & Observability"]
@@ -551,8 +551,8 @@ graph TD
     subgraph Phase 5: Progressive Canary & Prometheus Auto-Rollback
         M --> N[Helm Deploy Canary 10% Traffic]
         N --> O[Wait 180s & Query Prometheus Metric API]
-        O -->|Error Rate < 0.1%| P[Promote Canary to 100% Primary Deployment]
-        O -->|Error Rate > 1.0%| Q[EXECUTE IMMEDIATE AUTO-ROLLBACK]
+        O -->|"Error Rate < 0.1%"| P[Promote Canary to 100% Primary Deployment]
+        O -->|"Error Rate > 1.0%"| Q[EXECUTE IMMEDIATE AUTO-ROLLBACK]
     end
 
     subgraph Phase 6: Observability & DORA Metrics Audit

@@ -59,18 +59,18 @@ flowchart TD
         TEMPO["Grafana Tempo / Jaeger (Distributed Spans)"]
     end
 
-    CTRL -->|Scrape Metrics :8082| SM
-    SERVER -->|Scrape Metrics :8083| SM
-    REPO -->|Scrape Metrics :8084| SM
-    REDIS -->|Scrape Metrics :9121| SM
+    CTRL -->|"Scrape Metrics :8082"| SM
+    SERVER -->|"Scrape Metrics :8083"| SM
+    REPO -->|"Scrape Metrics :8084"| SM
+    REDIS -->|"Scrape Metrics :9121"| SM
 
     SM --> PROM
     PROM --> GRAFANA
     PROM --> ALERT
 
-    CTRL -.->|OTLP gRPC Export Spans| OTEL
-    SERVER -.->|OTLP gRPC Export Spans| OTEL
-    REPO -.->|OTLP gRPC Export Spans| OTEL
+    CTRL -.->|"OTLP gRPC Export Spans"| OTEL
+    SERVER -.->|"OTLP gRPC Export Spans"| OTEL
+    REPO -.->|"OTLP gRPC Export Spans"| OTEL
     OTEL --> TEMPO
 
 

@@ -203,8 +203,8 @@ flowchart TD
         N1["Chạy 'terraform plan -refresh-only'"] --> N2["Gửi API đọc Cloud"]
         N2 --> N3["Hiển thị Drift Diff trên Terminal để SRE Review"]
         N3 --> N4{"SRE Duyệt Thay Đổi?"}
-        N4 -->|Đồng ý| N5["Chạy 'terraform apply -refresh-only' -&gt; Ghi State an toàn"]
-        N4 -->|Từ chối| N6["Hủy bỏ lệnh, giữ nguyên State hiện tại"]
+        N4 -->|"Đồng ý"| N5["Chạy 'terraform apply -refresh-only' -&gt; Ghi State an toàn"]
+        N4 -->|"Từ chối"| N6["Hủy bỏ lệnh, giữ nguyên State hiện tại"]
     end
 
     style O3 fill:none,stroke:#3b82f6,stroke-width:2px

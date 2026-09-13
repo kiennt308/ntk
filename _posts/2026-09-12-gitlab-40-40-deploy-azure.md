@@ -112,15 +112,15 @@ flowchart TD
 
     subgraph Azure Entra ID Authentication
         C --> D[Entra ID Identity Engine]
-        D -->|Evaluate Federated Identity Credential| E{Match Subject & Audience?}
-        E -->|No| F[Deny az login]
-        E -->|Yes| G[Issue Short-lived Azure Access Token TTL 60m]
+        D -->|"Evaluate Federated Identity Credential"| E{"Match Subject & Audience?"}
+        E -->|"No"| F[Deny az login]
+        E -->|"Yes"| G[Issue Short-lived Azure Access Token TTL 60m]
     end
 
     subgraph Azure Resource Manager Deployments
-        G -->|Azure RBAC AcrPush| H[az acr login & docker push]
-        G -->|Azure RBAC App Service Contributor| I[az webapp config container set]
-        G -->|Azure RBAC AKS Cluster User| J[az aks get-credentials & kubectl apply]
+        G -->|"Azure RBAC AcrPush"| H[az acr login & docker push]
+        G -->|"Azure RBAC App Service Contributor"| I[az webapp config container set]
+        G -->|"Azure RBAC AKS Cluster User"| J[az aks get-credentials & kubectl apply]
     end
 ```
 
@@ -500,14 +500,14 @@ flowchart TD
     end
 
     subgraph Azure Entra ID Security
-        C --> D{Exact Subject Identifier Match?}
-        D -->|Valid Match| E[Issue Azure Access Token TTL 60m]
+        C --> D{"Exact Subject Identifier Match?"}
+        D -->|"Valid Match"| E[Issue Azure Access Token TTL 60m]
     end
 
     subgraph Azure Target Infrastructure
-        E -->|az acr login| F[Azure Container Registry ACR]
-        E -->|az webapp config| G[Azure App Service Web App]
-        E -->|az aks get-credentials| H[Azure Kubernetes Service AKS]
+        E -->|"az acr login"| F[Azure Container Registry ACR]
+        E -->|"az webapp config"| G[Azure App Service Web App]
+        E -->|"az aks get-credentials"| H[Azure Kubernetes Service AKS]
     end
 ```
 
@@ -614,21 +614,21 @@ Trong bài lab này, học viên sẽ trực tiếp xây dựng luồng tự đ�
 graph TD
     subgraph GitLab CI Engine
         A[Git Push to main] --> B[Generate OIDC JWT Token]
-        B -->|Audience: api://AzureADTokenExchange| C[az login --federated-token]
+        B -->|"Audience: api://AzureADTokenExchange"| C[az login --federated-token]
     end
 
     subgraph Azure Entra ID Federated Authentication Engine
         C --> D[Entra ID Token Exchange Engine]
-        D -->|Evaluate Subject Identifier Match| E{Exact Subject Match?}
-        E -->|No| F[Deny az login]
-        E -->|Yes| G[Issue Short-lived Azure Access Token TTL 60m]
+        D -->|"Evaluate Subject Identifier Match"| E{"Exact Subject Match?"}
+        E -->|"No"| F[Deny az login]
+        E -->|"Yes"| G[Issue Short-lived Azure Access Token TTL 60m]
         G --> H[Impersonate User-Assigned Managed Identity]
     end
 
     subgraph Azure Target Infrastructure
-        H -->|az acr login| I[Azure Container Registry ACR]
-        H -->|az webapp config container set| J[Azure App Service Web App]
-        H -->|az aks get-credentials| K[Azure Kubernetes Service AKS]
+        H -->|"az acr login"| I[Azure Container Registry ACR]
+        H -->|"az webapp config container set"| J[Azure App Service Web App]
+        H -->|"az aks get-credentials"| K[Azure Kubernetes Service AKS]
     end
 ```
 

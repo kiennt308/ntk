@@ -65,7 +65,7 @@ graph TD
     C1 --> D[Xuất báo cáo an ninh chuẩn JSON/SARIF<br/>gl-sast-report.json & gl-dependency-scanning-report.json]
     C2 --> D
     
-    D --> E{Security Quality Gate Check}
+    D --> E{"Security Quality Gate Check"}
     E -- Có lỗ hổng CRITICAL / HIGH --> F[FAIL PIPELINE exit code 1<br/>Chặn không cho Merge MR]
     E -- 0 lỗ hổng CRITICAL / HIGH --> G[PASS PIPELINE<br/>Hiển thị Security Widget trên GitLab UI]
 ```
@@ -763,7 +763,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Lập trình viên push commit chứa mã nguồn lỗi mẫu] --> B{GitLab CI Pipeline Stage Test}
+    A[Lập trình viên push commit chứa mã nguồn lỗi mẫu] --> B{"GitLab CI Pipeline Stage Test"}
     
     subgraph Step1_SAST_Scan [Bước 1: Semgrep SAST Scan]
         B --> C1[semgrep scan --config auto --json]
@@ -778,7 +778,7 @@ graph TD
     end
 
     subgraph Step3_QualityGate_Ignore [Bước 3: Quality Gate & Ignore Files]
-        C3 --> E1{Security Quality Gate Check}
+        C3 --> E1{"Security Quality Gate Check"}
         D3 --> E1
         E1 -- Có lỗi CRITICAL/HIGH --> E2[Fail Pipeline exit 1]
         E2 --> E3[Tạo .semgrepignore & .trivyignore có vết audit]

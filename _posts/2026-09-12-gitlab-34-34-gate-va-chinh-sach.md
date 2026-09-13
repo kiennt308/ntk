@@ -55,7 +55,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ```mermaid
 graph TD
-    A[Merge Request commit code & cấu hình] --> B{Multi-stage Security Quality Gates}
+    A[Merge Request commit code & cấu hình] --> B{"Multi-stage Security Quality Gates"}
     
     subgraph Multi_Stage_Gate_Evaluation [Khối 1: Rào chắn An ninh Đa lớp]
         B --> C1[Stage 1: Secret Scan & SAST Gate]
@@ -65,9 +65,9 @@ graph TD
     end
 
     subgraph False_Positive_And_Bypass [Khối 2: Xử lý Báo Nhầm & Emergency Bypass Audit]
-        C1 & C2 & C3 & C4 -- Phát hiện lỗi Critical/High --> D{Đối soát Tệp Allowlist / Ignore}
+        C1 & C2 & C3 & C4 -- Phát hiện lỗi Critical/High --> D{"Đối soát Tệp Allowlist / Ignore"}
         D -- Lỗi nằm trong .trivyignore/.gitleaksignore hợp lệ --> E[PASS GATE <br/>Cảnh báo được gỡ bỏ khỏi Quality Gate]
-        D -- Lỗi không nằm trong Allowlist --> F{Kiểm tra Emergency Bypass Variable}
+        D -- Lỗi không nằm trong Allowlist --> F{"Kiểm tra Emergency Bypass Variable"}
         F -- Có biến EMERGENCY_SECURITY_BYPASS=SEC-999 còn thời hạn --> G[PASS EMERGENCY BYPASS<br/>Ghi vết Audit Log công khai trên MR UI]
         F -- Không có biến Bypass hợp lệ --> H[FAIL PIPELINE exit code 1<br/>Chặn cứng nút Merge MR]
     end
@@ -728,7 +728,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Merge Request commit code & cấu hình] --> B{Multi-stage Security Quality Gates}
+    A[Merge Request commit code & cấu hình] --> B{"Multi-stage Security Quality Gates"}
     
     subgraph Multi_Stage_Gate_Evaluation [Bước 1 & 2: Rào chắn Multi-stage Gate]
         B --> C1[Job 1: secret-scan-gitleaks]
@@ -739,9 +739,9 @@ graph TD
     end
 
     subgraph False_Positive_And_Bypass [Bước 3 & 4: Allowlist & Emergency Bypass]
-        C1 & C2 & C3 & C4 & C5 -- Khảo sát Lỗi --> D{Đối soát Tệp Allowlist & Script Audit}
+        C1 & C2 & C3 & C4 & C5 -- Khảo sát Lỗi --> D{"Đối soát Tệp Allowlist & Script Audit"}
         D -- Lỗi nằm trong Allowlist hợp lệ còn thời hạn --> E[PASS QUALITY GATE <br/>Cảnh báo được bỏ qua an toàn]
-        D -- Lỗi hết hạn hoặc không nằm trong Allowlist --> F{Check EMERGENCY_SECURITY_BYPASS}
+        D -- Lỗi hết hạn hoặc không nằm trong Allowlist --> F{"Check EMERGENCY_SECURITY_BYPASS"}
         F -- Khai báo biến Bypass=SEC-999 hợp lệ --> G[PASS EMERGENCY BYPASS<br/>In vết Audit Log công khai trên MR UI]
         F -- Không có biến Bypass hợp lệ --> H[FAIL PIPELINE exit code 1<br/>Chặn cứng nút Merge MR]
     end

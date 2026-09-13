@@ -538,14 +538,14 @@ Lệnh <code>sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver
 
 ```mermaid
 graph TD
-    Candidate[CKS Security Engineer] -->|1. Start 90m Speed Timer| SpeedEnv[CKS Speed Drill Environment]
-    SpeedEnv -->|2. System Hardening| Q1[Câu 1: AppArmor & Seccomp Profiles]
-    SpeedEnv -->|3. Supply Chain Security| Q2[Câu 2: Kyverno Enforce & Digest Pinning]
-    SpeedEnv -->|4. Static Analysis Fix| Q3[Câu 3: Kubesec Scan & SecurityContext]
-    SpeedEnv -->|5. Logging & Runtime| Q4[Câu 4: Audit Policy & Falco Custom Rules]
+    Candidate[CKS Security Engineer] -->|"1. Start 90m Speed Timer"| SpeedEnv[CKS Speed Drill Environment]
+    SpeedEnv -->|"2. System Hardening"| Q1[Câu 1: AppArmor & Seccomp Profiles]
+    SpeedEnv -->|"3. Supply Chain Security"| Q2[Câu 2: Kyverno Enforce & Digest Pinning]
+    SpeedEnv -->|"4. Static Analysis Fix"| Q3[Câu 3: Kubesec Scan & SecurityContext]
+    SpeedEnv -->|"5. Logging & Runtime"| Q4[Câu 4: Audit Policy & Falco Custom Rules]
     
-    Q1 & Q2 & Q3 & Q4 -->|6. Auto-Grading Script| GradeScript[Script Chấm Điểm Tự Động]
-    GradeScript -->|Score >= 80%: PASS| CKSReady[CKS Exam Ready!]
+    Q1 & Q2 & Q3 & Q4 -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tự Động]
+    GradeScript -->|"Score >= 80%: PASS"| CKSReady[CKS Exam Ready!]
 ```
 
 ---

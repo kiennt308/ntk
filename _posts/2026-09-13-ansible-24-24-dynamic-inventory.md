@@ -81,19 +81,19 @@ Tự động hóa hoàn toàn việc phát hiện hạ tầng biến động tr�
 
 ```mermaid
 graph TD
-    A["Cloud Provider API / Infrastructure (AWS, Azure, Docker)"] --> |1. Lệnh truy vấn API tự động| B["Dynamic Inventory Plugin (amazon.aws.aws_ec2 / constructed)"]
+    A["Cloud Provider API / Infrastructure (AWS, Azure, Docker)"] -->|"1. Lệnh truy vấn API tự động"| B["Dynamic Inventory Plugin (amazon.aws.aws_ec2 / constructed)"]
     
     subgraph "Xử lý Gom nhóm và Phân tầng Động"
-        B --> |2. Đọc thuộc tính plugin: & keyed_groups| C["Tự động tạo Nhóm theo Tags: tag_Environment_prod"]
-        B --> |3. Đọc thuộc tính compose:| D["Gán lại hostname = private_ip_address"]
-        B --> |4. Đọc thuộc tính groups:| E["Gán nhóm điều kiện: web_nodes if 'web' in tags"]
+        B -->|"2. Đọc thuộc tính plugin: & keyed_groups"| C["Tự động tạo Nhóm theo Tags: tag_Environment_prod"]
+        B -->|"3. Đọc thuộc tính compose:"| D["Gán lại hostname = private_ip_address"]
+        B -->|"4. Đọc thuộc tính groups:"| E["Gán nhóm điều kiện: web_nodes if 'web' in tags"]
     end
     
     C --> F["Bảng Kiểm kê Động (Dynamic Inventory Graph)"]
     D --> F
     E --> F
     
-    F --> |5. Thi hành Playbook không cần sửa file tĩnh| G["ansible-playbook -i inventory/ site-dynamic.yml"]
+    F -->|"5. Thi hành Playbook không cần sửa file tĩnh"| G["ansible-playbook -i inventory/ site-dynamic.yml"]
     G --> H["Lượt chạy Lần 2 đạt changed=0 (Chuẩn Idempotency)"]
 ```
 
@@ -317,8 +317,8 @@ Khi xây dựng bộ kịch bản tự động hóa cho hạ tầng Multi-Cloud 
 flowchart TD
     A["Nhu cầu Quản lý Hạ tầng Đám mây & Quy mô lớn"] --> B{"Lựa chọn Inventory Plugin"}
     
-    B -->|Môi trường Cloud AWS| C["plugin: amazon.aws.aws_ec2 & keyed_groups theo Tags"]
-    B -->|Hạ tầng Data Center / Hybrid| D["plugin: ansible.builtin.constructed & keyed_groups theo Facts"]
+    B -->|"Môi trường Cloud AWS"| C["plugin: amazon.aws.aws_ec2 & keyed_groups theo Tags"]
+    B -->|"Hạ tầng Data Center / Hybrid"| D["plugin: ansible.builtin.constructed & keyed_groups theo Facts"]
     
     C --> E["Cấu hình ansible.cfg: enable_plugins & cache = True"]
     D --> E
@@ -462,29 +462,29 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-inventory & ansible-playbook)"] --> |1. Nạp cấu hình: enable_plugins & cache = True| CFG["ansible.cfg"]
+    SubGraph1["Control Node (ansible-inventory & ansible-playbook)"] -->|"1. Nạp cấu hình: enable_plugins & cache = True"| CFG["ansible.cfg"]
     
     subgraph "Tự động hóa Gom nhóm Động Dynamic Inventory"
-        CFG --> |2. Nạp file kiểm kê tĩnh gốc| ST["inventory/01-static.ini"]
-        CFG --> |3. Nạp Dynamic Plugin| CT["inventory/02-constructed.yaml (plugin: constructed)"]
+        CFG -->|"2. Nạp file kiểm kê tĩnh gốc"| ST["inventory/01-static.ini"]
+        CFG -->|"3. Nạp Dynamic Plugin"| CT["inventory/02-constructed.yaml (plugin: constructed)"]
         
-        ST --> |4. Truy vấn Facts hệ thống| FACTS["Facts: ansible_distribution, env_tag"]
+        ST -->|"4. Truy vấn Facts hệ thống"| FACTS["Facts: ansible_distribution, env_tag"]
         FACTS --> CT
-        CT --> |5. Đọc keyed_groups| GRP["Đồ thị Nhóm Động: web_servers, os_Linux"]
+        CT -->|"5. Đọc keyed_groups"| GRP["Đồ thị Nhóm Động: web_servers, os_Linux"]
     end
     
-    SubGraph1 --> |6. Tra cứu đồ thị nhóm| GRP
-    SubGraph1 --> |7. Thi hành Playbook: site-dynamic-inventory.yml| PB["Playbook: site-dynamic-inventory.yml"]
+    SubGraph1 -->|"6. Tra cứu đồ thị nhóm"| GRP
+    SubGraph1 -->|"7. Thi hành Playbook: site-dynamic-inventory.yml"| PB["Playbook: site-dynamic-inventory.yml"]
     GRP --> PB
     
-    PB --> |8. Gửi cấu hình phát hiện động| T1["Target Container 1 (target1)"]
+    PB -->|"8. Gửi cấu hình phát hiện động"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Tra cứu ansible-inventory --graph| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Tra cứu ansible-inventory --graph"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

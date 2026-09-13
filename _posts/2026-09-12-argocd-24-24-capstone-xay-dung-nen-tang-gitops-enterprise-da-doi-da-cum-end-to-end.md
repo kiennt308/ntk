@@ -70,16 +70,16 @@ flowchart TD
         PROM_PROD["Prometheus Metrics Provider"]
         SEALED["Sealed Secrets Controller (Mã Hóa KMS)"]
         
-        ROLLOUT -->|Canary 20% -> 50% -> 100%| PAYMENT
-        ROLLOUT -->|PromQL AnalysisRun| PROM_PROD
-        SEALED -->|Giải mã| PROD_NS
+        ROLLOUT -->|"Canary 20% -> 50% -> 100%"| PAYMENT
+        ROLLOUT -->|"PromQL AnalysisRun"| PROM_PROD
+        SEALED -->|"Giải mã"| PROD_NS
     end
 
-    GIT_LAYER ==>|Declarative Sync| AC
+    GIT_LAYER ==>|"Declarative Sync"| AC
     AC --> ROOT_APP
-    APPSET -->|Deploy chéo hạ tầng| DEV_APPS
-    APPSET -->|Deploy chéo hạ tầng| SPOKE_PROD
-    NOTIF -.->|Báo động sự cố| SLACK["Slack / Telegram DevOps Channel"]
+    APPSET -->|"Deploy chéo hạ tầng"| DEV_APPS
+    APPSET -->|"Deploy chéo hạ tầng"| SPOKE_PROD
+    NOTIF -.->|"Báo động sự cố"| SLACK["Slack / Telegram DevOps Channel"]
 
 
 ```
@@ -345,7 +345,7 @@ flowchart TD
         F3["Tầng 3 (Network): NetworkPolicy chặn luồng gRPC :8081<br/>khiến commit v2.0 trên Git không bao giờ được Reconcile!"]
     end
 
-    ROOT -.->|Che mắt người vận hành| HIDDEN_FAILS
+    ROOT -.->|"Che mắt người vận hành"| HIDDEN_FAILS
     HIDDEN_FAILS ==> TRAP["HẬU QUẢ: Giám đốc / Developer tưởng hệ thống đã deploy v2.0 thành công,<br/>nhưng thực tế Production đang tê liệt hoặc chạy code cũ!"]
 
 

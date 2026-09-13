@@ -538,14 +538,14 @@ Vì giúp <b style="color: var(--accent-primary);">đọc lại log của contai
 
 ```mermaid
 graph TD
-    Candidate[CKAD Developer] -->|1. Start 90m Speed Timer| SpeedEnv[CKAD Speed Drill Environment]
-    SpeedEnv -->|2. Config & Secrets| Q1[Câu 1: ConfigMap, Secret & envFrom]
-    SpeedEnv -->|3. Probes & Health| Q2[Câu 2: Liveness & Readiness Probes]
-    SpeedEnv -->|4. CronJob & Jobs| Q3[Câu 3: CronJob Schedule Tasks]
-    SpeedEnv -->|5. Canary & Networking| Q4[Câu 4: Canary Deployment & Service]
+    Candidate[CKAD Developer] -->|"1. Start 90m Speed Timer"| SpeedEnv[CKAD Speed Drill Environment]
+    SpeedEnv -->|"2. Config & Secrets"| Q1[Câu 1: ConfigMap, Secret & envFrom]
+    SpeedEnv -->|"3. Probes & Health"| Q2[Câu 2: Liveness & Readiness Probes]
+    SpeedEnv -->|"4. CronJob & Jobs"| Q3[Câu 3: CronJob Schedule Tasks]
+    SpeedEnv -->|"5. Canary & Networking"| Q4[Câu 4: Canary Deployment & Service]
     
-    Q1 & Q2 & Q3 & Q4 -->|6. Auto-Grading Script| GradeScript[Script Chấm Điểm Tự Động]
-    GradeScript -->|Score >= 80%: PASS| CKADReady[CKAD Exam Ready!]
+    Q1 & Q2 & Q3 & Q4 -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tự Động]
+    GradeScript -->|"Score >= 80%: PASS"| CKADReady[CKAD Exam Ready!]
 ```
 
 ---

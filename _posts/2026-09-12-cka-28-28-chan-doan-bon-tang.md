@@ -117,17 +117,17 @@ Mô hình Y khoa phẫu thuật: Bắt bệnh từ triệu chứng lâm sàng (P
 
 ```mermaid
 graph TD
-    Start[Bắt đầu chẩn đoán] --> L1{Tầng 1: Cụm Control Plane}
-    L1 -->|API Server / etcd sập| FixL1[Cứu Control Plane / Static Pods]
-    L1 -->|OK| L2{Tầng 2: Trạng thái Node}
+    Start[Bắt đầu chẩn đoán] --> L1{"Tầng 1: Cụm Control Plane"}
+    L1 -->|"API Server / etcd sập"| FixL1[Cứu Control Plane / Static Pods]
+    L1 -->|"OK"| L2{"Tầng 2: Trạng thái Node"}
     
-    L2 -->|Node NotReady / MemoryPressure| FixL2[Cứu Kubelet / Dọn dẹp đĩa Node]
-    L2 -->|OK| L3{Tầng 3: Workload & Pod}
+    L2 -->|"Node NotReady / MemoryPressure"| FixL2[Cứu Kubelet / Dọn dẹp đĩa Node]
+    L2 -->|"OK"| L3{"Tầng 3: Workload & Pod"}
     
-    L3 -->|Pending / CrashLoop / OOM| FixL3[Sửa Spec Pod / Image / Config / Limits]
-    L3 -->|OK| L4{Tầng 4: Mạng & Service}
+    L3 -->|"Pending / CrashLoop / OOM"| FixL3[Sửa Spec Pod / Image / Config / Limits]
+    L3 -->|"OK"| L4{"Tầng 4: Mạng & Service"}
     
-    L4 -->|No Endpoints / DNS / NetPol| FixL4[Sửa Selector / CoreDNS / NetworkPolicy]
+    L4 -->|"No Endpoints / DNS / NetPol"| FixL4[Sửa Selector / CoreDNS / NetworkPolicy]
 ```
 
 **Nguyên lý cốt lõi:** Sự cố ở tầng dưới (Node `NotReady` hoặc CNI sập) sẽ kéo theo hàng loạt sự cố ở tầng trên (Pod `Pending` hoặc `Unknown`); sửa dứt điểm tầng dưới trước thì các lỗi tầng trên tự động biến mất.
@@ -337,11 +337,11 @@ graph TD
     Step1 --> Step2[Bước 2: Lọc sự kiện - kubectl get events --sort-by]
     Step2 --> Step3[Bước 3: Chi tiết Pod - kubectl describe pod]
     
-    Step3 --> State{Trạng thái Pod}
-    State -->|Pending| CheckSched[Check CPU/RAM/Taint/PVC]
-    State -->|ImagePullBackOff| CheckImg[Check Tên ảnh/Tag/Secret]
-    State -->|CrashLoopBackOff| CheckLog[Check logs -p / Exit Code / Probes]
-    State -->|Terminating| CheckForce[Check Finalizers / Kubelet]
+    Step3 --> State{"Trạng thái Pod"}
+    State -->|"Pending"| CheckSched[Check CPU/RAM/Taint/PVC]
+    State -->|"ImagePullBackOff"| CheckImg[Check Tên ảnh/Tag/Secret]
+    State -->|"CrashLoopBackOff"| CheckLog[Check logs -p / Exit Code / Probes]
+    State -->|"Terminating"| CheckForce[Check Finalizers / Kubelet]
 ```
 
 **Năm điều phải nhớ:**

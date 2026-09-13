@@ -462,26 +462,26 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook & ansible-doc CLI)"] --> |1. Tra cứu tài liệu: ansible-doc ansible.builtin.copy| DOC["ansible-doc Output"]
+    SubGraph1["Control Node (ansible-playbook & ansible-doc CLI)"] -->|"1. Tra cứu tài liệu: ansible-doc ansible.builtin.copy"| DOC["ansible-doc Output"]
     
-    SubGraph1 --> |2. Nạp Playbook: site-fqcn.yml| PB["Playbook: site-fqcn.yml (100% FQCN)"]
+    SubGraph1 -->|"2. Nạp Playbook: site-fqcn.yml"| PB["Playbook: site-fqcn.yml (100% FQCN)"]
     
     subgraph "Nội bộ Playbook FQCN"
-        PB --> |3. Task 1: ansible.builtin.file| M1["ansible.builtin.file: state=directory"]
-        PB --> |4. Task 2: ansible.builtin.copy| M2["ansible.builtin.copy: dest=/etc/fqcn-app.conf"]
-        PB --> |5. Task 3: ansible.builtin.command| M3["ansible.builtin.command: changed_when: false"]
-        PB --> |6. Task 4: community.general.ini_file| M4["community.general.ini_file: /etc/fqcn-app.ini"]
+        PB -->|"3. Task 1: ansible.builtin.file"| M1["ansible.builtin.file: state=directory"]
+        PB -->|"4. Task 2: ansible.builtin.copy"| M2["ansible.builtin.copy: dest=/etc/fqcn-app.conf"]
+        PB -->|"5. Task 3: ansible.builtin.command"| M3["ansible.builtin.command: changed_when: false"]
+        PB -->|"6. Task 4: community.general.ini_file"| M4["community.general.ini_file: /etc/fqcn-app.ini"]
     end
     
-    M2 --> |7. Gửi cấu hình đã render FQCN| T1["Target Container 1 (target1)"]
-    M4 --> |8. Gửi cấu hình INI| T1
+    M2 -->|"7. Gửi cấu hình đã render FQCN"| T1["Target Container 1 (target1)"]
+    M4 -->|"8. Gửi cấu hình INI"| T1
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY FQCN 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook site-fqcn.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-fqcn.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

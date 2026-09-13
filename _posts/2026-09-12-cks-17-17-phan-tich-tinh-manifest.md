@@ -117,11 +117,11 @@ Mô hình Kiểm Tra Thiết Kế Bản Vẽ Xây Dựng Trước Khi Đặt Mó
 
 ```mermaid
 graph TD
-    Code[Dev Write YAML / Dockerfile] -->|1. Static Analysis Scan| Linter[Kubesec / Trivy Config / Hadolint]
-    Linter -->|Fail: Critical Flaws| DevFix[Fix Security Context & Limits]
-    DevFix -->|Re-scan| Linter
-    Linter -->|Pass: High Score| Commit[Commit to Git Repository]
-    Commit -->|2. CI/CD Pipeline| Deploy[Deploy to K8s Production Cluster]
+    Code[Dev Write YAML / Dockerfile] -->|"1. Static Analysis Scan"| Linter[Kubesec / Trivy Config / Hadolint]
+    Linter -->|"Fail: Critical Flaws"| DevFix[Fix Security Context & Limits]
+    DevFix -->|"Re-scan"| Linter
+    Linter -->|"Pass: High Score"| Commit[Commit to Git Repository]
+    Commit -->|"2. CI/CD Pipeline"| Deploy[Deploy to K8s Production Cluster]
 ```
 
 **Nguyên lý cốt lõi:** CẤM TUYỆT ĐỐI việc để sót các cờ nguy hiểm cao trong Pod spec: `privileged: true`, `runAsUser: 0`, `allowPrivilegeEscalation: true`, hoặc thiếu `readOnlyRootFilesystem: true`.
@@ -566,15 +566,15 @@ Vì cờ <code>privileged: true</code> phá vỡ hoàn toàn rào chắn cách l
 
 ```mermaid
 graph TD
-    Dev[Security Engineer / Dev] -->|1. Create Insecure Manifest| BadYAML[/tmp/bad-pod.yaml]
-    BadYAML -->|2. Kubesec / Trivy Scan| Scanner[Static Analysis Tools]
-    Scanner -->|Score -30: Critical Flaws| Report[Report Security Flaws]
+    Dev[Security Engineer / Dev] -->|"1. Create Insecure Manifest"| BadYAML[/tmp/bad-pod.yaml]
+    BadYAML -->|"2. Kubesec / Trivy Scan"| Scanner[Static Analysis Tools]
+    Scanner -->|"Score -30: Critical Flaws"| Report[Report Security Flaws]
     
-    Report -->|3. Add SecurityContext & Limits| GoodYAML[/tmp/good-pod.yaml]
-    GoodYAML -->|4. Re-scan Kubesec| Scanner
-    Scanner -->|Score +10: PASSED| PassedGate[Pass CI/CD Gatekeeper]
+    Report -->|"3. Add SecurityContext & Limits"| GoodYAML[/tmp/good-pod.yaml]
+    GoodYAML -->|"4. Re-scan Kubesec"| Scanner
+    Scanner -->|"Score +10: PASSED"| PassedGate[Pass CI/CD Gatekeeper]
     
-    PassedGate -->|5. Deploy to Cluster| PodRunning[Pod Started in lab62]
+    PassedGate -->|"5. Deploy to Cluster"| PodRunning[Pod Started in lab62]
 ```
 
 ---

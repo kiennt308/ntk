@@ -304,8 +304,8 @@ Ghép:      terraform output -json | tạo inventory -> ansible-playbook cài ph
 
 ```mermaid
 graph LR
-  C["control node<br/>(khai báo trạng thái muốn)"] -->|SSH push module| T1["target1"]
-  C -->|SSH| T2["target2"]
+  C["control node<br/>(khai báo trạng thái muốn)"] -->|"SSH push module"| T1["target1"]
+  C -->|"SSH"| T2["target2"]
   T1 -. "docker exec: SỰ THẬT" .-> C
   C -. "PLAY RECAP: lời khai" .-> DEV["học viên đối chiếu"]
 ```
@@ -413,8 +413,8 @@ Chưa có target: `cd labs && make up && make key && make inventory && make ping
 
 ```mermaid
 graph LR
-  C["controller"] -->|SSH đẩy module| T1["target1 (sshd)"]
-  C -->|SSH| T2["target2 (sshd)"]
+  C["controller"] -->|"SSH đẩy module"| T1["target1 (sshd)"]
+  C -->|"SSH"| T2["target2 (sshd)"]
   T1 -. "docker exec: SỰ THẬT" .-> DEV["học viên"]
   C -. "PLAY RECAP: lời khai" .-> DEV
 ```

@@ -529,9 +529,9 @@ kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUO
 ```mermaid
 graph TD
     subgraph Client_Access ["Chặng 1: Client gọi qua Service Types"]
-        CLIENT["Pod test-client (curl)"] -->|VIP: 10.96.X.Y:80| CLUSTER_IP["ClusterIP: web-clusterip"]
-        CLIENT -->|NodePort: 30080| NODE_PORT["NodePort: web-nodeport"]
-        CLIENT -->|Direct DNS A record| HEADLESS["Headless: web-headless (clusterIP: None)"]
+        CLIENT["Pod test-client (curl)"] -->|"VIP: 10.96.X.Y:80"| CLUSTER_IP["ClusterIP: web-clusterip"]
+        CLIENT -->|"NodePort: 30080"| NODE_PORT["NodePort: web-nodeport"]
+        CLIENT -->|"Direct DNS A record"| HEADLESS["Headless: web-headless (clusterIP: None)"]
     end
 
     subgraph Backend_Pods ["Chặng 2: Routing via EndpointSlice to Pods"]

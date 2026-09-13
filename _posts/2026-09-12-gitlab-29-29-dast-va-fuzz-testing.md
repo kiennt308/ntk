@@ -65,7 +65,7 @@ graph TD
     C1 --> D[Xuất báo cáo an ninh gl-dast-report.json & gl-coverage-fuzzing-report.json]
     C2 --> D
     
-    D --> E{Security Quality Gate Check}
+    D --> E{"Security Quality Gate Check"}
     E -- Có lỗi CRITICAL/HIGH hoặc Crash --> F[FAIL PIPELINE exit code 1<br/>Tự động Cleanup Ephemeral App]
     E -- 0 lỗi CRITICAL/HIGH & 0 Crash --> G[PASS PIPELINE<br/>Tự động Cleanup Ephemeral App]
 ```
@@ -764,7 +764,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Merge Request commit code] --> B{GitLab CI Pipeline Stage Test}
+    A[Merge Request commit code] --> B{"GitLab CI Pipeline Stage Test"}
     
     subgraph Ephemeral_App_Deployment [Bước 1: Khởi chạy Ephemeral App]
         B --> C1[before_script: docker run -d --name ephemeral-app -p 8080:8080 my-app]
@@ -777,7 +777,7 @@ graph TD
     end
 
     subgraph Security_Gate_and_Cleanup [Bước 4: Quality Gate & Environment Cleanup]
-        D1 --> E1{Security Quality Gate Check}
+        D1 --> E1{"Security Quality Gate Check"}
         D2 --> E1
         E1 --> E2[after_script: docker rm -f ephemeral-app tiêu hủy container]
     end

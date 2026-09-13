@@ -117,10 +117,10 @@ Mô hình Cổng Kiểm Soát Khách Sạn và 3 Hạng Thẻ An Ninh: `Pod Secu
 
 ```mermaid
 graph TD
-    Client[Kubectl Apply Pod] -->|API Request| PSA{Pod Security Admission}
-    PSA -->|Check NS Label: enforce=restricted| Check{Tuân thủ Restricted PSS?}
-    Check -->|Đủ non-root, drop ALL, seccomp| Allow[API Server: ACCEPT Pod Created]
-    Check -.->|Vi phạm: Chạy root / Privileged| Block[API Server: REJECT 403 Forbidden]
+    Client[Kubectl Apply Pod] -->|"API Request"| PSA{"Pod Security Admission"}
+    PSA -->|"Check NS Label: enforce=restricted"| Check{"Tuân thủ Restricted PSS?"}
+    Check -->|"Đủ non-root, drop ALL, seccomp"| Allow[API Server: ACCEPT Pod Created]
+    Check -.->|"Vi phạm: Chạy root / Privileged"| Block[API Server: REJECT 403 Forbidden]
 ```
 
 **Nguyên lý cốt lõi:** Cấp độ `baseline` cấm các thuộc tính nguy hiểm cao như `privileged: true`, `hostNetwork: true`, `hostPID: true`, `hostIPC: true` và `hostPort`; Cấp độ `restricted` thắt chặt thêm bằng cách ép buộc `runAsNonRoot: true`, `allowPrivilegeEscalation: false` và `seccompProfile`.
@@ -544,14 +544,14 @@ Vì Namespace <code>kube-system</code> chứa các Pods hạ tầng (như CNI, k
 
 ```mermaid
 graph TD
-    Client[Kubectl Apply Pod] -->|1. Request to API Server| PSA{Pod Security Admission}
-    PSA -->|2. Check Namespace Labels| Labels[Namespace lab52 Labels]
+    Client[Kubectl Apply Pod] -->|"1. Request to API Server"| PSA{"Pod Security Admission"}
+    PSA -->|"2. Check Namespace Labels"| Labels[Namespace lab52 Labels]
     
-    Labels -->|Mode: warn=restricted| WarnPath[API Server: ACCEPT Pod + Return WARNING Message]
-    Labels -->|Mode: enforce=restricted| EnforcePath{Check Pod SecurityContext}
+    Labels -->|"Mode: warn=restricted"| WarnPath[API Server: ACCEPT Pod + Return WARNING Message]
+    Labels -->|"Mode: enforce=restricted"| EnforcePath{"Check Pod SecurityContext"}
     
-    EnforcePath -->|Vi phạm: Root / Privileged| Block[REJECT 403 Forbidden]
-    EnforcePath -->|Đạt Restricted PSS| Allow[ACCEPT Pod Created]
+    EnforcePath -->|"Vi phạm: Root / Privileged"| Block[REJECT 403 Forbidden]
+    EnforcePath -->|"Đạt Restricted PSS"| Allow[ACCEPT Pod Created]
 ```
 
 ---

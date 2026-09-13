@@ -381,15 +381,15 @@ spec:
 
 ```mermaid
 graph TD
-    Admin[Quản trị viên] -->|Khởi tạo| PV[PersistentVolume - Cấp Cluster]
-    Dev[Nhà phát triển] -->|Yêu cầu| PVC[PersistentVolumeClaim - Cấp Namespace]
+    Admin[Quản trị viên] -->|"Khởi tạo"| PV[PersistentVolume - Cấp Cluster]
+    Dev[Nhà phát triển] -->|"Yêu cầu"| PVC[PersistentVolumeClaim - Cấp Namespace]
     
-    PV <-->|Matching Capacity + AccessModes| PVC
-    PVC -->|Mount via volumeMounts| Pod[Pod / Container]
+    PV <-->|"Matching Capacity + AccessModes"| PVC
+    PVC -->|"Mount via volumeMounts"| Pod[Pod / Container]
     
-    PVC -.->|Khi xóa PVC| Reclaim{Reclaim Policy}
-    Reclaim -->|Retain| Released[PV trạng thái Released - Giữ dữ liệu - Cần xóa claimRef]
-    Reclaim -->|Delete| Destroyed[PV & Dữ liệu bị xóa vĩnh viễn]
+    PVC -.->|"Khi xóa PVC"| Reclaim{"Reclaim Policy"}
+    Reclaim -->|"Retain"| Released[PV trạng thái Released - Giữ dữ liệu - Cần xóa claimRef]
+    Reclaim -->|"Delete"| Destroyed[PV & Dữ liệu bị xóa vĩnh viễn]
 ```
 
 **Năm điều phải nhớ:**
@@ -605,9 +605,9 @@ graph LR
     end
     
     PV1 <--> HostDir
-    PVC1 <-->|Bound| PV1
-    Pod1 -->|Mounts| PVC1
-    Pod2 -->|Re-mounts| PVC1
+    PVC1 <-->|"Bound"| PV1
+    Pod1 -->|"Mounts"| PVC1
+    Pod2 -->|"Re-mounts"| PVC1
 ```
 
 **Các quyết định thiết kế bài lab:**

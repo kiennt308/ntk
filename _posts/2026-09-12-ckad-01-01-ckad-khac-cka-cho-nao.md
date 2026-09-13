@@ -590,7 +590,7 @@ graph TD
         Cron[CronJob cleanup-task: 0 2 * * *]
     end
     
-    CM -->|envFrom| PodEnv
+    CM -->|"envFrom"| PodEnv
     PodSec --> Checkpoint1
     PodEnv --> Checkpoint2
     PodProbe --> Checkpoint3

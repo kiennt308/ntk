@@ -81,7 +81,7 @@ Khởi đầu Giai đoạn 4 (Sản xuất và vận hành) — Triệt tiêu ng
 
 ```mermaid
 graph TD
-    A["Dữ liệu Nhạy cảm Plaintext (db_password: Secret123)"] --> |Lệnh CLI: ansible-vault encrypt| B["Mã hóa AES-256: $ANSIBLE_VAULT;1.1;AES256"]
+    A["Dữ liệu Nhạy cảm Plaintext (db_password: Secret123)"] -->|"Lệnh CLI: ansible-vault encrypt"| B["Mã hóa AES-256: $ANSIBLE_VAULT;1.1;AES256"]
     
     subgraph "Lưu trữ Bảo mật và Tích hợp Git"
         B --> C["Tệp mã hóa: vars/vault.yml (An toàn commit lên Git)"]
@@ -319,8 +319,8 @@ Khi xây dựng bộ kịch bản quản trị hệ thống Doanh nghiệp chu�
 flowchart TD
     A["Dữ liệu Nhạy cảm (Mật khẩu, Keys, Tokens)"] --> B{"Lựa chọn Phương pháp Mã hóa Vault"}
     
-    B -->|Mã hóa Toàn bộ File Biến| C["ansible-vault create / encrypt vars/vault.yml"]
-    B -->|Mã hóa Chuỗi Biến Đơn lẻ| D["ansible-vault encrypt_string 'secret' --name 'db_pass'"]
+    B -->|"Mã hóa Toàn bộ File Biến"| C["ansible-vault create / encrypt vars/vault.yml"]
+    B -->|"Mã hóa Chuỗi Biến Đơn lẻ"| D["ansible-vault encrypt_string 'secret' --name 'db_pass'"]
     
     C --> E["Cấu hình an toàn: vault_password_file = ./.vault_pass trong ansible.cfg"]
     D --> E
@@ -449,27 +449,27 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-vault & ansible-playbook)"] --> |1. Cấu hình: vault_password_file = ./.vault_pass| CFG["ansible.cfg"]
+    SubGraph1["Control Node (ansible-vault & ansible-playbook)"] -->|"1. Cấu hình: vault_password_file = ./.vault_pass"| CFG["ansible.cfg"]
     
     subgraph "Bảo mật Dữ liệu Local & Git Protection"
-        CFG --> |2. Đọc mật khẩu Vault| PASS[".vault_pass (Chỉ định quyền chmod 0600)"]
-        PASS --> |3. Thêm vào lá chắn Git| GIT[".gitignore (Ngăn đẩy .vault_pass lên Git)"]
+        CFG -->|"2. Đọc mật khẩu Vault"| PASS[".vault_pass (Chỉ định quyền chmod 0600)"]
+        PASS -->|"3. Thêm vào lá chắn Git"| GIT[".gitignore (Ngăn đẩy .vault_pass lên Git)"]
         
-        SubGraph1 --> |4. Mã hóa tệp biến vars/vault.yml| VFILE["vars/vault.yml ($ANSIBLE_VAULT;1.1;AES256)"]
+        SubGraph1 -->|"4. Mã hóa tệp biến vars/vault.yml"| VFILE["vars/vault.yml ($ANSIBLE_VAULT;1.1;AES256)"]
     end
     
-    SubGraph1 --> |5. Thi hành Playbook: site-vault.yml| PB["Playbook: site-vault.yml"]
-    VFILE --> |6. Giải mã biến tạm thời trong RAM| PB
-    PASS --> |6. Giải mã biến tạm thời trong RAM| PB
+    SubGraph1 -->|"5. Thi hành Playbook: site-vault.yml"| PB["Playbook: site-vault.yml"]
+    VFILE -->|"6. Giải mã biến tạm thời trong RAM"| PB
+    PASS -->|"6. Giải mã biến tạm thời trong RAM"| PB
     
-    PB --> |7. Gửi cấu hình bảo mật đã render| T1["Target Container 1 (target1)"]
+    PB -->|"7. Gửi cấu hình bảo mật đã render"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook với Vault| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook với Vault"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

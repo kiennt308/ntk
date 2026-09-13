@@ -61,23 +61,23 @@ flowchart TD
         WORKLOADS["Pods / Deployments / Services / CRDs"]
     end
 
-    CLI -->|HTTPS / gRPC| API_SERVER
-    WEB -->|HTTPS / REST| API_SERVER
-    HOOK -->|HTTP POST /api/webhook| API_SERVER
+    CLI -->|"HTTPS / gRPC"| API_SERVER
+    WEB -->|"HTTPS / REST"| API_SERVER
+    HOOK -->|"HTTP POST /api/webhook"| API_SERVER
     
     API_SERVER [--]|Session / Cache| REDIS
-    API_SERVER -->|gRPC Request| CONTROLLER
+    API_SERVER -->|"gRPC Request"| CONTROLLER
     
     CONTROLLER [--]|Manifest Cache| REDIS
-    CONTROLLER -->|1. Request Render Manifests (gRPC :8081)| REPO_SERVER
-    REPO_SERVER -->|Git Clone / Pull (Port 443)| GIT
+    CONTROLLER -->|"1. Request Render Manifests (gRPC :8081)"| REPO_SERVER
+    REPO_SERVER -->|"Git Clone / Pull (Port 443)"| GIT
     
-    CONTROLLER -->|2. Watch Live State (Informer)| K8S_API
-    CONTROLLER ==>|3. Three-way Diff & Apply| K8S_API
+    CONTROLLER -->|"2. Watch Live State (Informer)"| K8S_API
+    CONTROLLER ==>|"3. Three-way Diff & Apply"| K8S_API
     K8S_API --> WORKLOADS
 
-    APPSET -->|Sinh ra Application CRDs| API_SERVER
-    NOTIF -->|Lắng nghe Application Events| CONTROLLER
+    APPSET -->|"Sinh ra Application CRDs"| API_SERVER
+    NOTIF -->|"Lắng nghe Application Events"| CONTROLLER
 
 
 ```
@@ -373,9 +373,9 @@ Trên giao diện Web, toàn bộ hàng trăm ứng dụng đều hiển thị b
 ```mermaid
 flowchart TD
     DEV["Developer Commit 50 Helm Overlays cùng lúc"] --> CONTROLLER
-    CONTROLLER -->|Bắn 50 gRPC Requests đồng thời| REPO["argocd-repo-server (Chỉ có 1 Replica, RAM 512Mi)"]
-    REPO -->|CPU 100% & Hết RAM| OOM["OOMKilled! Pod bị Restart liên tục"]
-    OOM -.->|Nghẽn luồng kết nối TCP :8081| TIMEOUT["RPC DeadlineExceeded (Timeout)"]
+    CONTROLLER -->|"Bắn 50 gRPC Requests đồng thời"| REPO["argocd-repo-server (Chỉ có 1 Replica, RAM 512Mi)"]
+    REPO -->|"CPU 100% & Hết RAM"| OOM["OOMKilled! Pod bị Restart liên tục"]
+    OOM -.->|"Nghẽn luồng kết nối TCP :8081"| TIMEOUT["RPC DeadlineExceeded (Timeout)"]
     TIMEOUT ==> TRAP["HẬU QUẢ: Toàn bộ hệ thống GitOps bị TÊ LIỆT HOÀN TOÀN!"]
 
 

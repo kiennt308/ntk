@@ -118,13 +118,13 @@ Mô hình Thuê Căn Hộ Chung Cư và Biệt Thự Lập Phương Sandbox: Con
 ```mermaid
 graph TD
     subgraph Standard Container runc
-        Pod1[Untrusted Pod] -->|Direct Syscalls| HostKernel[Shared Host Linux Kernel]
-        HostKernel -.->|Vulnerability: Container Escape| VulnerableHost[Host Node Compromised!]
+        Pod1[Untrusted Pod] -->|"Direct Syscalls"| HostKernel[Shared Host Linux Kernel]
+        HostKernel -.->|"Vulnerability: Container Escape"| VulnerableHost[Host Node Compromised!]
     end
 
     subgraph Sandboxed Container gVisor
-        Pod2[Untrusted Pod] -->|Intercept Syscalls| gVisorSentry[gVisor Sentry Kernel in User-Space]
-        gVisorSentry -->|Filtered Syscalls| HostKernel2[Shared Host Linux Kernel Protected]
+        Pod2[Untrusted Pod] -->|"Intercept Syscalls"| gVisorSentry[gVisor Sentry Kernel in User-Space]
+        gVisorSentry -->|"Filtered Syscalls"| HostKernel2[Shared Host Linux Kernel Protected]
     end
 ```
 
@@ -537,11 +537,11 @@ Vì việc đánh chặn syscalls qua Sentry trong user-space làm tăng độ t
 
 ```mermaid
 graph TD
-    Client[Kubectl Apply Pod untrusted-pod] -->|1. Pod Spec runtimeClassName: gvisor| Kubelet[Kubelet Node]
-    Kubelet -->|2. Lookup RuntimeClass gvisor| RC{RuntimeClass gvisor: handler gvisor}
-    RC -->|3. Invoke CRI containerd| Containerd[containerd CRI Plugin]
-    Containerd -->|4. Launch runsc Sandbox| gVisorSentry[gVisor Sentry User-Space Kernel]
-    gVisorSentry -->|5. Isolated Execution| UntrustedApp[Untrusted Pod Container]
+    Client[Kubectl Apply Pod untrusted-pod] -->|"1. Pod Spec runtimeClassName: gvisor"| Kubelet[Kubelet Node]
+    Kubelet -->|"2. Lookup RuntimeClass gvisor"| RC{"RuntimeClass gvisor: handler gvisor"}
+    RC -->|"3. Invoke CRI containerd"| Containerd[containerd CRI Plugin]
+    Containerd -->|"4. Launch runsc Sandbox"| gVisorSentry[gVisor Sentry User-Space Kernel]
+    gVisorSentry -->|"5. Isolated Execution"| UntrustedApp[Untrusted Pod Container]
 ```
 
 ---

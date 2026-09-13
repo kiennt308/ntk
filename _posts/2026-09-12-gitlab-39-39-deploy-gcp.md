@@ -113,9 +113,9 @@ flowchart TD
 
     subgraph GCP Workload Identity Federation
         C --> D[WIF Pool Provider]
-        D -->|Evaluate Attribute Mapping & Condition CEL| E{Match Assertion?}
-        E -->|No| F[Deny Token Exchange]
-        E -->|Yes| G[Issue Federated FederatedToken]
+        D -->|"Evaluate Attribute Mapping & Condition CEL"| E{"Match Assertion?"}
+        E -->|"No"| F[Deny Token Exchange]
+        E -->|"Yes"| G[Issue Federated FederatedToken]
     end
 
     subgraph GCP IAM Service Account Impersonation
@@ -506,15 +506,15 @@ flowchart TD
     end
 
     subgraph GCP Security & Authentication
-        C --> D{WIF Provider Attribute Condition CEL}
-        D -->|Valid assertion| E[Exchange for GCP Access Token]
+        C --> D{"WIF Provider Attribute Condition CEL"}
+        D -->|"Valid assertion"| E[Exchange for GCP Access Token]
         E --> F[Service Account Impersonation]
     end
 
     subgraph GCP Target Infrastructure
-        F -->|Push Image| G[Google Artifact Registry]
-        F -->|Deploy Serverless| H[Google Cloud Run]
-        F -->|Update Manifests| I[Google Kubernetes Engine GKE]
+        F -->|"Push Image"| G[Google Artifact Registry]
+        F -->|"Deploy Serverless"| H[Google Cloud Run]
+        F -->|"Update Manifests"| I[Google Kubernetes Engine GKE]
     end
 ```
 
@@ -626,17 +626,17 @@ graph TD
 
     subgraph GCP Workload Identity Federation Engine
         C --> D[GCP STS Exchange Token]
-        D -->|Evaluate Attribute Condition CEL| E{CEL Condition PASSED?}
-        E -->|No| F[Deny WIF Exchange]
-        E -->|Yes| G[Issue Federated Token]
+        D -->|"Evaluate Attribute Condition CEL"| E{"CEL Condition PASSED?"}
+        E -->|"No"| F[Deny WIF Exchange]
+        E -->|"Yes"| G[Issue Federated Token]
         G --> H[Service Account Impersonation]
         H --> I[Issue GCP Access Token TTL 60m]
     end
 
     subgraph GCP Target Infrastructure
-        I -->|Push Docker Image| J[Google Artifact Registry]
-        I -->|Deploy Serverless App| K[Google Cloud Run Service]
-        I -->|Apply K8s Manifests| L[Google Kubernetes Engine GKE]
+        I -->|"Push Docker Image"| J[Google Artifact Registry]
+        I -->|"Deploy Serverless App"| K[Google Cloud Run Service]
+        I -->|"Apply K8s Manifests"| L[Google Kubernetes Engine GKE]
     end
 ```
 

@@ -303,13 +303,13 @@ cp /etc/kubernetes/manifests/etcd.yaml /tmp/etcd.yaml.bak
 ```mermaid
 graph TD
     Trouble[API Server Connection Refused / Node NotReady] --> SSH[SSH vào Master Node]
-    SSH --> KubeletStatus{Check systemctl status kubelet}
+    SSH --> KubeletStatus{"Check systemctl status kubelet"}
     
-    KubeletStatus -->|Kubelet Dead| FixKubelet[journalctl -u kubelet -> Fix Swap / cgroup / Disk]
-    KubeletStatus -->|Kubelet Running| CheckCRI[Check crictl ps -a]
+    KubeletStatus -->|"Kubelet Dead"| FixKubelet[journalctl -u kubelet -> Fix Swap / cgroup / Disk]
+    KubeletStatus -->|"Kubelet Running"| CheckCRI[Check crictl ps -a]
     
-    CheckCRI -->|Static Pod Crash| FixManifest[Fix YAML in /etc/kubernetes/manifests/]
-    CheckCRI -->|x509 Cert Expired| FixCert[kubeadm certs renew all -> restart kubelet]
+    CheckCRI -->|"Static Pod Crash"| FixManifest[Fix YAML in /etc/kubernetes/manifests/]
+    CheckCRI -->|"x509 Cert Expired"| FixCert[kubeadm certs renew all -> restart kubelet]
 ```
 
 **Năm điều phải nhớ:**
@@ -533,9 +533,9 @@ graph TD
         SwapSpace["Swap Memory"]
     end
     
-    KubeletCP -->|Watch| StaticPods
-    KubeletCP -->|Reads Certs| Certs
-    KubeletWorker -->|Block if Active| SwapSpace
+    KubeletCP -->|"Watch"| StaticPods
+    KubeletCP -->|"Reads Certs"| Certs
+    KubeletWorker -->|"Block if Active"| SwapSpace
 ```
 
 ---

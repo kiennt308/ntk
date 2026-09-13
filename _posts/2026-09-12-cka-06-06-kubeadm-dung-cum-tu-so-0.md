@@ -507,11 +507,11 @@ graph TD
 
     INIT --> MANIFESTS
     INIT --> CONF
-    JOIN1 -->|gRPC TLS 6443| INIT
-    JOIN2 -->|gRPC TLS 6443| INIT
-    FLANNEL -->|Chuyển trạng thái| Control_Plane_Node
-    FLANNEL -->|Chuyển trạng thái| Worker_Node_1
-    FLANNEL -->|Chuyển trạng thái| Worker_Node_2
+    JOIN1 -->|"gRPC TLS 6443"| INIT
+    JOIN2 -->|"gRPC TLS 6443"| INIT
+    FLANNEL -->|"Chuyển trạng thái"| Control_Plane_Node
+    FLANNEL -->|"Chuyển trạng thái"| Worker_Node_1
+    FLANNEL -->|"Chuyển trạng thái"| Worker_Node_2
 
     style Control_Plane_Node fill:none,stroke:#f57c00,stroke-width:2px
     style CNI_Layer fill:none,stroke:#388e3c,stroke-width:2px

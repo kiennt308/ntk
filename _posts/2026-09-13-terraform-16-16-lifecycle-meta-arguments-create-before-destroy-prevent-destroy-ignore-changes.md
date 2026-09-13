@@ -240,13 +240,13 @@ Hai meta-argument này biến mã nguồn Terraform thành các bài kiểm th�
 
 ```mermaid
 flowchart LR
-    A["Bắt Đầu Đánh Giá Resource"] --> B{Kiểm Tra Precondition}
-    B -->|Thất bại| ERR1["Dừng Lập Tức: Không Gọi Cloud API"]
-    B -->|Thành công| C["Gửi Yêu Cầu Provisioning Đến Cloud API"]
+    A["Bắt Đầu Đánh Giá Resource"] --> B{"Kiểm Tra Precondition"}
+    B -->|"Thất bại"| ERR1["Dừng Lập Tức: Không Gọi Cloud API"]
+    B -->|"Thành công"| C["Gửi Yêu Cầu Provisioning Đến Cloud API"]
     C --> D["Cloud API Trả Về Trạng Thái Tài Nguyên"]
-    D --> E{Kiểm Tra Postcondition}
-    E -->|Thất bại| ERR2["Dừng Apply: Đánh Dấu Tài Nguyên Tainted/Lỗi"]
-    E -->|Thành công| F["Hoàn Tất Resource Node: Ghi Nhận Vào State"]
+    D --> E{"Kiểm Tra Postcondition"}
+    E -->|"Thất bại"| ERR2["Dừng Apply: Đánh Dấu Tài Nguyên Tainted/Lỗi"]
+    E -->|"Thành công"| F["Hoàn Tất Resource Node: Ghi Nhận Vào State"]
 
     style ERR1 fill:none,stroke:#ff0000,stroke-width:2px
     style ERR2 fill:none,stroke:#ff0000,stroke-width:2px
@@ -285,8 +285,8 @@ Một trong những lỗi đau đầu nhất đối với các kỹ sư Terrafor
 ```mermaid
 graph TD
     subgraph Dependency_Cycle ["Vòng Lặp Chết Người"]
-        SG["aws_security_group: CBD = false"] -->|Phụ thuộc| EC2["aws_instance: CBD = true"]
-        EC2 -->|Cần Security Group để tạo| SG
+        SG["aws_security_group: CBD = false"] -->|"Phụ thuộc"| EC2["aws_instance: CBD = true"]
+        EC2 -->|"Cần Security Group để tạo"| SG
     end
     style Dependency_Cycle fill:none,stroke:#ff0000,stroke-width:2px
 
@@ -320,8 +320,8 @@ Trong bài lab này, chúng ta sẽ xây dựng một Web Cluster gồm 2 Instan
 ```mermaid
 graph TD
     ALB["Application Load Balancer"] --> TG["Target Group"]
-    TG -->|Active| EC2_OLD["EC2 App v1 - Port 8080"]
-    TG -.->|Provisioning & Drain| EC2_NEW[EC2 App v2 - Port 8080]
+    TG -->|"Active"| EC2_OLD["EC2 App v1 - Port 8080"]
+    TG -.->|"Provisioning & Drain"| EC2_NEW[EC2 App v2 - Port 8080]
 
     style ALB fill:none,stroke:#0288d1,stroke-width:2px
     style EC2_OLD fill:none,stroke:#c62828,stroke-width:2px

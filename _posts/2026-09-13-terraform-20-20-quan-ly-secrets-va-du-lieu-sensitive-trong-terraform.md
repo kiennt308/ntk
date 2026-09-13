@@ -67,8 +67,8 @@ flowchart TD
     A["Mã HCL: sensitive = true"] --> B["Giao Diện Terminal: Hiển thị (sensitive value)"]
     A --> C["Cloud Provider API: Gửi qua kênh HTTPS TLS mã hóa"]
     A --> D["File terraform.tfstate: LƯU TOÀN BỘ PLAINTEXT RÕ MỒI MỘT!"]
-    D --> E{Ai Có Quyền Đọc S3 State?}
-    E -->|Dev / DevOps / CI Runner| F["Đọc trọn vẹn Master Password Không Bị Mã Hóa!"]
+    D --> E{"Ai Có Quyền Đọc S3 State?"}
+    E -->|"Dev / DevOps / CI Runner"| F["Đọc trọn vẹn Master Password Không Bị Mã Hóa!"]
 
     style D fill:none,stroke:#ff0000,stroke-width:2px
     style F fill:none,stroke:#ff0000,stroke-width:2px
@@ -210,11 +210,11 @@ Thay vì lưu một mật khẩu cố định (Static Credentials) dùng chung t
 
 ```mermaid
 flowchart TD
-    TF["Terraform Engine"] -->|Xác thực AppRole / Token| VAULT["HashiCorp Vault Server"]
-    VAULT -->|Vault gọi PostgreSQL Driver| DB["(Amazon RDS PostgreSQL)"]
-    DB -->|Tạo User tạm thời: v-token-user-98723| VAULT
-    VAULT -->|Cấp User & Pass kèm TTL = 1h| TF
-    TF -->|Triển khai ứng dụng với DB Credentials| APP["Microservice Container"]
+    TF["Terraform Engine"] -->|"Xác thực AppRole / Token"| VAULT["HashiCorp Vault Server"]
+    VAULT -->|"Vault gọi PostgreSQL Driver"| DB["(Amazon RDS PostgreSQL)"]
+    DB -->|"Tạo User tạm thời: v-token-user-98723"| VAULT
+    VAULT -->|"Cấp User & Pass kèm TTL = 1h"| TF
+    TF -->|"Triển khai ứng dụng với DB Credentials"| APP["Microservice Container"]
     
     style VAULT fill:none,stroke:#0288d1,stroke-width:2px
     style DB fill:none,stroke:#28a745,stroke-width:2px
@@ -260,7 +260,7 @@ flowchart LR
 
     subgraph Ephemeral_TF110 ["Mô Hình Ephemeral Values: TF 1.10+"]
         E_SEC["Ephemeral Secret Input"] --> E_TF["Terraform Engine"]
-        E_TF -.->|BỊ CHẶN: KHÔNG GHI VÀO STATE!| E_ST[(terraform.tfstate: ZERO SECRETS)]
+        E_TF -.->|"BỊ CHẶN: KHÔNG GHI VÀO STATE!"| E_ST[(terraform.tfstate: ZERO SECRETS)]
         E_TF --> E_API["Cloud Provider API: Chỉ tồn tại trong Memory"]
     end
 
@@ -290,9 +290,9 @@ Trong bài lab này, chúng ta sẽ xây dựng một quy trình chuẩn doanh n
 
 ```mermaid
 graph TD
-    KMS["AWS KMS Customer Managed Key"] -->|Mã hóa dữ liệu tại chỗ| SM["AWS Secrets Manager Secret"]
-    RAND["random_password resource"] -->|Sinh chuỗi ký tự ngẫu nhiên 32 ký tự| SM
-    SM -->|Secret Version| APP["Mô Phỏng Cấu Hình Máy Chủ Cơ Sở Dữ Liệu"]
+    KMS["AWS KMS Customer Managed Key"] -->|"Mã hóa dữ liệu tại chỗ"| SM["AWS Secrets Manager Secret"]
+    RAND["random_password resource"] -->|"Sinh chuỗi ký tự ngẫu nhiên 32 ký tự"| SM
+    SM -->|"Secret Version"| APP["Mô Phỏng Cấu Hình Máy Chủ Cơ Sở Dữ Liệu"]
 
     style KMS fill:none,stroke:#0288d1,stroke-width:2px
     style SM fill:none,stroke:#28a745,stroke-width:2px

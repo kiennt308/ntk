@@ -81,13 +81,13 @@ Hoàn thiện bức tranh tự động hóa hạ tầng cấp Enterprise (I-10):
 
 ```mermaid
 graph TD
-    A["Kỹ sư Push Code / Merge Request (Git Repository)"] --> |Kích hoạt Pipeline| B["CI/CD Runner (before_script: nạp SSH Key & .vault_pass)"]
+    A["Kỹ sư Push Code / Merge Request (Git Repository)"] -->|"Kích hoạt Pipeline"| B["CI/CD Runner (before_script: nạp SSH Key & .vault_pass)"]
     
     subgraph "Pipeline CI/CD 4 Giai đoạn Tự động hóa"
-        B --> |Stage 1: lint| C["ansible-playbook --syntax-check & ansible-lint"]
-        C --> |Stage 2: test| D["molecule test (Khởi tạo Docker container)"]
-        D --> |Stage 3: staging| E["ansible-playbook -i inventory/staging site-cicd.yml"]
-        E --> |Stage 4: production| F{"Cổng Phê duyệt Thủ công: when: manual"}
+        B -->|"Stage 1: lint"| C["ansible-playbook --syntax-check & ansible-lint"]
+        C -->|"Stage 2: test"| D["molecule test (Khởi tạo Docker container)"]
+        D -->|"Stage 3: staging"| E["ansible-playbook -i inventory/staging site-cicd.yml"]
+        E -->|"Stage 4: production"| F{"Cổng Phê duyệt Thủ công: when: manual"}
         F -- Gạt nút OK --> G["ansible-playbook -i inventory/production --serial 1 site-cicd.yml"]
     end
     
@@ -315,10 +315,10 @@ Khi xây dựng hệ thống CI/CD tự động hóa hạ tầng Enterprise:
 flowchart TD
     A["Kiến trúc Tự động hóa Ansible trong CI/CD Enterprise"] --> B{"4 Giai đoạn Pipeline (.gitlab-ci.yml)"}
     
-    B -->|Stage 1: lint| C["ansible-playbook --syntax-check & ansible-lint"]
-    B -->|Stage 2: test| D["molecule test (Docker Container & verify.yml)"]
-    B -->|Stage 3: staging| E["ansible-playbook -i inventory/staging site-cicd.yml"]
-    B -->|Stage 4: production| F["when: manual & serial: 1 -> ansible-playbook -i inventory/production"]
+    B -->|"Stage 1: lint"| C["ansible-playbook --syntax-check & ansible-lint"]
+    B -->|"Stage 2: test"| D["molecule test (Docker Container & verify.yml)"]
+    B -->|"Stage 3: staging"| E["ansible-playbook -i inventory/staging site-cicd.yml"]
+    B -->|"Stage 4: production"| F["when: manual & serial: 1 -> ansible-playbook -i inventory/production"]
     
     C --> G["Secret Management: $ANSIBLE_VAULT_PASSWORD & chmod 0600 .vault_pass"]
     D --> G
@@ -460,30 +460,30 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (CI/CD Runner Simulation & ansible-playbook)"] --> |1. Khởi tạo pipeline: .gitlab-ci.yml| PIPELINE[".gitlab-ci.yml (4 Stages)"]
+    SubGraph1["Control Node (CI/CD Runner Simulation & ansible-playbook)"] -->|"1. Khởi tạo pipeline: .gitlab-ci.yml"| PIPELINE[".gitlab-ci.yml (4 Stages)"]
     
     subgraph "Tự động hóa Đường ống CI/CD Enterprise"
-        PIPELINE --> |2. before_script: secret injection| SEC[".vault_pass (chmod 0600 từ $ANSIBLE_VAULT_PASSWORD)"]
-        PIPELINE --> |3. Stage 1: lint| LINT["ansible-playbook --syntax-check & ansible-lint"]
-        PIPELINE --> |4. Stage 2: test| TEST["molecule test simulation (verify.yml)"]
-        PIPELINE --> |5. Stage 3: staging| STG["ansible-playbook -i inventory/staging site-cicd.yml"]
-        PIPELINE --> |6. Stage 4: production| PROD{"when: manual & serial: 1"}
+        PIPELINE -->|"2. before_script: secret injection"| SEC[".vault_pass (chmod 0600 từ $ANSIBLE_VAULT_PASSWORD)"]
+        PIPELINE -->|"3. Stage 1: lint"| LINT["ansible-playbook --syntax-check & ansible-lint"]
+        PIPELINE -->|"4. Stage 2: test"| TEST["molecule test simulation (verify.yml)"]
+        PIPELINE -->|"5. Stage 3: staging"| STG["ansible-playbook -i inventory/staging site-cicd.yml"]
+        PIPELINE -->|"6. Stage 4: production"| PROD{"when: manual & serial: 1"}
         SEC --> STG
         SEC --> PROD
     end
     
-    SubGraph1 --> |7. Thi hành Playbook chính: site-cicd.yml| PB["Playbook: site-cicd.yml"]
+    SubGraph1 -->|"7. Thi hành Playbook chính: site-cicd.yml"| PB["Playbook: site-cicd.yml"]
     STG --> PB
     PROD --> PB
     
-    PB --> |8. Gửi cấu hình triển khai CI/CD| T1["Target Container 1 (target1)"]
+    PB -->|"8. Gửi cấu hình triển khai CI/CD"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (100% GIAI ĐOẠN 4 COMPLETE!)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy giả lập 4 stages của .gitlab-ci.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy giả lập 4 stages của .gitlab-ci.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

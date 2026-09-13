@@ -329,12 +329,12 @@ Khi triển khai ứng dụng trên hạ tầng có cả server ảo hóa (VM) v
 ```mermaid
 flowchart TD
     A["Ansible Đánh giá Task"] --> B{"Mệnh đề when: thỏa mãn?"}
-    B -->|FALSE| C["Bỏ qua Task -> Status SKIPPED (PLAY RECAP skipped+1)"]
-    B -->|TRUE| D["Thực thi Task trên Máy đích"]
+    B -->|"FALSE"| C["Bỏ qua Task -> Status SKIPPED (PLAY RECAP skipped+1)"]
+    B -->|"TRUE"| D["Thực thi Task trên Máy đích"]
     
     D --> E{"Task có làm thay đổi máy đích?"}
-    E -->|Có| F["Báo CHANGED (Lần 1)"]
-    E -->|Không| G["Báo OK (Lần 2)"]
+    E -->|"Có"| F["Báo CHANGED (Lần 1)"]
+    E -->|"Không"| G["Báo OK (Lần 2)"]
     
     C & F & G --> H["CHẠY THỬ LẦN 2"]
     H --> I{"PLAY RECAP Lần 2: changed=0?"}
@@ -469,18 +469,18 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Nạp Variable: app_env=production| PB["Playbook: conditionals-site.yml"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Variable: app_env=production"| PB["Playbook: conditionals-site.yml"]
     
-    PB --> |2. Task 1: when os_family == RedHat| T1["Target Container 1 (target1 - Alpine/Debian) -> SKIPPED"]
-    PB --> |3. Task 2: when os_family == Debian/Alpine| T1
-    PB --> |4. Task 3: block when app_env == production| T1
+    PB -->|"2. Task 1: when os_family == RedHat"| T1["Target Container 1 (target1 - Alpine/Debian) -> SKIPPED"]
+    PB -->|"3. Task 2: when os_family == Debian/Alpine"| T1
+    PB -->|"4. Task 3: block when app_env == production"| T1
     
     T1 -. "RECAP Lần 1: ok=4, changed=2, skipped=1" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0, skipped=1 (ĐẠT IDEMPOTENT)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook conditionals-site.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook conditionals-site.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

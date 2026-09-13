@@ -38,12 +38,12 @@ Trước khi đặt bút viết manifest, kỹ sư Platform cần lựa chọn m
 flowchart TD
     subgraph M1["1. Cài Đặt Toàn Cụm (Cluster-Wide Mode)"]
         CW_ARGO["Argo CD Control Plane"]
-        CW_ARGO -->|ClusterRole: Toàn quyền quản trị| ALL_NS["Tất cả Namespaces trong Cụm"]
+        CW_ARGO -->|"ClusterRole: Toàn quyền quản trị"| ALL_NS["Tất cả Namespaces trong Cụm"]
     end
 
     subgraph M2["2. Cài Đặt Giới Hạn Namespace (Namespace-Scoped Mode)"]
         NS_ARGO["Argo CD Control Plane"]
-        NS_ARGO -->|Role: Chỉ quản trị namespace đích| TARGET_NS["Chỉ Namespace: app-team-a"]
+        NS_ARGO -->|"Role: Chỉ quản trị namespace đích"| TARGET_NS["Chỉ Namespace: app-team-a"]
     end
 
     subgraph M3["3. Cài Đặt Độ Sẵn Sàng Cao (High Availability HA Mode)"]
@@ -338,7 +338,7 @@ Thì lệnh bị treo 30 giây rồi trả về lỗi:
 ```mermaid
 flowchart TD
     CLI_CALL["Lệnh CLI: argocd login (Dùng pure HTTP/2 gRPC)"] --> INGRESS["NGINX Ingress (Mặc định chỉ hỗ trợ HTTP/1.1)"]
-    INGRESS -->|Không hiểu gói tin gRPC| FAIL["Trả về lỗi 400 Bad Request / HTML Error Page"]
+    INGRESS -->|"Không hiểu gói tin gRPC"| FAIL["Trả về lỗi 400 Bad Request / HTML Error Page"]
     FAIL ==> TRAP["BẪY: Web UI chạy tốt nhưng CLI và CI Pipelines bị tê liệt!"]
 
 

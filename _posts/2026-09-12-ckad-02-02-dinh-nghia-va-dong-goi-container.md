@@ -124,8 +124,8 @@ Mô hình Chiếc hộp Hành lý Du lịch: Nếu đóng gói thông thường 
 
 ```mermaid
 graph TD
-    DF_EP["ENTRYPOINT (Dockerfile)"] -->|Ghi đè bởi| K8S_CMD["command: [...] (K8s YAML)"]
-    DF_CMD["CMD (Dockerfile)"] -->|Ghi đè bởi| K8S_ARGS["args: [...] (K8s YAML)"]
+    DF_EP["ENTRYPOINT (Dockerfile)"] -->|"Ghi đè bởi"| K8S_CMD["command: [...] (K8s YAML)"]
+    DF_CMD["CMD (Dockerfile)"] -->|"Ghi đè bởi"| K8S_ARGS["args: [...] (K8s YAML)"]
 ```
 
 **Nguyên lý cốt lõi:** Nếu khai báo `command` trong Kubernetes YAML nhưng bỏ trống `args`, toàn bộ chỉ thị `ENTRYPOINT` và `CMD` của Dockerfile gốc sẽ bị xóa sạch và chỉ chạy duy nhất lệnh trong `command`.
@@ -212,8 +212,8 @@ CMD ["/myapp"]
 
 ```mermaid
 graph LR
-    Kubelet[Kubelet Service] -->|Gửi SIGTERM| PID1[Tiến trình PID 1 trong Container]
-    PID1 -->|Đóng kết nối DB & Xóa Session| Graceful[Dừng ứng dụng êm ái trong 2s]
+    Kubelet[Kubelet Service] -->|"Gửi SIGTERM"| PID1[Tiến trình PID 1 trong Container]
+    PID1 -->|"Đóng kết nối DB & Xóa Session"| Graceful[Dừng ứng dụng êm ái trong 2s]
 ```
 
 **Nguyên lý cốt lõi:** Tránh dùng định dạng shell `CMD node server.js` trong Dockerfile vì nó sẽ bọc tiến trình qua `/bin/sh -c` làm mất PID 1; hãy luôn dùng định dạng mảng exec `CMD ["node", "server.js"]`.
@@ -337,11 +337,11 @@ graph TD
     K8s[Kubernetes Manifest] --> K_CMD["command: [...] (Ghi đè ENTRYPOINT)"]
     K8s --> K_ARGS["args: [...] (Ghi đè CMD)"]
     
-    K_CMD -->|Ghi đè| EP
-    K_ARGS -->|Ghi đè| CMD
+    K_CMD -->|"Ghi đè"| EP
+    K_ARGS -->|"Ghi đè"| CMD
     
     MultiStage[Multi-stage Build] --> Stage1[Stage 1: SDK/Compiler Build 800MB]
-    Stage1 -->|Copy Artifact| Stage2[Stage 2: Alpine/Distroless Runtime 30MB]
+    Stage1 -->|"Copy Artifact"| Stage2[Stage 2: Alpine/Distroless Runtime 30MB]
 ```
 
 **Năm điều phải nhớ:**

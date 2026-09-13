@@ -507,15 +507,15 @@ Lệnh <code>kubectl logs -n kube-system -l k8s-app=kube-dns</code>.
 
 ```mermaid
 graph TD
-    SREEngineer[SRE Incident Response Team] -->|1. Detect 4 Planted Incidents| GameDayEnv[Game Day Sandbox Environment]
-    GameDayEnv -->|2. Fix Incident 1| Inc1[Node NotReady - Kubelet Crash]
-    GameDayEnv -->|3. Fix Incident 2| Inc2[Pod OOMKilled - Exit Code 137]
-    GameDayEnv -->|4. Fix Incident 3| Inc3[Expired TLS Certs - Renew All]
-    GameDayEnv -->|5. Fix Incident 4| Inc4[CoreDNS Resolution Failure]
+    SREEngineer[SRE Incident Response Team] -->|"1. Detect 4 Planted Incidents"| GameDayEnv[Game Day Sandbox Environment]
+    GameDayEnv -->|"2. Fix Incident 1"| Inc1[Node NotReady - Kubelet Crash]
+    GameDayEnv -->|"3. Fix Incident 2"| Inc2[Pod OOMKilled - Exit Code 137]
+    GameDayEnv -->|"4. Fix Incident 3"| Inc3[Expired TLS Certs - Renew All]
+    GameDayEnv -->|"5. Fix Incident 4"| Inc4[CoreDNS Resolution Failure]
     
-    Inc1 & Inc2 & Inc3 & Inc4 -->|6. Compile 6-Section Report| PostmortemReport[/tmp/postmortem.md Report]
-    PostmortemReport -->|7. Auto-Grading Script| GradeScript[Script Chấm Điểm Game Day]
-    GradeScript -->|Score >= 80%: PASS| SREReady[Enterprise SRE Certified!]
+    Inc1 & Inc2 & Inc3 & Inc4 -->|"6. Compile 6-Section Report"| PostmortemReport[/tmp/postmortem.md Report]
+    PostmortemReport -->|"7. Auto-Grading Script"| GradeScript[Script Chấm Điểm Game Day]
+    GradeScript -->|"Score >= 80%: PASS"| SREReady[Enterprise SRE Certified!]
 ```
 
 ---

@@ -66,7 +66,7 @@ graph TD
 
     subgraph Verification_Phase [Khối 2: Xác thực Chữ ký số ở CD Pipeline / K8s Cluster]
         C4 --> D1[cosign verify --key cosign.pub $IMAGE_DIGEST]
-        D1 --> D2{Verification Quality Gate Check}
+        D1 --> D2{"Verification Quality Gate Check"}
         D2 -- Chữ ký bị tráo đổi / Thiếu chữ ký --> D3[FAIL PIPELINE exit code 1<br/>Từ chối Deploy xuống K8s Cluster]
         D2 -- Chữ ký hợp lệ khớp Public Key --> E[PASS PIPELINE<br/>Triển khai thành công xuống Production K8s]
     end
@@ -753,7 +753,7 @@ graph TD
 
     subgraph Verification_Quality_Gate [Bước 3 & 4: Verify Signature & Quality Gate]
         D4 --> E1[cosign verify --key cosign.pub $IMAGE_DIGEST]
-        E1 --> E2{Verification Quality Gate Check}
+        E1 --> E2{"Verification Quality Gate Check"}
         E2 -- Hiện vật bị tráo đổi / Sai chữ ký --> E3[FAIL PIPELINE exit code 1<br/>Từ chối Deploy xuống K8s Cluster]
         E2 -- Chữ ký hợp lệ 100% --> F[Pipeline PASSED xanh 100%<br/>Cho phép Deploy Production]
         F --> G[Cập nhật dòng 5 bang-5-security-va-hien-vat.tsv]

@@ -55,18 +55,18 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ```mermaid
 graph TD
-    A[Merge Request commit code IaC & Dockerfile] --> B{Stage Test: Kiểm thử Hạ tầng tĩnh}
+    A[Merge Request commit code IaC & Dockerfile] --> B{"Stage Test: Kiểm thử Hạ tầng tĩnh"}
     
     subgraph IaC_Scan_Phase [Khối 1: IaC Scanning trước khi Build]
         B --> C1[Checkov IaC Scan: Quét Dockerfile, Terraform, K8s Manifests]
-        C1 --> C2{IaC Quality Gate Check}
+        C1 --> C2{"IaC Quality Gate Check"}
         C2 -- Lỗi Privileged / Root USER --> C3[FAIL PIPELINE exit code 1<br/>Chặn không cho phép Build Image]
     end
     
     subgraph Container_Image_Scan_Phase [Khối 2: Container Image Scanning sau khi Build]
         C2 -- Pass IaC Check --> D1[Stage Build: docker build tạo Container Image]
         D1 --> D2[Trivy Image Scan: Quét CVEs của Linux Base OS & Packages]
-        D2 --> D3{Container Quality Gate Check}
+        D2 --> D3{"Container Quality Gate Check"}
         D3 -- Lỗi CRITICAL/HIGH --> D4[FAIL PIPELINE exit code 1<br/>Chặn không cho phép Push Registry]
         D3 -- 0 Lỗi CRITICAL/HIGH --> E[PASS PIPELINE<br/>Push Image sang Registry]
     end
@@ -739,11 +739,11 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Merge Request commit code Dockerfile & K8s] --> B{Stage Test: IaC Scan}
+    A[Merge Request commit code Dockerfile & K8s] --> B{"Stage Test: IaC Scan"}
     
     subgraph IaC_Scanning_Phase [Bước 1: Quét IaC trước khi Build]
         B --> C1[checkov -d . --framework dockerfile,kubernetes --output json]
-        C1 --> C2{Checkov Quality Gate Check}
+        C1 --> C2{"Checkov Quality Gate Check"}
         C2 -- Lỗi Privileged / Root USER --> C3[FAIL PIPELINE exit code 1<br/>Chặn không cho phép Build Image]
     end
 
@@ -751,7 +751,7 @@ graph TD
         C2 -- Pass IaC Check --> D1[Stage Build: docker build -t my-app:test .]
         D1 --> D2[trivy image --severity CRITICAL,HIGH $IMAGE_NAME]
         D2 --> D3[syft $IMAGE_NAME -o cyclonedx-json=sbom.json]
-        D3 --> D4{Container Quality Gate Check}
+        D3 --> D4{"Container Quality Gate Check"}
         D4 -- Lỗi CRITICAL/HIGH --> D5[FAIL PIPELINE exit code 1<br/>Chặn không cho phép Push Registry]
     end
 

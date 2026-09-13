@@ -81,14 +81,14 @@ Chặng dừng chân vĩ đại — Đỉnh cao tốt nghiệp toàn khóa học
 
 ```mermaid
 graph TD
-    A["Khách hàng (User Browser / HTTP Request)"] --> |1. Gửi request HTTP port 80| LB["Tầng 1: Load Balancer (Nginx Upstream Cluster - role_lb)"]
+    A["Khách hàng (User Browser / HTTP Request)"] -->|"1. Gửi request HTTP port 80"| LB["Tầng 1: Load Balancer (Nginx Upstream Cluster - role_lb)"]
     
     subgraph "Hạ tầng Enterprise 3 Tầng Tự động hóa (site-capstone.yml)"
-        LB --> |2. Điều hướng lưu lượng round-robin| WEB1["Tầng 2: Web Node 1 (Python App / Systemd - role_web)"]
-        LB --> |2. Điều hướng lưu lượng round-robin| WEB2["Tầng 2: Web Node 2 (Python App / Systemd - role_web)"]
+        LB -->|"2. Điều hướng lưu lượng round-robin"| WEB1["Tầng 2: Web Node 1 (Python App / Systemd - role_web)"]
+        LB -->|"2. Điều hướng lưu lượng round-robin"| WEB2["Tầng 2: Web Node 2 (Python App / Systemd - role_web)"]
         
-        WEB1 --> |3. Truy vấn CSDL qua Port 5432| DB["Tầng 3: DB Node (PostgreSQL / Firewalld Rich Rule - role_db)"]
-        WEB2 --> |3. Truy vấn CSDL qua Port 5432| DB
+        WEB1 -->|"3. Truy vấn CSDL qua Port 5432"| DB["Tầng 3: DB Node (PostgreSQL / Firewalld Rich Rule - role_db)"]
+        WEB2 -->|"3. Truy vấn CSDL qua Port 5432"| DB
     end
     
     subgraph "Hệ thống An toàn & Bảo mật Phân tầng (role_common_security)"
@@ -98,9 +98,9 @@ graph TD
         VAULT["Ansible Vault: AES-256 Secret Encryption"] --- SEC1
     end
     
-    DB --> |4. Trả kết quả dữ liệu| WEB1
-    WEB1 --> |5. Trả trang HTML render| LB
-    LB --> |6. Phản hồi HTTP 200 OK| A
+    DB -->|"4. Trả kết quả dữ liệu"| WEB1
+    WEB1 -->|"5. Trả trang HTML render"| LB
+    LB -->|"6. Phản hồi HTTP 200 OK"| A
 ```
 
 **Nguyên lý cốt lõi:** Thiết lập mô hình kiến trúc hạ tầng Enterprise 3 tầng chuẩn hóa: Tầng 1 Load Balancer (Nginx tiếp nhận và điều hướng lưu lượng), Tầng 2 Web Cluster (cụm máy chủ xử lý logic ứng dụng), và Tầng 3 Database Cluster (máy chủ lưu trữ dữ liệu PostgreSQL).
@@ -353,17 +353,17 @@ Khi bàn giao dự án tự động hóa hạ tầng Enterprise cho Doanh nghi�
 flowchart TD
     A["DỰ ÁN CAPSTONE: TỰ ĐỘNG HÓA HỆ THỐNG ENTERPRISE 3 TẦNG"] --> B{"4 Roles Phân tầng Chuyên nghiệp"}
     
-    B -->|1. Lockout Protection & Security| C["role_common_security (SSH 22 First & Firewalld Base)"]
-    B -->|2. Tầng 3 Database Cluster| D["role_db (PostgreSQL & Rich Rule 5432 cho Web IP)"]
-    B -->|3. Tầng 2 Web App Cluster| E["role_web (Systemd web-app.service under sysops)"]
-    B -->|4. Tầng 1 Load Balancer| F["role_lb (Nginx Upstream Jinja2 Template & Dynamic Web Nodes)"]
+    B -->|"1. Lockout Protection & Security"| C["role_common_security (SSH 22 First & Firewalld Base)"]
+    B -->|"2. Tầng 3 Database Cluster"| D["role_db (PostgreSQL & Rich Rule 5432 cho Web IP)"]
+    B -->|"3. Tầng 2 Web App Cluster"| E["role_web (Systemd web-app.service under sysops)"]
+    B -->|"4. Tầng 1 Load Balancer"| F["role_lb (Nginx Upstream Jinja2 Template & Dynamic Web Nodes)"]
     
     C --> G["Master Playbook Orchestration: site-capstone.yml (serial: 1 & Vault Secret)"]
     D --> G
     E --> G
     F --> G
     
-    G -->|Thực thi End-to-End Verification| H["ansible.builtin.uri: HTTP 200 OK (LB -> Web -> DB)"]
+    G -->|"Thực thi End-to-End Verification"| H["ansible.builtin.uri: HTTP 200 OK (LB -> Web -> DB)"]
     
     H --> I["LƯỢT CHẠY LẦN 2 (Re-run Capstone)"]
     I --> J{"PLAY RECAP Lần 2: changed=0 cho TẤT CẢ các Node?"}
@@ -519,20 +519,20 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (Master Capstone Orchestrator)"] --> |1. Nạp Inventory & Vault Secret| INV["inventory/capstone-hosts.ini & vars/vault.yml"]
+    SubGraph1["Control Node (Master Capstone Orchestrator)"] -->|"1. Nạp Inventory & Vault Secret"| INV["inventory/capstone-hosts.ini & vars/vault.yml"]
     
     subgraph "Dự án Capstone Tự động hóa Hạ tầng Enterprise 3 Tầng"
-        INV --> |2. Stage 1: Security Base| SEC["role_common_security (Lockout Protection SSH 22 First)"]
-        SEC --> |3. Stage 2: Tầng 3 Database| DB["role_db (PostgreSQL & Rich Rule 5432 cho Web Node IP)"]
-        DB --> |4. Stage 3: Tầng 2 Web Cluster| WEB["role_web (Systemd web-app.service under sysops - serial: 1)"]
-        WEB --> |5. Stage 4: Tầng 1 Load Balancer| LB["role_lb (Nginx Upstream Dynamic Web Nodes)"]
+        INV -->|"2. Stage 1: Security Base"| SEC["role_common_security (Lockout Protection SSH 22 First)"]
+        SEC -->|"3. Stage 2: Tầng 3 Database"| DB["role_db (PostgreSQL & Rich Rule 5432 cho Web Node IP)"]
+        DB -->|"4. Stage 3: Tầng 2 Web Cluster"| WEB["role_web (Systemd web-app.service under sysops - serial: 1)"]
+        WEB -->|"5. Stage 4: Tầng 1 Load Balancer"| LB["role_lb (Nginx Upstream Dynamic Web Nodes)"]
     end
     
-    SubGraph1 --> |6. Thi hành Playbook Capstone master: site-capstone.yml| PB["Playbook: site-capstone.yml"]
+    SubGraph1 -->|"6. Thi hành Playbook Capstone master: site-capstone.yml"| PB["Playbook: site-capstone.yml"]
     LB --> PB
     
-    PB --> |7. Gửi toàn bộ kịch bản| T1["Target Container 1 (target1 - LB & Web)"]
-    PB --> |7. Gửi toàn bộ kịch bản| T2["Target Container 2 (target2 - DB)"]
+    PB -->|"7. Gửi toàn bộ kịch bản"| T1["Target Container 1 (target1 - LB & Web)"]
+    PB -->|"7. Gửi toàn bộ kịch bản"| T2["Target Container 2 (target2 - DB)"]
     
     T1 -. "RECAP Lần 1: ok=10, changed=6" .-> SubGraph1
     T2 -. "RECAP Lần 1: ok=9,  changed=4" .-> SubGraph1
@@ -540,9 +540,9 @@ graph TD
     T1 -. "RECAP Lần 2: ok=10, changed=0 (100% HOÀN THÀNH KHÓA HỌC NTKANSIBLE!)" .-> SubGraph1
     T2 -. "RECAP Lần 2: ok=9,  changed=0 (100% HOÀN THÀNH KHÓA HỌC NTKANSIBLE!)" .-> SubGraph1
     
-    DEV["Học viên (Capstone Defender)"] --> |A. Chạy End-to-End URI Verification| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2 trên TẤT CẢ các node| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Capstone Defender)"] -->|"A. Chạy End-to-End URI Verification"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2 trên TẤT CẢ các node"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

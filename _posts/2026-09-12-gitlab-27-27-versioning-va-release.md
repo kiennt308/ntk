@@ -734,7 +734,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Lập trình viên push commit theo chuẩn Conventional Commits] --> B{GitLab CI Pipeline}
+    A[Lập trình viên push commit theo chuẩn Conventional Commits] --> B{"GitLab CI Pipeline"}
     
     subgraph Step1_Analyze_Commits [Bước 1 & 2: Analyzers & Dry-run]
         B --> C1[npx semantic-release --dry-run]

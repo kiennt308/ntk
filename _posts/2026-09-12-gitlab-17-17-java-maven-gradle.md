@@ -458,14 +458,14 @@ test_job:
 
 ```mermaid
 flowchart TD
-    A[Java CI/CD Pipeline] --> B{Chọn Build Tool}
+    A[Java CI/CD Pipeline] --> B{"Chọn Build Tool"}
     
-    B -->|Apache Maven| C[Cấu hình Maven]
+    B -->|"Apache Maven"| C[Cấu hình Maven]
     C --> C1[Di chuyển kho: -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository]
     C --> C2[Thêm cờ chuẩn: -B -ntp]
     C --> C3[Bật cờ --release 17]
     
-    B -->|Gradle| D[Cấu hình Gradle]
+    B -->|"Gradle"| D[Cấu hình Gradle]
     D --> D1[Di chuyển kho: GRADLE_USER_HOME=$CI_PROJECT_DIR/.gradle]
     D --> D2[Tắt Daemon: --no-daemon]
     D --> D3[Phân lập Cache: modules-2 & wrapper]
@@ -593,7 +593,7 @@ flowchart TD
 
 ```mermaid
 graph TD
-    A[Git Push Event] --> B{GitLab CI Pipeline}
+    A[Git Push Event] --> B{"GitLab CI Pipeline"}
     
     subgraph Maven_Pipeline [Pipeline Maven]
         B --> C[Job: maven-build-test]

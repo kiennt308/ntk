@@ -83,9 +83,9 @@ Khi một kỹ sư khác (hoặc Pipeline tiếp theo) kích hoạt lệnh, Terr
 ```mermaid
 flowchart TD
     A["Gặp Lỗi State Lock Error"] --> B["Bước 1: Điều Tra Who & Created Timestamp"]
-    B --> C{Tiến trình cũ còn chạy không?}
-    C -->|Còn chạy trên CI/CD| D["Chờ tiến trình hoàn tất hoặc Cancel Job trên CI Web UI"]
-    C -->|Đã chết hẳn / Crash / Timeout| E["Bước 2: Thông Báo Kênh Incident Slack"]
+    B --> C{"Tiến trình cũ còn chạy không?"}
+    C -->|"Còn chạy trên CI/CD"| D["Chờ tiến trình hoàn tất hoặc Cancel Job trên CI Web UI"]
+    C -->|"Đã chết hẳn / Crash / Timeout"| E["Bước 2: Thông Báo Kênh Incident Slack"]
     E --> F["Bước 3: Chạy Lệnh: terraform force-unlock [LOCK_ID]"]
     F --> G["Bước 4: Xác Minh Mở Khóa Thành Công"]
     G --> H["Chạy terraform plan -refresh-only Để Kiểm Tra Drift"]
@@ -175,10 +175,10 @@ Khi bạn chạy lại `terraform apply`:
 flowchart TD
     A["Phát Hiện State File Bị Hỏng / Corrupted"] --> B["DỪNG TOÀN BỘ PIPELINE & KHÓA QUYỀN TRUY CẬP"]
     B --> C["Phương Án 1: Khôi Phục Từ S3 Versioning"]
-    C -->|S3 Đã Bật Versioning| D["Lấy Version Trước Đó Của S3 State Object"]
+    C -->|"S3 Đã Bật Versioning"| D["Lấy Version Trước Đó Của S3 State Object"]
     D --> E["Tải Về & Kiểm Tra Cú Pháp JSON Bằng jq"]
-    E -->|JSON Hợp Lệ| F["Khôi Phục Bản Ghi Lên S3 & Tăng Số Serial (+1)"]
-    C -->|S3 Không Bật Versioning| G["Phương Án 2: Dùng terraform.tfstate.backup"]
+    E -->|"JSON Hợp Lệ"| F["Khôi Phục Bản Ghi Lên S3 & Tăng Số Serial (+1)"]
+    C -->|"S3 Không Bật Versioning"| G["Phương Án 2: Dùng terraform.tfstate.backup"]
     G --> H["Kiểm Tra File Backup Cục Bộ / CI Artifacts"]
     H --> F
     F --> I["Chạy terraform plan -refresh-only Để Cập Nhật Drift Mới Nhất"]

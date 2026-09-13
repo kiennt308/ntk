@@ -454,18 +454,18 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Check Cú pháp: --syntax-check| PB["Playbook: site.yml"]
-    SubGraph1 --> |2. Check Mô phỏng: --check --diff| PB
-    SubGraph1 --> |3. Thực thi Play 1 (hosts: web)| T1["Target Container 1 (target1 - Web)"]
-    SubGraph1 --> |4. Thực thi Play 2 (hosts: db)| T2["Target Container 2 (target2 - DB)"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Check Cú pháp: --syntax-check"| PB["Playbook: site.yml"]
+    SubGraph1 -->|"2. Check Mô phỏng: --check --diff"| PB
+    SubGraph1 -->|"3. Thực thi Play 1 (hosts: web)"| T1["Target Container 1 (target1 - Web)"]
+    SubGraph1 -->|"4. Thực thi Play 2 (hosts: db)"| T2["Target Container 2 (target2 - DB)"]
     
     T1 -. "PLAY RECAP: ok=3, changed=1" .-> SubGraph1
     T2 -. "PLAY RECAP: ok=2, changed=1" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy ansible-playbook| SubGraph1
-    DEV --> |B. Chạy lần 2 kiểm changed=0| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
-    DEV --> |D. Đối soát sự thật máy đích| T2
+    DEV["Học viên (Tester)"] -->|"A. Chạy ansible-playbook"| SubGraph1
+    DEV -->|"B. Chạy lần 2 kiểm changed=0"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
+    DEV -->|"D. Đối soát sự thật máy đích"| T2
 ```
 
 ---

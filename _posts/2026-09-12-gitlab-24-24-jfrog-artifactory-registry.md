@@ -63,7 +63,7 @@ graph TD
     
     D --> E[Artifactory LOCAL DEV Repository<br/>Upload kèm Build Info Metadata]
     
-    E --> F{JFrog Xray Security & License Scan}
+    E --> F{"JFrog Xray Security & License Scan"}
     
     F -- "Pass Security & License Check" --> G[Promote Artifact to LOCAL PROD Repository]
     F -- "Fail CRITICAL CVEs" --> H[Block Deployment & Notify Slack/GitLab]
@@ -712,7 +712,7 @@ graph LR
 
 ```mermaid
 graph TD
-    A[Git Push to repo-artifactory-lab] --> B{GitLab CI Pipeline}
+    A[Git Push to repo-artifactory-lab] --> B{"GitLab CI Pipeline"}
     
     subgraph Step1_Setup_Proxy [Bước 1: JFrog CLI & Remote Proxy Cache]
         B --> C1[jf c add enterprise-artifactory]

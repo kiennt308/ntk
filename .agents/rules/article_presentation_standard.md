@@ -109,6 +109,19 @@ Mọi sơ đồ Mermaid (bao gồm `flowchart`, `graph`, và `sequenceDiagram`) 
 - Thực thi / Thành công: `#10b981` (Emerald)
 - Lỗi / Sự cố / Outage: `#f43f5e` hoặc `#dc2626` (Rose/Red)
 
+### 5.4. Quy Chuẩn Cú Pháp & Thoát Ký Tự Tránh Lỗi Parser (Mermaid Syntax Standards)
+1. **Bọc nhãn đường nối (Edge Labels) bằng dấu ngoặc kép**:
+   - Tất cả nhãn trên đường kết nối (`-->|"..."|`, `---|"..."|`, `==>|"..."|`, `-.->|"..."|`) **bắt buộc phải được bọc trong cặp dấu ngoặc kép `"`**.
+   - ❌ **Sai (Gây sập Mermaid Parser)**: `MASK -->|BẬT (sensitive=true)| CLI` (lỗi: `Expecting PS, got...`).
+   - ✅ **Đúng**: `MASK -->|"BẬT (sensitive=true)"| CLI`.
+2. **Bọc nhãn khối Node (Node Labels & Shapes) bằng dấu ngoặc kép**:
+   - Mọi khối chứa dấu ngoặc đơn `()`, ngoặc vuông `[]`, ngoặc nhọn `{}`, dấu bằng `=`, dấu hai chấm `:`, hoặc `<br/>` phải bọc text bên trong bằng dấu ngoặc kép:
+     - Node chữ nhật: `ID["Nhãn chi tiết (VPC CIDR / 10.0.0.0/16)"]`
+     - Node hình thoi (Decision): `MASK{"Cờ sensitive = true"}`
+     - Node bo tròn: `ID("Nội dung text")` hoặc `ID(["Stadium text"])`
+     - Node Database: `DB[("PostgreSQL Cluster (Primary)")]`
+3. **Tuyệt đối không dùng ký tự Markdown thô (`**`, `` ` ``) trong nhãn Mermaid**: Mermaid không hỗ trợ parse markdown trong text nhãn thông thường; dùng chữ in hoa hoặc nhãn rõ ràng.
+
 ---
 
 ## 6. Chuẩn Hóa Bảng So Sánh & Bảng Thực Hành (Table Optimization Standards)

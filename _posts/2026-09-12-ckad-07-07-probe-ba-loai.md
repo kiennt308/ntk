@@ -117,10 +117,10 @@ Mô hình Bác sĩ Khám Bệnh cho Vận động viên: `startupProbe` giống 
 
 ```mermaid
 graph TD
-    Start[Khởi động Container] --> Startup{startupProbe thành công?}
-    Startup -->|Chưa/Đang thử| DisableProbes[Vô hiệu hóa livenessProbe & readinessProbe]
+    Start[Khởi động Container] --> Startup{"startupProbe thành công?"}
+    Startup -->|"Chưa/Đang thử"| DisableProbes[Vô hiệu hóa livenessProbe & readinessProbe]
     DisableProbes --> Startup
-    Startup -->|Thành công 100%| EnableProbes[Kích hoạt livenessProbe & readinessProbe chạy định kỳ]
+    Startup -->|"Thành công 100%"| EnableProbes[Kích hoạt livenessProbe & readinessProbe chạy định kỳ]
 ```
 
 **Nguyên lý cốt lõi:** Khi `readinessProbe` thất bại, Kubelet KHÔNG tiêu diệt container mà chỉ gỡ IP của Pod ra khỏi danh sách Service Endpoints để ngừng chuyển traffic; khi `livenessProbe` thất bại, Kubelet sẽ tiêu diệt và khởi động lại container theo `restartPolicy`.
@@ -336,8 +336,8 @@ graph TD
     Actions --> Exec[exec: Exit code 0]
     Actions --> TCP[tcpSocket: Connect Port OK]
     
-    Readiness -->|FAIL| CutTraffic[Gỡ IP khỏi Service Endpoints]
-    Liveness -->|FAIL| RestartPod[Kubelet Send SIGKILL & Restart]
+    Readiness -->|"FAIL"| CutTraffic[Gỡ IP khỏi Service Endpoints]
+    Liveness -->|"FAIL"| RestartPod[Kubelet Send SIGKILL & Restart]
 ```
 
 **Năm điều phải nhớ:**

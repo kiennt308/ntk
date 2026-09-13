@@ -63,9 +63,9 @@ flowchart TD
         GCP["Google Cloud Platform"]
     end
 
-    DEV -->|CLI-driven Run| RUN_ENG
-    GIT -->|VCS-driven Run| RUN_ENG
-    API_CALL -->|API-driven Run| RUN_ENG
+    DEV -->|"CLI-driven Run"| RUN_ENG
+    GIT -->|"VCS-driven Run"| RUN_ENG
+    API_CALL -->|"API-driven Run"| RUN_ENG
 
     RUN_ENG --> WS_MGR
     RUN_ENG --> VAR_SETS
@@ -74,9 +74,9 @@ flowchart TD
     RUN_ENG --> POLICY_ENG
     RUN_ENG --> DRIFT_SCHED
 
-    RUN_ENG -->|Provisioning qua HTTPS TLS| AWS
-    RUN_ENG -->|Provisioning qua HTTPS TLS| AZURE
-    RUN_ENG -->|Provisioning qua HTTPS TLS| GCP
+    RUN_ENG -->|"Provisioning qua HTTPS TLS"| AWS
+    RUN_ENG -->|"Provisioning qua HTTPS TLS"| AZURE
+    RUN_ENG -->|"Provisioning qua HTTPS TLS"| GCP
 
     style HCP_Terraform_Platform fill:none,stroke:#2e7d32,stroke-width:2px
     style RUN_ENG fill:none,stroke:#0288d1,stroke-width:2px
@@ -172,9 +172,9 @@ Trong môi trường lớn, việc lặp lại các biến số xác thực (nh�
 
 ```mermaid
 graph TD
-    VS["Variable Set: Global-AWS-Production-Credentials"] -->|Gán tự động| W1["Workspace: 01-prod-networking"]
-    VS -->|Gán tự động| W2["Workspace: 02-prod-database"]
-    VS -->|Gán tự động| W3["Workspace: 03-prod-kubernetes"]
+    VS["Variable Set: Global-AWS-Production-Credentials"] -->|"Gán tự động"| W1["Workspace: 01-prod-networking"]
+    VS -->|"Gán tự động"| W2["Workspace: 02-prod-database"]
+    VS -->|"Gán tự động"| W3["Workspace: 03-prod-kubernetes"]
 
     subgraph Variable_Set_Contents ["Nội Dung Bên Trong Variable Set"]
         V1["AWS_ACCESS_KEY_ID: Environment Variable"]
@@ -198,12 +198,12 @@ Một trong những giá trị lớn nhất của HCP Terraform là **Private Mo
 
 ```mermaid
 flowchart LR
-    DEV_TEAM["Nhóm Platform Engineering"] -->|Tạo Git Tag v1.2.0| GIT["Repo: terraform-aws-secure-vpc"]
-    GIT -->|Webhook tự động| REG["HCP Private Module Registry"]
-    REG -->|Phát hành| MOD["app.terraform.io/corp-fintech-global/secure-vpc/aws"]
+    DEV_TEAM["Nhóm Platform Engineering"] -->|"Tạo Git Tag v1.2.0"| GIT["Repo: terraform-aws-secure-vpc"]
+    GIT -->|"Webhook tự động"| REG["HCP Private Module Registry"]
+    REG -->|"Phát hành"| MOD["app.terraform.io/corp-fintech-global/secure-vpc/aws"]
     
-    APP_DEV["Nhóm Application Kỹ Sư"] -->|Sử dụng Module| USE_CODE["Mã HCL: module 'vpc'"]
-    USE_CODE -->|Tải an toàn| REG
+    APP_DEV["Nhóm Application Kỹ Sư"] -->|"Sử dụng Module"| USE_CODE["Mã HCL: module 'vpc'"]
+    USE_CODE -->|"Tải an toàn"| REG
 
     style REG fill:none,stroke:#2e7d32,stroke-width:2px
 

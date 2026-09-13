@@ -518,11 +518,11 @@ graph TD
         KUBECONFIG["dev-user.kubeconfig (--embed-certs=true)"]
     end
 
-    OPENSSL -->|Nộp YAML| CSR_OBJ
-    CSR_OBJ -->|Duyệt bằng ca.key| APPROVE
-    APPROVE -->|Root CA ký| CERT_OUT
-    CERT_OUT -->|Nhúng Base64| KUBECONFIG
-    ROOT_CA -->|Ký chứng chỉ| APPROVE
+    OPENSSL -->|"Nộp YAML"| CSR_OBJ
+    CSR_OBJ -->|"Duyệt bằng ca.key"| APPROVE
+    APPROVE -->|"Root CA ký"| CERT_OUT
+    CERT_OUT -->|"Nhúng Base64"| KUBECONFIG
+    ROOT_CA -->|"Ký chứng chỉ"| APPROVE
 
     style PKI_Storage fill:none,stroke:#f57c00,stroke-width:2px
     style CSR_Workflow fill:none,stroke:#0288d1,stroke-width:2px

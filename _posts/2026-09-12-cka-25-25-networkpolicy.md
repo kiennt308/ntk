@@ -161,13 +161,13 @@ Con số chốt: **1** nhãn trùng khớp trong `podSelector` là đủ để c
 ```mermaid
 graph TD
     subgraph Zero_Trust_Architecture ["Kiến trúc Bảo mật Mạng Zero Trust"]
-        POLICY["NetworkPolicy: default-deny-all"] -->|1. podSelector: {}| DENY["KHOÁ 100% Ingress & Egress"]
+        POLICY["NetworkPolicy: default-deny-all"] -->|"1. podSelector: {}"| DENY["KHOÁ 100% Ingress & Egress"]
         
-        DENY -->|2. Whitelist Ingress| ALLOW_IN["Mở duy nhất Pod frontend (app: web) cổng 5432"]
-        DENY -->|3. Whitelist Egress| ALLOW_OUT["Mở duy nhất IP CoreDNS (10.96.0.10:53)"]
+        DENY -->|"2. Whitelist Ingress"| ALLOW_IN["Mở duy nhất Pod frontend (app: web) cổng 5432"]
+        DENY -->|"3. Whitelist Egress"| ALLOW_OUT["Mở duy nhất IP CoreDNS (10.96.0.10:53)"]
 
-        CLIENT_BAD["Pod hacker (app: rogue)"] -->|BLOCKED 100% Timeout| DENY
-        CLIENT_GOOD["Pod frontend (app: web)"] -->|ALLOWED Port 5432| ALLOW_IN
+        CLIENT_BAD["Pod hacker (app: rogue)"] -->|"BLOCKED 100% Timeout"| DENY
+        CLIENT_GOOD["Pod frontend (app: web)"] -->|"ALLOWED Port 5432"| ALLOW_IN
     end
 
     style DENY fill:none,stroke:#e53935,stroke-width:2px
@@ -527,9 +527,9 @@ graph TD
         POD_DB["Pod: secure-db (label app: db, Port 5432)"]
     end
 
-    POD_FRONT -->|1. ALLOWED Port 5432| POD_DB
-    POD_UNTRUST -.->|2. BLOCKED Timeout| POD_DB
-    POD_FRONT -->|3. ALLOWED Egress Port 53| COREDNS["CoreDNS (10.96.0.10)"]
+    POD_FRONT -->|"1. ALLOWED Port 5432"| POD_DB
+    POD_UNTRUST -.->|"2. BLOCKED Timeout"| POD_DB
+    POD_FRONT -->|"3. ALLOWED Egress Port 53"| COREDNS["CoreDNS (10.96.0.10)"]
 
     style DEFAULT_DENY fill:none,stroke:#e53935,stroke-width:2px
     style ALLOW_DB fill:none,stroke:#388e3c,stroke-width:2px

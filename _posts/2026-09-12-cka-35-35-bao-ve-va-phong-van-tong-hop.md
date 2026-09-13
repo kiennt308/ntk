@@ -502,14 +502,14 @@ Trở thành <b style="color: var(--accent-primary);">Chuyên gia Hạ tầng Đ
 
 ```mermaid
 graph TD
-    GraduationCandidate[Senior Platform Architect Candidate] -->|1. Start Graduation Exam| GradEnv[Graduation Environment: /tmp/graduation]
-    GradEnv -->|2. CKA Speed Test| CKASection[CKA Section: jsonpath, etcd, Kubelet Fix]
-    GradEnv -->|3. CKAD Speed Test| CKADSection[CKAD Section: CronJob, Probes, Canary]
-    GradEnv -->|4. CKS Speed Test| CKSSection[CKS Section: AppArmor, Kyverno, Falco]
+    GraduationCandidate[Senior Platform Architect Candidate] -->|"1. Start Graduation Exam"| GradEnv[Graduation Environment: /tmp/graduation]
+    GradEnv -->|"2. CKA Speed Test"| CKASection[CKA Section: jsonpath, etcd, Kubelet Fix]
+    GradEnv -->|"3. CKAD Speed Test"| CKADSection[CKAD Section: CronJob, Probes, Canary]
+    GradEnv -->|"4. CKS Speed Test"| CKSSection[CKS Section: AppArmor, Kyverno, Falco]
     
-    CKASection & CKADSection & CKSSection -->|5. Capstone Demo & Q&A| DefenseSection[Live Capstone Demo & 36 Interview Q&As]
-    DefenseSection -->|6. Auto-Grading Script| GradeScript[Script Chấm Điểm Tốt Nghiệp]
-    GradeScript -->|Score >= 80%: PASS| SeniorWings[Senior Cloud Native Engineer Certified!]
+    CKASection & CKADSection & CKSSection -->|"5. Capstone Demo & Q&A"| DefenseSection[Live Capstone Demo & 36 Interview Q&As]
+    DefenseSection -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tốt Nghiệp]
+    GradeScript -->|"Score >= 80%: PASS"| SeniorWings[Senior Cloud Native Engineer Certified!]
 ```
 
 ---

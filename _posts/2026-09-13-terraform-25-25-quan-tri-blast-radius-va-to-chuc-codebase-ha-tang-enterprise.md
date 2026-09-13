@@ -47,7 +47,7 @@ flowchart TD
         M_STATE --> M_EKS["EKS Production Cluster"]
         M_STATE --> M_APP["100+ Microservices & Ingress"]
         
-        FAIL["Lỗi Apply / Hỏng State File"] -.->|TIÊU DIỆT 100% TOÀN BỘ HỆ THỐNG!| M_STATE
+        FAIL["Lỗi Apply / Hỏng State File"] -.->|"TIÊU DIỆT 100% TOÀN BỘ HỆ THỐNG!"| M_STATE
     end
 
     subgraph Layered_Micro_States ["Kiến Trúc Đa Tầng Micro-States: Blast Radius Được Cô Lập"]
@@ -55,7 +55,7 @@ flowchart TD
         S_DATA --> S_COMP["(State 3: Compute Layer \n 40 Resources)"]
         S_COMP --> S_APP["(State 4: App Layer \n 30 Resources)"]
         
-        FAIL_APP["Lỗi Apply App Layer"] -.->|CHỈ ẢNH HƯỞNG TẦNG APP - CÁC TẦNG KHÁC 100% AN TOÀN| S_APP
+        FAIL_APP["Lỗi Apply App Layer"] -.->|"CHỈ ẢNH HƯỞNG TẦNG APP - CÁC TẦNG KHÁC 100% AN TOÀN"| S_APP
     end
 
     style Monolith_Architecture fill:none,stroke:#c62828,stroke-width:2px
@@ -173,16 +173,16 @@ Khi chia nhỏ thành nhiều State files độc lập, tầng sau cần đọc 
 ```mermaid
 flowchart LR
     subgraph Method1 ["Cách 1: terraform_remote_state"]
-        M1_SRC["(State Network)"] -->|Đọc toàn bộ file State| M1_DST["Tầng EKS Compute"]
+        M1_SRC["(State Network)"] -->|"Đọc toàn bộ file State"| M1_DST["Tầng EKS Compute"]
     end
 
     subgraph Method2 ["Cách 2: AWS SSM Parameter Store - Khuyến Nghị"]
-        M2_NET["Tầng Network"] -->|Ghi vpc_id vào SSM| SSM["(AWS SSM: /infra/prod/vpc_id)"]
-        SSM -->|Data Source aws_ssm_parameter đọc| M2_DST["Tầng EKS Compute"]
+        M2_NET["Tầng Network"] -->|"Ghi vpc_id vào SSM"| SSM["(AWS SSM: /infra/prod/vpc_id)"]
+        SSM -->|"Data Source aws_ssm_parameter đọc"| M2_DST["Tầng EKS Compute"]
     end
 
     subgraph Method3 ["Cách 3: Terragrunt Dependency"]
-        M3_TG["Terragrunt Orchestrator"] -->|Inject Outputs vào Inputs| M3_DST["Tầng EKS Compute"]
+        M3_TG["Terragrunt Orchestrator"] -->|"Inject Outputs vào Inputs"| M3_DST["Tầng EKS Compute"]
     end
 
     style Method1 fill:none,stroke:#c62828,stroke-width:2px

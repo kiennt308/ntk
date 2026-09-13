@@ -117,8 +117,8 @@ Mô hình Tháp Văn phòng Bảo vệ 3 lớp và Thẻ Căn cước: `NetworkP
 
 ```mermaid
 graph TD
-    Attacker[Hacker chiếm Pod Frontend] -->|Thử truy cập mạng nội bộ| NetPol{NetworkPolicy: Default Deny All}
-    NetPol -->|KHÓA SẠCH| Blocked[Traffic bị Drop 100%]
+    Attacker[Hacker chiếm Pod Frontend] -->|"Thử truy cập mạng nội bộ"| NetPol{"NetworkPolicy: Default Deny All"}
+    NetPol -->|"KHÓA SẠCH"| Blocked[Traffic bị Drop 100%]
 ```
 
 **Nguyên lý cốt lõi:** Nếu một Pod không bị chi phối bởi bất kỳ NetworkPolicy nào, mặc định Kubernetes sẽ cho phép 100% traffic Ingress và Egress tự do ra vào Pod đó mà không gặp rào cản.
@@ -223,10 +223,10 @@ egress:
 
 ```mermaid
 graph TD
-    User[Tệp YAML NetworkPolicy] -->|1. Apply| APIServer[API Server / etcd]
-    APIServer -->|2. Event Watch| Calico[CNI Plugin: Calico DaemonSet]
-    Calico -->|3. Nạp luật Kernel| LinuxKernel[Linux Kernel iptables / eBPF]
-    LinuxKernel -->|4. Thực thi| Drop[DROP hoặc ACCEPT Packet Mạng]
+    User[Tệp YAML NetworkPolicy] -->|"1. Apply"| APIServer[API Server / etcd]
+    APIServer -->|"2. Event Watch"| Calico[CNI Plugin: Calico DaemonSet]
+    Calico -->|"3. Nạp luật Kernel"| LinuxKernel[Linux Kernel iptables / eBPF]
+    LinuxKernel -->|"4. Thực thi"| Drop[DROP hoặc ACCEPT Packet Mạng]
 ```
 
 **Nguyên lý cốt lõi:** Cờ `ipBlock.except` trong NetworkPolicy được dùng để loại trừ các dải IP CIDR cụ thể (ví dụ cho phép ra internet `0.0.0.0/0` nhưng `except` chặn dải IP nội bộ `10.0.0.0/8`).
@@ -584,11 +584,11 @@ graph TD
         Backend[Pod backend: app=backend]
         DB[Pod db: app=database]
         
-        NetPolBackend{NetworkPolicy backend-policy: Ingress from app=frontend ONLY}
+        NetPolBackend{"NetworkPolicy backend-policy: Ingress from app=frontend ONLY"}
     end
     
-    Frontend -->|ALLOWED: Port 8080| NetPolBackend --> Backend
-    Attacker -.->|BLOCKED: Dropped Packet| NetPolBackend
+    Frontend -->|"ALLOWED: Port 8080"| NetPolBackend --> Backend
+    Attacker -.->|"BLOCKED: Dropped Packet"| NetPolBackend
 ```
 
 ---

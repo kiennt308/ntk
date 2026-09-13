@@ -514,14 +514,14 @@ Vì giúp <b style="color: var(--accent-primary);">in ra bảng dữ liệu chu�
 
 ```mermaid
 graph TD
-    Candidate[CKA Administrator] -->|1. Start 90m Speed Timer| SpeedEnv[CKA Speed Drill Environment]
-    SpeedEnv -->|2. Fast Extraction| Q1[Câu 1: jsonpath Pod IPs]
-    SpeedEnv -->|3. Cluster Admin| Q2[Câu 2: Etcd Backup & Kubelet Status]
-    SpeedEnv -->|4. Storage & Networking| Q3[Câu 3: PV, PVC & Ingress Config]
-    SpeedEnv -->|5. Workloads & Rollout| Q4[Câu 4: Sidecar Pod & Rollout Undo]
+    Candidate[CKA Administrator] -->|"1. Start 90m Speed Timer"| SpeedEnv[CKA Speed Drill Environment]
+    SpeedEnv -->|"2. Fast Extraction"| Q1[Câu 1: jsonpath Pod IPs]
+    SpeedEnv -->|"3. Cluster Admin"| Q2[Câu 2: Etcd Backup & Kubelet Status]
+    SpeedEnv -->|"4. Storage & Networking"| Q3[Câu 3: PV, PVC & Ingress Config]
+    SpeedEnv -->|"5. Workloads & Rollout"| Q4[Câu 4: Sidecar Pod & Rollout Undo]
     
-    Q1 & Q2 & Q3 & Q4 -->|6. Auto-Grading Script| GradeScript[Script Chấm Điểm Tự Động]
-    GradeScript -->|Score >= 80%: PASS| CKAReady[CKA Exam Ready!]
+    Q1 & Q2 & Q3 & Q4 -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tự Động]
+    GradeScript -->|"Score >= 80%: PASS"| CKAReady[CKA Exam Ready!]
 ```
 
 ---

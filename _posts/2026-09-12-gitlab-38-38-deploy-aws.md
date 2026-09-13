@@ -112,14 +112,14 @@ flowchart TD
     end
 
     subgraph AWS Security Token Service
-        C --> D{Verify JWT via GitLab JWKS}
-        D -->|Match StringEquals sub| E[Issue AWS Temporary Credentials]
+        C --> D{"Verify JWT via GitLab JWKS"}
+        D -->|"Match StringEquals sub"| E[Issue AWS Temporary Credentials]
     end
 
     subgraph Deployment Targets
-        E -->|Target 1| F[AWS S3 Sync & CloudFront Invalidation]
-        E -->|Target 2| G[Amazon ECR Push & AWS ECS Fargate Update]
-        E -->|Target 3| H[Amazon EKS kubectl apply Manifests]
+        E -->|"Target 1"| F[AWS S3 Sync & CloudFront Invalidation]
+        E -->|"Target 2"| G[Amazon ECR Push & AWS ECS Fargate Update]
+        E -->|"Target 3"| H[Amazon EKS kubectl apply Manifests]
     end
 ```
 
@@ -590,15 +590,15 @@ flowchart TD
     end
 
     subgraph AWS IAM & STS Security
-        C --> D{Verify JWKS & Condition sub}
-        D -->|Valid| E[Export AWS Temporary Credentials]
+        C --> D{"Verify JWKS & Condition sub"}
+        D -->|"Valid"| E[Export AWS Temporary Credentials]
     end
 
     subgraph AWS Infrastructure Deployments
-        E -->|Web Frontend| F[aws s3 sync & CloudFront Invalidation]
-        E -->|Container Image| G[aws ecr get-login & docker push]
+        E -->|"Web Frontend"| F[aws s3 sync & CloudFront Invalidation]
+        E -->|"Container Image"| G[aws ecr get-login & docker push]
         G --> H[aws ecs update-service --force-new-deployment]
-        E -->|Kubernetes App| I[aws eks update-kubeconfig & kubectl apply]
+        E -->|"Kubernetes App"| I[aws eks update-kubeconfig & kubectl apply]
     end
 ```
 
@@ -710,14 +710,14 @@ graph TD
 
     subgraph AWS Security Token Service Simulator
         C --> D[Verify JWT Signature & Evaluate Trust Policy]
-        D -->|Validation PASSED| E[Issue AWS Temporary Credentials]
+        D -->|"Validation PASSED"| E[Issue AWS Temporary Credentials]
     end
 
     subgraph AWS Target Deployments
-        E -->|Web Frontend Target| F[Script deploy-s3-cloudfront.sh]
-        E -->|Container Registry Target| G[Script ecr-login-push.sh]
-        G -->|ECS Service Update| H[Script update-ecs-service.sh]
-        E -->|Kubernetes Target| I[Script deploy-eks-manifests.sh]
+        E -->|"Web Frontend Target"| F[Script deploy-s3-cloudfront.sh]
+        E -->|"Container Registry Target"| G[Script ecr-login-push.sh]
+        G -->|"ECS Service Update"| H[Script update-ecs-service.sh]
+        E -->|"Kubernetes Target"| I[Script deploy-eks-manifests.sh]
     end
 
     F --> J[Amazon S3 Bucket + CloudFront CDN]

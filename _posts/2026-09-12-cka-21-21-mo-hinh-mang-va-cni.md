@@ -180,15 +180,15 @@ Con số chốt: **3** CNI Plugins phổ biến hàng đầu trong hệ sinh th�
 ```mermaid
 graph TD
     subgraph Intra_Node ["1. Gói tin đi cùng Node (Intra-Node)"]
-        POD_A["Pod A (IP: 10.244.1.2)"] -->|veth0| VETH_HOSTA["vethXXXX (Host Namespace)"]
-        VETH_HOSTA -->|Bridge / eBPF| VETH_HOSTB["vethYYYY (Host Namespace)"]
-        VETH_HOSTB -->|veth0| POD_B["Pod B (IP: 10.244.1.3)"]
+        POD_A["Pod A (IP: 10.244.1.2)"] -->|"veth0"| VETH_HOSTA["vethXXXX (Host Namespace)"]
+        VETH_HOSTA -->|"Bridge / eBPF"| VETH_HOSTB["vethYYYY (Host Namespace)"]
+        VETH_HOSTB -->|"veth0"| POD_B["Pod B (IP: 10.244.1.3)"]
     end
 
     subgraph Inter_Node ["2. Gói tin đi khác Node (Inter-Node Overlay VXLAN)"]
-        POD_A2["Pod A (Node 1)"] -->|Encapsulation| TUNNEL["VXLAN Interface (outer UDP packet)"]
-        TUNNEL -->|Physical eth0| ETH_WIRE["Physical Network Wire"]
-        ETH_WIRE -->|Physical eth0| TUNNEL2["Node 2 Decapsulation"]
+        POD_A2["Pod A (Node 1)"] -->|"Encapsulation"| TUNNEL["VXLAN Interface (outer UDP packet)"]
+        TUNNEL -->|"Physical eth0"| ETH_WIRE["Physical Network Wire"]
+        ETH_WIRE -->|"Physical eth0"| TUNNEL2["Node 2 Decapsulation"]
         TUNNEL2 --> POD_C["Pod C (Node 2: IP 10.244.2.5)"]
     end
 
@@ -492,16 +492,16 @@ kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUO
 ```mermaid
 graph TD
     subgraph Node1 ["Worker Node 01 (worker-01)"]
-        POD1["Pod pod-node1 (IP: 10.244.1.X)"] -->|veth0| VETH1["vethXXXX (Host)"]
-        VETH1 -->|Bridge / CNI| TUN1["VXLAN Interface (UDP 4789)"]
+        POD1["Pod pod-node1 (IP: 10.244.1.X)"] -->|"veth0"| VETH1["vethXXXX (Host)"]
+        VETH1 -->|"Bridge / CNI"| TUN1["VXLAN Interface (UDP 4789)"]
     end
 
     subgraph Node2 ["Worker Node 02 (worker-02)"]
-        TUN2["VXLAN Interface (UDP 4789)"] -->|Bridge / CNI| VETH2["vethYYYY (Host)"]
-        VETH2 -->|veth0| POD2["Pod pod-node2 (IP: 10.244.2.Y)"]
+        TUN2["VXLAN Interface (UDP 4789)"] -->|"Bridge / CNI"| VETH2["vethYYYY (Host)"]
+        VETH2 -->|"veth0"| POD2["Pod pod-node2 (IP: 10.244.2.Y)"]
     end
 
-    TUN1 -->|Physical eth0 Wire| TUN2
+    TUN1 -->|"Physical eth0 Wire"| TUN2
 
     style Node1 fill:none,stroke:#0288d1,stroke-width:2px
     style Node2 fill:none,stroke:#f57c00,stroke-width:2px

@@ -54,7 +54,7 @@ flowchart TD
 
     APPSET_GIT["ApplicationSet (Git Directory Generator)<br/>directories: [services/*]"]
 
-    GIT_TREE -->|Tự động quét cây thư mục| APPSET_GIT
+    GIT_TREE -->|"Tự động quét cây thư mục"| APPSET_GIT
 
     subgraph AUTO_APPS["TỰ ĐỘNG SINH ỨNG DỤNG TỨC THÌ (Zero-Touch)"]
         A1["App: payment-api"]
@@ -338,8 +338,8 @@ Khi có sự kiện `Pull Request` mở, cập nhật hoặc đóng, GitHub sẽ
 
 ```mermaid
 flowchart TD
-    APPSET["ApplicationSet PR Controller (Không gắn Token GitHub)"] -->|Gọi API liên tục mỗi 3 phút| GITHUB["GitHub Public API Server"]
-    GITHUB -->|Vượt quá ngưỡng 60 requests/giờ!| RATE_LIMIT["HTTP 403 API RATE LIMIT EXCEEDED!"]
+    APPSET["ApplicationSet PR Controller (Không gắn Token GitHub)"] -->|"Gọi API liên tục mỗi 3 phút"| GITHUB["GitHub Public API Server"]
+    GITHUB -->|"Vượt quá ngưỡng 60 requests/giờ!"| RATE_LIMIT["HTTP 403 API RATE LIMIT EXCEEDED!"]
     RATE_LIMIT ==> TRAP["HẬU QUẢ: Toàn bộ Preview Environments bị TÊ LIỆT HOÀN TOÀN!"]
 
 

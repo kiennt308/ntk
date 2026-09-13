@@ -335,7 +335,7 @@ Khi chạy lệnh trên:
 flowchart TD
     AAD["Azure AD: User thuộc 350 Security Groups"] --> TOKEN["ID Token JWT có kích thước 16KB!"]
     TOKEN --> INGRESS["Ingress Controller (Giới hạn mặc định: 4KB / 8KB Header)"]
-    INGRESS -->|Header quá lớn!| FAIL["HTTP 431: Request Header Fields Too Large!"]
+    INGRESS -->|"Header quá lớn!"| FAIL["HTTP 431: Request Header Fields Too Large!"]
     FAIL ==> FIX["GIẢI PHÁP: Cấu hình Group Filter Regex trên IdP!"]
 
 

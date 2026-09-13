@@ -121,8 +121,8 @@ graph TD
     Authentication --> Mutating[1. Mutating Admission Webhooks: Chèn sidecar / Sửa defaults]
     Mutating --> SchemaValidation[2. Object Schema Validation]
     SchemaValidation --> Validating[3. Validating Admission Webhooks / CEL Policies: Kiểm tra & Chặn]
-    Validating -->|Pass 100%| ETCD[Ghi dữ liệu vào etcd]
-    Validating -.->|Fail Rule| Deny[Tra về lỗi 403 Forbidden]
+    Validating -->|"Pass 100%"| ETCD[Ghi dữ liệu vào etcd]
+    Validating -.->|"Fail Rule"| Deny[Tra về lỗi 403 Forbidden]
 ```
 
 **Nguyên lý cốt lõi:** Sử dụng `ValidatingAdmissionPolicy` (CEL) tích hợp sẵn trong K8s 1.30+ thay cho các External Webhooks bất cứ khi nào có thể để tăng hiệu năng xử lý request và loại bỏ nguy cơ làm chậm API Server do ngẽn mạng.
@@ -539,12 +539,12 @@ Chính sách đó KHÔNG CÓ HIỆU LỰC, API Server sẽ không kiểm duyệt
 
 ```mermaid
 graph TD
-    Client[Kubectl Apply Pod] -->|1. Request to API Server| APIServer[Kube-APIServer]
-    APIServer -->|2. Check ValidatingAdmissionPolicy CEL| PolicyEngine{CEL Policy Engine}
+    Client[Kubectl Apply Pod] -->|"1. Request to API Server"| APIServer[Kube-APIServer]
+    APIServer -->|"2. Check ValidatingAdmissionPolicy CEL"| PolicyEngine{"CEL Policy Engine"}
     
-    PolicyEngine -->|Biểu thức CEL: 'owner' in labels| CheckLabels{Có nhãn owner?}
-    CheckLabels -.->|No: false| Block[REJECT 403 Forbidden: Pod bắt buộc phải có nhãn owner]
-    CheckLabels -->|Yes: true| Allow[ACCEPT Pod Created in Namespace lab53]
+    PolicyEngine -->|"Biểu thức CEL: 'owner' in labels"| CheckLabels{"Có nhãn owner?"}
+    CheckLabels -.->|"No: false"| Block[REJECT 403 Forbidden: Pod bắt buộc phải có nhãn owner]
+    CheckLabels -->|"Yes: true"| Allow[ACCEPT Pod Created in Namespace lab53]
 ```
 
 ---

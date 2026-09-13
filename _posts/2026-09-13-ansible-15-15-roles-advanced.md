@@ -314,8 +314,8 @@ Khi triển khai hệ thống Microservices đa môi trường:
 flowchart TD
     A["Nhu cầu Tổ chức Role Nâng cao"] --> B{"Chọn Phương pháp Nạp"}
     
-    B -->|Tĩnh Static| C["import_role: nạp ở Parse time (Hỗ trợ tags & Handlers)"]
-    B -->|Động Dynamic| D["include_role: nạp ở Runtime (Hỗ trợ when & loop)"]
+    B -->|"Tĩnh Static"| C["import_role: nạp ở Parse time (Hỗ trợ tags & Handlers)"]
+    B -->|"Động Dynamic"| D["include_role: nạp ở Runtime (Hỗ trợ when & loop)"]
     
     C --> E["Tùy biến: tasks_from, vars_from, handlers_from"]
     D --> E
@@ -455,26 +455,26 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Nạp Playbook: site-advanced-roles.yml| PB["Playbook: site-advanced-roles.yml"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Playbook: site-advanced-roles.yml"| PB["Playbook: site-advanced-roles.yml"]
     
-    PB --> |2. Task 1: import_role -> common| R1["Role: common"]
-    PB --> |3. Task 2: include_role -> app_server (when: production)| R2["Role: app_server"]
+    PB -->|"2. Task 1: import_role -> common"| R1["Role: common"]
+    PB -->|"3. Task 2: include_role -> app_server (when: production)"| R2["Role: app_server"]
     
     subgraph "Nội bộ Role: roles/app_server/"
         R2 -. "Auto dependency -> meta/main.yml" .-> R1
-        R2 --> |4. Run tasks_from: configure.yml| TCFG["configure.yml: Deploy /etc/app-server.conf"]
+        R2 -->|"4. Run tasks_from: configure.yml"| TCFG["configure.yml: Deploy /etc/app-server.conf"]
     end
     
-    PB --> |5. Task 3: include_role -> webserver with loop| R3["Role: webserver (Looped)"]
+    PB -->|"5. Task 3: include_role -> webserver with loop"| R3["Role: webserver (Looped)"]
     
-    R2 --> |6. Gửi cấu hình đã render| T1["Target Container 1 (target1)"]
+    R2 -->|"6. Gửi cấu hình đã render"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=6, changed=3" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=6, changed=0 (MỐC 50% KHÓA HỌC)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook site-advanced-roles.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-advanced-roles.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

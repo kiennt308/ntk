@@ -110,15 +110,15 @@ Bài học này sẽ giúp bạn hiểu rõ ưu nhược điểm của từng ph
 flowchart TD
     subgraph Model A: Push-based CD (Helm Direct)
         A1[Developer Push Code] --> B1[GitLab CI Runner]
-        B1 -->|Holds Admin Kubeconfig| C1[helm upgrade --atomic]
-        C1 -->|Push API Request| D1[Kubernetes API Server]
+        B1 -->|"Holds Admin Kubeconfig"| C1[helm upgrade --atomic]
+        C1 -->|"Push API Request"| D1[Kubernetes API Server]
     end
 
     subgraph Model B: Pull-based CD (GitOps ArgoCD)
         A2[Developer Push Code] --> B2[GitLab CI Build Image]
-        B2 -->|Update Image Tag| C2[GitOps Config Repository]
-        D2[ArgoCD Controller in Cluster] -->|Polls/Webhooks| C2
-        D2 -->|Detect State Drift & Pull| E2[Kubernetes API Server]
+        B2 -->|"Update Image Tag"| C2[GitOps Config Repository]
+        D2[ArgoCD Controller in Cluster] -->|"Polls/Webhooks"| C2
+        D2 -->|"Detect State Drift & Pull"| E2[Kubernetes API Server]
     end
 ```
 
@@ -487,15 +487,15 @@ flowchart TD
     end
 
     subgraph GitOps Config Repo
-        C -->|Commit new tag| D[apps/payment/values.yaml]
+        C -->|"Commit new tag"| D[apps/payment/values.yaml]
     end
 
     subgraph Kubernetes Cluster Inside
-        E[ArgoCD Controller Operator] -->|1. Detect Git Commit| D
-        E -->|2. Compare Desired vs Live State| F{State Drift?}
-        F -->|Out of Sync| G[3. Pull Manifests & Apply]
-        G -->|4. Readiness Probe Passed| H[Zero Downtime Production Release]
-        F -->|Self Healing Triggered| G
+        E[ArgoCD Controller Operator] -->|"1. Detect Git Commit"| D
+        E -->|"2. Compare Desired vs Live State"| F{"State Drift?"}
+        F -->|"Out of Sync"| G[3. Pull Manifests & Apply]
+        G -->|"4. Readiness Probe Passed"| H[Zero Downtime Production Release]
+        F -->|"Self Healing Triggered"| G
     end
 ```
 
@@ -601,17 +601,17 @@ Trong bài lab này, học viên sẽ trực tiếp triển khai và làm chủ 
 ```mermaid
 graph TD
     subgraph Phase 1: Push-based CD (Direct Helm Upgrade)
-        A[Gitlab CI Job] -->|1. helm lint| B[Helm Package Engine]
-        B -->|2. helm upgrade --atomic --wait| C[Kubernetes API Server]
-        C -->|3. Readiness Probe Failed| D[Atomic Rollback Triggered]
+        A[Gitlab CI Job] -->|"1. helm lint"| B[Helm Package Engine]
+        B -->|"2. helm upgrade --atomic --wait"| C[Kubernetes API Server]
+        C -->|"3. Readiness Probe Failed"| D[Atomic Rollback Triggered]
     end
 
     subgraph Phase 2: Pull-based CD (GitOps ArgoCD Sync)
-        E[App Code Repo] -->|Auto Commit Image Tag| F[GitOps Config Repo]
-        G[ArgoCD Controller] -->|1. Poll/Webhook| F
-        G -->|2. Compare Desired vs Live State| H[Kubernetes API Server]
-        I[Manual kubectl edit] -->|3. State Drift Detected| G
-        G -->|4. Self-Healing Re-sync| H
+        E[App Code Repo] -->|"Auto Commit Image Tag"| F[GitOps Config Repo]
+        G[ArgoCD Controller] -->|"1. Poll/Webhook"| F
+        G -->|"2. Compare Desired vs Live State"| H[Kubernetes API Server]
+        I[Manual kubectl edit] -->|"3. State Drift Detected"| G
+        G -->|"4. Self-Healing Re-sync"| H
     end
 ```
 

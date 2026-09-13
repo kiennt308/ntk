@@ -117,7 +117,7 @@ Mô hình Trình quản lý Gói APT/NPM trên Linux/NodeJS: Helm Chart giống 
 
 ```mermaid
 graph TD
-    Chart[Helm Chart: Thư mục chứa templates & Chart.yaml] --> Combine{Helm Engine}
+    Chart[Helm Chart: Thư mục chứa templates & Chart.yaml] --> Combine{"Helm Engine"}
     Values[Values File: values.yaml / custom-values.yaml] --> Combine
     Combine --> Release[Helm Release: Bản cài đặt thực tế trên Kubernetes Namespace]
 ```

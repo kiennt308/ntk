@@ -186,14 +186,14 @@ graph TD
         CSINode[CSI Node Plugin - DaemonSet privileged]
     end
     
-    APIServer <-->|Watch PVC| ExternalProvisioner
-    ExternalProvisioner <-->|gRPC| CSIController
-    CSIController -->|Create Storage Disk| CloudStorage[Cloud / SAN / Local Storage]
+    APIServer <-->|"Watch PVC"| ExternalProvisioner
+    ExternalProvisioner <-->|"gRPC"| CSIController
+    CSIController -->|"Create Storage Disk"| CloudStorage[Cloud / SAN / Local Storage]
     
-    APIServer <-->|Watch VolumeAttachment| ExternalAttacher
-    ExternalAttacher <-->|gRPC| CSIController
+    APIServer <-->|"Watch VolumeAttachment"| ExternalAttacher
+    ExternalAttacher <-->|"gRPC"| CSIController
     
-    CSINode <-->|Mount / Format Disk| WorkerNodeDisk[Worker Node Filesystem]
+    CSINode <-->|"Mount / Format Disk"| WorkerNodeDisk[Worker Node Filesystem]
 ```
 
 **Nguyên lý cốt lõi:** CSI Node Plugin bắt buộc chạy dưới dạng `DaemonSet` trên mọi Worker Node với quyền `privileged: true` để thực hiện các câu lệnh mount/format đĩa ở tầng nhân OS.
@@ -373,15 +373,15 @@ kubectl annotate storageclass new-sc storageclass.kubernetes.io/is-default-class
 
 ```mermaid
 graph TD
-    PVC[PVC yêu cầu 10Gi] -->|Chỉ định storageClassName| SC[StorageClass]
-    SC -->|Gọi API| CSI[CSI Provisioner Plugin]
-    CSI -->|Cấp đĩa vật lý| Disk[Cloud / SAN / Local Disk]
-    Disk -->|Tự động tạo| PV[PV tự sinh pvc-xxxx 10Gi]
-    PV <-->|Bound tự động| PVC
+    PVC[PVC yêu cầu 10Gi] -->|"Chỉ định storageClassName"| SC[StorageClass]
+    SC -->|"Gọi API"| CSI[CSI Provisioner Plugin]
+    CSI -->|"Cấp đĩa vật lý"| Disk[Cloud / SAN / Local Disk]
+    Disk -->|"Tự động tạo"| PV[PV tự sinh pvc-xxxx 10Gi]
+    PV <-->|"Bound tự động"| PVC
     
     subgraph Resizing Workflow
-        EditPVC[Patch PVC 10Gi -> 20Gi] -->|Chặng 1| ResizeDisk[CSI Resize Cloud Disk]
-        ResizeDisk -->|Chặng 2| ResizeFS[Kubelet resize2fs / xfs_growfs inside Container]
+        EditPVC[Patch PVC 10Gi -> 20Gi] -->|"Chặng 1"| ResizeDisk[CSI Resize Cloud Disk]
+        ResizeDisk -->|"Chặng 2"| ResizeFS[Kubelet resize2fs / xfs_growfs inside Container]
     end
 ```
 
@@ -597,15 +597,15 @@ graph TD
         Provisioner["Local Path Provisioner (Deployment)"]
     end
     
-    PVC1["pvc-dynamic-1 (Auto Default)"] -->|Requests| SCDefault
-    SCDefault -->|Triggers| Provisioner
-    Provisioner -->|Creates PV| PV1["PV Auto-generated"]
-    PV1 <-->|Bound| PVC1
+    PVC1["pvc-dynamic-1 (Auto Default)"] -->|"Requests"| SCDefault
+    SCDefault -->|"Triggers"| Provisioner
+    Provisioner -->|"Creates PV"| PV1["PV Auto-generated"]
+    PV1 <-->|"Bound"| PVC1
     
-    PVCWait["pvc-wait"] -->|Requests| SCWait
-    SCWait -.->|Delay until Pod scheduled| PodWait["pod-wait"]
+    PVCWait["pvc-wait"] -->|"Requests"| SCWait
+    SCWait -.->|"Delay until Pod scheduled"| PodWait["pod-wait"]
     
-    PVCExpand["pvc-expand (1Gi -> 3Gi)"] -->|Requests| SCExpand
+    PVCExpand["pvc-expand (1Gi -> 3Gi)"] -->|"Requests"| SCExpand
 ```
 
 ---

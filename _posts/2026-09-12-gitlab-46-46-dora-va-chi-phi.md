@@ -110,17 +110,17 @@ Bài học này giúp bạn trở thành Chuyên gia Đo lường & Tối ưu H�
 ```mermaid
 graph TD
     subgraph DORA 4 Metrics Standard
-        A[1. Deployment Frequency - DF] --> D{Performance Tier Evaluation}
+        A[1. Deployment Frequency - DF] --> D{"Performance Tier Evaluation"}
         B[2. Lead Time for Changes - LTC] --> D
         C[3. Change Failure Rate - CFR] --> D
         E[4. Time to Restore Service - MTTR] --> D
     end
 
     subgraph Evaluation Tiers
-        D -->|DF > On-demand, LTC < 1h, CFR < 5%, MTTR < 1h| F[ELITE PERFORMER - Target State]
-        D -->|DF 1/day - 1/week, LTC 1 day - 1 week, CFR 6-15%| G[HIGH PERFORMER]
-        D -->|DF 1/month, LTC 1-6 months, CFR 16-30%| H[MEDIUM PERFORMER]
-        D -->|DF < 1/6 months, LTC > 6 months, CFR > 30%| I[LOW PERFORMER - Need Urgent Refactoring]
+        D -->|"DF > On-demand, LTC < 1h, CFR < 5%, MTTR < 1h"| F[ELITE PERFORMER - Target State]
+        D -->|"DF 1/day - 1/week, LTC 1 day - 1 week, CFR 6-15%"| G[HIGH PERFORMER]
+        D -->|"DF 1/month, LTC 1-6 months, CFR 16-30%"| H[MEDIUM PERFORMER]
+        D -->|"DF < 1/6 months, LTC > 6 months, CFR > 30%"| I[LOW PERFORMER - Need Urgent Refactoring]
     end
 ```
 
@@ -133,10 +133,10 @@ flowchart TD
     end
 
     subgraph Push Commit B Event
-        C[Developer pushes Commit B 2 mins later] --> D{Is Pipeline 1 Job Interruptible?}
-        D -->|interruptible = false| E[Pipeline 1 keeps running 18 mins MORE!]
+        C[Developer pushes Commit B 2 mins later] --> D{"Is Pipeline 1 Job Interruptible?"}
+        D -->|"interruptible = false"| E[Pipeline 1 keeps running 18 mins MORE!]
         E --> F[Wasted 20 Runner Minutes! Costs 2x Money!]
-        D -->|interruptible = true| G[CANCEL PIPELINE 1 Immediately!]
+        D -->|"interruptible = true"| G[CANCEL PIPELINE 1 Immediately!]
         G --> H[Pipeline 2 (Commit B) Starts Executing]
         H --> I[SAVED 18 Runner Minutes! 50% Cost Savings!]
     end
@@ -443,21 +443,21 @@ Mặc dù tối ưu chi phí FinOps là quan trọng, nhưng KHÔNG nên cắt g
 flowchart TD
     subgraph GitLab CI/CD Event Stream
         A[Git Commits & MRs] --> B[Pipeline Execution Engine]
-        B -->|Job Complete| C[Deployments & Environments]
+        B -->|"Job Complete"| C[Deployments & Environments]
     end
 
     subgraph Cost Optimization & FinOps Layer
-        B -->|Check interruptible = true| D{New Commit Pushed?}
-        D -->|Yes| E[CANCEL Old Pipeline Immediately!]
-        D -->|No| F[Execute on Spot Instances NodePool]
-        F -.->|Saved 70% Costs| G[Cloud FinOps Budget]
+        B -->|"Check interruptible = true"| D{"New Commit Pushed?"}
+        D -->|"Yes"| E[CANCEL Old Pipeline Immediately!]
+        D -->|"No"| F[Execute on Spot Instances NodePool]
+        F -.->|"Saved 70% Costs"| G[Cloud FinOps Budget]
     end
 
     subgraph DORA Analytics & Monitoring Layer
-        C -.->|REST API Fetch| H[DORA Metrics Exporter]
-        H -->|Calculate DF, LTC, CFR, MTTR| I[Prometheus Metrics Engine]
-        I -->|Push Metrics| J[Grafana Central DORA Dashboard]
-        G -.->|Runner Minutes Used| I
+        C -.->|"REST API Fetch"| H[DORA Metrics Exporter]
+        H -->|"Calculate DF, LTC, CFR, MTTR"| I[Prometheus Metrics Engine]
+        I -->|"Push Metrics"| J[Grafana Central DORA Dashboard]
+        G -.->|"Runner Minutes Used"| I
     end
 ```
 
@@ -567,17 +567,17 @@ Trong bài lab này, học viên sẽ trực tiếp xây dựng hệ thống đo
 graph TD
     subgraph Phase 1: Pipeline Execution & Metrics Generation
         A[Git Commits / MR Events] --> B[GitLab CI Pipeline Engine]
-        B -->|Check interruptible = true| C{New Commit Pushed?}
-        C -->|Yes| D[CANCEL Old Pipeline Immediately]
-        C -->|No| E[Job Execution on Spot NodePool]
+        B -->|"Check interruptible = true"| C{"New Commit Pushed?"}
+        C -->|"Yes"| D[CANCEL Old Pipeline Immediately]
+        C -->|"No"| E[Job Execution on Spot NodePool]
         E --> F[Deployment Success / Failure Event]
     end
 
     subgraph Phase 2: DORA Metrics & Cost Processing
         F --> G[GitLab REST API Endpoints]
-        G -->|1. /dora/metrics| H[DORA Metrics Python Calculator]
-        G -->|2. /pipelines| I[Pipeline Failure & Flaky Test Scanner]
-        G -->|3. /runner_usage| J[Runner Minutes FinOps Engine]
+        G -->|"1. /dora/metrics"| H[DORA Metrics Python Calculator]
+        G -->|"2. /pipelines"| I[Pipeline Failure & Flaky Test Scanner]
+        G -->|"3. /runner_usage"| J[Runner Minutes FinOps Engine]
         H --> K[DORA JSON Report: DF, LTC, CFR, MTTR]
         J --> L[Cost Reduction Report: 70% Spot Savings]
     end

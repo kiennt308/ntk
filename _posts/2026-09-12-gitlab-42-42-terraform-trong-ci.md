@@ -112,21 +112,21 @@ flowchart TD
     subgraph Phase 1: Merge Request (Plan Gate)
         A[Developer Create MR] --> B[CI Runner: terraform init]
         B --> C[CI Runner: terraform plan -out=tfplan]
-        C -->|1. Create Artifact| D[Artifact: tfplan Binary File]
-        C -->|2. Render Report| E[MR Comment: Infrastructure Changes]
+        C -->|"1. Create Artifact"| D[Artifact: tfplan Binary File]
+        C -->|"2. Render Report"| E[MR Comment: Infrastructure Changes]
     end
 
     subgraph Phase 2: Merge & Apply (Manual Gate)
         F[Tech Lead Approves & Merges MR] --> G[Pipeline on main Branch]
         G --> H[Job: terraform apply tfplan]
-        D -->|Pass EXACT tfplan Artifact| H
-        H -->|Apply Changes to Cloud| I[Cloud Resources Updated]
+        D -->|"Pass EXACT tfplan Artifact"| H
+        H -->|"Apply Changes to Cloud"| I[Cloud Resources Updated]
     end
 
     subgraph Phase 3: Cron Drift Detection
         J[Daily Scheduled Pipeline] --> K[terraform plan -detailed-exitcode]
-        K -->|Exitcode 0: No Drift| L[Pipeline Passed]
-        K -->|Exitcode 2: Drift Detected| M[Alert Slack/Email: Manual Cloud Edit!]
+        K -->|"Exitcode 0: No Drift"| L[Pipeline Passed]
+        K -->|"Exitcode 2: Drift Detected"| M[Alert Slack/Email: Manual Cloud Edit!]
     end
 ```
 
@@ -525,20 +525,20 @@ flowchart TD
 
     subgraph Stage 2: Plan (MR Gate)
         C --> D[terraform plan -out=tfplan]
-        D -->|Pass Binary File| E[Artifact: tfplan]
-        D -->|Render JSON Report| F[MR Widget Comment]
+        D -->|"Pass Binary File"| E[Artifact: tfplan]
+        D -->|"Render JSON Report"| F[MR Widget Comment]
     end
 
     subgraph Stage 3: Apply (Manual Gate)
-        G[Merge MR to main] --> H{Manual Approval?}
-        H -->|User Click Play| I[terraform apply tfplan]
-        E -->|Consume Exact Artifact| I
+        G[Merge MR to main] --> H{"Manual Approval?"}
+        H -->|"User Click Play"| I[terraform apply tfplan]
+        E -->|"Consume Exact Artifact"| I
         I --> J[Cloud Infrastructure Updated]
     end
 
     subgraph Stage 4: Scheduled Drift Detection
         K[Cron Trigger 6:00 AM] --> L[terraform plan -detailed-exitcode]
-        L -->|Exitcode 2| M[Send Slack Alert: Drift Detected!]
+        L -->|"Exitcode 2"| M[Send Slack Alert: Drift Detected!]
     end
 ```
 
@@ -644,26 +644,26 @@ Trong bài lab này, học viên sẽ trực tiếp xây dựng luồng tự đ�
 ```mermaid
 graph TD
     subgraph Phase 1: Code Validation & Linting
-        A[Git Push / MR] -->|1. terraform fmt| B[Format Checker]
-        B -->|2. tflint & trivy| C[Security & Quality Scanner]
+        A[Git Push / MR] -->|"1. terraform fmt"| B[Format Checker]
+        B -->|"2. tflint & trivy"| C[Security & Quality Scanner]
     end
 
     subgraph Phase 2: Plan Gate (MR Execution)
-        C -->|3. terraform plan -out=tfplan| D[GitLab Managed State Backend]
-        D -->|State Lock HTTP POST| E[State Locked]
-        D -->|4. Generate Artifact| F[tfplan Binary File]
-        D -->|Unlock HTTP DELETE| G[State Unlocked]
+        C -->|"3. terraform plan -out=tfplan"| D[GitLab Managed State Backend]
+        D -->|"State Lock HTTP POST"| E[State Locked]
+        D -->|"4. Generate Artifact"| F[tfplan Binary File]
+        D -->|"Unlock HTTP DELETE"| G[State Unlocked]
     end
 
     subgraph Phase 3: Apply Gate (Manual Approval)
-        H[Manual Approval Click] -->|5. terraform apply tfplan| I[Consume Exact tfplan Artifact]
-        I -->|6. Apply Changes| J[Cloud Infrastructure Updated]
+        H[Manual Approval Click] -->|"5. terraform apply tfplan"| I[Consume Exact tfplan Artifact]
+        I -->|"6. Apply Changes"| J[Cloud Infrastructure Updated]
     end
 
     subgraph Phase 4: Cron Drift Detection
-        K[Cron Schedule 6:00 AM] -->|7. plan -detailed-exitcode| L{Exitcode Status}
-        L -->|Exitcode 0| M[No Drift]
-        L -->|Exitcode 2| N[Alert Slack: Infrastructure Drift!]
+        K[Cron Schedule 6:00 AM] -->|"7. plan -detailed-exitcode"| L{"Exitcode Status"}
+        L -->|"Exitcode 0"| M[No Drift]
+        L -->|"Exitcode 2"| N[Alert Slack: Infrastructure Drift!]
     end
 ```
 

@@ -117,11 +117,11 @@ Mô hình Thẻ Chìa Khóa Văn Phòng và Chốt Cửa Phân Quyền RBAC: Pod
 
 ```mermaid
 graph TD
-    AppPod[Application Pod] -->|Assigned| SA[ServiceAccount app-sa]
-    SA -->|RoleBinding| Role[Role pod-reader]
+    AppPod[Application Pod] -->|"Assigned"| SA[ServiceAccount app-sa]
+    SA -->|"RoleBinding"| Role[Role pod-reader]
     
-    Role -->|Least Privilege| GoodPerms[Verbs: get, list | Resources: pods]
-    Role -.->|FORBIDDEN Wildcard| BadPerms[Verbs: * | Resources: *]
+    Role -->|"Least Privilege"| GoodPerms[Verbs: get, list | Resources: pods]
+    Role -.->|"FORBIDDEN Wildcard"| BadPerms[Verbs: * | Resources: *]
 ```
 
 **Nguyên lý cốt lõi:** CẤM TUYỆT ĐỐI cấp các cờ quyền leo thang đặc quyền (`verbs: ["escalate"]`, `verbs: ["bind"]`, `verbs: ["impersonate"]`) cho bất kỳ ServiceAccount nào ngoài các hệ thống quản trị cốt lõi của Control Plane.
@@ -565,14 +565,14 @@ Vì các Pods hạ tầng này bắt buộc phải gọi Kube-APIServer để c�
 
 ```mermaid
 graph TD
-    Subj[ServiceAccount app-sa in lab55] -->|automountServiceAccountToken: false| TokenBlock[No Secret Token Mounted in Pod]
-    Subj -->|RoleBinding bind-pod-reader| RoleDef[Role pod-reader]
+    Subj[ServiceAccount app-sa in lab55] -->|"automountServiceAccountToken: false"| TokenBlock[No Secret Token Mounted in Pod]
+    Subj -->|"RoleBinding bind-pod-reader"| RoleDef[Role pod-reader]
     
-    RoleDef -->|Allowed Verbs| AllowPods[verbs: get, list | resources: pods -> YES]
-    RoleDef -.->|Denied Verbs| DenySecrets[verbs: get | resources: secrets -> NO]
+    RoleDef -->|"Allowed Verbs"| AllowPods[verbs: get, list | resources: pods -> YES]
+    RoleDef -.->|"Denied Verbs"| DenySecrets[verbs: get | resources: secrets -> NO]
     
-    Audit[kubectl auth can-i CLI] -->|Audit Request| APIServer{Kube-APIServer RBAC}
-    APIServer -->|Verify app-sa| AuditResult[list pods: YES | get secrets: NO]
+    Audit[kubectl auth can-i CLI] -->|"Audit Request"| APIServer{"Kube-APIServer RBAC"}
+    APIServer -->|"Verify app-sa"| AuditResult[list pods: YES | get secrets: NO]
 ```
 
 ---

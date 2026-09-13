@@ -62,11 +62,11 @@ flowchart TD
         end
     end
 
-    BASE -->|Tái sử dụng gốc| DEV
-    BASE -->|Tái sử dụng gốc| STAGING
-    BASE -->|Tái sử dụng gốc| PROD
+    BASE -->|"Tái sử dụng gốc"| DEV
+    BASE -->|"Tái sử dụng gốc"| STAGING
+    BASE -->|"Tái sử dụng gốc"| PROD
 
-    PROD ==>|Argo CD biên dịch kustomize build| PROD_RENDERED["Manifest Hoàn Chỉnh Triển Khai Lên Production"]
+    PROD ==>|"Argo CD biên dịch kustomize build"| PROD_RENDERED["Manifest Hoàn Chỉnh Triển Khai Lên Production"]
 
 
 ```
@@ -101,9 +101,9 @@ flowchart TD
     BASE --> GCP
     AWS --> US_PROD
     GCP --> EU_PROD
-    C_TRACE -.->|components: [...]| US_PROD
-    C_HPA -.->|components: [...]| US_PROD
-    C_AUTH -.->|components: [...]| EU_PROD
+    C_TRACE -.->|"components: [...]"| US_PROD
+    C_HPA -.->|"components: [...]"| US_PROD
+    C_AUTH -.->|"components: [...]"| EU_PROD
 
 
 ```

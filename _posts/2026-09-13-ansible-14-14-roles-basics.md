@@ -460,25 +460,25 @@ cd labs && make up && make key && make inventory
 
 ```mermaid
 graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] --> |1. Nạp Playbook: site-roles.yml| PB["Playbook: site-roles.yml"]
+    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Playbook: site-roles.yml"| PB["Playbook: site-roles.yml"]
     
-    PB --> |2. เรียก Role: roles/webserver| R1["Role: webserver"]
+    PB -->|"2. เรียก Role: roles/webserver"| R1["Role: webserver"]
     
     subgraph "Nội bộ Role: roles/webserver/"
-        R1 --> |3. Read defaults/main.yml| DEF["webserver_port=8080, webserver_title='Demo'"]
-        R1 --> |4. Run tasks/main.yml| TSK["Task 1: File dir, Task 2: Template index, Task 3: Config file"]
-        TSK --> |5. Notify Handler| HND["handlers/main.yml: Restart Webserver"]
-        TSK --> |6. Render Template| TMP["templates/index.html.j2"]
+        R1 -->|"3. Read defaults/main.yml"| DEF["webserver_port=8080, webserver_title='Demo'"]
+        R1 -->|"4. Run tasks/main.yml"| TSK["Task 1: File dir, Task 2: Template index, Task 3: Config file"]
+        TSK -->|"5. Notify Handler"| HND["handlers/main.yml: Restart Webserver"]
+        TSK -->|"6. Render Template"| TMP["templates/index.html.j2"]
     end
     
-    R1 --> |7. Gửi cấu hình đã render| T1["Target Container 1 (target1)"]
+    R1 -->|"7. Gửi cấu hình đã render"| T1["Target Container 1 (target1)"]
     
     T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
     T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
     
-    DEV["Học viên (Tester)"] --> |A. Chạy Playbook site-roles.yml| SubGraph1
-    DEV --> |B. Khẳng định changed=0 ở Lần 2| SubGraph1
-    DEV --> |C. Đối soát sự thật máy đích| T1
+    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-roles.yml"| SubGraph1
+    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
+    DEV -->|"C. Đối soát sự thật máy đích"| T1
 ```
 
 ---

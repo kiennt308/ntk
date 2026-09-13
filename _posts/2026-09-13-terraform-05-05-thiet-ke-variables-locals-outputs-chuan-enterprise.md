@@ -161,9 +161,9 @@ locals {
 
 ```mermaid
 flowchart LR
-    SECRET["Password Generator / RDS Master Password"] --> MASK{Cờ sensitive = true}
-    MASK -->|BẬT (sensitive=true)| CLI_SAFE["Màn hình CLI / CI Logs: (sensitive value) [AN TOÀN]"]
-    MASK -->|TẮT (sensitive=false)| CLI_DANGER["Màn hình CLI / CI Logs: 'SuperSecretPass123!' [NGUY HIỂM]"]
+    SECRET["Password Generator / RDS Master Password"] --> MASK{"Cờ sensitive = true"}
+    MASK -->|"BẬT (sensitive=true)"| CLI_SAFE["Màn hình CLI / CI Logs: (sensitive value) [AN TOÀN]"]
+    MASK -->|"TẮT (sensitive=false)"| CLI_DANGER["Màn hình CLI / CI Logs: 'SuperSecretPass123!' [NGUY HIỂM]"]
 
     style CLI_SAFE fill:none,stroke:#3b82f6,stroke-width:2px
     style SECRET fill:none,stroke:#0ea5e9,stroke-width:2px

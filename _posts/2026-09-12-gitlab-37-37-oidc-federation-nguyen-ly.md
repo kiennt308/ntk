@@ -476,10 +476,10 @@ flowchart TD
     end
 
     subgraph Token Verification & Exchange
-        C --> D{Cloud Provider Selection}
-        D -->|AWS| E[AWS STS AssumeRoleWithWebIdentity]
-        D -->|GCP| F[GCP Workload Identity Federation]
-        D -->|Azure| G[Azure Federated Credentials Login]
+        C --> D{"Cloud Provider Selection"}
+        D -->|"AWS"| E[AWS STS AssumeRoleWithWebIdentity]
+        D -->|"GCP"| F[GCP Workload Identity Federation]
+        D -->|"Azure"| G[Azure Federated Credentials Login]
         
         E --> H[Verify Signature via GitLab JWKS & Match Claim sub]
         F --> H
@@ -487,7 +487,7 @@ flowchart TD
     end
 
     subgraph Secure Cloud Execution
-        H -->|Validation PASSED| I[Issue Temporary Access Credentials TTL < 60m]
+        H -->|"Validation PASSED"| I[Issue Temporary Access Credentials TTL < 60m]
         I --> J[Execute Deployment to AWS EKS / GCP GKE / Azure AKS]
     end
 ```
@@ -594,20 +594,20 @@ Trong bài lab này, học viên sẽ trực tiếp xây dựng một OIDC Ident
 graph TD
     subgraph GitLab CI OIDC Provider Simulator
         A[GitLab CI Runner Event] --> B[Script generate-oidc-token.sh]
-        B -->|Signs with Private Key| C[Signed OIDC JWT Token]
+        B -->|"Signs with Private Key"| C[Signed OIDC JWT Token]
     end
 
     subgraph Cloud OIDC Trust Engine Simulator
         C --> D[Script verify-jwks-signature.sh]
-        D -->|Fetch Public Key from JWKS Endpoint| E[Signature Verification PASSED]
+        D -->|"Fetch Public Key from JWKS Endpoint"| E[Signature Verification PASSED]
         E --> F[Script evaluate-trust-policy.sh]
         
-        F -->|Matches Claim sub| G[AWS / GCP / Azure Policy Matcher]
+        F -->|"Matches Claim sub"| G[AWS / GCP / Azure Policy Matcher]
     end
 
     subgraph Security & Access Issuance
-        G -->|Validation SUCCESS| H[Issue Short-Lived Cloud Token TTL 900s]
-        G -->|Claim Mismatch / Expired| I[Access Denied Error]
+        G -->|"Validation SUCCESS"| H[Issue Short-Lived Cloud Token TTL 900s]
+        G -->|"Claim Mismatch / Expired"| I[Access Denied Error]
     end
 
     H --> J[Script simulate-cloud-api-call.sh]

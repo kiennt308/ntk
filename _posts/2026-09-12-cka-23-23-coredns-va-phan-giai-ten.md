@@ -513,14 +513,14 @@ kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUO
 ```mermaid
 graph TD
     subgraph Pod_DNS_Config ["Chặng 1: Pod /etc/resolv.conf & CoreDNS Service"]
-        POD_DEF["Pod dns-test-pod (ndots:5)"] -->|nameserver 10.96.0.10| KUBE_DNS["Service kube-dns (10.96.0.10:53)"]
-        POD_CUS["Pod custom-dns-pod (ndots:2)"] -->|nameserver 10.96.0.10| KUBE_DNS
+        POD_DEF["Pod dns-test-pod (ndots:5)"] -->|"nameserver 10.96.0.10"| KUBE_DNS["Service kube-dns (10.96.0.10:53)"]
+        POD_CUS["Pod custom-dns-pod (ndots:2)"] -->|"nameserver 10.96.0.10"| KUBE_DNS
     end
 
     subgraph CoreDNS_Backend ["Chặng 2: CoreDNS Pods & External Resolution"]
         KUBE_DNS --> COREDNS_PODS["CoreDNS Deployment (2 Replicas in kube-system)"]
-        COREDNS_PODS -->|Plugin kubernetes| INTERNAL_VIP["ClusterIP VIP Resolution"]
-        COREDNS_PODS -->|Plugin forward| EXTERNAL_DNS["External DNS (8.8.8.8)"]
+        COREDNS_PODS -->|"Plugin kubernetes"| INTERNAL_VIP["ClusterIP VIP Resolution"]
+        COREDNS_PODS -->|"Plugin forward"| EXTERNAL_DNS["External DNS (8.8.8.8)"]
     end
 
     Pod_DNS_Config --> CoreDNS_Backend

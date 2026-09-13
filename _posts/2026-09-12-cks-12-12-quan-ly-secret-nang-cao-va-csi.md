@@ -118,12 +118,12 @@ Mô hình Ngân Hàng Trung Tâm Vault và Xe Giao Hàng CSI Driver: Secret mặ
 ```mermaid
 graph TD
     subgraph Insecure K8s Secret
-        Dev[Dev Team] -->|Base64 Only| ETCD[etcd Database Plaintext Exposure!]
+        Dev[Dev Team] -->|"Base64 Only"| ETCD[etcd Database Plaintext Exposure!]
     end
 
     subgraph Secure Secrets Store CSI Driver
-        Vault[External Vault / AWS Secrets Manager] -->|Secrets Store CSI Driver| CSIVolume[Pod Memory tmpfs Mount]
-        CSIVolume -.->|No Storage| ETCD2[etcd Clean: No Plaintext Secrets Saved]
+        Vault[External Vault / AWS Secrets Manager] -->|"Secrets Store CSI Driver"| CSIVolume[Pod Memory tmpfs Mount]
+        CSIVolume -.->|"No Storage"| ETCD2[etcd Clean: No Plaintext Secrets Saved]
     end
 ```
 
@@ -572,10 +572,10 @@ Thông điệp lỗi <b style="color: var(--accent-primary);"><code>MountVolume.
 
 ```mermaid
 graph TD
-    VaultServer[HashiCorp Vault / External Secret Store] -->|1. Fetch Secrets| CSIDriver[Secrets Store CSI Driver]
-    CSIDriver -->|2. Process SPC Config| SPC[SecretProviderClass vault-db-secrets]
-    SPC -->|3. Mount to Pod Memory tmpfs| Pod[Pod app-csi-pod in lab57]
-    Pod -->|4. Access Secrets| SecretFile[/mnt/secrets-store/db-password]
+    VaultServer[HashiCorp Vault / External Secret Store] -->|"1. Fetch Secrets"| CSIDriver[Secrets Store CSI Driver]
+    CSIDriver -->|"2. Process SPC Config"| SPC[SecretProviderClass vault-db-secrets]
+    SPC -->|"3. Mount to Pod Memory tmpfs"| Pod[Pod app-csi-pod in lab57]
+    Pod -->|"4. Access Secrets"| SecretFile[/mnt/secrets-store/db-password]
 ```
 
 ---

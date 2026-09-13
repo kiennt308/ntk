@@ -117,8 +117,8 @@ Mô hình Lễ tân Tòa nhà và Chiếc Máy Phiên dịch HTTPS: `Service` gi
 
 ```mermaid
 graph TD
-    ClientInner[Microservice A nội bộ] -->|1. Gọi ClusterIP| SvcClusterIP[ClusterIP Service: 10.96.0.10:80]
-    ClientOuter[Khách ngoài Internet] -->|2. Truy cập Ingress/LoadBalancer| SvcLB[LoadBalancer Service / Ingress]
+    ClientInner[Microservice A nội bộ] -->|"1. Gọi ClusterIP"| SvcClusterIP[ClusterIP Service: 10.96.0.10:80]
+    ClientOuter[Khách ngoài Internet] -->|"2. Truy cập Ingress/LoadBalancer"| SvcLB[LoadBalancer Service / Ingress]
     SvcClusterIP --> Pods[Pods backend]
     SvcLB --> Pods
 ```
@@ -220,9 +220,9 @@ rules:
 
 ```mermaid
 graph LR
-    User[Trình duyệt Web] -->|1. HTTPS mã hóa port 443| Ingress[Ingress Controller: TLS Termination]
-    Ingress -->|2. HTTP giải mã port 80| Pod1[Pod Web App 1]
-    Ingress -->|3. HTTP giải mã port 80| Pod2[Pod Web App 2]
+    User[Trình duyệt Web] -->|"1. HTTPS mã hóa port 443"| Ingress[Ingress Controller: TLS Termination]
+    Ingress -->|"2. HTTP giải mã port 80"| Pod1[Pod Web App 1]
+    Ingress -->|"3. HTTP giải mã port 80"| Pod2[Pod Web App 2]
 ```
 
 **Nguyên lý cốt lõi:** Để bật HTTPS trên Ingress, bắt buộc phải khai báo khối `spec.tls` chỉ định mảng `hosts` và tên `secretName` trỏ tới một Secret kiểu `kubernetes.io/tls` chứa đúng 2 khóa `tls.crt` và `tls.key`.
@@ -559,10 +559,10 @@ Cú pháp <code>curl -H "Host: app.example.com" http://<ingress-ip>/</code>.
 
 ```mermaid
 graph TD
-    User[Khách gửi HTTP/HTTPS] -->|Host: app.lab44.com| Ingress[Ingress app-ingress: TLS Termination]
+    User[Khách gửi HTTP/HTTPS] -->|"Host: app.lab44.com"| Ingress[Ingress app-ingress: TLS Termination]
     
-    Ingress -->|Path / | WebSvc[Service web-svc: ClusterIP 80]
-    Ingress -->|Path /api| ApiSvc[Service api-svc: ClusterIP 80]
+    Ingress -->|"Path /"| WebSvc[Service web-svc: ClusterIP 80]
+    Ingress -->|"Path /api"| ApiSvc[Service api-svc: ClusterIP 80]
     
     WebSvc --> PodWeb[Pod web-app Nginx]
     ApiSvc --> PodApi[Pod api-app Httpbin]

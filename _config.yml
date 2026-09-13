@@ -319,11 +319,11 @@ contact_page:
       display_url: "mailto:kiennt.sg@gmail.com"
       btn_text: "Send Email →"
       btn_url: "mailto:kiennt.sg@gmail.com"
-      btn_class: "btn--primary"
+      btn_class: "btn--secondary"
       is_external: false
 
     - title: "LinkedIn"
-      icon: "briefcase"
+      icon: "linkedin"
       badge: "Network"
       badge_class: "badge--cyan"
       icon_bg: "var(--accent-cyan-light)"

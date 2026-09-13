@@ -274,62 +274,62 @@ about_page:
         period: "Aug 2025 – Mar 2026"
         badge_class: "badge--amber"
         location: "Ho Chi Minh City, Vietnam (Hybrid)"
-        highlights:
-          - "Architected, implemented, and operated scalable, secure, and highly available AWS cloud infrastructures supporting IoT-driven manufacturing applications for a global industrial leader."
-          - "Engineered AWS IoT Core and Edge solutions (AWS Greengrass) to collect, process, and synchronize mission-critical manufacturing telemetry data."
-          - "Built robust real-time data streaming and processing pipelines utilizing AWS Kinesis, EMR, Lambda, S3, RDS, and DynamoDB."
-          - "Automated cloud environments using Infrastructure-as-Code (Terraform, CloudFormation) and implemented robust CI/CD deployment pipelines."
-          - "Enforced rigorous security compliance, fine-grained access control, performance tuning, and compute/storage cost optimization."
+        # highlights:
+        #   - "Architected, implemented, and operated scalable, secure, and highly available AWS cloud infrastructures supporting IoT-driven manufacturing applications for a global industrial leader."
+        #   - "Engineered AWS IoT Core and Edge solutions (AWS Greengrass) to collect, process, and synchronize mission-critical manufacturing telemetry data."
+        #   - "Built robust real-time data streaming and processing pipelines utilizing AWS Kinesis, EMR, Lambda, S3, RDS, and DynamoDB."
+        #   - "Automated cloud environments using Infrastructure-as-Code (Terraform, CloudFormation) and implemented robust CI/CD deployment pipelines."
+        #   - "Enforced rigorous security compliance, fine-grained access control, performance tuning, and compute/storage cost optimization."
       - role: "Cloud Engineer"
         company: "NEC Vietnam"
         period: "Mar 2023 – Jul 2025"
         badge_class: "badge--primary"
         location: "Ho Chi Minh City, Vietnam (Hybrid)"
-        highlights:
-          - "Delivered enterprise cloud solutions and managed multi-account AWS architectures adhering to AWS Well-Architected Framework standards."
-          - "Configured and maintained production Kubernetes / Amazon EKS clusters, automating application deployments and cluster autoscaling."
-          - "Developed and optimized CI/CD pipelines to accelerate release velocity while embedding automated security and compliance checks."
-          - "Designed centralized monitoring and structured logging frameworks using Prometheus, Grafana, and CloudWatch to ensure system reliability."
+        # highlights:
+        #   - "Delivered enterprise cloud solutions and managed multi-account AWS architectures adhering to AWS Well-Architected Framework standards."
+        #   - "Configured and maintained production Kubernetes / Amazon EKS clusters, automating application deployments and cluster autoscaling."
+        #   - "Developed and optimized CI/CD pipelines to accelerate release velocity while embedding automated security and compliance checks."
+        #   - "Designed centralized monitoring and structured logging frameworks using Prometheus, Grafana, and CloudWatch to ensure system reliability."
       - role: "Cloud Engineer"
         company: "Innovative Hub (SG) Pte Ltd"
         period: "Jul 2021 – Mar 2023"
         badge_class: "badge--cyan"
         location: "Ho Chi Minh City, Vietnam (Hybrid)"
-        highlights:
-          - "Designed and provisioned resilient cloud infrastructure using Terraform and CloudFormation across staging and production environments."
-          - "Containerized legacy applications with Docker and established automated CI/CD build-test-deploy workflows."
-          - "Collaborated on cloud migration projects, database clustering, and network security hardening for regional enterprise clients."
+        # highlights:
+        #   - "Designed and provisioned resilient cloud infrastructure using Terraform and CloudFormation across staging and production environments."
+        #   - "Containerized legacy applications with Docker and established automated CI/CD build-test-deploy workflows."
+        #   - "Collaborated on cloud migration projects, database clustering, and network security hardening for regional enterprise clients."
       - role: "IoT & Cloud Engineer"
         company: "VIETNET Distribution JSC."
         period: "Jan 2021 – Mar 2022"
         badge_class: "badge--emerald"
         location: "Ho Chi Minh City, Vietnam (Hybrid)"
-        highlights:
-          - "Developed IoT edge gateway integration and cloud communication bridges for telemetry data collection and device fleet monitoring."
-          - "Maintained backend cloud services, API endpoints, and database storage for real-time telemetry processing."
+        # highlights:
+        #   - "Developed IoT edge gateway integration and cloud communication bridges for telemetry data collection and device fleet monitoring."
+        #   - "Maintained backend cloud services, API endpoints, and database storage for real-time telemetry processing."
       - role: "System Administrator"
         company: "HOANG PHUC COMMUNICATION"
         period: "Jan 2019 – Jan 2021"
         badge_class: "badge--purple"
         location: "Ho Chi Minh City, Vietnam (On-site)"
-        highlights:
-          - "Administered enterprise Linux server hosts, internal network infrastructure, and virtualization platforms maintaining 99.9% uptime."
-          - "Authored automated Python and Bash maintenance scripts for daily backups, log rotation, security patching, and health checks."
-      - role: "System Integration Engineer"
+      #   highlights:
+      #     - "Administered enterprise Linux server hosts, internal network infrastructure, and virtualization platforms maintaining 99.9% uptime."
+      #     - "Authored automated Python and Bash maintenance scripts for daily backups, log rotation, security patching, and health checks."
+      # - role: "System Integration Engineer"
         company: "SCTV Online"
         period: "Jan 2015 – Feb 2019"
         badge_class: "badge--secondary"
         location: "Ho Chi Minh City, Vietnam (On-site)"
-        highlights:
-          - "Managed high-availability streaming media delivery infrastructure and video streaming servers serving large concurrent audiences."
-          - "Administered Linux server clusters, tuned network throughput, and resolved mission-critical infrastructure incidents 24/7."
+        # highlights:
+        #   - "Managed high-availability streaming media delivery infrastructure and video streaming servers serving large concurrent audiences."
+        #   - "Administered Linux server clusters, tuned network throughput, and resolved mission-critical infrastructure incidents 24/7."
       - role: "Physical Design Engineer"
         company: "I2S Viet Nam - Uniquify Viet Nam"
         period: "Feb 2014 – Jan 2015"
         badge_class: "badge--secondary"
         location: "Ho Chi Minh City, Vietnam (On-site)"
-        highlights:
-          - "Executed ASIC physical design, floorplanning, placement, clock tree synthesis (CTS), and static timing analysis (STA)."
+        # highlights:
+        #   - "Executed ASIC physical design, floorplanning, placement, clock tree synthesis (CTS), and static timing analysis (STA)."
 
   # Executive Endorsement Spotlight
   # recommendation:

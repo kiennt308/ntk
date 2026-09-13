@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 03] Tối Ưu Cú Pháp HCL: Làm Chủ Dynamic Type, Heredoc, For Expressions"
+title: "[Bài 03] Tối Ưu Cú Pháp HCL: Làm Chủ Dynamic Type, Heredoc, For Expressions & Type Constraints"
 date: 2026-09-13 11:40:00 +0700
 categories: [Terraform]
 tags:
@@ -13,19 +13,19 @@ series: "Terraform Enterprise Architecture"
 series_order: 3
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
-summary: "Hướng dẫn thực chiến làm chủ ngôn ngữ HCL: Cấu trúc dữ liệu phức hợp, kỹ"
+summary: "Hướng dẫn thực chiến làm chủ ngôn ngữ HCL: Cấu trúc dữ liệu phức hợp, kỹ thuật Type Constraints, optional attributes, For Expressions nhóm Ellipsis và kho hàm Built-in Functions chuẩn Enterprise."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tối Ưu Cú Pháp HCL: Làm Chủ Dynamic Type, Heredoc, For Expressions."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Hệ thống Type Constraints: Phân biệt rõ Primitive, Collection (list, set, map) và Structural types (object, tuple) cùng optional() với default value."
+  - "For Expressions & Ellipsis (...): Chuyển đổi dữ liệu đa chiều, lọc điều kiện if và gom nhóm danh sách con tự động không sợ duplicate key."
+  - "Template & JSON Encoding: Tuyệt đối tránh ghép chuỗi Heredoc thủ công, sử dụng jsonencode() và yamlencode() để đảm bảo tính toàn vẹn cú pháp."
+  - "Built-in Functions & REPL: Tận dụng cidrsubnet, merge, flatten, try/can và kiểm thử tương tác trực tiếp với terraform console."
 ---
 {% raw %}
 # Tối Ưu Cú Pháp HCL: Làm Chủ Dynamic Type, Heredoc, For Expressions & Type Constraints
 
 Ngôn ngữ cấu hình **HCL (HashiCorp Configuration Language)** được thiết kế để cân bằng hoàn hảo giữa tính trực quan dễ đọc của con người (như YAML) và sức mạnh lập trình khai báo có cấu trúc dữ liệu chặt chẽ (như JSON). Tuy nhiên, khi xây dựng các Module Enterprise phục vụ hàng chục đội ngũ kỹ thuật, nhiều kỹ sư vẫn gặp khó khăn khi phải xử lý các cấu trúc dữ liệu lồng nhau phức tạp (`list(object)`), chuyển đổi mảng thành map bằng `for` expressions với toán tử nhóm Ellipsis (`...`), hoặc định dạng các tệp cấu hình JSON/YAML động bằng Heredoc templates mà không bị lỗi escape ký tự.
 
-Bài viết này sẽ đưa bạn đi sâu vào nghệ thuật làm chủ ngôn ngữ HCL từ phiên bản Terraform 1.7+: Khám phá toàn bộ hệ thống kiểm định kiểu dữ liệu (**Type Constraints**), tối ưu hóa luồng xử lý biến đổi dữ liệu với **For Expressions**, làm chủ kho tàng **Built-in Functions** và học cách gỡ rối trực tiếp trên công cụ tương tác `terraform console`.
+Bài viết này sẽ đưa bạn đi sâu vào nghệ thuật làm chủ ngôn ngữ HCL từ phiên bản Terraform 1.7+: Khám phá toàn bộ hệ thống kiểm định kiểu dữ liệu (<strong style="color: var(--accent-primary);">Type Constraints</strong>), tối ưu hóa luồng xử lý biến đổi dữ liệu với <strong style="color: var(--accent-cyan);">For Expressions</strong>, làm chủ kho tàng <strong style="color: var(--accent-amber);">Built-in Functions</strong> và học cách gỡ rối trực tiếp trên công cụ tương tác `<code style="color: var(--accent-primary); font-weight: 700;">terraform console</code>`.
 
 ---
 
@@ -50,7 +50,18 @@ graph TD
     STRUC --> S1["object({...}): Khóa cố định, các giá trị khác kiểu"]
     STRUC --> S2["tuple([...]): Mảng độ dài cố định, đa kiểu dữ liệu"]
 
-
+    style TYPE fill:none,stroke:#3b82f6,stroke-width:2.5px
+    style PRIM fill:none,stroke:#0ea5e9,stroke-width:2px
+    style COLL fill:none,stroke:#f59e0b,stroke-width:2px
+    style STRUC fill:none,stroke:#10b981,stroke-width:2px
+    style P1 fill:none,stroke:#0ea5e9,stroke-width:1.5px
+    style P2 fill:none,stroke:#0ea5e9,stroke-width:1.5px
+    style P3 fill:none,stroke:#0ea5e9,stroke-width:1.5px
+    style C1 fill:none,stroke:#f59e0b,stroke-width:1.5px
+    style C2 fill:none,stroke:#f59e0b,stroke-width:1.5px
+    style C3 fill:none,stroke:#f59e0b,stroke-width:1.5px
+    style S1 fill:none,stroke:#10b981,stroke-width:1.5px
+    style S2 fill:none,stroke:#10b981,stroke-width:1.5px
 ```
 
 ### 1.1. Bảng So Sánh Chi Tiết Các Kiểu Dữ Liệu Tập Hợp & Cấu Trúc
@@ -150,8 +161,8 @@ locals {
 ## 3. Xử Lý Heredoc Template, JSON/YAML Encoding Chuẩn Xác
 
 ### 3.1. Phân Biệt `<<EOT` và `<<-EOT` (Indented Heredoc)
-- `<<EOT`: Giữ nguyên toàn bộ khoảng trắng và thụt đầu dòng (leading whitespace) ở tất cả các dòng, khiến mã nguồn HCL nhìn bừa bộn nếu muốn căn lề đẹp.
-- `<<-EOT`: Tự động loại bỏ khoảng trắng thụt lề dựa trên vị trí của từ khóa kết thúc `EOT`, cho phép bạn thụt dòng code HCL sạch sẽ mà chuỗi văn bản xuất ra vẫn chuẩn xác.
+- <span class="badge badge--amber">`<<EOT`</span>: Giữ nguyên toàn bộ khoảng trắng và thụt đầu dòng (leading whitespace) ở tất cả các dòng, khiến mã nguồn HCL nhìn bừa bộn nếu muốn căn lề đẹp.
+- <span class="badge badge--emerald">`<<-EOT`</span>: Tự động loại bỏ khoảng trắng thụt lề dựa trên vị trí của từ khóa kết thúc `EOT`, cho phép bạn thụt dòng code HCL sạch sẽ mà chuỗi văn bản xuất ra vẫn chuẩn xác.
 
 ```hcl
 locals {
@@ -336,7 +347,7 @@ variable "security_rules" {
 ## 6. Phân Tích Cạm Bẫy Thực Chiến: Lỗi "Invalid JSON String In IAM Policy"
 
 ### Tình Huống Sự Cố Thực Tế:
-Một nhóm kỹ sư chuyển đổi từ Ansible sang Terraform đã viết IAM Policy bằng cách nối chuỗi Heredoc truyền thống:
+Vào lúc <span class="badge badge--rose">🕒 09:30 AM</span>, một nhóm kỹ sư chuyển đổi từ Ansible sang Terraform đã viết IAM Policy bằng cách nối chuỗi Heredoc truyền thống:
 
 ```hcl
 # CODE GÂY LỖI: Nối chuỗi thủ công trong Heredoc
@@ -358,57 +369,61 @@ resource "aws_iam_policy" "bad_policy" {
 ```
 
 ### Log Lỗi Trả Về Khi Apply:
-```log
+```diff
 # Trích đoạn log lỗi từ AWS API
-Error: Error creating IAM Policy bad-policy: MalformedPolicyDocument: 
-Syntax errors in policy. (Line 8, Column 10: Trailing comma in JSON object)
-	status code: 400, request id: 7f8a9b1c-9921-4321-beef-123456789abc
+! [CRITICAL ERROR] Error creating IAM Policy bad-policy: MalformedPolicyDocument: 
+! Syntax errors in policy. (Line 8, Column 10: Trailing comma in JSON object)
+! 	status code: 400, request id: 7f8a9b1c-9921-4321-beef-123456789abc
 
   on main.tf line 12, in resource "aws_iam_policy" "bad_policy":
   12: resource "aws_iam_policy" "bad_policy" {
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao IAM Policy bị từ chối tạo?** $\rightarrow$ Vì AWS API trả về lỗi `MalformedPolicyDocument` do cú pháp JSON không hợp lệ.
-2. **Tại sao JSON không hợp lệ?** $\rightarrow$ Vì xuất hiện dấu phẩy thừa (Trailing Comma) sau dòng `"Resource": "..."`.
-3. **Tại sao lại có dấu phẩy thừa?** $\rightarrow$ Do kỹ sư sao chép từ cấu hình cũ và nối chuỗi bằng Heredoc `<<-EOT` mà không qua parser kiểm tra.
-4. **Tại sao không phát hiện sớm ở bước `terraform validate`?** $\rightarrow$ Vì `terraform validate` chỉ kiểm tra cú pháp HCL; đối với HCL thì chuỗi trong Heredoc chỉ là một chuỗi văn bản (`string`), không kiểm tra tính đúng đắn của JSON bên trong.
-5. **Biện pháp khắc phục tận gốc:**
-   - **Chuyển đổi 100% sang `jsonencode()`:** Khi dùng `jsonencode()`, HCL parser sẽ kiểm tra cấu trúc Map/List ngay tại thời điểm biên dịch, loại bỏ 100% nguy cơ lỗi JSON.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao IAM Policy bị từ chối tạo?** $\rightarrow$ Vì AWS API trả về lỗi `MalformedPolicyDocument` do cú pháp JSON không hợp lệ.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao JSON không hợp lệ?** $\rightarrow$ Vì xuất hiện dấu phẩy thừa (Trailing Comma) sau dòng `"Resource": "..."`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao lại có dấu phẩy thừa?** $\rightarrow$ Do kỹ sư sao chép từ cấu hình cũ và nối chuỗi bằng Heredoc `<<-EOT` mà không qua parser kiểm tra.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao không phát hiện sớm ở bước `terraform validate`?** $\rightarrow$ Vì `terraform validate` chỉ kiểm tra cú pháp HCL; đối với HCL thì chuỗi trong Heredoc chỉ là một chuỗi văn bản (`string`), không kiểm tra tính đúng đắn của JSON bên trong.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục tận gốc:**
+   - <span class="badge badge--emerald">100% JSONEncode</span> **Chuyển đổi sang `jsonencode()`:** Khi dùng `jsonencode()`, HCL parser sẽ kiểm tra cấu trúc Map/List ngay tại thời điểm biên dịch, loại bỏ 100% nguy cơ lỗi JSON.
 
 ---
 
 ## 7. Hands-on Lab: Khám Phá & Gỡ Rối Biểu Thức Với `terraform console` (8 Bước)
 
-### Bước 1: Khởi động môi trường tương tác REPL
+| Bước | Lệnh / Biểu Thức | Mục Đích Thực Thi |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `terraform console` | Khởi động môi trường dòng lệnh tương tác REPL của Terraform |
+| <span class="badge badge--cyan">02</span> | `cidrsubnet(...) & cidrhost(...)` | Thử nghiệm tính toán phân bổ dải IP mạng Subnet và Host |
+| <span class="badge badge--indigo">03</span> | `[for s in [...] : upper(s) if ...]` | Thử nghiệm biến đổi danh sách kèm bộ lọc điều kiện `if` |
+| <span class="badge badge--amber">04</span> | `{for item in [...] : item.k => item.v...}` | Thử nghiệm gom nhóm mảng con bằng toán tử Ellipsis (`...`) |
+| <span class="badge badge--emerald">05</span> | `jsonencode({ env = "prod", ... })` | Thử nghiệm mã hóa Object HCL thành chuỗi JSON chuẩn mực |
+| <span class="badge badge--primary">06</span> | `coalesce(null, "", "default")` | Kiểm tra xử lý giá trị rỗng và cơ chế Fallback an toàn |
+| <span class="badge badge--rose">07</span> | `flatten([["a", "b"], ["c", "d"]])` | Làm phẳng cấu trúc danh sách lồng 2 chiều thành 1 chiều |
+| <span class="badge badge--emerald">08</span> | `exit` | Thoát khỏi phiên làm việc dòng lệnh tương tác Console |
+
 ```bash
-# Khởi động trình tương tác dòng lệnh Terraform Console
+# 1. Khởi động môi trường tương tác REPL
 terraform console
 ```
 
-### Bước 2: Thử nghiệm các hàm xử lý mạng IP
 ```hcl
-# Thử nghiệm hàm chia mạng con cidrsubnet
+# 2. Thử nghiệm các hàm xử lý mạng IP
 > cidrsubnet("10.100.0.0/16", 8, 1)
 "10.100.1.0/24"
 
-# Thử nghiệm hàm tính toán IP máy chủ cidrhost
 > cidrhost("10.100.1.0/24", 10)
 "10.100.1.10"
-```
 
-### Bước 3: Thử nghiệm For Expression với bộ lọc Filter
-```hcl
+# 3. Thử nghiệm For Expression với bộ lọc Filter
 > [for s in ["web", "api", "db", "cache"] : upper(s) if s != "cache"]
 [
   "WEB",
   "API",
   "DB",
 ]
-```
 
-### Bước 4: Thử nghiệm toán tử nhóm Ellipsis (`...`)
-```hcl
+# 4. Thử nghiệm toán tử nhóm Ellipsis (...)
 > { for item in [{k="fruit", v="apple"}, {k="fruit", v="banana"}, {k="veg", v="carrot"}] : item.k => item.v... }
 {
   "fruit" = [
@@ -419,22 +434,16 @@ terraform console
     "carrot",
   ]
 }
-```
 
-### Bước 5: Thử nghiệm hàm `jsonencode` và kiểm tra cấu trúc
-```hcl
+# 5. Thử nghiệm hàm jsonencode và kiểm tra cấu trúc
 > jsonencode({ env = "prod", enabled = true, count = 5 })
 "{\"count\":5,\"enabled\":true,\"env\":\"prod\"}"
-```
 
-### Bước 6: Kiểm tra xử lý giá trị Null và hàm `coalesce`
-```hcl
+# 6. Kiểm tra xử lý giá trị Null và hàm coalesce
 > coalesce(null, "", "default-value")
 "default-value"
-```
 
-### Bước 7: Thử nghiệm hàm `flatten` trên mảng 2 chiều
-```hcl
+# 7. Thử nghiệm hàm flatten trên mảng 2 chiều
 > flatten([["a", "b"], ["c", "d"], ["e"]])
 [
   "a",
@@ -443,10 +452,8 @@ terraform console
   "d",
   "e",
 ]
-```
 
-### Bước 8: Thoát khỏi Terraform Console
-```hcl
+# 8. Thoát khỏi Terraform Console
 > exit
 ```
 
@@ -454,12 +461,11 @@ terraform console
 
 ## 8. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
 <details class="qa-card">
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Sự khác biệt cơ bản giữa kiểu dữ liệu `list` và `set` trong Terraform là gì?</span>
+    <span>Sự khác biệt cơ bản giữa kiểu dữ liệu <code>list</code> và <code>set</code> trong Terraform là gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -471,7 +477,7 @@ terraform console
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   - <code>list</code> là danh sách có thứ tự theo chỉ mục (0, 1, 2...) và cho phép các phần tử trùng lặp giá trị.<br/>
-- <code>set</code> là tập hợp các phần tử không có thứ tự và <b style="color: var(--accent-primary);">tuyệt đối không chứa phần tử trùng lặp</b>. Khi truyền vào <code>for_each</code>, <code>set</code> an toàn hơn <code>list</code> vì tránh được hiện tượng Index Shifting.
+  - <code>set</code> là tập hợp các phần tử không có thứ tự và <b style="color: var(--accent-primary);">tuyệt đối không chứa phần tử trùng lặp</b>. Khi truyền vào <code>for_each</code>, <code>set</code> an toàn hơn <code>list</code> vì tránh được hiện tượng Index Shifting.
 </div>
 </details>
 
@@ -479,7 +485,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q02</span>
-    <span>Thuộc tính `optional()` trong kiểu dữ liệu `object` có tác dụng gì từ phiên bản Terraform 1.3+?</span>
+    <span>Thuộc tính <code>optional()</code> trong kiểu dữ liệu <code>object</code> có tác dụng gì từ phiên bản Terraform 1.3+?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -498,7 +504,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q03</span>
-    <span>Kỹ thuật nhóm Ellipsis (`...`) trong biểu thức `for` được dùng để làm gì?</span>
+    <span>Kỹ thuật nhóm Ellipsis (<code>...</code>) trong biểu thức <code>for</code> được dùng để làm gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -517,7 +523,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Vì sao nên dùng `<<-EOT` thay vì `<<EOT` khi viết Heredoc String?</span>
+    <span>Vì sao nên dùng <code>&lt;&lt;-EOT</code> thay vì <code>&lt;&lt;EOT</code> khi viết Heredoc String?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -528,7 +534,7 @@ terraform console
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  <code><<-EOT</code> (Indented Heredoc) cho phép thụt đầu dòng các dòng chữ bên trong để mã nguồn HCL đẹp và ngay ngắn, nhưng khi biên dịch, Terraform sẽ tự động loại bỏ khoảng trắng thụt lề bằng với vị trí của từ khóa <code>EOT</code>.
+  <code>&lt;&lt;-EOT</code> (Indented Heredoc) cho phép thụt đầu dòng các dòng chữ bên trong để mã nguồn HCL đẹp và ngay ngắn, nhưng khi biên dịch, Terraform sẽ tự động loại bỏ khoảng trắng thụt lề bằng với vị trí của từ khóa <code>EOT</code>.
 </div>
 </details>
 
@@ -536,7 +542,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Tại sao việc dùng `jsonencode()` lại an toàn hơn nối chuỗi thủ công trong IAM Policy?</span>
+    <span>Tại sao việc dùng <code>jsonencode()</code> lại an toàn hơn nối chuỗi thủ công trong IAM Policy?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -555,7 +561,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q06</span>
-    <span>Hàm `cidrsubnet(prefix, newbits, netnum)` hoạt động như thế nào? Cho ví dụ?</span>
+    <span>Hàm <code>cidrsubnet(prefix, newbits, netnum)</code> hoạt động như thế nào? Cho ví dụ?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -574,7 +580,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q07</span>
-    <span>Khi nào nên sử dụng hàm `can()` hoặc `try()` trong xử lý biểu thức HCL?</span>
+    <span>Khi nào nên sử dụng hàm <code>can()</code> hoặc <code>try()</code> trong xử lý biểu thức HCL?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -586,7 +592,7 @@ terraform console
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   - <code>can(expression)</code>: Trả về <code>true</code> nếu biểu thức thực thi thành công không lỗi, trả về <code>false</code> nếu có lỗi (thường dùng trong <code>validation</code> block).<br/>
-- <code>try(expr1, expr2, default)</code>: Trả về kết quả của biểu thức đầu tiên không bị lỗi, giúp xử lý các thuộc tính có thể không tồn tại mà không làm sập tiến trình chạy.
+  - <code>try(expr1, expr2, default)</code>: Trả về kết quả của biểu thức đầu tiên không bị lỗi, giúp xử lý các thuộc tính có thể không tồn tại mà không làm sập tiến trình chạy.
 </div>
 </details>
 
@@ -594,7 +600,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Hàm `flatten()` thường được sử dụng kết hợp với `for expressions` trong trường hợp nào?</span>
+    <span>Hàm <code>flatten()</code> thường được sử dụng kết hợp với <code>for expressions</code> trong trường hợp nào?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -613,7 +619,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span>Lệnh `terraform console` có làm thay đổi hạ tầng thực tế hoặc State file không?</span>
+    <span>Lệnh <code>terraform console</code> có làm thay đổi hạ tầng thực tế hoặc State file không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -632,7 +638,7 @@ terraform console
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q10</span>
-    <span>Hàm `templatefile(path, vars)` có ưu điểm gì vượt trội so với data source `template_file` cũ?</span>
+    <span>Hàm <code>templatefile(path, vars)</code> có ưu điểm gì vượt trội so với data source <code>template_file</code> cũ?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -643,7 +649,7 @@ terraform console
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  <code>templatefile()</code> là một hàm built-in chạy trực tiếp trong Terraform Core, không cần cài đặt thêm Provider ngoài (`template` provider), có hiệu năng render cực nhanh và hỗ trợ đầy đủ toàn bộ hệ thống kiểu dữ liệu hiện đại của HCL (Maps, Objects, Tuples).
+  <code>templatefile()</code> là một hàm built-in chạy trực tiếp trong Terraform Core, không cần cài đặt thêm Provider ngoài (<code>template</code> provider), có hiệu năng render cực nhanh và hỗ trợ đầy đủ toàn bộ hệ thống kiểu dữ liệu hiện đại của HCL (Maps, Objects, Tuples).
 </div>
 </details>
 
@@ -653,5 +659,7 @@ terraform console
 
 Làm chủ cú pháp **HCL**, hệ thống **Type Constraints**, kỹ thuật **For Expressions** và kho hàm **Built-in Functions** là bước nhảy vọt biến bạn từ một người chỉ biết copy/paste code mẫu thành một kỹ sư Platform có khả năng kiến tạo những Module hạ tầng linh hoạt và mạnh mẽ.
 
-Trong **[Bài 04: Đồ Thị Phụ Thuộc (Dependency Graph): Quản Lý Phụ Thuộc Tường Minh, Ngầm Định & Xử Lý Lỗi Vòng Lặp Tuần Hoàn (Cycle)](04-dependency-graph-dag-quan-ly-phu-thuoc-tuong-minh-ngam-dinh.md)**, chúng ta sẽ chuyên sâu vào việc xử lý các tình huống phức tạp nhất của đồ thị DAG: Tách rời tài nguyên với Security Group Rules hai chiều, kỹ thuật phá vỡ Cycle và tối ưu hóa thứ tự triển khai tài nguyên đa tầng.
+> [!TIP]
+> **BÀI HỌC TIẾP THEO:**
+> Trong **[Bài 04: Đồ Thị Phụ Thuộc (Dependency Graph): Quản Lý Phụ Thuộc Tường Minh, Ngầm Định & Xử Lý Lỗi Vòng Lặp Tuần Hoàn (Cycle)](./04-dependency-graph-dag-quan-ly-phu-thuoc-tuong-minh-ngam-dinh.md)**, chúng ta sẽ chuyên sâu vào việc xử lý các tình huống phức tạp nhất của đồ thị DAG: Tách rời tài nguyên với Security Group Rules hai chiều, kỹ thuật phá vỡ Cycle và tối ưu hóa thứ tự triển khai tài nguyên đa tầng.
 {% endraw %}

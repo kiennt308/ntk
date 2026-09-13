@@ -372,7 +372,40 @@ blog_page:
     tags_title: "Popular Tags"
 
 # ==============================================================================
-# ⚙️ 12. JEKYLL PLUGINS & BUILD SETTINGS
+# 📖 12. NỘI DUNG TRANG CHI TIẾT BÀI VIẾT (POST DETAIL PAGE)
+# ==============================================================================
+post_page:
+  breadcrumbs_home: "Home"
+  breadcrumbs_blog: "Blog"
+  back_to_blog_text: "Back to Blog"
+  read_time_suffix: "min read"
+  date_format: "%B %d, %Y"
+  date_format_short: "%b %d, %Y"
+  updated_label: "Updated:"
+  learning_path_series_badge: "📚 Learning Path Series"
+  parts_unit: "Parts"
+  current_article_note: "(This article)"
+  tags_label: "TAGS:"
+  written_by_prefix: "Written by"
+  author_role: "Senior DevOps / SRE / Cloud Architect"
+  author_desc: "Passionate about building scalable cloud architectures, automating operations, and writing pragmatic engineering guides."
+  prev_article_label: "← Previous Article"
+  next_article_label: "Next Article →"
+  related_articles_heading: "Related Articles in"
+  actions_title: "Actions & Sharing"
+  copy_link_btn_text: "Copy Link"
+  print_guide_btn_text: "Print Guide"
+  share_x_btn_text: "Share to X"
+  share_linkedin_btn_text: "Share to LinkedIn"
+  specs_title: "Guide Specs"
+  spec_category_label: "Category:"
+  spec_level_label: "Level:"
+  spec_estimated_label: "Estimated:"
+  spec_published_label: "Published:"
+  read_guide_btn_text: "Read Guide"
+
+# ==============================================================================
+# ⚙️ 13. JEKYLL PLUGINS & BUILD SETTINGS
 # ==============================================================================
 twitter:
   username: kiennt308

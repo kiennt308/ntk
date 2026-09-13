@@ -1,11 +1,12 @@
 {% assign words = include.post.content | number_of_words %}
 {% if words < 360 %}
-  {% assign read_time = "1 min read" %}
+  {% assign read_time_num = 1 %}
 {% else %}
-  {% assign read_time = words | divided_by: 180 | append: " min read" %}
+  {% assign read_time_num = words | divided_by: 180 %}
 {% endif %}
+{% assign read_time = read_time_num | append: " " | append: site.post_page.read_time_suffix | default: "min read" %}
 
-{% assign post_cat = include.post.categories | first %}
+{% assign post_cat = include.post.categories | first | default: "DevOps" %}
 {% assign cat_class = "badge--primary" %}
 {% for topic in site.topics %}
   {% if topic.category_name == post_cat %}
@@ -42,7 +43,7 @@
     <div class="card__meta">
       <span>{{ read_time }}</span>
       <span class="card__meta-dot"></span>
-      <span>{{ include.post.date | date: "%b %d, %Y" }}</span>
+      <span>{{ include.post.date | date: site.post_page.date_format_short | default: "%b %d, %Y" }}</span>
     </div>
   </div>
 
@@ -58,7 +59,7 @@
     </div>
     
     <a href="{{ include.post.url | relative_url }}" class="post-read-link">
-      <span>Read Guide</span>
+      <span>{{ site.post_page.read_guide_btn_text | default: "Read Guide" }}</span>
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
       </svg>

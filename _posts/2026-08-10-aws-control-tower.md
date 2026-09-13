@@ -1,9 +1,6 @@
 ---
-layout: post
 title: "AWS Control Tower: When Should You Use It?"
-description: "An in-depth review of AWS Control Tower, covering multi-account landing zones, organizational guardrails, account factory processes, and production tradeoffs."
-date: 2026-08-10 09:00:00 +0700
-last_updated: 2026-08-11 07:00:00 +0700
+last_updated: 2026-08-11
 categories: [AWS]
 tags: [Control Tower, Multi-Account, Security, Cloud Architecture]
 difficulty: Advanced

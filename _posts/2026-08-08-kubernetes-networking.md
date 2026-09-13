@@ -1,8 +1,5 @@
 ---
-layout: post
 title: "Kubernetes Networking Explained"
-description: "Demystifying the Kubernetes networking model, covering Pod-to-Pod communication, the role of kube-proxy, CoreDNS service resolution, and Ingress routing."
-date: 2026-08-08 11:00:00 +0700
 categories: [Kubernetes]
 tags: [Kubernetes, Networking, Pod, Service, Ingress]
 difficulty: Advanced

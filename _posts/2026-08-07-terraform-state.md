@@ -1,8 +1,5 @@
 ---
-layout: post
 title: "Terraform State Management Best Practices"
-description: "A production-grade guide to managing Terraform state files safely, focusing on remote backends, locking configurations, multi-environment directories, and state commands."
-date: 2026-08-07 12:00:00 +0700
 categories: [Terraform]
 tags: [Terraform, IaC, State, Automation, DevOps]
 difficulty: Intermediate

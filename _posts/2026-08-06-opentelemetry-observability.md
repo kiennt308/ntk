@@ -1,8 +1,5 @@
 ---
-layout: post
 title: "Building an Observability Platform with OpenTelemetry"
-description: "A practical guide to building an enterprise-grade observability platform using the OpenTelemetry Collector, Prometheus, Loki, and Grafana."
-date: 2026-08-06 13:00:00 +0700
 categories: [Observability]
 tags: [OpenTelemetry, Observability, Grafana, Prometheus, SRE]
 difficulty: Intermediate

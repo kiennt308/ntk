@@ -1,8 +1,5 @@
 ---
-layout: post
 title: "AWS EKS Production Checklist"
-description: "A comprehensive security, networking, and scaling checklist for deploying enterprise workloads to Amazon Elastic Kubernetes Service (EKS)."
-date: 2026-08-05 14:00:00 +0700
 categories: [Kubernetes]
 tags: [Kubernetes, EKS, Security, Production, AWS]
 difficulty: Intermediate

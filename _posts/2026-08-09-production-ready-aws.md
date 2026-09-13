@@ -1,8 +1,5 @@
 ---
-layout: post
 title: "How I Design a Production-Ready AWS Environment"
-description: "A comprehensive guide to planning and deploying a production-ready AWS environment using modular Terraform, multi-AZ VPC topologies, and secure transit networking."
-date: 2026-08-09 10:00:00 +0700
 categories: [AWS]
 tags: [AWS, Terraform, Networking, Security, Cloud Architecture]
 difficulty: Intermediate

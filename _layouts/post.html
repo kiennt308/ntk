@@ -1,15 +1,19 @@
 ---
 layout: default
 ---
+
+{% assign page_cfg = site.post_page %}
+
 <!-- Calculate Reading Time -->
 {% assign words = content | number_of_words %}
 {% if words < 360 %}
-  {% assign read_time = "1 min read" %}
+  {% assign read_time_num = 1 %}
 {% else %}
-  {% assign read_time = words | divided_by: 180 | append: " min read" %}
+  {% assign read_time_num = words | divided_by: 180 %}
 {% endif %}
+{% assign read_time = read_time_num | append: " " | append: page_cfg.read_time_suffix %}
 
-{% assign post_cat = page.categories | first %}
+{% assign post_cat = page.categories | first | default: "DevOps" %}
 {% assign cat_class = "badge--primary" %}
 {% for topic in site.topics %}
   {% if topic.category_name == post_cat %}
@@ -20,9 +24,9 @@ layout: default
 <div class="container container--wide">
   <!-- Breadcrumbs navigation -->
   <nav class="breadcrumbs no-print" aria-label="Breadcrumb">
-    <a href="{{ '/' | relative_url }}">Home</a>
+    <a href="{{ '/' | relative_url }}">{{ page_cfg.breadcrumbs_home }}</a>
     <span class="breadcrumbs-sep">/</span>
-    <a href="{{ '/blog.html' | relative_url }}">Blog</a>
+    <a href="{{ '/blog.html' | relative_url }}">{{ page_cfg.breadcrumbs_blog }}</a>
     <span class="breadcrumbs-sep">/</span>
     <a href="{{ '/categories.html' | relative_url }}#{{ post_cat | downcase }}">{{ post_cat }}</a>
     <span class="breadcrumbs-sep">/</span>
@@ -40,7 +44,7 @@ layout: default
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Back to Blog
+          {{ page_cfg.back_to_blog_text }}
         </a>
       </div>
 
@@ -79,14 +83,14 @@ layout: default
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            {{ page.date | date: "%B %d, %Y" }}
+            {{ page.date | date: page_cfg.date_format }}
           </span>
           {% if page.last_updated %}
           <span class="article-meta-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89" />
             </svg>
-            Updated: {{ page.last_updated | date: "%B %d, %Y" }}
+            {{ page_cfg.updated_label }} {{ page.last_updated | date: page_cfg.date_format }}
           </span>
           {% endif %}
           <span class="article-meta-item">
@@ -105,11 +109,11 @@ layout: default
           <summary class="series-box-summary">
             <div class="series-box-header" style="margin-bottom: 0;">
               <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="series-box-badge">📚 Learning Path Series</span>
+                <span class="series-box-badge">{{ page_cfg.learning_path_series_badge }}</span>
                 <span class="series-box-title">{{ page.series }}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 0.65rem;">
-                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">{{ series_posts.size }} Parts</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">{{ series_posts.size }} {{ page_cfg.parts_unit }}</span>
                 <svg class="series-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -122,7 +126,7 @@ layout: default
                 <li class="series-box-item {% if s_post.url == page.url %}current{% endif %}">
                   <span class="series-box-num">{{ s_post.series_order | default: forloop.index }}</span>
                   {% if s_post.url == page.url %}
-                    <span>{{ s_post.title }} <em>(This article)</em></span>
+                    <span>{{ s_post.title }} <em>{{ page_cfg.current_article_note }}</em></span>
                   {% else %}
                     <a href="{{ s_post.url | relative_url }}">{{ s_post.title }}</a>
                   {% endif %}
@@ -153,28 +157,36 @@ layout: default
       {% endif %}
 
       <!-- Article Tags Cloud -->
+      {% if page.tags and page.tags.size > 0 %}
       <div class="article-tags" style="margin-top: 3rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
-        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 0.5rem;">TAGS:</span>
+        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 0.5rem;">{{ page_cfg.tags_label }}</span>
         {% for tag in page.tags %}
           <a href="{{ '/tags.html' | relative_url }}#{{ tag | downcase }}" class="badge">#{{ tag }}</a>
         {% endfor %}
       </div>
+      {% endif %}
 
       <!-- Author Bio Section -->
       <div class="author-bio no-print">
         <div class="author-avatar">
-          KN
+          {{ site.author.initials | default: "KN" }}
         </div>
         <div class="author-info">
-          <h3>Written by {{ site.author.name }}</h3>
-          <div class="author-role">Senior DevOps / SRE / Cloud Architect</div>
+          <h3>{{ page_cfg.written_by_prefix }} {{ site.author.name }}</h3>
+          <div class="author-role">{{ page_cfg.author_role | default: site.author.title }}</div>
           <p class="author-desc">
-            Passionate about building scalable cloud architectures, automating operations, and writing pragmatic engineering guides.
+            {{ page_cfg.author_desc | default: site.author.bio }}
           </p>
           <div style="display: flex; gap: 1rem; font-size: 0.85rem;">
-            <a href="https://github.com/{{ site.social.github }}" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="mailto:{{ site.email }}">Email</a>
+            {% if site.social.github %}
+              <a href="https://github.com/{{ site.social.github }}" target="_blank" rel="noopener noreferrer">GitHub</a>
+            {% endif %}
+            {% if site.social.linkedin %}
+              <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            {% endif %}
+            {% if site.email %}
+              <a href="mailto:{{ site.email }}">Email</a>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -183,7 +195,7 @@ layout: default
       <div class="post-navigation no-print">
         {% if page.previous %}
           <a class="post-nav-card" href="{{ page.previous.url | relative_url }}">
-            <span class="post-nav-label">← Previous Article</span>
+            <span class="post-nav-label">{{ page_cfg.prev_article_label }}</span>
             <span class="post-nav-title">{{ page.previous.title }}</span>
           </a>
         {% else %}
@@ -192,7 +204,7 @@ layout: default
         
         {% if page.next %}
           <a class="post-nav-card post-nav-card--next" href="{{ page.next.url | relative_url }}">
-            <span class="post-nav-label">Next Article →</span>
+            <span class="post-nav-label">{{ page_cfg.next_article_label }}</span>
             <span class="post-nav-title">{{ page.next.title }}</span>
           </a>
         {% else %}
@@ -202,7 +214,7 @@ layout: default
 
       <!-- Related Posts Section -->
       <div class="related-posts no-print">
-        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Related Articles in {{ post_cat }}</h2>
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">{{ page_cfg.related_articles_heading }} {{ post_cat }}</h2>
         <div class="grid grid--2col">
           {% assign count = 0 %}
           {% for post in site.posts %}
@@ -227,43 +239,43 @@ layout: default
     <!-- RIGHT SIDEBAR: Action Panel & Quick Specs -->
     <aside class="article-sidebar-right no-print">
       <div class="action-box">
-        <h3 class="action-box-title">Actions & Sharing</h3>
+        <h3 class="action-box-title">{{ page_cfg.actions_title }}</h3>
         <div class="action-btn-list">
           <button class="btn btn--secondary btn--sm btn-copy-link" style="width: 100%; justify-content: flex-start;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
-            Copy Link
+            {{ page_cfg.copy_link_btn_text }}
           </button>
           
           <button class="btn btn--secondary btn--sm" onclick="window.print()" style="width: 100%; justify-content: flex-start;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
-            Print Guide
+            {{ page_cfg.print_guide_btn_text }}
           </button>
 
           <a href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&url={{ site.url }}{{ page.url }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="width: 100%; justify-content: flex-start;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            Share to X
+            {{ page_cfg.share_x_btn_text }}
           </a>
 
           <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ site.url }}{{ page.url }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="width: 100%; justify-content: flex-start;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-            Share to LinkedIn
+            {{ page_cfg.share_linkedin_btn_text }}
           </a>
         </div>
       </div>
 
       <div class="action-box">
-        <h3 class="action-box-title">Guide Specs</h3>
+        <h3 class="action-box-title">{{ page_cfg.specs_title }}</h3>
         <div style="font-size: 0.825rem; display: flex; flex-direction: column; gap: 0.65rem; color: var(--text-secondary);">
-          <div><strong>Category:</strong> {{ post_cat }}</div>
+          <div><strong>{{ page_cfg.spec_category_label }}</strong> {{ post_cat }}</div>
           {% if page.difficulty %}
-            <div><strong>Level:</strong> {{ page.difficulty }}</div>
+            <div><strong>{{ page_cfg.spec_level_label }}</strong> {{ page.difficulty }}</div>
           {% endif %}
-          <div><strong>Estimated:</strong> {{ read_time }}</div>
-          <div><strong>Published:</strong> {{ page.date | date: "%b %d, %Y" }}</div>
+          <div><strong>{{ page_cfg.spec_estimated_label }}</strong> {{ read_time }}</div>
+          <div><strong>{{ page_cfg.spec_published_label }}</strong> {{ page.date | date: page_cfg.date_format_short }}</div>
         </div>
       </div>
 

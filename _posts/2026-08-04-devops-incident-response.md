@@ -1,8 +1,5 @@
 ---
-layout: post
 title: "DevOps Incident Response: From Alert to Postmortem"
-description: "A playbook for handling high-priority production incidents, covering alerting, triage, hot mitigation, and writing blameless postmortems."
-date: 2026-08-04 15:00:00 +0700
 categories: [DevOps]
 tags: [SRE, Incident Response, Postmortem, Monitoring, DevOps]
 difficulty: Intermediate

@@ -1,7 +1,11 @@
 <header class="navbar">
   <div class="container navbar__container">
     <a class="logo" href="{{ '/' | relative_url }}">
-      <div class="logo-badge">{{ site.header.logo_badge | default: site.author.initials | default: "KN" }}</div>
+      {% if site.header.logo_image %}
+        <img src="{{ site.header.logo_image | relative_url }}" alt="{{ site.header.logo_text | default: site.title }}" class="logo-image">
+      {% else %}
+        <div class="logo-badge">{{ site.header.logo_badge | default: site.author.initials | default: "KN" }}</div>
+      {% endif %}
       <span class="logo-text">{{ site.header.logo_text | default: site.title }}</span>
     </a>
 

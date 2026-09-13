@@ -282,6 +282,15 @@ html.dark-theme header.navbar {
   letter-spacing: 0.5px;
   box-shadow: 0 2px 8px rgba(var(--accent-primary-rgb), 0.35);
 }
+.logo-image {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 2px 8px rgba(var(--accent-primary-rgb), 0.25);
+  border: 1px solid var(--border-color);
+}
 .logo-text {
   letter-spacing: -0.02em;
 }

@@ -40,8 +40,9 @@ social:
 # 🎨 4. GIAO DIỆN HEADER & LOGO (HEADER & NAVBAR)
 # ==============================================================================
 header:
-  logo_badge: "KN"                # Text viết tắt trong ô badge logo
-  logo_text: "Kien Nguyen"        # Tên hiển thị cạnh badge
+  logo_image: "/assets/imgs/logo.jpg" # Đường dẫn ảnh logo (ưu tiên hiển thị)
+  logo_badge: "KN"                    # Text viết tắt fallback nếu không dùng ảnh
+  logo_text: "Kien Nguyen"            # Tên hiển thị cạnh logo
   nav_menu:                       # Danh sách các menu trên Header
     - title: "Home"
       url: "/"

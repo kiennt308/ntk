@@ -129,7 +129,165 @@ homepage:
     secondary_btn_url: "/about.html#resume-download"
 
 # ==============================================================================
-# ⚙️ 8. JEKYLL PLUGINS & BUILD SETTINGS
+# 📖 8. NỘI DUNG TRANG ABOUT (ABOUT ME & CV PROFILE)
+# ==============================================================================
+about_page:
+  title: "About Kien Nguyen"
+  hero_badge: "Senior DevOps / SRE"
+  
+  # Section 1: Giới thiệu & Triết lý kỹ thuật
+  background:
+    section_title: "1. Background & Engineering Philosophy"
+    intro: "I am a **Senior DevOps, SRE, and Cloud Architect** with over 6 years of experience designing, automating, and maintaining high-availability, cloud-native infrastructures. My practice centers around treating infrastructure as versioned software, building self-healing Kubernetes platforms, and implementing robust end-to-end observability systems."
+    focus_heading: "Core Areas of Focus"
+    focus_items:
+      - title: "☁️ Cloud Architecture:"
+        desc: "Multi-region, multi-account AWS landing zones utilizing AWS Control Tower, transit networking, and strict security guardrails."
+      - title: "🚢 Platform Engineering:"
+        desc: "Standardizing developer environments, internal developer portals, and ArgoCD GitOps pipelines to accelerate delivery cycles."
+      - title: "📊 Site Reliability Engineering:"
+        desc: "Software-driven operations, SLO/SLA management, automated incident triage, and blameless postmortem culture."
+    principles_heading: "Engineering Principles"
+    principles:
+      - title: "Automate Everything:"
+        desc: "If an operational task needs to be performed more than twice, it deserves a tested script or pipeline."
+      - title: "Simplicity by Design:"
+        desc: "Complex, fragile pipelines break easily. Build modular, observable, and resilient architectures."
+      - title: "Documentation is Code:"
+        desc: "Systems that are not documented do not exist. Clear runbooks and architecture decision records (ADRs) are essential."
+      - title: "Security & Least Privilege:"
+        desc: "Implement zero-trust network boundaries, automated container scanning, and continuous compliance guardrails."
+
+  # Section 2: Ma trận kỹ năng chuyên môn
+  competencies:
+    section_title: "2. Technical Competencies Matrix"
+    items:
+      - title: "☁️ Cloud & Infrastructure"
+        skills: "AWS (Control Tower, Organizations, VPC, IAM, Transit Gateway, Route53), GCP, Microsoft Azure."
+      - title: "🚢 Containers & Orchestration"
+        skills: "Kubernetes, Amazon EKS, Docker, Helm, ArgoCD, Karpenter, Cilium CNI, Istio Service Mesh."
+      - title: "🏗️ Infrastructure as Code"
+        skills: "Terraform, Terragrunt, OpenTofu, Ansible, AWS CloudFormation, Policy-as-Code (OPA)."
+      - title: "📊 Observability & SRE"
+        skills: "OpenTelemetry Collector, Prometheus, Grafana, Loki, Alertmanager, AWS CloudWatch."
+      - title: "⚡ CI/CD & DevSecOps"
+        skills: "GitHub Actions, GitLab CI, Jenkins, Trivy, Snyk, SonarQube, Cosign."
+      - title: "💻 Languages & Operating Systems"
+        skills: "Python, Go, Bash Shell Scripting, SQL, Linux (Ubuntu, Debian, RHEL, Amazon Linux)."
+
+  # Section 3: Kinh nghiệm làm việc (Timeline)
+  experience:
+    section_title: "3. Professional Work Experience"
+    jobs:
+      - role: "Senior DevOps / Cloud Engineer"
+        company: "Apex Scale Technologies"
+        period: "2024 – PRESENT"
+        badge_class: "badge--amber"
+        highlights:
+          - "Designed and configured enterprise AWS Multi-Account environments using AWS Control Tower and custom modular Terraform blueprints."
+          - "Built GitOps delivery workflows with ArgoCD on EKS, managing continuous zero-downtime releases for 120+ Microservices."
+          - "Configured dynamic cluster node autoscaling with Karpenter on AWS EKS, reducing overall compute spend by 40%."
+          - "Standardized OpenTelemetry distributed tracing and metrics aggregation across distributed services, visualized in Grafana dashboards."
+      - role: "Cloud Engineer"
+        company: "CloudBound Solutions"
+        period: "2023 – 2024"
+        badge_class: "badge--primary"
+        highlights:
+          - "Managed and deployed modular infrastructure utilizing Terraform & Terragrunt for VPC, EKS, RDS, and S3 resources."
+          - "Migrated CI/CD pipelines to GitHub Actions, accelerating release velocity by 35% using optimized runner caches."
+          - "Integrated automated container security vulnerability scanning (Trivy, Snyk) within delivery pipelines."
+          - "Configured Alertmanager routing and structured log aggregation to reduce Mean Time to Detection (MTTD)."
+      - role: "System Administrator & Infrastructure Engineer"
+        company: "Vanguard Systems Integrators"
+        period: "2020 – 2023"
+        badge_class: "badge--cyan"
+        highlights:
+          - "Administered production Linux host environments and internal networking, achieving 99.9% service uptime."
+          - "Authored automated maintenance scripts in Python and Bash for database backups, health telemetry, and log rotation."
+          - "Planned and executed physical-to-cloud server migration procedures onto AWS EC2 instances."
+
+  # Section 4: Học vấn, Chứng chỉ & Nghiên cứu
+  education_and_certifications:
+    section_title: "4. Education, Certifications & Research"
+    education:
+      title: "🎓 Education & Degrees"
+      degree: "B.S. in Computer Science / Engineering"
+      institution: "Vietnam National University (2016 – 2020)"
+      desc: "Focus on distributed systems, operating systems internals, and network protocols."
+    certifications:
+      title: "🏆 Professional Certifications"
+      items:
+        - "✓ AWS Solutions Architect – Professional (2025)"
+        - "✓ AWS DevOps Engineer – Professional (2025)"
+        - "✓ Certified Kubernetes Administrator (CKA) (2024)"
+        - "✓ Certified Kubernetes Security Specialist (CKS) (2024)"
+    research:
+      title: "Academic Research & Publications"
+      items:
+        - title: "IJCNN 2025:"
+          name: '"Attention-Based Spatial-Temporal Fusion for EEG-Based Emotion Recognition" — International Joint Conference on Neural Networks.'
+        - title: "IEEE Transactions (2026):"
+          name: '"Multimodal Emotion Classification Using Deep Transformer Networks and Physiological Signals" — Under Review.'
+
+  # Section 5: Khung tải CV / Resume
+  resume_download:
+    title: "Curriculum Vitae / Resume"
+    description: "Looking for a comprehensive breakdown of technical milestones, project architectures, and references? Download the complete PDF resume below."
+    pdf_url: "/assets/cv/cv.pdf"
+    download_btn_text: "Download PDF Resume"
+    print_btn_text: "Print Resume"
+    cta_text: "Interested in collaborating or consulting?"
+    cta_link_text: "Get in touch →"
+    cta_link_url: "/contact.html"
+
+# ==============================================================================
+# 📬 9. NỘI DUNG TRANG LIÊN HỆ (CONTACT PAGE)
+# ==============================================================================
+contact_page:
+  badge: "CONTACT & CONNECT"
+  title: "Let's Work Together"
+  subtitle: "Have a question about cloud architectures, Kubernetes best practices, or looking for DevOps / SRE consulting? Reach out directly via the channels below."
+  channels:
+    - title: "Direct Email"
+      icon: "✉️"
+      badge: "Primary"
+      badge_class: "badge--amber"
+      icon_bg: "var(--accent-amber-light)"
+      icon_color: "var(--accent-amber)"
+      desc: "Best for technical inquiries, consulting proposals, or architecture discussions."
+      btn_text: "Send Email →"
+      type: "email"
+    - title: "LinkedIn"
+      icon: "💼"
+      badge: "Network"
+      badge_class: "badge--cyan"
+      icon_bg: "var(--accent-cyan-light)"
+      icon_color: "var(--accent-cyan)"
+      desc: "Connect for professional networking, industry insights, and career collaborations."
+      btn_text: "Connect →"
+      type: "linkedin"
+    - title: "GitHub Profile"
+      icon: "🐙"
+      badge: "Code"
+      badge_class: "badge--primary"
+      icon_bg: "var(--accent-primary-light)"
+      icon_color: "var(--accent-primary)"
+      desc: "Explore open-source infrastructure scripts, Terraform blueprints, and configurations."
+      btn_text: "Follow →"
+      type: "github"
+    - title: "Location & Availability"
+      icon: "📍"
+      badge: "Available"
+      badge_class: "badge--emerald"
+      icon_bg: "var(--accent-emerald-light)"
+      icon_color: "var(--accent-emerald)"
+      desc: "Based in Vietnam (UTC+7 / ICT). Open for remote advisory, cloud consulting, and technical writing."
+      status_text: "🟢 Open for Consulting"
+      btn_text: "View Profile →"
+      type: "about"
+
+# ==============================================================================
+# ⚙️ 10. JEKYLL PLUGINS & BUILD SETTINGS
 # ==============================================================================
 twitter:
   username: kiennt308

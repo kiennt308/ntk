@@ -161,34 +161,6 @@ topics:
     badge_class: "badge--rose"
     description: "Enterprise CI/CD pipeline automation, autoscaling GitLab runners, DAG pipelines, automated security scanning (SAST/DAST), container registries, and zero-downtime releases."
 
-  - id: "aws"
-    category_name: "AWS"
-    title: "AWS & Cloud Architecture"
-    icon: "cloud"
-    badge_class: "badge--amber"
-    description: "Architecting enterprise multi-account landing zones with Control Tower, zero-trust VPC networking, automated compliance guardrails, and FinOps cost optimization at scale."
-
-  - id: "kubernetes"
-    category_name: "Kubernetes"
-    title: "Kubernetes & Cloud-Native"
-    icon: "container"
-    badge_class: "badge--cyan"
-    description: "Production Amazon EKS blueprints, resilient CNI networking, ingress controllers, Karpenter autoscaling, GitOps delivery, and container security hardening."
-
-  - id: "observability"
-    category_name: "Observability"
-    title: "Observability & SRE Practice"
-    icon: "chart"
-    badge_class: "badge--emerald"
-    description: "End-to-end distributed tracing with OpenTelemetry, Prometheus & Grafana metric pipelines, actionable Alertmanager routing, and incident response runbooks."
-
-  - id: "devops"
-    category_name: "DevOps"
-    title: "DevOps & Platform Engineering"
-    icon: "zap"
-    badge_class: "badge--rose"
-    description: "High-velocity CI/CD workflows, developer self-service platforms, automated security scanning (DevSecOps), and zero-downtime release automation."
-
 # ==============================================================================
 # 🚀 7. TEXT TRANG CHỦ (HOMEPAGE CONTENT)
 # ==============================================================================

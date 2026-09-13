@@ -111,23 +111,43 @@ Mọi sơ đồ Mermaid (bao gồm `flowchart`, `graph`, và `sequenceDiagram`) 
 
 ---
 
-## 6. Chuẩn Hóa Bảng So Sánh & Bảng Thực Hành (Tables)
+## 6. Chuẩn Hóa Bảng So Sánh & Bảng Thực Hành (Table Optimization Standards)
 
-Mọi bảng Markdown trong bài viết phải đảm bảo tính co giãn linh hoạt (**Responsive Width 100%**), không gây tràn chiều ngang hay xuất hiện thanh cuộn ngang (scrollbar) trên màn hình chuẩn:
+Mọi bảng Markdown trong bài viết phải đảm bảo tính co giãn linh hoạt (**Responsive Width 100%**), tối ưu hóa trải nghiệm đọc và **tuyệt đối không để xảy ra hiện tượng xuất hiện thanh cuộn ngang (horizontal scrollbar)** trên màn hình tiêu chuẩn:
 
-1. **Kích thước & Khoảng đệm nhỏ gọn (Compact Text & Padding)**:
-   - Font chữ trong bảng sử dụng cỡ `0.8rem` (~12.8px - 13px), tiêu đề bảng `0.775rem` in hoa nhẹ nhàng.
-   - Khoảng đệm ô `padding: 0.55rem 0.7rem` giúp tối ưu diện tích hiển thị.
-   - Thẻ `code` trong bảng được định dạng `word-break: break-all` và `white-space: normal` để các câu lệnh dài tự động xuống dòng linh hoạt, không đẩy dãn chiều rộng của cột.
-2. **Cột Thứ tự / Badge (First Column)**:
-   - Cột chứa số thứ tự bước thực hành (`01`, `02`, ...) hoặc Badge phân loại được thiết lập chiều rộng tối thiểu tự động (`width: 1%; white-space: nowrap; text-align: center;`) để dành trọn vẹn không gian cho các cột nội dung và câu lệnh.
-3. **Bảng so sánh kỹ thuật**:
-   - Đặt tên cột rõ ràng: `| Tiêu Chí Kỹ Thuật | Công Cụ A | Công Cụ B | ... |`
-   - Cột tiêu chí dùng in đậm: `**Tiêu chí**`
-   - Các từ khóa giá trị dùng Code span hoặc in đậm có màu.
-4. **Bảng Hands-on Lab (Các bước thực hành)**:
-   - Cột bước đánh số bằng Badge pill căn giữa:
-     `| <span class="badge badge--primary">01</span> | \`lenh-cli\` | Mục đích thực thi chi tiết |`
+### 6.1. Quy tắc Thiết Kế & Bố Cục Bảng (Layout & Structure)
+1. **Giới hạn số lượng cột hợp lý**:
+   - Bảng Hands-on Lab: **3 cột** (`Bước` :---: \| `Lệnh CLI / Cấu Hình` :--- \| `Mục Đích Thực Thi` :---).
+   - Bảng so sánh tham số / cờ CLI: **3–4 cột** (`Tham Số` \| `Mặc Định` \| `Hành Vi Kỹ Thuật` \| `Khuyến Nghị`).
+   - Bảng so sánh công cụ / giải pháp: **3–4 cột** (`Tiêu Chí` \| `Giải Pháp A` \| `Giải Pháp B` \| `Ghi Chú`).
+2. **Căn lề cột chuẩn ngữ nghĩa**:
+   - Cột số thứ tự / Badge / Icon: Căn giữa (`:---:`).
+   - Cột tên tham số / Lệnh CLI / Khái niệm: Căn trái (`:---`).
+   - Cột số liệu / Dung lượng / Thời gian: Căn phải (`---:`).
+3. **Cột Thứ tự / Badge (First Column Auto-Fit)**:
+   - Cột đầu tiên chứa số bước (`01`, `02`, ...) hoặc Badge phân loại luôn dùng Badge pill căn giữa `<span class="badge badge--primary">01</span>`. Cột này được CSS tự động ép gọn (`width: 1%; white-space: nowrap;`) để nhường tối đa 90%+ chiều rộng cho nội dung chi tiết.
+
+### 6.2. Kích Thước Chữ & Tối Ưu Nội Dung Ô (Compact Typography & Text Wrapping)
+1. **Typography nhỏ gọn**: Font chữ bảng cỡ `0.8rem` (~12.8px - 13px), header `0.775rem` in hoa nhẹ nhàng, padding ô `0.55rem 0.7rem` chống dãn khung.
+2. **Xử lý lệnh CLI & Thẻ `code` dài**:
+   - Thẻ `code` trong ô bảng phải được định dạng tự động ngắt dòng mềm mại (`word-break: break-all`, `white-space: normal`).
+   - Tuyệt đối không đặt code block nhiều dòng (fenced code block ` ``` `) bên trong ô bảng Markdown. Nếu lệnh quá phức tạp, chỉ ghi tóm tắt lệnh chính trong bảng và đặt code block chi tiết ngay bên dưới bảng.
+3. **Cô đọng nội dung**: Mô tả trong ô bảng phải súc tích, trực diện, gạch bỏ các từ thừa, bôi đậm từ khóa kỹ thuật cốt lõi.
+
+### 6.3. Bảng Mẫu Chuẩn Hands-on Lab:
+```markdown
+| Bước | Lệnh CLI | Mục Đích Thực Thi |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `terraform init -upgrade` | Tải Provider Plugins mới nhất và xác thực mã băm SHA-256 |
+| <span class="badge badge--cyan">02</span> | `terraform plan -parallelism=5` | Tạo kế hoạch thực thi với mức độ song song kiểm soát an toàn |
+| <span class="badge badge--emerald">03</span> | `terraform apply -auto-approve` | Áp dụng cấu hình hạ tầng trực tiếp lên môi trường đám mây |
+```
+
+### 6.4. Checklist Kiểm Tra Bảng Trước Khi Xuất Bản:
+- [ ] Bảng có vừa khít 100% khung bài viết mà không sinh scrollbar ngang không?
+- [ ] Các thẻ `code` chứa lệnh dài có xuống dòng tự nhiên không bị tràn ô không?
+- [ ] Cột số bước có dùng badge pill `<span class="badge badge--...">` và căn giữa `:---:` không?
+- [ ] Cột tiêu chí / lệnh có in đậm hoặc bọc backticks rõ ràng không?
 
 ---
 

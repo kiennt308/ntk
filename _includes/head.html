@@ -56,6 +56,25 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.ads.client_id }}" crossorigin="anonymous"></script>
   {% endif %}
 
+  <!-- MathJax Configuration & Loader for LaTeX Formulas -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Mermaid.js for Technical Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
   <!-- Main JavaScript File with Cache Buster -->
   <script src="{{ '/assets/js/main.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 </head>

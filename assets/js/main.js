@@ -630,4 +630,55 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('online', () => {
     showToast('Internet connection restored.');
   });
+
+  /* ==========================================================================
+     15. Mermaid Diagram Auto-Renderer & Dark Mode Sync
+     ========================================================================== */
+  function initMermaidDiagrams() {
+    if (typeof mermaid === 'undefined') return;
+
+    const mermaidCodes = document.querySelectorAll(
+      'code.language-mermaid, pre.language-mermaid, div.language-mermaid pre code, .highlighter-rouge.language-mermaid pre code, .language-mermaid pre'
+    );
+
+    if (mermaidCodes.length > 0) {
+      mermaidCodes.forEach((codeEl) => {
+        const rawContent = codeEl.textContent || codeEl.innerText;
+        const container = codeEl.closest('.highlighter-rouge') || codeEl.closest('pre') || codeEl;
+
+        const mermaidWrapper = document.createElement('div');
+        mermaidWrapper.className = 'mermaid';
+        mermaidWrapper.textContent = rawContent.trim();
+
+        if (container && container.parentNode) {
+          container.parentNode.replaceChild(mermaidWrapper, container);
+        }
+      });
+
+      const isDark = document.documentElement.classList.contains('dark-theme');
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: isDark ? 'dark' : 'default',
+        themeVariables: {
+          darkMode: isDark,
+          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+        },
+        securityLevel: 'loose'
+      });
+
+      try {
+        mermaid.run();
+      } catch (err) {
+        console.warn('Mermaid rendering notice:', err);
+      }
+    }
+  }
+
+  // Initial render
+  initMermaidDiagrams();
+
+  // Re-initialize MathJax if needed on dynamic changes
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise().catch((err) => console.warn('MathJax typesetting error:', err));
+  }
 });

@@ -2317,3 +2317,45 @@ mark.search-highlight {
   }
 }
 
+/* ==========================================================================
+   Mermaid Diagrams & MathJax LaTeX Styles
+   ========================================================================== */
+.mermaid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  padding: 1.5rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+  min-height: 80px;
+  text-align: center;
+  transition: background var(--transition-normal), border-color var(--transition-normal);
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+}
+
+/* MathJax LaTeX container tweaks */
+mjx-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+mjx-container[display="true"] {
+  margin: 1.25rem 0 !important;
+  padding: 0.75rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+

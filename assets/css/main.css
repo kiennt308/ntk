@@ -2333,26 +2333,241 @@ mark.search-highlight {
 /* ==========================================================================
    Mermaid Diagrams & MathJax LaTeX Styles
    ========================================================================== */
+.mermaid-wrapper {
+  position: relative;
+  margin: 2rem 0;
+}
+
 .mermaid {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2rem 0;
-  padding: 1.5rem 1rem;
+  padding: 1.75rem 1.25rem;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow-x: auto;
   min-height: 80px;
   text-align: center;
-  transition: background var(--transition-normal), border-color var(--transition-normal);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  cursor: zoom-in;
+}
+
+.mermaid:hover {
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .mermaid svg {
   max-width: 100%;
   height: auto;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+}
+
+.mermaid-zoom-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: all var(--transition-fast);
+  z-index: 2;
+  user-select: none;
+}
+
+.mermaid-wrapper:hover .mermaid-zoom-btn {
+  opacity: 1;
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Mermaid Interactive Lightbox Modal & Zoom Controls
+   ========================================================================== */
+.mermaid-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mermaid-lightbox.active {
+  display: flex;
+  opacity: 1;
+}
+
+.mermaid-lightbox-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(9, 13, 22, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.mermaid-lightbox-container {
+  position: relative;
+  z-index: 10;
+  width: 92vw;
+  max-width: 1300px;
+  height: 88vh;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl), 0 0 50px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleIn {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.mermaid-lightbox-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.25rem;
+  background: var(--bg-surface-elevated);
+  border-bottom: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.mermaid-lightbox-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.mermaid-lightbox-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lightbox-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.lightbox-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+.lightbox-btn--close {
+  margin-left: 0.5rem;
+  background: rgba(225, 29, 72, 0.08);
+  border-color: rgba(225, 29, 72, 0.2);
+  color: var(--accent-rose);
+}
+
+.lightbox-btn--close:hover {
+  background: var(--accent-rose);
+  color: #ffffff;
+  border-color: var(--accent-rose);
+}
+
+.lightbox-zoom-level {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 48px;
+  text-align: center;
+}
+
+.mermaid-lightbox-viewport {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--bg-page);
+  cursor: grab;
+}
+
+.mermaid-lightbox-viewport.dragging {
+  cursor: grabbing;
+}
+
+.mermaid-lightbox-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  transition: transform 0.08s ease-out;
+  padding: 2rem;
+}
+
+.mermaid-lightbox-content svg {
+  max-width: none !important;
+  max-height: none !important;
+  user-select: none;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+}
+
+.mermaid-lightbox-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  background: var(--bg-surface-elevated);
+  border-top: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.mermaid-lightbox-hint .hint-dot {
+  opacity: 0.4;
 }
 
 /* MathJax LaTeX container tweaks */
@@ -2371,4 +2586,5 @@ mjx-container[display="true"] {
   border-radius: var(--radius-md);
   text-align: center;
 }
+
 

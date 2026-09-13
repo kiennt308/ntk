@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     15. Mermaid Diagram Auto-Renderer & Dark Mode Sync
+     15. Mermaid Diagram Auto-Renderer & Interactive Zoom Lightbox
      ========================================================================== */
   function initMermaidDiagrams() {
     if (typeof mermaid === 'undefined') return;
@@ -676,8 +676,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = codeEl.closest('.highlighter-rouge') || codeEl.closest('pre') || codeEl;
 
         const mermaidWrapper = document.createElement('div');
-        mermaidWrapper.className = 'mermaid';
-        mermaidWrapper.textContent = rawContent.trim();
+        mermaidWrapper.className = 'mermaid-wrapper';
+
+        const mermaidInner = document.createElement('div');
+        mermaidInner.className = 'mermaid';
+        mermaidInner.textContent = rawContent.trim();
+
+        const zoomHint = document.createElement('button');
+        zoomHint.className = 'mermaid-zoom-btn';
+        zoomHint.type = 'button';
+        zoomHint.setAttribute('aria-label', 'Phóng to sơ đồ');
+        zoomHint.title = 'Bấm để phóng to và tương tác với sơ đồ';
+        zoomHint.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><span>Phóng to</span>';
+
+        mermaidWrapper.appendChild(mermaidInner);
+        mermaidWrapper.appendChild(zoomHint);
 
         if (container && container.parentNode) {
           container.parentNode.replaceChild(mermaidWrapper, container);
@@ -696,11 +709,199 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       try {
-        mermaid.run();
+        mermaid.run().then(() => {
+          attachMermaidLightbox();
+        });
       } catch (err) {
         console.warn('Mermaid rendering notice:', err);
       }
+    } else {
+      // If already rendered (e.g. static div.mermaid)
+      attachMermaidLightbox();
     }
+  }
+
+  // Lightbox implementation with Zoom, Pan, Mousewheel, and Keyboard controls
+  function attachMermaidLightbox() {
+    let lightbox = document.getElementById('mermaid-lightbox');
+    if (!lightbox) {
+      lightbox = document.createElement('div');
+      lightbox.id = 'mermaid-lightbox';
+      lightbox.className = 'mermaid-lightbox';
+      lightbox.setAttribute('aria-hidden', 'true');
+      lightbox.innerHTML = `
+        <div class="mermaid-lightbox-backdrop"></div>
+        <div class="mermaid-lightbox-container" role="dialog" aria-label="Sơ đồ tương tác">
+          <div class="mermaid-lightbox-toolbar">
+            <span class="mermaid-lightbox-title">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              <span>Interactive Architecture Viewer</span>
+            </span>
+            <div class="mermaid-lightbox-actions">
+              <button type="button" class="lightbox-btn" id="lightbox-zoom-out" title="Thu nhỏ (Ctrl + -)" aria-label="Zoom out">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+              </button>
+              <span class="lightbox-zoom-level" id="lightbox-zoom-level">100%</span>
+              <button type="button" class="lightbox-btn" id="lightbox-zoom-in" title="Phóng to (Ctrl + +)" aria-label="Zoom in">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+              </button>
+              <button type="button" class="lightbox-btn" id="lightbox-reset" title="Đặt lại kích thước (100%)" aria-label="Reset zoom">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              </button>
+              <button type="button" class="lightbox-btn lightbox-btn--close" id="lightbox-close" title="Đóng (ESC)" aria-label="Close">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
+          <div class="mermaid-lightbox-viewport" id="mermaid-lightbox-viewport">
+            <div class="mermaid-lightbox-content" id="mermaid-lightbox-content"></div>
+          </div>
+          <div class="mermaid-lightbox-hint">
+            <span>🖱️ Kéo chuột để di chuyển (Pan)</span>
+            <span class="hint-dot">•</span>
+            <span>🔍 Cuộn chuột để phóng to / thu nhỏ</span>
+            <span class="hint-dot">•</span>
+            <span>⌨️ Nhấn ESC để đóng</span>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(lightbox);
+
+      let scale = 1;
+      let panX = 0;
+      let panY = 0;
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+
+      const content = document.getElementById('mermaid-lightbox-content');
+      const viewport = document.getElementById('mermaid-lightbox-viewport');
+      const zoomLevelDisplay = document.getElementById('lightbox-zoom-level');
+      const backdrop = lightbox.querySelector('.mermaid-lightbox-backdrop');
+      const closeBtn = document.getElementById('lightbox-close');
+      const zoomInBtn = document.getElementById('lightbox-zoom-in');
+      const zoomOutBtn = document.getElementById('lightbox-zoom-out');
+      const resetBtn = document.getElementById('lightbox-reset');
+
+      function updateTransform() {
+        if (!content) return;
+        content.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+        if (zoomLevelDisplay) {
+          zoomLevelDisplay.textContent = `${Math.round(scale * 100)}%`;
+        }
+      }
+
+      function openModal(svgElement) {
+        if (!svgElement) return;
+        content.innerHTML = '';
+        const clonedSvg = svgElement.cloneNode(true);
+        clonedSvg.style.maxWidth = 'none';
+        clonedSvg.style.width = 'auto';
+        clonedSvg.style.height = 'auto';
+        content.appendChild(clonedSvg);
+
+        scale = 1.25;
+        panX = 0;
+        panY = 0;
+        updateTransform();
+
+        lightbox.classList.add('active');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        lightbox.classList.remove('active');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      backdrop.addEventListener('click', closeModal);
+      closeBtn.addEventListener('click', closeModal);
+
+      document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('active')) {
+          if (e.key === 'Escape') closeModal();
+          if (e.key === '+' || e.key === '=') {
+            scale = Math.min(5, scale + 0.25);
+            updateTransform();
+          }
+          if (e.key === '-' || e.key === '_') {
+            scale = Math.max(0.4, scale - 0.25);
+            updateTransform();
+          }
+          if (e.key === '0') {
+            scale = 1;
+            panX = 0;
+            panY = 0;
+            updateTransform();
+          }
+        }
+      });
+
+      zoomInBtn.addEventListener('click', () => {
+        scale = Math.min(5, scale + 0.25);
+        updateTransform();
+      });
+
+      zoomOutBtn.addEventListener('click', () => {
+        scale = Math.max(0.4, scale - 0.25);
+        updateTransform();
+      });
+
+      resetBtn.addEventListener('click', () => {
+        scale = 1;
+        panX = 0;
+        panY = 0;
+        updateTransform();
+      });
+
+      // Mousewheel Zoom
+      viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.15 : 0.15;
+        scale = Math.min(5, Math.max(0.4, scale + delta));
+        updateTransform();
+      }, { passive: false });
+
+      // Drag / Pan Interaction
+      viewport.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        isDragging = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        viewport.classList.add('dragging');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        updateTransform();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          viewport.classList.remove('dragging');
+        }
+      });
+
+      window._openMermaidLightbox = openModal;
+    }
+
+    const wrappers = document.querySelectorAll('.mermaid-wrapper, .mermaid');
+    wrappers.forEach((box) => {
+      const svg = box.querySelector('svg');
+      if (svg) {
+        box.style.cursor = 'zoom-in';
+        box.onclick = (e) => {
+          if (window._openMermaidLightbox) {
+            window._openMermaidLightbox(svg);
+          }
+        };
+      }
+    });
   }
 
   // Initial render

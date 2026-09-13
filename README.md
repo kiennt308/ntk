@@ -2,6 +2,7 @@
 
 A high-performance, print-optimized, and premium-themed personal blog and engineering portfolio website built using **Jekyll**. This template is tailor-made for DevOps, SRE, Systems, and Cloud engineers to showcase technical certifications, academic research, enterprise projects, and publish code-rich guides.
 
+
 ---
 
 ## Key Features

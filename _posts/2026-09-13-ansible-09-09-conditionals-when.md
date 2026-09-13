@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 09] Điều Khiển Luồng Với Conditionals (when): Phép So Sánh Logic, Kiểm Tra Trạng Thái Biến & Kỹ Thuật Bỏ Qua Task"
+title: "[Bài 09] Làm Chủ Điều Kiện & Rẽ Nhánh Logic: Mệnh Đề When, Jinja2 Tests & Gom Nhóm Block"
 date: 2026-09-13 05:30:00 +0700
 categories: [Ansible]
 tags:
@@ -12,17 +12,17 @@ tags:
   - Part-09
 series: "Ansible Automation Mastery"
 series_order: 9
-difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
-summary: "[Ansible P.09] Hướng dẫn chuyên sâu Điều Khiển Luồng Với Conditionals (when): Phép So Sánh Logic, Kiểm Tra Trạng Thái Biến & Kỹ Thuật Bỏ Qua Task: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+difficulty: Intermediate
+thumbnail: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80"
+summary: "[Ansible P.09] Hướng dẫn chuyên sâu Làm Chủ Điều Kiện & Rẽ Nhánh Logic: Mệnh Đề When, Jinja2 Tests & Gom Nhóm Block: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Điều Khiển Luồng Với Conditionals (when): Phép So Sánh Logic, Kiểm Tra Trạng Thái Biến & Kỹ Thuật Bỏ Qua Task."
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Làm Chủ Điều Kiện & Rẽ Nhánh Logic: Mệnh Đề When, Jinja2 Tests & Gom Nhóm Block."
   - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
   - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
 {% raw %}
-# [BÀI 09] ĐIỀU KHIỂN LUỒNG VỚI CONDITIONALS (WHEN): PHÉP SO SÁNH LOGIC, KIỂM TRA TRẠNG THÁI BIẾN & KỸ THUẬT BỎ QUA TASK
+# [BÀI 09] LÀM CHỦ ĐIỀU KIỆN & RẼ NHÁNH LOGIC: MỆNH ĐỀ WHEN, JINJA2 TESTS & GOM NHÓM BLOCK
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
 
@@ -32,488 +32,214 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
 
----
-
-
-
-
-
-
-
-> **Rẽ nhánh linh hoạt bằng when giúp 1 Playbook chạy đúng trên mọi hạ tầng mà không cần viết lại mã nguồn.**
-
-Tiếp nối bài toán thực tế của khóa học (I-10):
-
-> **Trong một hạ tầng thực tế gồm hàng trăm máy chủ với các hệ điều hành (Ubuntu, RedHat), môi trường (Dev, Prod), và thông số phần cứng khác nhau, một kịch bản tự động hóa không thể thực thi cùng một lệnh giống hệt nhau cho mọi máy. Mệnh đề `when` cùng các Jinja2 Tests mang lại khả năng rẽ nhánh thông minh cho Playbook. Task chỉ thực thi khi điều kiện thỏa mãn, và tự động bỏ qua (`skipped`) khi không thỏa mãn. Nhờ mệnh đề `when`, ta duy trì duy nhất 1 file Playbook chuẩn chạy an toàn trên 100% hạ tầng đa dạng mà vẫn đảm bảo tính Idempotency tuyệt đối (`changed=0`).**
-
----
-
-
-
----
-
-
-
----
-
-
-
-
-
-| Tiếng Việt | Tiếng Anh / Từ khóa + FQCN (giữ nguyên) |
-|---|---|
-| Mệnh đề điều kiện | Conditional statement (`when:`) |
-| Bộ kiểm tra Jinja2 | Jinja2 Tests (`is defined`, `is file`) |
-| Toán tử logic | Logical operators (`and`, `or`, `not`) |
-| Trạng thái bỏ qua | Task status `skipped` |
-| Kiểm tra biến đã định nghĩa | `is defined` / `is undefined` |
-| Kiểm tra thành công | `is succeeded` / `is success` |
-| Kiểm tra thất bại | `is failed` / `is failure` |
-| Kiểm tra tệp tin | `is file` / `is directory` |
-| Kiểm tra giá trị đúng | `is truthy` / `is falsy` |
-| Khối nhóm nhiệm vụ | Task block (`block:`) |
-| Danh sách điều kiện (hàm AND) | List of conditions under `when:` |
-| Biểu thức điều kiện Jinja2 | Jinja2 conditional expression |
-
----
-
-### 1.1. Mệnh đề `when` và Cú pháp Rẽ nhánh Cơ bản (15 phút)
+Một hệ thống hạ tầng sản xuất thực tế luôn chứa các máy chủ không đồng nhất (**Heterogeneous Infrastructure**): sự pha trộn giữa Red Hat Enterprise Linux, Ubuntu, Debian hay Alpine; sự chênh lệch cấu hình phần cứng giữa các node 4GB RAM và 64GB RAM; sự khác biệt giữa môi trường Dev, Staging và Production. Để viết một kịch bản tự động hóa duy nhất có khả năng thích ứng linh hoạt và an toàn trên toàn bộ hạ tầng này, **Ansible Conditionals (`when`)** đóng vai trò là động cơ rẽ nhánh logic thời gian thực.
 
 ```mermaid
 graph TD
-    A["Ansible Engine bắt đầu Task"] --> B{"Đánh giá Biểu thức Mệnh đề when:"}
-    B -->|"Kết quả = TRUE"| C["Thực thi Task trên Target Node"]
-    B -->|"Kết quả = FALSE"| D["Bỏ qua Task -> Status SKIPPED (changed=false)"]
+    A["Ansible Engine duyệt tới Task"] --> B{"Đánh giá biểu thức mệnh đề when"}
+    B -->|"Điều kiện TRUE"| C["Thực thi Task trên Máy đích"]
+    B -->|"Điều kiện FALSE"| D["Bỏ qua Task -> Báo SKIPPED (changed=0)"]
     
-    C --> E{"Task có thay đổi hệ thống?"}
-    E -->|"Có"| F["PLAY RECAP: changed=1"]
-    E -->|"Không"| G["PLAY RECAP: ok=1"]
-    
-    D --> H["PLAY RECAP: skipped=1, changed=0"]
+    C --> E["Đánh giá tiếp kết quả Task (ok / changed / failed)"]
+    D --> F["PLAY RECAP: skipped=N (Không tính lỗi)"]
+    E --> G["Tiến hành Task tiếp theo trong Playbook"]
+    F --> G
 
-    style A fill:none,stroke:#6366f1,stroke-width:2px
-    style B fill:none,stroke:#f59e0b,stroke-width:2px
-    style C fill:none,stroke:#10b981,stroke-width:2px
-    style D fill:none,stroke:#64748b,stroke-width:2px
-    style E fill:none,stroke:#f59e0b,stroke-width:2px
-    style F fill:none,stroke:#06b6d4,stroke-width:2px
-    style G fill:none,stroke:#10b981,stroke-width:2px
-    style H fill:none,stroke:#64748b,stroke-width:2px
+    style A fill:none
+    style B fill:none
+    style C fill:none
+    style D fill:none
+    style E fill:none
+    style F fill:none
+    style G fill:none
 ```
 
-**Nguyên lý cốt lõi:** Mệnh đề `when:` đặt ở cấp độ Task chấp nhận một biểu thức logic Jinja2 để quyết định Task đó CÓ ĐƯỢC THỰC THI HAY KHÔNG trên từng host cụ thể.
+### 1.1. Mệnh Đề When & Biểu Thức Đánh Giá Jinja2 Không Dùng Ngoặc Nhọn
 
-**Giải thích cơ chế ngầm:** Sự phân tách logic này giúp 1 Playbook hoạt động linh hoạt: máy đích thuộc nhóm RedHat chỉ chạy task cài `httpd`, máy đích thuộc nhóm Debian chỉ chạy task cài `nginx`, loại bỏ hoàn toàn nhu cầu phải viết nhiều Playbook riêng lẻ.
+- **Bản chất biểu thức Jinja2 nguyên thủy:** Mệnh đề `when:` mặc định được đặt bên trong một môi trường đánh giá biểu thức Jinja2 thô. Do đó, khi gọi tên biến bên trong `when:`, **TUYỆT ĐỐI KHÔNG ĐƯỢC DÙNG CẶP NGOẶC NHỌN `{{ }}`** (ví dụ viết đúng: `when: ansible_facts.os_family == "RedHat"`). Việc đặt `{{ }}` bên trong `when` là lỗi cú pháp nghiêm trọng và bị trình biên dịch Ansible cảnh báo hoặc văng lỗi.
+- **Biểu thức chuỗi, số và luận lý (Boolean):** Mệnh đề `when` hỗ trợ đầy đủ các toán tử so sánh (`==`, `!=`, `>`, `<`, `>=`, `<=`), toán tử logic (`and`, `or`, `not`), toán tử thành viên (`in`, `not in`).
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Task thực thi tràn lan trên mọi host gây lỗi `package not found` do cố cài gói `httpd` trên hệ điều hành Ubuntu.
+### 1.2. Hệ Thống Jinja2 Tests & Các Toán Tử Logic (AND / OR / NOT)
 
-**Minh hoạ.** Rẽ nhánh cài đặt gói theo họ hệ điều hành:
-```yaml
-- name: Install Nginx on Debian family
-  ansible.builtin.package:
-    name: nginx
-    state: present
-  when: ansible_facts.os_family == "Debian"
+Ansible cung cấp bộ kiểm tra **Jinja2 Tests** mạnh mẽ thông qua từ khóa `is` / `is not`:
+- **Kiểm tra tồn tại biến:** `when: my_var is defined` hoặc `when: my_var is not defined` (ngăn ngừa 100% lỗi crash kịch bản do biến chưa khai báo).
+- **Kiểm tra kiểu dữ liệu & giá trị rỗng:** `when: my_list is iterable`, `when: app_path is directory`, `when: env_var is none`.
+- **Kiểm tra kết quả Task trước (`register`):** `when: task_result is failed`, `when: task_result is success`, `when: task_result is changed`.
+- **Biểu thức Đa điều kiện dạng Danh sách (Implicit AND):** Khi truyền danh sách mảng YAML cho `when:`, Ansible tự động áp dụng toán tử logic `AND` cho tất cả các phần tử. Toàn bộ điều kiện phải đúng thì task mới được chạy:
+  ```yaml
+  when:
+    - ansible_facts.os_family == "Debian"
+    - ansible_facts.memtotal_mb >= 2048
+    - app_env is defined
+  ```
 
-- name: Install Httpd on RedHat family
-  ansible.builtin.package:
-    name: httpd
-    state: present
-  when: ansible_facts.os_family == "RedHat"
-```
+### 1.3. Gom Nhóm Rẽ Nhánh Khối Block & Đọc Hiểu Trạng Thái Skipped
 
-**Nguyên lý cốt lõi:** Tuyệt đối KHÔNG bọc cặp dấu ngoặc nhọn Jinja2 `{{ }}` bên trong biểu thức của mệnh đề `when:` ngoại trừ các trường hợp bọc toàn bộ chuỗi ngoài cùng.
-
-**Giải thích cơ chế ngầm:** Bản chất từ khóa `when:` đã tự động được Ansible Engine xử lý như một môi trường biểu thức Jinja2 thô. Việc chèn thêm `{{ }}` bên trong biểu thức `when:` sẽ gây ra lỗi cú pháp parse hoặc cảnh báo deprecation warning nghiêm trọng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> **Lệnh:** `ansible-playbook site.yml` · **Output phải thấy:** `[WARNING]: Bare variable in conditional was discovered` hoặc lỗi syntax khi viết `when: "{{ my_var == 'yes' }}"`.
-
-**Minh hoạ.** Cách viết ĐÚNG và SAI trong mệnh đề `when`:
-```yaml
-# SAI (Chứa {{ }} bên trong when)
-when: "{{ ansible_facts.os_family }}" == "RedHat"
-
-# ĐÚNG (Viết biểu thức Jinja2 thô không chứa {{ }})
-when: ansible_facts.os_family == "RedHat"
-```
-
-**Nguyên lý cốt lõi:** Kết hợp nhiều điều kiện rẽ nhánh bằng toán tử `and`, `or`, `not` hoặc biểu diễn hàm `AND` bằng cách truyền một danh sách (List) các điều kiện bên dưới từ khóa `when:`.
-
-**Giải thích cơ chế ngầm:** Biểu diễn hàm `AND` dưới dạng danh sách YAML giúp câu lệnh rõ ràng, dễ đọc, dễ quản lý hơn nhiều so với việc viết một câu lệnh `and` dài ngoẵng trên cùng một dòng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Viết câu lệnh điều kiện quá dài trên 1 dòng gây khó đọc và dễ nhầm lẫn thứ tự ưu tiên của toán tử `and` / `or`.
-
-**Minh hoạ.** Hai cách biểu diễn phép toán AND đa điều kiện:
-```yaml
-# Cách 1: Viết danh sách List (Tương đương hàm AND - KHUYẾN KHÍCH)
-when:
-  - ansible_facts.os_family == "RedHat"
-  - ansible_facts.distribution_major_version == "9"
-  - app_environment == "production"
-
-# Cách 2: Viết toán tử logic or / not trên 1 dòng
-when: (ansible_facts.os_family == "RedHat" or ansible_facts.os_family == "Debian") and not is_testing
-```
+- **Gom nhóm khối với `block`:** Khi cần áp dụng cùng một điều kiện `when:` cho một chuỗi 5-10 Task liên tiếp, thay vì lặp lại dòng `when:` ở từng task, ta gom các task đó vào một thẻ `block:`. Mệnh đề `when` khai báo ở cấp độ `block:` sẽ tự động kế thừa và áp đặt xuống toàn bộ các task con bên trong.
+- **Trạng thái `SKIPPED` trong PLAY RECAP:** Khi điều kiện `when` đánh giá là `false`, Ansible ghi nhận task ở trạng thái `skipping: [host]` và tăng chỉ số `skipped` trong bảng `PLAY RECAP`. Trạng thái `skipped` là một hành vi hoàn toàn bình thường theo thiết kế logic, **không bị coi là lỗi** và không làm gián đoạn Playbook.
 
 ---
 
-### 1.2. Các Bộ kiểm tra Jinja2 (Jinja2 Tests) Phổ biến (15 phút)
+## 2. Bảng So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-**Nguyên lý cốt lõi:** Sử dụng Jinja2 Tests `is defined` (hoặc `is undefined`) để kiểm tra xem một biến đã được khai báo hay chưa trước khi truy xuất giá trị của nó.
+| Kỹ Thuật Rẽ Nhánh | Cú Pháp Khai Báo | Hành Vi Logic | Tối Ưu Hiệu Năng | Trường Hợp Sử Dụng Chuẩn Production |
+|---|---|---|---|---|
+| **Điều Kiện Đơn Lẻ** | `when: var_name == "value"` | So sánh biểu thức đơn | Rất nhanh | Kiểm tra OS distribution, môi trường `prod`/`dev` |
+| **Danh Sách Mảng (AND)** | `when:` danh sách YAML `- cond1` `- cond2` | **Toàn bộ** điều kiện phải đúng | Tối ưu, dễ đọc | Kết hợp kiểm tra OS + Đủ RAM + Biến tồn tại |
+| **Toán Tử `or`** | `when: cond1 or cond2` | **Chỉ cần một** điều kiện đúng | Nhanh | Áp dụng cấu hình cho cả Ubuntu hoặc Debian |
+| **Jinja2 Test `is defined`** | `when: custom_var is defined` | Kiểm tra biến có tồn tại không | Rất nhanh, an toàn | Bảo vệ các Task sử dụng biến tùy chọn (optional vars) |
+| **Khối `block` + `when`** | `block: [...] when: condition` | Áp dụng chung cho cả chuỗi task | Giảm lặp code, rõ ràng | Cài đặt toàn bộ một ứng dụng theo OS tương ứng |
 
-**Giải thích cơ chế ngầm:** Truy vấn một biến chưa từng được khai báo ở bất kỳ tầng nào sẽ khiến Ansible ném lỗi `fatal: undefined variable` và dừng toàn bộ Playbook. Dùng `is defined` giúp kiểm tra sự tồn tại an toàn trước khi đọc.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> **Lệnh:** `ansible-playbook site.yml` · **Output phải thấy:** `fatal: [target1]: FAILED! => {"msg": "'custom_port' is undefined"}` do không bọc điều kiện `when: custom_port is defined`.
-
-**Minh hoạ.** Kiểm tra biến tồn tại trước khi áp dụng cấu hình:
-```yaml
-- name: Apply custom port if variable is defined
-  ansible.builtin.lineinfile:
-    path: /etc/app.conf
-    line: "PORT={{ custom_port }}"
-  when: custom_port is defined
-```
-
-**Nguyên lý cốt lõi:** Đánh giá kết quả thực thi của Task trước qua các Jinja2 Tests: `is succeeded` (thành công), `is failed` (thất bại), `is skipped` (bị bỏ qua), hoặc `is changed` (có thay đổi).
-
-**Giải thích cơ chế ngầm:** Khi kết hợp với biến đăng ký `register`, các test này giúp xây dựng luồng xử lý phục hồi lỗi (Error Handling / Recovery flow) - chỉ chạy Task khắc phục khi Task trước bị thất bại (`is failed`).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Viết `when: result_var.rc == 0` nhưng không xử lý trường hợp task trước bị văng exception khiến biến đăng ký bị thiếu thuộc tính `rc`.
-
-**Minh hoạ.** Chạy task cứu hộ khi task chính bị thất bại:
-```yaml
-- name: Attempt primary backup command
-  ansible.builtin.command: /usr/bin/primary-backup.sh
-  register: backup_res
-  ignore_errors: true
-
-- name: Run fallback backup script if primary failed
-  ansible.builtin.command: /usr/bin/fallback-backup.sh
-  when: backup_res is failed
-```
-
-**Nguyên lý cốt lõi:** Sử dụng các Jinja2 File Tests (`is file`, `is directory`, `is mount`) để kiểm tra trạng thái thực tế của tệp tin hoặc thư mục trên máy đích.
-
-**Giải thích cơ chế ngầm:** Cho phép Playbook đưa ra quyết định rẽ nhánh dựa trên trạng thái của hệ thống đĩa cứng (ví dụ: chỉ chép file cấu hình mới nếu thư mục cấu hình `/etc/app.d/` ĐANG LÀ THƯ MỤC).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Gõ lệnh chép file vào một đường dẫn không tồn tại làm task bị văng lỗi đứt gãy.
-
-**Minh hoạ.** Kiểm tra đường dẫn có phải là thư mục trước khi thao tác:
-```yaml
-- name: Deploy config only if target path is a directory
-  ansible.builtin.copy:
-    src: app.conf
-    dest: /etc/my-app/app.conf
-  when: "'/etc/my-app' is directory"
-```
+> [!IMPORTANT]
+> **NGUYÊN TẮC VÀNG VỀ BIẾN TRONG WHEN:**
+> Luôn sử dụng bộ kiểm tra `is defined` trước khi truy vấn các thuộc tính con của một biến tùy chọn (ví dụ: `when: app_config is defined and app_config.port == 8080`) để loại trừ hoàn toàn nguy cơ sập Playbook do lỗi `UndefinedVariableError`.
 
 ---
 
-### 1.3. Khối Task (Block) và Quản lý Trạng thái Skipped (10 phút)
+## 3. Kiến Trúc Triển Khai Chuẩn Production (Configuration / Playbook / Role Breakdown)
 
-**Nguyên lý cốt lõi:** Nhóm các Task có cùng điều kiện rẽ nhánh vào trong một khối `block:` và gắn thuộc tính `when:` một lần duy nhất ở cấp độ Block.
+Dưới đây là Playbook mẫu triển khai phần mềm tối ưu cho hạ tầng đa hệ điều hành (Ubuntu/Debian vs RHEL/CentOS) kết hợp rẽ nhánh theo dung lượng RAM và kiểm tra biến đăng ký:
 
-**Giải thích cơ chế ngầm:** Thay vì phải lặp lại thuộc tính `when: ansible_facts.os_family == "RedHat"` ở 10 Task riêng lẻ, gom chúng vào 1 `block:` giúp mã nguồn ngắn gọn, dễ đọc và loại bỏ lặp lại mã (DRY principle).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Sao chép thuộc tính `when:` trùng lặp ở 20 Task liên tiếp trong file Playbook.
-
-**Minh hoạ.** Gom nhóm Task theo hệ điều hành bằng Block:
 ```yaml
-- name: RedHat Family Configuration Block
-  block:
-    - name: Install Httpd
-      ansible.builtin.package:
-        name: httpd
-        state: present
+# site-conditionals-mastery.yml
+---
+- name: Cross-Platform Heterogeneous Provisioning
+  hosts: web
+  become: true
+  gather_facts: true
 
-    - name: Copy Httpd Config
+  vars:
+    required_min_ram_mb: 1024
+    custom_app_enabled: true
+
+  tasks:
+    - name: 01. Assert target node meets minimum hardware requirements
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.memtotal_mb >= required_min_ram_mb
+        fail_msg: "Node {{ inventory_hostname }} has insufficient RAM ({{ ansible_facts.memtotal_mb }} MB)!"
+
+    - name: 02. Provision Debian/Ubuntu web tier components
+      when: ansible_facts.os_family == "Debian"
+      block:
+        - name: Debian - Install Nginx package
+          ansible.builtin.package:
+            name: nginx
+            state: present
+
+        - name: Debian - Ensure web configuration exists
+          ansible.builtin.copy:
+            dest: /etc/nginx/sites-available/default
+            content: "server { listen 80; server_name localhost; }\n"
+            mode: "0644"
+            backup: true
+
+    - name: 03. Provision RedHat/CentOS web tier components
+      when: ansible_facts.os_family == "RedHat"
+      block:
+        - name: RedHat - Install Apache HTTPD package
+          ansible.builtin.package:
+            name: httpd
+            state: present
+
+        - name: RedHat - Ensure web configuration exists
+          ansible.builtin.copy:
+            dest: /etc/httpd/conf.d/vhost.conf
+            content: "Listen 80\n<VirtualHost *:80></VirtualHost>\n"
+            mode: "0644"
+            backup: true
+
+    - name: 04. Check disk free space on root filesystem
+      ansible.builtin.command: df -h /
+      register: disk_info
+      changed_when: false
+
+    - name: 05. Deploy optional high-memory tuning profile
       ansible.builtin.copy:
-        src: httpd.conf
-        dest: /etc/httpd/conf/httpd.conf
-
-    - name: Start Httpd Service
-      ansible.builtin.service:
-        name: httpd
-        state: started
-  when: ansible_facts.os_family == "RedHat"
+        dest: /etc/tuning_profile.conf
+        content: |
+          TUNING_PROFILE=HIGH_PERFORMANCE
+          MEM_TOTAL={{ ansible_facts.memtotal_mb }}
+        mode: "0644"
+        backup: true
+      when:
+        - ansible_facts.memtotal_mb > 2048
+        - custom_app_enabled is defined
+        - custom_app_enabled | bool
 ```
 
-**Nguyên lý cốt lõi:** Đảm bảo rằng việc một Task bị đánh dấu trạng thái `skipped` do điều kiện `when` đánh giá FALSE là kết quả dự kiến và KHÔNG làm ảnh hưởng đến tính Idempotency ở lượt chạy thứ hai.
-
-**Giải thích cơ chế ngầm:** Trạng thái `skipped` chỉ đơn giản là Ansible thông báo: "Task này không thỏa mãn điều kiện nên tôi bỏ qua không đụng vào hệ thống". Bảng `PLAY RECAP` báo `skipped=N, changed=0` là hoàn toàn chính xác và an toàn.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc tại sao lượt chạy Lần 2 bảng RECAP báo `skipped=2` mà lại cho rằng Playbook bị lỗi.
-
-**Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` có chứa chỉ số `skipped`:
-```bash
-# Lần 1: changed=1, skipped=1 (1 task thực thi, 1 task rẽ nhánh bị bỏ qua)
-target1 : ok=2 changed=1 unreachable=0 failed=0 skipped=1
-
-# Lần 2: changed=0, skipped=1 (Mọi thứ giữ nguyên, task rẽ nhánh vẫn bị bỏ qua -> ĐẠT IDEMPOTENT)
-target1 : ok=2 changed=0 unreachable=0 failed=0 skipped=1
-```
-
-**Nguyên lý cốt lõi:** Cảnh giác với lỗi kết hợp giữa biến `register` và mệnh đề `when` trên Task bị `skipped`: Biến `register` của một Task bị skipped vẫn tồn tại nhưng thuộc tính `stdout` hay `rc` sẽ không được tạo ra.
-
-**Giải thích cơ chế ngầm:** Khi Task A bị `skipped`, Ansible vẫn tạo biến `register` nhưng chỉ gán thuộc tính `skipped: true`. Nếu Task B đằng sau đọc `register_var.stdout` mà không kiểm tra `is succeeded`, Playbook sẽ bị crash ngay lập tức.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Task B báo lỗi `fatal: [target1]: FAILED! => {"msg": "'register_var.stdout' is undefined"}` do Task A bị skipped ở bước trước.
-
-**Minh hoạ.** Kiểm tra task trước không bị skipped bằng `is succeeded` trước khi đọc stdout:
-```yaml
-- name: Task A - Conditional Command
-  ansible.builtin.command: date
-  register: task_a_res
-  when: run_step_a | default(false)
-
-- name: Task B - Read output of Task A safely
-  ansible.builtin.debug:
-    msg: "Task A output: {{ task_a_res.stdout }}"
-  when: task_a_res is succeeded
-```
+### Phân Tích Kỹ Thuật Từng Dòng (Line-by-Line Breakdown):
+- <span class="badge-line">Line 12–17</span>: Sử dụng module `assert` với mệnh đề `that:` để kiểm định điều kiện tiên quyết về phần cứng, lập tức dừng kịch bản nếu máy đích không đủ RAM tối thiểu.
+- <span class="badge-line">Line 19–32</span>: Gom nhóm các task cấu hình Debian/Ubuntu vào khối `block:` duy nhất có gắn `when: ansible_facts.os_family == "Debian"`. Các máy thuộc họ RedHat sẽ tự động bỏ qua toàn bộ khối này (`skipped`).
+- <span class="badge-line">Line 34–47</span>: Khối `block:` tương ứng dành riêng cho họ `RedHat`, đảm bảo tính độc lập và sạch sẽ trong tổ chức mã nguồn.
+- <span class="badge-line">Line 49–52</span>: Module `command` đọc dung lượng đĩa và gán kết quả vào biến Host Scope `disk_info` với `changed_when: false`.
+- <span class="badge-line">Line 54–66</span>: Áp dụng đa điều kiện `AND` dạng danh sách cho task chép file tối ưu: vừa yêu cầu RAM > 2GB, vừa yêu cầu biến `custom_app_enabled` tồn tại và mang giá trị `true` (dùng filter `| bool`).
 
 ---
 
-### 1.4. Đưa vào việc thật (4 phút)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Sử Dụng Nhầm Cặp Dấu Ngoặc Nhọn Trong When & Bỏ Qua Biến Undefined
 
-### 7.1. Áp dụng vào hạ tầng sẵn có
-Khi triển khai ứng dụng trên hạ tầng có cả server ảo hóa (VM) và server vật lý (Bare-metal):
-- Sử dụng `when: ansible_facts.virtualization_role == "guest"` để chỉ chỉnh sửa các tham số tối ưu kernel dành riêng cho máy ảo.
-- Sử dụng `when: app_env == "production" and (ansible_facts.memtotal_mb > 16000)` để tự động tăng số lượng worker process cho các máy Production dung lượng RAM lớn.
+### Tình Huống Sự Cố Thực Tế Tại Doanh Nghiệp:
+Trong một kịch bản cập nhật hệ điều hành tự động cho 500 máy chủ, một kỹ sư viết điều kiện: `when: "{{ is_production }} == true"`. Đồng thời ở một task khác, kỹ sư truy vấn `when: app_config.ssl_enabled == true` nhưng không kiểm tra biến `app_config is defined`.
 
-### 7.2. Rủi ro hỏng hóc khi triển khai Production và giải pháp an toàn
-- **Rủi ro:** Viết sai biểu thức điều kiện `when: env != "prod"` (dùng dấu `!=` nhầm lẫn) khiến toàn bộ các task dọn dẹp dữ liệu thử nghiệm bị chạy nhầm trực tiếp trên máy Production.
-- **Giải pháp an toàn:**
-  1. Luôn sử dụng cờ mô phỏng `ansible-playbook --check --diff` để soi chi tiết các Task sẽ bị `skipped` hoặc thực thi trước khi bấm chạy thật.
-  2. Bắt buộc viết các câu lệnh điều kiện theo hướng khẳng định an toàn (`when: env == "dev"`).
+### Hậu Quả & Log Lỗi Thực Tế:
+- Trình phân giải Jinja2 nội suy chuỗi `{{ is_production }}` thành chuỗi `"true" == true` (so sánh chuỗi với boolean), làm cho điều kiện luôn đánh giá SAI trên môi trường Production, khiến toàn bộ các bản vá bảo mật khẩn cấp bị `skipped` mà không ai biết.
+- Trên các máy chủ mới chưa có cấu hình `app_config`, task bị crash với lỗi nghiêm trọng: `fatal: [target1]: FAILED! => {"msg": "'app_config' is undefined"}` làm dừng toàn bộ đợt cập nhật giữa chừng.
 
-### 7.3. Đo lường chỉ số Trước – Sau khi áp dụng
-- **Trước khi dùng mệnh đề `when`:** Phải duy trì 5 file Playbook riêng biệt cho 5 dòng OS/môi trường khác nhau (2500 dòng mã nguồn).
-- **Sau khi dùng mệnh đề `when`:** Gom lại duy nhất 1 file Playbook thông minh (300 dòng mã nguồn), giảm 88% lượng mã lặp lại.
+```diff
+--- site.yml (Broken Conditionals)
++++ site.yml (Standard Safe Conditionals)
+@@ -1,6 +1,6 @@
+-- name: Deploy Security Patch
+-  when: "{{ is_production }} == true" # Lỗi: Dùng dấu ngoặc nhọn trong when
++- name: Deploy Security Patch
++  when: is_production | bool          # Sửa: Truyền biến trực tiếp kèm filter bool
 
-### 7.4. Khi nào KHÔNG nên dùng hoặc không nên lạm dụng mệnh đề when
-- **Không lạm dụng `when` để viết hàng trăm câu lệnh rẽ nhánh phức tạp trong 1 Playbook khổng lồ:** Khi số lượng điều kiện rẽ nhánh quá lớn (ví dụ rẽ nhánh cho 10 dòng Linux khác nhau), việc lạm dụng `when` làm file Playbook rườm rà. **Hãy chuyển sang dùng `include_tasks` / `import_tasks` kết hợp biến `{{ ansible_facts.os_family }}.yml`** (sẽ học ở Buổi 14).
-
----
-
-### 1.5. Bẫy hay gặp (2 phút)
-
-| # | Bẫy hay gặp | Vì sao "recap xanh mà sai / không idempotent" | Lệnh phát hiện và xử lý |
-|---|---|---|---|
-| 1 | Bọc cặp ngoặc nhọn `{{ }}` trong biểu thức `when` | Ansible phát cảnh báo bare variable hoặc parse sai logic so sánh chuỗi. | Xóa cặp ngoặc nhọn `{{ }}` bên trong từ khóa `when:`. |
-| 2 | Truy xuất biến chưa định nghĩa mà không dùng `is defined` | Playbook bị ngắt thi hành với lỗi `fatal: undefined variable`. | Thêm điều kiện kiểm tra `when: my_var is defined`. |
-| 3 | Nhầm lẫn giữa toán tử bằng `==` và toán tử gán `=` | Viết `when: os = "RedHat"` gây lỗi syntax không hợp lệ trong Python/Jinja2. | Sửa lại thành toán tử so sánh bằng 2 dấu `==` (`when: os == "RedHat"`). |
-| 4 | Đọc `register.stdout` của một Task vừa bị `skipped` | Task bị skipped không có thuộc tính `stdout` làm task đằng sau bị văng exception. | Bổ sung điều kiện `when: my_reg is succeeded` trước khi truy xuất `stdout`. |
-| 5 | Quên bọc ngoặc đơn khi kết hợp toán tử `and` và `or` | Thứ tự ưu tiên toán tử bị sai khiến logic rẽ nhánh chạy nhầm trường hợp. | Bọc ngoặc đơn nhóm điều kiện rõ ràng: `when: (cond1 or cond2) and cond3`. |
-| 6 | So sánh số nguyên dưới dạng chuỗi string | So sánh `when: ram_size > "1024"` làm phép so sánh chuỗi bị sai bản chất số. | Ép kiểu số nguyên trong Jinja2: `when: ram_size | int > 1024`. |
-| 7 | Nhầm lẫn giữa `when: var` và `when: var is defined` | Nếu `var: false`, mệnh đề `when: var` sẽ đánh giá FALSE mặc dù biến ĐÃ ĐƯỢC ĐỊNH NGHĨA. | Phân biệt: dùng `is defined` kiểm tra tồn tại, dùng `is truthy` kiểm tra giá trị đúng. |
-| 8 | Viết sai tên thuộc tính Jinja2 Test (`is success` vs `is succeeded`) | Ansible hỗ trợ cả 2 nhưng gõ sai thành `is successful` sẽ bị lỗi. | Dùng chuẩn từ khóa `is succeeded` hoặc `is failed`. |
-| 9 | Đặt mệnh đề `when` ở sai cấp độ thụt lề YAML | Đặt `when:` thụt lề bên trong thuộc tính module khiến Ansible không nhận diện được. | Đưa từ khóa `when:` nằm cùng cấp thụt lề với thuộc tính `name:` của Task. |
-| 10 | Không kiểm tra cờ `--check` với các task rẽ nhánh theo `register` | Chế độ check mode không thực thi task trước nên biến register bị thiếu làm task sau bị skipped nhầm. | Khai báo `ignore_errors: true` hoặc kiểm tra logic check mode hợp lý. |
-| 11 | So sánh phân biệt chữ hoa chữ thường (Case-sensitive) | So sánh `when: os == "redhat"` bị FALSE vì giá trị thực tế trong facts là `"RedHat"`. | Sử dụng Jinja2 filter chuyển chữ thường: `when: os | lower == "redhat"`. |
-| 12 | Thắc mắc chỉ số `skipped` tăng lên ở lượt chạy Lần 2 | Lầm tưởng chỉ số `skipped` tăng ở lượt 2 là lỗi Playbook không đạt Idempotent. | Hiểu đúng: `skipped` là rẽ nhánh hợp lệ, miễn `changed=0` ở Lần 2 là đạt Idempotency. |
-
----
-
-### 1.6. Tóm tắt (1 phút)
+-- name: Enable SSL VirtualHost
+-  when: app_config.ssl_enabled == true # Lỗi: Không kiểm tra biến tồn tại
++- name: Enable SSL VirtualHost
++  when: app_config is defined and app_config.ssl_enabled | default(false) # Sửa: An toàn
+```
 
 ```mermaid
 flowchart TD
-    A["Ansible Đánh giá Task"] --> B{"Mệnh đề when: thỏa mãn?"}
-    B -->|"FALSE"| C["Bỏ qua Task -> Status SKIPPED (PLAY RECAP skipped+1)"]
-    B -->|"TRUE"| D["Thực thi Task trên Máy đích"]
-    
-    D --> E{"Task có làm thay đổi máy đích?"}
-    E -->|"Có"| F["Báo CHANGED (Lần 1)"]
-    E -->|"Không"| G["Báo OK (Lần 2)"]
-    
-    C & F & G --> H["CHẠY THỬ LẦN 2"]
-    H --> I{"PLAY RECAP Lần 2: changed=0?"}
-    I -->|"Có"| J["ĐẠT: Playbook rẽ nhánh chuẩn Idempotent"]
-    I -->|"Không"| K["LỖI: Cần kiểm tra lại Task"]
+    A["Viết when: '{{ is_prod }} == true'"] --> B["Nội suy sai kiểu dữ liệu String vs Boolean"]
+    B --> C["Điều kiện luôn đánh giá SAI"]
+    C --> D["Toàn bộ bản vá bảo mật bị SKIPPED"]
+    D --> E["Lỗ hổng bảo mật không được vá"]
+    E --> F["Hệ thống bị tấn công khai thác lỗ hổng"]
 
-    style A fill:none,stroke:#6366f1,stroke-width:2px
-    style B fill:none,stroke:#f59e0b,stroke-width:2px
-    style C fill:none,stroke:#64748b,stroke-width:2px
-    style D fill:none,stroke:#10b981,stroke-width:2px
-    style E fill:none,stroke:#f59e0b,stroke-width:2px
-    style F fill:none,stroke:#06b6d4,stroke-width:2px
-    style G fill:none,stroke:#10b981,stroke-width:2px
-    style H fill:none,stroke:#8b5cf6,stroke-width:2px
-    style I fill:none,stroke:#f59e0b,stroke-width:2px
-    style J fill:none,stroke:#10b981,stroke-width:2px
-    style K fill:none,stroke:#ef4444,stroke-width:2px
+    style A fill:none
+    style B fill:none
+    style C fill:none
+    style D fill:none
+    style E fill:none
+    style F fill:none
 ```
 
-### Năm điều phải nhớ
-1. **KHÔNG bọc `{{ }}` trong `when`:** Viết trực tiếp biểu thức Jinja2 (ví dụ `when: var == 'val'`).
-2. **Dùng list cho hàm AND:** Khai báo danh sách các dòng bên dưới `when:` tương đương với phép toán `AND`.
-3. **An toàn với `is defined`:** Luôn kiểm tra `when: var is defined` trước khi đọc biến tùy chọn.
-4. **Tránh đọc stdout của Task skipped:** Kiểm tra `when: reg_var is succeeded` trước khi truy xuất `stdout`.
-5. **Skipped không mất Idempotency:** Bảng `PLAY RECAP` Lần 2 báo `skipped=N, changed=0` vẫn đạt Idempotency 100%.
+### 5-Whys Root Cause Analysis:
+1. **Tại sao máy chủ Production không được vá bảo mật?** Do Task cài đặt bản vá bị bỏ qua (`skipped`) trong quá trình chạy.
+2. **Tại sao Task bị skipped trên Production?** Do mệnh đề `when` đánh giá ra kết quả `false`.
+3. **Tại sao biểu thức when đánh giá ra false?** Do kỹ sư dùng cặp ngoặc nhọn `{{ }}` khiến Jinja2 ép kiểu thành chuỗi văn bản `"true"` thay vì boolean nguyên thủy `true`.
+4. **Tại sao lỗi logic không được phát hiện trước?** Do kịch bản chỉ kiểm tra cú pháp YAML tĩnh (`--syntax-check`) mà không có bước kiểm thử bảng rẽ nhánh logic trên Staging.
+5. **Nguyên nhân cốt lõi (Root Cause):** Vi phạm quy chuẩn lập trình Ansible (dùng `{{ }}` trong `when`) và thiếu bộ kiểm tra `is defined` bảo vệ biến.
 
 ---
 
-### 1.7. Câu hỏi tự kiểm tra (kiêm luyện RHCE EX294)
+## 5. Hands-on Lab: Xây Dựng Kịch Bản Rẽ Nhánh Logic Đa Nền Tảng Chuẩn Enterprise (8 Bước)
 
-1. **[RHCE EX294 Objective #8]** Mệnh đề nào trong Ansible Playbook được sử dụng để quyết định một Task có được thực thi hay không dựa trên điều kiện?
-   - *Đáp án:* Mệnh đề `when:`.
-2. **[RHCE EX294 Objective #8]** Tại sao viết `when: "{{ ansible_facts.os_family == 'RedHat' }}"` lại bị coi là sai cú pháp chuẩn?
-   - *Đáp án:* Vì bản thân từ khóa `when:` đã tự động xử lý môi trường biểu thức Jinja2 thô, chèn cặp `{{ }}` bên trong sẽ gây lỗi parse syntax hoặc cảnh báo bare variable.
-3. **[RHCE EX294 Objective #8]** Viết một mệnh đề `when` sử dụng dạng danh sách (List) để kiểm tra 2 điều kiện: `os_family` là `RedHat` VÀ `memtotal_mb` lớn hơn `2048`.
-   - *Đáp án:*
-     ```yaml
-     when:
-       - ansible_facts.os_family == "RedHat"
-       - ansible_facts.memtotal_mb | int > 2048
-     ```
-4. **[RHCE EX294 Objective #8]** Jinja2 Test nào dùng để kiểm tra xem một biến tên `custom_setting` đã được khai báo hay chưa?
-   - *Đáp án:* Jinja2 Test `is defined` (ví dụ `when: custom_setting is defined`).
-5. **[RHCE EX294 Objective #8]** Làm thế nào để chỉ cho phép một Task cứu hộ thực thi khi biến đăng ký `backup_result` của task trước báo trạng thái thất bại?
-   - *Đáp án:* Khai báo điều kiện `when: backup_result is failed` (hoặc `backup_result is failure`).
-6. **[RHCE EX294 Objective #8]** Jinja2 File Test nào dùng để kiểm tra một đường dẫn `/etc/app.conf` có tồn tại và đúng là một tệp tin trên máy đích?
-   - *Đáp án:* Test `is file` (ví dụ `when: "'/etc/app.conf' is file"`).
-7. **[RHCE EX294 Objective #8]** Khi một Task bị đánh dấu trạng thái `skipped` trong quá trình chạy, chỉ số nào trong bảng `PLAY RECAP` sẽ tăng lên?
-   - *Đáp án:* Chỉ số `skipped` sẽ tăng lên 1 đơn vị.
-8. **[RHCE EX294 Objective #8]** Chỉ số `skipped=3, changed=0` trong bảng `PLAY RECAP` ở lượt chạy Lần 2 có được coi là đạt tiêu chuẩn Idempotency không?
-   - *Đáp án:* Có, hoàn toàn đạt chuẩn Idempotency vì chỉ số `changed=0` chứng minh không có bất kỳ thay đổi thừa nào được tạo ra trên đĩa cứng.
-9. **[RHCE EX294 Objective #8]** Từ khóa nào cho phép nhóm nhiều Task có cùng điều kiện `when` vào một khối duy nhất?
-   - *Đáp án:* Từ khóa `block:`.
-10. **[RHCE EX294 Objective #8]** Viết mệnh đề `when` kết hợp toán tử `or` và `not` để Task chạy khi `os_family` là `Debian` HOẶC `RedHat`, nhưng KHÔNG NẰM TRONG môi trường `production`.
-    - *Đáp án:* `when: (ansible_facts.os_family == "Debian" or ansible_facts.os_family == "RedHat") and not (env == "production")`
-11. **[RHCE EX294 Objective #8]** Tại sao việc đọc `my_reg.stdout` của một Task vừa bị `skipped` lại gây ra lỗi fatal trong Playbook?
-    - *Đáp án:* Vì Task bị `skipped` chỉ tạo biến `my_reg` với thuộc tính `skipped: true` chứ không chạy lệnh để tạo ra trường `stdout`.
-12. **[RHCE EX294 Objective #8]** Viết một đoạn Playbook YAML sử dụng `when` để chỉ khởi chạy dịch vụ `nginx` khi biến `ansible_facts.services['nginx.service'].state` bằng `"stopped"`.
-    - *Đáp án:*
-      ```yaml
-      - name: Start Nginx if stopped
-        ansible.builtin.service:
-          name: nginx
-          state: started
-        when:
-          - ansible_facts.services is defined
-          - ansible_facts.services['nginx.service'].state == "stopped"
-      ```
-13. **[RHCE EX294 Objective #8]** Lệnh CLI nào giúp xem trước các Task nào sẽ bị `skipped` hoặc thực thi trước khi chính thức áp đặt thay đổi lên hệ thống Production?
-    - *Đáp án:* `ansible-playbook --check --diff site.yml`
-
----
-
-### 1.8. Tài liệu tham khảo
-
-- Ansible Core Documentation (v2.15+): [Conditionals](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_conditionals.html)
-- Ansible Core Documentation: [Jinja2 Tests](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_tests_in_conditionals.html)
-- Red Hat Certified Engineer (RHCE) EX294 Study Guide: Applying Conditionals and Blocks in Ansible Playbooks.
-
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Nội dung | Thời lượng dự kiến | Thời lượng thực tế |
-|---|---|---|---|
-| §0 | Khởi động và ôn tập buổi 08 | 10 phút | 10 phút |
-| §1–§2 | Mục tiêu làm được & Cần biết trước | 2 phút | 2 phút |
-| §3 | Thuật ngữ Việt-Anh & Mô hình tư duy | 8 phút | 8 phút |
-| §4 | Mệnh đề when & Cú pháp Rẽ nhánh (QT 4.1–4.3) | 15 phút | 15 phút |
-| §5 | Các Jinja2 Tests Phổ biến (QT 5.1–5.3) | 15 phút | 15 phút |
-| §6 | Khối Task Block & Trạng thái Skipped (QT 6.1–6.3) | 10 phút | 10 phút |
-| §7–§9 | Đưa vào việc thật, Bẫy hay gặp & Tóm tắt | 7 phút | 7 phút |
-| §10–§11 | Câu hỏi tự kiểm tra EX294 & Tài liệu tham khảo | 3 phút | 3 phút |
-| **Tổng** | **Khối lý thuyết Buổi 09** | **60 phút** | **60 phút** |
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
-> [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên môi trường máy chủ Linux / Docker containers phân tán. Hãy đảm bảo bạn đã chuẩn bị Control Node cài đặt Ansible Core 2.15+ cùng các Managed Nodes đã cấu hình SSH Key Authentication.
-
-## Khối thực hành — 150 phút
-
-> **Đối soát thời lượng:** Khối thực hành kéo dài đúng **150'** (từ L0 đến L11).
-> **Nguyên tắc cốt lõi:** Thực hành rẽ nhánh điều kiện với mệnh đề `when`, sử dụng danh sách điều kiện AND, toán tử `or`/`not`, Jinja2 Tests (`is defined`, `is succeeded`, `is failed`, `is file`), gom nhóm task bằng `block`, xử lý trạng thái `skipped`, thực thi phép thử **Lượt chạy Lần thứ hai** chứng minh `PLAY RECAP` đạt `changed=0` và đối soát sự thật máy đích qua `docker exec`.
-
----
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm tra bằng lệnh CLI) |
+| Bước | Lệnh CLI / Tác Vụ Chính | Mục Đích Thực Thi |
 |---|---|---|
-| TH1 | Viết task với mệnh đề when rẽ nhánh theo biến | Task cài đặt gói chỉ chạy khi `target_env == "production"` |
-| TH2 | Sử dụng mảng danh sách điều kiện under when (hàm AND) | Task chỉ chạy khi thỏa mãn cả 2 điều kiện OS và RAM |
-| TH3 | Sử dụng Jinja2 Test is defined tránh lỗi undefined | Task kiểm tra biến `custom_port is defined` an toàn |
-| TH4 | Đăng ký biến register và rẽ nhánh theo is succeeded | Task đằng sau chỉ chạy khi task trước `is succeeded` |
-| TH5 | Gom nhóm nhiều task bằng block và when chung | Khối `block` thừa hưởng chung 1 điều kiện `when` |
-| TH6 | Kiểm soát trạng thái skipped trong PLAY RECAP | Terminal in báo cáo `skipped=N, changed=0` hợp lệ |
-| TH7 | Thực thi Phép thử Lượt chạy Lần hai (Idempotency) | Bảng `PLAY RECAP` Lần 2 đạt `changed=0` tuyệt đối |
-| TH8 | Đối soát sự thật máy đích bằng docker exec | `docker exec target1 ...` kiểm tra đúng dịch vụ đã rẽ nhánh |
+| **Bước 1** | Chuẩn bị môi trường `lab-ansible-09` | Khởi tạo cấu hình dự án cô lập |
+| **Bước 2** | Viết kịch bản rẽ nhánh đơn giản | Thử nghiệm rẽ nhánh theo biến boolean và Jinja2 `is defined` |
+| **Bước 3** | Rẽ nhánh đa điều kiện (AND / OR) | Kết hợp thông số Facts hệ điều hành và biến người dùng |
+| **Bước 4** | Rẽ nhánh theo kết quả lệnh với `register` | Bắt exit code và chuỗi stdout để quyết định task sau |
+| **Bước 5** | Gom nhóm logic bằng khối `block` | Tái cấu trúc kịch bản phân nhánh theo OS Family |
+| **Bước 6** | Soạn thảo Playbook tổng hợp hoàn chỉnh | Xây dựng kịch bản chuẩn Enterprise |
+| **Bước 7** | Thực thi Phép thử Lần 2 chứng minh Idempotency | Đạt chỉ số `changed=0` trên bảng `PLAY RECAP` |
+| **Bước 8** | Đối soát hiện vật thực tế qua `docker exec` | Xác nhận các file cấu hình được tạo đúng theo nhánh logic |
 
----
-
-## L1. Điều kiện tiên quyết về môi trường
-
-| Kiểm tra | LỆNH THỰC THI | Kết quả kỳ vọng |
-|---|---|---|
-| Ansible core đã cài | `ansible --version` | Phiên bản ansible-core v2.15 trở lên |
-| Docker Compose sẵn sàng | `docker compose ps` | Cả target1 và target2 ở trạng thái `Up` |
-| Kết nối SSH sẵn sàng | `ansible all -m ansible.builtin.ping` | Đạt `SUCCESS` cho mọi host |
-| Inventory dự án | `ansible-inventory --graph` | Hiển thị các nhóm `web` và `db` |
-| Thư mục thực hành | `pwd` | Đang ở thư mục `~/lab-ansible-09` |
-
-Nếu chưa có target container:
-```bash
-cd labs && make up && make key && make inventory
-```
-
----
-
-## L2. Kiến trúc bài lab
-
-```mermaid
-graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Variable: app_env=production"| PB["Playbook: conditionals-site.yml"]
-    
-    PB -->|"2. Task 1: when os_family == RedHat"| T1["Target Container 1 (target1 - Alpine/Debian) -> SKIPPED"]
-    PB -->|"3. Task 2: when os_family == Debian/Alpine"| T1
-    PB -->|"4. Task 3: block when app_env == production"| T1
-    
-    T1 -.->|"RECAP Lần 1: ok=4, changed=2, skipped=1"| SubGraph1
-    T1 -.->|"RECAP Lần 2: ok=4, changed=0, skipped=1 (ĐẠT IDEMPOTENT)"| SubGraph1
-    
-    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook conditionals-site.yml"| SubGraph1
-    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
-    DEV -->|"C. Đối soát sự thật máy đích"| T1
-
-    style SubGraph1 fill:none,stroke:#6366f1,stroke-width:2px
-    style PB fill:none,stroke:#06b6d4,stroke-width:2px
-    style T1 fill:none,stroke:#10b981,stroke-width:2px
-    style DEV fill:none,stroke:#f59e0b,stroke-width:2px
-```
-
----
-
-## L3. Bước 1 — Rẽ nhánh Cơ bản với when và Kiểm tra biến is defined (30 phút)
-
-Tạo thư mục dự án `~/lab-ansible-09`, file `ansible.cfg`, `inventory.ini`, và viết file Playbook rẽ nhánh cơ bản `step1-when.yml` (QT 4.1, QT 4.2, QT 5.1).
+### Bước 1 — Thiết lập môi trường dự án
 
 ```bash
 mkdir -p ~/lab-ansible-09 && cd ~/lab-ansible-09
@@ -541,725 +267,492 @@ target2 ansible_host=127.0.0.1 ansible_port=2222
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
-target_env=production
-EOF
-
-cat << 'EOF' > step1-when.yml
----
-- name: Basic Conditional Execution with When and Is Defined
-  hosts: web
-  become: true
-  tasks:
-    - name: Task 1 - Print message only for production environment
-      ansible.builtin.debug:
-        msg: "Executing on Production Node"
-      when: target_env == "production"
-
-    - name: Task 2 - Print message for non-existent staging environment (Skipped)
-      ansible.builtin.debug:
-        msg: "Executing on Staging Node"
-      when: target_env == "staging"
-
-    - name: Task 3 - Safely check optional variable using is defined
-      ansible.builtin.debug:
-        msg: "Optional custom port is {{ custom_port }}"
-      when: custom_port is defined
 EOF
 ```
 
-Thực thi Playbook `step1-when.yml`:
-```bash
-ansible-playbook step1-when.yml
-```
+### Bước 2 — Soạn thảo kịch bản thử nghiệm rẽ nhánh logic
 
-**CHECKPOINT 1 — Task 1 thực thi khi target_env == production và Task 2 bị skipped chính xác.**
-- **Lệnh kiểm tra:**
 ```bash
-STEP1_OUT=$(ansible-playbook step1-when.yml)
-if echo "$STEP1_OUT" | grep -q "Executing on Production Node" && echo "$STEP1_OUT" | grep -q "skipping: \[target1\]"; then
-  echo "CHECKPOINT 1: ĐẠT - Mệnh đề when đánh giá chính xác (Task 1 thực thi, Task 2 bị skipped)"
-else
-  echo "CHECKPOINT 1: LỖI - Đánh giá mệnh đề when thất bại"
-fi
-```
-
-**CHECKPOINT 2 — Task 3 dùng is defined không bị văng lỗi undefined khi custom_port chưa khai báo.**
-- **Lệnh kiểm tra:**
-```bash
-if echo "$STEP1_OUT" | grep -q "failed=0" && ! echo "$STEP1_OUT" | grep -q "custom_port is undefined"; then
-  echo "CHECKPOINT 2: ĐẠT - Jinja2 Test is defined kiểm tra biến an toàn, không bị crash lỗi undefined"
-else
-  echo "CHECKPOINT 2: LỖI - Kiểm tra biến is defined bị lỗi"
-fi
-```
-
+cat << 'EOF' > test-when.yml
 ---
-
-## L4. Bước 2 — Đa điều kiện AND / OR và Bắt Kết quả với Register (30 phút)
-
-Viết file Playbook `step2-multi-when.yml` sử dụng mảng danh sách điều kiện (AND), toán tử `or`, và bắt kết quả lệnh CLI với `register` để rẽ nhánh bằng `is succeeded` / `is failed` (QT 4.3, QT 5.2).
-
-```bash
-cat << 'EOF' > step2-multi-when.yml
----
-- name: Multi Conditionals and Register Result Checks
+- name: Test Basic Conditionals
   hosts: web
   become: true
+  gather_facts: true
+
+  vars:
+    feature_toggle: true
+    optional_flag: "ENABLED"
+
   tasks:
-    - name: Task 1 - Test system command and register result
-      ansible.builtin.command: which curl
-      register: curl_check
-      ignore_errors: true
+    - name: Task 1 - Run only if feature is enabled
+      ansible.builtin.debug:
+        msg: "Feature toggle is active"
+      when: feature_toggle | bool
+
+    - name: Task 2 - Run only if optional variable is defined
+      ansible.builtin.debug:
+        msg: "Optional flag value is {{ optional_flag }}"
+      when: optional_flag is defined
+
+    - name: Task 3 - This task should be skipped
+      ansible.builtin.debug:
+        msg: "This should not be printed"
+      when: feature_toggle is not defined or not feature_toggle | bool
+EOF
+
+ansible-playbook test-when.yml
+```
+
+```bash
+# CHECKPOINT 1: Kiểm tra rẽ nhánh logic cơ bản
+TEST_OUT=$(ansible-playbook test-when.yml)
+if echo "$TEST_OUT" | grep -q "skipping:" && echo "$TEST_OUT" | grep -q "Feature toggle is active"; then
+  echo "CHECKPOINT 1: ĐẠT - Mệnh đề when thực thi đúng logic (task 1 chạy, task 3 skipped)"
+else
+  echo "CHECKPOINT 1: LỖI - Rẽ nhánh logic cơ bản thất bại"
+fi
+```
+
+### Bước 3 — Soạn thảo Playbook tổng hợp chuẩn Enterprise
+
+```bash
+cat << 'EOF' > site.yml
+---
+- name: Enterprise Cross-Platform Logic Mastery
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    enable_app_monitoring: true
+    min_ram_threshold: 512
+
+  tasks:
+    - name: 01. Execute kernel query
+      ansible.builtin.command: uname -s
+      register: kernel_type
       changed_when: false
 
-    - name: Task 2 - Install curl if check failed (Task recovery flow)
-      ansible.builtin.package:
-        name: curl
-        state: present
-      when: curl_check is failed
-
-    - name: Task 3 - Deploy web config using multi-condition list (AND logic)
-      ansible.builtin.copy:
-        content: "APP_ENV=production\nSECURE_MODE=enabled\n"
-        dest: /etc/app-secure.conf
-        mode: '0644'
-      when:
-        - target_env == "production"
-        - curl_check is succeeded
-        - ansible_facts.os_family == "Debian" or ansible_facts.os_family == "Alpine" or ansible_facts.os_family == "RedHat"
-EOF
-```
-
-Thực thi Playbook `step2-multi-when.yml`:
-```bash
-ansible-playbook step2-multi-when.yml
-```
-
-**CHECKPOINT 3 — Biến register curl_check kết hợp is succeeded / is failed rẽ nhánh chính xác.**
-- **Lệnh kiểm tra:**
-```bash
-STEP2_OUT=$(ansible-playbook step2-multi-when.yml)
-if echo "$STEP2_OUT" | grep -q "Task 3 - Deploy web config" && echo "$STEP2_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 3: ĐẠT - Biến register kết hợp Jinja2 Test is succeeded rẽ nhánh chính xác"
-else
-  echo "CHECKPOINT 3: LỖI - Rẽ nhánh biến register thất bại"
-fi
-```
-
-**CHECKPOINT 4 — Danh sách mảng điều kiện under when (hàm AND) đánh giá TRUE thành công.**
-- **Lệnh kiểm tra:**
-```bash
-if echo "$STEP2_OUT" | grep -q "changed=1" || echo "$STEP2_OUT" | grep -q "ok=4"; then
-  echo "CHECKPOINT 4: ĐẠT - Mảng danh sách điều kiện under when (hàm AND) thỏa mãn 100% các điều kiện"
-else
-  echo "CHECKPOINT 4: LỖI - Đánh giá mảng điều kiện AND thất bại"
-fi
-```
-
----
-
-## L5. Bước 3 — Gom nhóm Task với Block và File Tests (30 phút)
-
-Viết file Playbook `step3-block-when.yml` sử dụng khối `block:` để gom nhiều Task chung 1 điều kiện `when` và sử dụng File Test `is file` (QT 5.3, QT 6.1, QT 6.2).
-
-```bash
-cat << 'EOF' > step3-block-when.yml
----
-- name: Block Level Conditionals and File Tests
-  hosts: web
-  become: true
-  tasks:
-    - name: Task 1 - Check if /etc/app-secure.conf exists
-      ansible.builtin.stat:
-        path: /etc/app-secure.conf
-      register: file_stat
-
-    - name: Production Web Deployment Block
+    - name: 02. Deploy Linux specific baseline
+      when: kernel_type.stdout == "Linux"
       block:
-        - name: Block Task A - Create log directory
+        - name: Linux - Create app runtime directory
           ansible.builtin.file:
-            path: /var/log/prod-web
+            path: /var/log/app_monitor
             state: directory
-            mode: '0755'
+            mode: "0755"
 
-        - name: Block Task B - Deploy production flag file
+        - name: Linux - Deploy monitoring config
           ansible.builtin.copy:
-            content: "STATUS=ACTIVE_PROD\n"
-            dest: /etc/prod-status.flag
-            mode: '0644'
-      when:
-        - target_env == "production"
-        - file_stat.stat.exists
-EOF
-```
-
-Thực thi Playbook `step3-block-when.yml`:
-```bash
-ansible-playbook step3-block-when.yml
-```
-
-**CHECKPOINT 5 — Khối Block thừa hưởng chung điều kiện when thực thi thành công cả 2 task bên trong.**
-- **Lệnh kiểm tra:**
-```bash
-STEP3_OUT=$(ansible-playbook step3-block-when.yml)
-if echo "$STEP3_OUT" | grep -q "Block Task A - Create log directory" && echo "$STEP3_OUT" | grep -q "Block Task B - Deploy production flag file"; then
-  echo "CHECKPOINT 5: ĐẠT - Khối Block thừa hưởng chung 1 điều kiện when thi hành thành công toàn bộ các task bên trong"
-else
-  echo "CHECKPOINT 5: LỖI - Thực thi Block with when thất bại"
-fi
-```
-
----
-
-## L6. Bước 4 — Tổng hợp Playbook Rẽ nhánh Hoàn chỉnh và Phép thử Lượt 2 (30 phút)
-
-Tạo file Playbook hoàn chỉnh `conditionals-site.yml` tổng hợp toàn bộ các kỹ thuật rẽ nhánh `when`, `block`, Jinja2 Tests và thực thi phép thử **Lượt chạy Lần thứ hai** chứng minh `PLAY RECAP` đạt `changed=0` (QT 6.3).
-
-```bash
-cat << 'EOF' > conditionals-site.yml
----
-- name: Fully Standardized Idempotent Conditional Playbook
-  hosts: web
-  become: true
-  tasks:
-    - name: Task 1 - Ensure curl package is installed
-      ansible.builtin.package:
-        name: curl
-        state: present
-
-    - name: Task 2 - Check application config file stat
-      ansible.builtin.stat:
-        path: /etc/app-secure.conf
-      register: app_conf_stat
-
-    - name: Task 3 - Deploy backup config if main config missing (Skipped when exists)
-      ansible.builtin.copy:
-        content: "BACKUP_MODE=true\n"
-        dest: /etc/app-backup.conf
-        mode: '0644'
-      when: not app_conf_stat.stat.exists
-
-    - name: Main Production Configuration Block
-      block:
-        - name: Block Task 1 - Deploy main production application file
-          ansible.builtin.copy:
+            dest: /etc/app_monitor.conf
             content: |
-              APP_ENV={{ target_env }}
-              SERVICE_NAME=web-production
-              IDEMPOTENCE_TEST=PASSED
-            dest: /etc/main-production.conf
-            mode: '0644'
+              NODE={{ inventory_hostname }}
+              OS_FAMILY={{ ansible_facts.os_family }}
+              MONITORING_ENABLED={{ enable_app_monitoring }}
+            mode: "0644"
+            backup: true
+          when:
+            - enable_app_monitoring is defined
+            - enable_app_monitoring | bool
+            - ansible_facts.memtotal_mb >= min_ram_threshold
 
-        - name: Block Task 2 - Ensure production log directory exists
-          ansible.builtin.file:
-            path: /var/log/production-app
-            state: directory
-            mode: '0755'
-      when:
-        - target_env == "production"
-        - app_conf_stat.stat.exists
+    - name: 03. Target-specific configuration for target1 only
+      ansible.builtin.copy:
+        dest: /etc/target1_exclusive.conf
+        content: "NODE_ROLE=PRIMARY_WEB\n"
+        mode: "0644"
+        backup: true
+      when: inventory_hostname == "target1"
 EOF
 ```
 
-Thực thi Lần 1:
 ```bash
-ansible-playbook conditionals-site.yml
+# CHECKPOINT 2: Kiểm tra cú pháp Playbook
+ansible-playbook --syntax-check site.yml
 ```
 
-Thực thi Lần 2 (BẮT BUỘC ĐẠT `changed=0`):
+### Bước 4 — Chạy mô phỏng Dry-run
+
 ```bash
-ansible-playbook conditionals-site.yml
+ansible-playbook --check --diff site.yml
 ```
 
-**CHECKPOINT 6 — Phép thử Lượt 2 đạt changed=0 khi sử dụng mệnh đề when rẽ nhánh.**
-- **Lệnh kiểm tra:**
 ```bash
-RUN2_COND_OUT=$(ansible-playbook conditionals-site.yml)
-if echo "$RUN2_COND_OUT" | grep -q "changed=0" && echo "$RUN2_COND_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 6: ĐẠT - Phép thử Lượt 2 đạt chuẩn Idempotency (PLAY RECAP báo changed=0 khi dùng mệnh đề when)"
+# CHECKPOINT 3: Kiểm tra chế độ Dry-run
+CHECK_OUT=$(ansible-playbook --check --diff site.yml)
+if echo "$CHECK_OUT" | grep -q "PLAY RECAP" && ! echo "$CHECK_OUT" | grep -q "failed=1"; then
+  echo "CHECKPOINT 3: ĐẠT - Chạy mô phỏng Dry-run thành công"
 else
-  echo "CHECKPOINT 6: LỖI - Lượt 2 không đạt changed=0 (Playbook không chuẩn Idempotent)"
+  echo "CHECKPOINT 3: LỖI - Chạy mô phỏng thất bại"
 fi
 ```
 
-**CHECKPOINT 7 — Bảng PLAY RECAP báo chỉ số skipped=1 chính xác cho task không thỏa mãn khi.**
-- **Lệnh kiểm tra:**
+### Bước 5 — Thực thi Playbook Lần 1
+
 ```bash
-if echo "$RUN2_COND_OUT" | grep -q "skipped=1" || echo "$RUN2_COND_OUT" | grep -q "ok=4"; then
-  echo "CHECKPOINT 7: ĐẠT - Bảng PLAY RECAP ghi nhận chính xác chỉ số skipped=1 cho Task 3 bị bỏ qua"
+ansible-playbook site.yml
+```
+
+```bash
+# CHECKPOINT 4: Kiểm tra kết quả thực thi lần 1
+RUN1_OUT=$(ansible-playbook site.yml)
+if echo "$RUN1_OUT" | grep -q "failed=0" && echo "$RUN1_OUT" | grep -q "unreachable=0"; then
+  echo "CHECKPOINT 4: ĐẠT - Playbook thực thi lần 1 thành công trên toàn bộ hạ tầng"
 else
-  echo "CHECKPOINT 7: LỖI - Ghi nhận chỉ số skipped thất bại"
+  echo "CHECKPOINT 4: LỖI - Thực thi Playbook lần 1 thất bại"
+fi
+```
+
+### Bước 6 — Thực thi Phép thử Lần 2 chứng minh Idempotency
+
+```bash
+ansible-playbook site.yml
+```
+
+```bash
+# CHECKPOINT 5 & 6: Kiểm tra tính Idempotency đạt changed=0
+RUN2_FINAL=$(ansible-playbook site.yml)
+if echo "$RUN2_FINAL" | grep -q "changed=0" && echo "$RUN2_FINAL" | grep -q "failed=0"; then
+  echo "CHECKPOINT 5 & 6: ĐẠT - Kịch bản rẽ nhánh logic đạt Idempotency tuyệt đối (changed=0 ở lần 2)"
+else
+  echo "CHECKPOINT 5 & 6: LỖI - Kịch bản chưa đạt chuẩn Idempotency"
+fi
+```
+
+### Bước 7 — Đối soát hiện vật trên target1 (Nhánh True)
+
+```bash
+docker exec target1 cat /etc/app_monitor.conf
+docker exec target1 cat /etc/target1_exclusive.conf
+```
+
+```bash
+# CHECKPOINT 7: Đối soát target1 chứa đúng file
+T1_MON=$(docker exec target1 cat /etc/app_monitor.conf)
+T1_EXC=$(docker exec target1 cat /etc/target1_exclusive.conf)
+if echo "$T1_MON" | grep -q "MONITORING_ENABLED=True" && echo "$T1_EXC" | grep -q "PRIMARY_WEB"; then
+  echo "CHECKPOINT 7: ĐẠT - Target1 nhận đầy đủ cấu hình theo đúng nhánh logic"
+else
+  echo "CHECKPOINT 7: LỖI - Đối soát target1 thất bại"
+fi
+```
+
+### Bước 8 — Đối soát hiện vật trên target2 (Nhánh False - Skipped)
+
+```bash
+# File target1_exclusive.conf BẮT BUỘC KHÔNG ĐƯỢC TỒN TẠI trên target2
+docker exec target2 ls /etc/target1_exclusive.conf 2>&1 || true
+```
+
+```bash
+# CHECKPOINT 8: Đối soát target2 đã bỏ qua task đúng như thiết kế
+if docker exec target2 ls /etc/target1_exclusive.conf 2>&1 | grep -q "No such file"; then
+  echo "CHECKPOINT 8: ĐẠT - Target2 bỏ qua file độc quyền của target1 chính xác 100%"
+else
+  echo "CHECKPOINT 8: LỖI - Target2 bị ghi đè file không mong muốn"
 fi
 ```
 
 ---
 
-## L7. Bước 5 — Đối soát Sự thật Máy đích qua docker exec (20 phút)
+## 6. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-Sử dụng lệnh `docker exec` đối soát trực tiếp các file sản phẩm được tạo ra theo đúng nhánh điều kiện `when` trên target node (QT 6.3).
-
-Đối soát file `/etc/main-production.conf`:
-```bash
-docker exec target1 cat /etc/main-production.conf
-```
-
-**CHECKPOINT 8 — Đối soát file /etc/main-production.conf trên target1 chứa đúng dữ liệu rẽ nhánh khi target_env == production.**
-- **Lệnh kiểm tra:**
-```bash
-EXEC_PROD_FILE=$(docker exec target1 cat /etc/main-production.conf)
-if echo "$EXEC_PROD_FILE" | grep -q "APP_ENV=production" && echo "$EXEC_PROD_FILE" | grep -q "IDEMPOTENCE_TEST=PASSED"; then
-  echo "CHECKPOINT 8: ĐẠT - Kiểm tra sự thật qua docker exec xác nhận file /etc/main-production.conf đã được tạo đúng nhánh điều kiện production"
-else
-  echo "CHECKPOINT 8: LỖI - Kiểm tra file sản phẩm rẽ nhánh trên máy đích thất bại"
-fi
-```
-
----
-
-## L8. Nộp sản phẩm và dọn dẹp (10 phút)
-
-Thu thập kết quả ra các file báo cáo cuối buổi:
-```bash
-ansible-playbook conditionals-site.yml > conditionals-playbook.yml
-ansible-playbook step1-when.yml > when-proof.txt
-ansible-playbook conditionals-site.yml > idempotency-check.txt
-docker exec target1 cat /etc/main-production.conf > kiem-may-dich.txt
-docker exec target1 ls -ld /var/log/production-app >> kiem-may-dich.txt
-```
-
----
-
-## L9. Xử lý sự cố
-
-| # | Hiện tượng lỗi | Nguyên nhân gốc rễ | Cách xử lý nhanh |
-|---|---|---|---|
-| 1 | Lỗi `[WARNING]: Bare variable in conditional was discovered` | Bọc cặp ngoặc nhọn `{{ }}` bên trong từ khóa `when:` | Xóa cặp ngoặc nhọn `{{ }}` trong mệnh đề `when:` (viết `when: my_var == 'val'`). |
-| 2 | Lỗi `fatal: [target1]: FAILED! => {"msg": "'my_var' is undefined"}` | Mệnh đề `when` đọc một biến chưa khai báo mà không dùng `is defined` | Thêm điều kiện kiểm tra `when: my_var is defined and my_var == 'val'`. |
-| 3 | Lỗi `Syntax Error: unexpected '='` | Dùng toán tử gán 1 dấu `=` thay vì toán tử so sánh 2 dấu `==` | Sửa lại thành toán tử so sánh `when: my_var == "value"`. |
-| 4 | Task đằng sau bị error do đọc `register.stdout` của task bị skipped | Task trước bị skipped nên không tạo ra trường `stdout` trong biến register | Thêm điều kiện `when: reg_var is succeeded` trước khi truy xuất `stdout`. |
-| 5 | Biểu thức `when` kết hợp `and`/`or` chạy sai logic | Quên bọc ngoặc đơn phân nhóm ưu tiên phép toán logic | Bọc ngoặc đơn rõ ràng: `when: (cond1 or cond2) and cond3`. |
-| 6 | Mảng danh sách điều kiện under `when:` chạy theo logic OR nhầm lẫn | Lầm tưởng mảng list trong `when` là logic OR | Ghi nhớ: Mảng list dưới `when:` luôn là hàm AND; dùng từ khóa `or` trên 1 dòng nếu muốn logic OR. |
-| 7 | So sánh biến boolean bị sai | Viết `when: is_active == "true"` (so sánh chuỗi string thay vì boolean) | Viết chính xác `when: is_active` hoặc `when: is_active | bool`. |
-| 8 | Block với `when` không chạy task nào bên trong | Biểu thức `when` ở cấp Block đánh giá FALSE làm toàn bộ Block bị skipped | Kiểm tra lại logic biểu thức `when` của Block bằng `debug`. |
-| 9 | Jinja2 Test `is file` bị crash | Truyền chuỗi biến không đúng cú pháp string | Viết đúng cú pháp: `when: "'/path/to/file' is file"` hoặc `when: stat_res.stat.isreg`. |
-| 10 | Task rẽ nhánh bị lặp thay đổi ở Lần 2 | Task bên trong mệnh đề `when` gọi module `shell` thô không idempotent | Thêm `creates` hoặc đổi lệnh shell sang module tiêu chuẩn. |
-| 11 | Cờ `--check` làm các task rẽ nhánh sau bị skipped nhầm | Check mode không thực thi task 1 nên biến register bị thiếu thông số | Khai báo `ignore_errors: true` hoặc kiểm tra stat file tiên quyết. |
-| 12 | So sánh phân biệt chữ hoa chữ thường bị sai | So sánh `when: env == "PROD"` bị FALSE do giá trị thực tế là `"production"` | Sử dụng Jinja2 filter `when: env | lower == "production"`. |
-| 13 | Thắc mắc chỉ số `skipped` xuất hiện trong RECAP | Lầm tưởng chỉ số `skipped > 0` là Playbook bị lỗi | Nhận thức đúng: `skipped` là rẽ nhánh hợp lệ, miễn `changed=0` ở Lần 2 là đạt Idempotency. |
-| 14 | Mệnh đề `when` nằm sai mức thụt lề YAML | Đặt từ khóa `when:` thụt lề quá sâu bên trong tham số của module | Đưa `when:` nằm cùng cấp thụt lề với từ khóa `name:` của Task. |
-
----
-
-## L10. Bài tập mở rộng
-
-1. **BT1:** Viết Playbook `os-branch.yml` sử dụng `when` để chỉ chép file `/etc/motd` khi `ansible_facts.os_family == "Debian"`.
-2. **BT2:** Viết task sử dụng mảng list dưới `when:` kiểm tra 3 điều kiện: `os_family == "RedHat"`, `memtotal_mb > 1024`, và `target_env == "production"`.
-3. **BT3:** Viết task chạy lệnh `ping -c 1 8.8.8.8`, đăng ký biến `register: ping_res`, và chỉ chạy task sau khi `ping_res is succeeded`.
-4. **BT4:** Sử dụng `block:` nhóm 3 task cấu hình Database chỉ khi `ansible_facts.hostname` chứa từ `"db"`.
-5. **BT5:** Viết Playbook kiểm tra nếu file `/etc/nginx/nginx.conf` ĐANG TỒN TẠI (dùng `is file`) thì thực hiện backup file ra `/etc/nginx/nginx.conf.bak`.
-6. **BT6:** Thực thi phép thử Idempotency Lần 2 cho Playbook ở BT5 và đối soát kết quả `PLAY RECAP` thu được `changed=0`.
-7. **BT7:** Sử dụng cờ `--check --diff` chứng minh các task bị `skipped` không tạo ra bất kỳ dự báo thay đổi mạo danh nào.
-8. **BT8:** Viết kịch bản bash script nhận tham số môi trường (`dev`/`prod`), tự động truyền Extra Vars `-e "target_env=$1"` và kiểm tra kết quả rẽ nhánh trong log.
-
----
-
-## L11. Sản phẩm nộp và chấm điểm
-
-### Danh mục sản phẩm nộp
-- File Playbook `conditionals-playbook.yml`, `step1-when.yml`, `step2-multi-when.yml`, `step3-block-when.yml`.
-- Báo cáo kết quả 8 CHECKPOINT từ terminal.
-- Các file kết quả: `conditionals-playbook.yml`, `when-proof.txt`, `idempotency-check.txt`, `kiem-may-dich.txt`.
-
-### Thang điểm đánh giá
-
-| Mức điểm | Tiêu chí đạt được |
-|---|---|
-| **0–4 điểm** | Chưa hiểu mệnh đề `when`, dính lỗi bọc `{{ }}` trong `when` hoặc làm Playbook crash do undefined variable. |
-| **5–7 điểm** | Viết được `when` đơn giản, nhưng chưa thành thạo mảng điều kiện AND, Jinja2 Tests (`is defined`, `is succeeded`) hay `block`. |
-| **8–9 điểm** | Đạt đủ 8 CHECKPOINT, chứng minh thành thạo `when`, mảng AND, `or`/`not`, Jinja2 Tests, `block`, kiểm soát `skipped`, Idempotency Lần 2 (`changed=0`) và đối soát `docker exec`. |
-| **10 điểm** | Đạt 9 điểm + Hoàn thành xuất sắc 100% các Bài tập mở rộng (BT1–BT8). |
-
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Nội dung | Thời lượng dự kiến | Thời lượng thực tế |
-|---|---|---|---|
-| L0–L2 | Mục tiêu, Tiên quyết & Kiến trúc bài lab | 10 phút | 10 phút |
-| L3 | Bước 1: Rẽ nhánh cơ bản với when & is defined | 30 phút | 30 phút |
-| L4 | Bước 2: Đa điều kiện AND/OR & biến register | 30 phút | 30 phút |
-| L5 | Bước 3: Gom nhóm Task với Block & File Tests | 30 phút | 30 phút |
-| L6 | Bước 4: Tổng hợp Playbook & Phép thử Lần 2 | 30 phút | 30 phút |
-| L7 | Bước 5: Đối soát sự thật máy đích qua docker exec | 20 phút | 20 phút |
-| L8–L11 | Nộp sản phẩm, Sự cố, Bài tập & Chấm điểm | 10 phút | 10 phút |
-| **Tổng** | **Khối thực hành Buổi 09** | **150 phút** | **150 phút** |
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **DevOps Engineer**, **Site Reliability Engineer (SRE)** và **Cloud Automation Architect**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ xử lý sự cố hệ thống:
-
----
-
-
-
-## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
-
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q01</span>
-  <span class="qa-question-text">Mệnh đề <code>when</code> trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task?</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Tại sao khi viết biểu thức điều kiện trong mệnh đề when TUYỆT ĐỐI KHÔNG ĐƯỢC dùng cặp dấu ngoặc nhọn {{ }}?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Mệnh đề <code>when:</code> bản thân nó đã được thiết kế sẵn như một biểu thức Jinja2 thô. Trình biên dịch Ansible tự động đánh giá biểu thức bên trong như một câu lệnh Python. Nếu đặt thêm cặp ngoặc nhọn <code>when: "{{ my_var }}" == "prod"</code>, Jinja2 sẽ nội suy chuỗi này trước khi đưa vào bộ đánh giá điều kiện, gây lỗi xung đột kiểu dữ liệu (ví dụ biến boolean bị biến thành chuỗi), làm sai lệch kết quả logic hoặc phát sinh cảnh báo cú pháp nghiêm trọng.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Cho rằng dùng <code>{{ }}</code> trong <code>when</code> là bình thường.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết không nên dùng nhưng không giải thích được cơ chế Raw Jinja2 Evaluation.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Giải thích chính xác cơ chế Raw Jinja2 Context của <code>when</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Phân tích xuất sắc lỗi sai lệch kiểu dữ liệu khi so sánh Boolean vs String do <code>{{ }}</code> gây ra.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Cú pháp viết đúng để kiểm tra biến boolean <code>is_active</code> là gì? <i>(<code>when: is_active | bool</code> hoặc <code>when: is_active</code>)</i></div>
   </div>
-  <p><b>Hỏi:</b> Mệnh đề <code>when</code> trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? <i>(Liên quan QT 4.1)</i></p>
-  <p><b>Đáp án chuẩn:</b> Mệnh đề <code>when</code> cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau <code>when:</code> đánh giá kết quả là <code>TRUE</code>. Mệnh đề <code>when</code> được Ansible Engine đánh giá ngay tại thời điểm runtime <b>TRƯỚC KHI TASK ĐƯỢC GỬI THI HÀNH</b> trên máy đích. Nếu điều kiện đánh giá <code>FALSE</code>, Task lập tức bị bỏ qua với trạng thái <code>skipped</code>.</p>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không biết tác dụng của <code>when</code>.</li>
-    <li><b>1:</b> Biết <code>when</code> rẽ nhánh nhưng không giải thích được mốc thời gian đánh giá runtime trước khi chạy task.</li>
-    <li><b>2:</b> Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.</li>
-    <li><b>3:</b> Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo <code>ansible_facts.os_family</code>.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Mệnh đề <code>when</code> được đánh giá trên Control Node hay trên Managed Node? <i>(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q02</span>
-  <span class="qa-question-text">Tại sao việc bọc cặp dấu ngoặc nhọn Jinja2 <code>{{ '{{' }} {{ '}}' }}</code> bên trong từ khóa <code>when:</code> bị coi là sai cú pháp chuẩn?</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <p><b>Hỏi:</b> Tại sao việc bọc cặp dấu ngoặc nhọn Jinja2 <code>{{ '{{' }} {{ '}}' }}</code> bên trong từ khóa <code>when:</code> (ví dụ <code>when: "{{ '{{' }} var == 'val' {{ '}}' }}"</code>) bị coi là sai cú pháp chuẩn? <i>(Liên quan QT 4.2)</i></p>
-  <p><b>Đáp án chuẩn:</b> Vì bản thân từ khóa <code>when:</code> đã tự động được Ansible Engine đặt sẵn trong môi trường biểu thức Jinja2 thô. Việc chèn thêm cặp ngoặc nhọn <code>{{ '{{' }} {{ '}}' }}</code> bên trong sẽ làm Ansible hiểu nhầm là truyền một chuỗi mẫu template thô, dẫn đến cảnh báo <code>Bare variable warning</code> hoặc lỗi parse syntax làm sai lệch kết quả so sánh logic.</p>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Cho rằng phải bọc <code>{{ '{{' }} {{ '}}' }}</code> mới đúng cú pháp.</li>
-    <li><b>1:</b> Biết không bọc <code>{{ '{{' }} {{ '}}' }}</code> nhưng không giải thích được cơ chế parser Jinja2 thô của từ khóa <code>when</code>.</li>
-    <li><b>2:</b> Phân tích chính xác lý do từ khóa <code>when</code> tự động xử lý môi trường Jinja2 thô.</li>
-    <li><b>3:</b> Nêu đúng + viết ví dụ so sánh mã ĐÚNG và SAI trực quan.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Ngoại lệ duy nhất nào cho phép bọc ngoặc kép <code>""</code> ở mệnh đề <code>when</code>? <i>(Bọc ngoặc kép toàn bộ chuỗi bên ngoài cùng để tránh lỗi YAML khi chuỗi chứa ký tự đặc biệt như dấu hai chấm.)</i></p>
-</div>
-</details>
-
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q03</span>
-  <span class="qa-question-text">Trình bày 2 cách biểu diễn phép toán điều kiện AND trong mệnh đề <code>when</code>. Cách nào được khuyến khích trong thực tế?</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <p><b>Hỏi:</b> Trình bày 2 cách biểu diễn phép toán điều kiện AND trong mệnh đề <code>when</code>. Cách nào được khuyến khích trong thực tế? <i>(Liên quan QT 4.3)</i></p>
-  <p><b>Đáp án chuẩn:</b></p>
-  <ul>
-    <li><b>Cách 1 (Toán tử <code>and</code> trên 1 dòng):</b> <code>when: cond1 and cond2 and cond3</code></li>
-    <li><b>Cách 2 (Mảng danh sách YAML - KHUYẾN KHÍCH):</b>
-      <pre><code class="language-yaml">when:
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Trình bày cách biểu diễn điều kiện logic AND và OR trong mệnh đề when của Ansible.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>• <b>Toán tử AND:</b> Có 2 cách: (1) Dùng từ khóa <code>and</code> trên cùng 1 dòng: <code>when: cond1 and cond2</code>, hoặc (2) <b>Cách chuẩn mực YAML:</b> Truyền danh sách mảng nhiều phần tử bên dưới <code>when:</code> (mỗi dòng là một dấu gạch ngang <code>-</code>):</div>
+    <pre><code>when:
   - cond1
-  - cond2
-  - cond3</code></pre>
-    </li>
-  </ul>
-  <p>Cách 2 được khuyến khích tuyệt đối trong thực tế vì trình bày dạng mảng danh sách rõ ràng, dễ đọc, dễ bảo trì và loại bỏ hoàn toàn nguy cơ nhầm lẫn thứ tự ưu tiên phép toán.</p>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không biết biểu diễn phép toán AND.</li>
-    <li><b>1:</b> Biết gõ từ khóa <code>and</code> nhưng không biết cách biểu diễn mảng danh sách YAML.</li>
-    <li><b>2:</b> Phân tích chính xác cả 2 cách + lý do chọn mảng danh sách theo chuẩn DevOps.</li>
-    <li><b>3:</b> Nêu đúng + viết ví dụ kết hợp cả <code>and</code>, <code>or</code>, <code>not</code> có ngoặc đơn phân nhóm ưu tiên.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Mảng danh sách các điều kiện bên dưới <code>when:</code> đại diện cho phép toán AND hay phép toán OR? <i>(Đại diện cho phép toán AND 100%.)</i></p>
-</div>
+  - cond2</code></pre>
+    <div>• <b>Toán tử OR:</b> Dùng từ khóa <code>or</code> trực tiếp trong biểu thức: <code>when: cond1 or cond2</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Dùng ký hiệu <code>&&</code> hoặc <code>||</code> kiểu C/Bash (sai cú pháp trong Jinja2).</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết <code>and</code>/<code>or</code> nhưng không biết dạng danh sách YAML cho phép gom nhóm AND sạch đẹp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Trình bày chính xác cả 2 dạng cú pháp AND và cú pháp OR.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + kết hợp cặp dấu ngoặc tròn <code>(cond1 or cond2) and cond3</code> để kiểm soát thứ tự ưu tiên logic.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Tại sao trong Ansible nên ưu tiên viết AND dạng danh sách mảng thay vì viết một dòng dài với từ khóa <code>and</code>? <i>(Dạng danh sách mảng dễ đọc, dễ comment từng dòng, và dễ review diff trên Git.)</i></div>
+  </div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q04</span>
-  <span class="qa-question-text">Jinja2 Test <code>is defined</code> được dùng trong trường hợp nào? Nếu truy xuất một biến chưa khai báo mà KHÔNG dùng <code>is defined</code>, điều gì sẽ xảy ra?</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Jinja2 Tests is defined và is not defined giải quyết bài toán gì? Tại sao chúng là chốt chặn an toàn quan trọng nhất?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Khi Playbook cố gắng truy vấn một biến chưa từng được khai báo, Ansible sẽ lập tức dừng kịch bản và văng lỗi <code>AnsibleUndefinedVariable</code>. Bộ kiểm tra <code>is defined</code> giúp kiểm tra sự tồn tại của biến trước khi sử dụng. Nếu biến chưa được định nghĩa, biểu thức trả về <code>false</code> và task bị bỏ qua an toàn thay vì làm sập cả Playbook. Đây là chốt chặn an toàn sống còn cho các biến tùy chọn (Optional parameters).</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết mục đích của <code>is defined</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết kiểm tra biến nhưng không giải thích được cơ chế ngăn chặn crash kịch bản.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân tích chính xác cơ chế phòng vệ lỗi UndefinedVariable.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + viết biểu thức ngắn mạch (short-circuit evaluation): <code>when: config is defined and config.enabled</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu viết <code>when: config.enabled and config is defined</code> (đảo ngược vị trí), điều gì sẽ xảy ra nếu <code>config</code> chưa tồn tại? <i>(Vẫn bị crash, vì Jinja2 đánh giá từ trái qua phải, gặp <code>config.enabled</code> trước khi kiểm tra <code>config is defined</code>.)</i></div>
   </div>
-  <p><b>Hỏi:</b> Jinja2 Test <code>is defined</code> được dùng trong trường hợp nào? Nếu truy xuất một biến chưa khai báo mà KHÔNG dùng <code>is defined</code>, điều gì sẽ xảy ra? <i>(Liên quan QT 5.1)</i></p>
-  <p><b>Đáp án chuẩn:</b> <code>is defined</code> được dùng để kiểm tra xem một biến tùy chọn (Optional variable) đã được khai báo hay chưa trước khi đọc giá trị của nó (ví dụ <code>when: custom_port is defined</code>). Nếu truy xuất một biến chưa bao giờ được khai báo mà KHÔNG dùng <code>is defined</code>, Ansible sẽ ném lỗi fatal <code>undefined variable</code> và làm dừng thi hành toàn bộ Playbook lập tức.</p>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không biết Jinja2 Test <code>is defined</code>.</li>
-    <li><b>1:</b> Biết <code>is defined</code> kiểm tra biến nhưng không nêu được rủi ro văng lỗi fatal khi thiếu nó.</li>
-    <li><b>2:</b> Phân tích chính xác vai trò phòng chống lỗi fatal undefined variable của <code>is defined</code>.</li>
-    <li><b>3:</b> Nêu đúng + cho ví dụ thực tế cài đặt cổng dịch vụ tùy chỉnh với <code>is defined</code>.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Phân biệt sự khác nhau giữa <code>when: my_var is defined</code> và <code>when: my_var</code>? <i>(<code>is defined</code> chỉ kiểm tra biến CÓ TỒN TẠI HAY KHÔNG; <code>when: my_var</code> vừa kiểm tra tồn tại vừa kiểm tra giá trị của biến có phải là TRUE/non-empty hay không.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q05</span>
-  <span class="qa-question-text">Trình bày cơ chế xây dựng Luồng phục hồi lỗi (Recovery Flow) kết hợp giữa thuộc tính <code>register</code> và Jinja2 Test <code>is failed</code>.</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Trình bày cách sử dụng kết quả của một Task trước (thông qua register) làm điều kiện trong mệnh đề when của Task sau.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Ta lưu kết quả Task trước bằng <code>register: task_res</code>, sau đó ở Task tiếp theo sử dụng các thuộc tính của biến này trong mệnh đề <code>when:</code>. Ví dụ:</div>
+    <div>• Kiểm tra exit code: <code>when: task_res.rc == 0</code></div>
+    <div>• Kiểm tra chuỗi đầu ra: <code>when: "'SUCCESS' in task_res.stdout"</code></div>
+    <div>• Kiểm tra trạng thái thay đổi: <code>when: task_res is changed</code> hoặc <code>when: task_res is failed</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết kết hợp <code>register</code> với <code>when</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết dùng <code>rc</code> nhưng không biết các Jinja2 tests như <code>is changed</code> hay <code>in stdout</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Trình bày đúng cấu trúc và cú pháp điều kiện phong phú.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + lưu ý trường hợp task trước bị skipped thì biến register sẽ có cấu trúc ra sao.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu Task trước bị <code>skipped</code>, điều kiện <code>when: task_res.rc == 0</code> ở task sau có chạy được không? <i>(Sẽ bị lỗi undefined vì khi task bị skipped, <code>task_res</code> không chứa thuộc tính <code>rc</code>; phải viết <code>when: task_res.rc is defined and task_res.rc == 0</code>.)</i></div>
   </div>
-  <p><b>Hỏi:</b> Trình bày cơ chế xây dựng Luồng phục hồi lỗi (Recovery Flow) kết hợp giữa thuộc tính <code>register</code> và Jinja2 Test <code>is failed</code>. <i>(Liên quan QT 5.2)</i></p>
-  <p><b>Đáp án chuẩn:</b> Quy trình 2 bước:</p>
-  <ol>
-    <li><b>Task chính:</b> Đăng ký kết quả chạy bằng <code>register: primary_res</code> và thêm <code>ignore_errors: true</code> để không dừng Playbook nếu bị lỗi.</li>
-    <li><b>Task phục hồi (Fallback):</b> Khai báo mệnh đề <code>when: primary_res is failed</code>. Task phục hồi này CHỈ THỰC THI khi Task chính bị thất bại, giúp hệ thống tự động chuyển sang phương án dự phòng an toàn.</li>
-  </ol>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không biết cách bắt lỗi để chạy task phục hồi.</li>
-    <li><b>1:</b> Biết dùng <code>register</code> nhưng không biết các test <code>is failed</code> / <code>is succeeded</code>.</li>
-    <li><b>2:</b> Trình bày chính xác luồng 2 bước kết hợp <code>register</code>, <code>ignore_errors</code>, và <code>is failed</code>.</li>
-    <li><b>3:</b> Nêu đúng + viết đoạn YAML hoàn chỉnh thử nghiệm chạy script primary fail -&gt; fallback run.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Ngoài <code>is failed</code> và <code>is succeeded</code>, Ansible còn hỗ trợ các Jinja2 Status Tests nào khác? <i>(<code>is skipped</code>, <code>is changed</code>, <code>is finished</code>.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q06</span>
-  <span class="qa-question-text">Nêu 3 Jinja2 File Tests thường dùng để kiểm tra trạng thái tệp tin/thư mục trên đĩa cứng máy đích. Cho ví dụ.</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Khối Task (block) giúp tối ưu hóa việc sử dụng mệnh đề when như thế nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Khối <code>block</code> cho phép gom nhóm một danh sách nhiều Task liên quan logic lại với nhau và gắn duy nhất một mệnh đề <code>when:</code> ở cấp độ khối. Toàn bộ các Task bên trong <code>block</code> sẽ tự động kế thừa điều kiện này. Lợi ích: loại bỏ việc lặp lại dòng <code>when</code> ở từng task (nguyên lý DRY), mã nguồn ngắn gọn, trực quan và dễ bảo trì khi cần sửa đổi logic rẽ nhánh.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết cấu trúc <code>block</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết <code>block</code> gom task nhưng không giải thích được cơ chế kế thừa điều kiện <code>when</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân tích chính xác cơ chế kế thừa điều kiện + lợi ích DRY.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + minh họa ví dụ phân tách 2 block cài đặt riêng cho Ubuntu và CentOS.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Một Task bên trong <code>block</code> có thể có thêm một mệnh đề <code>when</code> riêng của nó nữa không? <i>(Được, khi đó task con phải thỏa mãn CẢ điều kiện của block VÀ điều kiện riêng của task thì mới được chạy.)</i></div>
   </div>
-  <p><b>Hỏi:</b> Nêu 3 Jinja2 File Tests thường dùng để kiểm tra trạng thái tệp tin/thư mục trên đĩa cứng máy đích. Cho ví dụ. <i>(Liên quan QT 5.3)</i></p>
-  <p><b>Đáp án chuẩn:</b></p>
-  <ol>
-    <li><code>is file</code>: Kiểm tra đường dẫn có phải là một tệp tin thông thường (ví dụ <code>when: "'/etc/app.conf' is file"</code>).</li>
-    <li><code>is directory</code>: Kiểm tra đường dẫn có phải là một thư mục (ví dụ <code>when: "'/var/log/app' is directory"</code>).</li>
-    <li><code>is mount</code>: Kiểm tra đường dẫn có phải là một điểm mount đĩa cứng (ví dụ <code>when: "'/mnt/data' is mount"</code>).</li>
-  </ol>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không biết các Jinja2 File Tests.</li>
-    <li><b>1:</b> Liệt kê được 1 test nhưng viết sai cú pháp.</li>
-    <li><b>2:</b> Phân tích chính xác cả 3 File Tests <code>is file</code>, <code>is directory</code>, <code>is mount</code>.</li>
-    <li><b>3:</b> Nêu đúng + viết ví dụ Playbook rẽ nhánh chép file chỉ khi thư mục đích đã tồn tại.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Để sử dụng các File Tests này một cách chính xác nhất, ta nên kết hợp với module thu thập thông số nào trước đó? <i>(Kết hợp với module <code>ansible.builtin.stat</code> để lấy thông số đĩa cứng.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q07</span>
-  <span class="qa-question-text">Việc sử dụng khối <code>block:</code> kết hợp với mệnh đề <code>when:</code> mang lại lợi ích gì cho việc thiết kế mã nguồn Playbook?</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Chỉ số skipped trong bảng PLAY RECAP có bị coi là lỗi không? Khi nào trạng thái skipped là bình thường và khi nào là bất thường?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Chỉ số <code>skipped</code> <b>KHÔNG PHẢI LÀ LỖI</b>. Đó là hành vi thiết kế đúng khi một Task không thỏa mãn điều kiện <code>when</code> nên được bỏ qua an toàn. <b>Bình thường:</b> Khi ta cấu hình hạ tầng đa OS, các task của Ubuntu bị skipped trên máy RedHat là hoàn toàn chuẩn mực. <b>Bất thường:</b> Khi điều kiện <code>when</code> bị viết sai logic (ví dụ gõ nhầm tên biến hoặc so sánh sai kiểu dữ liệu), khiến cho task quan trọng lẽ ra phải chạy lại bị skipped mất.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Cho rằng <code>skipped > 0</code> là Playbook bị lỗi.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết skipped không phải lỗi nhưng không phân biệt được trường hợp bất thường do sai logic.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân tích chính xác bản chất của chỉ số <code>skipped</code> trong cả 2 trường hợp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Trình bày xuất sắc phương pháp dùng cờ <code>-v</code> để xem lý do tại sao task bị skipped (`skipping: [host] => ...`).</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Lệnh CLI nào giúp hiển thị chi tiết nguyên nhân một task bị skipped trên màn hình terminal? <i>(Thêm cờ verbose <code>-v</code> hoặc <code>-vv</code> khi chạy <code>ansible-playbook</code>.)</i></div>
   </div>
-  <p><b>Hỏi:</b> Việc sử dụng khối <code>block:</code> kết hợp với mệnh đề <code>when:</code> mang lại lợi ích gì cho việc thiết kế mã nguồn Playbook? <i>(Liên quan QT 6.1)</i></p>
-  <p><b>Đáp án chuẩn:</b> Khối <code>block:</code> cho phép nhóm nhiều Task có chung logic hoạt động lại với nhau và chỉ cần khai báo thuộc tính <code>when:</code> <b>duy nhất 1 lần ở cấp độ Block</b>. Tất cả các Task bên trong Block sẽ tự động thừa hưởng điều kiện <code>when</code> đó. Lợi ích: Giúp mã nguồn ngắn gọn, loại bỏ lặp lại mã (DRY principle) và dễ dàng quản lý luồng rẽ nhánh theo hạ tầng.</p>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không biết cấu trúc <code>block:</code>.</li>
-    <li><b>1:</b> Biết <code>block</code> nhưng lặp lại thuộc tính <code>when</code> ở từng task bên trong.</li>
-    <li><b>2:</b> Phân tích chính xác lợi ích thừa hưởng điều kiện <code>when</code> ở cấp độ Block.</li>
-    <li><b>3:</b> Nêu đúng + viết đoạn mã YAML minh họa Block cấu hình dành riêng cho hệ điều hành RedHat.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Nếu một Task bên trong Block có khai báo thêm mệnh đề <code>when</code> riêng, Ansible sẽ xử lý ra sao? <i>(Task đó phải thỏa mãn CẢ điều kiện của Block VÀ điều kiện riêng của Task thì mới được thực thi.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q08</span>
-  <span class="qa-question-text">Tại sao một Playbook có nhiều Task bị <code>skipped</code> ở lượt chạy Lần 2 nhưng vẫn được kết luận là ĐẠT chuẩn Idempotency 100%?</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Trình bày cách sử dụng toán tử in và not in trong mệnh đề when để kiểm tra chuỗi hoặc phần tử mảng.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Toán tử <code>in</code> và <code>not in</code> kiểm tra sự tồn tại của một phần tử trong danh sách (List) hoặc một chuỗi con trong chuỗi văn bản (String). Ví dụ:</div>
+    <div>• Kiểm tra trong danh sách: <code>when: inventory_hostname in groups['web_production']</code></div>
+    <div>• Kiểm tra chuỗi phân phối OS: <code>when: ansible_facts.distribution in ['Ubuntu', 'Debian', 'Kali']</code></div>
+    <div>• Kiểm tra không thuộc nhóm: <code>when: inventory_hostname not in groups['db_nodes']</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết toán tử <code>in</code> trong Jinja2.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết dùng nhưng viết sai cú pháp mảng Python.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Viết chính xác cú pháp cho cả String substring và List membership.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + kết hợp kiểm tra host thuộc nhóm Inventory thông qua biến ma thuật <code>group_names</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Cú pháp nào kiểm tra xem máy hiện tại có nằm trong nhóm Inventory tên là <code>loadbalancers</code> không? <i>(<code>when: "'loadbalancers' in group_names"</code>)</i></div>
   </div>
-  <p><b>Hỏi:</b> Tại sao một Playbook có nhiều Task bị <code>skipped</code> ở lượt chạy Lần 2 nhưng vẫn được kết luận là ĐẠT chuẩn Idempotency 100%? <i>(Liên quan QT 6.2)</i></p>
-  <p><b>Đáp án chuẩn:</b> Vì chỉ số <code>skipped</code> trong bảng <code>PLAY RECAP</code> chỉ phản ánh số lượng Task rẽ nhánh bị bỏ qua do điều kiện <code>when</code> đánh giá FALSE. Việc bỏ qua một Task <b>KHÔNG LÀM THAY ĐỔI</b> bất kỳ byte nào trên đĩa cứng máy đích. Tiêu chuẩn nghiệm thu Idempotency chỉ căn cứ duy nhất vào chỉ số <code>changed=0</code> ở lượt chạy Lần 2. Do đó <code>skipped=N, changed=0</code> hoàn toàn đạt chuẩn Idempotency tuyệt đối.</p>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Lầm tưởng <code>skipped &gt; 0</code> là Playbook bị lỗi không đạt Idempotency.</li>
-    <li><b>1:</b> Biết <code>skipped</code> là bỏ qua nhưng không giải thích được lý do tại sao nó không ảnh hưởng <code>changed=0</code>.</li>
-    <li><b>2:</b> Phân tích chính xác bản chất chỉ số <code>skipped</code> và khẳng định tiêu chuẩn <code>changed=0</code> ở Lần 2.</li>
-    <li><b>3:</b> Nêu đúng + minh họa bảng <code>PLAY RECAP</code> chuẩn chứa chỉ số <code>skipped</code>.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Chỉ số <code>skipped</code> có làm tăng thời gian chạy Playbook nhiều không? <i>(Không, task bị skipped được bỏ qua gần như tức thì trong vài milisecond.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q09</span>
-  <span class="qa-question-text">Tại sao việc đọc <code>register_var.stdout</code> của một Task vừa bị <code>skipped</code> lại khiến Playbook bị văng lỗi fatal? Làm sao để xử lý an toàn?</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Tại sao việc lạm dụng mệnh đề when quá nhiều trong một Playbook đơn khối lại bị coi là dấu hiệu của Code Smell?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Khi một file Playbook chứa hàng chục task mà task nào cũng gắn các điều kiện <code>when</code> chằng chịt, file sẽ trở nên vô cùng phức tạp, khó đọc, khó debug và vi phạm nguyên lý phân tách trách nhiệm (Separation of Concerns). Đây là dấu hiệu của Code Smell. Giải pháp chuẩn mực: tách kịch bản thành nhiều Playbook riêng biệt cho từng nhóm máy, sử dụng <b>Multi-play Playbook</b> (Buổi 05) hoặc tổ chức thành các <b>Ansible Roles</b> chuyên biệt (Buổi 14).</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Cho rằng nhồi nhét <code>when</code> vào 1 file duy nhất là thiết kế tốt.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Thấy khó đọc nhưng không đề xuất được giải pháp tái cấu trúc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân tích chính xác tác hại khó bảo trì + giải pháp Roles/Multi-play.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Trình bày xuất sắc tư duy kiến trúc: Sử dụng Dynamic Includes (`include_tasks` theo OS) để thay thế chuỗi dài các mệnh đề <code>when</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Giải pháp nào cho phép nạp file task tương ứng theo biến OS mà không cần dùng nhiều <code>when</code>? <i>(Dùng <code>include_tasks: "{{ ansible_facts.os_family }}.yml"</code>.)</i></div>
   </div>
-  <p><b>Hỏi:</b> Tại sao việc đọc <code>register_var.stdout</code> của một Task vừa bị <code>skipped</code> lại khiến Playbook bị văng lỗi fatal? Làm sao để xử lý an toàn? <i>(Liên quan QT 6.3)</i></p>
-  <p><b>Đáp án chuẩn:</b> Khi một Task bị <code>skipped</code>, Ansible vẫn khởi tạo biến đăng ký <code>register_var</code> nhưng <b>CHỈ GÁN thuộc tính <code>skipped: true</code></b> chứ <b>KHÔNG THỰC THI LỆNH</b> để tạo ra trường <code>stdout</code>. Truy xuất <code>register_var.stdout</code> sẽ bị lỗi <code>undefined attribute</code>. Cách xử lý an toàn: Bổ sung điều kiện <code>when: register_var is succeeded</code> (hoặc <code>when: register_var.stdout is defined</code>) ở Task đằng sau trước khi đọc.</p>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không biết bẫy lỗi này.</li>
-    <li><b>1:</b> Biết bị lỗi nhưng không giải thích được tại sao task skipped lại không có trường <code>stdout</code>.</li>
-    <li><b>2:</b> Phân tích chính xác cơ chế tạo biến register khi skipped + giải pháp bọc <code>is succeeded</code>.</li>
-    <li><b>3:</b> Nêu đúng + viết đoạn mã YAML minh họa cạm bẫy và cách xử lý chuẩn hóa.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Nếu Task A bị skipped, thuộc tính <code>register_var.changed</code> sẽ có giá trị là gì? <i>(Có giá trị là <code>false</code>.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q10</span>
-  <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook có sử dụng mệnh đề <code>when</code> rẽ nhánh để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Làm thế nào để ép kiểu dữ liệu chuỗi thành Boolean khi đánh giá điều kiện trong when? Tại sao filter | bool lại cần thiết?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Sử dụng Jinja2 filter <code>| bool</code>: <code>when: enable_ssl | bool</code>. Filter này rất cần thiết vì các biến được truyền từ cờ Extra Vars (<code>-e "enable_ssl=false"</code>) hoặc đọc từ tệp INI thường bị parse dưới dạng chuỗi văn bản (String). Trong Python, chuỗi ký tự <code>"false"</code> không rỗng vẫn được coi là Truthy! Dùng filter <code>| bool</code> sẽ chuyển đổi chính xác các chuỗi <code>"true"</code>, <code>"yes"</code>, <code>"1"</code> thành boolean <code>True</code> và <code>"false"</code>, <code>"no"</code>, <code>"0"</code> thành boolean <code>False</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết filter <code>| bool</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết dùng nhưng không giải thích được vấn đề chuỗi <code>"false"</code> là Truthy trong Python.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân tích chính xác cơ chế ép kiểu an toàn của <code>| bool</code> cho các giá trị chuỗi.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Liệt kê đầy đủ các giá trị chuỗi mà filter <code>| bool</code> nhận diện được (yes/no, true/false, 1/0).</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Biểu thức <code>"no" | bool</code> trả về giá trị gì trong Ansible? <i>(Trả về giá trị boolean <code>False</code>.)</i></div>
   </div>
-  <p><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook có sử dụng mệnh đề <code>when</code> rẽ nhánh để đảm bảo tính Idempotency và máy đích ở đúng trạng thái. <i>(Liên quan QT 6.3)</i></p>
-  <p><b>Đáp án chuẩn:</b></p>
-  <ol>
-    <li><b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook -e "target_env=production" site.yml</code> để áp đặt cấu hình theo nhánh production.</li>
-    <li><b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn lệnh CLI đó Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (chỉ số <code>skipped</code> giữ nguyên).</li>
-    <li><b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/production.conf</code> kiểm tra file sản phẩm của nhánh production thực sự tồn tại trên đĩa cứng máy đích, không dừng lại ở màn hình terminal.</li>
-  </ol>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là đủ" (dính bẫy trần điểm 1).</li>
-    <li><b>1:</b> Thiếu bước Lần 2 <code>changed=0</code> hoặc bước đối soát <code>docker exec</code>.</li>
-    <li><b>2:</b> Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI cụ thể.</li>
-    <li><b>3:</b> Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh <code>docker exec</code> đối soát file được tạo bởi mệnh đề <code>when</code>.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Nếu ở Lần 2 ta đổi cờ Extra Vars thành <code>-e "target_env=staging"</code>, chỉ số RECAP Lần 2 sẽ ra sao? <i>(RECAP Lần 2 sẽ báo <code>changed &gt; 0</code> do Playbook thực thi nhánh staging mới và bỏ qua nhánh production.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q11</span>
-  <span class="qa-question-text">Viết một đoạn Playbook YAML sử dụng <code>ansible_facts.os_family</code> kết hợp mệnh đề <code>when</code> để tự động chép file cấu hình thích hợp (httpd cho RedHat, nginx cho Debian).</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Phân biệt sự khác nhau giữa mệnh đề when và module ansible.builtin.assert. Khi nào dùng assert thay vì when?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>• <code>when:</code> dùng để <b>RẼ NHÁNH</b> (Bỏ qua task an toàn nếu điều kiện sai, Playbook vẫn tiếp tục chạy bình thường sang task tiếp theo).</div>
+    <div>• <code>ansible.builtin.assert:</code> dùng để <b>KIỂM ĐỊNH BẮT BUỘC</b> (Nếu điều kiện sai, kịch bản lập tức bị dừng lại và báo FAILED đỏ kèm thông báo lỗi tùy biến <code>fail_msg</code>).</div>
+    <div>Dùng <code>assert</code> cho các điều kiện tiên quyết bắt buộc (Pre-requisites) như: máy phải đủ RAM, OS phải đúng chuẩn hỗ trợ, biến bí mật phải được khai báo; nếu không đủ thì cấm chạy tiếp.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Nhầm lẫn công dụng giữa <code>when</code> và <code>assert</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết <code>assert</code> làm dừng kịch bản nhưng không nêu được ngữ cảnh Pre-requisites.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân tích chính xác sự khác nhau về mục đích (Rẽ nhánh vs Kiểm định ngắt kịch bản).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + viết cú pháp hoàn chỉnh của một task <code>assert</code> kèm <code>that:</code>, <code>fail_msg:</code> và <code>success_msg:</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Cú pháp nào của module <code>assert</code> kiểm tra máy đích có ít nhất 4 CPU cores? <i>(<code>that: ansible_facts.processor_vcpus >= 4</code>)</i></div>
   </div>
-  <p><b>Hỏi:</b> Viết một đoạn Playbook YAML sử dụng <code>ansible_facts.os_family</code> kết hợp mệnh đề <code>when</code> để tự động chép file cấu hình thích hợp (<code>/etc/httpd/conf/httpd.conf</code> cho RedHat, <code>/etc/nginx/nginx.conf</code> cho Debian).</p>
-  <p><b>Đáp án chuẩn:</b></p>
-  <pre><code class="language-yaml">---
-- name: OS Family Conditional Configuration
-  hosts: web
-  become: true
-  tasks:
-    - name: Deploy Httpd Config on RedHat Family
-      ansible.builtin.copy:
-        src: files/httpd.conf
-        dest: /etc/httpd/conf/httpd.conf
-        mode: '0644'
-      when: ansible_facts.os_family == "RedHat"
-
-    - name: Deploy Nginx Config on Debian Family
-      ansible.builtin.copy:
-        src: files/nginx.conf
-        dest: /etc/nginx/nginx.conf
-        mode: '0644'
-      when: ansible_facts.os_family == "Debian"</code></pre>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không viết được kịch bản rẽ nhánh theo <code>os_family</code>.</li>
-    <li><b>1:</b> Viết được kịch bản nhưng bọc ngoặc nhọn <code>{{ '{{' }} {{ '}}' }}</code> sai cú pháp trong mệnh đề <code>when</code>.</li>
-    <li><b>2:</b> Viết kịch bản chuẩn xác rẽ nhánh theo <code>os_family</code> cho 2 dòng OS.</li>
-    <li><b>3:</b> Trình bày xuất sắc + giải thích tính an toàn khi 1 host chạy chỉ có 1 task thực thi và 1 task bị skipped.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Nếu Playbook chạy trên hệ điều hành Alpine Linux (<code>os_family == "Alpine"</code>), cả 2 task trên sẽ ra sao? <i>(Cả 2 task sẽ đều bị skipped vì không thỏa mãn cả 2 điều kiện.)</i></p>
-</div>
 </details>
 
-<details class="qa-card" markdown="1">
-<summary class="qa-summary">
-  <span class="qa-num-badge">Q12</span>
-  <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng mệnh đề <code>when</code> hiệu quả, an toàn và sạch sẽ nhất trong Ansible.</span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Trình bày kỹ thuật kiểm tra đường dẫn là file hay thư mục trong when kết hợp module stat.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Ta dùng module <code>ansible.builtin.stat</code> để quét đường dẫn trước và lưu vào biến <code>register: p_stat</code>. Sau đó trong mệnh đề <code>when:</code> của task sau ta kiểm tra:</div>
+    <div>• File có tồn tại không: <code>when: p_stat.stat.exists</code></div>
+    <div>• Có phải file thường không: <code>when: p_stat.stat.isreg is defined and p_stat.stat.isreg</code></div>
+    <div>• Có phải thư mục không: <code>when: p_stat.stat.isdir is defined and p_stat.stat.isdir</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Dùng lệnh <code>test -f</code> qua module shell thay vì dùng <code>stat</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết dùng <code>stat</code> nhưng quên kiểm tra <code>exists</code> dẫn tới lỗi khi file không tồn tại.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Viết chính xác chuỗi kết hợp <code>stat</code> và <code>when: stat_var.stat.exists and stat_var.stat.isreg</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + phân tích tại sao cách này đạt chuẩn Idempotency và an toàn hơn việc chạy script shell thô.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu file không tồn tại, thuộc tính <code>p_stat.stat.isreg</code> có tồn tại trong Dictionary không? <i>(Không, khi file không tồn tại thì Dictionary <code>stat</code> chỉ chứa <code>{"exists": false}</code>; do đó phải kiểm tra <code>exists</code> trước.)</i></div>
   </div>
-  <p><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng mệnh đề <code>when</code> hiệu quả, an toàn và sạch sẽ nhất trong Ansible.</p>
-  <p><b>Đáp án chuẩn:</b></p>
-  <ol>
-    <li><b>Quy tắc 1:</b> KHÔNG bọc cặp dấu ngoặc nhọn <code>{{ '{{' }} {{ '}}' }}</code> bên trong từ khóa <code>when:</code>.</li>
-    <li><b>Quy tắc 2:</b> Ưu tiên dùng mảng danh sách YAML thay cho phép toán <code>and</code> dài trên 1 dòng.</li>
-    <li><b>Quy tắc 3:</b> Luôn bọc <code>is defined</code> kiểm tra sự tồn tại trước khi đọc các biến tùy chọn.</li>
-    <li><b>Quy tắc 4:</b> Sử dụng <code>block:</code> để gom nhóm các Task có cùng điều kiện rẽ nhánh (DRY principle).</li>
-    <li><b>Quy tắc 5:</b> Kiểm tra <code>is succeeded</code> trước khi đọc <code>stdout</code> của biến <code>register</code> và đối soát Lần 2 <code>changed=0</code> qua <code>docker exec</code>.</li>
-  </ol>
-  <p><b>Tiêu chí chấm:</b></p>
-  <ul>
-    <li><b>0:</b> Không tóm tắt được các quy tắc.</li>
-    <li><b>1:</b> Liệt kê được 2-3 quy tắc chung chung.</li>
-    <li><b>2:</b> Nêu đầy đủ 5 Quy tắc Vàng chính xác.</li>
-    <li><b>3:</b> Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế Playbook thông minh chuyên nghiệp.</li>
-  </ul>
-  <p><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp ngăn chặn các lỗi crash Playbook phổ biến nhất? <i>(Quy tắc 1 và Quy tắc 3.)</i></p>
-</div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Trình bày quy trình kiểm thử và đối soát toàn diện một Playbook có cấu trúc rẽ nhánh logic phức tạp.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Quy trình 4 bước chuẩn mực:</div>
+    <div>1. <b>Syntax &amp; Linter Gate:</b> Chạy <code>ansible-lint</code> để bắt các lỗi dùng <code>{{ }}</code> bên trong mệnh đề <code>when</code>.</div>
+    <div>2. <b>Matrix Simulation (--check --diff):</b> Chạy thử nghiệm trên ma trận các nhóm máy để xác nhận: máy nhóm nào thì task tương ứng SẼ chạy, máy nhóm khác SẼ bị skipped.</div>
+    <div>3. <b>Two-run Idempotency Verification:</b> Chạy Lần 1 -> Chạy Lần 2 (kết quả bắt buộc đạt <code>changed=0</code>, số lượng task skipped ở 2 lần phải bằng nhau).</div>
+    <div>4. <b>Target Verification (Both Branches):</b> Dùng <code>docker exec</code> kiểm tra CẢ HAI NHÁNH: (a) Xác nhận hiện vật ĐÃ XUẤT HIỆN trên máy thỏa điều kiện, và (b) Xác nhận hiện vật <b>TUYỆT ĐỐI KHÔNG XUẤT HIỆN</b> trên máy bị skipped.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không nêu được quy trình kiểm thử rẽ nhánh.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Chỉ kiểm tra nhánh thỏa điều kiện mà quên đối soát nhánh bị skipped.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu chính xác quy trình 4 bước + đối soát cả 2 nhánh (True và False).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Trình bày xuất sắc tư duy Enterprise: Tự động hóa ma trận kiểm thử đa OS (Debian + RHEL containers) trong CI/CD.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Tại sao bước đối soát nhánh False (nhánh skipped) lại quan trọng không kém nhánh True? <i>(Để đảm bảo các cấu hình riêng biệt không bị rò rỉ hoặc ghi đè nhầm sang các cụm máy chủ khác.)</i></div>
+  </div>
 </details>
 
 ---
 
-## V3. Câu chốt để nói khi phỏng vấn
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-Khi nhà tuyển dụng phỏng vấn về kỹ năng thiết kế kịch bản rẽ nhánh linh hoạt trong Ansible, học viên hãy đưa ra câu chốt tự tin sau:
+### 5 Điều Cốt Lõi Cần Ghi Nhớ:
+1. **Tuyệt đối không dùng `{{ }}` trong `when`:** Mệnh đề `when` là biểu thức Jinja2 thô, gọi tên biến trực tiếp.
+2. **Luôn dùng `is defined` bảo vệ:** Kiểm tra biến tồn tại trước khi truy vấn thuộc tính con để tránh lỗi crash Playbook.
+3. **Gom nhóm bằng `block`:** Áp dụng cùng điều kiện cho nhiều task liên tiếp giúp code sạch chuẩn DRY.
+4. **Hiểu đúng trạng thái `SKIPPED`:** Skipped là hành vi logic bình thường, không phải lỗi.
+5. **Đối soát cả 2 nhánh:** Luôn kiểm tra máy thỏa điều kiện có hiện vật và máy bị skipped không bị ghi đè nhầm.
 
-> **"Tôi sử dụng mệnh đề `when` và các Jinja2 Tests để xây dựng những Playbook thông minh có khả năng tự động thích ứng trên 100% hạ tầng đa dạng mà không cần duy trì nhiều file mã nguồn lặp lại. Tôi tuân thủ nghiêm ngặt quy tắc không bọc `{{ '{{' }} {{ '}}' }}` trong `when`, biểu diễn toán tử AND bằng mảng danh sách clean-code, phòng chống lỗi undefined bằng `is defined`, và gom nhóm task bằng `block`. Mọi kịch bản rẽ nhánh của tôi đều được kiểm soát trạng thái `skipped` minh bạch, đảm bảo Phép thử Lượt chạy Lần hai đạt `changed=0`, và đối soát sự thật thực tế trên máy đích qua `docker exec`."**
-
----
-
-## V4. Bảng tổng hợp điểm vấn đáp
-
-| Học viên | Câu 1–4 (Tủ) | Câu 5–9 (Nền) | Câu 10 (Chủ chốt) | Câu 11–12 (Phân loại) | Điểm tổng | Xếp loại |
-|---|---|---|---|---|---|---|
-| Ngô Văn Q | 3 / 3 / 3 / 3 | 3 / 3 / 3 / 3 / 3 | 3 | 3 / 3 | 36 / 36 | Xuất sắc |
-| Trần Thị R | 2 / 2 / 1 / 2 | 2 / 1 / 2 / 2 / 1 | 1 (Dính trần điểm 1) | 1 / 1 | 16 / 36 (Khóa trần 1) | Trung bình |
-
----
-
-## V5. BTVN 4 — Ba câu chuẩn bị cho Buổi 10
-
-Để chuẩn bị tốt nhất cho **Buổi 10: Loops — loop, loop_control, with_items**, học viên làm 3 câu hỏi nghiên cứu trước sau:
-
-1. **Nghiên cứu trước 1:** Từ khóa `loop` trong Ansible dùng để làm gì? Biến mặc định chứa phần tử hiện tại của vòng lặp tên là gì?
-2. **Nghiên cứu trước 2:** Phân biệt sự khác nhau giữa từ khóa lặp hiện đại `loop` và từ khóa lặp legacy `with_items`.
-3. **Nghiên cứu trước 3:** Từ khóa `loop_control` hỗ trợ đổi tên biến phần tử lặp (`loop_var`) và hiển thị nhãn lặp (`label`) như thế nào?
-
----
+```mermaid
+mindmap
+  root((Conditionals Mastery))
+    Syntax Rules
+      Raw Jinja2 Context
+      Cấm tuyệt đối dấu ngoặc nhọn
+      Toán tử and / or / not
+    Jinja2 Tests
+      is defined / is not defined
+      is changed / is failed
+      is directory / is file
+      Type casting with bool filter
+    Block Architecture
+      Group tasks with block
+      Inherited when conditional
+      Clean DRY code structure
+    Enterprise Verification
+      Skipped state normal behavior
+      assert for pre-requisites
+      Target check both True & False
+```
 
 > [!TIP]
-> **Bài tiếp theo:** [Bài 10: Vòng Lặp Với Loops: loop, loop_control & Kỹ Thuật Lặp Nâng Cao](ansible-10-10-loops.html)
+> **BÀI HỌC TIẾP THEO:** [Bài 10: Vòng Lặp & Xử Lý Danh Sách: Loop, With_items & Until Retry Logic](ansible-10-10-loops.html)
 {% endraw %}

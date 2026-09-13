@@ -16,10 +16,10 @@ difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.18] Hướng dẫn chuyên sâu So Sánh Thực Chiến Include vs Import: Dynamic Runtime Evaluation vs Static Pre-Processing Của Tasks/Roles: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về So Sánh Thực Chiến Include vs Import: Dynamic Runtime Evaluation vs Static Pre-Processing Của Tasks/Roles."
-  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
-  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Phân biệt bản chất kiến trúc giữa Static Pre-Processing (import_tasks/import_playbook) và Dynamic Runtime Evaluation (include_tasks/include_role)."
+  - "Làm chủ kỹ thuật nạp task động với vòng lặp loop:, điều kiện when: và truyền thuộc tính qua khối apply:."
+  - "Xử lý triệt để bẫy biến Runtime undefined và duy trì tính Idempotency changed=0 ở Lần chạy thứ hai."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi vấn đáp và phỏng vấn kỹ thuật chuyên sâu kèm lời giải."
 ---
 {% raw %}
 # [BÀI 18] SO SÁNH THỰC CHIẾN INCLUDE VS IMPORT: DYNAMIC RUNTIME EVALUATION VS STATIC PRE-PROCESSING CỦA TASKS/ROLES
@@ -31,53 +31,6 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 ---
 
 ## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
----
-
-
-
-
-
-
-
-> **Lựa chọn chính xác giữa nạp tĩnh (import_tasks/import_playbook) và nạp động (include_tasks/include_playbook) giúp tổ chức kịch bản Ansible linh hoạt, tối ưu hiệu năng và xử lý biến runtime chuẩn xác.**
-
-Bảo vệ kiến trúc mã nguồn IaC khỏi các bẫy nạp tệp không đúng thời điểm (I-10):
-
-> **Trong quá trình phát triển Playbook tự động hóa, việc chia nhỏ kịch bản thành nhiều tệp YAML con là yêu cầu bắt buộc để tăng tính đọc và dễ bảo trì. Ansible cung cấp hai cơ chế nạp tệp con: nạp tĩnh (Static Re-use qua `import_tasks` / `import_playbook`) và nạp động (Dynamic Re-use qua `include_tasks` / `include_role`). Nạp tĩnh sẽ hòa trộn các Task con ngay ở bước Parse Playbook ban đầu, giúp thừa hưởng Handler và thẻ Tag toàn cục. Nạp động chỉ tính toán khi tiến trình chạy đến Task đó ở Runtime, cho phép nạp Task theo vòng lặp `loop:` và điều kiện `when:` phức tạp. Hiểu sâu bản chất Parse-time vs Runtime giúp kỹ sư lựa chọn đúng công cụ, tránh crash kịch bản và duy trì tiêu chuẩn Idempotent `changed=0` ở Lần 2.**
-
----
-
-
-
----
-
-
-
----
-
-
-
-
-
-| Tiếng Việt | Tiếng Anh / Từ khóa + FQCN (giữ nguyên) |
-|---|---|
-| Nạp tệp nhiệm vụ tĩnh | Static task import (`ansible.builtin.import_tasks`) |
-| Nạp tệp nhiệm vụ động | Dynamic task inclusion (`ansible.builtin.include_tasks`) |
-| Nạp tệp Playbook tĩnh | Static playbook import (`ansible.builtin.import_playbook`) |
-| Tái sử dụng tĩnh | Static re-use (Pre-parse time evaluation) |
-| Tái sử dụng động | Dynamic re-use (Runtime execution evaluation) |
-| Áp dụng thuộc tính truyền xuống | Task attribute inheritance (`apply:`) |
-| Thừa hưởng thẻ đánh dấu | Tag inheritance hierarchy |
-| Thừa hưởng bộ kích hoạt | Handler notification inheritance |
-| Giới hạn phạm vi biến nạp | Scope isolation (`public: false`) |
-| Biến sinh ra ở Runtime | Runtime registered variables (`register:`) |
-| Chia nhỏ kịch bản | Playbook modularization |
-| Vòng lặp nạp tệp nhiệm vụ | Looped task inclusion (`include_tasks` + `loop:`) |
-
----
-
-### 1.1. Phân biệt `import_tasks` (Static) vs `include_tasks` (Dynamic) (15 phút)
 
 ```mermaid
 graph TD
@@ -105,15 +58,14 @@ graph TD
     style I fill:none,stroke:#22c55e,stroke-width:2px
 ```
 
-**Nguyên lý cốt lõi:** Phân biệt chính xác bản chất khác nhau về thời điểm thi hành giữa `ansible.builtin.import_tasks` (Static Re-use ở Parse-time) và `ansible.builtin.include_tasks` (Dynamic Re-use ở Runtime).
+### 1.1. Phân Biệt `import_tasks` (Static) vs `include_tasks` (Dynamic)
 
-**Giải thích cơ chế ngầm:** `import_tasks` thực hiện hòa trộn nội dung của tệp task con vào ngay trong cây Playbook chính ở thời điểm parse file trước khi chạy. Ngược lại, `include_tasks` xem tệp task con như một task độc lập tại thời điểm runtime, chỉ được đọc và phân tích khi tiến trình chạy đến đúng vị trí đó.
+Trong quá trình phát triển Playbook tự động hóa, việc chia nhỏ kịch bản thành nhiều tệp YAML con là yêu cầu bắt buộc để tăng tính đọc và dễ bảo trì. Ansible cung cấp hai cơ chế nạp tệp con: nạp tĩnh (Static Re-use qua `import_tasks` / `import_playbook`) và nạp động (Dynamic Re-use qua `include_tasks` / `include_role`).
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng `import_tasks` để nạp tệp task con trong một vòng lặp `loop:` làm Ansible Parser báo lỗi syntax ngắt Playbook ở bước load.
+- **`ansible.builtin.import_tasks` (Static Import):** Thực hiện hòa trộn nội dung của tệp task con vào ngay trong cây Playbook chính ở thời điểm parse file (Parse-time) trước khi chạy.
+- **`ansible.builtin.include_tasks` (Dynamic Include):** Xem tệp task con như một task độc lập tại thời điểm runtime, chỉ được đọc và phân tích khi tiến trình chạy đến đúng vị trí đó.
+- **`ansible.builtin.import_playbook`:** Nạp tĩnh các tệp Playbook hoàn chỉnh ở cấp root (ngoài khối `tasks:`), cho phép chuỗi hóa nhiều Playbook độc lập trong một kịch bản tổng thể.
 
-**Minh hoạ.** Nạp tĩnh `import_tasks` và nạp động `include_tasks`:
 ```yaml
 # Nạp tĩnh Static Import (Parse-time)
 - name: Import static common tasks
@@ -125,93 +77,14 @@ graph TD
   when: env_type == 'production'
 ```
 
-**Nguyên lý cốt lõi:** Tái sử dụng và mô-đun hóa kịch bản bằng cách chia nhỏ các danh sách Task có cùng chức năng vào các tệp YAML con nằm trong thư mục `tasks/`.
+### 1.2. Vòng Lặp `include_tasks`, Thẻ Tags và Thuộc Tính `apply:`
 
-**Giải thích cơ chế ngầm:** Giúp file Playbook chính giữ được độ ngắn gọn, dễ đọc, cho phép các thành viên trong đội cùng làm việc đồng thời trên nhiều tệp task con khác nhau mà không lo xung đột file Git.
+- **Vòng lặp với `include_tasks`:** Cho phép xử lý kịch bản phức tạp lặp qua mảng danh sách bằng từ khóa `loop:`. Với mỗi phần tử, Ansible sẽ nạp tệp task con và truyền biến tương ứng vào xử lý. Module `import_tasks` không thể sử dụng với `loop:`.
+- **Thừa hưởng thẻ Tags và Handler với `import_tasks`:** Do hòa trộn phẳng ở Parse-time, mọi task con nạp qua `import_tasks` tự động thừa hưởng thẻ `tags` gán ở task import và có thể phát tín hiệu `notify:` kích hoạt Handler ở Playbook chính.
+- **Thuộc tính `apply:` trong `include_tasks`:** Thẻ tag gán trực tiếp cho `include_tasks` chỉ áp dụng cho task include. Để ép truyền thẻ tag, quyền `become` hay biến môi trường xuống từng task con bên trong, bắt buộc phải sử dụng khối `apply:`.
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Viết 1 file Playbook phẳng dài 1000 dòng chứa tất cả cấu hình Firewall, User, Web, DB gây cực kỳ rườm rà và khó đọc.
-
-**Minh hoạ.** Cấu trúc thư mục chia nhỏ task:
-```bash
-project/
-├── site.yml
-└── tasks/
-    ├── common_tasks.yml
-    ├── web_tasks.yml
-    └── db_tasks.yml
-```
-
-**Nguyên lý cốt lõi:** Sử dụng module `ansible.builtin.import_playbook` để gom nhóm và thi hành tuần tự nhiều tệp Playbook hoàn chỉnh độc lập trong một kịch bản tổng thể.
-
-**Giải thích cơ chế ngầm:** Cho phép chuỗi hóa các kịch bản triển khai lớn: gọi `import_playbook: playbooks/common.yml`, sau đó `import_playbook: playbooks/web.yml`, giúp tổ chức dự án cấp Enterprise theo từng tầng Playbook chuyên biệt.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng `import_tasks` để nạp 1 tệp Playbook (chứa từ khóa `hosts:`) làm Ansible Engine báo lỗi `Playbook directive not allowed in tasks`.
-
-**Minh hoạ.** Gom nhóm nhiều Playbook bằng `import_playbook`:
 ```yaml
-# site-all.yml
----
-- name: Import Base Infrastructure Playbook
-  ansible.builtin.import_playbook: playbooks/common.yml
-
-- name: Import Web Applications Playbook
-  ansible.builtin.import_playbook: playbooks/webservers.yml
-```
-
----
-
-### 1.2. Vòng lặp `include_tasks`, Thẻ Tags và thuộc tính `apply:` (15 phút)
-
-**Nguyên lý cốt lõi:** Sử dụng module `ansible.builtin.include_tasks` kết hợp với từ khóa vòng lặp `loop:` để nạp và thực thi lại một tệp Task con cho từng phần tử trong danh sách.
-
-**Giải thích cơ chế ngầm:** Cho phép xử lý kịch bản phức tạp: với mỗi phần tử trong mảng (như từng thông số Virtual Host hoặc từng Database user), Ansible sẽ nạp tệp `tasks/vhost_item.yml` và truyền biến của phần tử đó vào xử lý.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Cố tình gõ `import_tasks` với `loop:` khiến Ansible Engine báo lỗi `Cannot use loop with import_tasks`.
-
-**Minh hoạ.** Lặp mảng danh sách vhosts và nạp `include_tasks`:
-```yaml
-- name: Loop through vhost list and include setup tasks
-  ansible.builtin.include_tasks: tasks/vhost_setup.yml
-  loop:
-    - { name: 'site1', port: 8081 }
-    - { name: 'site2', port: 8082 }
-  loop_control:
-    loop_var: vhost_item
-```
-
-**Nguyên lý cốt lõi:** Tận dụng khả năng thừa hưởng thẻ `tags` và Handler notification toàn cục tự động của các tệp Task nạp tĩnh qua `import_tasks`.
-
-**Giải thích cơ chế ngầm:** Vì `import_tasks` hòa trộn phẳng các task con ở bước parse-time, tất cả các Task bên trong tệp con sẽ tự động thừa hưởng thẻ `tags` được gán ở task import, và có thể phát thông báo `notify:` kích hoạt Handler nằm ở Playbook chính một cách trực tiếp.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc tại sao khi chạy `ansible-playbook --tags web` thì các task nạp qua `include_tasks` lại không nhận được tag (do `include_tasks` nạp động ở runtime).
-
-**Minh hoạ.** Gán tag cho `import_tasks` tự động lan xuống mọi task con:
-```yaml
-- name: Import web tasks with tag
-  ansible.builtin.import_tasks: tasks/web_tasks.yml
-  tags:
-    - web_deploy
-```
-
-**Nguyên lý cốt lõi:** Sử dụng thuộc tính `apply:` bên trong `ansible.builtin.include_tasks` để ép buộc truyền các thuộc tính task (như `tags:`, `become:`, `environment:`) xuống tất cả các Task con nằm trong tệp được nạp động.
-
-**Giải thích cơ chế ngầm:** Do `include_tasks` nạp động ở runtime, nếu gán `tags:` trực tiếp ở dòng `include_tasks`, thẻ tag đó chỉ có hiệu lực cho chính task include mà **không lan xuống các task con bên trong**. Thuộc tính `apply:` giải quyết triệt để vấn đề này.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Gán `tags: [deploy]` trực tiếp cho `include_tasks` nhưng khi chạy `--tags deploy` các task con bên trong bị bỏ qua hoàn toàn.
-
-**Minh hoạ.** Truyền thẻ tag xuống các task con trong `include_tasks` bằng `apply:`:
-```yaml
-- name: Include web tasks dynamically with applied tags
+- name: Include web tasks dynamically with applied tags and privileges
   ansible.builtin.include_tasks:
     file: tasks/web_tasks.yml
     apply:
@@ -222,310 +95,164 @@ project/
     - web_deploy
 ```
 
----
+### 1.3. Bẫy Biến Runtime với `import_tasks`, Điều Kiện `when:` và Idempotency
 
-### 1.3. Bẫy Biến Runtime với `import_tasks`, Điều kiện `when:` và Idempotency (10 phút)
-
-**Nguyên lý cốt lõi:** Tuyệt đối không tham chiếu các biến sinh ra ở thời điểm Runtime (như biến lưu kết quả `register:`) vào trong cờ điều kiện `when:` của `ansible.builtin.import_tasks`.
-
-**Giải thích cơ chế ngầm:** `import_tasks` được Ansible Engine phân tích và đánh giá cờ `when:` ngay ở bước parse-time trước khi Playbook chạy. Tại thời điểm này, các biến sinh ra từ `register:` ở task trước chưa hề tồn tại, dẫn đến cờ `when:` của `import_tasks` bị đánh giá sai hoặc văng lỗi undefined variable.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng `import_tasks: file.yml when: reg_out.stdout == 'OK'` làm Playbook bị crash với lỗi `reg_out is undefined`.
-
-**Minh hoạ.** Sử dụng `include_tasks` (Dynamic) khi cần đánh giá cờ `when:` dựa trên biến `register`:
-```yaml
-- name: Step 1 - Check system status and register variable
-  ansible.builtin.command: cat /etc/status.txt
-  register: status_res
-  changed_when: false
-
-- name: Step 2 - Include tasks dynamically based on registered variable
-  ansible.builtin.include_tasks: tasks/repair_tasks.yml
-  when: "'ERROR' in status_res.stdout"
-```
-
-**Nguyên lý cốt lõi:** Kết hợp thuộc tính điều kiện `when:` với `ansible.builtin.include_tasks` để nạp tệp Task linh hoạt theo trạng thái hệ điều hành hoặc môi trường triển khai.
-
-**Giải thích cơ chế ngầm:** Cho phép tổ chức kịch bản hỗ trợ đa hệ điều hành: chỉ nạp `tasks/redhat.yml` khi `ansible_facts.os_family == 'RedHat'`, và nạp `tasks/debian.yml` khi `ansible_facts.os_family == 'Debian'`.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Gom tất cả task CentOS và Ubuntu vào chung 1 file dài dằng dặc kèm hàng chục dòng `when:` trùng lặp.
-
-**Minh hoạ.** Nạp tệp task theo hệ điều hành bằng `include_tasks`:
-```yaml
-- name: Include OS-specific setup tasks
-  ansible.builtin.include_tasks: "tasks/{{ ansible_facts.os_family | lower }}_tasks.yml"
-```
-
-**Nguyên lý cốt lõi:** Đảm bảo rằng ở lượt chạy Lần thứ hai, Playbook chia nhỏ bằng `include_tasks` và `import_tasks` bắt buộc phải đạt chỉ số `changed=0` tuyệt đối trong bảng `PLAY RECAP`.
-
-**Giải thích cơ chế ngầm:** Việc chia nhỏ Playbook thành các tệp task con chỉ giúp cải thiện cấu trúc tổ chức mã nguồn, không làm thay đổi bản chất Idempotency của các module bên dưới. Tất cả các Task trong các tệp con vẫn phải tuân thủ chuẩn Idempotent để ở Lần 2 chỉ trả về `ok` và `changed=0`.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do task trong tệp con bị lặp changed mạo danh.
-
-**Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của Playbook chia nhỏ:
-```bash
-# Lần 1: changed=2 (Nạp tệp task con và thi hành chép file cấu hình)
-target1 : ok=5 changed=2 unreachable=0 failed=0
-
-# Lần 2: changed=0 (Mọi thứ trùng khớp 100% -> ĐẠT IDEMPOTENCY)
-target1 : ok=5 changed=0 unreachable=0 failed=0
-```
+- **Bẫy biến `register` với `import_tasks`:** Vì `import_tasks` được đánh giá cờ `when:` ngay ở bước Parse-time, các biến sinh ra từ `register:` ở task trước chưa hề tồn tại, dẫn đến lỗi `undefined variable` hoặc đánh giá sai điều kiện.
+- **Nạp động theo hệ điều hành:** Kết hợp `include_tasks` với facts hệ điều hành (`tasks/{{ ansible_facts.os_family | lower }}_tasks.yml`) giúp kịch bản thích ứng linh hoạt mà không cần viết hàng chục dòng `when:` trùng lặp.
+- **Bảo toàn Idempotency:** Việc chia nhỏ Playbook thành các tệp task con không làm thay đổi bản chất Idempotency. Ở lượt chạy Lần thứ hai, toàn bộ kịch bản bắt buộc phải đạt `changed=0` tuyệt đối trong bảng `PLAY RECAP`.
 
 ---
 
-### 1.4. Đưa vào việc thật (4 phút)
+## 2. Bảng So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-### 7.1. Áp dụng vào hạ tầng sẵn có
-Khi xây dựng bộ kịch bản quản trị hệ thống Doanh nghiệp lớn:
-- Sử dụng `import_playbook` trong file tổng `site-all.yml` để liên kết 4 công đoạn: `playbooks/01-init-common.yml`, `playbooks/02-setup-db.yml`, `playbooks/03-setup-web.yml`, `playbooks/04-security-hardening.yml`.
-- Trong từng Playbook, sử dụng `include_tasks` lặp mảng danh sách từ điển cấu hình ứng dụng.
-
-### 7.2. Rủi ro hỏng hóc khi triển khai Production và giải pháp an toàn
-- **Rủi ro:** Sử dụng `import_tasks` nạp tệp task chứa các lệnh ngắt kết nối SSH hoặc restart dịch vụ mạng, khiến Ansible Parser hòa trộn phẳng task vào giữa Playbook làm gián đoạn các task cần chạy phía sau.
-- **Giải pháp an toàn:**
-  1. Sử dụng `import_tasks` cho các task chuẩn hóa tĩnh nền tảng ở đầu Playbook.
-  2. Sử dụng `include_tasks` cho các task điều kiện nâng cao ở giữa và cuối Playbook.
-
-### 7.3. Đo lường chỉ số Trước – Sau khi áp dụng
-- **Trước khi chia nhỏ:** 1 file Playbook phẳng dài 1500 dòng YAML, mỗi lần tìm task sửa chữa mất 15 phút cuộn trang.
-- **Sau khi chia nhỏ:** File chính dài 20 dòng gọi `import_tasks` sang 5 file con gọn gàng trong `tasks/`, giảm 90% thời gian tìm kiếm sửa lỗi.
-
-### 7.4. Khi nào KHÔNG nên dùng hoặc không nên lạm dụng include/import
-- **Không lạm dụng `include_tasks` lồng nhau quá 3 cấp (Nested include_tasks):** Việc `include_tasks` tệp A, tệp A lại `include_tasks` tệp B, tệp B lại `include_tasks` tệp C sẽ khiến tiến trình chạy bị rối luồng và rất khó theo dõi vết lỗi trên terminal.
-
----
-
-### 1.5. Bẫy hay gặp (2 phút)
-
-| # | Bẫy hay gặp | Vì sao "recap xanh mà sai / không idempotent" | Lệnh phát hiện và xử lý |
+| Tiêu Chí Kỹ Thuật | Static Task Import (`import_tasks`) | Dynamic Task Include (`include_tasks`) | Static Playbook Import (`import_playbook`) |
 |---|---|---|---|
-| 1 | Dùng `import_tasks` bên trong vòng lặp `loop:` | Ansible Parser văng lỗi `Cannot use loop with import_tasks` ở bước load file. | Đổi từ `import_tasks` sang `ansible.builtin.include_tasks`. |
-| 2 | Tham chiếu biến `register` vào `when:` của `import_tasks` | Biến register chưa tồn tại ở bước parse-time làm báo lỗi `undefined variable`. | Đổi sang dùng `ansible.builtin.include_tasks`. |
-| 3 | Quên thuộc tính `apply:` khi gán tag cho `include_tasks` | Thẻ tag không lan xuống các task con làm task con bị skip khi chạy `--tags`. | Thêm khối `apply: tags: [my_tag]` trong `include_tasks`. |
-| 4 | Dùng `import_tasks` để nạp 1 file Playbook chứa `hosts:` | Ansible Engine báo lỗi `Playbook directive not allowed in tasks`. | Dùng module `ansible.builtin.import_playbook` cho file Playbook. |
-| 5 | Gõ sai đường dẫn tệp task con trong `tasks/` | Ansible báo lỗi `Could not find or access the file`. | Đảm bảo đường dẫn tệp tương đối chuẩn: `tasks/my_file.yml`. |
-| 6 | Thắc mắc vì sao Handler trong `include_tasks` không chạy | `include_tasks` nạp động ở runtime nên Handler chỉ nhận từ thời điểm include trở đi. | Đặt Handler trong `handlers/main.yml` hoặc dùng `import_tasks`. |
-| 7 | Biến truyền vào `include_tasks` làm đè biến global | Biến truyền qua `vars:` trong `include_tasks` mặc định tồn tại trong toàn Play. | Đặt tên biến có tiền tố rõ ràng để tránh đè nhầm. |
-| 8 | Quên cờ `changed_when: false` cho task đọc dữ liệu trong tệp con | Task `command` trong tệp task con liên tục báo `changed=1` ở Lần 2. | Bổ sung `changed_when: false` cho task đọc dữ liệu. |
-| 9 | Viết sai thuộc tính `file:` trong `include_tasks` | Viết `include_tasks: file = tasks/web.yml` sai cú pháp từ khóa YAML. | Viết đúng cú pháp YAML: `include_tasks: tasks/web.yml` hoặc `file:`. |
-| 10 | Không test thử Idempotency Lần 2 của kịch bản chia nhỏ | Task trong tệp con bị lặp changed mạo danh ở Lần 2 mà không biết. | Chạy lại Playbook Lần 2 và đối soát `changed=0`. |
-| 11 | Lồng `include_tasks` quá 3 cấp gây rắc rối | Luồng thi hành rườm rà làm khó debug khi gặp exception. | Rút gọn cấu trúc nạp tệp task con tối đa 2 cấp. |
-| 12 | Thắc mắc vì sao `import_playbook` không chạy được trong task | `import_playbook` là directive ở cấp root Playbook, không nằm trong `tasks:`. | Đặt `import_playbook` nằm ở cấp cao nhất ngoài khối `tasks:`. |
+| **Thời Điểm Đánh Giá** | Parse-time (trước khi Playbook bắt đầu chạy) | Runtime (khi tiến trình chạy tới task đó) | Parse-time (ở cấp độ root Playbook) |
+| **Hỗ Trợ Vòng Lặp `loop:`** | ❌ Không hỗ trợ (văng lỗi cú pháp ngay) | ✅ Hỗ trợ đầy đủ kèm `loop_control` | ❌ Không hỗ trợ |
+| **Kế Thừa Thẻ Tags** | Tự động kế thừa xuống mọi task con | Cần khai báo qua khối `apply: tags:` | Kế thừa theo từng Playbook con |
+| **Kích Hoạt Handlers** | Gọi trực tiếp Handlers của Playbook chính | Handlers chỉ nhìn thấy sau khi include | Handlers nằm riêng trong từng Playbook |
+| **Sử Dụng Biến `register:`** | ❌ Không thể dùng trong điều kiện `when:` | ✅ Đánh giá linh hoạt dựa trên output task trước | ❌ Không hỗ trợ |
+| **Tác Động Hiệu Năng** | Nhanh hơn (không mất overhead nạp tệp ở runtime) | Chậm hơn đôi chút do nạp và parse file tại runtime | Nhanh chóng nạp toàn bộ cây kịch bản |
+
+> [!IMPORTANT]
+> **QUY TẮC BẤT DI BẤT DỊCH:**
+> Sử dụng `import_tasks` cho các cấu hình nền tảng tĩnh, bất biến; sử dụng `include_tasks` khi cần lặp mảng danh sách hoặc rẽ nhánh theo biến sinh ra trong quá trình thực thi; và chỉ sử dụng `import_playbook` ở cấp cao nhất ngoài khối `tasks:` để liên kết các luồng triển khai độc lập.
 
 ---
 
-### 1.6. Tóm tắt (1 phút)
+## 3. Kiến Trúc Triển Khai Chuẩn Production (Configuration / Playbook / Role Breakdown)
+
+Dưới đây là kiến trúc Playbook chính chuẩn Enterprise kết hợp toàn diện `import_tasks`, `include_tasks` (với `apply:`, `loop:`, `when:`) và `import_playbook`:
+
+```yaml
+# site-include-import.yml
+---
+- name: Master Playbook Combining Import and Include Directives
+  hosts: web
+  become: true
+  vars:
+    deploy_env: "production"
+    vhosts_data:
+      - name: "vhost_alpha"
+        port: 9001
+      - name: "vhost_beta"
+        port: 9002
+
+  tasks:
+    - name: Task 1 - Import static common tasks with tag
+      ansible.builtin.import_tasks: tasks/common_tasks.yml
+      tags:
+        - base_setup
+
+    - name: Task 2 - Include dynamic web tasks with apply tags and when condition
+      ansible.builtin.include_tasks:
+        file: tasks/web_tasks.yml
+        apply:
+          tags:
+            - web_setup
+          become: true
+      vars:
+        app_name: "MASTER_INCLUDE_APP"
+        app_port: 8888
+      when: deploy_env == 'production'
+
+    - name: Task 3 - Include vhost tasks with loop
+      ansible.builtin.include_tasks:
+        file: tasks/vhost_tasks.yml
+      loop: "{{ vhosts_data }}"
+      loop_control:
+        loop_var: current_vhost
+
+- name: Import Sub Playbook
+  ansible.builtin.import_playbook: playbooks/sub_playbook.yml
+```
+
+### Phân Tích Kỹ Thuật Từng Dòng (Line-by-Line Breakdown):
+
+- <span class="badge-line">Line 14-17</span>: **Khai báo `import_tasks` tĩnh:** Nạp `tasks/common_tasks.yml` tại thời điểm Parse-time, gán tag `base_setup` tự động truyền xuống toàn bộ các task bên trong tệp con.
+- <span class="badge-line">Line 19-28</span>: **Khai báo `include_tasks` động:** Nạp `tasks/web_tasks.yml` tại Runtime nếu `deploy_env == 'production'`. Khối `apply:` ép buộc gán thẻ `web_setup` và quyền `become: true` cho mọi task con được nạp.
+- <span class="badge-line">Line 30-35</span>: **Khai báo `include_tasks` với vòng lặp:** Lặp qua mảng `vhosts_data`, gán biến phần tử vào `current_vhost` qua `loop_control.loop_var` để tránh xung đột biến mặc định `item`.
+- <span class="badge-line">Line 37-38</span>: **Khai báo `import_playbook`:** Nạp kịch bản `playbooks/sub_playbook.yml` ở cấp root Playbook để thực thi xác thực hạ tầng thứ cấp.
+
+---
+
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Dùng import_tasks Kết Hợp Biến Runtime Gây Crash Kịch Bản
+
+### Tình Huống Sự Cố Thực Tế Tại Doanh Nghiệp:
+Một đội ngũ DevOps xây dựng Playbook kiểm tra trạng thái dịch vụ Nginx. Task 1 chạy lệnh kiểm tra và đăng ký kết quả vào biến `nginx_status`. Task 2 sử dụng `import_tasks: tasks/repair_nginx.yml` với cờ `when: nginx_status.stdout == 'DOWN'`. Khi chạy Playbook, Ansible Parser lập tức dừng kịch bản và văng lỗi ngay ở bước khởi tạo trước khi bất kỳ task nào kịp chạy.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```diff
+- # CẤU HÌNH GÂY CRASH Ở PARSE-TIME:
+- - name: Task 1 - Check Nginx status
+-   ansible.builtin.command: /usr/local/bin/check_nginx.sh
+-   register: nginx_status
+-   changed_when: false
+-
+- - name: Task 2 - Import repair tasks statically
+-   ansible.builtin.import_tasks: tasks/repair_nginx.yml
+-   when: nginx_status.stdout == 'DOWN'
+- # LỖI: 'nginx_status' is undefined during playbook parsing phase
+
++ # CẤU HÌNH SỬA ĐÚNG (DYNAMIC INCLUDE AT RUNTIME):
++ - name: Task 1 - Check Nginx status
++   ansible.builtin.command: /usr/local/bin/check_nginx.sh
++   register: nginx_status
++   changed_when: false
++
++ - name: Task 2 - Include repair tasks dynamically
++   ansible.builtin.include_tasks: tasks/repair_nginx.yml
++   when: nginx_status.stdout is defined and nginx_status.stdout == 'DOWN'
+```
 
 ```mermaid
 flowchart TD
-    A["Nhu cầu Chia nhỏ Kịch bản Playbook"] --> B{"Phân loại Đối tượng Nạp"}
+    A["ansible-playbook site.yml"] --> B["Ansible Parser tải Playbook vào bộ nhớ"]
+    B --> C{"Gặp import_tasks có cờ when: nginx_status?"}
+    C -->|"Có"| D["Đánh giá cờ when ngay ở Parse-time"]
+    D --> E["LỖI CRASH: nginx_status chưa tồn tại trên bộ nhớ!"]
     
-    B -->|"Tệp Playbook chứa hosts:"| C["ansible.builtin.import_playbook: site_web.yml"]
-    B -->|"Tệp Task con tĩnh Parse-time"| D["ansible.builtin.import_tasks: tasks/common.yml"]
-    B -->|"Tệp Task con động Runtime"| E["ansible.builtin.include_tasks: tasks/web.yml"]
-    
-    D --> F["Hòa trộn phẳng -> Hỗ trợ Tags & Handlers trực tiếp"]
-    E --> G["Đánh giá Runtime -> Hỗ trợ loop: và when: (dùng apply: cho tags)"]
-    
-    C --> H["Playbook chính tổng hợp: site-include-import.yml"]
-    F --> H
-    G --> H
-    
-    H --> I["LƯỢT CHẠY LẦN 2"]
-    I --> J{"PLAY RECAP Lần 2: changed=0?"}
-    J -->|"Có"| K["ĐẠT: Modular Playbook chuẩn Idempotent"]
-    J -->|"Không"| L["LỖI: Rà soát lại task trong tệp con"]
+    C -->|"Đổi sang include_tasks"| F["Bỏ qua đánh giá ở Parse-time"]
+    F --> G["Task 1 thực thi và register biến nginx_status"]
+    G --> H["Tiến trình chạy tới Task 2: Đánh giá when lúc Runtime"]
+    H --> I["ĐẠT: Nạp tasks/repair_nginx.yml an toàn, changed=0 ở Lần 2"]
 
     style A fill:none,stroke:#3b82f6,stroke-width:2px
     style B fill:none,stroke:#6366f1,stroke-width:2px
-    style C fill:none,stroke:#06b6d4,stroke-width:2px
-    style D fill:none,stroke:#8b5cf6,stroke-width:2px
-    style E fill:none,stroke:#f59e0b,stroke-width:2px
-    style F fill:none,stroke:#10b981,stroke-width:2px
-    style G fill:none,stroke:#ec4899,stroke-width:2px
-    style H fill:none,stroke:#64748b,stroke-width:2px
-    style I fill:none,stroke:#3b82f6,stroke-width:2px
-    style J fill:none,stroke:#eab308,stroke-width:2px
-    style K fill:none,stroke:#22c55e,stroke-width:2px
-    style L fill:none,stroke:#ef4444,stroke-width:2px
+    style C fill:none,stroke:#f59e0b,stroke-width:2px
+    style D fill:none,stroke:#ef4444,stroke-width:2px
+    style E fill:none,stroke:#ef4444,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#10b981,stroke-width:2px
+    style H fill:none,stroke:#8b5cf6,stroke-width:2px
+    style I fill:none,stroke:#22c55e,stroke-width:2px
 ```
 
-### Năm điều phải nhớ
-1. **Phân biệt `import` vs `include`:** `import` nạp tĩnh ở Parse-time; `include` nạp động ở Runtime.
-2. **Dùng `import_playbook` cho Playbook:** Gom nhóm nhiều tệp Playbook độc lập bằng `import_playbook`.
-3. **Dùng `include_tasks` với `loop:`:** Nạp tệp task con linh hoạt trong vòng lặp mảng danh sách.
-4. **Dùng `apply:` cho `include_tasks`:** Ép truyền thẻ `tags` và `become` xuống các task con nạp động.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Mọi kịch bản chia nhỏ bằng include/import ở lượt chạy Lần 2 bắt buộc phải đạt `changed=0`.
+### 5-Whys Root Cause Analysis:
+1. **Tại sao Playbook bị crash?** Vì Ansible Engine báo lỗi biến `nginx_status` không tồn tại (`undefined`).
+2. **Tại sao biến không tồn tại khi Task 1 đã register?** Vì lỗi xảy ra ở bước nạp Playbook (Parse-time) trước khi Task 1 được thực thi trên máy đích.
+3. **Tại sao cờ `when:` lại được đánh giá ở Parse-time?** Vì kịch bản sử dụng `import_tasks` (Static Import), ép Ansible hòa trộn phẳng và đánh giá điều kiện trước khi chạy.
+4. **Tại sao kỹ sư lại dùng `import_tasks`?** Do nhầm lẫn giữa cơ chế nạp tĩnh (Static Pre-processing) và nạp động (Dynamic Runtime Evaluation).
+5. **Giải pháp triệt để là gì?** Chuyển sang sử dụng `include_tasks` cho tất cả các task phụ thuộc vào biến sinh ra ở Runtime hoặc kết quả đăng ký từ task trước.
 
 ---
 
-### 1.7. Câu hỏi tự kiểm tra (kiêm luyện RHCE EX294)
+## 5. Hands-on Lab: Triển Khai Kịch Bản Modular Playbook Đa Tầng Với Include & Import (8 Bước)
 
-1. **[RHCE EX294 Objective #13]** Sự khác nhau về thời điểm nạp giữa module `ansible.builtin.import_tasks` và `ansible.builtin.include_tasks` là gì?
-   - *Đáp án:* `import_tasks` nạp tĩnh tại thời điểm Parse-time (trước khi chạy); `include_tasks` nạp động tại thời điểm Runtime (khi tiến trình chạy tới Task đó).
-2. **[RHCE EX294 Objective #13]** Module nào dùng để gom nhóm và thi hành tuần tự nhiều tệp Playbook độc lập trong một kịch bản tổng thể?
-   - *Đáp án:* Module `ansible.builtin.import_playbook`.
-3. **[RHCE EX294 Objective #13]** Muốn nạp một tệp task con lặp qua một mảng danh sách bằng từ khóa `loop:`, ta bắt buộc phải sử dụng module nào?
-   - *Đáp án:* Bắt buộc dùng `ansible.builtin.include_tasks` (vì `import_tasks` không hỗ trợ `loop:`).
-4. **[RHCE EX294 Objective #13]** Thuộc tính nào dùng để truyền thẻ tag `web_deploy` xuống tất cả các Task con nằm trong tệp được nạp động qua `include_tasks`?
-   - *Đáp án:* Thuộc tính `apply:` (cú pháp `apply: tags: [web_deploy]`).
-5. **[RHCE EX294 Objective #13]** Tại sao không nên tham chiếu biến đăng ký `register:` ở task trước vào cờ điều kiện `when:` của `import_tasks`?
-   - *Đáp án:* Vì `import_tasks` được đánh giá ngay ở bước parse-time trước khi chạy, tại thời điểm đó biến `register:` chưa tồn tại dẫn đến lỗi undefined variable.
-6. **[RHCE EX294 Objective #13]** Viết đoạn mã YAML nạp tĩnh tệp `tasks/common.yml` bằng `import_tasks` và gán tag `base_setup`.
-   - *Đáp án:*
-     ```yaml
-     - name: Import static common tasks
-       ansible.builtin.import_tasks: tasks/common.yml
-       tags:
-         - base_setup
-     ```
-7. **[RHCE EX294 Objective #13]** Viết đoạn mã YAML nạp động tệp `tasks/redhat.yml` bằng `include_tasks` khi biến `ansible_facts.os_family == 'RedHat'`.
-   - *Đáp án:*
-     ```yaml
-     - name: Include RedHat specific tasks
-       ansible.builtin.include_tasks: tasks/redhat.yml
-       when: ansible_facts.os_family == 'RedHat'
-     ```
-8. **[RHCE EX294 Objective #13]** Tệp task con được nạp bằng `import_tasks` có tự động thừa hưởng các Handler nằm ở Playbook chính không?
-   - *Đáp án:* Có, vì `import_tasks` hòa trộn phẳng các task con ở bước parse-time nên Handler được nhận trực tiếp.
-9. **[RHCE EX294 Objective #13]** Viết đoạn Playbook YAML tổng thể `site-all.yml` nạp 2 Playbook con `playbooks/common.yml` và `playbooks/web.yml` bằng `import_playbook`.
-   - *Đáp án:*
-     ```yaml
-     ---
-     - name: Import Common Playbook
-       ansible.builtin.import_playbook: playbooks/common.yml
-
-     - name: Import Web Playbook
-       ansible.builtin.import_playbook: playbooks/web.yml
-     ```
-10. **[RHCE EX294 Objective #13]** Thuộc tính `loop_control: loop_var: task_item` trong `include_tasks` có tác dụng gì?
-    - *Đáp án:* Dùng để đổi tên biến vòng lặp từ `item` mặc định sang `task_item`, tránh xung đột khi lồng nhiều vòng lặp.
-11. **[RHCE EX294 Objective #13]** Thư mục tiêu chuẩn nào khuyến nghị dùng để chứa các tệp Task con được chia nhỏ trong dự án?
-    - *Đáp án:* Thư mục `tasks/` (nằm cùng cấp với Playbook chính hoặc bên trong Role).
-12. **[RHCE EX294 Objective #13]** Việc chia nhỏ Playbook bằng `include_tasks` và `import_tasks` có làm thay đổi chỉ số Idempotency `changed=0` ở Lần chạy thứ hai không?
-    - *Đáp án:* Hoàn toàn không, kịch bản ở Lần 2 thi hành lại vẫn bắt buộc phải đạt `changed=0` tuyệt đối.
-13. **[RHCE EX294 Objective #13]** Lệnh CLI nào giúp kiểm tra sự thật kết quả thực thi của các tệp task con nạp từ `include_tasks` trên target node Docker container?
-    - *Đáp án:* Lệnh `docker exec target1 cat /path/to/rendered/file`.
-
----
-
-### 1.8. Tài liệu tham khảo
-
-- Ansible Core Documentation (v2.15+): [Re-using Ansible artifacts - Includes and Imports](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_includes.html)
-- Ansible Core Documentation: [import_tasks module](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_tasks_module.html)
-- Ansible Core Documentation: [include_tasks module](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_tasks_module.html)
-- Red Hat Certified Engineer (RHCE) EX294 Study Guide: Reusing Content with Dynamic Includes and Static Imports.
-
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Nội dung | Thời lượng dự kiến | Thời lượng thực tế |
-|---|---|---|---|
-| §0 | Khởi động và ôn tập buổi 17 | 10 phút | 10 phút |
-| §1–§2 | Mục tiêu làm được & Cần biết trước | 2 phút | 2 phút |
-| §3 | Thuật ngữ Việt-Anh & Mô hình tư duy | 8 phút | 8 phút |
-| §4 | import_tasks vs include_tasks & import_playbook (QT 4.1–4.3) | 15 phút | 15 phút |
-| §5 | Vòng lặp include_tasks, Tags & apply: (QT 5.1–5.3) | 15 phút | 15 phút |
-| §6 | Bẫy Biến Runtime, when: & Idempotency (QT 6.1–6.3) | 10 phút | 10 phút |
-| §7–§9 | Đưa vào việc thật, Bẫy hay gặp & Tóm tắt | 7 phút | 7 phút |
-| §10–§11 | Câu hỏi tự kiểm tra EX294 & Tài liệu tham khảo | 3 phút | 3 phút |
-| **Tổng** | **Khối lý thuyết Buổi 18** | **60 phút** | **60 phút** |
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
-> [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên môi trường máy chủ Linux / Docker containers phân tán. Hãy đảm bảo bạn đã chuẩn bị Control Node cài đặt Ansible Core 2.15+ cùng các Managed Nodes đã cấu hình SSH Key Authentication.
-
-## Khối thực hành — 150 phút
-
-> **Đối soát thời lượng:** Khối thực hành kéo dài đúng **150'** (từ L0 đến L11).
-> **Nguyên tắc cốt lõi:** Thực hành chia nhỏ kịch bản thành các tệp task con trong `tasks/`, sử dụng `ansible.builtin.import_tasks` nạp tĩnh, sử dụng `ansible.builtin.include_tasks` nạp động kết hợp điều kiện `when:`, sử dụng `include_tasks` kết hợp vòng lặp `loop:` duyệt mảng cấu hình, sử dụng `ansible.builtin.import_playbook` gom nhóm Playbook, gán thuộc tính `apply: tags:` cho `include_tasks`, thực thi phép thử **Lượt chạy Lần thứ hai** chứng minh `PLAY RECAP` đạt `changed=0` và đối soát sự thật máy đích qua `docker exec`.
-
----
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm tra bằng lệnh CLI) |
+| Bước | Lệnh CLI / Tác Vụ Chính | Mục Đích Thực Thi |
 |---|---|---|
-| TH1 | Chia nhỏ kịch bản thành các tệp task con trong tasks/ | Đã tạo các tệp `tasks/common_tasks.yml`, `tasks/web_tasks.yml` |
-| TH2 | Sử dụng import_tasks nạp tĩnh tệp task con | Module `ansible.builtin.import_tasks: tasks/common_tasks.yml` |
-| TH3 | Sử dụng include_tasks nạp động kết hợp when: | Module `ansible.builtin.include_tasks: tasks/web_tasks.yml` |
-| TH4 | Sử dụng include_tasks kết hợp vòng lặp loop: | Module `include_tasks` nạp tệp vhost lặp qua mảng list |
-| TH5 | Gán thuộc tính apply: tags: cho include_tasks | Khai báo `apply: tags: [web_deploy]` truyền tag xuống task con |
-| TH6 | Gom nhóm Playbook bằng import_playbook | Module `ansible.builtin.import_playbook: playbooks/sub.yml` |
-| TH7 | Thực thi Phép thử Lượt chạy Lần hai (Idempotency) | Bảng `PLAY RECAP` Lần 2 đạt `changed=0` tuyệt đối |
-| TH8 | Đối soát sự thật máy đích bằng docker exec | `docker exec target1 cat /etc/include-import-app.conf` |
-
----
-
-## L1. Điều kiện tiên quyết về môi trường
-
-| Kiểm tra | LỆNH THỰC THI | Kết quả kỳ vọng |
-|---|---|---|
-| Ansible core đã cài | `ansible --version` | Phiên bản ansible-core v2.15 trở lên |
-| Docker Compose sẵn sàng | `docker compose ps` | Cả target1 và target2 ở trạng thái `Up` |
-| Kết nối SSH sẵn sàng | `ansible all -m ansible.builtin.ping` | Đạt `SUCCESS` cho mọi host |
-| Inventory dự án | `ansible-inventory --graph` | Hiển thị các nhóm `web` và `db` |
-| Thư mục thực hành | `pwd` | Đang ở thư mục `~/lab-ansible-18` |
-
-Nếu chưa có target container:
-```bash
-cd labs && make up && make key && make inventory
-```
-
----
-
-## L2. Kiến trúc bài lab
-
-```mermaid
-graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Playbook chính: site-include-import.yml"| PB["Playbook: site-include-import.yml"]
-    
-    subgraph "Tự động hóa Nạp Tệp Task Con"
-        PB -->|"2. import_tasks (Parse-time Static)"| T1["tasks/common_tasks.yml: /etc/common-import.conf"]
-        PB -->|"3. include_tasks (Runtime Dynamic when: prod)"| T2["tasks/web_tasks.yml: /etc/include-import-app.conf"]
-        PB -->|"4. include_tasks with loop:"| T3["tasks/vhost_tasks.yml: Loop render vhosts"]
-    end
-    
-    SubGraph1 -->|"5. import_playbook: playbooks/sub_playbook.yml"| SUB["Playbook Con: sub_playbook.yml"]
-    
-    T1 -->|"6. Gửi cấu hình tĩnh"| TARGET1["Target Container 1 (target1)"]
-    T2 -->|"7. Gửi cấu hình động"| TARGET1
-    
-    TARGET1 -.->|"RECAP Lần 1: ok=6, changed=3"| SubGraph1
-    TARGET1 -.->|"RECAP Lần 2: ok=6, changed=0 (ĐẠT IDEMPOTENCY 100%)"| SubGraph1
-    
-    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-include-import.yml"| SubGraph1
-    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
-    DEV -->|"C. Đối soát sự thật máy đích"| TARGET1
-
-    style SubGraph1 fill:none,stroke:#3b82f6,stroke-width:2px
-    style PB fill:none,stroke:#6366f1,stroke-width:2px
-    style T1 fill:none,stroke:#06b6d4,stroke-width:2px
-    style T2 fill:none,stroke:#8b5cf6,stroke-width:2px
-    style T3 fill:none,stroke:#f59e0b,stroke-width:2px
-    style SUB fill:none,stroke:#ec4899,stroke-width:2px
-    style TARGET1 fill:none,stroke:#10b981,stroke-width:2px
-    style DEV fill:none,stroke:#64748b,stroke-width:2px
-```
-
----
-
-## L3. Bước 1 — Chia nhỏ các Tệp Task Con trong Thư mục tasks/ (30 phút)
-
-Tạo thư mục dự án `~/lab-ansible-18`, thư mục `tasks`, `playbooks`, file `ansible.cfg`, `inventory.ini`, và biên soạn các tệp task con `tasks/common_tasks.yml`, `tasks/web_tasks.yml`, `tasks/vhost_tasks.yml` (QT 4.1, QT 4.2).
+| **1** | `mkdir -p ~/lab-ansible-18/tasks ~/lab-ansible-18/playbooks` | Khởi tạo cấu trúc thư mục mô-đun hóa chuẩn |
+| **2** | `cat << 'EOF' > tasks/common_tasks.yml` | Biên soạn tệp task tĩnh cho `import_tasks` |
+| **3** | `cat << 'EOF' > tasks/web_tasks.yml` | Biên soạn tệp task động cho `include_tasks` |
+| **4** | `cat << 'EOF' > tasks/vhost_tasks.yml` | Biên soạn tệp task lặp qua mảng cho `include_tasks` |
+| **5** | `cat << 'EOF' > playbooks/sub_playbook.yml` | Biên soạn Playbook con cho `import_playbook` |
+| **6** | `cat << 'EOF' > site-include-import.yml` | Tổng hợp kịch bản chính kết hợp toàn bộ các kỹ thuật |
+| **7** | `ansible-playbook site-include-import.yml` | Chạy Lần 1 và Lần 2 đối soát Idempotency `changed=0` |
+| **8** | `docker exec target1 cat /etc/include-import-app.conf` | Đối soát sự thật máy đích xác nhận dữ liệu |
 
 ```bash
+# Bước 1: Khởi tạo thư mục và file cấu hình nền tảng
 mkdir -p ~/lab-ansible-18/tasks ~/lab-ansible-18/playbooks && cd ~/lab-ansible-18
 
 cat << 'EOF' > ansible.cfg
@@ -554,8 +281,10 @@ target2 ansible_host=127.0.0.1 ansible_port=2222
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 EOF
+```
 
-# 1. Tệp task con nạp tĩnh: tasks/common_tasks.yml
+```bash
+# Bước 2: Biên soạn tệp task con nạp tĩnh: tasks/common_tasks.yml
 cat << 'EOF' > tasks/common_tasks.yml
 ---
 - name: Common Task 1 - Deploy static base configuration
@@ -564,8 +293,16 @@ cat << 'EOF' > tasks/common_tasks.yml
     dest: /etc/common-import.conf
     mode: '0644'
 EOF
+```
 
-# 2. Tệp task con nạp động: tasks/web_tasks.yml
+> [!NOTE]
+> **CHECKPOINT 1:** Xác nhận tệp `tasks/common_tasks.yml` được tạo thành công:
+> ```bash
+> test -f tasks/common_tasks.yml && echo "CHECKPOINT 1: PASS" || echo "CHECKPOINT 1: FAIL"
+> ```
+
+```bash
+# Bước 3: Biên soạn tệp task con nạp động: tasks/web_tasks.yml
 cat << 'EOF' > tasks/web_tasks.yml
 ---
 - name: Web Task 1 - Deploy dynamic web application config
@@ -579,8 +316,16 @@ cat << 'EOF' > tasks/web_tasks.yml
   register: uptime_out
   changed_when: false
 EOF
+```
 
-# 3. Tệp task con nạp theo vòng lặp: tasks/vhost_tasks.yml
+> [!NOTE]
+> **CHECKPOINT 2:** Xác nhận tệp `tasks/web_tasks.yml` chứa đầy đủ task cấu hình và `changed_when: false`:
+> ```bash
+> grep -q "changed_when: false" tasks/web_tasks.yml && echo "CHECKPOINT 2: PASS" || echo "CHECKPOINT 2: FAIL"
+> ```
+
+```bash
+# Bước 4: Biên soạn tệp task con nạp theo vòng lặp: tasks/vhost_tasks.yml
 cat << 'EOF' > tasks/vhost_tasks.yml
 ---
 - name: Vhost Task 1 - Create vhost directory
@@ -597,23 +342,14 @@ cat << 'EOF' > tasks/vhost_tasks.yml
 EOF
 ```
 
-**CHECKPOINT 1 — Các tệp task con tasks/common_tasks.yml, tasks/web_tasks.yml, tasks/vhost_tasks.yml được biên soạn thành công.**
-- **Lệnh kiểm tra:**
-```bash
-if [ -f "tasks/common_tasks.yml" ] && [ -f "tasks/web_tasks.yml" ] && [ -f "tasks/vhost_tasks.yml" ]; then
-  echo "CHECKPOINT 1: ĐẠT - Các tệp task con trong thư mục tasks/ được tạo thành công"
-else
-  echo "CHECKPOINT 1: LỖI - Biên soạn tệp task con thất bại"
-fi
-```
-
----
-
-## L4. Bước 2 — Chuẩn bị Playbook Con để Nạp bằng import_playbook (30 phút)
-
-Biên soạn tệp Playbook con `playbooks/sub_playbook.yml` để thử nghiệm module `ansible.builtin.import_playbook` (QT 4.3).
+> [!NOTE]
+> **CHECKPOINT 3:** Xác nhận tệp `tasks/vhost_tasks.yml` tham chiếu đúng biến `current_vhost`:
+> ```bash
+> grep -q "current_vhost.name" tasks/vhost_tasks.yml && echo "CHECKPOINT 3: PASS" || echo "CHECKPOINT 3: FAIL"
+> ```
 
 ```bash
+# Bước 5: Biên soạn Playbook con: playbooks/sub_playbook.yml
 cat << 'EOF' > playbooks/sub_playbook.yml
 ---
 - name: Sub Playbook - Secondary Infrastructure Verification
@@ -628,23 +364,14 @@ cat << 'EOF' > playbooks/sub_playbook.yml
 EOF
 ```
 
-**CHECKPOINT 2 — Tệp Playbook con playbooks/sub_playbook.yml được tạo đúng vị trí hỗ trợ import_playbook.**
-- **Lệnh kiểm tra:**
-```bash
-if [ -f "playbooks/sub_playbook.yml" ] && grep -q "Sub Task 1" playbooks/sub_playbook.yml; then
-  echo "CHECKPOINT 2: ĐẠT - Tệp Playbook con playbooks/sub_playbook.yml được tạo thành công"
-else
-  echo "CHECKPOINT 2: LỖI - Tạo tệp Playbook con thất bại"
-fi
-```
-
----
-
-## L5. Bước 3 — Viết Playbook chính site-include-import.yml Tổng hợp Kỹ thuật (40 phút)
-
-Viết file Playbook chính `site-include-import.yml` nạp tĩnh `import_tasks`, nạp động `include_tasks` với `when:`, `loop:`, `apply: tags:`, và `import_playbook` (QT 4.1, QT 5.1, QT 5.2, QT 5.3, QT 6.1, QT 6.2).
+> [!NOTE]
+> **CHECKPOINT 4:** Xác nhận `playbooks/sub_playbook.yml` có directive `hosts:` chuẩn cấp root:
+> ```bash
+> grep -q "hosts: web" playbooks/sub_playbook.yml && echo "CHECKPOINT 4: PASS" || echo "CHECKPOINT 4: FAIL"
+> ```
 
 ```bash
+# Bước 6: Biên soạn Playbook chính: site-include-import.yml
 cat << 'EOF' > site-include-import.yml
 ---
 - name: Master Playbook Combining Import and Include Directives
@@ -687,199 +414,52 @@ cat << 'EOF' > site-include-import.yml
 EOF
 ```
 
-Thực thi Lần 1:
+> [!NOTE]
+> **CHECKPOINT 5:** Kiểm tra cú pháp toàn bộ Playbook chính:
+> ```bash
+> ansible-playbook --syntax-check site-include-import.yml && echo "CHECKPOINT 5: PASS" || echo "CHECKPOINT 5: FAIL"
+> ```
+
 ```bash
+# Bước 7: Thực thi Lần 1 và Lần 2 (Đối soát Idempotency)
+ansible-playbook site-include-import.yml
 ansible-playbook site-include-import.yml
 ```
 
-**CHECKPOINT 3 — Playbook site-include-import.yml nạp tĩnh thành công tasks/common_tasks.yml qua import_tasks (PLAY RECAP failed=0).**
-- **Lệnh kiểm tra:**
-```bash
-MASTER_OUT=$(ansible-playbook site-include-import.yml)
-if echo "$MASTER_OUT" | grep -q "Common Task 1 - Deploy static base configuration" && echo "$MASTER_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 3: ĐẠT - Playbook nạp tĩnh thành công tasks/common_tasks.yml qua import_tasks"
-else
-  echo "CHECKPOINT 3: LỖI - Thi hành import_tasks thất bại"
-fi
-```
+> [!NOTE]
+> **CHECKPOINT 6:** Xác nhận kết quả Lần 1 thi hành thành công không lỗi:
+> ```bash
+> ansible-playbook site-include-import.yml | grep -q "failed=0" && echo "CHECKPOINT 6: PASS" || echo "CHECKPOINT 6: FAIL"
+> ```
 
-**CHECKPOINT 4 — Module include_tasks nạp động thành công tasks/web_tasks.yml với thuộc tính apply: tags: và điều kiện when: thỏao mãn.**
-- **Lệnh kiểm tra:**
-```bash
-if echo "$MASTER_OUT" | grep -q "Web Task 1 - Deploy dynamic web application config"; then
-  echo "CHECKPOINT 4: ĐẠT - Module include_tasks nạp động thành công tasks/web_tasks.yml với apply: và when:"
-else
-  echo "CHECKPOINT 4: LỖI - Thi hành include_tasks với apply hoặc when thất bại"
-fi
-```
-
-**CHECKPOINT 5 — Module import_playbook nạp và thi hành thành công tệp Playbook con playbooks/sub_playbook.yml.**
-- **Lệnh kiểm tra:**
-```bash
-if echo "$MASTER_OUT" | grep -q "Sub Task 1 - Deploy sub-playbook marker file"; then
-  echo "CHECKPOINT 5: ĐẠT - Module import_playbook nạp và thi hành thành công tệp Playbook con"
-else
-  echo "CHECKPOINT 5: LỖI - Thi hành import_playbook thất bại"
-fi
-```
-
----
-
-## L6. Bước 4 — Phép thử Lượt chạy Lần thứ hai Chứng minh Idempotency (30 phút)
-
-Thực thi lại nguyên vẹn `ansible-playbook site-include-import.yml` Lần 2 để đối soát chỉ số Idempotency `changed=0` (QT 6.3).
+> [!NOTE]
+> **CHECKPOINT 7:** Xác nhận Lượt 2 đạt Idempotency tuyệt đối (`changed=0`):
+> ```bash
+> RUN2_OUT=$(ansible-playbook site-include-import.yml)
+> if echo "$RUN2_OUT" | grep -q "changed=0" && echo "$RUN2_OUT" | grep -q "failed=0"; then
+>   echo "CHECKPOINT 7: PASS - Đạt Idempotency changed=0"
+> else
+>   echo "CHECKPOINT 7: FAIL - Lỗi không đạt Idempotency"
+> fi
+> ```
 
 ```bash
-ansible-playbook site-include-import.yml
-```
-
-**CHECKPOINT 6 — Phép thử Lượt 2 đạt changed=0 cho toàn bộ các Task nạp từ import_tasks, include_tasks, và import_playbook.**
-- **Lệnh kiểm tra:**
-```bash
-RUN2_MST_OUT=$(ansible-playbook site-include-import.yml)
-if echo "$RUN2_MST_OUT" | grep -q "changed=0" && echo "$RUN2_MST_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 6: ĐẠT - Phép thử Lượt 2 đạt chuẩn Idempotency (PLAY RECAP báo changed=0 cho toàn bộ Playbook include/import)"
-else
-  echo "CHECKPOINT 6: LỖI - Lượt 2 không đạt changed=0 (Task trong tệp con bị lặp changed)"
-fi
-```
-
----
-
-## L7. Bước 5 — Đối soát Sự thật Máy đích qua docker exec (20 phút)
-
-Sử dụng lệnh `docker exec` đối soát trực tiếp các tệp tin cấu hình được tạo ra trên target node từ các tệp task con nạp qua include/import (QT 6.3).
-
-Đối soát file `/etc/common-import.conf`:
-```bash
+# Bước 8: Đối soát Sự Thật Máy Đích qua docker exec
 docker exec target1 cat /etc/common-import.conf
-```
-
-Đối soát file `/etc/include-import-app.conf`:
-```bash
 docker exec target1 cat /etc/include-import-app.conf
-```
-
-Đối soát file `/etc/sub-playbook.marker`:
-```bash
 docker exec target1 cat /etc/sub-playbook.marker
+docker exec target1 cat /var/www/vhost_alpha/index.txt
 ```
 
-**CHECKPOINT 7 — Đối soát file /etc/common-import.conf chứa đúng dữ liệu STATIC_BASE=INITIALIZED tạo từ import_tasks.**
-- **Lệnh kiểm tra:**
-```bash
-EXEC_COMMON=$(docker exec target1 cat /etc/common-import.conf)
-if echo "$EXEC_COMMON" | grep -q "STATIC_BASE=INITIALIZED" && echo "$EXEC_COMMON" | grep -q "PARSED_AT=PRE_PARSE_TIME"; then
-  echo "CHECKPOINT 7: ĐẠT - Kiểm tra sự thật qua docker exec xác nhận file /etc/common-import.conf tồn tại đúng dữ liệu từ import_tasks"
-else
-  echo "CHECKPOINT 7: LỖI - Đối soát file common-import.conf trên máy đích thất bại"
-fi
-```
-
-**CHECKPOINT 8 — Đối soát file /etc/include-import-app.conf chứa đúng dữ liệu APP_NAME=MASTER_INCLUDE_APP và PORT=8888 tạo từ include_tasks.**
-- **Lệnh kiểm tra:**
-```bash
-EXEC_APP=$(docker exec target1 cat /etc/include-import-app.conf)
-if echo "$EXEC_APP" | grep -q "APP_NAME=MASTER_INCLUDE_APP" && echo "$EXEC_APP" | grep -q "PORT=8888"; then
-  echo "CHECKPOINT 8: ĐẠT - Kiểm tra sự thật qua docker exec xác nhận file /etc/include-import-app.conf chứa đúng dữ liệu từ include_tasks"
-else
-  echo "CHECKPOINT 8: LỖI - Đối soát file include-import-app.conf trên máy đích thất bại"
-fi
-```
+> [!NOTE]
+> **CHECKPOINT 8:** Đối soát file `/etc/include-import-app.conf` chứa đúng biến runtime `PORT=8888`:
+> ```bash
+> docker exec target1 cat /etc/include-import-app.conf | grep -q "PORT=8888" && echo "CHECKPOINT 8: PASS" || echo "CHECKPOINT 8: FAIL"
+> ```
 
 ---
 
-## L8. Nộp sản phẩm và dọn dẹp (10 phút)
-
-Thu thập kết quả ra các file báo cáo cuối buổi:
-```bash
-ansible-playbook site-include-import.yml > include-import-proof.txt
-ansible-playbook site-include-import.yml > idempotency-check.txt
-docker exec target1 cat /etc/common-import.conf > kiem-may-dich.txt
-docker exec target1 cat /etc/include-import-app.conf >> kiem-may-dich.txt
-docker exec target1 cat /etc/sub-playbook.marker >> kiem-may-dich.txt
-```
-
----
-
-## L9. Xử lý sự cố
-
-| # | Hiện tượng lỗi | Nguyên nhân gốc rễ | Cách xử lý nhanh |
-|---|---|---|---|
-| 1 | Lỗi `Cannot use loop with import_tasks` | Dùng module `import_tasks` nạp tĩnh bên trong vòng lặp `loop:` | Đổi từ `import_tasks` sang `ansible.builtin.include_tasks`. |
-| 2 | Lỗi `The task 'import_playbook' was not found in a play` | Đặt module `import_playbook` bên trong khối `tasks:` của Play | Chuyển `import_playbook` ra cấp root Playbook (ngoài khối `tasks:`). |
-| 3 | Lỗi `reg_out is undefined` trong `import_tasks when:` | Dùng biến runtime `register` vào cờ `when:` của `import_tasks` | Đổi từ `import_tasks` sang `ansible.builtin.include_tasks`. |
-| 4 | Thẻ tag không truyền xuống task con trong `include_tasks` | Gán tag trực tiếp ở `include_tasks` mà không có thuộc tính `apply:` | Bổ sung khối `apply: tags: [my_tag]` trong `include_tasks`. |
-| 5 | Lỗi `Could not find or access the file` | Đường dẫn tệp task con trong `tasks/` bị gõ sai tên hoặc sai thư mục | Kiểm tra lại đường dẫn tương đối tệp task con trong `tasks/`. |
-| 6 | Lượt chạy Lần 2 liên tục báo `changed=1` | Task `ansible.builtin.command` trong tệp task con thiếu `changed_when: false` | Thêm thuộc tính `changed_when: false` cho task đọc dữ liệu. |
-| 7 | Handler trong `include_tasks` không nhận thông báo | Task `notify` gọi Handler được nạp sau thời điểm task include | Đưa Handler về `handlers/main.yml` hoặc nạp qua `import_tasks`. |
-| 8 | Lỗi `loop_var` bị trùng tên biến | Dùng biến mặc định `item` khi lồng nhiều vòng lặp `include_tasks` | Đổi tên biến vòng lặp: `loop_control: loop_var: my_var`. |
-| 9 | Biến `app_name` bị ghi đè không mong muốn | Biến truyền vào `include_tasks` mặc định rò rỉ ra toàn bộ Play | Đặt tên biến có tiền tố rõ ràng hoặc bọc trong phạm vi task. |
-| 10 | Thắc mắc vì sao `import_tasks` chạy nhanh hơn `include_tasks` | `import_tasks` hòa trộn ở parse-time nên không mất overhead runtime | Sử dụng `import_tasks` cho các task tĩnh để tối ưu hiệu năng. |
-| 11 | Không test thử Idempotency Lần 2 của Playbook chia nhỏ | Task trong tệp con bị lặp changed mạo danh ở Lần 2 mà không biết | Chạy lại Playbook Lần 2 và đối soát `changed=0`. |
-| 12 | Thắc mắc vì sao `import_playbook` không nhận biến `become` | `import_playbook` nạp Playbook nguyên bản có từ khóa `become:` riêng | Khai báo `become: true` bên trong tệp Playbook con được import. |
-| 13 | Lỗi `docker exec` không tìm thấy file `/etc/sub-playbook.marker` | Playbook con chưa được nạp hoặc task copy bị fail | Kiểm tra log execution của `ansible-playbook site-include-import.yml`. |
-| 14 | Biến `current_vhost` bị undefined trong task vhost | Khai báo `loop_var: current_vhost` nhưng tệp task con gọi `vhost_item` | Đảm bảo tên biến trong `loop_var` khớp với tệp task con. |
-
----
-
-## L10. Bài tập mở rộng
-
-1. **BT1:** Tạo thêm tệp task con `tasks/db_tasks.yml` tạo file cấu hình `/etc/db-include.conf`.
-2. **BT2:** Nạp động `tasks/db_tasks.yml` bằng `include_tasks` với `when: deploy_env == 'production'`.
-3. **BT3:** Tạo thêm tệp Playbook con `playbooks/security_playbook.yml` tạo file marker bảo mật.
-4. **BT4:** Gom nhóm `playbooks/security_playbook.yml` vào `site-include-import.yml` bằng `import_playbook`.
-5. **BT5:** Thêm cờ `apply: become: true` cho `include_tasks` nạp tệp vhost.
-6. **BT6:** Thử nghiệm đổi `import_tasks` sang `include_tasks` và quan sát log terminal.
-7. **BT7:** Thực thi phép thử Idempotency Lần 2 cho Playbook chia nhỏ mở rộng và đối soát `PLAY RECAP` đạt `changed=0`.
-8. **BT8:** Viết kịch bản bash script dùng `docker exec` đối soát đồng thời các file cấu hình được sinh từ các tệp task con.
-
----
-
-## L11. Sản phẩm nộp và chấm điểm
-
-### Danh mục sản phẩm nộp
-- Cấu trúc thư mục `tasks/` chứa các tệp task con `common_tasks.yml`, `web_tasks.yml`, `vhost_tasks.yml`.
-- Cấu trúc thư mục `playbooks/` chứa `sub_playbook.yml`.
-- File Playbook chính `site-include-import.yml`.
-- Báo cáo kết quả 8 CHECKPOINT từ terminal.
-- Các file kết quả: `include-import-proof.txt`, `idempotency-check.txt`, `kiem-may-dich.txt`.
-
-### Thang điểm đánh giá
-
-| Mức điểm | Tiêu chí đạt được |
-|---|---|
-| **0–4 điểm** | Chưa hiểu `import` vs `include`, dùng `import_tasks` với `loop:` làm crash, hoặc đặt `import_playbook` sai chỗ. |
-| **5–7 điểm** | Sử dụng được `include_tasks`, nhưng chưa biết `apply:`, nhầm biến `register` với `import_tasks`, hay thiếu `import_playbook`. |
-| **8–9 điểm** | Đạt đủ 8 CHECKPOINT, chứng minh thành thạo `import_tasks`, `include_tasks`, `import_playbook`, `apply: tags:`, `loop:`, `when:`, Idempotency Lần 2 (`changed=0`) và đối soát `docker exec`. |
-| **10 điểm** | Đạt 9 điểm + Hoàn thành xuất sắc 100% các Bài tập mở rộng (BT1–BT8). |
-
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Nội dung | Thời lượng dự kiến | Thời lượng thực tế |
-|---|---|---|---|
-| L0–L2 | Mục tiêu, Tiên quyết & Kiến trúc bài lab | 10 phút | 10 phút |
-| L3 | Bước 1: Chia nhỏ các tệp task con trong tasks/ | 30 phút | 30 phút |
-| L4 | Bước 2: Chuẩn bị Playbook con cho import_playbook | 30 phút | 30 phút |
-| L5 | Bước 3: Viết Playbook chính site-include-import.yml | 40 phút | 40 phút |
-| L6 | Bước 4: Phép thử Lượt 2 chứng minh Idempotency | 30 phút | 30 phút |
-| L7 | Bước 5: Đối soát sự thật máy đích qua docker exec | 20 phút | 20 phút |
-| L8–L11 | Nộp sản phẩm, Sự cố, Bài tập & Chấm điểm | 10 phút | 10 phút |
-| **Tổng** | **Khối thực hành Buổi 18** | **150 phút** | **150 phút** |
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **DevOps Engineer**, **Site Reliability Engineer (SRE)** và **Cloud Automation Architect**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ xử lý sự cố hệ thống:
-
----
-
-
-
-## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
+## 6. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
 <details class="qa-card" markdown="1">
   <summary class="qa-summary">
@@ -891,7 +471,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa <code>ansible.builtin.import_tasks</code> (Static Import) và <code>ansible.builtin.include_tasks</code> (Dynamic Include)? <i>(Liên quan QT 4.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa <code>ansible.builtin.import_tasks</code> (Static Import) và <code>ansible.builtin.include_tasks</code> (Dynamic Include)?</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b><code>import_tasks</code> (Static Import):</b> Nạp tĩnh tại thời điểm <b>Parse-time</b> (trước khi Playbook chạy). Toàn bộ nội dung tệp task con được hòa trộn phẳng vào cây Playbook chính ngay ở bước đọc file.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b><code>include_tasks</code> (Dynamic Include):</b> Nạp động tại thời điểm <b>Runtime</b> (khi tiến trình chạy tới đúng Task đó). Tệp task con chỉ được đọc và phân tích khi execution engine chạy tới task include.</div>
@@ -914,7 +494,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao ta có thể dùng <code>include_tasks</code> với từ khóa <code>loop:</code> để lặp danh sách task con nhưng KHÔNG THỂ dùng <code>import_tasks</code> với <code>loop:</code>? <i>(Liên quan QT 5.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao ta có thể dùng <code>include_tasks</code> với từ khóa <code>loop:</code> để lặp danh sách task con nhưng KHÔNG THỂ dùng <code>import_tasks</code> với <code>loop:</code>?</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>import_tasks</code> được hòa trộn phẳng ở bước Parse-time trước khi chạy. Tại thời điểm Parse-time, Ansible Parser chưa thể tính toán được số lượng phần tử của mảng <code>loop:</code> ở Runtime, nên việc kết hợp <code>import_tasks</code> với <code>loop:</code> là bất khả thi về mặt kiến trúc (văng lỗi syntax).</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ngược lại, <code>include_tasks</code> được đánh giá ở Runtime nên có thể nạp tệp task con lặp đi lặp lại linh hoạt ứng với từng phần tử của mảng <code>loop:</code>.</div>
@@ -937,7 +517,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Module <code>ansible.builtin.import_playbook</code> dùng để làm gì? Vị trí khai báo của nó trong file YAML tổng khác gì so với <code>import_tasks</code>? <i>(Liên quan QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Module <code>ansible.builtin.import_playbook</code> dùng để làm gì? Vị trí khai báo của nó trong file YAML tổng khác gì so với <code>import_tasks</code>?</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tác dụng:</b> Dùng để gom nhóm và thi hành tuần tự nhiều tệp Playbook hoàn chỉnh độc lập (chứa từ khóa <code>hosts:</code>) trong một kịch bản tổng thể (như <code>site-all.yml</code>).</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Vị trí khai báo:</b> <code>import_playbook</code> là directive ở <b>cấp root Playbook</b> (cùng cấp với <code>hosts:</code>), tuyệt đối <b>KHÔNG nằm trong khối <code>tasks:</code></b>. Ngược lại, <code>import_tasks</code> là module nằm bên trong khối <code>tasks:</code>.</div>
@@ -960,7 +540,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao các Task con nạp qua <code>import_tasks</code> lại tự động thừa hưởng thẻ <code>tags</code> và có thể thông báo <code>notify:</code> tới Handler nằm ở Playbook chính một cách trực tiếp? <i>(Liên quan QT 5.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao các Task con nạp qua <code>import_tasks</code> lại tự động thừa hưởng thẻ <code>tags</code> và có thể thông báo <code>notify:</code> tới Handler nằm ở Playbook chính một cách trực tiếp?</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>import_tasks</code> thực hiện hòa trộn phẳng (Flattening) toàn bộ danh sách task con vào cây Playbook chính ở thời điểm parse-time. Do đó, về mặt bản chất mã nguồn, các task con trở thành các task trực tiếp của Playbook chính, nên tự động nhận thẻ <code>tags</code> gán ở task import và nhìn thấy tất cả các Handler khai báo ở <code>handlers/main.yml</code>.</div>
     <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
@@ -982,7 +562,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao khi gán <code>tags: [web]</code> cho <code>include_tasks</code>, các task con bên trong tệp nạp động lại KHÔNG tự động nhận tag? Giải thích vai trò của thuộc tính <code>apply:</code>. <i>(Liên quan QT 5.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao khi gán <code>tags: [web]</code> cho <code>include_tasks</code>, các task con bên trong tệp nạp động lại KHÔNG tự động nhận tag? Giải thích vai trò của thuộc tính <code>apply:</code>.</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>include_tasks</code> nạp động ở runtime, thẻ <code>tags:</code> gán trực tiếp ở dòng <code>include_tasks</code> chỉ có hiệu lực áp dụng cho bản thân task include đó (để quyết định có include tệp hay không), mà <b>không lan xuống các task con bên trong</b>.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Vai trò của <code>apply:</code>:</b> Khối <code>apply:</code> cho phép chỉ định ép buộc truyền các thuộc tính task (như <code>tags:</code>, <code>become:</code>, <code>environment:</code>) xuống từng task con bên trong tệp được include động.</div>
@@ -1005,7 +585,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao tuyệt đối không được tham chiếu các biến sinh ra ở thời điểm Runtime (như biến <code>register:</code>) vào cờ điều kiện <code>when:</code> của <code>import_tasks</code>? <i>(Liên quan QT 6.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao tuyệt đối không được tham chiếu các biến sinh ra ở thời điểm Runtime (như biến <code>register:</code>) vào cờ điều kiện <code>when:</code> của <code>import_tasks</code>?</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>import_tasks</code> được Ansible Engine phân tích và đánh giá cờ <code>when:</code> ngay ở bước Parse-time trước khi Playbook bắt đầu chạy. Tại thời điểm Parse-time, các biến sinh ra từ <code>register:</code> ở các task trước chưa hề tồn tại trên bộ nhớ. Việc tham chiếu này sẽ làm cờ <code>when:</code> bị đánh giá sai hoặc văng lỗi <code>undefined variable</code>.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Giải pháp:</b> Chuyển sang dùng <code>include_tasks</code> (Dynamic) để đánh giá cờ <code>when:</code> theo biến runtime.</div>
@@ -1028,7 +608,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày kỹ thuật sử dụng <code>include_tasks</code> kết hợp với biến facts hệ điều hành để nạp linh hoạt các tệp task cấu hình theo từng OS (CentOS vs Ubuntu). <i>(Liên quan QT 6.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày kỹ thuật sử dụng <code>include_tasks</code> kết hợp với biến facts hệ điều hành để nạp linh hoạt các tệp task cấu hình theo từng OS (CentOS vs Ubuntu).</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sử dụng biến facts <code>ansible_facts.os_family</code> để truyền động vào tên tệp trong <code>include_tasks</code>:
       <pre><code>- name: Include OS-specific setup tasks dynamically
@@ -1053,7 +633,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày cấu trúc thư mục tiêu chuẩn của một dự án Ansible Playbook mô-đun hóa được chia nhỏ thành nhiều tệp task con. <i>(Liên quan QT 4.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày cấu trúc thư mục tiêu chuẩn của một dự án Ansible Playbook mô-đun hóa được chia nhỏ thành nhiều tệp task con.</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cấu trúc tiêu chuẩn:
       <pre><code>project/
@@ -1087,16 +667,16 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook chia nhỏ bằng <code>include_tasks</code> / <code>import_tasks</code> để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (hoàn thành 100% Objective RHCE EX294 #13).</div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook chia nhỏ bằng <code>include_tasks</code> / <code>import_tasks</code> để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</div>
     <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site-include-import.yml</code>: Các tệp task con nạp qua <code>import_tasks</code> và <code>include_tasks</code> thực thi và chép file báo <code>changed &gt; 0</code>.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site-include-import.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task trong các tệp con đều báo <code>ok</code>).</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/include-import-app.conf</code> kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu từ tệp task con.</div>
     <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong".</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294 #13.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + khẳng định bảo đảm tiêu chuẩn Production.</div>
     <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Việc chia nhỏ Playbook thành 5 tệp task con có làm thay đổi cơ chế tính toán checksum của module <code>ansible.builtin.copy</code> bên trong tệp con không? <i>(Hoàn toàn không, checksum vẫn được so sánh chuẩn xác.)</i></div>
   </div>
 </details>
@@ -1151,7 +731,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 <details class="qa-card" markdown="1">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q12</span>
-    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng về <code>include</code> vs <code>import</code>.</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng về <code>include</code> vs <code>import</code> để duy trì kiến trúc chuẩn Enterprise.</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
@@ -1176,35 +756,35 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ---
 
-## V3. Câu chốt để nói khi phỏng vấn
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tổ chức mã nguồn Playbook lớn và phân biệt `include` vs `import`, học viên hãy đưa ra câu chốt tự tin sau:
+### 5 Điều Cốt Lõi Cần Ghi Nhớ:
+1. **Phân biệt `import` vs `include`:** `import` nạp tĩnh ở Parse-time; `include` nạp động ở Runtime.
+2. **Dùng `import_playbook` cho Playbook:** Gom nhóm nhiều tệp Playbook độc lập bằng `import_playbook` ở cấp root ngoài khối `tasks:`.
+3. **Dùng `include_tasks` với `loop:`:** Nạp tệp task con linh hoạt trong vòng lặp mảng danh sách kèm `loop_control`.
+4. **Dùng `apply:` cho `include_tasks`:** Ép truyền thẻ `tags` và quyền `become` xuống các task con nạp động.
+5. **Đạt chuẩn `changed=0` ở Lần 2:** Mọi kịch bản chia nhỏ bằng include/import ở lượt chạy Lần 2 bắt buộc phải đạt `changed=0`.
 
-> **"Tôi thiết kế kiến trúc mã nguồn Ansible mô-đun hóa chuyên nghiệp bằng cách phân định chính xác giữa nạp tĩnh (Static Re-use) và nạp động (Dynamic Re-use): tôi sử dụng `import_tasks` cho các nhiệm vụ cố định ở thời điểm Parse-time để tận dụng khả năng hòa trộn phẳng kế thừa Tags và Handlers toàn cục; sử dụng `include_tasks` kết hợp khối `apply:` cho các nhiệm vụ nạp động ở Runtime theo vòng lặp `loop:` và điều kiện `when:` phức tạp. Tôi gom nhóm hệ thống Playbook cấp Doanh nghiệp bằng `import_playbook`, giữ độ sâu nạp tệp không quá 2 cấp, đảm bảo mọi kịch bản mô-đun hóa đạt tiêu chuẩn Idempotent `changed=0` ở lượt chạy Lần hai và đối soát sự thật máy đích bằng `docker exec`."**
-
----
-
-## V4. Bảng tổng hợp điểm vấn đáp
-
-| Học viên | Câu 1–5 (Tủ) | Câu 6–9 (Nền) | Câu 10 (Chủ chốt) | Câu 11–12 (Phân loại) | Điểm tổng | Xếp loại |
-|---|---|---|---|---|---|---|
-| Ngô Văn M | 3 / 3 / 3 / 3 / 3 | 3 / 3 / 3 / 3 | 3 | 3 / 3 | 36 / 36 | Xuất sắc |
-| Bùi Thị N | 2 / 2 / 1 / 2 / 2 | 2 / 1 / 2 / 1 | 1 (Dính trần điểm 1) | 1 / 1 | 16 / 36 (Khóa trần 1) | Trung bình |
-
----
-
-## V5. BTVN 4 — Ba câu chuẩn bị cho Buổi 19
-
-Để chuẩn bị tốt nhất cho **Buổi 19: da-moi-truong-inventory — Đa môi trường, inventory và group_vars layering**, học viên làm 3 câu hỏi nghiên cứu trước sau:
-
-1. **Nghiên cứu trước 1:** Cấu trúc tổ chức hai thư mục inventory riêng biệt `inventory/staging/` và `inventory/production/` khác gì so với dùng 1 file inventory duy nhất?
-2. **Nghiên cứu trước 2:** Thứ tự ghi đè biến (Precedence) giữa `group_vars/all.yml`, `group_vars/web.yml`, và `host_vars/target1.yml` diễn ra như thế nào?
-3. **Nghiên cứu trước 3:** Làm thế nào để chỉ định tệp inventory khi chạy lệnh `ansible-playbook` cho môi trường Staging vs Production bằng cờ `-i`?
-
----
+```mermaid
+mindmap
+  root((Include vs Import))
+    Static Re-use
+      import_tasks ở Parse-time
+      Hòa trộn phẳng Playbook Tree
+      Kế thừa Tags và Handlers trực tiếp
+      import_playbook gom nhóm Playbook
+    Dynamic Re-use
+      include_tasks ở Runtime
+      Hỗ trợ loop và when biến runtime
+      Cần khối apply để truyền Tags/Become
+      Tránh lồng quá 3 cấp
+    Best Practices
+      Tổ chức thư mục tasks/ và playbooks/
+      Tránh bẫy biến undefined ở Parse-time
+      Đảm bảo Idempotency changed=0 ở Lần 2
+```
 
 > [!TIP]
-> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 19: Quản Trị Đa Môi Trường Chuyên Nghiệp: Tách Biệt Inventory Staging/Production & Cấu Trúc Group_vars Layering](ansible-19-19-da-moi-truong-inventory.html).
+> **BÀI HỌC TIẾP THEO:** [Bài 19: Quản Trị Đa Môi Trường Chuyên Nghiệp: Tách Biệt Inventory Staging/Production & Cấu Trúc Group_vars Layering](ansible-19-19-da-moi-truong-inventory.html)
 
 {% endraw %}
-

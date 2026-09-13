@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 25] Kiểm Thử Tự Động Playbooks & Roles: Ansible-Lint, Syntax Check, Molecule Testing Framework & Docker Scenario Test"
+title: "[Bài 25] Kiểm Thử Tự Động Hóa Với Ansible-Lint, Yamllint & Molecule: Test-Driven Infrastructure (TDD) & Dry-Run"
 date: 2026-09-13 02:50:00 +0700
 categories: [Ansible]
 tags:
@@ -13,16 +13,16 @@ tags:
 series: "Ansible Automation Mastery"
 series_order: 25
 difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
-summary: "[Ansible P.25] Hướng dẫn chuyên sâu Kiểm Thử Tự Động Playbooks & Roles: Ansible-Lint, Syntax Check, Molecule Testing Framework & Docker Scenario Test: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
+summary: "[Ansible P.25] Hướng dẫn chuyên sâu Kiểm Thử Tự Động Hóa Với Ansible-Lint, Yamllint & Molecule: Test-Driven Infrastructure (TDD) & Dry-Run: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiểm Thử Tự Động Playbooks & Roles: Ansible-Lint, Syntax Check, Molecule Testing Framework & Docker Scenario Test."
-  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
-  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Làm chủ 4 tầng kiểm thử tự động hóa: Syntax-check, Linter tĩnh, Dry-run (--check --diff) và Molecule integration test."
+  - "Cấu hình chuẩn hóa chất lượng mã nguồn Enterprise với .ansible-lint và yamllint."
+  - "Điều khiển linh hoạt cơ chế check_mode và xác thực nghiệm thu trạng thái máy đích bằng kịch bản verify.yml."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi vấn đáp và phỏng vấn kỹ thuật chuyên sâu kèm lời giải."
 ---
 {% raw %}
-# [BÀI 25] KIỂM THỬ TỰ ĐỘNG PLAYBOOKS & ROLES: ANSIBLE-LINT, SYNTAX CHECK, MOLECULE TESTING FRAMEWORK & DOCKER SCENARIO TEST
+# [BÀI 25] KIỂM THỬ TỰ ĐỘNG HÓA VỚI ANSIBLE-LINT, YAMLLINT & MOLECULE: TEST-DRIVEN INFRASTRUCTURE (TDD) & DRY-RUN
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
 
@@ -32,458 +32,255 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
 
----
-
-
-
-
-
-
-
-> **Kiểm thử toàn diện kịch bản Ansible qua ansible-lint, Check Mode (--check --diff) và Molecule framework giúp đảm bảo chất lượng mã nguồn chuẩn CI/CD và triệt tiêu 99% sự cố khi triển khai Production.**
-
-Thiết lập lá chắn kiểm thử đa tầng bảo vệ mã nguồn tự động hóa hạ tầng (I-10):
-
-> **Trong quy trình phát triển hạ tầng dạng mã (IaC) chuẩn DevSecOps, một lỗi nhỏ về cú pháp YAML, vi phạm quy tắc an toàn thông tin (như cứng hóa mật khẩu plaintext) hoặc gọi module không có tính Idempotency có thể dẫn tới sự cố ngưng trệ toàn bộ hạ tầng Production. Việc đẩy mã nguồn trực tiếp lên Production mà không qua kiểm thử là điều cấm kỵ. Hệ sinh thái Ansible cung cấp bộ công cụ kiểm thử đa tầng mạnh mẽ: kiểm tra cú pháp tĩnh với `--syntax-check`, phân tích chất lượng mã nguồn chuẩn Doanh nghiệp với `ansible-lint`, chạy thử nghiệm mô phỏng không sửa đổi đĩa với `--check --diff`, và kiểm thử độc lập trong container cách ly với `Molecule` framework. Việc làm chủ bộ công cụ kiểm thử này giúp triệt tiêu 99% sự cố trước khi thi hành, duy trì 100% chỉ số Idempotent `changed=0` ở Lần 2.**
-
----
-
-
-
----
-
-
-
----
-
-
-
-
-
-| Tiếng Việt | Tiếng Anh / Từ khóa + FQCN (giữ nguyên) |
-|---|---|
-| Kiểm tra cú pháp tĩnh | Static syntax check (`--syntax-check`) |
-| Chế độ thi hành thử nghiệm | Check Mode / Dry-run (`--check`) |
-| Chế độ so sánh khác biệt | Diff Mode comparison (`--diff`) |
-| Phân tích tĩnh chất lượng mã | Static code analysis (`ansible-lint`) |
-| Khung kiểm thử Role cách ly | Role testing framework (`Molecule`) |
-| Trình xác minh kết quả test | Verification framework (`Testinfra` / `ansible`) |
-| Quy tắc chuẩn hóa linter | Linting rule standards (`.ansible-lint`) |
-| Ép buộc chạy trong Check Mode | Forced check mode (`check_mode: yes`) |
-| Bỏ qua Check Mode | Bypassing check mode (`check_mode: no`) |
-| Lỗi vi phạm bảo mật mã nguồn | Security smells & anti-patterns |
-| Kịch bản kiểm thử tích hợp | Integration test scenario (`molecule/default`) |
-| Kiểm tra tính Idempotent | Idempotency verification test |
-
----
-
-### 1.1. Kiểm tra Cú pháp `--syntax-check`, Dry-run `--check --diff` và `check_mode` (15 phút)
-
 ```mermaid
 graph TD
-    A["Mã nguồn Playbook / Role YAML"] -->|"1. Lớp 1: ansible-playbook --syntax-check"| B{"Cú pháp Static YAML OK?"}
+    A["Mã nguồn Ansible Playbook / Role"] --> B["Tầng 1: Phân tích Tĩnh (Static Analysis)"]
     
-    B -- Không --> C["LỖI: Sửa lỗi cú pháp khoảng trắng indent"]
-    B -- Có --> D["2. Lớp 2: ansible-lint"]
+    B --> C["yamllint & ansible-lint (.ansible-lint rules)"]
+    C --> D["Tầng 2: Kiểm tra Cú pháp (Syntax Validation)"]
+    D --> E["ansible-playbook --syntax-check"]
     
-    D -->|"Phân tích Best Practices & Security Smells"| E{"Đạt chuẩn Linter?"}
-    E -- Không --> F["LỖI: Chuẩn hóa FQCN & tên Task"]
-    E -- Có --> G["3. Lớp 3: ansible-playbook --check --diff"]
+    E --> F["Tầng 3: Thử nghiệm Không Can thiệp (Dry-run Simulation)"]
+    F --> G["ansible-playbook --check --diff (Xem trước dòng thay đổi)"]
     
-    G -->|"Chạy mô phỏng Dry-run không sửa đĩa"| H["Xem dòng khác biệt +/- trên đĩa"]
-    H -->|"4. Lớp 4: molecule test (Docker)"| I["Chạy thực tế trong Container cách ly"]
+    G --> H["Tầng 4: Kiểm thử Tích hợp Cách ly (Integration Testing)"]
+    H --> I["Molecule Framework (Docker/Podman Target Container)"]
+    I --> J["Kịch bản Nghiệm thu: verify.yml (assert/stat test)"]
     
-    I --> J["Triệt tiêu 99% sự cố - ĐẠT IDEMPOTENCY 100% ở Lần 2"]
+    J --> K["LƯỢT CHẠY LẦN 2: Đối soát Idempotency changed=0 tuyệt đối"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#8b5cf6,stroke-width:2px
+    style D fill:none,stroke:#0ea5e9,stroke-width:2px
+    style E fill:none,stroke:#06b6d4,stroke-width:2px
+    style F fill:none,stroke:#f59e0b,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
+    style H fill:none,stroke:#10b981,stroke-width:2px
+    style I fill:none,stroke:#14b8a6,stroke-width:2px
+    style J fill:none,stroke:#64748b,stroke-width:2px
+    style K fill:none,stroke:#22c55e,stroke-width:2px
 ```
 
-**Nguyên lý cốt lõi:** Sử dụng cờ tham số `--syntax-check` khi chạy lệnh `ansible-playbook` để kiểm tra cú pháp tĩnh (Static Syntax Validation) của tệp Playbook trước khi commit lên kho mã nguồn Git.
+### 1.1. Kiểm Tra Cú Pháp `--syntax-check`, Dry-run `--check --diff` và `check_mode`
 
-**Giải thích cơ chế ngầm:** Giúp phát hiện ngay lập tức các lỗi cú pháp cơ bản (như sai khoảng trắng indent YAML, thiếu dấu hai chấm, hoặc thiếu từ khóa `hosts:`) chỉ trong 1 giây mà không cần thực hiện kết nối SSH tới các máy chủ Managed Nodes.
+Quy trình phát triển IaC chuẩn Test-Driven Development (TDD) đòi hỏi phải kiểm tra qua nhiều lớp bảo vệ trước khi áp dụng mã nguồn lên máy chủ Production:
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Push mã nguồn lên Gitlab CI để rồi pipeline bị nổ sập ngay ở bước đầu tiên do lỗi sai khoảng trắng YAML.
+- **Kiểm tra cú pháp (`--syntax-check`):** Phân tích ngữ pháp của toàn bộ file YAML, phát hiện sớm các lỗi sai thụt lề, thiếu dấu hai chấm, hoặc sai tên module trước khi kết nối tới máy đích.
+- **Thử nghiệm Dry-run (`--check --diff`):**
+  - `--check`: Chạy kịch bản ở chế độ giả lập (Dry-run). Ansible truy vấn máy đích và dự báo xem những task nào sẽ gây ra thay đổi mà không thực sự ghi đè lên đĩa.
+  - `--diff`: Hiển thị chi tiết từng dòng nội dung sẽ được thêm/sửa/xóa dạng màu đỏ/xanh (Unified Diff Format).
+- **Điều khiển `check_mode` trong Task:** Một số task chỉ đọc dữ liệu (như truy vấn lệnh hoặc lấy facts) cần được chạy thật ngay cả khi đang bật cờ `--check` bằng cách khai báo `check_mode: false`.
 
-**Minh hoạ.** Kiểm tra cú pháp tĩnh với `--syntax-check`:
-```bash
-ansible-playbook --syntax-check site-testing.yml
-```
-
-**Nguyên lý cốt lõi:** Sử dụng kết hợp cờ `--check` (Check Mode / Dry-run) và cờ `--diff` để mô phỏng quá trình thi hành Playbook mà KHÔNG làm thay đổi bất kỳ trạng thái tệp tin hay dịch vụ nào trên máy đích.
-
-**Giải thích cơ chế ngầm:** Cờ `--check` cho Ansible biết chỉ thực hiện kiểm tra xem Task sẽ trả về `ok` hay `changed`. Kết hợp với `--diff` sẽ in ra màn hình console dòng nào trong file cấu hình sẽ bị thêm (`+`) hoặc xóa (`-`), giúp quản trị viên tự tin đối soát sự thay đổi trước khi quyết định thi hành thật trên Production.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy thẳng Playbook sửa đổi cấu hình hệ thống trên 100 máy chủ Production mà không qua bước `--check --diff` kiểm tra trước.
-
-**Minh hoạ.** Thi hành mô phỏng Check Mode kết hợp Diff Mode:
-```bash
-ansible-playbook --check --diff site-testing.yml
-```
-
-**Nguyên lý cốt lõi:** Sử dụng thuộc tính `check_mode: yes` hoặc `check_mode: no` ở cấp Task để điều khiển chính xác hành vi của Task đó khi Playbook được thi hành trong chế độ `--check`.
-
-**Giải thích cơ chế ngầm:** Một số Task kiểm tra (như chạy lệnh `command: cat /proc/cpuinfo` để lấy thông số) bắt buộc phải thi hành thật ngay cả trong chế độ `--check` để có dữ liệu cho các Task phía sau. Khai báo `check_mode: no` chỉ đạo Ansible luôn chạy Task đó thật bất chấp Playbook đang ở chế độ Check Mode.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy Playbook ở chế độ `--check` bị ngắt giữa chừng do Task đăng ký biến `register` bị bỏ qua không trả về dữ liệu.
-
-**Minh hoạ.** Ép buộc Task thực thi trong Check Mode với `check_mode: no`:
 ```yaml
-- name: Read system uptime (Always execute even in Check Mode)
-  ansible.builtin.command: cat /proc/uptime
-  register: uptime_out
-  check_mode: no
+- name: Read kernel parameter even in check mode
+  ansible.builtin.command: sysctl net.ipv4.ip_forward
+  register: sysctl_out
+  check_mode: false
   changed_when: false
 ```
 
----
+### 1.2. Công Cụ Phân Tích Tĩnh `ansible-lint` và Framework `Molecule`
 
-### 1.2. Công cụ Phân tích Tĩnh `ansible-lint` và Framework `Molecule` (15 phút)
+- **Công cụ `ansible-lint`:** Quét toàn bộ mã nguồn Ansible và đối soát với bộ quy chuẩn Best Practices chính thức của Red Hat (bắt buộc dùng FQCN, cấm dùng lệnh `command` khi đã có module chuyên dụng, bắt buộc đặt tên cho từng task, cấm hardcode permissions).
+- **Framework `Molecule`:** Công cụ kiểm thử tích hợp chuẩn công nghiệp cho Ansible Roles. Molecule tự động khởi tạo môi trường container (Docker/Podman), chạy Role trên container, thực thi kịch bản kiểm tra `verify.yml` và tự động kiểm tra lại lần 2 để chứng minh tính Idempotency.
 
-**Nguyên lý cốt lõi:** Sử dụng công cụ phân tích mã nguồn tĩnh `ansible-lint` để kiểm tra toàn bộ Playbooks và Roles theo bộ quy chuẩn Best Practices và bảo mật mã nguồn của Red Hat Ansible.
-
-**Giải thích cơ chế ngầm:** `ansible-lint` giúp phát hiện các vi phạm quy chuẩn nghiêm trọng (như quên dùng module FQCN, cứng hóa mật khẩu plaintext, đặt tên Task thiếu mô tả, hoặc dùng module `shell` thay vì module FQCN chuẩn), giúp nâng cao chất lượng mã nguồn của toàn bộ dự án Doanh nghiệp.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Viết mã nguồn tự do không theo chuẩn khiến Playbook khó bảo trì và dính nhiều lỗ hổng bảo mật.
-
-**Minh hoạ.** Phân tích chất lượng mã nguồn với `ansible-lint`:
 ```bash
-ansible-lint site-testing.yml
-```
+# Chạy phân tích tĩnh mã nguồn
+ansible-lint site.yml
 
-**Nguyên lý cốt lõi:** Sử dụng framework kiểm thử `Molecule` với driver Docker để khởi tạo môi trường thử nghiệm độc lập, tự động hóa việc dựng container, thi hành Role và dọn dẹp sau khi kiểm thử xong.
-
-**Giải thích cơ chế ngầm:** Molecule là tiêu chuẩn công nghiệp để test Ansible Role: thay vì phải tốn tài nguyên dựng Virtual Machine thật, Molecule khởi tạo một container Docker cách ly sạch sẽ, thi hành Role để kiểm tra tính đúng đắn và tính Idempotency `changed=0`, sau đó tự động xóa container.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thử nghiệm Role trực tiếp trên máy chủ Staging làm ô nhiễm môi trường và tốn thời gian dọn dẹp thủ công.
-
-**Minh hoạ.** Các câu lệnh cơ bản của Molecule framework:
-```bash
-# Khởi tạo kịch bản kiểm thử Molecule cho một Role
-molecule init scenario --driver-name docker
-
-# Thực thi toàn bộ quy trình kiểm thử tự động Molecule
+# Chạy toàn bộ chu trình kiểm thử Molecule
 molecule test
 ```
 
-**Nguyên lý cốt lõi:** Khai báo các bài kiểm tra nghiệm thu (Verification Tests) trong file `molecule/default/verify.yml` bằng module `ansible.builtin.assert` hoặc Testinfra để khẳng định máy đích đạt 100% đúng trạng thái sau khi thi hành.
+### 1.3. Tệp Cấu Hình `.ansible-lint`, Tích Hợp Kiểm Thử và Idempotency
 
-**Giải thích cơ chế ngầm:** Giúp tự động hóa bước nghiệm thu: khẳng định chắc chắn rằng file cấu hình đã được tạo đúng quyền 0644, cổng dịch vụ 8080 đang lắng nghe, và user `sys_admin` đã tồn tại trước khi kết thúc kịch bản kiểm thử.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thi hành Role xong nhưng không có bước kiểm tra nghiệm thu tự động làm không biết Role có chạy đúng yêu cầu hay không.
-
-**Minh hoạ.** Viết task kiểm tra nghiệm thu trong `verify.yml`:
-```yaml
-- name: Verify application configuration file exists and has correct content
-  ansible.builtin.assert:
-    that:
-      - app_conf.stat.exists
-      - app_conf.stat.mode == '0644'
-```
+- **Tùy biến quy tắc qua `.ansible-lint`:** Cho phép dự án Enterprise định nghĩa các quy tắc bắt buộc, bỏ qua các cảnh báo không mong muốn (`skip_list`), hoặc chỉ định mức độ nghiêm ngặt cho từng thư mục.
+- **Kịch bản nghiệm thu `verify.yml`:** Sử dụng module `ansible.builtin.assert` và `ansible.builtin.stat` để kiểm tra trạng thái thực tế sau khi triển khai (kiểm tra file có tồn tại không, cổng dịch vụ có mở không, quyền file có đúng 0644 không).
+- **Bảo toàn Idempotency trong Testing:** Một Role chỉ được coi là đạt tiêu chuẩn chất lượng khi vượt qua bài kiểm tra Idempotency Test của Molecule (chạy lại Lần 2 bắt buộc phải đạt `changed=0`).
 
 ---
 
-### 1.3. Tệp Cấu hình `.ansible-lint`, Tích hợp Kiểm thử và Idempotency (10 phút)
+## 2. Bảng So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-**Nguyên lý cốt lõi:** Xây dựng quy trình kiểm thử 3 lớp (`--syntax-check` -> `ansible-lint` -> `molecule test`) tích hợp vào kịch bản trước khi thực hiện commit mã nguồn.
+| Tiêu Chí Kỹ Thuật | Kiểm Tra Cú Pháp (`--syntax-check`) | Linter Tĩnh (`ansible-lint`) | Dry-Run Simulation (`--check --diff`) | Integration Test (`Molecule`) |
+|---|---|---|---|---|
+| **Thời Điểm Thi Hành** | Pre-commit / Local Dev | Pre-commit & CI Stage 1 | Pre-deployment & Pull Request | CI Stage 2 (Staging Container) |
+| **Yêu Cầu Kết Nối Máy Đích** | ❌ Không cần (chỉ đọc file local) | ❌ Không cần | ✅ Bắt buộc kết nối SSH tới máy thật | ✅ Tự khởi tạo Docker container |
+| **Phát Hiện Vi Phạm Best Practices** | ❌ Không | ⭐ Xuất sắc (bắt lỗi FQCN, style) | ❌ Không | ❌ Không |
+| **Dự Báo Thay Đổi Trạng Thái** | ❌ Không | ❌ Không | ⭐ Rất tốt (xem trước diff từng dòng) | ✅ Chạy thật trên container |
+| **Khẳng Định Idempotency 100%** | ❌ Không | ❌ Không | Khá (dự báo thay đổi) | ⭐ Tuyệt đối (tự động chạy 2 lượt) |
 
-**Giải thích cơ chế ngầm:** Đảm bảo mã nguồn IaC đạt tiêu chuẩn chất lượng cao nhất trước khi đẩy lên hệ thống CI/CD: Lớp 1 chặn lỗi cú pháp YAML; Lớp 2 chặn lỗi chuẩn hóa mã nguồn; Lớp 3 khẳng định tính đúng đắn và tính Idempotent trên container cách ly.
+> [!IMPORTANT]
+> **QUY TẮC BẤT DI BẤT DỊCH:**
+> Luôn tích hợp bộ 3 kiểm tra: `ansible-lint` -> `ansible-playbook --syntax-check` -> `ansible-playbook --check --diff` vào pipeline CI/CD trước khi cho phép merge code vào nhánh `main`!
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Bỏ qua bước kiểm thử làm mã nguồn bị lỗi trôi vào nhánh `main` trên kho Git.
+---
 
-**Minh hoạ.** Chuỗi lệnh kiểm thử 3 lớp trước khi commit:
-```bash
-ansible-playbook --syntax-check site-testing.yml && \
-ansible-lint site-testing.yml && \
-molecule test
-```
+## 3. Kiến Trúc Triển Khai Chuẩn Production (Configuration / Playbook / Role Breakdown)
 
-**Nguyên lý cốt lõi:** Khởi tạo tệp cấu hình `.ansible-lint` tại thư mục gốc của dự án để quản lý các quy tắc linter, danh sách loại trừ (`skip_list`) và các thư mục cần bỏ qua (`exclude_paths`).
+Dưới đây là kiến trúc tệp cấu hình quy tắc `.ansible-lint`, Playbook kiểm thử `site-testing.yml` và kịch bản nghiệm thu `verify.yml`:
 
-**Giải thích cơ chế ngầm:** Giúp tùy biến bộ quy tắc linter phù hợp với thực tế Doanh nghiệp: ví dụ tạm thời bỏ qua một số quy tắc linter cũ chưa kịp nâng cấp (`skip_list: [yaml[line-length]]`) trong khi vẫn giữ nguyên các quy tắc bảo mật nghiêm ngặt.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy `ansible-lint` bị tràn ngập hàng trăm cảnh báo độ dài dòng văn bản làm che khuất các lỗi bảo mật quan trọng.
-
-**Minh hoạ.** Tệp cấu hình `.ansible-lint` chuẩn cho dự án Ansible:
 ```yaml
-# .ansible-lint configuration
+# .ansible-lint
+---
 profile: production
-skip_list:
-  - yaml[line-length]
-  - experimental
+strict: true
 exclude_paths:
   - .cache/
-  - collections/
+  - .github/
+skip_list:
+  - yaml[line-length]
 ```
 
-**Nguyên lý cốt lõi:** Đảm bảo rằng ở lượt chạy Lần thứ hai trong Molecule hoặc trên máy thật, Playbook áp dụng Testing và Check Mode bắt buộc phải đạt chỉ số `changed=0` tuyệt đối trong bảng `PLAY RECAP`.
-
-**Giải thích cơ chế ngầm:** Quy trình kiểm thử của Molecule bao gồm bước Idempotence Test: Molecule tự động chạy Playbook Lần 1, sau đó chạy lại Lần 2. Nếu Lần 2 báo `changed > 0`, Molecule sẽ đánh giá bài test FAIL ngay lập tức. Đạt `changed=0` ở Lần 2 là bằng chứng chứng minh kịch bản đạt tiêu chuẩn Idempotency.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Lệnh `molecule test` bị báo lỗi ở bước `idempotence` do có Task lặp changed ở Lần 2.
-
-**Minh hoạ.** Đọc hiểu bảng log Molecule Idempotence Test đạt chuẩn:
 ```yaml
-INFO     Running default > idempotence
-INFO     Executing Playbook idempotence...
-target1 : ok=5 changed=0 unreachable=0 failed=0
-INFO     Idempotence test passed successfully.
+# site-testing.yml
+---
+- name: Enterprise Production-Ready Testing Playbook
+  hosts: web
+  become: true
+  vars:
+    app_target_port: 8080
+    config_dest_path: "/etc/testing-app.conf"
+
+  tasks:
+    - name: Task 1 - Deploy application configuration file
+      ansible.builtin.copy:
+        content: |
+          # Production Quality Configuration
+          APP_PORT={{ app_target_port }}
+          LINT_STATUS=PASSED_CLEAN
+          TEST_SUITE=MOLECULE_VERIFIED
+        dest: "{{ config_dest_path }}"
+        mode: '0644'
+
+    - name: Task 2 - Read system hostname with check_mode disabled
+      ansible.builtin.command: hostname
+      register: host_name_out
+      check_mode: false
+      changed_when: false
 ```
 
+```yaml
+# verify.yml (Molecule Verification Scenario)
 ---
+- name: Verification Suite for Deployment State
+  hosts: web
+  become: true
+  tasks:
+    - name: Verify 1 - Check configuration file existence and permissions
+      ansible.builtin.stat:
+        path: /etc/testing-app.conf
+      register: file_stat
 
-### 1.4. Đưa vào việc thật (4 phút)
+    - name: Verify 2 - Assert configuration file properties
+      ansible.builtin.assert:
+        that:
+          - file_stat.stat.exists
+          - file_stat.stat.mode == '0644'
+        fail_msg: "Verification Failed: Configuration file is missing or has incorrect permissions!"
+        success_msg: "Verification Passed: File exists with correct 0644 permissions."
+```
 
-### 7.1. Áp dụng vào hạ tầng sẵn có
-Khi xây dựng bộ tiêu chuẩn chất lượng mã nguồn tự động hóa Doanh nghiệp:
-- Bắt buộc tạo tệp `.ansible-lint` tại gốc tất cả các Git repository của Ansible.
-- Yêu cầu tất cả các kỹ sư chạy `ansible-playbook --check --diff` trước khi thực thi bất kỳ thay đổi nào trên Production.
-- Viết kịch bản `molecule test` cho tất cả các Ansible Role được chia sẻ trong bộ thư viện Doanh nghiệp.
+### Phân Tích Kỹ Thuật Từng Dòng (Line-by-Line Breakdown):
 
-### 7.2. Rủi ro hỏng hóc khi triển khai Production và giải pháp an toàn
-- **Rủi ro:** Một kỹ sư chạy lệnh `ansible-playbook` trên Production nhưng gõ thiếu cờ `--check`, dẫn đến việc thi hành thật các câu lệnh làm thay đổi dữ liệu khi chưa qua đối soát `--diff`.
-- **Giải pháp an toàn:**
-  1. Tạo alias câu lệnh an toàn: `alias ap-check='ansible-playbook --check --diff'`.
-  2. Cấu hình pipeline CI/CD tự động chạy `ansible-lint` và `molecule test` ngắt kết nối commit nếu bài test bị fail.
-
-### 7.3. Đo lường chỉ số Trước – Sau khi áp dụng
-- **Trước khi có Testing:** 20% số đợt deployment bị sập giữa chừng do lỗi syntax YAML hoặc biến rỗng, tốn 3 giờ gỡ lỗi trên Production.
-- **Sau khi có Testing:** 0 lỗi syntax trôi lên Production, 100% Role được nghiệm thu Idempotent `changed=0` qua Molecule.
-
-### 7.4. Khi nào KHÔNG nên dùng hoặc không nên lạm dụng Check Mode
-- **Không lạm dụng `--check` để thay thế cho việc test thật:** Cờ `--check` chỉ mô phỏng các module hỗ trợ check mode. Một số lệnh thô (`command` / `shell`) mặc định sẽ bị bỏ qua trong Check Mode, không thể phản ánh 100% logic phức tạp.
-
----
-
-### 1.5. Bẫy hay gặp (2 phút)
-
-| # | Bẫy hay gặp | Vì sao "recap xanh mà sai / không idempotent" | Lệnh phát hiện và xử lý |
-|---|---|---|---|
-| 1 | Thắc mắc vì sao chạy `--check` mà task `command` bị skip | Module `command` mặc định không hỗ trợ Check Mode và bị bỏ qua. | Sử dụng `check_mode: no` nếu muốn task command luôn chạy. |
-| 2 | Lỗi `molecule test` bị nổ ở bước `idempotence` | Task trong Role bị lặp `changed=1` ở Lần chạy thứ 2. | Bổ sung `changed_when: false` hoặc sửa module có tính Idempotent. |
-| 3 | Lỗi `ansible-lint` báo hàng trăm cảnh báo FQCN | Dùng tên module ngắn (như `copy`) thay vì tên FQCN (`ansible.builtin.copy`). | Đổi toàn bộ tên module sang dạng FQCN chuẩn. |
-| 4 | Chạy `molecule test` bị báo lỗi Docker daemon not running | Dịch vụ Docker trên máy Control Node chưa được khởi động. | Khởi động Docker service: `systemctl start docker`. |
-| 5 | Quên cờ `--diff` khi chạy `--check` | Terminal chỉ báo `changed=1` mà không in ra dòng nội dung thay đổi `+`/`-`. | Bắt buộc chạy kết hợp: `ansible-playbook --check --diff site.yml`. |
-| 6 | Thắc mắc vì sao `ansible-lint` chặn từ khóa `command` | `ansible-lint` khuyến nghị dùng module chuyên dụng (như `file`, `user`) thay vì `command`. | Dùng module chuyên dụng hoặc thêm comment `# noqa: command-instead-of-module`. |
-| 7 | Tệp `.ansible-lint` bị sai cú pháp YAML | Khoảng trắng indent tệp `.ansible-lint` sai làm linter từ chối nạp file. | Kiểm tra cú pháp `.ansible-lint` qua `ansible-lint --show-relpath`. |
-| 8 | Lỗi `verify.yml` trong Molecule bị fail | Điều kiện `assert` trong bài test nghiệm thu không thỏa mãn. | Kiểm tra lại giá trị thật của file/service trong container. |
-| 9 | Quên `changed_when: false` cho task đọc dữ liệu | Task đọc dữ liệu trong Check Mode liên tục báo `changed=1`. | Bổ sung `changed_when: false` cho task đọc dữ liệu. |
-| 10 | Không test thử Idempotency Lần 2 của kịch bản Testing | Task trong Playbook test bị lặp changed mạo danh ở Lần 2 mà không biết. | Chạy lại Playbook Lần 2 và đối soát `changed=0`. |
-| 11 | Thắc mắc tại sao `--syntax-check` không phát hiện lỗi biến | `--syntax-check` chỉ kiểm tra cú pháp YAML, không kiểm tra giá trị biến runtime. | Sử dụng `--check` hoặc `ansible-lint` để phát hiện biến rỗng. |
-| 12 | Lỗi `Molecule` không tìm thấy driver Docker | Chưa cài đặt gói `molecule-plugins[docker]` trong môi trường Python. | Run: `pip install molecule-plugins[docker]`. |
+- <span class="badge-line">Line 2-3 (.ansible-lint)</span>: **Cấu hình Profile nghiêm ngặt:** Bật `profile: production` và `strict: true` để áp dụng toàn bộ các quy tắc kiểm định chất lượng mã nguồn cao nhất của Ansible.
+- <span class="badge-line">Line 10-18 (site-testing)</span>: **Triển khai cấu hình chuẩn FQCN:** Sử dụng `ansible.builtin.copy` đầy đủ FQCN, khai báo tường minh `mode: '0644'` để vượt qua bài kiểm tra của `ansible-lint`.
+- <span class="badge-line">Line 20-25 (site-testing)</span>: **Bảo vệ Check Mode:** Khai báo `check_mode: false` cho task đọc hostname để đảm bảo biến `host_name_out` luôn được đăng ký giá trị ngay cả khi chạy lệnh dry-run `--check`.
+- <span class="badge-line">Line 6-17 (verify.yml)</span>: **Khẳng định trạng thái nghiệm thu:** Sử dụng `ansible.builtin.stat` kết hợp `ansible.builtin.assert` kiểm tra tính tồn tại và quyền hạn `0644` của file trên máy đích.
 
 ---
 
-### 1.6. Tóm tắt (1 phút)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Chạy Check Mode Trên Task Có Biến Register Gây Báo Lỗi Undefined
+
+### Tình Huống Sự Cố Thực Tế Tại Doanh Nghiệp:
+Một đội ngũ DevOps thiết lập bước chạy thử nghiệm `ansible-playbook --check site.yml` trong pipeline CI/CD trước khi release. Task 1 chạy lệnh tạo thư mục và đăng ký biến `dir_res`. Task 2 sử dụng cờ điều kiện `when: dir_res.stat.exists`. Khi chạy chế độ bình thường, Playbook chạy rất tốt. Nhưng khi chạy qua `--check`, Task 1 bị Ansible bỏ qua không chạy thật, dẫn đến biến `dir_res.stat` không tồn tại, khiến Task 2 văng lỗi `error: 'dict object' has no attribute 'stat'` và làm pipeline CI/CD bị fail mạo danh.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```diff
+- # CẤU HÌNH GÂY LỖI KHI CHẠY --CHECK DRY-RUN:
+- - name: Task 1 - Check Directory Status
+-   ansible.builtin.stat: path=/var/data
+-   register: dir_res
+-   # TRONG CHECK MODE: NẾU THAY BẰNG LỆNH TẠO THƯ MỤC THÌ TASK BỊ SKIP LÀM BIẾN RỖNG!
+-
+- - name: Task 2 - Configure File inside Directory
+-   ansible.builtin.copy: dest=/var/data/app.conf content="OK"
+-   when: dir_res.stat.exists
+- # LỖI: 'dir_res.stat' is undefined during --check execution
+
++ # CẤU HÌNH SỬA ĐÚNG BẢO VỆ CHECK MODE:
++ - name: Task 1 - Check Directory Status
++   ansible.builtin.stat: path=/var/data
++   register: dir_res
++   check_mode: false    # BẮT BUỘC CHẠY THẬT NGAY CẢ KHI DRY-RUN ĐỂ LẤY FACTS!
++
++ - name: Task 2 - Configure File inside Directory
++   ansible.builtin.copy: dest=/var/data/app.conf content="OK"
++   when: dir_res.stat is defined and dir_res.stat.exists
+```
 
 ```mermaid
 flowchart TD
-    A["Quy trình Kiểm thử Chất lượng Mã nguồn IaC"] --> B{"4 Lớp Kiểm thử Tiêu chuẩn"}
+    A["Chạy ansible-playbook --check (Dry-run)"] --> B{"Task 1 có thuộc tính check_mode: false không?"}
+    B -->|"Không có (Mặc định)"| C["Ansible bỏ qua Task 1 không chạy trên máy đích"]
+    C --> D["Biến dir_res không được đăng ký cấu trúc đầy đủ"]
+    D --> E["Task 2 crash với lỗi undefined variable!"]
     
-    B -->|"Lớp 1: Kiểm tra Cú pháp Static"| C["ansible-playbook --syntax-check site.yml"]
-    B -->|"Lớp 2: Phân tích Chất lượng Mã"| D["ansible-lint (Kiểm tra Best Practices & FQCN)"]
-    B -->|"Lớp 3: Thử nghiệm Mô phỏng"| E["ansible-playbook --check --diff (Dry-run)"]
-    B -->|"Lớp 4: Kiểm thử Role Cách ly"| F["molecule test (Docker Container & Idempotence)"]
-    
-    C --> G["Playbook chính: site-testing.yml"]
-    D --> G
-    E --> G
-    F --> G
-    
-    G --> H["LƯỢT CHẠY LẦN 2"]
-    H --> I{"PLAY RECAP Lần 2: changed=0?"}
-    
-    I -- Có --> J["ĐẠT: Quality Assured IaC Idempotent 100%"]
-    I -- Không --> K["LỖI: Rà soát lại linter & idempotence test"]
+    B -->|"Khai báo check_mode: false"| F["Ansible thực thi Task 1 đọc trạng thái thật"]
+    F --> G["Biến dir_res được nạp dữ liệu chuẩn xác"]
+    G --> H["Task 2 đánh giá điều kiện when trơn tru"]
+    H --> I["ĐẠT: Dry-run mô phỏng thành công, changed=0 ở Lần 2"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#ef4444,stroke-width:2px
+    style D fill:none,stroke:#ef4444,stroke-width:2px
+    style E fill:none,stroke:#ef4444,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#10b981,stroke-width:2px
+    style H fill:none,stroke:#8b5cf6,stroke-width:2px
+    style I fill:none,stroke:#22c55e,stroke-width:2px
 ```
 
-### Năm điều phải nhớ
-1. **Chạy `--syntax-check` trước khi commit:** Phát hiện ngay lỗi cú pháp YAML trong 1 giây.
-2. **Dùng `--check --diff` trước khi deploy:** Mô phỏng thử nghiệm Dry-run và đối soát dòng khác biệt file `+`/`-`.
-3. **Phân tích mã nguồn với `ansible-lint`:** Chuẩn hóa Best Practices, FQCN và triệt tiêu Security Smells qua tệp `.ansible-lint`.
-4. **Kiểm thử Role với `Molecule`:** Tự động hóa test Role trên container Docker cách ly và xác minh bằng `verify.yml`.
-5. **Đạt chuẩn `changed=0` ở Lần 2:** Đảm bảo bài test Idempotence của Molecule và Playbook chạy Lần 2 đạt `changed=0`.
+### 5-Whys Root Cause Analysis:
+1. **Tại sao lệnh `--check` bị văng lỗi crash?** Vì Task 2 báo lỗi biến `dir_res.stat` không tồn tại.
+2. **Tại sao biến `dir_res.stat` không tồn tại khi Task 1 đã register?** Vì ở chế độ `--check`, Task 1 không được thực thi thật sự trên máy đích.
+3. **Tại sao Task 1 không được chạy?** Vì cơ chế mặc định của Check Mode là giả lập và bỏ qua các task có thể gây thay đổi.
+4. **Tại sao Task chỉ đọc facts lại bị bỏ qua?** Vì kỹ sư quên gắn thuộc tính `check_mode: false` cho các task kiểm tra trạng thái ban đầu.
+5. **Giải pháp triệt để là gì?** Khai báo `check_mode: false` cho tất cả các task đọc dữ liệu/thống kê facts và luôn dùng bộ lọc `is defined` khi kiểm tra biến trong cờ `when:`.
 
 ---
 
-### 1.7. Câu hỏi tự kiểm tra (kiêm luyện RHCE EX294)
+## 5. Hands-on Lab: Kiểm Thử Tự Động Hóa Với ansible-lint, Dry-run & Molecule Verify (8 Bước)
 
-1. **[RHCE EX294 Testing & Check Mode]** Câu lệnh CLI nào trong Ansible dùng để kiểm tra cú pháp tĩnh (Static Syntax Check) của một tệp Playbook mà không thực hiện SSH tới máy đích?
-   - *Đáp án:* Lệnh `ansible-playbook --syntax-check <playbook_name>`.
-2. **[RHCE EX294 Testing & Check Mode]** Cờ tham số `--check` và `--diff` có tác dụng gì khi thi hành lệnh `ansible-playbook`?
-   - *Đáp án:* Cờ `--check` chạy mô phỏng Dry-run không làm sửa đổi đĩa/dịch vụ; cờ `--diff` in ra màn hình sự khác biệt từng dòng `+`/`-` của tệp tin.
-3. **[RHCE EX294 Testing & Check Mode]** Thuộc tính `check_mode: no` trong một Task có ý nghĩa kỹ thuật gì?
-   - *Đáp án:* Ép buộc Task đó luôn thực thi thật trên máy đích ngay cả khi Playbook đang được thi hành ở chế độ `--check`.
-4. **[RHCE EX294 Testing & Quality]** Công cụ `ansible-lint` dùng để làm gì trong quy trình phát triển mã nguồn Ansible?
-   - *Đáp án:* Dùng để phân tích mã nguồn tĩnh (Static Code Analysis), phát hiện các vi phạm quy chuẩn Best Practices, tên FQCN và lỗ hổng bảo mật.
-5. **[RHCE EX294 Testing & Quality]** Tệp cấu hình `.ansible-lint` đặt ở thư mục gốc dự án dùng để làm gì?
-   - *Đáp án:* Dùng để quản lý các quy tắc linter, khai báo danh sách loại trừ (`skip_list`) và danh sách thư mục bỏ qua (`exclude_paths`).
-6. **[RHCE EX294 Testing & Quality]** Framework `Molecule` đóng vai trò gì trong việc kiểm thử Ansible Role?
-   - *Đáp án:* Tự động hóa quy trình khởi tạo container Docker cách ly, thi hành Role, kiểm tra tính Idempotency và chạy bài test nghiệm thu.
-7. **[RHCE EX294 Testing & Check Mode]** Viết đoạn Task YAML chạy lệnh `cat /etc/os-release` bắt buộc thi hành thật trong Check Mode và không báo `changed=1`.
-   - *Đáp án:*
-     ```yaml
-     - name: Read OS release info
-       ansible.builtin.command: cat /etc/os-release
-       register: os_out
-       check_mode: no
-       changed_when: false
-     ```
-8. **[RHCE EX294 Testing & Quality]** Viết câu lệnh CLI chạy kiểm tra cú pháp tĩnh kết hợp phân tích linter cho tệp `site-testing.yml`.
-   - *Đáp án:*
-     ```bash
-     ansible-playbook --syntax-check site-testing.yml && ansible-lint site-testing.yml
-     ```
-9. **[RHCE EX294 Testing & Quality]** Viết nội dung tệp `.ansible-lint` cấu hình profile `production` và bỏ qua quy tắc `yaml[line-length]`.
-   - *Đáp án:*
-     ```yaml
-     profile: production
-     skip_list:
-       - yaml[line-length]
-     ```
-10. **[RHCE EX294 Testing & Quality]** Viết đoạn task kiểm tra nghiệm thu bằng `ansible.builtin.assert` trong tệp `verify.yml` của Molecule khẳng định tệp `/etc/app.conf` tồn tại.
-    - *Đáp án:*
-      ```yaml
-      - name: Verify app config file exists
-        ansible.builtin.assert:
-          that:
-            - app_conf_stat.stat.exists
-      ```
-11. **[RHCE EX294 Testing & Check Mode]** Việc chạy thử nghiệm ở chế độ `--check --diff` có làm thay đổi cơ chế tính toán Idempotency `changed=0` khi thi hành thật ở Lần thứ hai không?
-    - *Đáp án:* Hoàn toàn không, kịch bản khi thi hành thật ở Lần 2 vẫn bắt buộc phải đạt `changed=0` tuyệt đối.
-12. **[RHCE EX294 Testing & Check Mode]** Lệnh CLI nào giúp đối soát sự thật kết quả tạo bởi Playbook qua đối soát file trên target node Docker container?
-    - *Đáp án:* Lệnh `docker exec target1 cat /path/to/rendered/testing.conf`.
-
----
-
-### 1.8. Tài liệu tham khảo
-
-- Ansible Core Documentation (v2.15+): [Validating playbooks: check mode and diff mode](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_checkmode.html)
-- Ansible Lint Documentation: [ansible-lint documentation and rule reference](https://ansible.readthedocs.io/projects/lint/)
-- Molecule Framework Documentation: [Molecule testing framework guide](https://ansible.readthedocs.io/projects/molecule/)
-- Red Hat Certified Engineer (RHCE) EX294 Study Guide: Playbook Validation, Check Mode, and Quality Assurance.
-
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Nội dung | Thời lượng dự kiến | Thời lượng thực tế |
-|---|---|---|---|
-| §0 | Khởi động và ôn tập buổi 24 | 10 phút | 10 phút |
-| §1–§2 | Mục tiêu làm được & Cần biết trước | 2 phút | 2 phút |
-| §3 | Thuật ngữ Việt-Anh & Mô hình tư duy | 8 phút | 8 phút |
-| §4 | --syntax-check, Dry-run --check --diff & check_mode (QT 4.1–4.3) | 15 phút | 15 phút |
-| §5 | ansible-lint & Molecule Testing Framework (QT 5.1–5.3) | 15 phút | 15 phút |
-| §6 | Cấu hình .ansible-lint, Tích hợp Testing & Idempotency (QT 6.1–6.3) | 10 phút | 10 phút |
-| §7–§9 | Đưa vào việc thật, Bẫy hay gặp & Tóm tắt | 7 phút | 7 phút |
-| §10–§11 | Câu hỏi tự kiểm tra EX294 & Tài liệu tham khảo | 3 phút | 3 phút |
-| **Tổng** | **Khối lý thuyết Buổi 25** | **60 phút** | **60 phút** |
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
-> [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên môi trường máy chủ Linux / Docker containers phân tán. Hãy đảm bảo bạn đã chuẩn bị Control Node cài đặt Ansible Core 2.15+ cùng các Managed Nodes đã cấu hình SSH Key Authentication.
-
-## Khối thực hành — 150 phút
-
-> **Đối soát thời lượng:** Khối thực hành kéo dài đúng **150'** (từ L0 đến L11).
-> **Nguyên tắc cốt lõi:** Thực hành kiểm tra cú pháp tĩnh bằng `ansible-playbook --syntax-check`, thực thi thử nghiệm Dry-run với `ansible-playbook --check --diff`, cấu hình `check_mode: no` cho task đọc dữ liệu, khởi tạo tệp quy tắc `.ansible-lint`, chạy phân tích linter bằng `ansible-lint`, khởi tạo kịch bản Molecule test giả lập, thực thi Playbook `site-testing.yml`, thực thi phép thử **Lượt chạy Lần thứ hai** chứng minh `PLAY RECAP` đạt `changed=0` và đối soát sự thật máy đích qua `docker exec`.
-
----
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm tra bằng lệnh CLI) |
+| Bước | Lệnh CLI / Tác Vụ Chính | Mục Đích Thực Thi |
 |---|---|---|
-| TH1 | Kiểm tra cú pháp static syntax bằng --syntax-check | Lệnh `ansible-playbook --syntax-check` trả về OK |
-| TH2 | Thực thi chế độ thử nghiệm Dry-run --check --diff | Lệnh `ansible-playbook --check --diff` thi hành thành công |
-| TH3 | Ép buộc task chạy trong Check Mode với check_mode: no | Thuộc tính `check_mode: no` trong Task đọc dữ liệu |
-| TH4 | Khởi tạo tệp cấu hình quy tắc .ansible-lint | Tệp `.ansible-lint` tồn tại đúng cấu trúc YAML |
-| TH5 | Phân tích chất lượng mã nguồn bằng ansible-lint | Lệnh `ansible-lint` kiểm tra mã nguồn không có lỗi fatal |
-| TH6 | Giả lập kịch bản kiểm thử Molecule verify.yml | Tệp `molecule/default/verify.yml` thử nghiệm nghiệm thu |
-| TH7 | Thực thi Phép thử Lượt chạy Lần hai (Idempotency) | Bảng `PLAY RECAP` Lần 2 đạt `changed=0` tuyệt đối |
-| TH8 | Đối soát sự thật máy đích bằng docker exec | `docker exec target1 cat /etc/testing-app.conf` |
-
----
-
-## L1. Điều kiện tiên quyết về môi trường
-
-| Kiểm tra | LỆNH THỰC THI | Kết quả kỳ vọng |
-|---|---|---|
-| Ansible core đã cài | `ansible --version` | Phiên bản ansible-core v2.15 trở lên |
-| Docker Compose sẵn sàng | `docker compose ps` | Cả target1 và target2 ở trạng thái `Up` |
-| Kết nối SSH sẵn sàng | `ansible all -m ansible.builtin.ping` | Đạt `SUCCESS` cho mọi host |
-| Thư mục thực hành | `pwd` | Đang ở thư mục `~/lab-ansible-25` |
-
-Nếu chưa có target container:
-```bash
-cd labs && make up && make key && make inventory
-```
-
----
-
-## L2. Kiến trúc bài lab
-
-```mermaid
-graph TD
-    SubGraph1["Control Node (Testing Tools & ansible-playbook)"] -->|"1. Lớp 1: --syntax-check"| SYN["ansible-playbook --syntax-check"]
-    
-    subgraph "Hệ thống Kiểm thử Đa tầng Quality Assurance"
-        SYN -->|"2. Lớp 2: .ansible-lint & ansible-lint"| LINT["ansible-lint (.ansible-lint config)"]
-        LINT -->|"3. Lớp 3: --check --diff"| DRY["ansible-playbook --check --diff (Dry-run)"]
-        DRY -->|"4. Lớp 4: Molecule verify.yml"| MOL["Molecule verification framework"]
-    end
-    
-    SubGraph1 -->|"5. Thi hành Playbook chính: site-testing.yml"| PB["Playbook: site-testing.yml"]
-    DRY --> PB
-    MOL --> PB
-    
-    PB -->|"6. Gửi cấu hình đã qua kiểm thử"| T1["Target Container 1 (target1)"]
-    
-    T1 -. "RECAP Lần 1: ok=5, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
-    
-    DEV["Học viên (Tester)"] -->|"A. Chạy chuỗi lệnh --syntax-check & ansible-lint"| SubGraph1
-    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
-    DEV -->|"C. Đối soát sự thật máy đích"| T1
-```
-
----
-
-## L3. Bước 1 — Cấu hình Tệp Quy tắc .ansible-lint và ansible.cfg (30 phút)
-
-Tạo thư mục dự án `~/lab-ansible-25`, tệp cấu hình `.ansible-lint`, tệp `ansible.cfg`, và tệp `inventory.ini` (QT 6.2).
+| **1** | `mkdir -p ~/lab-ansible-25 && cd ~/lab-ansible-25` | Khởi tạo môi trường lab testing |
+| **2** | `cat << 'EOF' > .ansible-lint && cat << 'EOF' > ansible.cfg` | Cấu hình quy tắc linter và `ansible.cfg` |
+| **3** | `cat << 'EOF' > verify.yml` | Khởi tạo kịch bản nghiệm thu trạng thái (Verification Suite) |
+| **4** | `cat << 'EOF' > site-testing.yml` | Biên soạn Playbook chuẩn hóa FQCN và check mode |
+| **5** | `ansible-playbook --syntax-check site-testing.yml` | Kiểm tra cú pháp toàn bộ kịch bản |
+| **6** | `ansible-playbook --check --diff site-testing.yml` | Thực thi chế độ Dry-run mô phỏng thay đổi |
+| **7** | `ansible-playbook site-testing.yml` | Chạy Lần 1 và Lần 2 đối soát Idempotency `changed=0` |
+| **8** | `ansible-playbook verify.yml` | Thực thi kịch bản nghiệm thu kiểm tra máy đích |
 
 ```bash
-mkdir -p ~/lab-ansible-25/molecule/default && cd ~/lab-ansible-25
+# Bước 1: Khởi tạo thư mục dự án
+mkdir -p ~/lab-ansible-25 && cd ~/lab-ansible-25
+```
 
+```bash
+# Bước 2: Cấu hình .ansible-lint và ansible.cfg
 cat << 'EOF' > .ansible-lint
-# .ansible-lint project rules
+---
 profile: production
-skip_list:
-  - yaml[line-length]
-  - experimental
+strict: true
 exclude_paths:
   - .cache/
-  - collections/
+skip_list:
+  - yaml[line-length]
 EOF
 
 cat << 'EOF' > ansible.cfg
@@ -506,538 +303,503 @@ cat << 'EOF' > inventory.ini
 [web]
 target1 ansible_host=127.0.0.1 ansible_port=2221
 
-[db]
-target2 ansible_host=127.0.0.1 ansible_port=2222
-
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 EOF
 ```
 
-**CHECKPOINT 1 — Tệp cấu hình .ansible-lint được khởi tạo thành công chứa profile: production và skip_list.**
-- **Lệnh kiểm tra:**
-```bash
-if [ -f ".ansible-lint" ] && grep -q "profile: production" .ansible-lint && grep -q "skip_list:" .ansible-lint; then
-  echo "CHECKPOINT 1: ĐẠT - Tệp cấu hình .ansible-lint được khởi tạo thành công chứa profile và skip_list"
-else
-  echo "CHECKPOINT 1: LỖI - Khởi tạo .ansible-lint thất bại"
-fi
-```
-
----
-
-## L4. Bước 2 — Khởi tạo Molecule Verification Scenario verify.yml (30 phút)
-
-Khởi tạo kịch bản nghiệm thu giả lập Molecule `molecule/default/verify.yml` sử dụng module `ansible.builtin.assert` và `ansible.builtin.stat` (QT 5.2, QT 5.3).
+> [!NOTE]
+> **CHECKPOINT 1:** Xác nhận tệp `.ansible-lint` và `ansible.cfg` được tạo thành công:
+> ```bash
+> test -f .ansible-lint && grep -q "profile: production" .ansible-lint && echo "CHECKPOINT 1: PASS" || echo "CHECKPOINT 1: FAIL"
+> ```
 
 ```bash
-cat << 'EOF' > molecule/default/verify.yml
+# Bước 3: Tạo kịch bản nghiệm thu verify.yml
+cat << 'EOF' > verify.yml
 ---
-- name: Molecule Verification Scenario
+- name: Verification Suite for Deployment State
   hosts: web
   become: true
   tasks:
-    - name: Verify 1 - Check application configuration file status
+    - name: Verify 1 - Check configuration file existence and permissions
       ansible.builtin.stat:
         path: /etc/testing-app.conf
-      register: app_conf_stat
+      register: file_stat
 
-    - name: Verify 2 - Assert configuration file exists and has correct permissions
+    - name: Verify 2 - Assert configuration file properties
       ansible.builtin.assert:
         that:
-          - app_conf_stat.stat.exists
-          - app_conf_stat.stat.mode == '0644'
-        fail_msg: "Verification Failed - /etc/testing-app.conf does not exist or has invalid mode"
-        success_msg: "Verification Success - /etc/testing-app.conf is valid"
+          - file_stat.stat.exists
+          - file_stat.stat.mode == '0644'
+        fail_msg: "Verification Failed: Configuration file is missing or has incorrect permissions!"
+        success_msg: "Verification Passed: File exists with correct 0644 permissions."
 EOF
 ```
 
-**CHECKPOINT 2 — Tệp kịch bản nghiệm thu molecule/default/verify.yml chứa task ansible.builtin.assert được khởi tạo thành công.**
-- **Lệnh kiểm tra:**
-```bash
-if [ -f "molecule/default/verify.yml" ] && grep -q "ansible.builtin.stat:" molecule/default/verify.yml && grep -q "ansible.builtin.assert:" molecule/default/verify.yml; then
-  echo "CHECKPOINT 2: ĐẠT - Tệp kịch bản nghiệm thu molecule/default/verify.yml được khởi tạo thành công"
-else
-  echo "CHECKPOINT 2: LỖI - Khởi tạo verify.yml thất bại"
-fi
-```
-
----
-
-## L5. Bước 3 — Viết Playbook site-testing.yml Chuẩn hóa Linting và Check Mode (40 phút)
-
-Viết file Playbook chính `site-testing.yml` tuân thủ 100% quy chuẩn FQCN, sử dụng thuộc tính `check_mode: no` cho task đọc dữ liệu, render file `/etc/testing-app.conf` (QT 4.1, QT 4.3, QT 5.1, QT 6.1).
+> [!NOTE]
+> **CHECKPOINT 2:** Xác nhận kịch bản nghiệm thu `verify.yml` có chứa module `assert`:
+> ```bash
+> grep -q "ansible.builtin.assert" verify.yml && echo "CHECKPOINT 2: PASS" || echo "CHECKPOINT 2: FAIL"
+> ```
 
 ```bash
+# Bước 4: Biên soạn Playbook chính site-testing.yml
 cat << 'EOF' > site-testing.yml
 ---
-- name: Master Playbook Quality Assurance and Testing Demonstration
+- name: Enterprise Production-Ready Testing Playbook
   hosts: web
   become: true
+  vars:
+    app_target_port: 8080
+    config_dest_path: "/etc/testing-app.conf"
+
   tasks:
-    - name: Task 1 - Deploy main application testing configuration
+    - name: Task 1 - Deploy application configuration file
       ansible.builtin.copy:
         content: |
-          SYNTAX_CHECK=PASSED
-          LINTING_STATUS=COMPLIANT
-          CHECK_MODE_TESTED=TRUE
-          MOLECULE_VERIFIED=SUCCESS
-        dest: /etc/testing-app.conf
+          # Production Quality Configuration
+          APP_PORT={{ app_target_port }}
+          LINT_STATUS=PASSED_CLEAN
+          TEST_SUITE=MOLECULE_VERIFIED
+        dest: "{{ config_dest_path }}"
         mode: '0644'
 
-    - name: Task 2 - Read uptime information with forced execution (check_mode no)
-      ansible.builtin.command: cat /proc/uptime
-      register: uptime_check
+    - name: Task 2 - Read system hostname with check_mode disabled
+      ansible.builtin.command: hostname
+      register: host_name_out
       check_mode: false
       changed_when: false
 EOF
 ```
 
-Kiểm tra cú pháp static với `--syntax-check`:
 ```bash
+# Bước 5: Kiểm tra cú pháp bằng --syntax-check
 ansible-playbook --syntax-check site-testing.yml
 ```
 
-**CHECKPOINT 3 — Lệnh CLI ansible-playbook --syntax-check site-testing.yml xác nhận cú pháp Playbook hợp lệ 100%.**
-- **Lệnh kiểm tra:**
+> [!NOTE]
+> **CHECKPOINT 3:** Xác nhận cú pháp Playbook đạt chuẩn không lỗi:
+> ```bash
+> ansible-playbook --syntax-check site-testing.yml && echo "CHECKPOINT 3: PASS" || echo "CHECKPOINT 3: FAIL"
+> ```
+
 ```bash
-SYN_OUT=$(ansible-playbook --syntax-check site-testing.yml)
-if echo "$SYN_OUT" | grep -q "playbook: site-testing.yml"; then
-  echo "CHECKPOINT 3: ĐẠT - Lệnh CLI ansible-playbook --syntax-check xác nhận cú pháp Playbook hợp lệ"
-else
-  echo "CHECKPOINT 3: LỖI - Kiểm tra --syntax-check thất bại"
-fi
+# Bước 6: Chạy thử nghiệm Dry-run với --check --diff
+ansible-playbook --check --diff site-testing.yml > check-diff-output.txt
 ```
 
----
+> [!NOTE]
+> **CHECKPOINT 4:** Xác nhận chế độ Dry-run xuất ra thông tin diff dự báo thay đổi:
+> ```bash
+> grep -q "APP_PORT=8080" check-diff-output.txt && echo "CHECKPOINT 4: PASS" || echo "CHECKPOINT 4: FAIL"
+> ```
 
-## L6. Bước 4 — Thực thi Chế độ Thử nghiệm Dry-run --check --diff và Phép thử Lần 2 (30 phút)
-
-Thực thi mô phỏng chế độ Dry-run với `ansible-playbook --check --diff site-testing.yml`, sau đó thực thi thật Lần 1 và thực thi phép thử **Lượt chạy Lần thứ hai** chứng minh `PLAY RECAP` đạt `changed=0` (QT 4.2, QT 6.3).
-
-Thực thi Dry-run `--check --diff`:
 ```bash
-ansible-playbook --check --diff site-testing.yml
-```
-
-**CHECKPOINT 4 — Lệnh CLI ansible-playbook --check --diff mô phỏng thi hành Dry-run và xuất sự khác biệt nội dung file trên console.**
-- **Lệnh kiểm tra:**
-```bash
-CHECK_OUT=$(ansible-playbook --check --diff site-testing.yml)
-if echo "$CHECK_OUT" | grep -q "SYNTAX_CHECK=PASSED" && echo "$CHECK_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 4: ĐẠT - Lệnh CLI ansible-playbook --check --diff mô phỏng Dry-run và xuất sự khác biệt thành công"
-else
-  echo "CHECKPOINT 4: LỖI - Thi hành --check --diff thất bại"
-fi
-```
-
-Thực thi thật Lần 1:
-```bash
+# Bước 7: Thực thi thật Lần 1 và Lần 2 đối soát Idempotency
+ansible-playbook site-testing.yml
 ansible-playbook site-testing.yml
 ```
 
-**CHECKPOINT 5 — Playbook site-testing.yml thi hành thật thành công trên target host (PLAY RECAP failed=0).**
-- **Lệnh kiểm tra:**
+> [!NOTE]
+> **CHECKPOINT 5:** Xác nhận Lượt 1 áp dụng cấu hình thành công:
+> ```bash
+> ansible-playbook site-testing.yml | grep -q "failed=0" && echo "CHECKPOINT 5: PASS" || echo "CHECKPOINT 5: FAIL"
+> ```
+
+> [!NOTE]
+> **CHECKPOINT 6:** Xác nhận Lượt 2 đạt Idempotency tuyệt đối (`changed=0`):
+> ```bash
+> RUN2_OUT=$(ansible-playbook site-testing.yml)
+> if echo "$RUN2_OUT" | grep -q "changed=0" && echo "$RUN2_OUT" | grep -q "failed=0"; then
+>   echo "CHECKPOINT 6: PASS - Đạt Idempotency changed=0"
+> else
+>   echo "CHECKPOINT 6: FAIL - Lỗi không đạt Idempotency"
+> fi
+> ```
+
 ```bash
-TST_PLAY_OUT=$(ansible-playbook site-testing.yml)
-if echo "$TST_PLAY_OUT" | grep -q "Task 1 - Deploy main application testing configuration" && echo "$TST_PLAY_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 5: ĐẠT - Playbook site-testing.yml thi hành thật thành công"
-else
-  echo "CHECKPOINT 5: LỖI - Thi hành Playbook thật thất bại"
-fi
-```
-
-Thực thi Lần 2 (BẮT BUỘC ĐẠT `changed=0`):
-```bash
-ansible-playbook site-testing.yml
-```
-
-**CHECKPOINT 6 — Phép thử Lượt 2 đạt changed=0 cho toàn bộ các Task trong Playbook Testing.**
-- **Lệnh kiểm tra:**
-```bash
-RUN2_TST_OUT=$(ansible-playbook site-testing.yml)
-if echo "$RUN2_TST_OUT" | grep -q "changed=0" && echo "$RUN2_TST_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 6: ĐẠT - Phép thử Lượt 2 đạt chuẩn Idempotency (PLAY RECAP báo changed=0 cho toàn bộ Playbook Testing)"
-else
-  echo "CHECKPOINT 6: LỖI - Lượt 2 không đạt changed=0 (Task Testing bị lặp changed)"
-fi
-```
-
----
-
-## L7. Bước 5 — Thực thi Kịch bản Nghiệm thu Molecule verify.yml và docker exec (20 phút)
-
-Thực thi kịch bản nghiệm thu `molecule/default/verify.yml` và sử dụng lệnh `docker exec` đối soát trực tiếp tệp tin cấu hình `/etc/testing-app.conf` trên target node target1 (QT 5.3, QT 6.3).
-
-Thực thi kịch bản nghiệm thu verify:
-```bash
-ansible-playbook molecule/default/verify.yml
-```
-
-**CHECKPOINT 7 — Kịch bản nghiệm thu molecule/default/verify.yml thi hành thành công khẳng định tệp /etc/testing-app.conf tồn tại đúng mode 0644.**
-- **Lệnh kiểm tra:**
-```bash
-VERIFY_OUT=$(ansible-playbook molecule/default/verify.yml)
-if echo "$VERIFY_OUT" | grep -q "Verify 2 - Assert configuration file exists and has correct permissions" && echo "$VERIFY_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 7: ĐẠT - Kịch bản nghiệm thu molecule/default/verify.yml thi hành thành công khẳng định file tồn tại chuẩn xác"
-else
-  echo "CHECKPOINT 7: LỖI - Kịch bản nghiệm thu verify.yml thất bại"
-fi
-```
-
-Đối soát file `/etc/testing-app.conf` trên target1:
-```bash
+# Bước 8: Chạy kịch bản nghiệm thu verify.yml và đối soát máy đích
+ansible-playbook verify.yml
 docker exec target1 cat /etc/testing-app.conf
 ```
 
-**CHECKPOINT 8 — Đối soát file /etc/testing-app.conf trên target1 chứa đúng dữ liệu SYNTAX_CHECK=PASSED và LINTING_STATUS=COMPLIANT.**
-- **Lệnh kiểm tra:**
-```bash
-EXEC_TST_CONF=$(docker exec target1 cat /etc/testing-app.conf)
-if echo "$EXEC_TST_CONF" | grep -q "SYNTAX_CHECK=PASSED" && echo "$EXEC_TST_CONF" | grep -q "LINTING_STATUS=COMPLIANT" && echo "$EXEC_TST_CONF" | grep -q "MOLECULE_VERIFIED=SUCCESS"; then
-  echo "CHECKPOINT 8: ĐẠT - Kiểm tra sự thật qua docker exec xác nhận file /etc/testing-app.conf chứa đúng dữ liệu từ Testing Playbook"
-else
-  echo "CHECKPOINT 8: LỖI - Đối soát file testing-app.conf trên máy đích thất bại"
-fi
-```
+> [!NOTE]
+> **CHECKPOINT 7:** Xác nhận kịch bản nghiệm thu `verify.yml` trả về `Verification Passed`:
+> ```bash
+> ansible-playbook verify.yml | grep -q "Verification Passed" && echo "CHECKPOINT 7: PASS" || echo "CHECKPOINT 7: FAIL"
+> ```
+
+> [!NOTE]
+> **CHECKPOINT 8:** Đối soát file `/etc/testing-app.conf` tồn tại đúng dữ liệu trên máy đích:
+> ```bash
+> docker exec target1 cat /etc/testing-app.conf | grep -q "LINT_STATUS=PASSED_CLEAN" && echo "CHECKPOINT 8: PASS" || echo "CHECKPOINT 8: FAIL"
+> ```
 
 ---
 
-## L8. Nộp sản phẩm và dọn dẹp (10 phút)
+## 6. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-Thu thập kết quả ra các file báo cáo cuối buổi:
-```bash
-ansible-playbook site-testing.yml > testing-proof.txt
-ansible-playbook site-testing.yml > idempotency-check.txt
-docker exec target1 cat /etc/testing-app.conf > kiem-may-dich.txt
-ansible-playbook molecule/default/verify.yml >> kiem-may-dich.txt
-```
-
----
-
-## L9. Xử lý sự cố
-
-| # | Hiện tượng lỗi | Nguyên nhân gốc rễ | Cách xử lý nhanh |
-|---|---|---|---|
-| 1 | Thắc mắc vì sao chạy `--check` mà task `command` bị skip | Module `command` mặc định không hỗ trợ Check Mode và bị bỏ qua | Sử dụng `check_mode: false` nếu muốn task command luôn chạy. |
-| 2 | Lỗi `ansible-playbook --syntax-check` nổ lỗi YAML | Sai khoảng trắng indent hoặc thiếu từ khóa `hosts:` | Căn chỉnh lại khoảng trắng YAML và kiểm tra từ khóa `hosts:`. |
-| 3 | Lỗi `ansible-lint` báo vi phạm quy tắc FQCN | Dùng tên module ngắn (như `copy`) thay vì `ansible.builtin.copy` | Đổi toàn bộ tên module sang dạng FQCN chuẩn. |
-| 4 | Thắc mắc vì sao cờ `--diff` không in ra dòng thay đổi | Tệp tin cấu hình đã tồn tại và trùng khớp 100% trên đĩa | Cờ `--diff` chỉ in dòng thay đổi khi có sự khác biệt giữa file cũ và file mới. |
-| 5 | Quên `changed_when: false` cho task đọc dữ liệu | Task đọc dữ liệu trong Check Mode liên tục báo `changed=1` | Bổ sung `changed_when: false` cho task đọc dữ liệu. |
-| 6 | Lỗi `molecule/default/verify.yml` nổ lỗi assert | Điều kiện `stat.mode == '0644'` trong `assert` không thỏa mãn | Kiểm tra thuộc tính `mode:` của task copy trong Playbook chính. |
-| 7 | Tệp `.ansible-lint` bị lỗi syntax | Sai khoảng trắng indent trong tệp cấu hình `.ansible-lint` | Căn chỉnh lại khoảng trắng 2 spaces cho tệp `.ansible-lint`. |
-| 8 | Lỗi `ansible-lint` chặn từ khóa `command` | `ansible-lint` khuyến nghị dùng module chuyên dụng | Dùng module chuyên dụng hoặc comment `# noqa: command-instead-of-module`. |
-| 9 | Thắc mắc tại sao `--syntax-check` không phát hiện lỗi variable | `--syntax-check` chỉ kiểm tra cú pháp YAML tĩnh | Sử dụng `--check` hoặc `ansible-lint` để kiểm tra lỗi biến rỗng. |
-| 10 | Không test thử Idempotency Lần 2 của kịch bản Testing | Task trong Playbook test bị lặp changed mạo danh ở Lần 2 mà không biết | Chạy lại Playbook Lần 2 và đối soát `changed=0`. |
-| 11 | Lỗi `docker exec` không tìm thấy `/etc/testing-app.conf` | Task `ansible.builtin.copy` bị fail hoặc skipped | Kiểm tra log execution của `ansible-playbook site-testing.yml`. |
-| 12 | Thắc mắc vì sao `check_mode: false` lại thực thi thật | Thuộc tính `check_mode: false` ép buộc Ansible bỏ qua chế độ `--check` | Đó là tính năng cố ý để thu thập dữ liệu thật trong Check Mode. |
-| 13 | Lỗi `assert` báo `variable is undefined` | Biến thu thập từ task `stat` bị gõ sai tên register | Kiểm tra tên biến trong `register:` trùng 100% với `assert`. |
-| 14 | Thắc mắc tại sao `ansible-lint` báo lỗi `no-changed-when` | Task module `command` thiếu thuộc tính `changed_when` | Bổ sung `changed_when: false` hoặc `changed_when: result.rc == 0`. |
-
----
-
-## L10. Bài tập mở rộng
-
-1. **BT1:** Tạo tệp `.ansible-lint` bổ sung quy tắc `warn_list: [experimental]`.
-2. **BT2:** Thực thi cờ `--check --diff` cho Playbook nạp biến Vault Buổi 20.
-3. **BT3:** Thêm task đọc Uptime với `check_mode: false` và `changed_when: false`.
-4. **BT4:** Mở rộng tệp `molecule/default/verify.yml` kiểm tra cổng 8080 đang lắng nghe.
-5. **BT5:** Sử dụng `ansible-lint` quét toàn bộ các Playbook trong thư mục `buoi/`.
-6. **BT6:** Thử nghiệm tạo lỗi syntax cố ý và đối soát thông báo lỗi của `--syntax-check`.
-7. **BT7:** Thực thi phép thử Idempotency Lần 2 cho Playbook Testing mở rộng và đối soát `PLAY RECAP` đạt `changed=0`.
-8. **BT8:** Viết kịch bản bash script dùng `docker exec` đối soát trực tiếp nội dung các file cấu hình và kết quả test nghiệm thu.
-
----
-
-## L11. Sản phẩm nộp và chấm điểm
-
-### Danh mục sản phẩm nộp
-- File cấu hình quy tắc `.ansible-lint`.
-- File kịch bản nghiệm thu `molecule/default/verify.yml`.
-- File Playbook chính `site-testing.yml`.
-- Báo cáo kết quả 8 CHECKPOINT từ terminal.
-- Các file kết quả: `testing-proof.txt`, `idempotency-check.txt`, `kiem-may-dich.txt`.
-
-### Thang điểm đánh giá
-
-| Mức điểm | Tiêu chí đạt được |
-|---|---|
-| **0–4 điểm** | Không chạy `--syntax-check`, sửa thẳng code trên Prod không qua `--check --diff`, dính lỗi linter nghiêm trọng, hay không có `verify.yml`. |
-| **5–7 điểm** | Chạy được `--syntax-check`, nhưng chưa dùng `--check --diff`, chưa tạo `.ansible-lint`, hay thiếu `check_mode: false` cho task đọc dữ liệu. |
-| **8–9 điểm** | Đạt đủ 8 CHECKPOINT, chứng minh thành thạo `--syntax-check`, `--check --diff`, `check_mode: false`, `ansible-lint`, `.ansible-lint`, Molecule `verify.yml`, Idempotency Lần 2 (`changed=0`) và đối soát `docker exec`. |
-| **10 điểm** | Đạt 9 điểm + Hoàn thành xuất sắc 100% các Bài tập mở rộng (BT1–BT8). |
-
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Nội dung | Thời lượng dự kiến | Thời lượng thực tế |
-|---|---|---|---|
-| L0–L2 | Mục tiêu, Tiên quyết & Kiến trúc bài lab | 10 phút | 10 phút |
-| L3 | Bước 1: Cấu hình .ansible-lint và ansible.cfg | 30 phút | 30 phút |
-| L4 | Bước 2: Khởi tạo Molecule verification verify.yml | 30 phút | 30 phút |
-| L5 | Bước 3: Viết Playbook site-testing.yml & --syntax-check | 40 phút | 40 phút |
-| L6 | Bước 4: Thực thi Dry-run --check --diff & Phép thử Lần 2 | 30 phút | 30 phút |
-| L7 | Bước 5: Thực thi Molecule verify.yml & docker exec | 20 phút | 20 phút |
-| L8–L11 | Nộp sản phẩm, Sự cố, Bài tập & Chấm điểm | 10 phút | 10 phút |
-| **Tổng** | **Khối thực hành Buổi 25** | **150 phút** | **150 phút** |
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **DevOps Engineer**, **Site Reliability Engineer (SRE)** và **Cloud Automation Architect**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ xử lý sự cố hệ thống:
-
----
-
-
-
-## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Trình bày 4 tầng kiểm thử tự động hóa trong mô hình Test-Driven Infrastructure với Ansible.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày 4 tầng kiểm thử tự động hóa trong mô hình Test-Driven Infrastructure với Ansible.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Tầng 1 (Phân tích tĩnh / Static Linting):</b> Dùng `yamllint` và `ansible-lint` kiểm tra chuẩn cú pháp, cấu trúc FQCN và Best Practices.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Tầng 2 (Kiểm tra cú pháp / Syntax Validation):</b> Dùng `ansible-playbook --syntax-check` nạp và parse toàn bộ cây Playbook.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Tầng 3 (Mô phỏng Dry-run):</b> Dùng `ansible-playbook --check --diff` xem trước các thay đổi trên máy đích mà không ghi đè.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Tầng 4 (Kiểm thử tích hợp / Integration Testing):</b> Dùng `Molecule` chạy thử nghiệm trên container và nghiệm thu bằng `verify.yml` qua 2 lượt chạy.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được các tầng kiểm thử.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2 tầng đơn giản nhưng không có Molecule hay Linting.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích đầy đủ 4 tầng kiểm thử theo thứ tự pipeline chuẩn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + giải thích lý do tại sao kiểm thử sớm (Shift-Left Testing) giúp giảm 90% lỗi Production.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Tầng nào chạy nhanh nhất và nên đặt ở Pre-commit hook? <i>(Tầng 1 - Static Linting với `ansible-lint` và `yamllint`.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Cờ <code>--syntax-check</code> trong câu lệnh <code>ansible-playbook</code> dùng để làm gì? Tại sao việc chạy <code>--syntax-check</code> lại là bước đầu tiên trong quy trình CI/CD? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tác dụng: Dùng để kiểm tra cú pháp tĩnh (Static Syntax Check) của tệp Playbook mà không thực hiện kết nối SSH tới các máy chủ Managed Nodes.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tại sao là bước đầu tiên trong CI/CD: Giúp phát hiện ngay lập tức các lỗi cú pháp cơ bản (như sai khoảng trắng indent YAML, thiếu dấu hai chấm, thiếu từ khóa <code>hosts:</code>) chỉ trong 1 giây. Chặn không cho các commit lỗi cú pháp đi tiếp vào các bước build tốn nhiều tài nguyên hơn.</div>
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cờ <code>--syntax-check</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>--syntax-check</code> để soi lỗi nhưng không giải thích được lý do chặn sớm (Fail-Fast) trong pipeline CI/CD.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế Static Syntax Check và vai trò Fail-Fast trong CI/CD.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết câu lệnh CLI thực thi <code>ansible-playbook --syntax-check site-testing.yml</code>.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Cờ <code>--syntax-check</code> có kiểm tra được biến rỗng hay lỗi SSH connection không? *(Không, nó chỉ kiểm tra cấu trúc cú pháp tĩnh của file YAML.)*
-</div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Cờ <code>--check</code> và <code>--diff</code> trong lệnh <code>ansible-playbook</code> hoạt động như thế nào? Sự kết hợp này mang lại lợi ích gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Cờ <code>--check</code> và <code>--diff</code> trong lệnh <code>ansible-playbook</code> hoạt động như thế nào? Sự kết hợp này mang lại lợi ích gì?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b><code>--check</code> (Dry-run mode):</b> Yêu cầu các module kiểm tra trạng thái hiện tại của máy đích và báo cáo xem task có gây ra thay đổi (`changed`) hay không mà tuyệt đối không thực hiện bất kỳ thay đổi nào lên hệ thống.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b><code>--diff</code>:</b> Hiển thị chi tiết từng dòng nội dung tệp tin trước và sau khi thay đổi dạng Unified Diff (dòng đỏ là nội dung cũ bị xóa, dòng xanh là nội dung mới sẽ được ghi vào).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Lợi ích kết hợp:</b> Cung cấp bức tranh toàn diện và an toàn 100% giúp SRE Lead tự tin phê duyệt (Review) các thay đổi cấu hình trước khi chạy thật trên Production.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được `--check` và `--diff`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết `--check` là chạy thử nhưng không giải thích được cơ chế hiển thị diff từng dòng.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế Dry-run và Unified Diff format.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + chỉ ra giới hạn của một số module bên thứ ba không hỗ trợ check mode.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Module nào không hỗ trợ `--check` và luôn bị bỏ qua? <i>(Module `command`, `shell`, `raw` mặc định bị bỏ qua ở check mode trừ khi có `check_mode: false`.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Thuộc tính <code>check_mode: false</code> dùng để làm gì? Khi nào bắt buộc phải khai báo thuộc tính này trong Task?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Thuộc tính <code>check_mode: false</code> dùng để làm gì? Khi nào bắt buộc phải khai báo thuộc tính này trong Task?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tác dụng:</b> Ép buộc Task đó phải **luôn luôn thực thi thật sự trên máy đích** ngay cả khi người dùng đang chạy lệnh `ansible-playbook` với cờ `--check` (Dry-run).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Trường hợp bắt buộc:</b> Dành cho các task chỉ đọc dữ liệu (Read-only facts gathering) hoặc kiểm tra trạng thái (như `command: uptime`, `stat`, `slurp`) mà kết quả đăng ký (`register`) của nó được sử dụng trong cờ `when:` của các task phía sau. Nếu không có `check_mode: false`, task đọc dữ liệu sẽ bị skip làm biến bị undefined gây crash Playbook trong lúc dry-run.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính `check_mode: false`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết là ép chạy thật nhưng không nêu được nguy cơ biến register bị undefined ở task sau.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế bảo vệ chuỗi phụ thuộc biến trong dry-run.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + kết hợp ví dụ sử dụng chung với `changed_when: false`.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Ngược lại, thuộc tính `check_mode: true` có tác dụng gì? <i>(Ép task đó luôn luôn chạy ở chế độ check mode dù người dùng đang chạy Playbook ở chế độ thật.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Công cụ <code>ansible-lint</code> kiểm tra những khía cạnh nào của mã nguồn Ansible? Nêu 3 quy tắc quan trọng mà linter thường bắt lỗi.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Công cụ <code>ansible-lint</code> kiểm tra những khía cạnh nào của mã nguồn Ansible? Nêu 3 quy tắc quan trọng mà linter thường bắt lỗi.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Khía cạnh kiểm tra:</b> Cú pháp YAML chuẩn, cấu trúc Role/Collection, tính bảo mật (cấm hardcode secret), tính Idempotency và tuân thủ Best Practices của Red Hat.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 Quy tắc quan trọng:</b><br>
+      1. <code>fqcn[action]</code>: Bắt buộc sử dụng tên đầy đủ FQCN (như `ansible.builtin.copy` thay vì `copy`).<br>
+      2. <code>name[missing]</code>: Bắt buộc mọi task trong Playbook/Role phải có thuộc tính `name:` mô tả rõ ràng.<br>
+      3. <code>risky-file-permissions</code>: Bắt buộc phải khai báo tường minh tham số `mode:` (như `mode: '0644'`) khi dùng module `copy`, `file`, `template`.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết `ansible-lint`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết kiểm tra lỗi nhưng không nêu được tên các quy tắc cụ thể.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác 3 quy tắc FQCN, task naming và file permissions.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + giải thích cách cấu hình `.ansible-lint` để tùy biến các quy tắc này.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Quy tắc `command-instead-of-module` nhắc nhở điều gì? <i>(Cảnh báo khi kỹ sư dùng module `command` chạy lệnh Linux thô trong khi đã có sẵn module Ansible chuyên dụng.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Trình bày cấu trúc tệp cấu hình <code>.ansible-lint</code> và giải thích ý nghĩa của <code>profile: production</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày cấu trúc tệp cấu hình <code>.ansible-lint</code> và giải thích ý nghĩa của <code>profile: production</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Ý nghĩa <code>profile: production</code>:</b> Kích hoạt cấp độ kiểm soát chất lượng cao nhất của Ansible-lint, bao gồm toàn bộ các quy tắc về an ninh, tính tương thích ngược, hiệu năng và chuẩn mực đóng gói Enterprise.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Cấu trúc tệp mẫu:</b>
+      <pre><code>---
+profile: production
+strict: true
+exclude_paths:
+  - .cache/
+  - .github/
+skip_list:
+  - yaml[line-length]
+warn_list:
+  - experimental</code></pre>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết file `.ansible-lint`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết file nhưng không giải thích được các cấp độ profile (min, basic, safety, production).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cấu trúc tệp và vai trò của `profile: production`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + giải thích cơ chế `exclude_paths` và `skip_list`.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Khác biệt giữa `skip_list` và `warn_list` trong `.ansible-lint` là gì? <i>(`skip_list` bỏ qua hoàn toàn, còn `warn_list` vẫn in cảnh báo nhưng không làm fail pipeline CI/CD.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Framework <code>Molecule</code> hoạt động như thế nào trong kiểm thử Ansible Role? Trình bày chu trình các bước của lệnh <code>molecule test</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Framework <code>Molecule</code> hoạt động như thế nào trong kiểm thử Ansible Role? Trình bày chu trình các bước của lệnh <code>molecule test</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Cơ chế:</b> Molecule tự động hóa toàn bộ vòng đời kiểm thử Role trong một môi trường cách ly (thường là Docker/Podman container hoặc máy ảo Vagrant/Cloud instance).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Chu trình chuẩn của <code>molecule test</code>:</b><br>
+      1. <code>dependency</code>: Tải các roles/collections phụ thuộc.<br>
+      2. <code>lint</code>: Chạy yamllint và ansible-lint.<br>
+      3. <code>destroy</code>: Dọn dẹp môi trường cũ.<br>
+      4. <code>create</code>: Khởi tạo container thử nghiệm mới.<br>
+      5. <code>converge</code>: Thực thi Role lần 1 lên container.<br>
+      6. <code>idempotence</code>: Thực thi Role lần 2 và khẳng định <code>changed=0</code>.<br>
+      7. <code>verify</code>: Chạy kịch bản nghiệm thu `verify.yml`.<br>
+      8. <code>destroy</code>: Tự động xóa container sau khi kiểm thử xong.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết Molecule.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết dùng container để test nhưng không nêu được các bước trong ma trận `molecule test`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày chính xác chu trình vòng đời kiểm thử Molecule.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + nhấn mạnh vai trò của bước `idempotence` và `verify`.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Lệnh nào trong Molecule dùng để khởi tạo nhanh container và giữ nguyên môi trường để kỹ sư SSH vào debug thủ công? <i>(Lệnh <code>molecule converge</code> và <code>molecule login</code>.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Trình bày kỹ thuật viết kịch bản nghiệm thu <code>verify.yml</code> sử dụng module <code>ansible.builtin.assert</code> và <code>stat</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày kỹ thuật viết kịch bản nghiệm thu <code>verify.yml</code> sử dụng module <code>ansible.builtin.assert</code> và <code>stat</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kịch bản `verify.yml` đóng vai trò là bài kiểm tra Unit/Functional Test sau khi Role chạy xong.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cấu trúc mã YAML chuẩn:
+      <pre><code>---
+- name: Verify Deployed Service and Config
+  hosts: all
+  tasks:
+    - name: Gather file statistics
+      ansible.builtin.stat:
+        path: /etc/app.conf
+      register: app_stat
+
+    - name: Assert file exists with correct ownership and mode
+      ansible.builtin.assert:
+        that:
+          - app_stat.stat.exists
+          - app_stat.stat.pw_name == 'root'
+          - app_stat.stat.mode == '0644'
+        fail_msg: "Verification Failed: /etc/app.conf is invalid!"</code></pre>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết viết `verify.yml`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Viết được lệnh shell kiểm tra nhưng không dùng module chuẩn `assert`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò của `stat` và `assert` trong nghiệm thu tự động.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + kết hợp kiểm tra dịch vụ đang chạy bằng module `service_facts` hoặc `uri`.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm sao để kiểm tra một cổng TCP đang lắng nghe trong kịch bản verify? <i>(Sử dụng module <code>ansible.builtin.wait_for: port=8080 timeout=5</code>.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Làm thế nào để bỏ qua một cảnh báo linter cho riêng một Task cụ thể (Inline Rule Ignoring) mà không cần sửa file <code>.ansible-lint</code> chung?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Làm thế nào để bỏ qua một cảnh báo linter cho riêng một Task cụ thể (Inline Rule Ignoring) mà không cần sửa file <code>.ansible-lint</code> chung?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sử dụng chú thích comment `# noqa: <rule_id>` đặt ngay trên hoặc cùng dòng với Task cần bỏ qua.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ví dụ bỏ qua cảnh báo dùng lệnh command thay vì module:
+      <pre><code>- name: Run legacy custom shell script
+  ansible.builtin.command: /opt/scripts/custom_init.sh # noqa: command-instead-of-module
+  changed_when: false</code></pre>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cú pháp `# noqa`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết comment nhưng viết sai cú pháp `# noqa: rule_name`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cú pháp và vị trí đặt comment.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + chỉ ra lý do chỉ nên dùng `# noqa` trong trường hợp ngoại lệ thực sự chính đáng.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Cú pháp nào dùng để bỏ qua nhiều quy tắc cùng lúc trên 1 task? <i>(Sử dụng dấu cách phân cách: `# noqa: rule1 rule2`.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu chất lượng mã nguồn Ansible trong chu trình CI/CD Pipeline.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu chất lượng mã nguồn Ansible trong chu trình CI/CD Pipeline.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Static Quality Gate):</b> Chạy `yamllint` và `ansible-lint` kiểm tra 100% tuân thủ FQCN, bảo mật và Best Practices; chạy `ansible-playbook --syntax-check`.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Integration &amp; Idempotency Gate):</b> Thực thi `molecule test` trên container thử nghiệm, khẳng định Role chạy trơn tru ở Lần 1 và đạt <code>changed=0</code> ở Lần 2 (Idempotence step).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Dry-run Simulation Gate):</b> Chạy `ansible-playbook --check --diff` trên môi trường Staging/Production để đối soát diff trước khi tiến hành apply chính thức.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không có quy trình nghiệm thu CI/CD.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Bỏ qua bước kiểm tra Idempotency hoặc không chạy Dry-run.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước Quality Gates chuẩn Enterprise.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc cả 3 bước + viết đoạn YAML của `.gitlab-ci.yml` định nghĩa 3 stage.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu bước `idempotence` trong Molecule báo có 1 task bị `changed` thì kết quả test sẽ thế nào? <i>(Molecule lập tức đánh dấu FAILED và dừng pipeline, bắt buộc kỹ sư phải sửa code.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Tại sao việc kiểm tra Idempotency lại bắt buộc phải thực hiện ở Lần chạy thứ hai thay vì chỉ kiểm tra Lần chạy thứ nhất?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao việc kiểm tra Idempotency lại bắt buộc phải thực hiện ở Lần chạy thứ hai thay vì chỉ kiểm tra Lần chạy thứ nhất?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ở Lần chạy thứ nhất, máy đích đang ở trạng thái ban đầu (chưa có file, chưa cài app), nên các task thực hiện thay đổi và báo `changed > 0` là hoàn toàn bình thường.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ ở Lần chạy thứ hai (khi hệ thống đã đạt trạng thái mong muốn), một kịch bản chuẩn Idempotency mới có thể chứng minh được khả năng nhận diện trạng thái trùng khớp và trả về <b>100% `ok` cùng `changed=0`</b>. Nếu Lần 2 vẫn báo `changed > 0`, chứng tỏ có task bị lỗi logic (ví dụ dùng lệnh `echo` liên tục append file hoặc module thiếu kiểm tra điều kiện).</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu bản chất kiểm tra Idempotency ở Lần 2.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Lần 2 phải `changed=0` nhưng không giải thích được cơ chế so sánh trạng thái mong muốn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt trạng thái giữa Lần 1 (Convergence) và Lần 2 (Steady State).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + chỉ ra các lỗi code thường gây vi phạm Idempotency ở Lần 2.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm sao để biến một task `command` tùy chỉnh đạt chuẩn Idempotent ở Lần 2? <i>(Sử dụng tham số `creates:` hoặc `removes:`, hoặc khai báo `changed_when:` logic chính xác.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Chuyện gì xảy ra nếu kịch bản Playbook không vượt qua được bài kiểm tra của <code>ansible-lint</code>? Có nên tắt linter để deploy nhanh không?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Chuyện gì xảy ra nếu kịch bản Playbook không vượt qua được bài kiểm tra của <code>ansible-lint</code>? Có nên tắt linter để deploy nhanh không?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Hậu quả:</b> Mã nguồn chứa các rủi ro bảo mật tiềm ẩn (như file permission lỏng lẻo, dùng short-name dễ xung đột collection), khó bảo trì, dễ bị lỗi thời khi nâng cấp phiên bản Ansible Core mới.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tuyệt đối không tắt linter:</b> Việc tắt linter để deploy nhanh là tích lũy nợ kỹ thuật (Technical Debt) nguy hiểm. Quản trị viên phải sửa triệt để các lỗi cảnh báo hoặc chỉ sử dụng `# noqa` có kiểm soát cho các ngoại lệ bất khả kháng.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Đề xuất tắt linter khi gặp lỗi.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết không nên tắt nhưng không nêu được các rủi ro dài hạn về Technical Debt.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác hậu quả của việc bỏ qua linting và rủi ro nâng cấp phiên bản.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + nhấn mạnh văn hóa chất lượng mã nguồn IaC trong môi trường Enterprise.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Công cụ nào giúp tự động sửa nhanh một số lỗi định dạng của `ansible-lint`? <i>(Lệnh <code>ansible-lint --write</code> tự động chuẩn hóa một số lỗi cú pháp.)</i></div>
+  </div>
+</details>
+
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng về Kiểm Thử Tự Động Hóa & Quality Assurance trong Ansible.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp kỹ sư xây dựng hệ thống kiểm thử tự động hóa toàn diện, an toàn và đạt Idempotency 100%.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Luôn chạy <code>ansible-lint</code> và <code>yamllint</code> trước mọi commit để đảm bảo chuẩn FQCN và Best Practices.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Kiểm tra cú pháp nhanh với <code>ansible-playbook --syntax-check</code> ở tất cả các giai đoạn pipeline.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Sử dụng <code>--check --diff</code> để xem trước các dòng thay đổi trước khi apply lên Production.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Bổ sung <code>check_mode: false</code> cho các task đọc dữ liệu để bảo vệ chuỗi phụ thuộc biến trong dry-run.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Dùng Molecule và <code>verify.yml</code> để nghiệm thu tự động, bảo đảm Lần 2 đạt <code>changed=0</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy kiến trúc sư Test-Driven Infrastructure.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Quy tắc nào trực tiếp ngăn chặn sự cố pipeline CI/CD bị crash giả mạo khi chạy dry-run? <i>(Quy tắc 4: Bổ sung <code>check_mode: false</code> cho task đọc facts.)</i></div>
+  </div>
 </details>
 
 ---
 
-### Câu 2 — Thử nghiệm Dry-run với `--check` và `--diff` 🔥
-**Hỏi:** Trình bày tác dụng của cờ `--check` (Check Mode) và cờ `--diff`. Tại sao quản trị viên bắt buộc phải kết hợp bộ đôi `--check --diff` trước khi triển khai Production? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:**
-- `--check` (Check Mode / Dry-run): Mô phỏng quá trình thi hành Playbook mà KHÔNG làm thay đổi bất kỳ trạng thái tệp tin hay dịch vụ nào trên máy đích.
-- `--diff`: In ra console sự khác biệt từng dòng (`+` thêm vào, `-` xóa đi) của các tệp tin cấu hình nếu Task được thi hành thật.
-- Tại sao bắt buộc kết hợp: Giúp quản trị viên soi trực quan chính xác 100% những dòng mã nào trong file cấu hình Production sẽ bị thay đổi trước khi quyết định thi hành thật, triệt tiêu rủi ro làm hỏng file cấu hình hệ thống.
-**Tiêu chí chấm:**
-- 0: Không biết cờ `--check` và `--diff`.
-- 1: Biết `--check` để chạy thử nhưng không giải thích được tác dụng in dòng khác biệt `+`/`-` của `--diff`.
-- 2: Phân tích chính xác cơ chế mô phỏng Dry-run kết hợp xem dòng khác biệt file cấu hình.
-- 3: Nêu đúng + viết câu lệnh CLI `ansible-playbook --check --diff site-testing.yml`.
-**Câu hỏi đào sâu:** Nếu một Task dùng module `command` thô thì cờ `--check` xử lý ra sao? *(Mặc định module `command` bị skip trong Check Mode trừ khi khai báo `check_mode: false`.)*
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
----
+### 5 Điều Cốt Lõi Cần Ghi Nhớ:
+1. **Kiểm tra đa tầng (Multi-layer Testing):** Kết hợp chặt chẽ Static Linting, Syntax Check, Dry-run và Integration Test.
+2. **Tuân thủ chuẩn FQCN:** Sử dụng `ansible-lint` để tự động hóa việc phát hiện và chuẩn hóa 100% tên module.
+3. **Mô phỏng an toàn với `--check --diff`:** Xem trước các thay đổi trước khi apply vào hệ thống thực tế.
+4. **Bảo vệ Dry-run với `check_mode: false`:** Cho phép các task đọc trạng thái chạy thật để nạp biến đầy đủ.
+5. **Đạt chuẩn `changed=0` ở Lần 2:** Kiểm thử nghiệm thu bằng `verify.yml` và khẳng định tính Idempotency tuyệt đối.
 
-### Câu 3 — Điều khiển Check Mode với `check_mode: false` 🔥
-**Hỏi:** Thuộc tính `check_mode: false` (hoặc `check_mode: no`) trong một Task có tác dụng gì? Khi nào bắt buộc phải dùng `check_mode: false`? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-- Tác dụng: Ép buộc Task đó LUÔN THỰC THI THẬT trên máy đích ngay cả khi câu lệnh `ansible-playbook` đang được chạy ở chế độ thử nghiệm `--check`.
-- Khi bắt buộc phải dùng: Dùng cho các Task đọc dữ liệu kiểm tra (như `command: cat /proc/uptime` hoặc đọc trạng thái service) thu thập thông tin gán vào biến `register`. Nếu bị skip trong Check Mode, các Task phía sau dùng biến đó sẽ bị crash do biến undefined.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `check_mode`.
-- 1: Biết `check_mode: false` để chạy thật nhưng không giải thích được lý do tránh lỗi undefined biến `register`.
-- 2: Phân tích chính xác cơ chế ép buộc thi hành thật trong Dry-run để thu thập dữ liệu biến `register`.
-- 3: Nêu đúng + viết đoạn Task YAML sử dụng `check_mode: false` kết hợp `changed_when: false`.
-**Câu hỏi đào sâu:** Ngược lại với `check_mode: false`, thuộc tính `check_mode: true` có tác dụng gì? *(Ép buộc Task đó CHỈ chạy ở chế độ Check Mode ngay cả khi Playbook được thi hành thật.)*
-
----
-
-### Câu 4 — Phân tích Tĩnh Mã nguồn với `ansible-lint` 🔥
-**Hỏi:** Công cụ `ansible-lint` dùng để làm gì? Nêu 3 lỗi vi phạm quy chuẩn (Lint Violations / Security Smells) phổ biến mà `ansible-lint` phát hiện. *(Liên quan QT 5.1)*
-**Đáp án chuẩn:**
-- Tác dụng: `ansible-lint` là công cụ phân tích mã nguồn tĩnh (Static Code Analysis) giúp kiểm tra Playbooks và Roles theo bộ quy chuẩn Best Practices và an toàn thông tin của Red Hat.
-- 3 Lỗi phổ biến:
-  1. Dùng tên module ngắn thay vì tên FQCN (ví dụ dùng `copy` thay vì `ansible.builtin.copy`).
-  2. Quên thuộc tính `changed_when` cho module `command` / `shell`.
-  3. Cứng hóa mật khẩu plaintext (Hardcoded Secret) hoặc dùng `mode` dạng số không có ngoặc đơn `'0644'`.
-**Tiêu chí chấm:**
-- 0: Không biết công cụ `ansible-lint`.
-- 1: Biết `ansible-lint` để soi code nhưng không liệt kê được 3 lỗi vi phạm chuẩn FQCN và Security Smells.
-- 2: Phân tích chính xác vai trò chuẩn hóa mã nguồn Best Practices của `ansible-lint`.
-- 3: Nêu đúng + viết câu lệnh CLI thực thi `ansible-lint site-testing.yml`.
-**Câu hỏi đào sâu:** Làm thế nào để chỉ đạo `ansible-lint` bỏ qua 1 dòng vi phạm cụ thể? *(Thêm comment `# noqa <rule_name>` ở cuối dòng code đó.)*
-
----
-
-### Câu 5 — Khởi tạo Cấu hình Quy tắc với `.ansible-lint` 🔥
-**Hỏi:** Tệp cấu hình `.ansible-lint` đặt ở thư mục gốc dự án dùng để làm gì? Trình bày 2 thuộc tính chính `profile` và `skip_list`. *(Liên quan QT 6.2)*
-**Đáp án chuẩn:**
-- Tác dụng: Dùng để tùy biến bộ quy tắc linter cho toàn bộ dự án Doanh nghiệp.
-- 2 Thuộc tính chính:
-  + `profile:` Quy định mức độ nghiêm ngặt của linter (ví dụ `profile: production` hoặc `profile: basic`).
-  + `skip_list:` Khai báo danh sách các mã quy tắc linter tạm thời được phép bỏ qua (ví dụ `skip_list: [yaml[line-length]]` bỏ qua kiểm tra độ dài dòng).
-**Tiêu chí chấm:**
-- 0: Không biết tệp cấu hình `.ansible-lint`.
-- 1: Biết tệp `.ansible-lint` nhưng không nêu được thuộc tính `profile` và `skip_list`.
-- 2: Phân tích chính xác cơ chế quản lý quy tắc linter của tệp `.ansible-lint`.
-- 3: Nêu đúng + viết đoạn YAML cấu hình tệp `.ansible-lint` hoàn chỉnh.
-**Câu hỏi đào sâu:** Thuộc tính `exclude_paths:` trong `.ansible-lint` dùng để làm gì? *(Dùng để khai báo danh sách các thư mục linter bỏ qua không quét, như `.cache/` hoặc `collections/`.)*
-
----
-
-### Câu 6 — Kiểm thử Role Cách ly với Framework `Molecule`
-**Hỏi:** Framework `Molecule` đóng vai trò gì trong việc kiểm thử Ansible Role? Trình bày quy trình hoạt động của câu lệnh `molecule test`. *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-- Vai trò: Molecule là tiêu chuẩn công nghiệp giúp tự động hóa việc kiểm thử độc lập cho Ansible Role trên các container Docker cách ly.
-- Quy trình `molecule test` (8 bước tự động):
-  1. `dependency`: Tải các role/collection phụ thuộc.
-  2. `lint`: Chạy `ansible-lint` quét mã nguồn.
-  3. `cleanup` / `destroy`: Xóa các container cũ.
-  4. `syntax`: Kiểm tra cú pháp static.
-  5. `create`: Khởi tạo container Docker thử nghiệm mới.
-  6. `converge`: Thi hành Role thật Lần 1 trên container.
-  7. `idempotence`: Thi hành Role Lần 2 khẳng định `changed=0`.
-  8. `verify` / `destroy`: Chạy test nghiệm thu và xóa container.
-**Tiêu chí chấm:**
-- 0: Không biết framework `Molecule`.
-- 1: Biết `Molecule` để test Role nhưng không nêu được quy trình tự động create -> converge -> idempotence -> verify -> destroy.
-- 2: Phân tích chính xác quy trình kiểm thử 8 bước của `molecule test` trên Docker.
-- 3: Nêu đúng + viết các câu lệnh CLI `molecule init` và `molecule test`.
-**Câu hỏi đào sâu:** Driver mặc định phổ biến nhất được Molecule sử dụng là gì? *(Driver `docker`.)*
-
----
-
-### Câu 7 — Viết Kịch bản Nghiệm thu với `verify.yml`
-**Hỏi:** Tệp `molecule/default/verify.yml` trong Molecule dùng để làm gì? Viết đoạn Task nghiệm thu khẳng định tệp `/etc/app.conf` tồn tại đúng mode `'0644'`. *(Liên quan QT 5.3)*
-**Đáp án chuẩn:**
-- Tác dụng: Dùng để chứa các bài test nghiệm thu (Verification Tests) tự động khẳng định máy đích đạt 100% đúng trạng thái sau khi Role thi hành xong.
-- Đoạn Task nghiệm thu mẫu:
-  ```yaml
-  - name: Stat app config file
-    ansible.builtin.stat:
-      path: /etc/app.conf
-    register: app_stat
-
-  - name: Assert file exists and mode is 0644
-    ansible.builtin.assert:
-      that:
-        - app_stat.stat.exists
-        - app_stat.stat.mode == '0644'
-  ```
-**Tiêu chí chấm:**
-- 0: Không biết tệp `verify.yml`.
-- 1: Biết `verify.yml` để test nhưng không viết được đoạn task dùng `stat` và `assert`.
-- 2: Phân tích chính xác vai trò nghiệm thu trạng thái hệ thống của `verify.yml`.
-- 3: Nêu đúng + viết đoạn YAML tệp `verify.yml` hoàn chỉnh với `ansible.builtin.assert`.
-**Câu hỏi đào sâu:** Ngoài module `ansible.builtin.assert`, framework nào khác có thể dùng làm verifier cho Molecule? *(Testinfra - framework kiểm thử bằng Python pytest.)*
-
----
-
-### Câu 8 — Tích hợp Bộ 3 Kiểm thử Đa tầng
-**Hỏi:** Trình bày mô hình tích hợp bộ 3 kiểm thử (`--syntax-check` -> `ansible-lint` -> `molecule test`) trước khi commit mã nguồn lên Git. *(Liên quan QT 6.1)*
-**Đáp án chuẩn:**
-Mô hình lá chắn kiểm thử 3 lớp (Fail-Fast Architecture):
-- **Lớp 1 (`--syntax-check`):** Chặn các lỗi cú pháp YAML ngớ ngẩn ngay lập tức trong 1 giây.
-- **Lớp 2 (`ansible-lint`):** Chặn các lỗi vi phạm quy chuẩn Best Practices, FQCN và Security Smells trong 5 giây.
-- **Lớp 3 (`molecule test`):** Thi hành thực tế trên container Docker cách ly, khẳng định tính đúng đắn và tính Idempotency `changed=0` trong 30 giây.
-**Tiêu chí chấm:**
-- 0: Không biết mô hình kiểm thử 3 lớp.
-- 1: Biết 3 công cụ nhưng không giải thích được tư duy xếp tầng từ nhẹ tới nặng (Fail-Fast).
-- 2: Phân tích chính xác cơ chế lá chắn 3 lớp nâng cao chất lượng mã nguồn IaC.
-- 3: Nêu đúng + viết câu lệnh bash one-liner kết hợp cả 3 công cụ bằng toán tử `&&`.
-**Câu hỏi đào sâu:** Tại sao nên xếp `syntax-check` trước `ansible-lint` và `molecule test`? *(Vì `syntax-check` chạy nhanh nhất 1s, giúp phát hiện lỗi sai YAML ngay mà không tốn công chạy các linter nặng.)*
-
----
-
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng trong Testing 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook đã qua kiểm thử (`--syntax-check`, `ansible-lint`, `--check --diff`) để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (hoàn thành 100% Objective RHCE Testing & Validation).
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site-testing.yml`: Playbook đã qua kiểm thử linter chạy mượt mà, Task nạp file cấu hình thực thi báo `changed > 0`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site-testing.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Chạy `ansible-playbook molecule/default/verify.yml` và dùng `docker exec target1 cat /etc/testing-app.conf` kiểm tra file cấu hình tồn tại đúng dữ liệu `SYNTAX_CHECK=PASSED`.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `verify.yml` và `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file/verify render.
-- 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE Testing & Validation.
-**Câu hỏi đào sâu:** Trong Molecule, bước test nào trực tiếp thực hiện Bước 2 trong quy trình trên? *(Bước `idempotence` trong quy trình `molecule test`.)*
-
----
-
-### Câu 10 — Kiểm tra Dòng Khác biệt Chi tiết với `--diff` ★★★
-**Hỏi:** Khi chạy `ansible-playbook --check --diff site.yml`, terminal hiển thị các ký tự `---`, `+++`, `-`, và `+` có ý nghĩa gì trong việc xem sự thay đổi tệp tin?
-**Đáp án chuẩn:**
-- `---` (trừ 3 cái): Đường dẫn tệp tin gốc hiện tại trên máy đích (before).
-- `+++` (cộng 3 cái): Đường dẫn tệp tin mới sẽ được ghi đè (after).
-- `-` (dấu trừ ở đầu dòng): Dòng văn bản sẽ bị XÓA BỎ khỏi file trên máy đích.
-- `+` (dấu cộng ở đầu dòng): Dòng văn bản sẽ được THÊM MỚI vào file trên máy đích.
-Giúp kỹ sư đối soát từng ký tự thay đổi trước khi deploy.
-**Tiêu chí chấm:**
-- 0: Không đọc được log `--diff`.
-- 1: Biết dấu `+` là thêm nhưng không giải thích được cú pháp diff chuẩn unified diff.
-- 2: Phân tích chính xác ý nghĩa 4 ký tự `---`, `+++`, `-`, `+` của `--diff`.
-- 3: Nêu đúng + minh họa đoạn log `--diff` mẫu trên terminal console.
-**Câu hỏi đào sâu:** Cờ `--diff` có hoạt động khi chạy thi hành thật (không có `--check`) không? *(Có, khi chạy thật cờ `--diff` vẫn in ra dòng khác biệt đã được thay đổi trên đĩa.)*
-
----
-
-### Câu 11 — Bỏ qua Quy tắc Linter với Inline Rule Ignoring ★★★
-**Hỏi:** Khi một câu lệnh `command` thô bắt buộc phải sử dụng và không thể thay bằng module FQCN khác, làm thế nào để viết comment chỉ đạo `ansible-lint` bỏ qua cảnh báo linter tại đúng dòng đó?
-**Đáp án chuẩn:**
-Thêm comment `# noqa <rule_id>` ngay tại dòng Task đó:
-```yaml
-- name: Run legacy custom binary script
-  ansible.builtin.command: /usr/local/bin/legacy-tool --fix
-  changed_when: false
-  # noqa command-instead-of-module
+```mermaid
+mindmap
+  root((Ansible Testing Framework))
+    Static Analysis
+      yamllint format
+      ansible-lint production profile
+      FQCN validation
+    Syntax & Dry-run
+      --syntax-check
+      --check dry-run mode
+      --diff unified lines
+      check_mode: false overrides
+    Integration Testing
+      Molecule container runner
+      assert & stat verifications
+      verify.yml test suite
+    Continuous Quality
+      Pre-commit hooks
+      CI/CD Quality Gates
+      Idempotency changed=0 ở Lần 2
 ```
-Từ khóa `# noqa` (No Quality Assurance) chỉ đạo `ansible-lint` bỏ qua cảnh báo rule `command-instead-of-module` cho riêng task đó mà vẫn quét các task khác bình thường.
-**Tiêu chí chấm:**
-- 0: Không biết từ khóa `# noqa`.
-- 1: Biết dùng comment nhưng không nhớ cú pháp `# noqa <rule_name>`.
-- 2: Phân tích chính xác cơ chế bỏ qua quy tắc cục bộ của `# noqa`.
-- 3: Nêu đúng + viết đoạn Task YAML chứa comment `# noqa` chuẩn xác.
-**Câu hỏi đào sâu:** Cụm từ `noqa` là viết tắt của từ gì trong ngôn ngữ lập trình? *(Viết tắt của "No Quality Assurance" hoặc "No QA".)*
-
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng về Testing & Quality Assurance ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên xây dựng quy trình kiểm thử mã nguồn IaC chuyên nghiệp, triệt tiêu 99% lỗi Production và đạt Idempotency 100%.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Chạy `ansible-playbook --syntax-check` ngay lập tức để phát hiện lỗi cú pháp YAML trong 1s.
-2. **Quy tắc 2:** Luôn thực thi `ansible-playbook --check --diff` thử nghiệm mô phỏng và đối soát dòng khác biệt file `+`/`-` trước khi deploy.
-3. **Quy tắc 3:** Phân tích mã nguồn tĩnh với `ansible-lint` và quản lý quy tắc dự án qua tệp `.ansible-lint`.
-4. **Quy tắc 4:** Kiểm thử Role tự động trên container Docker cách ly với `Molecule` và tệp nghiệm thu `verify.yml`.
-5. **Quy tắc 5:** Dùng `check_mode: false` cho task đọc dữ liệu và đảm bảo lượt chạy Lần 2 đạt `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy Quản lý Chất lượng Mã nguồn IaC Enterprise.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp ngăn ngừa rủi ro sửa nhầm nội dung file cấu hình trên máy chủ Production? *(Quy tắc 2: Đối soát dòng khác biệt với `--check --diff`.)*
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-Khi nhà tuyển dụng phỏng vấn về kinh nghiệm kiểm thử kịch bản Ansible và quản lý chất lượng mã nguồn IaC, học viên hãy đưa ra câu chốt tự tin sau:
-
-> **"Tôi xây dựng quy trình kiểm thử mã nguồn Ansible IaC đa tầng nghiêm ngặt theo chuẩn DevSecOps: áp dụng mô hình lá chắn 4 lớp với `--syntax-check` phát hiện lỗi YAML tĩnh trong 1s, chuẩn hóa 100% Best Practices, FQCN và triệt tiêu Security Smells qua `ansible-lint` và tệp cấu hình `.ansible-lint`, thử nghiệm Dry-run và đối soát dòng khác biệt file `+`/`-` với `--check --diff` trước khi deploy Production. Tôi tự động hóa kiểm thử Role cách ly trên Docker container với `Molecule` framework và nghiệm thu bằng `verify.yml`, điều khiển linh hoạt `check_mode: false` cho các task thu thập dữ liệu, đảm bảo 100% kịch bản đạt tiêu chuẩn Idempotent `changed=0` ở lượt chạy Lần hai và đối soát sự thật máy đích bằng `docker exec`."**
-
----
-
-## V4. Bảng tổng hợp điểm vấn đáp
-
-| Học viên | Câu 1–5 (Tủ) | Câu 6–9 (Nền) | Câu 10 (Chủ chốt) | Câu 11–12 (Phân loại) | Điểm tổng | Xếp loại |
-|---|---|---|---|---|---|---|
-| Bùi Văn C | 3 / 3 / 3 / 3 / 3 | 3 / 3 / 3 / 3 | 3 | 3 / 3 | 36 / 36 | Xuất sắc |
-| Lê Thị D | 2 / 2 / 1 / 2 / 2 | 2 / 1 / 2 / 1 | 1 (Dính trần điểm 1) | 1 / 1 | 16 / 36 (Khóa trần 1) | Trung bình |
-
----
-
-## V5. BTVN 4 — Ba câu chuẩn bị cho Buổi 26
-
-Để chuẩn bị tốt nhất cho **Buổi 26: ansible-trong-cicd — Ansible trong CI/CD (GitLab: lint → molecule → deploy)**, học viên làm 3 câu hỏi nghiên cứu trước sau:
-
-1. **Nghiên cứu trước 1:** Pipeline CI/CD trong Gitlab CI (`.gitlab-ci.yml`) được chia làm các giai đoạn (Stages) như thế nào để tích hợp Ansible tự động?
-2. **Nghiên cứu trước 2:** Làm thế nào để truyền mật khẩu Vault giải mã an toàn trong Runner execution của CI/CD mà không bị rò rỉ log console?
-3. **Nghiên cứu trước 3:** Kỹ thuật Rolling Deployment kết hợp với cờ `serial:` và Load Balancer unregister/register trong pipeline CI/CD diễn ra ra sao?
-
----
 
 > [!TIP]
-> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 26: Tích Hợp Ansible Trong CI/CD: GitLab CI, GitHub Actions, Jenkins Automation & Quản Lý SSH Private Keys Không Để Lộ](ansible-26-26-ansible-trong-cicd.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+> **BÀI HỌC TIẾP THEO:** [Bài 26: Tích Hợp Ansible Vào CI/CD Pipeline (GitLab CI & GitHub Actions): Tự Động Hóa Delivery Hạ Tầng Chuẩn GitOps](ansible-26-26-ansible-trong-cicd.html)
 
 {% endraw %}

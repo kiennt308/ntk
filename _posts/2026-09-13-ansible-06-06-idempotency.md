@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 06] Giải Mã Tính Bất Biến (Idempotency): Cơ Chế Kiểm Tra Trạng Thái Đích & Tránh Cạm Bẫy 'Always Changed"
+title: "[Bài 06] Làm Chủ Tính Idempotency: Bản Chất OK / Changed / Failed, Phép Thử Lần 2 & Tối Ưu Changed_when"
 date: 2026-09-13 06:00:00 +0700
 categories: [Ansible]
 tags:
@@ -12,17 +12,17 @@ tags:
   - Part-06
 series: "Ansible Automation Mastery"
 series_order: 6
-difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
-summary: "[Ansible P.06] Hướng dẫn chuyên sâu Giải Mã Tính Bất Biến (Idempotency): Cơ Chế Kiểm Tra Trạng Thái Đích & Tránh Cạm Bẫy 'Always Changed': Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+difficulty: Intermediate
+thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
+summary: "[Ansible P.06] Hướng dẫn chuyên sâu Làm Chủ Tính Idempotency: Bản Chất OK / Changed / Failed, Phép Thử Lần 2 & Tối Ưu Changed_when: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Giải Mã Tính Bất Biến (Idempotency): Cơ Chế Kiểm Tra Trạng Thái Đích & Tránh Cạm Bẫy 'Always Changed."
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Làm Chủ Tính Idempotency: Bản Chất OK / Changed / Failed, Phép Thử Lần 2 & Tối Ưu Changed_when."
   - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
   - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
 {% raw %}
-# [BÀI 06] GIẢI MÃ TÍNH BẤT BIẾN (IDEMPOTENCY): CƠ CHẾ KIỂM TRA TRẠNG THÁI ĐÍCH & TRÁNH CẠM BẪY 'ALWAYS CHANGED'
+# [BÀI 06] LÀM CHỦ TÍNH IDEMPOTENCY: BẢN CHẤT OK / CHANGED / FAILED, PHÉP THỬ LẦN 2 & TỐI ƯU CHANGED_WHEN
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
 
@@ -32,444 +32,196 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
 
----
-
-
-
-
-
-
-
-> **Chạy lần hai phải changed=0 — không idempotent thì không phải config management.**
-
-Mục tiêu chốt hạ Giai đoạn 1 (Nền tảng) của khóa học (I-10):
-
-> **Tính bất biến (Idempotency) là lằn ranh đỏ phân định giữa một công cụ Quản trị Cấu hình (Configuration Management) chuyên nghiệp với một script Bash chạy thủ công. Một Playbook không đạt tính Idempotency sẽ gây ra nguy cơ sửa đổi đè đúp dữ liệu, tạo file rác trùng lặp và làm sập dịch vụ khi chạy lại. Ở Buổi 06, chúng ta sẽ đi sâu vào cơ chế kiểm soát trạng thái (`ok`, `changed`, `failed`), cách khắc phục các tác vụ lệnh thô (`command`/`shell`) bằng `creates`, `removes`, `changed_when`, và thiết lập quy trình kiểm thử lượt chạy lần thứ 2 bắt buộc đạt `changed=0`.**
-
----
-
-
-
----
-
-
-
----
-
-
-
-
-
-| Tiếng Việt | Tiếng Anh / Từ khóa + FQCN (giữ nguyên) |
-|---|---|
-| Tính bất biến (chạy lại không đổi) | Idempotency / Idempotent |
-| Mô hình khai báo trạng thái | Declarative state model |
-| Trạng thái giữ nguyên | Task status `ok` |
-| Trạng thái đã thay đổi | Task status `changed` |
-| Trạng thái thất bại | Task status `failed` |
-| Trạng thái bỏ qua | Task status `skipped` |
-| Điều kiện tạo file mới ngắt chạy | `creates` attribute |
-| Điều kiện xóa file ngắt chạy | `removes` attribute |
-| Ép trạng thái thay đổi tùy chỉnh | `changed_when` attribute |
-| Ép trạng thái thất bại tùy chỉnh | `failed_when` attribute |
-| Thử nghiệm lượt chạy lần hai | Second-run execution test |
-| Kiểm thử tự động hóa Idempotency | Molecule idempotence test |
-
----
-
-### 1.1. Bản chất Triết lý Idempotency và Trạng thái Task (15 phút)
+Tính bất biến (**Idempotency**) là hòn đá tảng phân định ranh giới giữa một kịch bản Shell Script thủ công truyền thống và một hệ thống Infrastructure as Code đạt chuẩn Enterprise. Về mặt bản chất toán học và khoa học máy tính, một hàm số hoặc một tác vụ tự động hóa được gọi là Idempotent khi và chỉ khi: áp dụng tác vụ đó $f(x)$ một lần hay $n$ lần liên tiếp ($f(f(...f(x)...))$) thì trạng thái cuối cùng của hệ thống vẫn hoàn toàn đồng nhất và không sinh ra bất kỳ hiệu ứng phụ ngoài mong muốn nào (**No Side Effects**).
 
 ```mermaid
 graph TD
-    A["Ansible Engine kích hoạt Task"] --> B["Đọc Trạng thái Hiện tại của Target Node"]
+    A["Ansible Engine kích hoạt Task"] --> B["Đọc Trạng thái Hiện tại của Máy đích"]
     B --> C{"So sánh với Trạng thái Khai báo trong Task"}
-    C -->|"Trạng thái đã khớp 100%"| D["Không thao tác hệ thống -> Report OK (changed=false)"]
-    C -->|"Trạng thái chưa khớp"| E["Thực hiện thay đổi hệ thống -> Report CHANGED (changed=true)"]
-    C -->|"Gặp lỗi đứt gãy"| F["Ngắt thi hành Play -> Report FAILED (failed=true)"]
+    C -->|"Trạng thái đã khớp 100%"| D["Không thao tác hệ thống -> Báo OK (changed=false)"]
+    C -->|"Trạng thái chưa khớp"| E["Thực hiện thay đổi hệ thống -> Báo CHANGED (changed=true)"]
+    C -->|"Gặp lỗi đứt gãy"| F["Ngắt thi hành Play -> Báo FAILED (failed=true)"]
     
     D --> G["PLAY RECAP: ok=N, changed=0, failed=0"]
     E --> G
     F --> G
 
-    style A fill:none,stroke:#6366f1,stroke-width:2px
-    style B fill:none,stroke:#3b82f6,stroke-width:2px
-    style C fill:none,stroke:#f59e0b,stroke-width:2px
-    style D fill:none,stroke:#10b981,stroke-width:2px
-    style E fill:none,stroke:#ec4899,stroke-width:2px
-    style F fill:none,stroke:#ef4444,stroke-width:2px
-    style G fill:none,stroke:#8b5cf6,stroke-width:2px
+    style A fill:none
+    style B fill:none
+    style C fill:none
+    style D fill:none
+    style E fill:none
+    style F fill:none
+    style G fill:none
 ```
 
-**Nguyên lý cốt lõi:** Mô hình Khai báo Trạng thái (Declarative State Model) trong Ansible yêu cầu người viết mô tả *trạng thái mong muốn của hệ thống* (ví dụ: "gói `nginx` phải ở trạng thái đã cài"), thay vì mô tả *chuỗi câu lệnh cần gõ* (như `apt-get install nginx`).
+### 1.1. Triết Lý Idempotency & Trạng Thái Nguyên Tử (OK vs CHANGED vs FAILED)
 
-**Giải thích cơ chế ngầm:** Trong mô hình khai báo, Ansible tự kiểm tra xem hệ thống đã đạt trạng thái đó chưa. Nếu chưa đạt, Ansible mới can thiệp; nếu đã đạt, Ansible giữ nguyên không thao tác lại. Đây là nền tảng tạo nên tính Idempotency.
+- **Mô hình Khai báo Trạng thái (Declarative State Model):** Thay vì ra lệnh theo tư duy mệnh lệnh (Imperative - "Hãy gõ lệnh `apt install nginx`"), kỹ sư mô tả trạng thái mong muốn của hệ thống ("Gói `nginx` phải ở trạng thái `present`"). Ansible tự động kiểm tra trạng thái hiện hành, chỉ can thiệp khi có sai lệch.
+- **Trạng thái `OK`:** Hệ thống đã đạt đúng trạng thái mong muốn từ trước. Ansible giữ nguyên trạng thái đĩa cứng và báo `changed=false`.
+- **Trạng thái `CHANGED`:** Hệ thống chưa đạt chuẩn, Ansible tiến hành can thiệp (chép file, cài gói, bật service) và báo `changed=true`.
+- **Trạng thái `FAILED`:** Tác vụ gặp sự cố (sai cú pháp, thiếu quyền, mất kết nối) và lập tức ngắt chuỗi thực thi để bảo vệ an toàn hệ thống.
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Viết Playbook theo tư duy Imperative (mô tả lệnh gõ) bằng cách nhồi nhét module `command`/`shell` liên tục thay vì dùng module chuyên dụng.
+### 1.2. Kỹ Thuật Chế Ngự Lệnh Thô Với Creates, Removes & Changed_when
 
-**Minh hoạ.** So sánh tư duy Imperative vs Declarative:
-```yaml
-# Imperative (SAI - Không idempotent tự nhiên)
-- name: Run apt install command
-  ansible.builtin.shell: apt-get install -y nginx
+- **Thuộc tính `creates` và `removes`:** Khi bắt buộc phải chạy module `command` hoặc `shell` để thực thi các tệp binary bên ngoài (ví dụ giải nén `tar -xzf`), thuộc tính `creates: /path/to/extracted_file` thông báo cho Ansible: "Nếu file này đã tồn tại, hãy bỏ qua task và báo `OK`". Ngược lại, `removes:` sẽ bỏ qua task nếu file đã biến mất.
+- **Tối ưu hóa với `changed_when: false`:** Áp dụng cho các tác vụ thuần túy chỉ đọc dữ liệu (`uname -a`, `uptime`, `cat /etc/issue`) để ngăn chặn việc tăng chỉ số `changed` giả mạo trong RECAP.
+- **Tùy biến điều kiện `changed_when: "<expression>"`:** Cho phép lập trình viên định nghĩa điều kiện báo changed dựa trên kết quả trả về của biến đăng ký `register` (ví dụ: `changed_when: "'MIGRATION_SUCCESS' in migration_res.stdout"`).
 
-# Declarative (ĐÚNG - Idempotent tự nhiên)
-- name: Ensure Nginx package is present
-  ansible.builtin.package:
-    name: nginx
-    state: present
-```
+### 1.3. Phép Thử Lượt Chạy Lần Hai (Second-run Test) & Tích Hợp CI/CD Pipeline
 
-**Nguyên lý cốt lõi:** Phân biệt bản chất 3 trạng thái thực thi của một Task: `ok` (trạng thái hệ thống đã khớp mong muốn, không cần sửa), `changed` (hệ thống có sự thay đổi thực tế), và `failed` (gặp lỗi ngắt thi hành).
-
-**Giải thích cơ chế ngầm:** Hiểu rõ 3 trạng thái này giúp quản trị viên phân tích chính xác xem hệ thống có bị biến đổi ngoài ý muốn hay không. Chỉ số `ok` tăng lên ở lượt chạy lần 2 thể hiện Playbook đang bảo vệ hệ thống không bị thay đổi thừa.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thấy lượt chạy lần 2 hiển thị `changed > 0` mà vẫn nghĩ rằng Playbook đã hoàn thành đúng chuẩn.
-
-**Minh hoạ.** Đọc hiểu bảng `PLAY RECAP`:
-```bash
-# Lần 1: changed=2 (Đã thực hiện cài gói và chép file)
-target1 : ok=3 changed=2 unreachable=0 failed=0
-
-# Lần 2: changed=0 (Mọi thứ đã đúng, ok=3 thể hiện hệ thống giữ nguyên)
-target1 : ok=3 changed=0 unreachable=0 failed=0
-```
-
-**Nguyên lý cốt lõi:** Các module thực thi lệnh thô (`ansible.builtin.command`, `ansible.builtin.shell`) mặc định không có khả năng tự kiểm tra trạng thái hệ thống, do đó luôn trả về `changed=true` mỗi lần chạy.
-
-**Giải thích cơ chế ngầm:** Ansible Engine không thể biết bên trong một đoạn script shell thô chứa những câu lệnh gì và có làm thay đổi đĩa cứng hay không. Để an toàn, Ansible mặc định coi mọi lệnh shell đều tạo ra thay đổi và gán trạng thái `CHANGED`.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> **Lệnh:** `ansible-playbook site.yml` · **Output phải thấy:** Lượt chạy lần 2 của Playbook vẫn luôn báo `changed=1` ở dòng RECAP do chứa task `shell` thô.
-
-**Minh hoạ.** Task `shell` thô gây mất tính Idempotency:
-```yaml
-- name: Unsafe shell command (Always CHANGED)
-  ansible.builtin.shell: echo "export ENV=prod" >> /etc/profile
-```
+Phép thử Lượt chạy Lần hai (**Second-run Execution Test**) là tiêu chuẩn vàng để nghiệm thu mọi kịch bản tự động hóa:
+1. **Lượt chạy Lần 1 (Provisioning Stage):** Áp đặt cấu hình mới, chuyển dịch hệ thống từ trạng thái cũ sang trạng thái mong muốn (`changed=N`).
+2. **Lượt chạy Lần 2 (Verification Stage):** Chạy lại nguyên vẹn kịch bản cũ, bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`**.
+3. **Cảnh báo "Ép trạng thái mạo danh":** Tuyệt đối không lạm dụng `changed_when: false` để che giấu một tác vụ có làm thay đổi dữ liệu thật (như `echo >> file`). Việc đối soát hiện vật thực tế qua `docker exec` hoặc SSH độc lập là bước kiểm chứng cuối cùng không thể bỏ qua.
 
 ---
 
-### 1.2. Kỹ thuật Khắc phục Lỗi Non-Idempotent (15 phút)
+## 2. Bảng So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-**Nguyên lý cốt lõi:** Sử dụng thuộc tính `creates` (hoặc `removes`) trong module `command`/`shell` để chỉ định đường dẫn tệp tin điều kiện ngắt thực thi khi tệp tin đó đã tồn tại (hoặc đã bị xóa).
+| Tiêu Chí Kỹ Thuật | Module Tiêu Chuẩn (`builtin.*`) | Module Lệnh Thô (`command`/`shell`) | Lệnh Thô + `creates` / `removes` | Lệnh Thô + `changed_when` | Ép Trạng Thái Mạo Danh (`changed_when: false`) |
+|---|---|---|---|---|---|
+| **Cơ chế Idempotency** | Tự động (Built-in Python State Check) | **Không có** (Luôn báo `changed=true`) | Dựa trên sự tồn tại của Inode/File trên đĩa | Dựa trên logic điều kiện chuỗi stdout/rc | **Giả tạo** (Ép cờ mà không kiểm soát thực tế) |
+| **Hành vi Lượt chạy Lần 2** | `changed=0` (Chuẩn mực) | `changed > 0` (Vi phạm) | `changed=0` nếu file đã tồn tại | `changed=0` nếu điều kiện không thỏa | `changed=0` (Nhưng thực tế đĩa cứng bị sửa) |
+| **Độ an toàn Production** | Rất cao | Rất thấp (Rủi ro đè đúp dữ liệu) | Cao | Cao | **Cực kỳ nguy hiểm** (Ẩn giấu lỗi) |
+| **Hỗ trợ Chế độ Dry-run (`--check`)** | Đầy đủ | Không hỗ trợ | Bỏ qua an toàn | Hỗ trợ có điều kiện | Gây sai lệch kết quả mô phỏng |
+| **Trường hợp áp dụng chuẩn** | 95% tác vụ quản trị hệ thống phổ biến | Tuyệt đối tránh trong Playbook chuẩn | Chạy bộ cài installer, giải nén tar/zip | Chạy script database migration, CLI custom | Cấm tuyệt đối trên Production |
 
-**Giải thích cơ chế ngầm:** Thuộc tính `creates: /path/to/file` bảo với Ansible rằng: "Nếu tệp tin `/path/to/file` đã tồn tại trên máy đích, có nghĩa là công việc này đã làm xong từ trước, hãy BỎ QUA Task này và báo `ok` (`changed=false`)".
+> [!IMPORTANT]
+> **NGUYÊN TẮC BẤT BIẾN:**
+> Một Playbook chỉ được coi là đạt tiêu chuẩn bàn giao Production khi vượt qua Phép thử Lượt chạy Lần 2 với `changed=0` trên 100% các máy chủ đích mà không sử dụng bất kỳ hành vi ép trạng thái mạo danh nào.
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> **Lệnh:** `ansible-playbook site.yml` · **Output phải thấy:** Lệnh giải nén file tar.gz bị chạy lại liên tục làm đè đúp dữ liệu mỗi khi thực thi Playbook.
+---
 
-**Minh hoạ.** Giải nén phần mềm chỉ khi thư mục đích chưa tồn tại bằng `creates`:
+## 3. Kiến Trúc Triển Khai Chuẩn Production (Configuration / Playbook / Role Breakdown)
+
+Dưới đây là file Playbook mẫu chuẩn hóa việc xử lý Idempotency cho các tình huống từ module chuẩn tới các lệnh thực thi nhị phân phức tạp:
+
 ```yaml
-- name: Extract app archive safely
-  ansible.builtin.command: tar -xzf /tmp/app.tar.gz -C /var/www/app
-  args:
-    creates: /var/www/app/index.php
+# playbook-idempotency-mastery.yml
+---
+- name: Production Idempotent Application Provisioning
+  hosts: web
+  become: true
+  gather_facts: false
+
+  vars:
+    app_version: "2.4.1"
+    install_dir: "/opt/custom-app"
+    archive_url: "https://internal.repo/app-{{ app_version }}.tar.gz"
+
+  tasks:
+    - name: 01. Ensure target installation directory exists
+      ansible.builtin.file:
+        path: "{{ install_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: 02. Read-only system check (Pure Idempotent Task)
+      ansible.builtin.command: uname -m
+      register: arch_check
+      changed_when: false
+
+    - name: 03. Extract application binary safely using creates parameter
+      ansible.builtin.command: >
+        tar -xzf /tmp/app-{{ app_version }}.tar.gz -C {{ install_dir }}
+      args:
+        creates: "{{ install_dir }}/bin/app-executable"
+
+    - name: 04. Run custom database schema migration with precise changed_when
+      ansible.builtin.command: "{{ install_dir }}/bin/migrate-db --check-and-apply"
+      register: db_migration
+      changed_when: "'APPLIED_NEW_MIGRATIONS' in db_migration.stdout"
+      failed_when: "db_migration.rc != 0 and 'SCHEMA_LOCKED' not in db_migration.stderr"
+
+    - name: 05. Enforce baseline environment configuration via lineinfile
+      ansible.builtin.lineinfile:
+        path: /etc/environment
+        regexp: '^APP_VERSION='
+        line: 'APP_VERSION="{{ app_version }}"'
+        state: present
+        backup: true
+
+    - name: 06. Ensure background worker daemon is active and enabled
+      ansible.builtin.service:
+        name: sshd
+        state: started
+        enabled: true
 ```
 
-**Nguyên lý cốt lõi:** Sử dụng thuộc tính `changed_when: false` đối với các Task chỉ thực hiện công việc đọc dữ liệu, truy vấn thông tin hoặc kiểm tra hệ thống.
-
-**Giải thích cơ chế ngầm:** Các tác vụ như chạy lệnh `uname -a`, `cat /etc/issue`, hoặc truy vấn trạng thái dịch vụ chỉ đọc dữ liệu từ máy đích mà KHÔNG làm thay đổi bất kỳ byte nào trên đĩa cứng. Khai báo `changed_when: false` ép Ansible báo trạng thái `ok` thay vì `changed`.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> **Lệnh:** `ansible-playbook site.yml` · **Output phải thấy:** Lệnh chạy `uptime` kiểm tra máy lại làm tăng chỉ số `changed` trong bảng `PLAY RECAP`.
-
-**Minh hoạ.** Đọc thông tin kernel an toàn không báo changed:
-```yaml
-- name: Query kernel version
-  ansible.builtin.command: uname -r
-  register: kernel_info
-  changed_when: false
-```
-
-**Nguyên lý cốt lõi:** Định nghĩa biểu thức điều kiện tùy chỉnh trong `changed_when` dựa trên kết quả trả về (`rc`, `stdout`, `stderr`) của biến đăng ký `register`.
-
-**Giải thích cơ chế ngầm:** Khi một lệnh shell tùy chỉnh trả về mã thoát (Return code `rc`) hoặc chuỗi kết quả xác định (ví dụ `stdout` chứa từ "upgraded"), ta có thể dùng biểu thức `changed_when: "'upgraded' in result.stdout"` để Ansible chỉ báo `changed=true` khi có thay đổi thật sự.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Task báo `changed=true` mạo danh trong khi câu lệnh shell bên trong không thực hiện thay đổi nào trên máy đích.
-
-**Minh hoạ.** Tự định nghĩa điều kiện báo `changed` dựa trên kết quả stdout:
-```yaml
-- name: Run custom DB migration script
-  ansible.builtin.command: /usr/bin/db-migrate.sh
-  register: migrate_res
-  changed_when: "'APPLIED_MIGRATIONS' in migrate_res.stdout"
-```
+### Phân Tích Kỹ Thuật Từng Dòng (Line-by-Line Breakdown):
+- <span class="badge-line">Line 14–18</span>: Module `file` chuẩn kiểm tra inode thư mục, chỉ tạo nếu chưa tồn tại (`changed=false` ở lần 2).
+- <span class="badge-line">Line 20–23</span>: Tác vụ đọc kiến trúc máy `uname -m` được gán tường minh `changed_when: false` để giữ nguyên trạng thái `ok`.
+- <span class="badge-line">Line 25–30</span>: Sử dụng module `command` để giải nén nhưng kèm thuộc tính điều kiện `args: creates: ...` ngăn chặn việc giải nén đè dữ liệu ở các lần chạy sau.
+- <span class="badge-line">Line 32–36</span>: Tự định nghĩa điều kiện báo changed cho kịch bản migration cơ sở dữ liệu: chỉ báo `changed=true` khi có dòng chữ `APPLIED_NEW_MIGRATIONS` trong `stdout`.
+- <span class="badge-line">Line 38–44</span>: Sử dụng module `lineinfile` kèm `regexp` và `backup: true` để đảm bảo dòng biến môi trường chỉ xuất hiện duy nhất một lần.
+- <span class="badge-line">Line 46–50</span>: Đảm bảo dịch vụ chạy và tự bật khi khởi động hệ thống mà không khởi động lại daemon vô lý.
 
 ---
 
-### 1.3. Thử nghiệm Lượt chạy Lần hai và Tự động hóa CI/CD (10 phút)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Đè Đúp Dữ Liệu & "Ép Trạng Thái Mạo Danh" Trên Production
 
-**Nguyên lý cốt lõi:** Phép thử Lượt chạy Lần hai (Second-run execution test) là tiêu chuẩn bắt buộc để nghiệm thu một Playbook: Chạy Playbook Lần 1 (chỉnh sửa) -> Chạy lại Lần 2 (kết quả bắt buộc đạt `changed=0`).
+### Tình Huống Sự Cố Thực Tế Tại Doanh Nghiệp:
+Tại một tập đoàn Fintech, nhóm vận hành sử dụng một Playbook chạy định kỳ mỗi 30 phút qua cron để đồng bộ cấu hình hệ thống. Trong kịch bản có một task sử dụng lệnh shell: `echo "api.gateway.internal" >> /etc/hosts`. 
+Để qua mặt hệ thống kiểm duyệt CI/CD yêu cầu `changed=0`, kỹ sư phụ trách đã thêm chỉ thị `changed_when: false` vào task này.
 
-**Giải thích cơ chế ngầm:** Lượt chạy Lần 1 xác nhận Playbook có khả năng cấu hình máy chủ từ trạng thái cũ sang trạng thái mới. Lượt chạy Lần 2 xác nhận Playbook có tính an toàn bất biến, không gây phá hỏng hệ thống khi chạy lại định kỳ.
+### Hậu Quả & Log Lỗi Thực Tế:
+- Bảng `PLAY RECAP` của CI/CD luôn hiển thị màu xanh hoàn hảo: `ok=12 changed=0 failed=0`.
+- Tuy nhiên trên thực tế, sau 1 tuần hoạt động, file `/etc/hosts` của máy chủ thanh toán bị phình to lên hơn **336 dòng trùng lặp**, khiến trình phân giải DNS nội bộ của Linux bị crash do tràn bộ đệm đọc file, làm sập toàn bộ cổng thanh toán API Gateway trong 2 giờ.
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Nghiệm thu Playbook ngay sau lượt chạy Lần 1 mà không thực thi Lần 2 để kiểm tra chỉ số `changed`.
-
-**Minh hoạ.** Quy trình lệnh CLI kiểm thử Idempotency:
-```bash
-ansible-playbook site.yml    # Lần 1: changed=N (Chỉnh sửa)
-ansible-playbook site.yml    # Lần 2: changed=0 (Idempotent - BẮT BUỘC)
+```diff
+--- /etc/hosts (Corrupted by Non-Idempotent Shell)
++++ /etc/hosts (Clean State with lineinfile)
+@@ -1,8 +1,2 @@
+ 127.0.0.1   localhost
+-10.0.0.15   api.gateway.internal
+-10.0.0.15   api.gateway.internal
+-10.0.0.15   api.gateway.internal
+-10.0.0.15   api.gateway.internal
+-10.0.0.15   api.gateway.internal
++# Sửa: Dùng lineinfile với regexp='^.*api\.gateway\.internal'
++10.0.0.15   api.gateway.internal
 ```
-
-**Nguyên lý cốt lõi:** Cảnh giác với hành vi "ép trạng thái mạo danh": Tuyệt đối không dùng `changed_when: false` để che giấu một Task có thực hiện thay đổi thật trên máy đích nhằm gian lận chỉ số RECAP.
-
-**Giải thích cơ chế ngầm:** Việc ép `changed_when: false` cho một Task có ghi đè dữ liệu sẽ làm cho bảng RECAP hiển thị màu xanh mạo danh (`changed=0`), nhưng thực tế máy đích vẫn bị ghi đè dữ liệu mỗi lần chạy, vi phạm nghiêm trọng nguyên tắc an toàn.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng `changed_when: false` bọc ngoài câu lệnh `echo data >> /file.txt` để qua mặt bài kiểm tra script `kiem-tra.sh`.
-
-**Minh hoạ.** Đối soát trực tiếp hiện vật thật bằng `docker exec` để phát hiện task ép trạng thái mạo danh:
-```bash
-docker exec target1 cat /etc/profile | grep "ENV="
-```
-
-**Nguyên lý cốt lõi:** Tích hợp công đoạn Idempotence Test vào quy trình kiểm thử tự động hóa trong pipeline CI/CD (sử dụng Molecule hoặc script kiểm định).
-
-**Giải thích cơ chế ngầm:** Trong mô hình GitOps và CI/CD, mọi thay đổi mã nguồn Playbook khi tạo Pull Request/Merge Request đều phải tự động chạy kiểm thử Idempotency trên môi trường container tạm thời. Nếu lượt chạy lần 2 có `changed > 0`, pipeline sẽ tự động đánh dấu FAILED và chặn Merge.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Đẩy mã nguồn Playbook lỗi non-idempotent lên nhánh `main` làm cho các kịch bản deploy tự động định kỳ bị lỗi lặp dữ liệu.
-
-**Minh hoạ.** Đoạn logic kiểm tra Idempotency trong bash script CI:
-```bash
-ansible-playbook site.yml > /tmp/run2.log
-if grep -q "changed=0" /tmp/run2.log; then
-  echo "CI PASSED: Playbook is fully idempotent."
-else
-  echo "CI FAILED: Playbook is NOT idempotent!"; exit 1
-fi
-```
-
----
-
-### 1.4. Đưa vào việc thật (4 phút)
-
-### 7.1. Áp dụng vào hạ tầng sẵn có
-Khi quản lý 500 máy chủ chạy kịch bản tự động hóa hàng đêm (Nightly Job):
-- Đảm bảo 100% Playbook đạt Idempotency (`changed=0`). Khi kịch bản chạy hàng đêm, nếu không có máy chủ nào bị lệch cấu hình, chỉ số tổng là `changed=0`, giúp hệ thống vận hành êm ái không gây gián đoạn dịch vụ.
-
-### 7.2. Rủi ro hỏng hóc khi triển khai Production và giải pháp an toàn
-- **Rủi ro:** Một Playbook không idempotent chứa lệnh `shell: systemctl restart httpd` chạy định kỳ sẽ làm gián đoạn kết nối của khách hàng trên Production mỗi 30 phút.
-- **Giải pháp an toàn:**
-  1. Thay thế lệnh `shell restart` bằng module `service` kết hợp `handlers` (học ở Buổi 11) để chỉ restart khi file cấu hình thực sự bị thay đổi.
-  2. Bắt buộc kiểm thử lượt chạy lần 2 trên Staging trước khi đưa kịch bản vào cronjob Production.
-
-### 7.3. Đo lường chỉ số Trước – Sau khi áp dụng
-- **Trước khi tối ưu Idempotency:** Kịch bản chạy lại 10 lần làm ghi đè đúp file cấu hình 10 lần, dịch vụ bị restart 10 lần vô lý.
-- **Sau khi tối ưu Idempotency:** Lần 1 thực hiện thay đổi, từ lần 2 trở đi chỉ số `changed=0`, dịch vụ không bị restart thừa, thời gian chạy giảm 80%.
-
-### 7.4. Khi nào KHÔNG nên dùng hoặc không thể áp dụng Idempotency
-- **Khi tác vụ bản chất là hành động đơn lẻ (Non-idempotent by nature):** Ví dụ tác vụ gửi tin nhắn cảnh báo Slack/Email thông báo "Bắt đầu Deploy", hoặc tác vụ sinh mã token dùng 1 lần. Với các tác vụ này, việc báo `changed=true` mỗi lần thực thi là đúng bản chất công việc.
-
----
-
-### 1.5. Bẫy hay gặp (2 phút)
-
-| # | Bẫy hay gặp | Vì sao "recap xanh mà sai / không idempotent" | Lệnh phát hiện và xử lý |
-|---|---|---|---|
-| 1 | Lạm dụng module `command`/`shell` không dùng `creates` | Lệnh giải nén hoặc tải file bị thực thi lại liên tục ở lần chạy thứ 2. | Bổ sung thuộc tính `creates: /path/to/extracted_file`. |
-| 2 | Ép `changed_when: false` mạo danh | Task có thay đổi dữ liệu thật nhưng ép `changed_when: false` để qua mặt bài test recap. | Dùng `docker exec` đối soát sự thật máy đích xem dữ liệu có bị ghi đè đúp hay không. |
-| 3 | Sửa file bằng module `shell` với toán tử `>>` | Câu lệnh `echo "data" >> /file` nối thêm dòng mới vào file mỗi lần chạy làm file phình to rác. | Thay thế bằng module chuyên dụng `ansible.builtin.lineinfile`. |
-| 4 | Không kiểm tra tham số `creates` với đường dẫn sai | Khai báo `creates: /wrong/path` làm cho Ansible tìm không thấy file và vẫn chạy lại lệnh shell. | Kiểm tra chính xác đường dẫn file tuyệt đối sẽ được tạo ra bởi lệnh shell. |
-| 5 | Dùng `removes` nhưng file cần xóa chưa bao giờ tồn tại | Khai báo `removes` cho một file không có thật khiến task luôn bị bỏ qua. | Kiểm tra lại logic sự tồn tại của file trước khi gán `removes`. |
-| 6 | Tin tưởng Playbook chạy lần 1 báo xanh | Thấy lần 1 báo `PLAY RECAP` xanh lá cây tưởng đã xong mà không test lượt 2. | Luôn thực thi câu lệnh `ansible-playbook site.yml` lần thứ 2 để kiểm tra `changed=0`. |
-| 7 | Nhầm lẫn giữa `changed_when` và `when` | `when` quyết định task CÓ CHẠY HAY KHÔNG; `changed_when` quyết định task báo CHANGED HAY OK sau khi chạy xong. | Phân biệt rõ: dùng `when` để rẽ nhánh thi hành, dùng `changed_when` để sửa báo cáo trạng thái. |
-| 8 | Bỏ qua biến `register` khi dùng `changed_when` | Viết `changed_when: "'SUCCESS' in result.stdout"` nhưng quên khai báo `register: result` ở task. | Luôn khai báo `register: <var_name>` ngay trước dòng `changed_when`. |
-| 9 | Dùng lệnh `date` hoặc nội dung động trong file | Nội dung file thay đổi liên tục theo mốc thời gian làm module `copy` luôn báo `changed=true`. | Sử dụng nội dung tĩnh hoặc quản lý mốc thời gian qua biến Jinja2 hợp lý. |
-| 10 | Đặt `failed_when` trùng lặp với `changed_when` | Khai báo nhầm lẫn khiến task bị đánh dấu lỗi (failed) thay vì đánh dấu thay đổi (changed). | Đọc kỹ tài liệu cú pháp của 2 thuộc tính `failed_when` và `changed_when`. |
-| 11 | Không kiểm tra log chi tiết với `-v` hoặc `--diff` | Không biết task nào trong Playbook đang tạo ra chỉ số `changed` ở lượt chạy thứ 2. | Chạy `ansible-playbook -v site.yml` để soi chi tiết từng task bị changed. |
-| 12 | Giả định mọi module Ansible đều idempotent | Một số module custom của cộng đồng chưa được tối ưu tốt vẫn báo changed lần 2. | Thử nghiệm kỹ trên môi trường lab trước khi đưa module mới vào kịch bản Production. |
-
----
-
-### 1.6. Tóm tắt (1 phút)
 
 ```mermaid
 flowchart TD
-    A["Thiết kế Task trong Playbook"] --> B{"Dùng Module chuyên dụng hay Command/Shell?"}
-    B -->|"Module chuyên dụng"| C["Tự động đạt Idempotency -> Lần 2 changed=false"]
-    B -->|"Command / Shell"| D{"Có thuộc tính điều khiển?"}
-    
-    D -->|"Có creates / removes"| E["Kiểm tra file điều kiện -> Đạt Idempotency"]
-    D -->|"Có changed_when"| F["Đánh giá biểu thức logic -> Báo changed đúng bản chất"]
-    D -->|"Không có gì"| G["LỖI: Luôn changed=true lần 2 (Non-idempotent)"]
-    
-    C & E & F --> H["CHẠY THỬ LẦN 2"]
-    H --> I{"PLAY RECAP changed=0?"}
-    I -->|"Có"| J["ĐẠT: Chuẩn Quản trị Cấu hình Idempotent"]
-    I -->|"Không"| K["LỖI: Cần tối ưu lại Task"]
+    A["Viết lệnh shell echo >> append file"] --> B["Thêm changed_when: false để gian lận RECAP"]
+    B --> C["CI/CD hiển thị màu xanh mạo danh (changed=0)"]
+    C --> D["Cronjob chạy lặp lại mỗi 30 phút"]
+    D --> E["File cấu hình phình to hàng trăm dòng rác"]
+    E --> F["Tràn bộ đệm OS & Sập dịch vụ thanh toán"]
 
-    style A fill:none,stroke:#6366f1,stroke-width:2px
-    style B fill:none,stroke:#f59e0b,stroke-width:2px
-    style C fill:none,stroke:#10b981,stroke-width:2px
-    style D fill:none,stroke:#f59e0b,stroke-width:2px
-    style E fill:none,stroke:#06b6d4,stroke-width:2px
-    style F fill:none,stroke:#3b82f6,stroke-width:2px
-    style G fill:none,stroke:#ef4444,stroke-width:2px
-    style H fill:none,stroke:#8b5cf6,stroke-width:2px
-    style I fill:none,stroke:#f59e0b,stroke-width:2px
-    style J fill:none,stroke:#10b981,stroke-width:2px
-    style K fill:none,stroke:#ef4444,stroke-width:2px
+    style A fill:none
+    style B fill:none
+    style C fill:none
+    style D fill:none
+    style E fill:none
+    style F fill:none
 ```
 
-### Năm điều phải nhớ
-1. **Idempotency là linh hồn CM:** Chạy lại kịch bản lần thứ 2 **bắt buộc** phải đạt `changed=0`.
-2. **Ưu tiên Module chuyên dụng:** Dùng `package`, `service`, `copy`, `lineinfile` thay cho `command`/`shell`.
-3. **Dùng `creates`/`removes` cho lệnh thô:** Khai báo file điều kiện ngắt để task `command`/`shell` không chạy lại thừa.
-4. **Dùng `changed_when: false` cho task đọc:** Các task truy vấn dữ liệu (`uname`, `cat`, `stat`) phải tắt cờ changed.
-5. **Kiểm tra sự thật trên máy đích:** Không dùng `changed_when: false` mạo danh; luôn dùng `docker exec` đối soát hiện vật thật.
+### 5-Whys Root Cause Analysis:
+1. **Tại sao cổng thanh toán bị mất kết nối?** Do trình phân giải tên miền hệ thống không thể đọc file `/etc/hosts` vì kích thước vượt ngưỡng phân tích.
+2. **Tại sao file `/etc/hosts` bị phình to bất thường?** Do kịch bản tự động hóa ghi đúp dòng cấu hình sau mỗi chu kỳ chạy cron 30 phút.
+3. **Tại sao kịch bản ghi đúp dòng?** Do sử dụng lệnh `echo >>` trong module `shell` thay vì dùng module `lineinfile`.
+4. **Tại sao hệ thống giám sát không cảnh báo thay đổi?** Do kỹ sư đã ép `changed_when: false` khiến Ansible không thể ghi nhận trạng thái thay đổi thật.
+5. **Nguyên nhân cốt lõi (Root Cause):** Thiếu văn hóa kỹ thuật chuẩn xác về tính Idempotency: gian lận trạng thái xanh giả tạo và thiếu bước đối soát sự thật khách quan trên máy đích.
 
 ---
 
-### 1.7. Câu hỏi tự kiểm tra (kiêm luyện RHCE EX294)
+## 5. Hands-on Lab: Triệt Tiêu Lỗi Non-Idempotent & Thiết Lập Tính Bất Biến Tuyệt Đối (8 Bước)
 
-1. **[RHCE EX294 Objective #6]** Khái niệm Idempotency (tính bất biến) trong Ansible Playbook có nghĩa là gì?
-   - *Đáp án:* Là tính chất đảm bảo khi thực thi lại Playbook nhiều lần trên máy đã đúng cấu hình, Ansible không tạo ra thay đổi mới và báo chỉ số `changed=0` ở `PLAY RECAP`.
-2. **[RHCE EX294 Objective #6]** Tại sao một Task sử dụng module `ansible.builtin.shell` thực hiện lệnh `echo "data" >> /file.txt` lại không đạt tính Idempotency?
-   - *Đáp án:* Vì module `shell` không tự kiểm tra trạng thái file, toán tử `>>` nối thêm dòng mới vào file mỗi lần chạy, khiến task luôn báo `changed=true` và làm hỏng file.
-3. **[RHCE EX294 Objective #6]** Thuộc tính `creates` trong module `command`/`shell` nhận tham số là gì và có tác dụng gì?
-   - *Đáp án:* Nhận tham số là đường dẫn một tệp tin (`creates: /path/to/file`). Nếu file này đã tồn tại trên máy đích, Ansible sẽ BỎ QUA không chạy lại lệnh shell đó và báo `changed=false`.
-4. **[RHCE EX294 Objective #6]** Thuộc tính `removes` trong module `command`/`shell` khác `creates` ở điểm nào?
-   - *Đáp án:* `removes` chỉ thực thi lệnh shell nếu tệp tin chỉ định ĐANG TỒN TẠI (dùng cho các tác vụ xóa); nếu file không tồn tại thì bỏ qua task.
-5. **[RHCE EX294 Objective #6]** Muốn một Task chạy lệnh `ansible.builtin.command: uname -a` đọc thông tin hệ thống không làm tăng chỉ số `changed` trong RECAP, ta khai báo thuộc tính gì?
-   - *Đáp án:* Khai báo thuộc tính `changed_when: false`.
-6. **[RHCE EX294 Objective #6]** Làm thế nào để tự định nghĩa một Task chỉ báo `changed=true` khi biến đăng ký `res.rc == 0`?
-   - *Đáp án:* Khai báo thuộc tính `changed_when: "res.rc == 0"` (sau khi đã gán `register: res`).
-7. **[RHCE EX294 Objective #6]** Sự khác biệt cốt lõi giữa thuộc tính `when` và thuộc tính `changed_when` là gì?
-   - *Đáp án:* `when` quyết định Task CÓ THỰC THI HAY KHÔNG; `changed_when` quyết định Task BÁO TRẠNG THÁI CHANGED HAY OK sau khi đã thực thi xong.
-8. **[RHCE EX294 Objective #6]** Tại sao việc ép `changed_when: false` cho một Task có thực hiện thay đổi dữ liệu thật lại bị coi là vi phạm nguyên tắc quản trị?
-   - *Đáp án:* Vì đó là hành vi mạo danh giấu sự thay đổi, làm bảng RECAP hiển thị sai bản chất công việc, gây rủi ro mất an toàn cho hệ thống.
-9. **[RHCE EX294 Objective #6]** Quy trình thử nghiệm nào là chuẩn mực để nghiệm thu tính Idempotency của một Playbook trước khi bàn giao?
-   - *Đáp án:* Thực thi lượt chạy Lần 1 (`changed=N`) -> Thực thi lượt chạy Lần 2 (`changed=0`) -> Đối soát thực tế máy đích qua `docker exec`.
-10. **[RHCE EX294 Objective #6]** Chỉ số `ok=5 changed=0 failed=0` trong bảng `PLAY RECAP` ở lượt chạy lần 2 thể hiện điều gì?
-    - *Đáp án:* Thể hiện cả 5 Task đã thành công, hệ thống đã ở đúng trạng thái mong muốn và không có bất kỳ thay đổi thừa nào được tạo ra (Playbook đạt Idempotency tuyệt đối).
-11. **[RHCE EX294 Objective #6]** Viết một đoạn Task YAML chuẩn Idempotent giải nén file `/tmp/app.tar.gz` vào `/var/www/app` chỉ khi file `/var/www/app/index.php` chưa tồn tại.
-    - *Đáp án:*
-      ```yaml
-      - name: Extract application package
-        ansible.builtin.command: tar -xzf /tmp/app.tar.gz -C /var/www/app
-        args:
-          creates: /var/www/app/index.php
-      ```
-12. **[RHCE EX294 Objective #6]** Trong pipeline CI/CD, nếu lượt chạy kiểm thử Idempotency Lần 2 của Playbook trả về `changed=1`, pipeline sẽ xử lý thế nào?
-    - *Đáp án:* Pipeline tự động ngắt dừng với kết quả FAILED và chặn không cho phép merge mã nguồn hoặc deploy lên Production.
-13. **[RHCE EX294 Objective #6]** Lệnh CLI nào giúp quản trị viên soi chi tiết từng Task trong Playbook để phát hiện Task nào đang gây ra chỉ số `changed` ở lượt chạy lần 2?
-    - *Đáp án:* `ansible-playbook -v site.yml` (hoặc `-vv`, `--diff`).
-
----
-
-### 1.8. Tài liệu tham khảo
-
-- Ansible Core Documentation (v2.15+): [Understanding Idempotency](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html#ansible-architecture)
-- Ansible Core Documentation: [Defining changed and failed status](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_error_handling.html#override-the-changed-result-of-a-task)
-- Red Hat Certified Engineer (RHCE) EX294 Study Guide: Ensuring Idempotency in Ansible Playbooks.
-
----
-
-## Bảng đối soát thời lượng
-
-| Mục | Nội dung | Thời lượng dự kiến | Thời lượng thực tế |
-|---|---|---|---|
-| §0 | Khởi động và ôn tập buổi 05 | 10 phút | 10 phút |
-| §1–§2 | Mục tiêu làm được & Cần biết trước | 2 phút | 2 phút |
-| §3 | Thuật ngữ Việt-Anh & Mô hình tư duy | 8 phút | 8 phút |
-| §4 | Bản chất Triết lý Idempotency (QT 4.1–4.3) | 15 phút | 15 phút |
-| §5 | Kỹ thuật Khắc phục Lỗi Non-Idempotent (QT 5.1–5.3) | 15 phút | 15 phút |
-| §6 | Thử nghiệm Lượt 2 & Tự động hóa CI (QT 6.1–6.3) | 10 phút | 10 phút |
-| §7–§9 | Đưa vào việc thật, Bẫy hay gặp & Tóm tắt | 7 phút | 7 phút |
-| §10–§11 | Câu hỏi tự kiểm tra EX294 & Tài liệu tham khảo | 3 phút | 3 phút |
-| **Tổng** | **Khối lý thuyết Buổi 06** | **60 phút** | **60 phút** |
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
-> [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên môi trường máy chủ Linux / Docker containers phân tán. Hãy đảm bảo bạn đã chuẩn bị Control Node cài đặt Ansible Core 2.15+ cùng các Managed Nodes đã cấu hình SSH Key Authentication.
-
-## Khối thực hành — 150 phút
-
-> **Đối soát thời lượng:** Khối thực hành kéo dài đúng **150'** (từ L0 đến L11).
-> **Nguyên tắc cốt lõi:** Thực hành khởi tạo kịch bản non-idempotent bị lỗi chạy lại liên tục, sau đó tiến hành tối ưu chuẩn hóa bằng module chuyên dụng, áp dụng thuộc tính `creates`, `removes`, `changed_when`, thực thi phép thử **Lượt chạy Lần thứ hai** chứng minh chỉ số `PLAY RECAP` đạt `changed=0` và đối soát sự thật máy đích qua `docker exec`.
-
----
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm tra bằng lệnh CLI) |
+| Bước | Lệnh CLI / Tác Vụ Chính | Mục Đích Thực Thi |
 |---|---|---|
-| TH1 | Nhận diện kịch bản non-idempotent do lạm dụng shell thô | Phân tích nhật ký Lần 2 báo `changed > 0` bất thường |
-| TH2 | Tối ưu task lệnh thô bằng thuộc tính `creates` | Task `command` giải nén bị bỏ qua ở Lần 2 khi file đã tồn tại |
-| TH3 | Tối ưu task đọc dữ liệu bằng `changed_when: false` | Task đọc cấu hình báo `ok` thay vì `changed` |
-| TH4 | Tự định nghĩa điều kiện báo changed bằng `changed_when` | Task chỉ báo `changed` khi `register` trả về mã rc=0 |
-| TH5 | Thay thế lệnh shell thô bằng module chuẩn hóa | Chuyển đổi lệnh `echo >>` thành module `ansible.builtin.lineinfile` |
-| TH6 | Thực thi phép thử Lượt chạy Lần 2 (Second-run test) | Bảng `PLAY RECAP` Lần 2 đạt `changed=0` tuyệt đối |
-| TH7 | Chạy thử nghiệm mô phỏng `--check --diff` | Lệnh `--check --diff` Lần 2 xác nhận không có dự báo thay đổi mạo danh |
-| TH8 | Đối soát sự thật máy đích bằng docker exec | `docker exec target1 ...` xác nhận không có dữ liệu đè đúp rác |
+| **Bước 1** | Chuẩn bị môi trường `lab-ansible-06` | Khởi tạo cấu hình dự án cô lập |
+| **Bước 2** | Viết Playbook lỗi `broken-site.yml` | Mô phỏng hiện tượng Non-idempotent với module lệnh thô |
+| **Bước 3** | Chạy Lần 1 và Lần 2 file lỗi | Nhận diện lỗi `changed > 0` ở lượt chạy thứ hai |
+| **Bước 4** | Khắc phục lệnh thô bằng `creates` | Ngăn chặn việc thực thi lại lệnh không cần thiết |
+| **Bước 5** | Điều khiển cờ trạng thái với `changed_when` | Kiểm soát chính xác chỉ số `ok` và `changed` |
+| **Bước 6** | Chuyển đổi toàn diện sang Module chuẩn | Chuẩn hóa kịch bản với `package`, `file`, `lineinfile` |
+| **Bước 7** | Thực thi Phép thử Lần 2 hoàn chỉnh | Đạt chứng nhận Idempotency `changed=0` trên RECAP |
+| **Bước 8** | Đối soát sự thật máy đích qua `docker exec` | Xác nhận tính toàn vẹn của hiện vật trên đĩa cứng |
 
----
-
-## L1. Điều kiện tiên quyết về môi trường
-
-| Kiểm tra | LỆNH THỰC THI | Kết quả kỳ vọng |
-|---|---|---|
-| Ansible core đã cài | `ansible --version` | Phiên bản ansible-core v2.15 trở lên |
-| Docker Compose sẵn sàng | `docker compose ps` | Cả target1 và target2 ở trạng thái `Up` |
-| Kết nối SSH sẵn sàng | `ansible all -m ansible.builtin.ping` | Đạt `SUCCESS` cho mọi host |
-| Inventory dự án | `ansible-inventory --graph` | Hiển thị các nhóm `web` và `db` |
-| Thư mục thực hành | `pwd` | Đang ở thư mục `~/lab-ansible-06` |
-
-Nếu chưa có target container:
-```bash
-cd labs && make up && make key && make inventory
-```
-
----
-
-## L2. Kiến trúc bài lab
-
-```mermaid
-graph TD
-    SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Lần 1: Thực thi Kịch bản Chốt Cấu hình"| PB["Playbook: idempotent-site.yml"]
-    SubGraph1 -->|"2. Lần 2: Thực thi Phép thử Idempotency"| PB
-    
-    PB -->|"Task 1: package state=present"| T1["Target Container 1 (target1)"]
-    PB -->|"Task 2: command args: creates=/file"| T1
-    PB -->|"Task 3: command changed_when: false"| T1
-    PB -->|"Task 4: lineinfile regexp=..."| T1
-    
-    T1 -.->|"RECAP Lần 1: ok=4, changed=3"| SubGraph1
-    T1 -.->|"RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENT)"| SubGraph1
-    
-    DEV["Học viên (Tester)"] -->|"A. Chạy Playbook Lần 1 & Lần 2"| SubGraph1
-    DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
-    DEV -->|"C. Đối soát sự thật máy đích"| T1
-
-    style SubGraph1 fill:none,stroke:#6366f1,stroke-width:2px
-    style PB fill:none,stroke:#3b82f6,stroke-width:2px
-    style T1 fill:none,stroke:#10b981,stroke-width:2px
-    style DEV fill:none,stroke:#f59e0b,stroke-width:2px
-```
-
----
-
-## L3. Bước 1 — Tạo Kịch bản Bị lỗi Non-Idempotent để Phân tích (25 phút)
-
-Tạo thư mục làm việc, file cấu hình `ansible.cfg`, `inventory.ini` và file Playbook bị lỗi thiết kế `bad-site.yml` lạm dụng lệnh shell thô (QT 4.1, QT 4.3).
+### Bước 1 — Thiết lập môi trường thực hành
 
 ```bash
 mkdir -p ~/lab-ansible-06 && cd ~/lab-ansible-06
@@ -498,169 +250,140 @@ target2 ansible_host=127.0.0.1 ansible_port=2222
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 EOF
+```
 
-cat << 'EOF' > bad-site.yml
+### Bước 2 — Soạn thảo Playbook chứa lỗi Non-Idempotent để phân tích
+
+```bash
+cat << 'EOF' > broken-site.yml
 ---
-- name: Bad Non-Idempotent Playbook
+- name: Demonstrate Non-Idempotent Behavior
   hosts: web
   become: true
   tasks:
-    - name: Bad Task 1 - Append line using shell echo (Non-idempotent)
-      ansible.builtin.shell: echo "EXPORT_ENV=production" >> /etc/environment
-
-    - name: Bad Task 2 - Run uptime command (Non-idempotent)
-      ansible.builtin.command: uptime
-
-    - name: Bad Task 3 - Create dummy directory using mkdir (Fails on run 2)
-      ansible.builtin.command: mkdir /var/log/my-app-logs
+    - name: Non-idempotent raw shell command
+      ansible.builtin.shell: echo "export APP_ENV=staging" >> /etc/profile
 EOF
 ```
 
-Thực thi kịch bản `bad-site.yml` Lần 1 và Lần 2:
 ```bash
-ansible-playbook bad-site.yml || true
-ansible-playbook bad-site.yml || true
-```
-
-**CHECKPOINT 1 — Phát hiện kịch bản bad-site.yml bị lỗi non-idempotent (Lần 2 vẫn có changed > 0 hoặc bị failed).**
-- **Lệnh kiểm tra:**
-```bash
-BAD_RUN2=$(ansible-playbook bad-site.yml 2>&1 || true)
-if echo "$BAD_RUN2" | grep -q "failed=1" || echo "$BAD_RUN2" | grep -q "changed=1" || echo "$BAD_RUN2" | grep -q "changed=2"; then
-  echo "CHECKPOINT 1: ĐẠT - Phát hiện chính xác kịch bản bad-site.yml bị lỗi Non-idempotent ở lượt chạy thứ 2"
+# CHECKPOINT 1: Kiểm tra tạo file broken-site.yml
+if [ -f "broken-site.yml" ] && grep -q "export APP_ENV" broken-site.yml; then
+  echo "CHECKPOINT 1: ĐẠT - Tạo file Playbook mô phỏng lỗi Non-idempotent thành công"
 else
-  echo "CHECKPOINT 1: LỖI - Chưa thể hiện được lỗi Non-idempotent của bad-site.yml"
+  echo "CHECKPOINT 1: LỖI - Tạo file mô phỏng thất bại"
 fi
 ```
 
----
+### Bước 3 — Thực thi 2 lần và quan sát lỗi Non-Idempotent
 
-## L4. Bước 2 — Tối ưu Task Lệnh thô bằng creates và removes (30 phút)
-
-Sử dụng thuộc tính `creates` và `removes` để chuyển đổi các task gọi module `command`/`shell` thành chuẩn Idempotency (QT 5.1).
-
-Tạo file Playbook mới `idempotent-site.yml` và áp dụng `creates`:
 ```bash
-cat << 'EOF' > idempotent-site.yml
+ansible-playbook broken-site.yml
+ansible-playbook broken-site.yml
+```
+
+```bash
+# CHECKPOINT 2: Phát hiện vi phạm Idempotency ở lượt chạy thứ 2
+RUN2_BROKEN=$(ansible-playbook broken-site.yml)
+if echo "$RUN2_BROKEN" | grep -q "changed=1"; then
+  echo "CHECKPOINT 2: ĐẠT - Xác nhận Playbook lỗi vi phạm Idempotency (lần 2 vẫn báo changed=1)"
+else
+  echo "CHECKPOINT 2: LỖI - Không quan sát được lỗi mong đợi"
+fi
+```
+
+### Bước 4 — Khắc phục tác vụ lệnh thô bằng thuộc tính creates
+
+```bash
+cat << 'EOF' > fix-creates.yml
 ---
-- name: Optimized Idempotent Playbook
+- name: Fix Non-Idempotent using creates parameter
   hosts: web
   become: true
   tasks:
-    - name: Task 1 - Create directory using command with creates attribute
-      ansible.builtin.command: mkdir -p /var/log/my-app-logs
+    - name: Create flag file safely with shell
+      ansible.builtin.shell: touch /var/log/custom-init.lock
       args:
-        creates: /var/log/my-app-logs
-
-    - name: Task 2 - Create dummy build marker file using shell with creates
-      ansible.builtin.shell: echo "BUILD_DATE=$(date)" > /var/log/my-app-logs/build.marker
-      args:
-        creates: /var/log/my-app-logs/build.marker
+        creates: /var/log/custom-init.lock
 EOF
+
+ansible-playbook fix-creates.yml
+ansible-playbook fix-creates.yml
 ```
 
-Thực thi `idempotent-site.yml` Lần 1 và Lần 2:
 ```bash
-ansible-playbook idempotent-site.yml
-ansible-playbook idempotent-site.yml
-```
-
-**CHECKPOINT 2 — Task command/shell dùng thuộc tính creates đạt Idempotency ở lượt chạy thứ 2.**
-- **Lệnh kiểm tra:**
-```bash
-CREATES_RUN2=$(ansible-playbook idempotent-site.yml)
-if echo "$CREATES_RUN2" | grep -q "changed=0" && echo "$CREATES_RUN2" | grep -q "failed=0"; then
-  echo "CHECKPOINT 2: ĐẠT - Thuộc tính creates giúp task command/shell đạt Idempotency (changed=0 lần 2)"
+# CHECKPOINT 3 & 4: Kiểm tra creates đạt changed=0 ở lần 2
+RUN2_CREATES=$(ansible-playbook fix-creates.yml)
+if echo "$RUN2_CREATES" | grep -q "changed=0"; then
+  echo "CHECKPOINT 3 & 4: ĐẠT - Thuộc tính creates giúp lệnh thô đạt Idempotency (changed=0 lần 2)"
 else
-  echo "CHECKPOINT 2: LỖI - Thuộc tính creates chưa hoạt động đúng"
+  echo "CHECKPOINT 3 & 4: LỖI - Thuộc tính creates chưa hoạt động đúng"
 fi
 ```
 
----
+### Bước 5 — Tối ưu hóa tác vụ kiểm tra với changed_when: false
 
-## L5. Bước 3 — Điều khiển Trạng thái Báo Changed với changed_when (30 phút)
-
-Sử dụng thuộc tính `changed_when: false` cho các task chỉ đọc dữ liệu và dùng biểu thức `changed_when` tự định nghĩa logic thay đổi (QT 5.2, QT 5.3).
-
-Bổ sung các task xử lý `changed_when` vào `idempotent-site.yml`:
 ```bash
-cat << 'EOF' > idempotent-site.yml
+cat << 'EOF' > fix-changed-when.yml
 ---
-- name: Optimized Idempotent Playbook
+- name: Control Task Status via changed_when
   hosts: web
   become: true
   tasks:
-    - name: Task 1 - Create directory using command with creates attribute
-      ansible.builtin.command: mkdir -p /var/log/my-app-logs
-      args:
-        creates: /var/log/my-app-logs
-
-    - name: Task 2 - Query system uptime with changed_when false
-      ansible.builtin.command: uptime
-      register: uptime_res
+    - name: Read kernel architecture (Read-only query)
+      ansible.builtin.command: uname -m
+      register: host_arch
       changed_when: false
 
-    - name: Task 3 - Run custom script with custom changed_when logic
-      ansible.builtin.shell: echo "CHECK_STATUS_OK"
-      register: script_res
-      changed_when: "'CHANGED_TRIGGER' in script_res.stdout"
+    - name: Check system uptime
+      ansible.builtin.command: uptime
+      changed_when: false
 EOF
+
+ansible-playbook fix-changed-when.yml
 ```
 
-Thực thi `idempotent-site.yml` Lần 1 và Lần 2:
 ```bash
-ansible-playbook idempotent-site.yml
-ansible-playbook idempotent-site.yml
-```
-
-**CHECKPOINT 3 — Task đọc uptime dùng changed_when: false báo ok thay vì changed.**
-- **Lệnh kiểm tra:**
-```bash
-UPTIME_RUN=$(ansible-playbook idempotent-site.yml)
-if echo "$UPTIME_RUN" | grep -q "changed=0" && echo "$UPTIME_RUN" | grep -q "ok=3"; then
-  echo "CHECKPOINT 3: ĐẠT - Task truy vấn uptime sử dụng changed_when: false báo ok chính xác không tăng changed"
+# CHECKPOINT 5: Kiểm tra changed_when: false đạt ok và không tăng changed
+CW_OUT=$(ansible-playbook fix-changed-when.yml)
+if echo "$CW_OUT" | grep -q "changed=0" && echo "$CW_OUT" | grep -q "ok=2"; then
+  echo "CHECKPOINT 5: ĐẠT - Tác vụ đọc dữ liệu với changed_when: false đạt chuẩn ok và changed=0"
 else
-  echo "CHECKPOINT 3: LỖI - Task changed_when: false hoạt động chưa chính xác"
+  echo "CHECKPOINT 5: LỖI - Cấu hình changed_when thất bại"
 fi
 ```
 
----
+### Bước 6 — Chuẩn hóa toàn diện Playbook với các Module tiêu chuẩn
 
-## L6. Bước 4 — Thay thế Lệnh thô bằng Module Tiêu chuẩn (30 phút)
-
-Chuyển đổi các câu lệnh `shell: echo >> /etc/environment` thành module tiêu chuẩn `ansible.builtin.lineinfile` để loại bỏ hoàn toàn nguy cơ đè đúp dữ liệu (QT 4.1, QT 6.2).
-
-Cập nhật `idempotent-site.yml` hoàn chỉnh:
 ```bash
-cat << 'EOF' > idempotent-site.yml
+cat << 'EOF' > site.yml
 ---
-- name: Fully Standardized Idempotent Playbook
+- name: Enterprise Production Idempotent Baseline
   hosts: web
   become: true
+  gather_facts: false
+
   tasks:
-    - name: Task 1 - Ensure Nginx package is installed (Standard module)
+    - name: 01. Ensure curl package is installed
       ansible.builtin.package:
         name: curl
         state: present
 
-    - name: Task 2 - Create log directory (Command with creates)
-      ansible.builtin.command: mkdir -p /var/log/my-app-logs
-      args:
-        creates: /var/log/my-app-logs
+    - name: 02. Ensure application base directory exists
+      ansible.builtin.file:
+        path: /var/www/app
+        state: directory
+        mode: "0755"
 
-    - name: Task 3 - Query uptime (Command with changed_when false)
-      ansible.builtin.command: uptime
-      register: uptime_out
-      changed_when: false
-
-    - name: Task 4 - Ensure EXPORT_ENV line in /etc/environment (Standard lineinfile)
+    - name: 03. Ensure environment parameter is uniquely configured
       ansible.builtin.lineinfile:
         path: /etc/environment
-        regexp: '^EXPORT_ENV='
-        line: 'EXPORT_ENV=production'
+        regexp: '^APP_ENV='
+        line: 'APP_ENV="production"'
         state: present
+        backup: true
 
-    - name: Task 5 - Ensure SSH service is running (Standard service)
+    - name: 04. Ensure SSH daemon service is started and enabled
       ansible.builtin.service:
         name: sshd
         state: started
@@ -668,459 +391,333 @@ cat << 'EOF' > idempotent-site.yml
 EOF
 ```
 
-**CHECKPOINT 4 — File idempotent-site.yml sử dụng module chuẩn lineinfile thay cho echo shell.**
-- **Lệnh kiểm tra:**
 ```bash
-if grep -q "ansible.builtin.lineinfile" idempotent-site.yml && ! grep -q "echo .* >>" idempotent-site.yml; then
-  echo "CHECKPOINT 4: ĐẠT - Đã thay thế thành công câu lệnh shell echo thô bằng module chuẩn ansible.builtin.lineinfile"
+# CHECKPOINT 6: Kiểm tra cú pháp Playbook chuẩn hóa
+ansible-playbook --syntax-check site.yml
+```
+
+### Bước 7 — Thực thi Phép thử Lần 2 trên Playbook chuẩn hóa
+
+```bash
+ansible-playbook site.yml
+ansible-playbook site.yml
+```
+
+```bash
+# CHECKPOINT 7: Chứng minh tính Idempotency tuyệt đối ở Lần 2
+RUN2_FINAL=$(ansible-playbook site.yml)
+if echo "$RUN2_FINAL" | grep -q "changed=0" && echo "$RUN2_FINAL" | grep -q "failed=0"; then
+  echo "CHECKPOINT 7: ĐẠT - Playbook chuẩn hóa đạt Idempotency tuyệt đối (PLAY RECAP lần 2 báo changed=0)"
 else
-  echo "CHECKPOINT 4: LỖI - Chưa thay thế lệnh shell thô bằng module chuẩn"
+  echo "CHECKPOINT 7: LỖI - Playbook chưa đạt tính Idempotency chuẩn"
+fi
+```
+
+### Bước 8 — Đối soát sự thật khách quan trên máy đích
+
+```bash
+docker exec target1 cat /etc/environment | grep "APP_ENV"
+docker exec target1 ls -ld /var/www/app
+```
+
+```bash
+# CHECKPOINT 8: Kiểm tra hiện vật thực tế qua docker exec
+REAL_ENV=$(docker exec target1 cat /etc/environment)
+REAL_DIR=$(docker exec target1 ls -ld /var/www/app)
+if echo "$REAL_ENV" | grep -q 'APP_ENV="production"' && echo "$REAL_DIR" | grep -q "drwxr-xr-x"; then
+  echo "CHECKPOINT 8: ĐẠT - Đối soát thực tế xác nhận máy đích đạt đúng trạng thái mong muốn và không bị trùng lặp"
+else
+  echo "CHECKPOINT 8: LỖI - Hiện vật trên máy đích không khớp cấu hình"
 fi
 ```
 
 ---
 
-## L7. Bước 5 — Phép thử Lượt 2, Mô phỏng Dry-run và Đối soát Máy đích (35 phút)
-
-Thực thi phép thử Lượt chạy Lần thứ 2 (Second-run execution test) chứng minh `PLAY RECAP` đạt `changed=0`, kiểm tra với cờ `--check --diff` và đối soát sự thật máy đích qua `docker exec` (QT 6.1, QT 6.2).
-
-Thực thi Lần 1:
-```bash
-ansible-playbook idempotent-site.yml
-```
-
-Thực thi Lần 2 (BẮT BUỘC ĐẠT `changed=0`):
-```bash
-ansible-playbook idempotent-site.yml
-```
-
-**CHECKPOINT 5 — Phép thử Lượt 2 (Second-run execution test) đạt changed=0 ở PLAY RECAP.**
-- **Lệnh kiểm tra:**
-```bash
-SECONDRUN_OUT=$(ansible-playbook idempotent-site.yml)
-if echo "$SECONDRUN_OUT" | grep -q "changed=0" && echo "$SECONDRUN_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 5: ĐẠT - Phép thử Lượt 2 đạt tính Idempotency tuyệt đối (PLAY RECAP báo changed=0)"
-else
-  echo "CHECKPOINT 5: LỖI - Lượt 2 không đạt changed=0 (Playbook không chuẩn Idempotent)"
-fi
-```
-
-Thực thi chạy thử nghiệm Dry-run với `--check --diff`:
-```bash
-ansible-playbook --check --diff idempotent-site.yml
-```
-
-**CHECKPOINT 6 — Thực thi cờ --check --diff ở Lần 2 xác nhận changed=0 không có dự báo mạo danh.**
-- **Lệnh kiểm tra:**
-```bash
-CHECK2_OUT=$(ansible-playbook --check --diff idempotent-site.yml)
-if echo "$CHECK2_OUT" | grep -q "changed=0" && echo "$CHECK2_OUT" | grep -q "failed=0"; then
-  echo "CHECKPOINT 6: ĐẠT - Chế độ mô phỏng --check --diff Lần 2 xác nhận không có bất kỳ dự báo thay đổi mạo danh nào"
-else
-  echo "CHECKPOINT 6: LỖI - Chế độ mô phỏng --check --diff báo lỗi"
-fi
-```
-
-Đối soát nội dung file `/etc/environment` trên target container:
-```bash
-docker exec target1 cat /etc/environment
-```
-
-**CHECKPOINT 7 — Đối soát file /etc/environment trên target1 chỉ chứa đúng 1 dòng EXPORT_ENV=production.**
-- **Lệnh kiểm tra:**
-```bash
-COUNT_LINES=$(docker exec target1 grep -c "^EXPORT_ENV=production" /etc/environment || true)
-if [ "$COUNT_LINES" -eq 1 ]; then
-  echo "CHECKPOINT 7: ĐẠT - Kiểm tra sự thật qua docker exec xác nhận dòng EXPORT_ENV=production xuất hiện duy nhất 1 lần (không bị đè đúp)"
-else
-  echo "CHECKPOINT 7: LỖI - Dòng cấu hình bị đè đúp trùng lặp trên máy đích"
-fi
-```
-
-**CHECKPOINT 8 — Đối soát sự tồn tại thư mục /var/log/my-app-logs trên target1.**
-- **Lệnh kiểm tra:**
-```bash
-DIR_CHECK=$(docker exec target1 ls -d /var/log/my-app-logs)
-if [ -n "$DIR_CHECK" ]; then
-  echo "CHECKPOINT 8: ĐẠT - Thư mục /var/log/my-app-logs tồn tại thực tế trên target node"
-else
-  echo "CHECKPOINT 8: LỖI - Thư mục /var/log/my-app-logs chưa được tạo thực tế"
-fi
-```
-
----
-
-## L8. Nộp sản phẩm và dọn dẹp (10 phút)
-
-Thu thập kết quả ra các file báo cáo cuối buổi:
-```bash
-ansible-playbook bad-site.yml 2>&1 > non-idempotent-log.txt || true
-ansible-playbook idempotent-site.yml > idempotency-proof.txt
-docker exec target1 cat /etc/environment > kiem-may-dich.txt
-docker exec target1 ls -ld /var/log/my-app-logs >> kiem-may-dich.txt
-```
-
----
-
-## L9. Xử lý sự cố
-
-| # | Hiện tượng lỗi | Nguyên nhân gốc rễ | Cách xử lý nhanh |
-|---|---|---|---|
-| 1 | Lượt 2 vẫn báo `changed=1` ở task `lineinfile` | Biểu thức `regexp` không khớp với dòng đang có làm Ansible chèn thêm dòng mới | Kiểm tra và viết lại regex chính xác (ví dụ `regexp='^EXPORT_ENV='`). |
-| 2 | Task `command` dùng `creates` nhưng vẫn chạy lại | Khai báo sai đường dẫn file trong `creates` (file thực tế tạo ra ở vị trí khác) | So sánh đường dẫn file tạo ra bởi câu lệnh với đường dẫn khai báo trong `creates`. |
-| 3 | Lỗi `fatal: [target1]: FAILED! => {"msg": "mkdir: File exists"}` | Dùng `command: mkdir` không có `creates` hoặc không có cờ `-p` | Bổ sung cờ `mkdir -p` và khai báo thuộc tính `args: creates: /path`. |
-| 4 | Lệnh `changed_when: false` giấu lỗi của task bị hỏng | Task bị lỗi sập nhưng dùng `changed_when: false` làm tưởng task thành công | Cần phân biệt `changed_when` (định nghĩa changed) với `ignore_errors` (bỏ qua lỗi). |
-| 5 | Biến đăng ký trong `changed_when` bị lỗi undefined | Quên khai báo `register: my_var` ở task trước khi gọi `changed_when` | Bổ sung dòng `register: my_var` trước khi truyền điều kiện `changed_when`. |
-| 6 | File `/etc/environment` bị đè đúp 10 dòng | Sử dụng module `shell: echo >>` ở bài lab cũ mà chưa dọn dẹp | Xóa các dòng trùng lặp trên target container bằng `docker exec` rồi chạy lại module `lineinfile`. |
-| 7 | Cờ `--check` báo lỗi `creates file does not exist` | Module `command` trong check mode không thể mô phỏng tạo file cho bước sau | Sử dụng module chuẩn hóa hoặc thêm `check_mode: false` cho task tạo file tiên quyết. |
-| 8 | Task `copy` vẫn báo `changed=true` ở Lần 2 | Nội dung file local bị thay đổi động (ví dụ chứa lệnh `date` lấy giờ hệ thống) | Chuyển sang nội dung tĩnh cố định để đảm bảo md5 checksum giữ nguyên. |
-| 9 | Task `service` luôn báo `changed=1` ở Lần 2 | Khai báo `state=restarted` thay vì `state=started` | Đổi từ `state=restarted` sang `state=started` (chỉ dùng restarted khi có notification). |
-| 10 | Báo lỗi `yaml.scanner.ScannerError` ở thuộc tính `args` | Khai báo `creates` không lề đúng cấp độ bên dưới `args:` | Thụt lề `creates:` vào 2 dấu cách bên dưới từ khóa `args:`. |
-| 11 | Không thấy thay đổi khi chạy lại Playbook sau khi sửa file | Quên không lưu file `idempotent-site.yml` trên Control node | Lưu file cấu hình mã nguồn trước khi gọi lệnh `ansible-playbook`. |
-| 12 | Thao tác `removes` không hoạt động như kỳ vọng | File cần xóa chưa bao giờ tồn tại khiến task luôn bị skipped | Kiểm tra sự tồn tại của file trước khi gán thuộc tính `removes`. |
-| 13 | Lỗi `changed_when` chứa cú pháp Jinja2 sai | Viết `changed_when: my_var.rc == 0` mà bọc trong `{{ }}` không đúng chuẩn | Trong `changed_when` truyền trực tiếp biểu thức Python/Jinja không cần cặp `{{ }}`. |
-| 14 | RECAP Lần 2 báo `ok=0 changed=0` do bị skipped toàn bộ | Điều kiện `when` bị sai khiến toàn bộ các Task trong Playbook bị bỏ qua | Rà soát lại logic điều kiện lọc `when` trong kịch bản. |
-
----
-
-## L10. Bài tập mở rộng
-
-1. **BT1:** Viết file Playbook `setup-app.yml` sử dụng module `command` để tải file nén `app.tar.gz` bằng `curl` và dùng `creates` để đảm bảo không tải lại nếu file nén đã có.
-2. **BT2:** Thêm task giải nén file `app.tar.gz` sử dụng `creates: /var/www/app/index.php` và kiểm tra lượt chạy lần 2 đạt `changed=0`.
-3. **BT3:** Viết 1 task chạy lệnh `df -h` kiểm tra dung lượng đĩa cứng, đăng ký biến `register: disk_out` và tắt cờ changed bằng `changed_when: false`.
-4. **BT4:** Viết 1 task chạy kịch bản shell `/usr/local/bin/check-db.sh`, sử dụng `changed_when: "'DB_UPDATED' in check_res.stdout"`.
-5. **BT5:** Chuyển đổi một Playbook legacy chứa 5 câu lệnh `shell` thô (`mkdir`, `touch`, `echo >>`, `systemctl start`, `useradd`) thành 100% module tiêu chuẩn Idempotent.
-6. **BT6:** Thực thi phép thử Idempotency Lần 2 cho Playbook ở BT5 và xuất báo cáo `PLAY RECAP` ra file `bt5-idempotency.log`.
-7. **BT7:** Sử dụng cờ `--check --diff` để chứng minh Playbook ở BT5 ở lượt chạy Lần 2 không có bất kỳ dự báo thay đổi mạo danh nào.
-8. **BT8:** Viết kịch bản bash script tự động hóa công đoạn kiểm thử Idempotency Lần 2: tự động chạy Playbook Lần 2, parse file log RECAP và trả về mã exit code 0 (nếu `changed=0`) hoặc exit code 1 (nếu `changed > 0`).
-
----
-
-## L11. Sản phẩm nộp và chấm điểm
-
-### Danh mục sản phẩm nộp
-- File Playbook `bad-site.yml` và `idempotent-site.yml`.
-- Báo cáo kết quả 8 CHECKPOINT từ terminal.
-- Các file kết quả: `non-idempotent-log.txt`, `idempotency-proof.txt`, `kiem-may-dich.txt`.
-
-### Thang điểm đánh giá
-
-| Mức điểm | Tiêu chí đạt được |
-|---|---|
-| **0–4 điểm** | Chưa hiểu khái niệm Idempotency, nộp Playbook Lần 2 vẫn bị đỏ FAILED hoặc dính lỗi `shell` đè đúp. |
-| **5–7 điểm** | Sửa được task bằng `creates`, nhưng chưa thành thạo `changed_when` và chưa thay thế được các lệnh shell thô bằng module chuẩn. |
-| **8–9 điểm** | Đạt đủ 8 CHECKPOINT, chứng minh Idempotency Lần 2 (`changed=0`) tuyệt đối cho toàn bộ Playbook và đối soát qua `docker exec`. |
-| **10 điểm** | Đạt 9 điểm + Hoàn thành xuất sắc 100% các Bài tập mở rộng (BT1–BT8). |
-
----
-
-## Bảng đối soát thời lượng
-
-| Bước | Nội dung | Thời lượng dự kiến | Thời lượng thực tế |
-|---|---|---|---|
-| L0–L2 | Mục tiêu, Tiên quyết & Kiến trúc bài lab | 10 phút | 10 phút |
-| L3 | Bước 1: Tạo kịch bản non-idempotent để phân tích | 25 phút | 25 phút |
-| L4 | Bước 2: Tối ưu task lệnh thô bằng creates/removes | 30 phút | 30 phút |
-| L5 | Bước 3: Điều khiển trạng thái với changed_when | 30 phút | 30 phút |
-| L6 | Bước 4: Thay thế lệnh thô bằng Module tiêu chuẩn | 30 phút | 30 phút |
-| L7 | Bước 5: Phép thử Lượt 2 & Đối soát docker exec | 35 phút | 35 phút |
-| L8–L11 | Nộp sản phẩm, Sự cố, Bài tập & Chấm điểm | 10 phút | 10 phút |
-| **Tổng** | **Khối thực hành Buổi 06** | **150 phút** | **150 phút** |
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **DevOps Engineer**, **Site Reliability Engineer (SRE)** và **Cloud Automation Architect**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ xử lý sự cố hệ thống:
-
----
-
-
-
-## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
+## 6. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q01</span>
-    <span class="qa-question-text">Tại sao tính Idempotency (tính bất biến) lại được coi là tiêu chuẩn vàng định nghĩa một công cụ Quản trị Cấu hình (Configuration Management)?</span>
+    <span class="qa-question-text">Trình bày định nghĩa và bản chất của tính Idempotency trong tự động hóa cấu hình hạ tầng. Tại sao Ansible tự hào là công cụ đạt chuẩn Idempotent?</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Idempotency đảm bảo rằng việc thực thi một kịch bản cấu hình một lần hay nhiều lần trên cùng một hệ thống đều mang lại <b>KẾT QUẢ TRẠNG THÁI CUỐI CÙNG GIỐNG NHAU</b>, mà không gây ra tác dụng phụ (như đè đúp dữ liệu, tạo file rác trùng lặp, làm sập dịch vụ). Nó chuyển đổi tư duy từ "gõ chuỗi lệnh thủ công" (Imperative) sang "khai báo trạng thái muốn có" (Declarative), giúp kịch bản chạy an toàn định kỳ trên hạ tầng quy mô lớn.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết định nghĩa Idempotency.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nói "chạy lại không bị lỗi" nhưng không giải thích được Declarative State Model.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Giải thích đúng cơ chế Declarative và tính an toàn khi chạy lại nhiều lần.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc sự khác biệt giữa Script Bash (Imperative) và Ansible Playbook (Declarative) kèm ví dụ thực tế.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu một script Bash gõ lệnh <code>echo "export PATH=$PATH:/opt/bin" &gt;&gt; /etc/profile</code> được chạy 10 lần, điều gì sẽ xảy ra? <i>(Dòng cấu hình bị nối thêm 10 lần vào file profile làm hỏng file, thể hiện sự thiếu Idempotency.)</i>
+    <div><b>Đáp án chuẩn:</b> Idempotency là tính chất mà khi một tác vụ được thực thi một lần hay nhiều lần liên tiếp, kết quả cuối cùng trên hệ thống vẫn hoàn toàn đồng nhất và không gây ra bất kỳ tác dụng phụ (side-effect) nào. Ansible đạt chuẩn Idempotent nhờ mô hình khai báo trạng thái (Declarative State Model): các module chuẩn trong <code>ansible.builtin</code> luôn kiểm tra trạng thái hiện tại của hệ thống trước khi quyết định có can thiệp hay không.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không nêu được định nghĩa Idempotency.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nêu được khái niệm chạy lại không đổi nhưng không giải thích được cơ chế kiểm tra trạng thái của module.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu chính xác định nghĩa + cơ chế Declarative của Ansible.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Phân tích xuất sắc bản chất toán học $f(f(x)) = f(x)$ và liên hệ trực tiếp với bảng <code>PLAY RECAP</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Lệnh <code>mkdir /tmp/test</code> có phải là lệnh idempotent không? <i>(Không, vì chạy lần 2 lệnh này sẽ báo lỗi <code>File exists</code> và trả về exit code khác 0.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q02</span>
-    <span class="qa-question-text">Phân biệt ý nghĩa của 3 trạng thái Task: ok, changed, và failed. Tại sao lượt chạy Lần 2 chỉ số ok tăng lên lại là tín hiệu tốt?</span>
+    <span class="qa-question-text">Phân biệt sự khác biệt bản chất giữa ba trạng thái thực thi của Task: OK, CHANGED và FAILED.</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
-    • <code>ok</code>: Hệ thống trên máy đích <b>ĐÃ Ở ĐÚNG TRẠNG THÁI</b> khai báo, Ansible không thực hiện thay đổi nào.<br>
-    • <code>changed</code>: Hệ thống <b>CHƯA ĐÚNG TRẠNG THÁI</b>, Ansible đã can thiệp thực hiện thay đổi thành công.<br>
-    • <code>failed</code>: Task gặp lỗi đứt gãy trong quá trình thi hành và dừng Playbook.<br>
-    Lượt chạy Lần 2 chỉ số <code>ok</code> tăng lên chứng minh hệ thống đang được giữ nguyên an toàn, các task không bị can thiệp thừa.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được <code>ok</code> và <code>changed</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Phân biệt được <code>changed</code> và <code>failed</code> nhưng nhầm <code>ok</code> là có thay đổi.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác bản chất của cả 3 trạng thái <code>ok</code>, <code>changed</code>, <code>failed</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + giải thích ý nghĩa chỉ số <code>changed=0</code> ở lượt chạy Lần 2.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu lượt chạy Lần 1 báo <code>ok=2 changed=3</code>, lượt chạy Lần 2 báo <code>ok=5 changed=0</code>, điều này khẳng định điều gì? <i>(Khẳng định Playbook đạt tính Idempotency 100%, toàn bộ 5 Task ở Lần 2 đã ở đúng trạng thái mong muốn.)</i>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>• <b>OK (Xanh lá):</b> Task chạy thành công nhưng KHÔNG làm thay đổi hệ thống đích (do hệ thống đã đúng trạng thái mong muốn từ trước).</div>
+    <div>• <b>CHANGED (Vàng/Cam):</b> Task chạy thành công VÀ có thực hiện thay đổi dữ liệu hoặc trạng thái trên máy đích.</div>
+    <div>• <b>FAILED (Đỏ):</b> Task gặp lỗi thực thi (sai cú pháp, lỗi quyền, exit code != 0) và lập tức dừng kịch bản Playbook.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Nhầm lẫn giữa OK và CHANGED.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nêu được FAILED nhưng chưa phân biệt rạch ròi giữa OK và CHANGED.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân biệt chính xác cả 3 trạng thái.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + giải thích tại sao ở lần chạy 2, số lượng task OK phải tăng lên và CHANGED phải về 0.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Khi chạy ở chế độ <code>--check</code> (Dry-run), một Task báo <code>CHANGED</code> có nghĩa là máy đích đã bị thay đổi chưa? <i>(Chưa, đó chỉ là dự báo rằng nếu chạy thật thì task này sẽ tạo ra thay đổi.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q03</span>
-    <span class="qa-question-text">Tại sao các tác vụ sử dụng module ansible.builtin.command hoặc ansible.builtin.shell mặc định luôn báo changed=true ở mọi lượt chạy?</span>
+    <span class="qa-question-text">Tại sao các module command và shell mặc định luôn trả về trạng thái CHANGED trong mỗi lần thực thi?</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Vì Ansible Engine xem <code>command</code> và <code>shell</code> là các "hộp đen" thực thi câu lệnh Linux thô. Engine không thể biết đoạn script shell bên trong chứa những lệnh gì và có làm biến đổi đĩa cứng hay không. Để an toàn, Ansible mặc định coi mọi lệnh shell đều tạo ra thay đổi và gán trạng thái <code>CHANGED</code>.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "do lệnh shell bị lỗi".</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết lệnh shell luôn báo changed nhưng không giải thích được lý do Ansible không soi được bên trong script.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Giải thích đúng lý do Ansible xem lệnh shell là hộp đen không tự kiểm tra trạng thái được.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + đề xuất 2 giải pháp khắc phục (<code>creates</code>/<code>removes</code> hoặc chuyển sang module chuyên dụng).</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu không khắc phục task <code>shell</code> thô này, bảng <code>PLAY RECAP</code> ở lượt chạy Lần 2 sẽ ra sao? <i>(Bảng RECAP lượt 2 sẽ tiếp tục báo <code>changed &gt; 0</code>, làm Playbook không bao giờ đạt chuẩn Idempotent.)</i>
+    <div><b>Đáp án chuẩn:</b> Ansible Engine coi các câu lệnh shell thô là "hộp đen" (black-box). Ansible không thể phân tích ngữ nghĩa bên trong câu lệnh shell để biết nó có làm sửa đổi file, tạo tiến trình hay chỉ đọc dữ liệu. Để đảm bảo an toàn và kích hoạt đúng các Handler phụ thuộc, Ansible mặc định gán trạng thái <code>changed=true</code> cho mọi task <code>command</code>/<code>shell</code> trừ khi có cấu hình bổ sung.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không giải thích được lý do.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Trả lời chung chung là do lệnh shell không an toàn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu chính xác khái niệm black-box và cơ chế mặc định an toàn của Ansible.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + chỉ ra tác động dây chuyền tới các Handlers (notify) khi task shell luôn báo changed.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Làm thế nào để một task <code>command</code> chạy lệnh <code>ls -l</code> không bị báo trạng thái <code>CHANGED</code>? <i>(Thêm tham số <code>changed_when: false</code> vào task.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q04</span>
-    <span class="qa-question-text">Trình bày cơ chế hoạt động của thuộc tính creates và removes trong module command/shell. Cho ví dụ.</span>
+    <span class="qa-question-text">Thuộc tính creates và removes trong module command/shell hoạt động như thế nào để mang lại tính Idempotency?</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
-    • <code>creates: /path/to/file</code>: Kiểm tra xem file/thư mục có tồn tại trên máy đích hay chưa. Nếu <b>ĐÃ TỒN TẠI</b>, Ansible <b>BỎ QUA Task</b> (báo <code>ok / changed=false</code>); nếu <b>CHƯA TỒN TẠI</b> mới thực thi lệnh shell.<br>
-    • <code>removes: /path/to/file</code>: Kiểm tra xem file/thư mục có tồn tại hay không. Nếu <b>ĐANG TỒN TẠI</b> mới thực thi lệnh shell (ví dụ lệnh xóa); nếu <b>KHÔNG TỒN TẠI</b> thì <b>BỎ QUA Task</b>.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Nhầm lẫn giữa <code>creates</code> và <code>removes</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>creates</code> bỏ qua khi có file nhưng không giải thích được <code>removes</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế kiểm tra file của cả <code>creates</code> và <code>removes</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa kịch bản giải nén file tar.gz dùng <code>creates</code>.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu đường dẫn file khai báo trong <code>creates</code> bị gõ sai chính tả, điều gì sẽ xảy ra ở lượt chạy Lần 2? <i>(Ansible tìm không thấy file nên vẫn tiếp tục chạy lại lệnh shell ở Lần 2, làm mất tính Idempotency.)</i>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>• <code>creates: /path/to/file</code>: Kiểm tra trước trên máy đích. Nếu file đã tồn tại, Ansible sẽ BỎ QUA không thực thi lệnh và báo trạng thái <code>OK</code> (<code>changed=false</code>). Lệnh chỉ chạy khi file chưa tồn tại.</div>
+    <div>• <code>removes: /path/to/file</code>: Ngược lại, nếu file đã bị xóa (không tồn tại), Ansible sẽ bỏ qua lệnh. Lệnh chỉ chạy khi file vẫn còn tồn tại.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết vai trò của <code>creates</code> và <code>removes</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Hiểu <code>creates</code> là lệnh tạo file mới.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Giải thích chính xác cơ chế điều kiện ngắt của cả 2 tham số.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + minh họa ví dụ giải nén file tar.gz an toàn bằng <code>creates</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Đường dẫn khai báo trong <code>creates</code> có thể là một thư mục (directory) thay vì một file thường được không? <i>(Được, Ansible kiểm tra sự tồn tại của inode đường dẫn bất kể là file hay directory.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q05</span>
-    <span class="qa-question-text">Khi nào nên khai báo thuộc tính changed_when: false cho một Task? Cho 2 ví dụ thực tế.</span>
+    <span class="qa-question-text">Khi nào ta nên sử dụng changed_when: false? Cho 3 ví dụ thực tế trong quản trị hạ tầng.</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Nên dùng <code>changed_when: false</code> cho các Task <b>chỉ đọc dữ liệu hoặc truy vấn trạng thái</b> từ máy đích mà <b>KHÔNG</b> thực hiện bất kỳ thao tác ghi/sửa đổi nào lên đĩa cứng. Ví dụ: (1) Chạy lệnh <code>uname -a</code> lấy thông tin kernel, (2) Chạy lệnh <code>cat /etc/os-release</code> kiểm tra phiên bản OS, (3) Chạy lệnh truy vấn trạng thái DB.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Cho rằng <code>changed_when: false</code> dùng cho mọi loại Task.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết dùng cho task đọc nhưng không cho được ví dụ cụ thể.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đúng bản chất Task Read-Only + đưa 2 ví dụ chuẩn.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + phân tích tác hại nếu lạm dụng <code>changed_when: false</code> cho task ghi dữ liệu thật.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu một Task chạy lệnh <code>echo "data" &gt; /file.txt</code> mà khai báo <code>changed_when: false</code>, điều gì sẽ xảy ra? <i>(Bảng RECAP báo <code>changed=0</code> giả mạo, nhưng thực tế đĩa cứng máy đích vẫn bị ghi đè mỗi lần chạy vi phạm nguyên tắc quản trị.)</i>
+    <div><b>Đáp án chuẩn:</b> Sử dụng <code>changed_when: false</code> khi một Task chạy lệnh bên ngoài nhưng mục đích duy nhất là ĐỌC DỮ LIỆU hoặc KIỂM TRA TRẠNG THÁI mà không thay đổi bất kỳ byte nào trên hệ thống đích. Ba ví dụ thực tế:</div>
+    <div>1. Chạy lệnh truy vấn thông tin máy chủ: <code>uname -r</code> hoặc <code>lscpu</code>.</div>
+    <div>2. Chạy lệnh kiểm tra dung lượng ổ đĩa: <code>df -h /var</code>.</div>
+    <div>3. Chạy lệnh đọc danh sách tài nguyên hiện hữu: <code>docker ps --format "{{.Names}}"</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không hiểu mục đích của <code>changed_when: false</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nêu được định nghĩa nhưng không đưa ra được ví dụ phù hợp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng định nghĩa + 2-3 ví dụ chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Phân tích xuất sắc lý do tại sao các lệnh chỉ đọc bắt buộc phải có <code>changed_when: false</code> để giữ sạch bảng RECAP.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu ta dùng <code>changed_when: false</code> cho một lệnh <code>rm -rf /data</code>, điều gì sẽ xảy ra trên máy đích và bảng RECAP? <i>(Máy đích vẫn bị xóa dữ liệu, nhưng bảng RECAP báo xanh <code>changed=0</code> giả mạo, gây sai lệch thông tin audit.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q06</span>
-    <span class="qa-question-text">Làm thế nào để tự định nghĩa điều kiện báo changed dựa trên kết quả trả về của câu lệnh shell qua thuộc tính changed_when?</span>
+    <span class="qa-question-text">Trình bày cách sử dụng changed_when với biểu thức điều kiện logic phức tạp kết hợp biến đăng ký register.</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Đăng ký kết quả trả về của lệnh shell vào một biến bằng thuộc tính <code>register: result_var</code>, sau đó sử dụng biểu thức logic trong <code>changed_when</code> để kiểm tra chuỗi <code>stdout</code> hoặc mã <code>rc</code>. Ví dụ: <code>changed_when: "'UPDATED' in result_var.stdout"</code> (chỉ báo <code>changed=true</code> khi chuỗi <code>stdout</code> chứa từ <code>UPDATED</code>).<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết kết hợp <code>register</code> và <code>changed_when</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nhớ <code>changed_when</code> nhưng viết sai cú pháp biểu thức Jinja/Python.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đúng cơ chế gán <code>register</code> + biểu thức <code>changed_when</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã YAML hoàn chỉnh minh họa kịch bản chạy script migration DB.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu câu lệnh shell trả về mã <code>rc=0</code> nhưng không làm thay đổi dữ liệu, biểu thức <code>changed_when: "result_var.rc == 0"</code> có chuẩn không? <i>(Không chuẩn, vì rc=0 chỉ là chạy lệnh thành công chứ không đồng nghĩa với có thay đổi dữ liệu.)</i>
+    <div><b>Đáp án chuẩn:</b> Ta lưu kết quả đầu ra của câu lệnh vào biến bằng từ khóa <code>register: &lt;var_name&gt;</code>, sau đó thiết lập biểu thức so khớp chuỗi trong <code>changed_when:</code> dựa trên <code>var_name.stdout</code>, <code>var_name.rc</code> hoặc <code>var_name.stderr</code>. Ví dụ: khi chạy script cập nhật database, chỉ báo changed khi output chứa chữ "MIGRATED": <code>changed_when: "'MIGRATED' in db_res.stdout"</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết kết hợp <code>register</code> và <code>changed_when</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết dùng <code>register</code> nhưng viết sai cú pháp trong <code>changed_when</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Trình bày đúng cấu trúc YAML và cú pháp điều kiện.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + kết hợp cả <code>changed_when</code> và <code>failed_when</code> để kiểm soát toàn diện luồng chạy.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Cú pháp nào kiểm tra lệnh có exit code khác 0 nhưng không coi đó là lỗi nếu chuỗi stderr chứa "WARNING"? <i>(<code>failed_when: "res.rc != 0 and 'WARNING' not in res.stderr"</code>)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q07</span>
-    <span class="qa-question-text">Trình bày quy trình Phép thử Lượt chạy Lần hai (Second-run test) để nghiệm thu một Playbook. Tại sao không thể bỏ qua bước này?</span>
+    <span class="qa-question-text">Trình bày quy trình "Phép thử Lượt chạy Lần hai" (Second-run Test). Tại sao chỉ số changed=0 ở lần 2 mới là tiêu chuẩn nghiệm thu cuối cùng?</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Quy trình: (1) Chạy <code>ansible-playbook site.yml</code> Lần 1 để áp đặt cấu hình ban đầu. (2) Chạy lại nguyên vẹn câu lệnh <code>ansible-playbook site.yml</code> Lần thứ hai: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b>. Không thể bỏ qua bước này vì lượt chạy Lần 1 chỉ chứng minh kịch bản <i>chạy được</i>, chỉ có lượt chạy Lần 2 mới chứng minh kịch bản <i>an toàn bất biến khi vận hành định kỳ</i>.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Cho rằng chỉ cần chạy Lần 1 thành công là đủ nghiệm thu.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nêu được chạy Lần 2 nhưng không giải thích được tại sao Lần 1 là chưa đủ.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò khác nhau của lượt Lần 1 (State Apply) và Lượt 2 (Idempotency Test).</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa bảng <code>PLAY RECAP</code> chuẩn của cả 2 lượt chạy.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu lượt chạy Lần 2 bảng RECAP báo <code>ok=4 changed=1 failed=0</code>, kết luận nghiệm thu là gì? <i>(Kết luận: Playbook KHÔNG ĐẠT tiêu chí Idempotency, bắt buộc phải tìm Task dính changed=1 để sửa lại.)</i>
+    <div><b>Đáp án chuẩn:</b> Quy trình thực thi gồm 2 lượt: Lần 1 cấu hình hạ tầng từ trạng thái A sang B (`changed=N`), sau đó chạy lại Lần 2 nguyên vẹn kịch bản đó. Ở Lần 2, hệ thống đã ở trạng thái B, nên toàn bộ các task phải phát hiện ra trạng thái đã đúng và báo <code>changed=0</code>. Nếu Lần 2 vẫn có <code>changed &gt; 0</code>, điều đó chứng minh kịch bản có chứa tác vụ trôi dạt cấu hình hoặc lệnh thô nguy hiểm.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Cho rằng chỉ cần chạy 1 lần thấy xanh là đạt.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết chạy lần 2 nhưng không giải thích được vì sao bắt buộc phải <code>changed=0</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu chính xác quy trình 2 lượt và ý nghĩa của <code>changed=0</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Phân tích xuất sắc tầm quan trọng của phép thử này trong các hệ thống chạy định kỳ (scheduled cron automation).</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu lượt chạy lần 2 báo <code>ok=5 changed=1 failed=0</code>, ta cần xử lý như thế nào? <i>(Tìm task duy nhất báo trạng thái vàng CHANGED trên terminal và thay thế nó bằng module chuẩn hoặc thêm <code>creates</code>/<code>changed_when</code>.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q08</span>
-    <span class="qa-question-text">Phân biệt giữa "Bảng PLAY RECAP hiển thị màu xanh mạo danh" và "Hạ tầng đạt Idempotency thực tế". Làm sao để phát hiện gian lận này?</span>
+    <span class="qa-question-text">Hành vi "Ép trạng thái mạo danh" (Fake Idempotency) là gì? Tác hại khôn lường của nó đối với môi trường Production?</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> "RECAP xanh mạo danh" xảy ra khi người viết cố tình dùng <code>changed_when: false</code> hoặc <code>ignore_errors: true</code> để ép màn hình terminal báo <code>changed=0</code> / <code>failed=0</code>, nhưng thực tế trên máy đích dữ liệu vẫn bị ghi đè rác hoặc gặp lỗi ngầm. Để phát hiện gian lận: Dùng <code>docker exec &lt;target&gt; ...</code> đối soát trực tiếp nội dung file, số lượng dòng trùng lặp và trạng thái dịch vụ thật trên đĩa cứng máy đích.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Tin tưởng tuyệt đối 100% vào báo cáo màn hình Control node.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết có thể giấu lỗi nhưng không biết cách dùng <code>docker exec</code> đối soát.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác tác hại của RECAP mạo danh + giải pháp đối soát máy đích.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + đưa ra ví dụ cụ thể câu lệnh <code>docker exec grep -c</code> đếm số dòng lặp để bóc phốt RECAP xanh mạo danh.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao kiểm tra bằng <code>docker exec</code> lại là thước đo sự thật khách quan nhất? <i>(Vì docker exec truy vấn trực tiếp Kernel và File System của máy đích, không thông qua các bộ lọc báo cáo của Ansible Engine.)</i>
+    <div><b>Đáp án chuẩn:</b> "Ép trạng thái mạo danh" là hành vi gắn <code>changed_when: false</code> vào một Task thực tế có thực hiện ghi đè hoặc sửa đổi hệ thống (ví dụ lệnh <code>echo >></code> hoặc lệnh patch cấu hình) để qua mặt bộ lọc kiểm tra của CI/CD. Tác hại: làm mù hệ thống audit, che giấu lỗi trôi dạt cấu hình, gây phình to file rác hoặc ghi đè dữ liệu mỗi chu kỳ chạy, dẫn tới downtime bất ngờ.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không hiểu khái niệm ép trạng thái mạo danh.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết là xấu nhưng không nêu được tác hại thực tế trên Production.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng định nghĩa và các nguy cơ hỏng hóc hệ thống.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + đề xuất phương pháp đối soát máy đích bằng kiểm thử hiện vật thực tế để triệt tiêu hành vi này.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Làm sao Tech Lead phát hiện được kỹ sư cấp dưới có hành vi ép trạng thái mạo danh trong Git Pull Request? <i>(Bật quy tắc linter kiểm tra mọi khai báo <code>changed_when: false</code> và yêu cầu kèm kiểm thử đối soát hiện vật máy đích.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q09</span>
-    <span class="qa-question-text">Trong một kịch bản CI/CD chuyên nghiệp (GitLab CI/GitHub Actions), bước Idempotency Test được tự động hóa bằng cách nào?</span>
+    <span class="qa-question-text">Tại sao việc đối soát sự thật bằng docker exec hoặc SSH độc lập lại là bước bắt buộc để chứng minh tính Idempotency?</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Trong pipeline CI/CD, sau bước chạy Playbook Lần 1 trên container thử nghiệm, kịch bản CI tự động thực thi lượt chạy Lần 2 và bắt luồng stdout của <code>PLAY RECAP</code>. Nếu script phát hiện chỉ số <code>changed=0</code>, pipeline trả về exit code 0 (PASSED). Nếu chỉ số <code>changed &gt; 0</code>, pipeline trả về exit code 1 (FAILED) và tự động chặn không cho Merge mã nguồn.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cách tự động hóa kiểm thử Idempotency.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết chạy lần 2 trong CI nhưng không biết cách parse stdout RECAP.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày chính xác luồng kiểm thử 2 lượt + parse exit code trong CI pipeline.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + đề xuất sử dụng công cụ kiểm thử tiêu chuẩn <b>Molecule</b> (<code>molecule verify / molecule test</code>).</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Công cụ <b>Molecule</b> trong hệ sinh thái Ansible có vai trò gì liên quan đến Idempotency? <i>(Molecule tự động khởi tạo container, chạy Playbook Lần 1, chạy Lần 2 kiểm tra changed=0, và dọn dẹp container tự động.)</i>
+    <div><b>Đáp án chuẩn:</b> Màn hình terminal của Control Node chỉ hiển thị các chuỗi thông báo do module hoặc playbook trả về. Nếu playbook chứa lỗi logic hoặc task ép trạng thái, màn hình RECAP có thể báo xanh hoàn hảo nhưng trên thực tế đĩa cứng máy đích bị hỏng hoặc thiếu cấu hình. Đối soát độc lập qua <code>docker exec</code> (kiểm tra <code>cat file</code>, <code>grep</code>, <code>id user</code>, <code>systemctl status</code>) giúp xác thực hiện vật thật sự trên đĩa cứng.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Cho rằng chỉ cần nhìn màn hình terminal là đủ.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết kiểm tra máy đích nhưng không giải thích được lý do độc lập với Control Node.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân tích chính xác nguyên lý "Source of Truth" trên đĩa cứng máy đích.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Trình bày xuất sắc tư duy kiểm thử tự động hóa trong testing framework (như Testinfra / Molecule).</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Khi đối soát file cấu hình <code>/etc/environment</code> qua <code>docker exec</code>, ta cần kiểm tra những gì? <i>(Kiểm tra nội dung file có đúng giá trị mong muốn và chỉ xuất hiện duy nhất 1 lần, không bị đè đúp nhiều dòng.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q10</span>
-    <span class="qa-question-text">Trình bày 3 ví dụ chuyển đổi các câu lệnh Shell thô hay gặp trong thực tế thành các Module tiêu chuẩn đạt tính Idempotency 100%.</span>
+    <span class="qa-question-text">So sánh hiệu quả và độ an toàn giữa việc sửa cấu hình bằng echo >> (qua shell module) và bằng module lineinfile.</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
-    1. <b>Ca 1 (Tạo thư mục):</b> Chuyển <code>shell: mkdir /app</code> -&gt; Module <code>ansible.builtin.file: path=/app state=directory mode='0755'</code>.<br>
-    2. <b>Ca 2 (Sửa file cấu hình):</b> Chuyển <code>shell: echo "Port 2222" &gt;&gt; /etc/ssh/sshd_config</code> -&gt; Module <code>ansible.builtin.lineinfile: path=/etc/ssh/sshd_config regexp='^#?Port' line='Port 2222'</code>.<br>
-    3. <b>Ca 3 (Quản lý User):</b> Chuyển <code>shell: useradd deployer</code> -&gt; Module <code>ansible.builtin.user: name=deployer state=present shell=/bin/bash</code>.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết chuyển đổi sang module chuẩn.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Chuyển được 1 ca đơn giản nhưng nhầm lẫn tham số <code>lineinfile</code>.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Chuyển đổi chính xác cả 3 ca thực tế.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc cả 3 ca + giải thích lý do tại sao các module chuẩn lại đạt Idempotency tự nhiên.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao dùng module <code>lineinfile</code> với <code>regexp</code> lại đảm bảo file không bị đè đúp dòng? <i>(Vì lineinfile tìm kiếm dòng cũ theo regex, nếu đã thấy dòng đúng nội dung thì nó giữ nguyên và báo changed=false.)</i>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>• <b>`echo >>` (Shell module):</b> Không có kiểm tra trạng thái cũ, mỗi lần chạy đều nối thêm 1 dòng vào cuối file -> Làm file bị phình to, trùng lặp cấu hình, luôn báo <code>changed=true</code> (Non-idempotent).</div>
+    <div>• <b>`lineinfile` (Module chuẩn):</b> Sử dụng biểu thức chính quy (<code>regexp</code>) để tìm dòng cũ. Nếu tìm thấy dòng khớp regex, nó sửa dòng đó; nếu dòng đã đúng nội dung, nó giữ nguyên và báo <code>changed=false</code> (Idempotent 100%), hỗ trợ <code>backup=yes</code> và <code>--diff</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Cho rằng hai cách làm là tương đương nhau.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết <code>lineinfile</code> tốt hơn nhưng không giải thích được cơ chế regex.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> So sánh chính xác trên 3 khía cạnh: Cơ chế thực thi, Idempotency, Khả năng sao lưu.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Trình bày xuất sắc ví dụ minh họa và kết luận chuẩn mực DevOps.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu trong file có 3 dòng giống nhau sẵn từ trước, <code>lineinfile</code> với <code>regexp</code> sẽ xử lý thế nào? <i>(Mặc định <code>lineinfile</code> sẽ sửa dòng cuối cùng khớp regex, các dòng trên giữ nguyên trừ khi kết hợp regex toàn cục.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q11</span>
-    <span class="qa-question-text">Khi gõ lệnh ansible-playbook --check --diff site.yml ở lượt chạy Lần thứ hai, kết quả hiển thị trên terminal sẽ ra sao nếu Playbook chuẩn Idempotent?</span>
+    <span class="qa-question-text">Trong mô hình CI/CD Pipeline (GitLab CI/GitHub Actions), bước Idempotency Test được tự động hóa bằng công cụ nào và cấu hình ra sao?</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Kết quả hiển thị bảng <code>PLAY RECAP</code> với chỉ số <code>changed=0</code>, và <b>KHÔNG HIỂN THỊ BẤT KỲ DÒNG DIFF NÀO</b> (không có dòng xanh <code>+</code> hay dòng đỏ <code>-</code>). Điều này chứng minh 100% rằng không có bất kỳ dự báo thay đổi mạo danh nào trên máy đích.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết kết quả hiển thị của <code>--check --diff</code> ở lượt chạy 2.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>changed=0</code> nhưng không giải thích được màn hình diff trống.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cả chỉ số RECAP <code>changed=0</code> và màn hình diff không xuất hiện thay đổi.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + chỉ ra ý nghĩa của việc rà soát diff trống trước khi nghiệm thu kịch bản.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu màn hình diff Lần 2 hiển thị <code>- PermitRootLogin yes</code> và <code>+ PermitRootLogin no</code>, điều đó có nghĩa là gì? <i>(Có nghĩa là task vẫn đang đòi sửa đổi file ở Lần 2, Playbook chưa đạt tính Idempotency.)</i>
+    <div><b>Đáp án chuẩn:</b> Trong CI/CD, bước kiểm thử tính bất biến thường được thực hiện qua công cụ <b>Molecule</b> (với Test scenario mặc định có bước `idempotence`) hoặc viết bash script trong CI stage: chạy <code>ansible-playbook site.yml</code> lần 1, sau đó chạy lại lần 2 và pipe output vào <code>grep -q "changed=0.*failed=0"</code>. Nếu không tìm thấy chuỗi này, script trả về exit code 1 làm fail pipeline ngay lập tức.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết cách tự động hóa kiểm thử Idempotency trong CI/CD.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nêu được chạy script bash nhưng không rõ logic kiểm tra regex.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng quy trình kiểm thử bash script hoặc nêu tên framework Molecule.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Phân tích xuất sắc cả 2 phương án: bash automation script và Molecule test matrix.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Tại sao Molecule lại là tiêu chuẩn kiểm thử hàng đầu cho Ansible Roles? <i>(Vì Molecule tự động dựng container/VM cô lập, áp playbook, kiểm tra idempotence, chạy unit test Testinfra rồi tự hủy container sau khi xong.)</i></div>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q12</span>
-    <span class="qa-question-text">Tóm tắt 5 Nguyên tắc Vàng để đảm bảo mọi Playbook Ansible do bạn viết ra đều đạt tính Idempotency tuyệt đối 100%.</span>
+    <span class="qa-question-text">Có trường hợp nào trong thực tế mà một Task bắt buộc phải Non-idempotent không? Nếu có, hãy nêu ví dụ và cách quản trị an toàn.</span>
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
-    1. <b>Nguyên tắc 1:</b> Luôn ưu tiên 100% Module tiêu chuẩn (<code>package</code>, <code>service</code>, <code>file</code>, <code>copy</code>, <code>lineinfile</code>, <code>user</code>, <code>cron</code>).<br>
-    2. <b>Nguyên tắc 2:</b> Khi buộc phải dùng <code>command</code>/<code>shell</code>, bắt buộc bổ sung thuộc tính <code>creates</code> hoặc <code>removes</code>.<br>
-    3. <b>Nguyên tắc 3:</b> Sử dụng <code>changed_when: false</code> cho các task chỉ đọc/truy vấn dữ liệu (<code>uname</code>, <code>cat</code>, <code>stat</code>).<br>
-    4. <b>Nguyên tắc 4:</b> Bắt buộc thực thi Phép thử Lượt chạy Lần hai (Second-run test) đạt chỉ số <code>changed=0</code> trong RECAP.<br>
-    5. <b>Nguyên tắc 5:</b> Tuyệt đối không dùng <code>changed_when: false</code> mạo danh; luôn dùng <code>docker exec</code> đối soát sự thật máy đích.<br><br>
-    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các nguyên tắc.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 nguyên tắc chung chung.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Nguyên tắc Vàng chính xác.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 nguyên tắc + khẳng định thái độ làm việc chuẩn mực của một DevOps Engineer chuyên nghiệp.</div>
-    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Trong 5 nguyên tắc trên, nguyên tắc nào đóng vai trò là "thước đo định lượng" để nghiệm thu kịch bản? <i>(Nguyên tắc 4: Phép thử Lượt chạy Lần hai đạt changed=0.)</i>
+    <div><b>Đáp án chuẩn:</b> Có. Một số tác vụ đặc thù mang tính thời điểm bắt buộc phải non-idempotent: (1) Tác vụ tạo bản sao lưu snapshot cơ sở dữ liệu trước khi nâng cấp (mỗi lần chạy đều phải sinh file backup mới có timestamp), (2) Tác vụ gửi thông báo tin nhắn Webhook tới Slack/Telegram khi deploy. Quản trị an toàn: tách các task này ra thành Playbook riêng biệt chuyên dụng (Ad-hoc Maintenance Playbook) hoặc gắn thẻ <code>tags: [never, backup]</code> để không bị kích hoạt tự động trong luồng cấu hình định kỳ.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Cho rằng 100% mọi tác vụ trên đời đều phải Idempotent mà không thấy các ngoại lệ.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nêu được ví dụ backup nhưng không đưa ra được giải pháp quản trị an toàn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng 2 ví dụ thực tế + giải pháp tách playbook/dùng tags.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Phân tích tư duy kiến trúc sâu sắc về phân tách giữa State Management (Bất biến) và Event-driven Actions (Theo sự kiện).</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Cấu hình <code>tags: ['never', 'notify']</code> có ý nghĩa gì trong Ansible? <i>(Task này sẽ không bao giờ được chạy khi thực thi Playbook thông thường, chỉ chạy khi người dùng chỉ định rõ <code>--tags notify</code> trên CLI.)</i></div>
   </div>
 </details>
 
 ---
 
-## V3. Câu chốt để nói khi phỏng vấn
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-Khi nhà tuyển dụng phỏng vấn về tư duy kiểm soát Idempotency trong Ansible, học viên hãy đưa ra câu chốt tự tin sau:
+### 5 Điều Cốt Lõi Cần Ghi Nhớ:
+1. **Idempotency là tiêu chuẩn cốt tử:** Playbook chạy một lần hay nhiều lần thì trạng thái hệ thống vẫn phải bất biến và an toàn.
+2. **Triệt tiêu lệnh thô:** Thay thế toàn bộ module `command`/`shell` bằng các module chuyên dụng (`package`, `service`, `file`, `lineinfile`).
+3. **Chế ngự lệnh nhị phân ngoài:** Luôn khai báo `creates:`, `removes:` hoặc `changed_when:` cho các binary bắt buộc phải gọi ngoài.
+4. **Phép thử Lượt chạy Lần 2:** Lượt chạy thứ hai của Playbook bắt buộc phải đạt `changed=0` trên bảng `PLAY RECAP`.
+5. **Cấm tuyệt đối ép trạng thái mạo danh:** Không dùng `changed_when: false` để che giấu các thay đổi dữ liệu thật, luôn đối soát hiện vật qua `docker exec`.
 
-> **"Tôi coi Idempotency là linh hồn định nghĩa giá trị của Quản trị Cấu hình. Trong mọi kịch bản Ansible, tôi tuân thủ nghiêm ngặt nguyên tắc ưu tiên các module tiêu chuẩn, sử dụng `creates`/`removes` để kiểm soát các lệnh shell thô, và dùng `changed_when: false` cho các tác vụ truy vấn Read-Only. Tiêu chuẩn nghiệm thu duy nhất của tôi là Phép thử Lượt chạy Lần thứ hai bắt buộc phải đạt chỉ số `changed=0` trong `PLAY RECAP`. Tôi tuyệt đối nói không với hành vi ép trạng thái mạo danh và luôn dùng `docker exec` hoặc truy vấn hệ thống độc lập để đối soát sự thật thực tế trên máy đích."**
-
----
-
-## V4. Bảng tổng hợp điểm vấn đáp
-
-| Học viên | Câu 1–4 (Tủ) | Câu 5–9 (Nền) | Câu 10 (Chủ chốt) | Câu 11–12 (Phân loại) | Điểm tổng | Xếp loại |
-|---|---|---|---|---|---|---|
-| Đăng Văn I | 3 / 3 / 3 / 3 | 3 / 3 / 3 / 3 / 2 | 3 | 3 / 3 | 35 / 36 | Xuất sắc |
-| Bùi Thị K | 2 / 2 / 1 / 2 | 2 / 1 / 2 / 2 / 1 | 1 (Dính trần điểm 1) | 1 / 1 | 16 / 36 (Khóa trần 1) | Trung bình |
-
----
-
-## V5. BTVN 4 — Ba câu chuẩn bị cho Buổi 07
-
-Để chuẩn bị tốt nhất cho **Buổi 07: Variables và Thứ tự Ưu tiên (Variables Precedence)**, học viên làm 3 câu hỏi nghiên cứu trước sau:
-
-1. **Nghiên cứu trước 1:** Biến trong Ansible có thể được định nghĩa ở những vị trí nào (Playbook vars, Inventory vars, Extra vars, Role defaults)?
-2. **Nghiên cứu trước 2:** Trong 22 tầng ưu tiên biến của Ansible, tầng nạp biến nào có quyền lực cao nhất (thắng tất cả các tầng khác)?
-3. **Nghiên cứu trước 3:** Cờ CLI `-e` (hoặc `--extra-vars`) được sử dụng như thế nào khi muốn ghi đè giá trị biến ngay tại thời điểm thực thi Playbook?
+```mermaid
+mindmap
+  root((Idempotency Mastery))
+    Core Philosophy
+      Declarative State Model
+      No Side-effects
+      f(f(x)) = f(x)
+    Task States
+      OK: Hệ thống đã chuẩn
+      CHANGED: Có can thiệp đĩa
+      FAILED: Ngắt bảo vệ an toàn
+    Engineering Techniques
+      creates & removes: Inode check
+      changed_when: Precise logic
+      Read-only changed_when: false
+      lineinfile regexp replacement
+    Enterprise Verification
+      Second-run test changed=0
+      docker exec real truth
+      CI/CD automated gating
+```
 
 > [!TIP]
-> **Khám phá bài học tiếp theo:** [Bài 07: Variables và Thứ Tự Ưu Tiên (Variable Precedence 22 Tầng) Trong Ansible](ansible-07-07-variables-precedence.html)
+> **BÀI HỌC TIẾP THEO:** [Bài 07: Làm Chủ Biến & Thứ Tự Ưu Tiên (Variable Precedence 22 Tầng) Trong Ansible](ansible-07-07-variables-precedence.html)
 {% endraw %}
-

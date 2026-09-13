@@ -32,616 +32,232 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
 
-> **Ansible là push-based, agentless, và idempotent: ta khai báo trạng thái muốn có, Ansible đẩy qua SSH
-> lên nhiều máy cùng lúc — và chạy lại phải không đổi gì.**
+Ansible là công cụ quản trị cấu hình (**Configuration Management**) và tự động hóa hạ tầng hoạt động theo triết lý **Push-Based**, **Agentless**, và **Idempotent**. Bạn chỉ cần khai báo trạng thái mong muốn cuối cùng (*Desired State*), Ansible Engine sẽ chủ động đẩy cấu hình qua giao thức SSH tới các máy đích phân tán và tự động hội tụ trạng thái mà không để lại tiến trình ngầm (Daemon).
 
-Chủ đề xuyên khoá (I-10), gieo hạt từ buổi này:
+```mermaid
+flowchart TD
+    subgraph Control["1. CONTROL NODE (MÁY ĐIỀU KHIỂN)"]
+        INV["📄 Inventory (Host List / Groups)"]
+        CFG["⚙️ ansible.cfg & Playbook YAML"]
+        ENG["🚀 Ansible Engine (Python 3)"]
+    end
 
-> **`PLAY RECAP` báo `ok`/`changed=0` KHÔNG đảm bảo máy đích đúng trạng thái. Một playbook chạy lần hai
-> vẫn `changed` thì KHÔNG phải config management thật.** Buổi này ta chạy playbook **hai lần** và kiểm
-> **trên máy đích** bằng `docker exec`, không tin recap.
+    subgraph Transport["2. GIAO THỨC TRUYỀN TẢI"]
+        SSH["🔒 Secure Shell (SSH / OpenSSH Port 22)"]
+    end
 
+    subgraph Targets["3. MANAGED NODES (MÁY ĐÍCH - AGENTLESS)"]
+        T1["🖥️ Target 1: Web Server<br/>(Python 3 + sshd)"]
+        T2["🖥️ Target 2: DB Server<br/>(Python 3 + sshd)"]
+        T3["🖥️ Target 3: App Server<br/>(Python 3 + sshd)"]
+    end
 
+    INV --> ENG
+    CFG --> ENG
+    ENG -->|"SSH Push Module + Arguments"| SSH
+    SSH -->|"Thực thi mã tạm & Thu hồi"| T1
+    SSH -->|"Thực thi mã tạm & Thu hồi"| T2
+    SSH -->|"Thực thi mã tạm & Thu hồi"| T3
 
-
-
-
-
-
-
-| Tiếng Việt | Tiếng Anh / từ khoá + FQCN (giữ nguyên) |
-|---|---|
-| Quản lý cấu hình | configuration management |
-| Đẩy (điều khiển từ trung tâm) | push-based |
-| Kéo (agent tự lấy) | pull-based |
-| Không cần agent | agentless |
-| Bất biến (chạy lại không đổi) | idempotent / idempotency |
-| Máy điều khiển | control node |
-| Máy bị quản | managed node |
-| Danh sách máy | `inventory` |
-| Lệnh chạy nhanh một lần | ad-hoc command |
-| Kịch bản khai báo | `playbook` |
-| Vở diễn (một nhóm task cho một nhóm host) | `play` |
-| Việc (một module + tham số) | `task` |
-| Mô-đun | `module` (ví dụ `ansible.builtin.package`) |
-| Sự việc thu từ máy đích | `facts` |
-| Báo cáo cuối lượt chạy | `PLAY RECAP` |
-| Leo quyền | `become` |
-| Tên đầy đủ của module | FQCN (fully qualified collection name) |
-
-
-
-**Mô hình 1 — "Người quản đốc gọi điện, không cài tai nghe vào từng thợ".** Push + agentless: control node
-mở SSH tới từng máy, đẩy lệnh, đóng kết nối. Máy đích **không** cần cài phần mềm Ansible (chỉ cần Python +
-sshd). Trái ngược Puppet/Chef truyền thống: máy đích chạy agent tự kéo cấu hình về (pull).
-
-**Mô hình 2 — "Chạy lần hai là bài kiểm tra thật".** Idempotency là linh hồn của config management: mô tả
-trạng thái muốn (gói `nginx` phải *có*), Ansible chỉ thay khi khác. Lần một có thể `changed`; **lần hai
-phải `changed=0`**. Nếu lần hai vẫn `changed`, hoặc dùng `command`/`shell` không idempotent, hoặc có lỗi
-thiết kế. "Chạy lần hai" là phép thử nhanh nhất để biết playbook đúng.
-
-**Mô hình 3 — "Recap là lời khai của Ansible, không phải sự thật của máy".** `PLAY RECAP` chỉ tổng hợp
-điều **module báo cáo**. `ignore_errors` giấu lỗi, `changed_when: false` che thay đổi, nhầm inventory
-chạy sai host — recap vẫn xanh. Muốn biết máy đúng chưa, hỏi **máy đích**: `docker exec ... systemctl
-is-active`, `cat` file cấu hình.
-
-### 1.1. Ba tính chất cốt lõi của Ansible
-
-**Nguyên lý cốt lõi:** Ansible **push-based**: control node chủ động đẩy cấu hình tới managed node qua SSH tại thời
-điểm ta chạy — không có tiến trình nền trên máy đích chờ kéo về.
-
-**Giải thích cơ chế ngầm:** Kết nối do control node khởi tạo; nó gom module + tham số, chuyển lên máy đích qua SSH, chạy,
-lấy kết quả, rồi đóng. Ưu điểm: kiểm soát thời điểm chính xác (chạy khi ta muốn), dễ audit. Đánh đổi: máy
-đích phải bật SSH và với tới được từ control node.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Nếu control node không SSH tới được máy đích, `ansible all -m ansible.builtin.ping`
-in `UNREACHABLE! => ... Failed to connect to the host via ssh`. Đây là lỗi số một buổi đầu — kiểm SSH key
-và inventory trước khi đổ lỗi cho Ansible.
-
-**Minh hoạ.**
-```bash
-ansible -i inventory.ini all -m ansible.builtin.ping
-# target1 | SUCCESS => { "ping": "pong" }   <- control node đẩy module ping qua SSH, chạy, trả kết quả
+    style Control fill:none,stroke:#6366f1,stroke-width:1.5px
+    style Transport fill:none,stroke:#3b82f6,stroke-width:1.5px
+    style Targets fill:none,stroke:#10b981,stroke-width:1.5px
+    style ENG fill:none,stroke:#6366f1,stroke-width:2px
+    style SSH fill:none,stroke:#0ea5e9,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:1.5px
+    style T2 fill:none,stroke:#10b981,stroke-width:1.5px
+    style T3 fill:none,stroke:#10b981,stroke-width:1.5px
 ```
 
-**Nguyên lý cốt lõi:** Ansible **agentless**: managed node chỉ cần **Python + sshd**, không cài phần mềm Ansible —
-nên triển khai nhanh và không có agent để bảo trì/vá.
+### 1.1. Ba Tính Chất Cốt Lõi: Push-Based, Agentless & Idempotency
 
-**Giải thích cơ chế ngầm:** Ansible chuyển module (mã Python) lên máy đích qua SSH, chạy bằng Python có sẵn, rồi xoá. Không
-daemon thường trú. So với mô hình agent (Puppet/Chef cổ điển): không phải cài/nâng cấp/canh agent trên
-hàng trăm máy — giảm bề mặt vận hành và bảo mật.
+* **Mô hình Push-Based (Chủ động đẩy):** Control node chủ động khởi tạo phiên SSH đẩy module + tham số tới từng target node tại thời điểm chạy. Không cần cài đặt agent thường trú, dễ dàng kiểm soát thời điểm và kiểm toán bảo mật.
+* **Mô hình Agentless (Không agent):** Máy đích chỉ cần môi trường **Python 3 + sshd**. Ansible Engine đẩy đoạn mã Python ngắn hạn lên thư mục tạm `~/.ansible/tmp/`, thực thi tác vụ, thu thập kết quả JSON và tự động xóa sạch file tạm.
+* **Nguyên lý Bất biến Idempotency:** Chạy Playbook lần đầu tiên sẽ đưa hệ thống về trạng thái mong muốn (`changed=X`). Khi chạy lại lần hai trên hệ thống đã chuẩn, Ansible đọc trạng thái thực tế và không thực hiện bất kỳ thay đổi nào, cam kết kết quả **`changed=0` tuyệt đối**.
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Máy đích thiếu Python: task báo lỗi kiểu `/usr/bin/python: not found` hoặc
-`The module failed to execute correctly`. Sửa bằng cách chỉ `ansible_python_interpreter=/usr/bin/python3`
-trong inventory.
+---
 
-**Minh hoạ.**
+### 1.2. Thuật Ngữ Cốt Lõi Trong Hệ Sinh Thái Ansible
+
+| Thuật Ngữ Tiếng Việt | Thuật Ngữ Kỹ Thuật (FQCN) | Định Nghĩa & Phạm Vi Sử Dụng |
+|---|---|---|
+| **Quản lý cấu hình** | `Configuration Management` | Tự động hóa thiết lập phần mềm và duy trì trạng thái máy chủ |
+| **Đẩy cấu hình** | `Push-based` | Control node chủ động gửi lệnh qua SSH |
+| **Không cần agent** | `Agentless` | Managed node chỉ cần Python 3 và OpenSSH |
+| **Bất biến** | `Idempotent / Idempotency` | Chạy lại nhiều lần không làm thay đổi trạng thái đã chuẩn |
+| **Máy điều khiển** | `Control Node` | Máy tính Linux cài đặt Ansible CLI và lưu trữ Playbooks |
+| **Máy bị quản** | `Managed Node (Target)` | Máy chủ nhận cấu hình, không cần cài Ansible Engine |
+| **Danh sách máy** | `Inventory` | Tệp INI / YAML định nghĩa danh sách IP, host và nhóm máy |
+| **Lệnh tức thì** | `Ad-hoc Command` | Thực thi một module đơn lẻ trên CLI không cần playbook |
+| **Kịch bản tự động hóa** | `Playbook` | Tệp YAML chứa danh sách các Play và Tasks tuần tự |
+| **Mô-đun chức năng** | `Module (FQCN)` | Đơn vị thực thi độc lập (ví dụ: `ansible.builtin.package`) |
+| **Dữ liệu thực tế** | `Facts` | Thông tin phần cứng, OS do `setup` module thu thập |
+| **Báo cáo tổng kết** | `PLAY RECAP` | Bản ghi trạng thái `ok`, `changed`, `unreachable`, `failed` |
+
+---
+
+## 2. Bảng So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
+
+Dưới đây là ma trận so sánh chi tiết giữa **Ansible**, **Puppet**, **Chef** và **Terraform** dựa trên 10 tiêu chí kiến trúc:
+
+| Tiêu Chí Kỹ Thuật | Ansible (Red Hat) | Puppet | Chef | HashiCorp Terraform |
+| :--- | :--- | :--- | :--- | :--- |
+| **Mô Hình Giao Tiếp** | **Push-Based** (Qua SSH/WinRM) | Pull-Based (Agent kéo định kỳ) | Pull-Based (Chef-Client daemon) | Push-Based (Gọi Cloud APIs) |
+| **Yêu Cầu Cài Đặt Target** | **Agentless** (Chỉ cần Python + SSH) | Cần Puppet Agent | Cần Chef Client / Ruby | Agentless (Gọi Cloud API Endpoint) |
+| **Ngôn Ngữ Khai Báo** | **YAML** (Human Readable) | Puppet DSL / Ruby | Ruby DSL | **HCL** (HashiCorp Config Lang) |
+| **Quản Trị Trạng Thái (State)**| **Stateless** (Không có file State) | Central Master Catalog | Chef Server Node Object | **Explicit State File** (`.tfstate`) |
+| **Thời Điểm Hội Tụ** | Chạy theo nhu cầu (On-demand / CI-CD) | Tự động sau mỗi 30 phút | Tự động sau mỗi 30 phút | Chạy theo nhu cầu (`terraform apply`) |
+| **Cơ Chế Drift Detection** | Báo cáo qua `--check --diff` | Master tự phát hiện và phục hồi | Client tự kiểm tra và sửa | `terraform plan -refresh-only` |
+| **Độ Phức Tạp Triển Khai** | **Rất thấp** (Cài đặt trong 2 phút) | Cao (Cần Puppet Master & PKI) | Cao (Cần Chef Automate Server) | **Rất thấp** (1 file binary duy nhất) |
+| **Bảo Trì & Vá Lỗ Hổng** | Không tốn công bảo trì agent | Phải nâng cấp agent định kỳ | Phải vá lỗi Chef Client định kỳ | Không có agent |
+| **Khả Năng Mở Rộng** | Forks song song + AWX Cluster | Rất tốt cho Fleet hàng ngàn node | Rất tốt cho Fleet lớn | Rất tốt cho quản trị hạ tầng Cloud |
+| **Mục Tiêu Tối Thượng** | **Cấu hình OS & Cài Đặt App** | Quản lý cấu hình máy chủ lớn | Quản lý cấu hình hạ tầng | **Khởi tạo tài nguyên Hạ Tầng (IaC)** |
+
+> [!IMPORTANT]
+> **QUY TẮC PHỐI HỢP VÀNG TRONG DOANH NGHIỆP:**
+> Không có công cụ "vạn năng". Kiến trúc hiện đại sử dụng **Terraform** để khởi tạo hạ tầng nền móng (VPC, Subnet, VMs, Kubernetes Cluster, Database), sau đó bàn giao IP cho **Ansible** để tự động cấu hình bên trong hệ điều hành (User, SSH, Firewalld, Nginx, Systemd services).
+
+---
+
+## 3. Kiến Trúc Triển Khai Chuẩn Production (Playbook Breakdown)
+
+Dưới đây là kịch bản Playbook khởi tạo Web Server chuẩn hóa với module FQCN, hỗ trợ phân nhánh đa hệ điều hành và đảm bảo tính Idempotency 100%:
+
 ```ini
-# inventory.ini — không cần cài gì trên target ngoài python3 + sshd
+# ==============================================================================
+# File: inventory.ini - Quản trị danh sách máy đích và biến kết nối
+# ==============================================================================
 [web]
 target1 ansible_host=172.20.0.2 ansible_user=ansible
+target2 ansible_host=172.20.0.3 ansible_user=ansible
+
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 ```
 
-**Nguyên lý cốt lõi:** **Idempotency** là tính chất định nghĩa config management: chạy playbook lần hai trên máy đã
-đúng trạng thái phải in **`changed=0`** — mô tả *trạng thái muốn*, không phải *lệnh cần chạy*.
-
-**Giải thích cơ chế ngầm:** Module chuyên (package/service/copy/lineinfile) đọc trạng thái hiện tại rồi chỉ thay khi lệch
-mong muốn. Nhờ đó chạy lại an toàn: không cài lại gói đã có, không ghi đè file đã đúng. Đây là điều làm
-Ansible khác một script bash chạy mù.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> `ansible-playbook site.yml` lần hai in `changed=0` ở dòng recap là ĐẠT. Nếu một
-task vẫn `changed` mỗi lần dù không ai đổi máy → task đó không idempotent (thường là `command`/`shell`),
-cần sửa (QT 5.1).
-
-**Minh hoạ.**
-```bash
-ansible-playbook site.yml            # lần 1: ok=3 changed=2
-ansible-playbook site.yml            # lần 2 PHẢI: ok=3 changed=0   <- idempotent
-```
-
-### 1.2. Module, recap, và chủ đề "trông có vẻ xong"
-
-**Nguyên lý cốt lõi:** Module `ansible.builtin.command`/`shell` **không có khái niệm trạng thái** nên **luôn báo
-`changed`** — ưu tiên module chuyên (tự idempotent); nếu buộc dùng shell, thêm `creates`/`removes`/
-`changed_when`.
-
-**Giải thích cơ chế ngầm:** `command` chỉ chạy lệnh và không biết "đã đúng chưa", nên mỗi lần đều `changed`. Module chuyên
-như `package` đọc danh sách gói rồi chỉ cài khi thiếu. Một playbook đầy `shell` là một script bash trá
-hình — mất idempotency, mất giá trị Ansible.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy lần hai, `PLAY RECAP` vẫn `changed=1` ở task `shell` dù máy không cần đổi.
-`ansible-playbook --check` cũng báo `changed` mỗi lần với `shell` không có `changed_when`.
-
-**Minh hoạ.**
 ```yaml
-- name: Tạo thư mục (idempotent nhờ module file, KHÔNG dùng shell mkdir)
-  ansible.builtin.file:
-    path: /opt/app
-    state: directory
-# Nếu buộc dùng command, chặn chạy lại bằng creates:
-- name: Chạy khởi tạo một lần
-  ansible.builtin.command: /opt/app/init.sh
-  args: { creates: /opt/app/.initialized }
-```
-
-**Nguyên lý cốt lõi:** `PLAY RECAP` là **lời khai của Ansible**, không phải sự thật của máy: `ignore_errors`,
-`changed_when: false`, hay nhầm inventory pattern đều làm recap "xanh mà sai" — phải kiểm **trên máy đích**.
-
-**Giải thích cơ chế ngầm:** Recap tổng hợp cái module *báo cáo* cho controller. `ignore_errors: true` biến task đỏ thành
-"tiếp tục", `changed_when: false` ép một task luôn `ok`, và nếu pattern chọn sai host thì recap xanh trên
-host **khác** cái ta tưởng. Sự thật nằm ở máy đích.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Recap `ok=5 changed=0 failed=0` trông đẹp, nhưng `docker exec target1 systemctl
-is-active httpd` in `inactive` — dịch vụ chưa chạy. Đối chiếu recap với máy đích luôn.
-
-**Minh hoạ.**
-```bash
-ansible-playbook site.yml            # recap: ok=5 changed=2 failed=0  (Ansible NÓI vậy)
-docker exec ntkansible-target1 systemctl is-active httpd    # active  <- SỰ THẬT trên máy đích
-```
-
-### 1.3. Inventory và lệnh ad-hoc
-
-**Nguyên lý cốt lõi:** **Inventory** định nghĩa *máy nào bị quản và thuộc nhóm nào*; pattern (`all`, tên nhóm, `web:!db`)
-chọn tập host cho mỗi lần chạy — chọn sai pattern là chạy nhầm máy.
-
-**Giải thích cơ chế ngầm:** Ansible không tự biết máy đích; inventory (INI/YAML) liệt kê host + biến kết nối (host, user).
-Nhóm cho phép áp cấu hình theo vai trò. Pattern trên dòng lệnh/playbook quyết định host nào nhận task.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> `ansible-inventory -i inventory.ini --graph` in cây host/nhóm — nếu một host
-không xuất hiện, nó không bị quản. `ansible web --list-hosts` cho biết pattern `web` khớp đúng máy nào
-trước khi chạy thật.
-
-**Minh hoạ.**
-```bash
-ansible-inventory -i inventory.ini --graph
-# @all:
-#   |--@web:
-#   |  |--target1
-#   |  |--target2
-ansible web -i inventory.ini --list-hosts     # kiểm pattern TRƯỚC khi chạy task đổi trạng thái
-```
-
-**Nguyên lý cốt lõi:** **Ad-hoc command** chạy một module một lần không cần playbook — hợp cho việc nhanh (kiểm tra,
-cài một gói); playbook hợp cho việc lặp lại, có version.
-
-**Giải thích cơ chế ngầm:** Ad-hoc: `ansible <pattern> -m <module> -a "<args>"`. Nhanh nhưng không lưu lại, không version.
-Việc gì làm hơn một lần hoặc cần review thì đưa vào playbook (đưa vào git). Cả hai dùng cùng module và cùng
-tính idempotent.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Gõ ad-hoc để đổi cấu hình prod rồi không ai biết đã làm gì — mất vết. Việc lặp
-lại mà vẫn ad-hoc là dấu hiệu nên chuyển sang playbook.
-
-**Minh hoạ.**
-```bash
-ansible all -i inventory.ini -m ansible.builtin.package -a "name=htop state=present" --become
-ansible all -i inventory.ini -m ansible.builtin.service -a "name=chronyd state=started" --become
-```
-
-### 1.4. Ansible so với Puppet/Chef/Terraform
-
-**Nguyên lý cốt lõi:** Ansible khác **Puppet/Chef** ở mô hình đẩy/agent: Ansible push + agentless (điều khiển từ
-trung tâm, không agent); Puppet/Chef cổ điển pull + agent (máy đích chạy agent tự kéo cấu hình theo chu kỳ).
-
-**Giải thích cơ chế ngầm:** Push cho kiểm soát thời điểm và triển khai nhanh (không cài agent). Pull cho hội tụ liên tục
-(agent tự sửa drift theo chu kỳ) và mở rộng tới rất nhiều máy tốt hơn. Chọn theo bối cảnh: đội nhỏ/vừa,
-cần đơn giản → Ansible; hạm đội lớn cần hội tụ liên tục → mô hình agent có lợi thế.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Kỳ vọng Ansible tự sửa drift 24/7 như agent Puppet — sai. Ansible chỉ chạy khi
-ta gọi (hoặc qua AWX/scheduler). Muốn hội tụ định kỳ, phải lên lịch (cron/AWX), không tự có.
-
-**Minh hoạ.**
-```text
-Ansible : push, agentless, chạy khi gọi        -> đơn giản, nhanh triển khai
-Puppet  : pull, agent, hội tụ theo chu kỳ      -> hạm đội lớn, tự sửa drift định kỳ
-```
-
-**Nguyên lý cốt lõi:** Ansible khác **Terraform** ở mục đích: Ansible = **configuration management** (cấu hình bên
-trong máy đã có); Terraform = **provisioning** (tạo/huỷ hạ tầng, có state). Chúng bổ trợ, thường ghép.
-
-**Giải thích cơ chế ngầm:** Terraform giữ state, tính diff để tạo/huỷ tài nguyên cloud. Ansible không giữ state tập trung;
-mỗi lần đánh giá lại trạng thái máy qua module idempotent để cấu hình. Mẫu ghép chuẩn: Terraform dựng
-VM/network → xuất IP → Ansible dùng IP làm inventory cài phần mềm.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng Ansible để "tạo và quản vòng đời" 500 tài nguyên cloud (thay Terraform) —
-được nhưng đau, vì Ansible không có state/diff/plan. Dùng Terraform `provisioner` để cấu hình phần mềm
-(thay Ansible) — chống thiết kế, không idempotent.
-
-**Minh hoạ.**
-```text
-Terraform: aws_instance (tạo VM, có state, destroy được)
-Ansible:   ansible.builtin.package / service / template (cấu hình BÊN TRONG VM)
-Ghép:      terraform output -json | tạo inventory -> ansible-playbook cài phần mềm
-```
-
-### 1.5. Đưa vào việc thật (4 phút)
-
-| Phần | Nội dung |
-|---|---|
-| **Áp vào hạ tầng đang có làm gì trước** | Chưa đổi máy prod. Việc làm ngay: dựng lab controller+target, `ping`, viết playbook cài một gói vô hại, tập chạy lần hai. Với máy thật, luôn `--check --diff` trên một host trước. |
-| **Cái gì hỏng nếu chạy thẳng lên prod** | Task không idempotent chạy lại gây hại (restart lặp, ghi đè); nhầm inventory pattern đổi sai máy. Cách an toàn: `--limit <host>`, `--check`, chạy `serial` từng đợt. |
-| **Đo trước — đo sau** | Ghi 3 số: số host `changed` lần một; số host `changed` lần hai (phải 0); số task không idempotent phát hiện được. |
-| **Khi nào KHÔNG nên dùng** | Không dùng Ansible thay Terraform để quản vòng đời hàng trăm tài nguyên cloud; không dùng `shell` khi có module chuyên. |
-
-### 1.6. Bẫy hay gặp (2 phút)
-
-| Bẫy | Vì sao dính | Làm đúng là |
-|---|---|---|
-| Tin `PLAY RECAP` xanh là xong | Chỉ nhìn recap | Chạy lần hai + `docker exec` kiểm máy đích |
-| Không chạy lần hai | Nghĩ một lần là đủ | Idempotency chỉ chứng minh khi chạy lần hai |
-| Lạm dụng `command`/`shell` | Quen tư duy bash | Module chuyên; shell thì thêm `creates`/`changed_when` |
-| `UNREACHABLE` đổ lỗi Ansible | Thực ra là SSH/inventory | Kiểm SSH key, `--list-hosts`, `ansible_host` |
-| Nhầm inventory pattern | Không kiểm trước | `--list-hosts`/`--graph` trước khi chạy |
-| `ignore_errors: true` khắp nơi | Cho "qua bài" | Chỉ dùng có chủ đích; đọc lỗi thật |
-| Quên `--become` khi cần root | Task cài gói fail quyền | Thêm `become: true`/`--become` |
-| Không FQCN, module mơ hồ | Quen tên ngắn | Dùng `ansible.builtin.copy` rõ ràng |
-| Máy đích thiếu Python | Ảnh base tối giản | Chỉ `ansible_python_interpreter` |
-| Tab trong YAML | Copy nhầm | Chỉ dùng dấu cách để thụt lề |
-| Kỳ vọng Ansible tự sửa drift 24/7 | Nhầm với agent | Lên lịch chạy (cron/AWX) nếu cần định kỳ |
-| Đổi cấu hình prod bằng ad-hoc, mất vết | Tiện tay | Việc lặp lại → playbook vào git |
-
-### 1.7. Tóm tắt (3 phút)
-
-```mermaid
-graph LR
-  C["control node<br/>(khai báo trạng thái muốn)"] -->|"SSH push module"| T1["target1"]
-  C -->|"SSH"| T2["target2"]
-  T1 -. "docker exec: SỰ THẬT" .-> C
-  C -. "PLAY RECAP: lời khai" .-> DEV["học viên đối chiếu"]
-
-  style C fill:none
-  style T1 fill:none
-  style T2 fill:none
-  style DEV fill:none
-```
-
-**Năm điều phải nhớ:**
-1. Ansible = push + agentless: control node đẩy module qua SSH, máy đích chỉ cần Python+sshd.
-2. Idempotency là linh hồn: **chạy lần hai phải `changed=0`**.
-3. Module chuyên idempotent; `command`/`shell` thì không — thêm `creates`/`changed_when`.
-4. **`PLAY RECAP` là lời khai, không phải sự thật** — kiểm máy đích bằng `docker exec` (I-10).
-5. Ansible = configuration; Terraform = provisioning; Puppet/Chef = pull+agent. Ghép, không thay thế.
-
-### 1.8. Câu hỏi tự kiểm tra
-
-1. Push-based và agentless nghĩa là gì? Máy đích cần cài gì?
-2. Idempotency là gì? Bằng chứng cụ thể là gì?
-3. Vì sao `command`/`shell` không idempotent? Sửa thế nào?
-4. `PLAY RECAP` xanh có đảm bảo máy đúng không? Vì sao?
-5. Ba cách làm recap "xanh mà sai"?
-6. Inventory là gì? Lệnh nào kiểm pattern trước khi chạy?
-7. Ad-hoc khác playbook ở đâu, khi nào dùng cái nào?
-8. Ansible khác Puppet/Chef ở mô hình nào?
-9. Ansible khác Terraform ở mục đích nào? Ghép thế nào?
-10. `UNREACHABLE` thường do đâu, không phải do đâu?
-11. Vì sao nên dùng FQCN (`ansible.builtin.copy`)?
-12. Muốn kiểm dịch vụ chạy thật trên target, gõ lệnh gì?
-
-### Đáp án
-
-1. Push: control node chủ động đẩy cấu hình qua SSH khi ta chạy. Agentless: máy đích không cần agent Ansible, chỉ cần Python + sshd.
-2. Chạy lại trên máy đã đúng không đổi gì; bằng chứng: `changed=0` ở PLAY RECAP lần hai.
-3. Vì không có khái niệm trạng thái, chỉ chạy lệnh → luôn `changed`. Sửa: dùng module chuyên, hoặc thêm `creates`/`removes`/`changed_when`.
-4. Không. Recap chỉ tổng hợp cái module báo cáo; `ignore_errors`/`changed_when`/nhầm host làm nó xanh mà máy sai.
-5. `ignore_errors: true`, `changed_when: false`, nhầm inventory pattern chạy sai host.
-6. Danh sách máy + nhóm + biến kết nối. Kiểm: `ansible-inventory --graph`, `ansible <pattern> --list-hosts`.
-7. Ad-hoc chạy một module một lần, không lưu; playbook cho việc lặp lại/có version. Việc >1 lần hoặc cần review → playbook.
-8. Ansible push+agentless (chạy khi gọi); Puppet/Chef pull+agent (tự kéo theo chu kỳ).
-9. Ansible = configuration (cấu hình trong máy); Terraform = provisioning (tạo/huỷ hạ tầng, có state). Ghép: Terraform tạo máy → IP → Ansible cài phần mềm.
-10. Do SSH/key/inventory (`ansible_host`, user, kết nối); KHÔNG phải do module hay logic playbook.
-11. Rõ ràng module thuộc collection nào, tránh nhầm khi tên module trùng giữa các collection; ổn định khi bản đổi.
-12. `docker exec <target> systemctl is-active <service>` (kiểm máy đích, không tin recap).
-
-## §12. Tài liệu tham khảo
-
-- Ansible docs — *Getting started / Intro to playbooks / Modules*, đo trên `ansible-core` bản chốt ở
-  `labs/versions.env` (`ANSIBLE_CORE_VER`) và collection tương ứng.
-- *Ansible vs. other tools* (so sánh push/pull, agent).
-
-## Bảng đối soát thời lượng
-
-| Mục | Nội dung | Thời lượng |
-|---|---|---|
-| §0 | Khởi động, ôn tập, luận đề | 10' |
-| §1–§3 | Làm được gì, cần biết, thuật ngữ | 10' |
-| §4 | Ba tính chất cốt lõi (QT 4.1–4.3) | 9' |
-| §5 | Module, recap (QT 5.1–5.2) | 9' |
-| §6 | Inventory, ad-hoc (QT 6.1–6.2) | 9' |
-| §7 | So công cụ (QT 7.1–7.2) | 7' |
-| §8–§9 | Đưa vào việc thật, bẫy | 4' |
-| §10–§12 | Tóm tắt, tự kiểm, tài liệu | 2' |
-| **Tổng** | | **60'** |
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
-> [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên môi trường máy chủ Linux / Docker containers phân tán. Hãy đảm bảo bạn đã chuẩn bị Control Node cài đặt Ansible Core 2.15+ cùng các Managed Nodes đã cấu hình SSH Key Authentication.
-
-## Khối thực hành — 150 phút
-
-> Lab chạy trên **controller + target container SSH** (docker-compose), không tốn tiền. Nguyên tắc buổi
-> này: **không tin PLAY RECAP** — chạy playbook **hai lần** (idempotency) và kiểm **trên máy đích** bằng
-> `docker exec` (I-10).
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu | Tiêu chí (kiểm bằng lệnh) |
-|---|---|---|
-| TH1 | Dựng lab + inventory | `ansible all -m ping` mọi target SUCCESS |
-| TH2 | Chạy lệnh ad-hoc | `ansible all -m package -a "name=htop state=present"` OK |
-| TH3 | Viết playbook đầu tiên | `ansible-playbook site.yml` recap `failed=0` |
-| TH4 | Kiểm trạng thái **thật** máy đích | `docker exec target systemctl is-active` → `active` |
-| TH5 | Chứng minh idempotency | Chạy lần hai `changed=0` |
-| TH6 | Thấy `command`/`shell` không idempotent | Task shell vẫn `changed` lần hai → sửa bằng `creates` |
-| TH7 | Thấy "recap xanh mà sai" | `ignore_errors` giấu lỗi; máy đích sai dù recap xanh |
-| TH8 | Kiểm pattern inventory | `--list-hosts` khớp đúng máy |
-
-## L1. Điều kiện tiên quyết về môi trường
-
-| Kiểm tra | LỆNH | Kết quả kỳ vọng |
-|---|---|---|
-| ansible có | `ansible --version` | bản khớp `versions.env` |
-| docker có | `docker compose ps` | target1..N `Up` |
-| kết nối được | `ansible all -m ansible.builtin.ping` | mọi host `SUCCESS`/`pong` |
-| inventory đúng | `ansible-inventory --graph` | đúng group/host |
-| SSH key đã trao | `ssh ansible@<ip> true` | không hỏi mật khẩu |
-| jq có | `jq --version` | in phiên bản |
-| Python trên target | `ansible all -m ansible.builtin.setup -a 'filter=ansible_python_version'` | in bản Python |
-| Thư mục làm việc | `pwd` | thư mục lab buổi 01 |
-
-Chưa có target: `cd labs && make up && make key && make inventory && make ping`.
-
-## L2. Kiến trúc bài lab
-
-```mermaid
-graph LR
-  C["controller"] -->|"SSH đẩy module"| T1["target1 (sshd)"]
-  C -->|"SSH"| T2["target2 (sshd)"]
-  T1 -. "docker exec: SỰ THẬT" .-> DEV["học viên"]
-  C -. "PLAY RECAP: lời khai" .-> DEV
-
-  style C fill:none
-  style T1 fill:none
-  style T2 fill:none
-  style DEV fill:none
-```
-
-**Ba quyết định thiết kế:**
-1. **Target là container sshd** — nhẹ, dựng nhanh, đủ để dạy push/agentless và idempotency.
-2. **Kiểm bằng `docker exec`, không bằng recap** — tách "Ansible nói" khỏi "máy đích thật" (I-10).
-3. **Có bước cố ý tạo task không idempotent và bước `ignore_errors`** — hai cách trực quan nhất cho thấy
-   recap không đáng tin một mình.
-
-## L3. Bước 1 — Inventory và ad-hoc (25 phút)
-
-Tạo thư mục và inventory (hoặc dùng `make inventory` sinh sẵn):
-
-```bash
-mkdir -p ~/lab-ansible-01 && cd ~/lab-ansible-01
-cp ../ntkansible/labs/inventory.ini .   # đã sinh bởi make inventory
-ansible-inventory -i inventory.ini --graph
-```
-
-**CHECKPOINT 1 — `ping` tới mọi target SUCCESS.**
-```bash
-ansible -i inventory.ini all -m ansible.builtin.ping 2>&1 | tee ping-recap.txt | grep -q 'UNREACHABLE' \
-  && echo "LỖI (có host UNREACHABLE)" || echo ĐẠT
-```
-
-**CHECKPOINT 2 — ad-hoc cài gói (idempotent) chạy được.**
-```bash
-ansible -i inventory.ini all -m ansible.builtin.package -a "name=htop state=present" --become >/dev/null 2>&1 \
-  && echo ĐẠT || echo LỖI
-```
-
-**CHECKPOINT 3 — kiểm pattern inventory khớp đúng máy.**
-```bash
-ansible -i inventory.ini web --list-hosts | grep -q 'target1' && echo ĐẠT || echo LỖI
-```
-
-## L4. Bước 2 — Playbook đầu tiên (30 phút)
-
-`site.yml` — cài và bật một dịch vụ, dùng **module chuyên** (idempotent):
-
-```yaml
-- name: Buổi 01 — cấu hình web tối giản
+# ==============================================================================
+# File: site.yml - Playbook chuẩn hóa Idempotency cài đặt Web Server
+# ==============================================================================
+- name: Buổi 01 — Triển khai Web Server tối giản chuẩn Idempotency
   hosts: web
   become: true
+  gather_facts: true
+
   tasks:
-    - name: Cài gói web server
+    - name: 1. Cài đặt gói máy chủ Web tương thích đa nền tảng
       ansible.builtin.package:
         name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
         state: present
-    - name: Bật và khởi động dịch vụ
+
+    - name: 2. Kích hoạt và bật dịch vụ khởi động cùng hệ thống
       ansible.builtin.service:
         name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
         state: started
         enabled: true
-    - name: Đặt trang chủ
+
+    - name: 3. Khởi tạo trang chủ mặc định chuẩn kiểm toán
       ansible.builtin.copy:
-        content: "ntkansible buoi 01\n"
+        content: "ntkansible buoi 01 - Automation Verified\n"
         dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
 ```
 
-```bash
-ansible-playbook -i inventory.ini site.yml | tee run1.txt
-```
-
-**CHECKPOINT 4 — playbook chạy không lỗi.**
-```bash
-grep -qE 'failed=0' run1.txt && echo ĐẠT || echo "LỖI (có task failed)"
-```
-
-## L5. Bước 3 — Kiểm trạng thái THẬT, không tin recap (20 phút)
-
-```bash
-SVC=$(docker exec ntkansible-target1 sh -c '. /etc/os-release; [ "$ID_LIKE" = fedora -o "$ID" = rocky ] && echo httpd || echo apache2')
-docker exec ntkansible-target1 systemctl is-active "$SVC" | tee kiem-may-dich.txt
-docker exec ntkansible-target1 cat /var/www/html/index.html
-```
-
-**CHECKPOINT 5 — dịch vụ chạy THẬT trên target (không chỉ tin PLAY RECAP).**
-```bash
-grep -qx 'active' kiem-may-dich.txt && echo ĐẠT || echo "LỖI (recap xanh nhưng dịch vụ không chạy?)"
-```
-
-## L6. Bước 4 — Idempotency: chạy lần hai (20 phút)
-
-```bash
-ansible-playbook -i inventory.ini site.yml | tee run2.txt
-grep -E 'PLAY RECAP' -A3 run1.txt run2.txt > idempotency.txt
-```
-
-**CHECKPOINT 6 — idempotent: lần hai `changed=0`.**
-```bash
-tail -1 run2.txt; grep -qE 'changed=0.*failed=0' run2.txt && echo "ĐẠT (idempotent)" || echo "LỖI (chưa idempotent)"
-```
-
-## L7. Bước 5 — THỬ THÁCH: không idempotent và "recap xanh mà sai" (25 phút)
-
-**Phần A — `shell` không idempotent.** Thêm vào `site.yml` một task shell "xấu":
-
-```yaml
-    - name: (XẤU) tạo thư mục bằng shell — luôn changed
-      ansible.builtin.shell: mkdir -p /opt/app
-```
-```bash
-ansible-playbook -i inventory.ini site.yml | tee run3.txt
-```
-
-**CHECKPOINT 7 — chứng minh task `shell` KHÔNG idempotent (vẫn `changed`), rồi sửa bằng `creates`.**
-```bash
-grep -qE 'changed=[1-9]' run3.txt && echo "Thấy không idempotent (đúng như dự đoán)"
-# Sửa: thay bằng module file, hoặc thêm creates cho command
-sed -i 's#ansible.builtin.shell: mkdir -p /opt/app#ansible.builtin.file: { path: /opt/app, state: directory }#' site.yml
-ansible-playbook -i inventory.ini site.yml >/dev/null
-ansible-playbook -i inventory.ini site.yml | grep -qE 'changed=0' && echo "ĐẠT (đã idempotent sau khi sửa)" || echo LỖI
-```
-
-**Phần B — `ignore_errors` giấu lỗi (recap xanh mà máy sai).** Thêm task cố ý hỏng:
-
-```yaml
-    - name: (BẪY) task hỏng bị ignore_errors giấu
-      ansible.builtin.command: /bin/false
-      ignore_errors: true
-```
-```bash
-ansible-playbook -i inventory.ini site.yml | tee run4.txt
-```
-
-**CHECKPOINT 8 — recap `failed=0` NHƯNG task thực sự hỏng (bài học I-10).**
-```bash
-grep -qE 'failed=0' run4.txt && grep -qiE 'ignoring|fatal.*false' run4.txt \
-  && echo "ĐẠT (recap failed=0 mà có lỗi bị giấu — không tin recap một mình)" || echo "LỖI"
-```
-
-> Bài học: `failed=0` không nghĩa "mọi thứ ổn" nếu có `ignore_errors`. Chỉ dùng `ignore_errors` có chủ
-> đích và luôn kiểm máy đích. Gỡ hai task bẫy trước khi nộp.
-
-## L8. Nộp sản phẩm và dọn dẹp (10 phút)
-
-```bash
-# Gỡ task bẫy, giữ site.yml sạch
-cp site.yml site.yml.final
-# (tuỳ chọn) đưa target về sạch cho buổi sau:
-ansible -i inventory.ini all -m ansible.builtin.package -a "name=htop state=absent" --become >/dev/null 2>&1 || true
-```
-
-## L9. Xử lý sự cố thường gặp trong lab
-
-| Triệu chứng | Nguyên nhân | Cách khắc phục |
-|---|---|---|
-| `UNREACHABLE ... via ssh` | Chưa trao SSH key / sai `ansible_host` | `make key`; kiểm `ssh ansible@<ip> true` |
-| `/usr/bin/python: not found` | Target thiếu Python | Đặt `ansible_python_interpreter=/usr/bin/python3` |
-| `Missing sudo password` | Cần become mà user không NOPASSWD | Ảnh target cấu hình sudo NOPASSWD, hoặc `--ask-become-pass` |
-| Task `package` fail | Sai tên gói theo distro | Rẽ theo `ansible_os_family` (httpd vs apache2) |
-| Lần hai vẫn `changed` | Task `shell`/`command` không idempotent | Module chuyên hoặc `creates`/`changed_when` |
-| `FQCN` không tìm thấy | Collection chưa cài | `ansible-galaxy collection install ...` (buổi 16) |
-| Tab trong YAML | Copy nhầm | Dùng dấu cách; `yamllint site.yml` |
-| Nhầm host, recap xanh sai máy | Pattern sai | `--list-hosts` trước khi chạy |
-| `service` không start trong container | systemd trong container hạn chế | Dùng ảnh target hỗ trợ systemd, hoặc kiểm bằng process |
-| `ignore_errors` giấu lỗi thật | Đặt bừa | Bỏ; đọc lỗi; chỉ ignore có chủ đích |
-| `become` thiếu ở ad-hoc | Quên `--become` | Thêm `--become` |
-| `changed_when: false` che thay đổi | Copy từ mạng | Hiểu rõ trước khi dùng |
-| Recap đẹp nhưng dịch vụ inactive | Tin recap | `docker exec ... systemctl is-active` |
-| `docker exec` không thấy container | Sai tên | `docker ps` lấy đúng tên `ntkansible-target1` |
-
-## L10. Bài tập mở rộng
-
-- **BT1.** Thêm nhóm `db` vào inventory với một target; chạy task chỉ trên `web`, chứng minh `db` không đổi.
-- **BT2.** Viết ad-hoc thu facts: `ansible all -m setup -a 'filter=ansible_distribution*'`; đọc distro từng target.
-- **BT3.** Đổi `site.yml` dùng biến cho tên gói/dịch vụ (thay `if/else`), chạy lại, vẫn idempotent.
-- **BT4.** Cố ý tạo một task `command` không idempotent rồi làm nó idempotent bằng `creates`; nộp recap hai lần chạy.
-- **BT5.** Thêm `ignore_errors: true` cho một task hỏng; giải thích hai câu vì sao recap `failed=0` là nguy hiểm.
-- **BT6.** Dùng `--check --diff` chạy `site.yml`; giải thích check mode làm gì và giới hạn của nó.
-- **BT7.** Đo: thời gian chạy lần một vs lần hai (`time ansible-playbook ...`); giải thích.
-- **BT8.** Viết `so-sanh.md`: Ansible vs Puppet vs Terraform theo 3 trục (mô hình, agent, mục đích).
-
-## L11. Sản phẩm nộp và tiêu chí chấm điểm
-
-| Sản phẩm | Điểm | Tiêu chí |
-|---|---|---|
-| `inventory.ini` + `ping-recap.txt` | 15 | Mọi target SUCCESS |
-| `site.yml` (module chuyên, idempotent) | 25 | Không lỗi; dùng module chuyên; có become |
-| `idempotency.txt` (recap 2 lần) | 20 | Lần hai `changed=0` |
-| `kiem-may-dich.txt` (`docker exec`) | 20 | Dịch vụ `active` **thật** trên target |
-| 8 CHECKPOINT in ĐẠT | 20 | Tự chạy, dán ĐẠT (gồm ca không idempotent + ignore_errors) |
-
-**Điểm trừ:** dùng "PLAY RECAP xanh" làm bằng chứng thay vì chạy lần hai + `docker exec` → **trần điểm 1**.
-Nộp playbook không idempotent (lần hai vẫn `changed` không lý do) → **trần điểm 1**.
-
-## Bảng đối soát thời lượng
-
-| Bước | Nội dung | Thời lượng |
-|---|---|---|
-| L1 | Kiểm môi trường | 10' |
-| L3 | Inventory + ad-hoc | 25' |
-| L4 | Playbook đầu tiên | 30' |
-| L5 | Kiểm máy đích thật | 20' |
-| L6 | Idempotency lần hai | 20' |
-| L7 | Thử thách: không idempotent + ignore_errors | 25' |
-| L2/L9/L10 | Kiến trúc, sự cố, bài tập (đan xen) | 10' |
-| L8 | Nộp + dọn | 10' |
-| **Tổng** | | **150'** |
+### Phân Tích Kỹ Thuật Từng Dòng (Line-by-Line Breakdown):
+* <span class="badge badge--primary"><code>hosts: web</code></span>: Chỉ định Playbook chỉ thực thi trên nhóm máy chủ `web` được khai báo trong inventory.
+* <span class="badge badge--amber"><code>become: true</code></span>: Kích hoạt cơ chế leo quyền quản trị (Privilege Escalation) qua `sudo` để thực thi các tác vụ cài đặt gói hệ thống.
+* <span class="badge badge--emerald"><code>ansible.builtin.package</code></span>: Module đa nền tảng tự động nhận diện `apt` trên Ubuntu/Debian hoặc `dnf`/`yum` trên RHEL/Rocky Linux.
+* <span class="badge badge--cyan"><code>state: present</code></span>: Định nghĩa trạng thái mong muốn (Desired State) — chỉ cài đặt nếu gói chưa tồn tại, bỏ qua nếu đã có sẵn.
 
 ---
 
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
+## 4. Phân Tích Cạm Bẫy Thực Chiến: "PLAY RECAP Xanh" & Task Không Idempotent
 
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **DevOps Engineer**, **Site Reliability Engineer (SRE)** và **Cloud Automation Architect**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ xử lý sự cố hệ thống:
+### Tình Huống Sự Cố Thực Tế Tại Doanh Nghiệp:
+Vào lúc <span class="badge badge--rose">🕒 02:00 AM</span>, trong phiên bảo trì hệ thống, một kỹ sư tự động hóa đã thực thi một Playbook có chứa task dùng module `ansible.builtin.shell: mkdir -p /opt/app` kết hợp cờ `ignore_errors: true`. 
 
-Gọi ngẫu nhiên, học viên đứng trả lời. Chấm ngay thang **0–3**: `0` không trả lời · `1` nhớ từ khoá sai
-cơ chế · `2` đúng cơ chế · `3` đúng cơ chế **và** nêu lệnh/con số chứng minh. Câu 🔥 là câu tủ (≥2 phải
-đạt); câu ★★★ phân loại mạnh.
+Màn hình console hiển thị `PLAY RECAP` với toàn bộ màu xanh (`failed=0`). Kỹ sư an tâm báo cáo hoàn thành phiên bảo trì. Tuy nhiên, sáng hôm sau dịch vụ thanh toán chính không hoạt động do một lệnh cấu hình trước đó bị lỗi nhưng bị `ignore_errors` che giấu.
 
-**Hai lỗi làm trần điểm là 1:**
-- Dùng **"PLAY RECAP xanh"** làm bằng chứng thay vì chạy lần hai + `docker exec` kiểm máy đích.
-- Nộp/khẳng định một playbook **không idempotent** (chạy lần hai vẫn `changed` không lý do) là "đã xong".
+### Hậu Quả & Log Lỗi Thực Tế:
 
-## V2. Bộ câu hỏi — ĐÚNG 12 câu
+```diff
+PLAY [Buổi 01 — Cấu hình hệ thống] *************************************************
+
+TASK [Tạo thư mục ứng dụng bằng shell] **********************************************
++ changed: [target1]
+
+TASK [Cố ý lỗi nhưng bị ẩn] *********************************************************
+! fatal: [target1]: FAILED! => {"changed": true, "cmd": "/bin/false", "msg": "non-zero return code"}
+...ignoring
+
+PLAY RECAP *************************************************************************
+target1   : ok=3   changed=1   unreachable=0   failed=0   skipped=0   rescued=0   ignored=1
+! [CRITICAL OUTAGE] Dịch vụ không chạy thật trên target1 dù PLAY RECAP báo failed=0!
+```
+
+```mermaid
+flowchart TD
+    A["🕒 02:00 AM: Chạy Playbook chứa task shell + ignore_errors"] --> B["⚠️ Task /bin/false bị lỗi nhưng ignore_errors: true bỏ qua"]
+    B --> C["📋 PLAY RECAP báo failed=0 (Xanh giả tạo)"]
+    C --> D["❌ Kỹ sư không kiểm tra trực tiếp máy đích bằng docker exec"]
+    D --> E["💥 HẬU QUẢ: Sáng hôm sau dịch vụ Production bị dừng hoạt động!"]
+
+    style A fill:none,stroke:#f43f5e,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#d97706,stroke-width:2px
+    style D fill:none,stroke:#64748b,stroke-width:1.5px
+    style E fill:none,stroke:#dc2626,stroke-width:2.5px
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao dịch vụ thanh toán không hoạt động?** $\rightarrow$ Vì tệp cấu hình quan trọng chưa được ghi đĩa do task trước đó bị dừng.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao kỹ sư không biết task bị lỗi?** $\rightarrow$ Vì trong Playbook cấu hình thuộc tính `ignore_errors: true` khiến task lỗi vẫn tiếp tục.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao bảng tổng kết vẫn hiển thị màu xanh?** $\rightarrow$ Vì `PLAY RECAP` chỉ đếm `failed` đối với các tác vụ không được gắn cờ ignore.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao không phát hiện lỗi trong quá trình kiểm thử?** $\rightarrow$ Do kỹ sư chỉ tin vào kết quả Play Recap mà không kiểm tra trạng thái thực tế bằng `systemctl is-active`.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
+   * <span class="badge badge--rose">Cấm Lạm Dụng ignore_errors</span> **Loại bỏ `ignore_errors: true` vô căn cứ:** Chỉ dùng khi có chủ đích và bắt buộc xử lý ngoại lệ ở task sau.
+   * <span class="badge badge--emerald">Idempotency Lần 2</span> **Bắt buộc chạy lần 2:** Mọi kịch bản phải đạt `changed=0` ở lượt chạy thứ 2.
+   * <span class="badge badge--cyan">Kiểm Tra Máy Đích</span> **Đối soát sự thật thực tế:** Luôn kiểm tra trực tiếp trên máy đích qua lệnh `docker exec target systemctl is-active <service>`.
+
+---
+
+## 5. Hands-on Lab: Khởi Tạo & Vận Hành Ansible Automation (8 Bước)
+
+| Bước | Lệnh CLI | Mục Đích Thực Thi |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `ansible --version && ansible-inventory -i inventory.ini --graph` | Kiểm tra phiên bản Ansible và cấu trúc phân nhóm Inventory |
+| <span class="badge badge--cyan">02</span> | `ansible -i inventory.ini all -m ansible.builtin.ping` | Kiểm tra thông suốt kết nối SSH và môi trường Python trên các node |
+| <span class="badge badge--indigo">03</span> | `ansible -i inventory.ini all -m ansible.builtin.package -a "name=htop state=present" --become` | Thực thi lệnh Ad-hoc cài đặt gói phần mềm |
+| <span class="badge badge--amber">04</span> | `ansible -i inventory.ini web --list-hosts` | Xác thực danh sách máy đích khớp với pattern trước khi chạy |
+| <span class="badge badge--emerald">05</span> | `ansible-playbook -i inventory.ini site.yml` | Thực thi Playbook lượt 1 để cấu hình Web Server |
+| <span class="badge badge--primary">06</span> | `docker exec ntkansible-target1 systemctl is-active httpd \|\| apache2` | Đối soát trực tiếp trạng thái dịch vụ trên máy đích |
+| <span class="badge badge--rose">07</span> | `ansible-playbook -i inventory.ini site.yml` | Chạy Playbook lượt 2 chứng minh tính Idempotency (changed=0) |
+| <span class="badge badge--emerald">08</span> | `ansible-playbook -i inventory.ini site.yml --check --diff` | Kiểm tra chế độ Dry-run và đối soát khác biệt cấu hình |
+
+```bash
+# 1. Kiểm tra cấu hình và kết nối SSH ad-hoc ping
+ansible-inventory -i inventory.ini --graph
+ansible -i inventory.ini all -m ansible.builtin.ping
+
+# 2. Cài đặt gói thử nghiệm bằng lệnh ad-hoc
+ansible -i inventory.ini all -m ansible.builtin.package -a "name=htop state=present" --become
+
+# 3. Chạy Playbook lượt 1
+ansible-playbook -i inventory.ini site.yml
+
+# 4. Đối soát trạng thái thực tế trên máy đích (không chỉ tin Play Recap)
+docker exec ntkansible-target1 systemctl is-active httpd || docker exec ntkansible-target1 systemctl is-active apache2
+docker exec ntkansible-target1 cat /var/www/html/index.html
+
+# 5. Chạy Playbook lượt 2 để chứng minh Idempotency (bắt buộc changed=0)
+ansible-playbook -i inventory.ini site.yml
+```
+
+---
+
+## 6. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
 <details class="qa-card">
   <summary class="qa-summary">
@@ -835,50 +451,14 @@ cơ chế · `2` đúng cơ chế · `3` đúng cơ chế **và** nêu lệnh/co
   </div>
 </details>
 
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"Ansible push + agentless: control node đẩy module qua SSH, máy đích chỉ cần Python và sshd &mdash; nên triển khai không phải cài agent trên hàng trăm máy."*
-2. *"Bài kiểm tra thật của một playbook là chạy lần hai: phải `changed=0`. Nếu không, tôi tìm task `command`/`shell` và làm nó idempotent bằng `creates` hoặc module chuyên."*
-3. *"Tôi không tin PLAY RECAP một mình &mdash; `ignore_errors` và `changed_when:false` làm nó xanh mà máy sai; tôi kiểm trên máy đích bằng `systemctl is-active` hoặc đọc file cấu hình."*
-4. *"Ansible lo configuration, Terraform lo provisioning; tôi ghép: Terraform dựng VM rồi Ansible cài phần mềm &mdash; không lạm dụng `provisioner`."*
-
-## V4. Bảng ghi điểm
-
-| Câu | Chủ đề | Điểm 0–3 |
-|---|---|---|
-| 1 | Push, agentless | |
-| 2 | Idempotency | |
-| 3 | command/shell không idempotent | |
-| 4 | PLAY RECAP không phải sự thật | |
-| 5 | Ba cách xanh-mà-sai | |
-| 6 | Inventory, pattern | |
-| 7 | Ad-hoc vs playbook | |
-| 8 | Ansible vs Puppet/Chef | |
-| 9 | Ansible vs Terraform | |
-| 10 | UNREACHABLE | |
-| 11 | FQCN | |
-| 12 | Tổng hợp | |
-| **Tổng /36** | | |
-
-Quy đổi: &ge; 30 giỏi &bull; 24–29 khá &bull; 18–23 đạt &bull; &lt; 18 chưa đạt (học lại §4–§6).
-
-**Lỗi làm trần điểm là 1:** dùng "PLAY RECAP xanh" làm bằng chứng &bull; khẳng định playbook không idempotent là "xong".
-
-## V5. Bài tập về nhà
-
-- **BTVN 1.** Viết `so-sanh.md`: Ansible vs Puppet vs Terraform (3 trục: mô hình push/pull, agent, mục đích).
-- **BTVN 2.** Tự dựng lại vòng đời ở nhà, nộp recap hai lần chạy (lần hai `changed=0`) + `docker exec` kiểm dịch vụ.
-- **BTVN 3.** Lấy một task `shell` bất kỳ, làm nó idempotent hai cách (module chuyên và `creates`); so sánh.
-- **BTVN 4 — Chuẩn bị cho buổi 02 (đúng 3 câu):**
-  1. Control node cần gì để chạy Ansible, và vì sao managed node chỉ cần Python + sshd? *(dẫn vào cài đặt + kiến trúc buổi 02)*
-  2. `ansible.cfg` là gì, ba thiết lập hay dùng nhất là gì? *(dẫn vào cấu hình control node)*
-  3. Lệnh ad-hoc `ansible all -m setup` trả về gì, dùng làm gì? *(dẫn vào facts, và ad-hoc sâu hơn buổi 02)*
-
-Ba câu này dẫn vào buổi 02 &mdash; *Cài đặt, kiến trúc, lệnh ad-hoc*: control node, `ansible.cfg`, SSH, module setup/facts, và các module ad-hoc thường dùng.
-
 ---
 
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+
+Tư duy **Configuration Management** theo mô hình **Push-Based**, **Agentless** và nguyên lý **Idempotency** là nền tảng cốt lõi xuyên suốt toàn bộ chương trình đào tạo Ansible Automation. Nắm vững kỹ năng đối soát thực tế trên máy đích và không phụ thuộc vào `PLAY RECAP` sẽ giúp bạn luôn làm chủ hệ thống trong mọi kịch bản vận hành thực chiến.
+
 > [!TIP]
-> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 02: Cài Đặt Ansible, Cấu Hình Control Node & Lệnh Ad-Hoc Nâng Cao](ansible-02-02-cai-dat-kien-truc-ad-hoc.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+> **BÀI HỌC TIẾP THEO:**
+> Trong **[[Bài 02] Cài Đặt Ansible, Cấu Hình Control Node & Lệnh Ad-Hoc Nâng Cao](ansible-02-02-cai-dat-kien-truc-ad-hoc.html)**, chúng ta sẽ đi sâu vào cấu trúc 4 tầng ưu tiên của `ansible.cfg`, thiết lập SSH Key Authentication bảo mật cao, và làm chủ toàn bộ hệ thống lệnh Ad-hoc thực chiến.
 
 {% endraw %}

@@ -804,6 +804,27 @@ document.addEventListener('DOMContentLoaded', () => {
           clonedSvg.style.maxWidth = 'none';
           clonedSvg.style.maxHeight = 'none';
           clonedSvg.style.display = 'block';
+          clonedSvg.style.background = 'transparent';
+
+          // Zero Solid Fill: Sanitize any dark or opaque fills on nodes, clusters, and actors
+          clonedSvg.querySelectorAll('rect, polygon, circle, ellipse, path').forEach(el => {
+            const fill = el.getAttribute('fill');
+            if (fill && (
+              fill.toLowerCase() === '#000000' || 
+              fill.toLowerCase() === '#000' || 
+              fill.toLowerCase() === '#1f2020' || 
+              fill.toLowerCase() === '#0d1117' || 
+              fill.toLowerCase() === '#1e293b' || 
+              fill.toLowerCase() === '#333333' || 
+              fill.toLowerCase() === '#222' || 
+              fill.toLowerCase() === '#111' ||
+              fill.toLowerCase() === '#ececff' ||
+              fill.toLowerCase() === 'black'
+            )) {
+              el.setAttribute('fill', 'none');
+            }
+          });
+
           content.appendChild(clonedSvg);
         }
 

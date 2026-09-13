@@ -2637,6 +2637,43 @@ mark.search-highlight {
   ry: 6px;
 }
 
+/* ZERO SOLID FILL FOR ALL MERMAID SUBGRAPHS / CLUSTERS */
+.mermaid .cluster rect,
+.mermaid .cluster polygon,
+.mermaid g.cluster rect,
+.mermaid-lightbox-content .cluster rect,
+.mermaid-lightbox-content .cluster polygon,
+.mermaid-lightbox-content g.cluster rect,
+.mermaid [class*="cluster"] rect,
+.mermaid-lightbox-content [class*="cluster"] rect,
+.mermaid rect.cluster,
+.mermaid-lightbox-content rect.cluster {
+  fill: transparent !important;
+  stroke: var(--border-color, #334155) !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 4, 4 !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+/* Subgraph / Cluster Labels */
+.mermaid .cluster span,
+.mermaid .cluster-label span,
+.mermaid .cluster-label text,
+.mermaid g.cluster text,
+.mermaid-lightbox-content .cluster span,
+.mermaid-lightbox-content .cluster-label span,
+.mermaid-lightbox-content .cluster-label text,
+.mermaid-lightbox-content g.cluster text {
+  fill: var(--text-primary, #f8fafc) !important;
+  color: var(--text-primary, #f8fafc) !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 12.5px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
 .mermaid .node .label,
 .mermaid-lightbox-content .node .label {
   font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
@@ -2981,13 +3018,24 @@ mark.search-highlight {
   transition: transform 0.08s ease-out;
   padding: 3rem;
   margin: auto;
+  background: transparent !important;
 }
 
 .mermaid-lightbox-content svg {
   max-width: none !important;
   max-height: none !important;
   user-select: none;
+  background: transparent !important;
   filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.12));
+}
+
+.mermaid-lightbox-content .cluster rect,
+.mermaid-lightbox-content g.cluster rect,
+.mermaid-lightbox-content .node rect,
+.mermaid-lightbox-content g.node rect,
+.mermaid-lightbox-content .actor rect,
+.mermaid-lightbox-content rect.actor {
+  fill: transparent !important;
 }
 
 .mermaid-lightbox-hint {

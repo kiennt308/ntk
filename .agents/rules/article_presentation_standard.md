@@ -88,9 +88,9 @@ Sử dụng các biến CSS theme-aware thay vì hardcode mã màu:
 Mọi sơ đồ Mermaid (bao gồm `flowchart`, `graph`, và `sequenceDiagram`) phải tuân thủ nghiêm ngặt các quy tắc sau:
 
 ### 5.1. Quy chuẩn chung & Lightbox Modal Zoom
-1. **Khử hoàn toàn nền đặc (Zero Solid Fill)**: Mọi khối hình, actor box, hay container đều phải trong suốt (`fill:none` hoặc `fill:transparent`) kết hợp viền màu kỹ thuật (`stroke-width: 1.5px - 2px`) để hiển thị sắc nét trên cả Light/Dark theme và không bị lóa/che lấp khi phóng to trong Lightbox.
-2. **Tăng cường độ tương phản (High Contrast)**: Phông chữ trong sơ đồ sử dụng màu `--text-primary` (`#f8fafc` trên nền tối, `#0f172a` trên nền sáng) với độ dày chữ `font-weight: 600 - 700`.
-3. **Phân nhóm bằng Subgraph**: Đặt tên subgraph trực quan, có đánh số thứ tự (ví dụ `subgraph Inputs["1. ĐẦU VÀO HỆ THỐNG"]`).
+1. **Khử hoàn toàn nền đặc (Zero Solid Fill)**: Mọi khối hình (Nodes), hộp Actor, và đặc biệt là **khung bao Subgraph / Clusters (`subgraph ... end`)** đều phải trong suốt 100% (`fill:none` hoặc `fill:transparent`). Tuyệt đối không để sót background màu đen (`#000000`, `#1f2020`) hay màu xám đặc khi hiển thị bình thường cũng như khi phóng to trong Lightbox Zoom Modal.
+2. **Khung bao Subgraph / Cluster**: Viền khung subgraph sử dụng nét đứt nhẹ nhàng (`stroke-dasharray: 4, 4`), màu viền `--border-color` (`#334155`), bo góc `rx: 8px` và tiêu đề subgraph in hoa đậm nét (`font-weight: 700`, `letter-spacing: 0.04em`).
+3. **Tăng cường độ tương phản (High Contrast)**: Phông chữ trong sơ đồ sử dụng màu `--text-primary` (`#f8fafc` trên nền tối, `#0f172a` trên nền sáng) với độ dày chữ `font-weight: 600 - 700`.
 4. **Ngắt dòng thông minh**: Dùng `<br/>` để chia text trong các khối dài thành 2–3 dòng gọn gàng, tránh làm khối bị quá dài theo chiều ngang.
 
 ### 5.2. Quy chuẩn dành riêng cho Sequence Diagrams

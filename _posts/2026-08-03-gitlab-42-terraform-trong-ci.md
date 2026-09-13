@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=fo
 summary: "[GitLab CI/CD P.42] Hướng dẫn chuyên sâu Tự Động Hóa Hạ Tầng Với Terraform Trong CI: Terraform Plan / Apply Pipeline, State Locking & Infracost Estimate: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 42] TỰ ĐỘNG HÓA HẠ TẦNG VỚI TERRAFORM TRONG CI: TERRAFORM PLAN / APPLY PIPELINE, STATE LOCKING & INFRACOST ESTIMATE
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2111,3 +2112,4 @@ Cấp quyền `AdministratorAccess` toàn quyền trên Cloud Account cho Terraf
 3. **Bài tập chuẩn bị trước giờ học:**
    - Trả lời câu hỏi: *"Khác biệt lớn nhất về yêu cầu tài nguyên hạ tầng giữa Blue-Green Deployment và Canary Deployment là gì?"*
    - Chuẩn bị ví dụ về kịch bản Rollback tức thì (<5 giây) khi tỷ lệ lỗi HTTP 5xx trên phiên bản Canary vượt quá 1%!
+{% endraw %}

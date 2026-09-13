@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "[CKA P.35] Hướng dẫn chuyên sâu Bảo Vệ Đồ Án Tốt Nghiệp & Đại Tuyển Tập 100+ Câu Hỏi Phỏng Vấn CKA Chuyên Sâu: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 35] BẢO VỆ ĐỒ ÁN TỐT NGHIỆP & ĐẠI TUYỂN TẬP 100+ CÂU HỎI PHỎNG VẤN CKA CHUYÊN SÂU
 
 Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
@@ -1181,3 +1182,4 @@ test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.lo
 | T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
 | T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
 | **Tổng** | **30'** | **30'** |
+{% endraw %}

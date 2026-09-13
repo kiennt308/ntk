@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "Làm chủ quản trị Helm Charts với Argo CD: Giải mã cơ chế helm template engine, tích hợp kho lưu trữ OCI Registry hiện đại, làm chủ kỹ thuật Multiple Sources $values kết hợp Helm công khai và Git nội bộ, cùng giải pháp xử lý bẫy kẹt bộ nhớ đệm Helm dependency."
 ---
 
+{% raw %}
 # Quản Lý Helm Charts Trong Argo CD & Kỹ Thuật Multiple Sources Nâng Cao
 
 Trong cộng đồng Cloud Native, **Helm** là trình quản lý gói (Package Manager) phổ biến nhất với hàng chục ngàn thư viện Chart chất lượng cao được cộng đồng mã nguồn mở và các hãng công nghệ phát hành (như Redis, PostgreSQL, Kafka, NGINX Ingress, Prometheus).
@@ -414,3 +415,4 @@ Làm chủ Helm trong Argo CD kết hợp với kỹ thuật **Multiple Sources*
 Chúc mừng bạn đã hoàn thành trọn vẹn **Giai Đoạn 2 (Đồng Bộ Nâng Cao & Quản Trị Đa Môi Trường)**!
 
 Ở bài tiếp theo mở màn **Giai Đoạn 3**, chúng ta sẽ bước lên cấp độ quy mô khổng lồ với **Mô Hình Quản Trị Quy Mô App-of-Apps Pattern Chuẩn Enterprise**!
+{% endraw %}

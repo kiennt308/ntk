@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=forma
 summary: "Hướng dẫn cài đặt Argo CD chuẩn Production: So sánh chi tiết 3 mô hình Cluster-wide vs Namespace-scoped vs High Availability (HA), cấu hình Ingress SSL Passthrough gRPC-Web, quản lý mật khẩu khởi tạo an toàn và làm chủ công cụ dòng lệnh Argo CD CLI."
 ---
 
+{% raw %}
 # Cài Đặt Argo CD Trên Kubernetes: Mô Hình HA, CLI & Xác Thực An Toàn
 
 Việc cài đặt Argo CD trên môi trường thử nghiệm (Local Minikube/Kind) thường chỉ tốn một câu lệnh `kubectl apply -f install.yaml`. Tuy nhiên, khi bước vào môi trường Vận hành Doanh nghiệp (Production Enterprise), bài toán cài đặt đòi hỏi những tiêu chuẩn kỹ thuật khắt khe hơn rất nhiều: **Khả năng chịu lỗi và tính sẵn sàng cao (High Availability)**, **Bảo mật luồng mạng giao tiếp gRPC qua Ingress/TLS**, **Gia cố NetworkPolicy Zero-Trust**, **Quản lý cài đặt Argo CD bằng chính Kustomize GitOps**, và **Xác thực danh tính an toàn không lộ mật khẩu gốc**.
@@ -410,3 +411,4 @@ argocd account can-i sync applications 'payment/*'
 Cài đặt Argo CD đúng chuẩn High Availability và thiết lập kênh giao tiếp an toàn qua Ingress gRPC-Web là viên gạch nền móng vững chắc đầu tiên để xây dựng nền tảng GitOps cấp doanh nghiệp.
 
 Ở bài tiếp theo, chúng ta sẽ bắt đầu giải mã **Application CRD Chuyên Sâu: Hợp Đồng Bộ Ba Source, Destination, Project & Cơ Chế Tracking ID Toàn Năng**!
+{% endraw %}

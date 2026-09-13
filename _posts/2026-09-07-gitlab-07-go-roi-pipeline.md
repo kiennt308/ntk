@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=fo
 summary: "[GitLab CI/CD P.07] Hướng dẫn chuyên sâu Kỹ Thuật Gỡ Rối & Chẩn Đoán Pipeline: CI_DEBUG_TRACE, Log Analysis, Runner Interactive Debug & SSH Debug: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 07] KỸ THUẬT GỠ RỐI & CHẨN ĐOÁN PIPELINE: CI_DEBUG_TRACE, LOG ANALYSIS, RUNNER INTERACTIVE DEBUG & SSH DEBUG
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2992,3 +2993,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. Nếu một job test được chia thành **5** phần chạy song song, cái gì phải thay đổi ở phần thu artifact và phần báo cáo? Ghi phỏng đoán, kể cả khi bạn chưa biết cú pháp.
 
 **Ba câu này dẫn vào đâu:** câu 1 dẫn vào **§4 buổi 08 — đường găng thay cho tổng các stage**; hiệu số giây bạn tính ra chính là phần thời gian đang bị `stage` bắt chờ vô cớ, và nó là số "đo trước" của cả buổi 08. Câu 2 dẫn vào **§5 buổi 08 — chuyển bản đồ phụ thuộc thành các dòng `needs:`**; mỗi cặp không cần chờ nhau sẽ thành một dòng cấu hình cụ thể, không phải một ý tưởng. Câu 3 dẫn vào **§6 buổi 08 — `parallel` và `matrix`**: chia một job thành 5 phần là việc dễ, việc khó là thu **5** bộ artifact về một báo cáo mà không job nào ghi đè job nào — và ca ghi đè đó chính là ô *im lặng, không chặn* mà bảng 32 ô của hôm nay dùng để bắt.
+{% endraw %}

@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=forma
 summary: "Phân tích sâu cơ chế thực thi 2 pha (Two-Phase Execution), giao thức gRPC"
 ---
 
+{% raw %}
 # Giải Mã Workflow Terraform: Cơ Chế Hoạt Động Ngầm Của Init, Plan, Apply & Đồ Thị DAG
 
 Hầu hết các kỹ sư khi bắt đầu làm quen với Terraform đều thuộc lòng bộ ba câu lệnh quen thuộc: `terraform init`, `terraform plan` và `terraform apply`. Tuy nhiên, khi vận hành hệ thống quy mô lớn với hàng trăm tài nguyên phân tán trên nhiều tài khoản đám mây, việc hiểu rõ **cơ chế ngầm (under-the-hood)** của từng giai đoạn thực thi là yếu tố sống còn giúp bạn tối ưu hóa thời gian chạy pipeline từ 45 phút xuống dưới 3 phút, gỡ rối các vòng lặp phụ thuộc (**Circular Dependency**) và ngăn chặn thảm họa xóa nhầm cơ sở dữ liệu Production.
@@ -441,3 +442,4 @@ Dùng để thay thế lệnh cũ <code>terraform taint</code>. Nó yêu cầu T
 Hiểu rõ cơ chế **Two-Phase Execution**, giao thức **gRPC Plugin RPC** và thuật toán **DAG** giúp bạn nắm trong tay chìa khóa để điều khiển, tối ưu hóa và gỡ lỗi mọi hệ thống IaC phức tạp nhất.
 
 Trong **[Bài 03: Tối Ưu Cú Pháp HCL: Xử Lý Dynamic Types, Expressions, Built-in Functions & Meta-Arguments Chuẩn Enterprise](03-toi-uu-cu-phap-hcl-xu-ly-dynamic-type-expressions.md)**, chúng ta sẽ đi sâu vào nghệ thuật lập trình HCL: Làm chủ hệ thống kiểu dữ liệu động, biểu thức điều kiện tam nguyên, các hàm tích hợp sẵn (Built-in Functions) và siêu tham số vòng lặp meta-arguments.
+{% endraw %}

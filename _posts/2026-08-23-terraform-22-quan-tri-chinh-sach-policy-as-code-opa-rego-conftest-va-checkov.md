@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=fo
 summary: "Thiết lập rào chắn bảo vệ hạ tầng tự động (Automated Guardrails) với Policy"
 ---
 
+{% raw %}
 # Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest và Checkov
 
 Khi quy mô hạ tầng doanh nghiệp phát triển lên hàng nghìn tài nguyên đám mây với hàng trăm kỹ sư tham gia đóng góp mã nguồn, việc chỉ dựa vào quy trình đánh giá thủ công (Manual Code Review qua Pull Request) là một "cơn ác mộng" quản trị. Con người luôn có thể mệt mỏi, bỏ sót các lỗ hổng bảo mật nghiêm trọng hoặc vô tình phê duyệt một cấu hình sai sót làm tiêu tốn ngân sách hàng trăm triệu đồng mỗi tháng.
@@ -486,3 +487,4 @@ mindmap
 - **Nguyên tắc bảo vệ Enterprise**: "Trust, but Verify" — Không một đoạn mã Terraform nào được phép chạy `terraform apply` trên Production nếu chưa vượt qua cổng kiểm thử tự động của **Conftest / OPA Policy Engine**.
 - **Quy tắc viết Rego**: Luôn viết thông điệp `msg` trong `deny` thật rõ ràng, chứa mã định danh lỗi (ví dụ: `[TAG-01]`, `[COST-02]`) để lập trình viên biết chính xác vị trí và cách khắc phục.
 - **Bước tiếp theo**: Trong [Bài 23: DRY Terraform Với Terragrunt: Remote State, Inputs và Dependencies](./23-dry-terraform-voi-terragrunt-remote-state-inputs-va-dependencies.md), chúng ta sẽ làm chủ công cụ Terragrunt để xóa bỏ 100% mã nguồn lặp lại (Don't Repeat Yourself) khi quản trị hàng trăm môi trường đa tài khoản!
+{% endraw %}

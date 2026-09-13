@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=fo
 summary: "[GitLab CI/CD P.35] Hướng dẫn chuyên sâu Kiểm Tra Năng Lực Thực Chiến Giữa Kỳ: Đánh Giá & Tối Ưu Hệ Thống CI/CD Pipeline Phức Tạp End-to-End: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 35] KIỂM TRA NĂNG LỰC THỰC CHIẾN GIỮA KỲ: ĐÁNH GIÁ & TỐI ƯU HỆ THỐNG CI/CD PIPELINE PHỨC TẠP END-TO-END
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2027,3 +2028,4 @@ Trả lời "Thấy build đỏ thì dev tự nhìn rồi tự lên JIRA tạo t
 3. **Bài tập chuẩn bị thực hành:**
    - Tạo thử nghiệm một tệp `.gitlab-ci.yml` cấu hình 3 môi trường: `development`, `staging`, `production`.
    - Cấu hình cho môi trường `production` yêu cầu quyền `Maintainer` mới được bấm nút `manual` execute job deploy!
+{% endraw %}

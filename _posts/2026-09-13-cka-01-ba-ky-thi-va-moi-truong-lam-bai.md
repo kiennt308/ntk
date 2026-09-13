@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?auto=fo
 summary: "[CKA P.01] Hướng dẫn chuyên sâu Tổng Quan 3 Kỳ Thi CNCF (CKA/CKAD/CKS), Môi Trường Làm Bài & Chiến Thuật Tối Ưu Thời Gian: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 01] TỔNG QUAN 3 KỲ THI CNCF (CKA/CKAD/CKS), MÔI TRƯỜNG LÀM BÀI & CHIẾN THUẬT TỐI ƯU THỜI GIAN
 
 Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
@@ -3086,3 +3087,4 @@ Trong `vim`: `:set paste` trước khi dán YAML từ panel đề bài, `yyp` nh
 | **Tổng** | | **30'** |
 
 Đối soát theo giây: `210 + 180 + 270 + 240 = 900` giây làm bài · `120` giây cho T0 và T1 · `780` giây chữa và chấm (T3 `360` + T4 `120` + T5 `240` + T6 `60`) · tổng `1800` giây, đúng **30'**. Đường gõ ngắn nhất cả bốn câu: `45 + 30 + 60 + 40 = 175` giây, tỉ số `175 ÷ 900 = 0,194`.
+{% endraw %}

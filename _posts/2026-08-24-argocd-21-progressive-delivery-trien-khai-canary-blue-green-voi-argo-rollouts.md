@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=forma
 summary: "Làm chủ chiến lược phát hành tiến bộ Progressive Delivery với Argo Rollouts: So sánh chi tiết Canary Release vs Blue-Green Deployment, điều phối Traffic Shaping (NGINX/Istio), tích hợp Prometheus AnalysisTemplate tự động đo lường tỷ lệ lỗi và tự động Rollback trong 1 giây khi có sự cố."
 ---
 
+{% raw %}
 # Progressive Delivery: Triển Khai Canary & Blue-Green Với Argo Rollouts
 
 Trong kiến trúc Kubernetes truyền thống, đối tượng `Deployment` tiêu chuẩn chỉ hỗ trợ chiến lược phát hành **Rolling Update** thô sơ: thay thế dần dần các Pods cũ bằng Pods mới.
@@ -405,3 +406,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Argo Rollouts:
 Argo Rollouts là "vũ khí tối thượng" đưa nền tảng phân phối phần mềm của doanh nghiệp lên cấp độ **Progressive Delivery** đỉnh cao — nơi mọi đợt phát hành mã nguồn đều được bảo vệ bởi các rào chắn số liệu thông minh và khả năng tự phục hồi thần tốc.
 
 Ở bài tiếp theo, chúng ta sẽ bước vào chuyên đề: **Giám Sát & Đo Lường Hệ Thống: Argo CD Observability, Prometheus Metrics & Grafana Dashboard Chuẩn SRE**!
+{% endraw %}

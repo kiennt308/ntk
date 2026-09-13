@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=fo
 summary: "[GitLab CI/CD P.40] Hướng dẫn chuyên sâu Tự Động Hóa Triển Khai Lên Azure: Azure OIDC Federation, Azure Kubernetes Service (AKS) & Azure Container Apps: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 40] TỰ ĐỘNG HÓA TRIỂN KHAI LÊN AZURE: AZURE OIDC FEDERATION, AZURE KUBERNETES SERVICE (AKS) & AZURE CONTAINER APPS
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1989,3 +1990,4 @@ Cho rằng "Client Secret vẫn an toàn nếu giấu kỹ trong CI Masked Varia
    - Chuẩn bị danh sách 3 điểm yếu lớn nhất của luồng `helm upgrade` trực tiếp từ CI Runner!
    - So sánh bộ 3 OIDC Federation của AWS (Buổi 38), GCP (Buổi 39), và Azure (Buổi 40) về điểm mạnh và điểm yếu bảo mật để tổng kết giai đoạn Cloud Deployment!
    - Viết sẵn 1 file `values.yaml` mẫu dành cho ứng dụng Web Microservice sẵn sàng cho bài lab Helm Chart ở Buổi 41 sắp tới!
+{% endraw %}

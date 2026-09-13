@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "Cẩm nang SRE Incident Response xử lý các sự cố nghiêm trọng nhất của Terraform:"
 ---
 
+{% raw %}
 # Gỡ Rối State Lock, Apply Nửa Chừng và Cứu Hộ State Corruption
 
 Trong sự nghiệp của một kỹ sư SRE / DevOps, không có khoảnh khắc nào làm tăng nhịp tim nhanh bằng việc nhận được thông báo đỏ lòm từ kênh Slack Incident: **"Terraform State bị kẹt Lock trong lúc Release, toàn bộ CI/CD Pipeline bị tê liệt!"** hoặc tồi tệ hơn: **"Máy chủ CI Runner bị sập nguồn giữa chừng khi đang chạy `terraform apply`, State file bị hỏng (Corrupted) và Terraform báo lỗi Invalid JSON!"**
@@ -430,3 +431,4 @@ mindmap
 - **Quy tắc vàng ứng cứu**: Bình tĩnh điều tra danh tính `Who` trước khi bấm `force-unlock`.
 - **Tiêu chuẩn thiết kế Backend**: 100% S3 State Buckets bắt buộc phải bật **S3 Versioning + S3 Object Lock**.
 - **Bước tiếp theo**: Trong [Bài 27: Quản Trị Hạ Tầng Doanh Nghiệp Với HCP Terraform & Terraform Cloud](./27-quan-tri-ha-tang-doanh-nghiep-voi-hcp-terraform-cloud.md), chúng ta sẽ khám phá nền tảng SaaS Enterprise hàng đầu của HashiCorp với Private Registry, Remote Execution và Quản trị Chi phí chuyên sâu!
+{% endraw %}

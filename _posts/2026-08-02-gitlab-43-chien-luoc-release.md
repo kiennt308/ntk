@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=forma
 summary: "[GitLab CI/CD P.43] Hướng dẫn chuyên sâu Chiến Lược Release Triển Khai An Toàn: Blue-Green Deployment, Canary Release, Feature Flags & Rollback Tự Động: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 43] CHIẾN LƯỢC RELEASE TRIỂN KHAI AN TOÀN: BLUE-GREEN DEPLOYMENT, CANARY RELEASE, FEATURE FLAGS & ROLLBACK TỰ ĐỘNG
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2114,3 +2115,4 @@ Mỗi lần muốn bật tính năng cho 1 khách hàng VIP lại phải nhờ k
 3. **Bài tập chuẩn bị trước giờ học:**
    - Trả lời câu hỏi: *"Tại sao việc chạy GitLab Runner với Shell Executor trên cùng máy chủ chứa source code lại tiềm ẩn nguy cơ bảo mật rò rỉ dữ liệu cực kỳ nghiêm trọng?"*
    - Chuẩn bị danh sách 3 cờ cấu hình quan trọng nhất trong khối `[runners.docker]` của tệp `config.toml`!
+{% endraw %}

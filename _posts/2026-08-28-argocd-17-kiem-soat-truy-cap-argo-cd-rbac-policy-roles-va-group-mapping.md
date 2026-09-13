@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=forma
 summary: "Làm chủ cơ chế phân quyền Role-Based Access Control (RBAC) trong Argo CD: Giải mã động cơ Casbin, phân tích cú pháp chuẩn 6 trường CSV, ánh xạ nhóm OIDC Groups (Okta, Azure AD, Keycloak), siết chặt quyền Pod Terminal Exec và xử lý các lỗ hổng cấp quyền quá mức."
 ---
 
+{% raw %}
 # Kiểm Soát Truy Cập: Argo CD RBAC, Policy Roles & Group Mapping Chuẩn Doanh Nghiệp
 
 Trong một tổ chức công nghệ có hàng trăm kỹ sư phát triển (Developers), kỹ sư kiểm thử (QA), chuyên viên an ninh mạng (SecOps) và kỹ sư vận hành (SRE), việc cấp chung một tài khoản `admin` toàn năng hoặc để chính sách phân quyền mặc định là một "lỗ hổng tử huyệt" đe dọa trực tiếp tới sự an toàn của hệ thống.
@@ -422,3 +423,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Argo CD RBAC:
 Một ma trận RBAC chặt chẽ kết hợp với cơ chế ánh xạ nhóm OIDC tập trung là "tấm khiên" bảo vệ vững chắc cho nền tảng GitOps doanh nghiệp, bảo đảm mọi hành vi can thiệp vào hệ thống đều nằm trong tầm kiểm soát và tuân thủ tuyệt đối các tiêu chuẩn an ninh quốc tế.
 
 Ở bài tiếp theo, chúng ta sẽ đi sâu vào **Tích Hợp Đăng Nhập Tập Trung: SSO, OIDC, Dex & Okta / Keycloak Chuẩn Doanh Nghiệp**!
+{% endraw %}

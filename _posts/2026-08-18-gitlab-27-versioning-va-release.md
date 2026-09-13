@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "[GitLab CI/CD P.27] Hướng dẫn chuyên sâu Tự Động Hóa Versioning & Release: Semantic Release, Conventional Commits, Git Tagging & Changelog Automation: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 27] TỰ ĐỘNG HÓA VERSIONING & RELEASE: SEMANTIC RELEASE, CONVENTIONAL COMMITS, GIT TAGGING & CHANGELOG AUTOMATION
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1774,3 +1775,4 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 | §V3 | Câu chốt để nói khi phỏng vấn | 3 phút |
 | §V4 | Bài tập về nhà (BTVN 4 chuẩn bị Buổi 28) | 2 phút |
 | **Tổng** | **Khối vấn đáp & Phấn bảng** | **20'** |
+{% endraw %}

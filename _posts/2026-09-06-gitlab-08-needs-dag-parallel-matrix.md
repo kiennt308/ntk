@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=forma
 summary: "[GitLab CI/CD P.08] Hướng dẫn chuyên sâu Tối Ưu Pipeline Phi Tuyến Tính Với Directed Acyclic Graph (DAG): needs, parallel & Matrix Builds: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 08] TỐI ƯU PIPELINE PHI TUYẾN TÍNH VỚI DIRECTED ACYCLIC GRAPH (DAG): NEEDS, PARALLEL & MATRIX BUILDS
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -3201,3 +3202,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. Hôm nay QT 5.2 cho thấy cạnh bị quên là hỏng im lặng. Nếu pipeline được **sinh ra bởi một job** — một job viết ra tệp YAML rồi bảo GitLab chạy nó — thì `rules` của các job trong pipeline đó được đánh giá **lúc nào** so với `t0` của pipeline cha? Ghi phỏng đoán, kèm một câu: điều đó cho phép làm **một** việc mà buổi 04 nói là không thể.
 
 **Ba câu này dẫn vào đâu:** câu 1 dẫn vào **§4 buổi 09 QT 4.1** — con số học viên tự đếm được (**12 × 3 = 36** khối, khoảng **540** dòng) chính là con số buổi 09 đối chiếu với **1** khối `trigger` cộng **1** script khoảng 40 dòng; **lab bước 1 buổi 09** dựng lại bài toán đó ở quy mô 3 module. Câu 2 dẫn vào **§5 buổi 09 QT 5.1 và QT 5.2** — job `trigger` là **bridge job**, **0** slot và **0** phút runner, mặc định nó **xanh ngay** khi tạo được pipeline con; đúng **1** dòng `strategy: depend` đổi điều đó, và **lab bước 2 buổi 09** đặt hai bridge job cạnh nhau để đo. Câu 3 dẫn vào **§4 buổi 09 QT 4.2** — pipeline con có `t0` **riêng**, nên biến do job cha sinh ra **dùng được** trong `rules` của pipeline con, thứ buổi 04 QT 4.2 nói là không thể trong một pipeline; đây là trục `t0` **lần thứ 3**, và **lab bước 4 buổi 09** đo nó. Bốn bước sinh pipeline lúc chạy nằm ở **§6 buổi 09 QT 6.1**.
+{% endraw %}

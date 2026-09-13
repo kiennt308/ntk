@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=fo
 summary: "Phân tích bản chất hoạt động của count và for_each, giải mã thảm họa phá"
 ---
 
+{% raw %}
 # Vòng Lặp Nâng Cao: Count vs For_Each, Thảm Họa Index Shifting & Kỹ Thuật Refactor Zero-Downtime Bằng Moved Block
 
 Khi viết mã nguồn Terraform, nhu cầu khởi tạo hàng loạt tài nguyên có cấu trúc tương tự nhau (ví dụ: tạo 6 Subnets đa vùng, 10 máy chủ cơ sở dữ liệu phân tán, hoặc hàng chục IAM Roles) là một yêu cầu cơ bản. Để đáp ứng nhu cầu này, Terraform cung cấp hai siêu tham số vòng lặp (**Meta-arguments**): **`count`** và **`for_each`**.
@@ -438,3 +439,4 @@ Sử dụng <b>For Expressions</b> kết hợp mệnh đề <code>if</code>:
 Hiểu rõ sự khác biệt bản chất giữa **`count`** và **`for_each`**, đồng thời làm chủ kỹ thuật di trú bằng **`moved {}`** giúp bạn loại bỏ vĩnh viễn nỗi sợ hãi "Index Shifting" và tự tin thiết kế những hệ thống co giãn quy mô lớn.
 
 Trong **[Bài 14: Dynamic Blocks & For Expressions: Lập Trình HCL Meta-Programming Cho Cấu Trúc Lồng Nhau Phức Tạp](14-dynamic-blocks-va-for-expressions-lap-trinh-hcl-meta-programming.md)**, chúng ta sẽ bước vào thế giới của siêu lập trình HCL: Cách sinh động các khối lồng nhau `dynamic "ingress"` cho Security Groups, làm phẳng mảng đa cấp với `flatten()`, và xử lý danh sách lồng nhau chuẩn Enterprise!
+{% endraw %}

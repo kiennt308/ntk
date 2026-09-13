@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=fo
 summary: "Bước ra khỏi giới hạn của HCL: Xây dựng hạ tầng bằng TypeScript/Python với"
 ---
 
+{% raw %}
 # CDKTF và Kiến Trúc Phát Triển Custom Terraform Provider
 
 Đối với đại đa số các tác vụ quản trị hạ tầng, ngôn ngữ cấu hình HashiCorp Configuration Language (HCL) mang lại sự đơn giản, trực quan và an toàn tuyệt đối nhờ tính chất Declarative. Tuy nhiên, khi đối mặt với các bài toán trừu tượng hóa phức tạp — như xây dựng các thuật toán tính toán phân bổ tài nguyên động, tái sử dụng các mẫu thiết kế hướng đối tượng (OOP Design Patterns), hoặc kiểm thử hạ tầng bằng các framework kiểm thử phần mềm tiêu chuẩn (như Jest hay PyTest) — HCL bắt đầu bộc lộ những giới hạn của một ngôn ngữ cấu hình tĩnh.
@@ -525,3 +526,4 @@ mindmap
 - **Quy tắc lựa chọn công cụ**: Sử dụng **HCL thuần** cho 90% các nhu cầu hạ tầng tiêu chuẩn; chỉ chuyển sang **CDKTF** khi cần giải quyết các bài toán logic phức tạp hoặc tích hợp sâu vào quy trình của Software Engineering.
 - **Tiêu chuẩn phát triển Provider**: Luôn sử dụng **Terraform Plugin Framework** thế hệ mới bằng ngôn ngữ Golang để đảm bảo hiệu năng và tính an toàn kiểu dữ liệu.
 - **Bước tiếp theo**: Trong [Bài 29: Tổng Ôn và Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)](./29-tong-on-va-bi-kip-chinh-phuc-chung-chi-terraform-associate-003.md), chúng ta sẽ hệ thống hóa toàn bộ 9 chuyên đề thi, mổ xẻ các câu hỏi bẫy kinh điển và trang bị chiến lược đạt điểm tuyệt đối trong kỳ thi HashiCorp Certified: Terraform Associate!
+{% endraw %}

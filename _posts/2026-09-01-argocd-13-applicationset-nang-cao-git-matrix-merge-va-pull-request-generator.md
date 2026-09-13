@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?auto=forma
 summary: "Khai phóng toàn bộ sức mạnh của Argo CD ApplicationSet: Tự động hóa Zero-Touch với Git Directory/File Generator, nhân ma trận đa dịch vụ đa cụm với Matrix & Merge Generator, và thiết lập môi trường thử nghiệm tạm thời Ephemeral Preview Environments cho từng Pull Request."
 ---
 
+{% raw %}
 # ApplicationSet Nâng Cao: Git Matrix, Merge & Pull Request Preview Generator
 
 Trong bài viết trước, chúng ta đã làm quen với List và Cluster Generator. Tuy nhiên, trong các doanh nghiệp công nghệ quy mô hàng đầu (như Intuit, Google, Red Hat), quy trình phân phối phần mềm đòi hỏi sự linh hoạt và tự động hóa cao hơn gấp nhiều lần:
@@ -426,3 +427,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Matrix, Merge & PR
 Các Generator nâng cao của `ApplicationSet` là đỉnh cao của tự động hóa GitOps hiện đại, mang lại trải nghiệm phát triển phần mềm mượt mà, tối ưu hóa chi phí hạ tầng và mở rộng quy mô không giới hạn.
 
 Ở bài tiếp theo, chúng ta sẽ đi sâu vào **Quản Trị Đa Cụm: Multi-Cluster GitOps & Kỹ Thuật Triển Khai Chéo Hạ Tầng Chuẩn Enterprise**!
+{% endraw %}

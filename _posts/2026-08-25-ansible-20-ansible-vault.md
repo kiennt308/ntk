@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=fo
 summary: "[Ansible P.20] Hướng dẫn chuyên sâu Bảo Mật Dữ Liệu Nhạy Cảm Với Ansible Vault: Mã Hóa File/String, Vault Password Client, Multi-Vault IDs & CI/CD Vault: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 20] BẢO MẬT DỮ LIỆU NHẠY CẢM VỚI ANSIBLE VAULT: MÃ HÓA FILE/STRING, VAULT PASSWORD CLIENT, MULTI-VAULT IDS & CI/CD VAULT
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -993,3 +994,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm bảo mật dữ liệu
 1. **Nghiên cứu trước 1:** RHEL System Roles (`redhat.rhel_system_roles`) là gì? Tại sao Red Hat lại đóng gói sẵn các Role chuẩn hóa cho SELinux, Firewall, Timesync?
 2. **Nghiên cứu trước 2:** Cơ chế nâng quyền `become: true` trong Ansible hoạt động ra sao bên dưới hệ điều hành Linux?
 3. **Nghiên cứu trước 3:** Các module Ansible như `ansible.posix.selinux` và `ansible.posix.seport` dùng để quản lý trạng thái và cổng kết nối của SELinux như thế nào?
+{% endraw %}

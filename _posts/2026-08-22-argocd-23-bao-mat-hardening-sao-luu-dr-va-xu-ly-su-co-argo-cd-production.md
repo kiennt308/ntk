@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=fo
 summary: "Hướng dẫn chuyên sâu về bảo mật Production Hardening cho Argo CD Control Plane: Thiết lập Kubernetes NetworkPolicy siết chặt Ingress/Egress, Pod Security Standards (PSS/PSA) cấm root, tối ưu High Availability Controller Sharding và xây dựng quy trình Disaster Recovery 60 giây với argocd admin export/import."
 ---
 
+{% raw %}
 # Bảo Mật Hardening, Sao Lưu Disaster Recovery và Xử Lý Sự Cố Argo CD Production
 
 Khi một hệ thống GitOps bước vào giai đoạn Vận hành Sản xuất (Production Readiness), bài toán không chỉ dừng lại ở việc tự động hóa triển khai ứng dụng hay cấu hình RBAC/SSO. Đội ngũ Platform Engineer và SRE phải đối mặt với trách nhiệm sống còn: **Đảm bảo An toàn Thông tin Đa tầng (Defense-in-Depth)**, **Mở rộng Quy mô với Độ sẵn sàng cao (High Availability & Controller Sharding)**, và **Khả năng Phục hồi Thảm họa (Disaster Recovery - DR) tức thì** khi trung tâm dữ liệu gặp sự cố.
@@ -407,3 +408,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Hardening & DR:
 Bảo mật và gia cố vận hành là ranh giới phân định giữa một hệ thống GitOps thử nghiệm và một nền tảng GitOps cấp độ Doanh nghiệp (Enterprise-Grade). Bằng cách thiết lập mô hình phòng thủ đa tầng kết hợp NetworkPolicy, Pod Security Standards, Controller Sharding và chiến lược Disaster Recovery bài bản, bạn đã biến Argo CD thành một cỗ máy phân phối phần mềm an toàn, tin cậy và sẵn sàng chịu đựng mọi biến cố hạ tầng.
 
 Ở bài viết tiếp theo, chúng ta sẽ bước vào **Bài 24 — Capstone Project**, nơi toàn bộ 23 bài học sẽ được hợp nhất để xây dựng một nền tảng E-commerce Multi-Cluster GitOps Enterprise hoàn chỉnh từ A-Z!
+{% endraw %}

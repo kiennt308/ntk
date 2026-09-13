@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "[Ansible P.24] Hướng dẫn chuyên sâu Dynamic Inventory Đa Nền Tảng: Tự Động Khám Phá Máy Chủ Trên AWS EC2, GCP Compute, Azure VM & Kubernetes Pods: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 24] DYNAMIC INVENTORY ĐA NỀN TẢNG: TỰ ĐỘNG KHÁM PHÁ MÁY CHỦ TRÊN AWS EC2, GCP COMPUTE, AZURE VM & KUBERNETES PODS
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1055,3 +1056,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý hạ tầng 
 1. **Nghiên cứu trước 1:** Công cụ `ansible-lint` là gì? Tại sao việc kiểm tra linter trước khi push code lên Git lại giúp ngăn ngừa 90% lỗi cú pháp và Security Smells?
 2. **Nghiên cứu trước 2:** Cờ `--check` (Check Mode) và `--diff` trong câu lệnh `ansible-playbook` có tác dụng gì trong việc thử nghiệm thay đổi (Dry-run execution)?
 3. **Nghiên cứu trước 3:** Framework `Molecule` dùng để tự động hóa việc kiểm thử Role (Testing Roles) trên các container Docker cách ly ra sao?
+{% endraw %}

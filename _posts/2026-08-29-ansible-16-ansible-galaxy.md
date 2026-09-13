@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=fo
 summary: "[Ansible P.16] Hướng dẫn chuyên sâu Quản Trị Hệ Sinh Thái Ansible Galaxy: Cài Đặt, Xuất Bản, Versioning & Quản Lý requirements.yml Chuẩn Doanh Nghiệp: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 16] QUẢN TRỊ HỆ SINH THÁI ANSIBLE GALAXY: CÀI ĐẶT, XUẤT BẢN, VERSIONING & QUẢN LÝ REQUIREMENTS.YML CHUẨN DOANH NGHIỆP
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -991,3 +992,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm khai thác kho tài ngu
 1. **Nghiên cứu trước 1:** Khái niệm FQCN (Fully Qualified Collection Name) trong Ansible 2.9+ là gì? Cho ví dụ minh họa FQCN của module `copy` và module `user`.
 2. **Nghiên cứu trước 2:** Khác biệt lớn nhất về mặt cấu trúc lưu trữ giữa một Ansible Role truyền thống và một Ansible Collection là gì?
 3. **Nghiên cứu trước 3:** Tại sao Red Hat khuyến nghị bắt buộc phải sử dụng FQCN thay vì tên short-name module cũ trong các Playbook Enterprise?
+{% endraw %}

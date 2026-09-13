@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?auto=forma
 summary: "[GitLab CI/CD P.41] Hướng dẫn chuyên sâu Tích Hợp GitOps Với ArgoCD & Kubernetes: Git Commit Trigger, Kustomize Image Update & Auto Sync Application: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 41] TÍCH HỢP GITOPS VỚI ARGOCD & KUBERNETES: GIT COMMIT TRIGGER, KUSTOMIZE IMAGE UPDATE & AUTO SYNC APPLICATION
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2046,3 +2047,4 @@ Chạy lệnh `argocd app sync` trực tiếp từ CI mà không commit thay đ�
    - Trả lời câu hỏi: *"Tại sao không nên để lệnh `terraform apply` tự động chạy ngay khi merge code mà bắt buộc phải qua bước phê duyệt Manual Gate?"*
    - Chuẩn bị danh sách 3 rủi ro lớn nhất khi lưu tệp `terraform.tfstate` cục bộ trên máy chủ CI Runner!
    - Viết thử một file `main.tf` đơn giản tạo một tài nguyên S3 Bucket hoặc Resource Group sẵn sàng cho bài lab Buổi 42!
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=fo
 summary: "[Ansible P.31] Đại cẩm nang tổng hợp hơn 350 câu hỏi phỏng vấn Ansible Automation chuyên sâu từ 30 chuyên đề: kiến trúc agentless, module FQCN, idempotency, variable precedence, Jinja2, roles/collections, vault security, tối ưu forks/pipelining và AWX/AAP."
 ---
 
+{% raw %}
 # [BÀI 31] TUYỂN TẬP 100+ CÂU HỎI PHỎNG VẤN ANSIBLE AUTOMATION & DEVOPS CHUYÊN SÂU (30 BUỔI)
 
 Bộ tài liệu đúc kết toàn bộ câu hỏi phỏng vấn thực chiến, bảng tiêu chí chấm điểm kỹ thuật và các câu hỏi đào sâu (Deep Dive) từ chuỗi 30 chuyên đề đào tạo chuyên gia tự động hóa Ansible Automation & DevOps Engineering.
@@ -6610,3 +6611,4 @@ Chúc mừng bạn đã hoàn thành xuất sắc 30/30 Buổi học của khóa
 3. **Bước 3 — Mở rộng Hệ sinh thái Tự động hóa:** Tiếp tục nghiên cứu mở rộng tích hợp Ansible với HashiCorp Terraform (khai báo ảo hóa Cloud), Kubernetes / OpenShift (quản lý container orchestration), và Event-Driven Ansible (EDA) để xây dựng hạ tầng tự động hóa tự chữa lành (Self-healing Infrastructure) cấp Doanh nghiệp.
 
 ---
+{% endraw %}

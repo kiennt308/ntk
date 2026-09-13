@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=fo
 summary: "Làm chủ cơ chế đánh giá sức khỏe tài nguyên trong Argo CD: Phân tích 5 trạng thái Health Status, vạch mặt cạm bẫy 'Healthy ảo' trên các CRD bên thứ ba và hướng dẫn từng bước lập trình Custom Lua Scripts kiểm tra sức khỏe chính xác 100% cho mọi tài nguyên tùy biến."
 ---
 
+{% raw %}
 # Kiểm Soát Sức Khỏe Tài Nguyên: Health Checks & Custom Lua Scripts Cho Mọi CRD
 
 Trong quy trình phân phối liên tục (GitOps Continuous Delivery), việc kiểm tra xem một tài nguyên đã được "Apply thành công" (`Sync Status: Synced`) chỉ mới là điều kiện cần. Điều kiện đủ và quan trọng nhất để bảo đảm hệ thống vận hành trơn tru là tài nguyên đó phải thực sự **khỏe mạnh** (**`Health Status: Healthy`**) — nghĩa là các Pods đã sẵn sàng nhận traffic, các kết nối cơ sở dữ liệu đã thông suốt, các Secrets đã được giải mã và chứng chỉ SSL/TLS đã được cấp phát hợp lệ.
@@ -419,3 +420,4 @@ argocd app get ecommerce-payment-api --output json | jq '.status.resources[] | {
 Làm chủ cơ chế Health Checks và tùy biến các script Lua là bước chuyển mình quan trọng để biến Argo CD thành một người gác đền thông minh — có khả năng thấu hiểu chiều sâu của mọi loại tài nguyên và bảo vệ hệ thống khỏi các đợt phát hành lỗi âm thầm.
 
 Ở bài tiếp theo, chúng ta sẽ đi sâu vào **Phát Hiện & Xử Lý Drift: Kỹ Thuật Bỏ Qua Sai Lệch Với `ignoreDifferences` & Chiếc Bẫy "Synced Ảo"**!
+{% endraw %}

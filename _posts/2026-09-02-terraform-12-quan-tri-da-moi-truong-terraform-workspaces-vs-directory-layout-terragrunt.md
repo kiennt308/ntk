@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "So sánh toàn diện các chiến lược quản trị đa môi trường (Dev, Staging, Prod):"
 ---
 
+{% raw %}
 # Quản Trị Đa Môi Trường (Multi-Environment): Terraform Workspaces vs Cấu Trúc Thư Mục (Directory Layout) vs Terragrunt
 
 Một trong những bài toán kiến trúc kinh điển nhất mà bất kỳ kỹ sư Platform SRE và DevOps nào cũng phải đối mặt khi mở rộng quy mô là: *Làm thế nào để triển khai cùng một bộ hạ tầng lên nhiều môi trường phân tán (Development, Staging, UAT, Production) một cách an toàn, nhất quán, cô lập bán kính ảnh hưởng (Blast Radius) và dễ bảo trì?*
@@ -414,3 +415,4 @@ Kỹ sư cập nhật phiên bản Module trong thư mục <code>environments/de
 Lựa chọn đúng chiến lược quản trị đa môi trường bằng **Directory-Based Layout** kết hợp **Reusable Modules** là tấm khiên an ninh vững chắc bảo vệ hạ tầng Production của doanh nghiệp khỏi mọi nguy cơ nhầm lẫn thao tác.
 
 Trong **[Bài 13: Vòng Lặp Nâng Cao: Count vs For-Each, Thảm Họa Index Shifting & Kỹ Thuật Moved Block](13-vong-lap-nang-cao-count-vs-for-each-tham-hoa-index-shifting-va-moved-block.md)**, chúng ta sẽ đi sâu vào các cơ chế lặp nâng cao: Phân tích thảm họa Index Shifting khi xóa phần tử mảng trong `count`, làm chủ `for_each` với cấu trúc Map/Set và kỹ thuật tái cấu trúc an toàn với khối `moved {}`!
+{% endraw %}

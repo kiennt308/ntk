@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "[Ansible P.12] Hướng dẫn chuyên sâu Lập Trình Bản Mẫu Jinja2 Templates: Filters, Biểu Thức Điều Kiện, Vòng Lặp & Tự Động Sinh File Cấu Hình Phức Tạp: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 12] LẬP TRÌNH BẢN MẪU JINJA2 TEMPLATES: FILTERS, BIỂU THỨC ĐIỀU KIỆN, VÒNG LẶP & TỰ ĐỘNG SINH FILE CẤU HÌNH PHỨC TẠP
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1067,3 +1068,4 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng tự động hóa sinh fil
 1. **Nghiên cứu trước 1:** Khối `block:` kết hợp `rescue:` và `always:` trong Ansible có cơ chế hoạt động tương đương cấu trúc `try...catch...finally` trong lập trình như thế nào?
 2. **Nghiên cứu trước 2:** Thuộc tính `failed_when:` dùng để thay đổi định nghĩa một Task bị coi là THẤT BẠI khi nào?
 3. **Nghiên cứu trước 3:** Thuộc tính `changed_when:` dùng để làm gì khi gọi các lệnh CLI thô với module `command` / `shell`?
+{% endraw %}

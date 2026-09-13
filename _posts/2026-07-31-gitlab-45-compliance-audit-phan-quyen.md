@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=fo
 summary: "[GitLab CI/CD P.45] Hướng dẫn chuyên sâu Phân Quyền & Kiểm Soát Truy Cập Doanh Nghiệp: GitLab RBAC, Protected Branches, Push Rules & SAML/SSO Integration: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 45] PHÂN QUYỀN & KIỂM SOÁT TRUY CẬP DOANH NGHIỆP: GITLAB RBAC, PROTECTED BRANCHES, PUSH RULES & SAML/SSO INTEGRATION
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1930,3 +1931,4 @@ Tắt bỏ hoàn toàn quy tắc Protected Branch và Approval Rules của dự 
 3. **Bài tập chuẩn bị trước giờ học:**
    - Trả lời câu hỏi: *"Nếu chỉ số Change Failure Rate (CFR) của đội bạn đang ở mức 25%, bạn sẽ sử dụng các công cụ CI/CD nào đã học để kéo CFR xuống dưới 5%?"*
    - Chuẩn bị một đoạn script Python gọi REST API GitLab để lấy tổng số deployments trong tháng vừa qua!
+{% endraw %}

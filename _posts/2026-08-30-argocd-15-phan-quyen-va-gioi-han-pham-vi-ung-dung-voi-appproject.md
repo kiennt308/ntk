@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=fo
 summary: "Hướng dẫn thiết lập cơ chế phân quyền đa khách thuê (Multi-tenancy) với AppProject trong Argo CD: Xây dựng 5 rào chắn an ninh vững chắc, kiểm soát tài nguyên cấp cụm và namespace, phân quyền RBAC Project Roles với JWT Tokens, thiết lập khung giờ đóng băng triển khai Sync Windows và xử lý các lỗi vi phạm chính sách bảo mật."
 ---
 
+{% raw %}
 # Phân Quyền & Giới Hạn Phạm Vi Ứng Dụng Với AppProject: 5 Rào Chắn An Ninh
 
 Trong môi trường doanh nghiệp có hàng chục đội phát triển cùng chia sẻ một hệ thống Argo CD chung, việc để tất cả ứng dụng trong dự án mặc định (**Project `default`**) là một lỗ hổng bảo mật cực kỳ nguy hiểm. 
@@ -418,3 +419,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về AppProject:
 `AppProject` là rào chắn an ninh vững chắc nhất trong Argo CD, biến hệ thống thành một nền tảng đa khách thuê (Multi-tenant Platform) an toàn tuyệt đối, phân định ranh giới trách nhiệm rõ ràng và bảo vệ môi trường Production trước mọi sai sót vận hành.
 
 Ở bài tiếp theo, chúng ta sẽ khám phá **Tùy Biến Engine Render Với Config Management Plugins (CMP v2 Sidecars) & Quản Trị Directory Apps**!
+{% endraw %}

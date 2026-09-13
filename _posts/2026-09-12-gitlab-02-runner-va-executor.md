@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=forma
 summary: "[GitLab CI/CD P.02] Hướng dẫn chuyên sâu GitLab Runner & Các Loại Executor: Shell, Docker, Kubernetes Executor & Cơ Chế Đăng Ký Token Mới: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 02] GITLAB RUNNER & CÁC LOẠI EXECUTOR: SHELL, DOCKER, KUBERNETES EXECUTOR & CƠ CHẾ ĐĂNG KÝ TOKEN MỚI
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2208,3 +2209,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. Nếu `image` được khai trong `config.toml` (làm mặc định) **và** cũng được khai trong một job, cái nào thắng? Ghi phỏng đoán của bạn cùng lập luận; buổi 03 sẽ **đo** thay vì tra tài liệu.
 
 **Ba câu này dẫn vào đâu:** câu 1 dẫn vào §4 buổi 03 về cấu trúc tệp `.gitlab-ci.yml` và khối `default`; câu 2 dẫn vào §5 buổi 03 với luận đề *`stage` là ràng buộc **thứ tự**, không phải ràng buộc **dữ liệu*** — và câu trả lời đúng cần `concurrent` của hôm nay, tức hai job cùng stage chỉ chạy cùng lúc khi có đủ slot; câu 3 dẫn vào §6 buổi 03 về thứ tự ưu tiên giữa `config.toml`, `default`, và khai báo trong job — nối thẳng vào QT 4.1 hôm nay.
+{% endraw %}

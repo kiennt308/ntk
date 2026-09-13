@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=forma
 summary: "[GitLab CI/CD P.04] Hướng dẫn chuyên sâu Điều Khiển Luồng Thực Thi Nâng Cao Với Rules & Workflow: rules:if, changes, exists & workflow:rules: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 04] ĐIỀU KHIỂN LUỒNG THỰC THI NÂNG CAO VỚI RULES & WORKFLOW: RULES:IF, CHANGES, EXISTS & WORKFLOW:RULES
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2356,3 +2357,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. Liệt kê **ba** thư mục trong dự án của bạn nên đi bằng `cache` và **ba** thư mục nên đi bằng `artifacts`. Với mỗi thư mục, ghi một câu lý do dựa trên buổi 01 QT 5.2.
 
 **Ba câu này dẫn vào đâu:** câu 1 dẫn vào §4 buổi 05 về **thời điểm tính `cache:key`** — và câu trả lời nối thẳng vào trục `t0` của hôm nay; câu 2 dẫn vào §5 buổi 05 về `dependencies` so `needs` khi job nguồn vắng mặt; câu 3 dẫn vào §6 buổi 05, nơi khoá học chốt **bảng phân loại thư mục** dùng lại ở toàn bộ giai đoạn 3 (buổi 15–22, mỗi ngôn ngữ một chiến lược cache).
+{% endraw %}

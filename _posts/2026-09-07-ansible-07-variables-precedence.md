@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=fo
 summary: "[Ansible P.07] Hướng dẫn chuyên sâu Hệ Thống Biến & Thứ Tự Ưu Tiên (Variable Precedence 22 Tầng): Extra Vars, Play Vars, Role Defaults & Inventory: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 07] HỆ THỐNG BIẾN & THỨ TỰ ƯU TIÊN (VARIABLE PRECEDENCE 22 TẦNG): EXTRA VARS, PLAY VARS, ROLE DEFAULTS & INVENTORY
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -985,3 +986,4 @@ Khi nhà tuyển dụng phỏng vấn về năng lực quản lý biến và x�
 1. **Nghiên cứu trước 1:** Ansible Facts là gì? Module nào tự động chạy ở đầu mỗi Play để thu thập thông tin này?
 2. **Nghiên cứu trước 2:** Làm thế nào để trích xuất địa chỉ IP, dung lượng RAM, và phiên bản hệ điều hành từ biến `ansible_facts`?
 3. **Nghiên cứu trước 3:** Custom Facts (.fact files) được lưu ở đường dẫn thư mục nào trên máy đích và có cấu trúc ra sao?
+{% endraw %}

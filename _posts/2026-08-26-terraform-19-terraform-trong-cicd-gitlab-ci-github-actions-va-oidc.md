@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=fo
 summary: "Xây dựng Pipeline CI/CD tự động hóa toàn diện cho Terraform với GitHub Actions"
 ---
 
+{% raw %}
 # Terraform trong CI/CD: GitLab CI, GitHub Actions và OIDC Authentication
 
 Trong môi trường doanh nghiệp hiện đại, việc chạy `terraform apply` trực tiếp từ máy tính xách tay cá nhân của kỹ sư (Laptop Ops) bị coi là một hành vi vi phạm nghiêm trọng các quy chuẩn bảo mật và quản trị rủi ro (Compliance & Governance). Mọi thay đổi hạ tầng bắt buộc phải được theo dõi thông qua phiên bản mã nguồn Git (GitOps), kiểm tra tự động trong quá trình **Pull Request (Plan Phase)** và chỉ được phép triển khai vào Production sau khi vượt qua các bước **Phê duyệt thủ công (Manual Approval Gate)** trên hệ thống **CI/CD Pipeline**.
@@ -562,3 +563,4 @@ mindmap
 - **Tiêu chuẩn vàng bảo mật**: Khai tử 100% IAM Access Keys tĩnh trên GitHub/GitLab, chuyển đổi toàn bộ sang **OIDC Keyless Authentication**.
 - **Nguyên tắc vận hành**: Không bao giờ áp dụng thay đổi mà không thông qua bước kiểm tra Pull Request và lưu giữ file plan nhị phân `tfplan.binary`.
 - **Bước tiếp theo**: Trong [Bài 20: Quản Lý Secrets và Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh Nghiệp](./20-quan-ly-secrets-va-du-lieu-sensitive-trong-terraform.md), chúng ta sẽ giải quyết triệt để vấn đề rò rỉ mật khẩu trong State file bằng HashiCorp Vault, AWS Secrets Manager và biến số `sensitive = true`!
+{% endraw %}

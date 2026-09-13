@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=forma
 summary: "[GitLab CI/CD P.37] Hướng dẫn chuyên sâu Xác Thực OIDC Không Cần Khóa (Keyless Authentication): AWS STS, GCP Workload Identity & Azure Federated Identity: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 37] XÁC THỰC OIDC KHÔNG CẦN KHÓA (KEYLESS AUTHENTICATION): AWS STS, GCP WORKLOAD IDENTITY & AZURE FEDERATED IDENTITY
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1985,3 +1986,4 @@ Cho rằng OIDC chạy ẩn nên không lưu lại dấu vết gì trên Cloud.
 
 3. **Bài tập chuẩn bị trước giờ học:**
    - Đọc trước tài liệu AWS IAM Trust Policy Condition Keys dành cho OIDC Provider: `sts:RoleSessionName`, `StringEquals`, và `StringLike`!
+{% endraw %}

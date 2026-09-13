@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=fo
 summary: "[GitLab CI/CD P.11] Hướng dẫn chuyên sâu Xây Dựng CI/CD Catalog & CI/CD Components: Đóng Gói Module, Semantic Versioning & Enterprise Component Hub: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 11] XÂY DỰNG CI/CD CATALOG & CI/CD COMPONENTS: ĐÓNG GÓI MODULE, SEMANTIC VERSIONING & ENTERPRISE COMPONENT HUB
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2286,3 +2287,4 @@ Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp
 t1 Fail-fast Fail               Bất biến Hạ tầng               Quản trị Doanh nghiệp
 (Server Merging)                (Immutable Infra)              (Enterprise Governance)
 ```
+{% endraw %}

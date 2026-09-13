@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=fo
 summary: "[GitLab CI/CD P.01] Hướng dẫn chuyên sâu Kiến Trúc GitLab CI/CD & Mô Hình Thực Thi Job: GitLab Server, Runner, Coordinator & Vòng Đời Pipeline: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 01] KIẾN TRÚC GITLAB CI/CD & MÔ HÌNH THỰC THI JOB: GITLAB SERVER, RUNNER, COORDINATOR & VÒNG ĐỜI PIPELINE
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2328,3 +2329,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. Trong tám pha của QT 4.2, pha nào **không** phụ thuộc vào `.gitlab-ci.yml` mà phụ thuộc vào cấu hình runner? Nêu ít nhất hai pha và giải thích ngắn gọn vì sao.
 
 **Ba câu này dẫn vào đâu:** câu 1 dẫn vào phần mô hình cô lập của ba executor ở buổi 02; câu 2 dẫn thẳng vào `concurrent` và `limit` trong `config.toml`, tức phần cấu hình runner mà học viên chưa hề đụng tới ở buổi 01; câu 3 dẫn vào việc **phân chia trách nhiệm giữa người viết pipeline và người vận hành runner** — chủ đề trung tâm của buổi 02, và là thứ quyết định ai phải sửa khi pipeline hỏng.
+{% endraw %}

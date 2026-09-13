@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=fo
 summary: "[Ansible P.13] Hướng dẫn chuyên sâu Xử Lý Lỗi Chuyên Sâu Với Blocks: block, rescue, always & Cơ Chế Try-Catch-Finally Trong Hạ Tầng: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 13] XỬ LÝ LỖI CHUYÊN SÂU VỚI BLOCKS: BLOCK, RESCUE, ALWAYS & CƠ CHẾ TRY-CATCH-FINALLY TRONG HẠ TẦNG
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1048,3 +1049,4 @@ Chúc mừng học viên đã **HOÀN THÀNH 100% GIAI ĐOẠN 2 (Buổi 07–13
 1. **Nghiên cứu trước 1:** Khái niệm `Role` trong Ansible là gì? Tại sao phải chia nhỏ Playbook khổng lồ thành các Role?
 2. **Nghiên cứu trước 2:** Cấu trúc thư mục chuẩn của 1 Ansible Role gồm những thư mục con nào (ví dụ `tasks/`, `handlers/`, `templates/`, `vars/`, `defaults/`, `meta/`)?
 3. **Nghiên cứu trước 3:** Lệnh CLI `ansible-galaxy role init <role_name>` dùng để làm gì?
+{% endraw %}

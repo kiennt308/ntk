@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=fo
 summary: "[GitLab CI/CD P.28] Hướng dẫn chuyên sâu Bảo Mật Tĩnh SAST & Dependency Scanning: GitLab SAST, Semgrep, Trivy & Quét Lỗ Hổng Phụ Thuộc Mã Nguồn: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 28] BẢO MẬT TĨNH SAST & DEPENDENCY SCANNING: GITLAB SAST, SEMGREP, TRIVY & QUÉT LỖ HỔNG PHỤ THUỘC MÃ NGUỒN
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1788,3 +1789,4 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 | §V3 | Câu chốt để nói khi phỏng vấn | 3 phút |
 | §V4 | Bài tập về nhà (BTVN 4 chuẩn bị Buổi 29) | 2 phút |
 | **Tổng** | **Khối vấn đáp & Phấn bảng** | **20'** |
+{% endraw %}

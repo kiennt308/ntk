@@ -4,8 +4,10 @@ layout: default
 
 {% assign page_cfg = site.post_page %}
 {% assign ads_on = false %}
-{% if page.ads != false and (site.ads.enabled or site.show_ads) %}
-  {% assign ads_on = true %}
+{% if page.ads != false %}
+  {% if site.ads.enabled or site.show_ads %}
+    {% assign ads_on = true %}
+  {% endif %}
 {% endif %}
 
 <!-- Calculate Reading Time -->

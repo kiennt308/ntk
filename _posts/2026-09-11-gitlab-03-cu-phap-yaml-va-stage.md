@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=forma
 summary: "[GitLab CI/CD P.03] Hướng dẫn chuyên sâu Cú Pháp YAML Cốt Lõi & Thiết Kế Stages: .gitlab-ci.yml, Pipeline Execution Order & Điều Phối Tuyến Tính: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 03] CÚ PHÁP YAML CỐT LÕI & THIẾT KẾ STAGES: .GITLAB-CI.YML, PIPELINE EXECUTION ORDER & ĐIỀU PHỐI TUYẾN TÍNH
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2332,3 +2333,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. Nếu một job **không chạy**, các job ở stage sau phụ thuộc artifact của nó sẽ ra sao — chạy bình thường, bị bỏ qua, hay đỏ? Ghi phỏng đoán kèm lập luận dựa trên buổi 01 QT 5.3 và buổi 03 QT 5.1.
 
 **Ba câu này dẫn vào đâu:** câu 1 dẫn vào §4 buổi 04 phân biệt `rules` với `only/except` với `when: manual` — ba cách "không chạy" có ba trạng thái khác nhau và hệ quả khác nhau; câu 2 dẫn vào §5 buổi 04 với **bảng chân trị 12 ca kích hoạt × `rules`**, bảng cần nhất của cả giai đoạn 1; câu 3 dẫn vào §6 buổi 04 về job bị bỏ qua và `allow_failure` — và nó là chỗ mô hình hàng rào của hôm nay gặp mô hình `rules` của buổi sau.
+{% endraw %}

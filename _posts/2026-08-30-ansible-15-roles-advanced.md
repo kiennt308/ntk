@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=forma
 summary: "[Ansible P.15] Hướng dẫn chuyên sâu Kỹ Thuật Role Nâng Cao: Role Dependencies, Search Paths, Parameterized Roles & Tái Cấu Trúc Playbook Quy Mô Lớn: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 15] KỸ THUẬT ROLE NÂNG CAO: ROLE DEPENDENCIES, SEARCH PATHS, PARAMETERIZED ROLES & TÁI CẤU TRÚC PLAYBOOK QUY MÔ LỚN
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1044,3 +1045,4 @@ Chúc mừng học viên đã **ĐẠT MỐC 50% KHÓA HỌC (Buổi 01–15)**!
 1. **Nghiên cứu trước 1:** Ansible Galaxy là gì? Lệnh CLI nào dùng để tìm kiếm và cài đặt một Role công đồng từ Galaxy?
 2. **Nghiên cứu trước 2:** Tệp `requirements.yml` dùng để làm gì trong việc quản lý danh sách các Roles và Collections phụ thuộc của dự án?
 3. **Nghiên cứu trước 3:** Lệnh CLI `ansible-galaxy install -r requirements.yml` có tác dụng gì khi triển khai dự án mới?
+{% endraw %}

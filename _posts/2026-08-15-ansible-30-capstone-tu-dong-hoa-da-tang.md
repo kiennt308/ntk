@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=fo
 summary: "[Ansible P.30] Hướng dẫn chuyên sâu Đồ Án Capstone: Xây Dựng Hệ Thống Tự Động Hóa Hạ Tầng Doanh Nghiệp Đa Tầng (Load Balancer, Web, DB, Security) End-to-End: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 30] ĐỒ ÁN CAPSTONE: XÂY DỰNG HỆ THỐNG TỰ ĐỘNG HÓA HẠ TẦNG DOANH NGHIỆP ĐA TẦNG (LOAD BALANCER, WEB, DB, SECURITY) END-TO-END
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1275,3 +1276,4 @@ Chúc mừng bạn đã hoàn thành xuất sắc 30/30 Buổi học của khóa
 1. **Bước 1 — Xây dựng Portfolio IaC trên GitHub:** Push toàn bộ bộ 4 Roles Capstone, `site-capstone.yml`, tệp `README.md` hướng dẫn và hình ảnh sơ đồ Mermaid L2 lên kho GitHub cá nhân. Đây là minh chứng vàng cho năng lực thực chiến khi ứng tuyển các vị trí Senior DevOps / Cloud Engineer.
 2. **Bước 2 — Đăng ký và Ôn luyện Kỳ thi RHCE EX294:** Sử dụng tệp [04-blueprint-rhce-ex294.md](file:///d:/ntkall-main/ntkansible/00-tong-quan/04-blueprint-rhce-ex294.md) để rà soát lại 100% các mục tiêu bài thi, tự bấm giờ làm lại kịch bản Capstone Buổi 30 trong 2.5 giờ để sẵn sàng thi đạt RHCE điểm tối đa.
 3. **Bước 3 — Mở rộng Hệ sinh thái Tự động hóa:** Tiếp tục nghiên cứu mở rộng tích hợp Ansible với HashiCorp Terraform (khai báo ảo hóa Cloud), Kubernetes / OpenShift (quản lý container orchestration), và Event-Driven Ansible (EDA) để xây dựng hạ tầng tự động hóa tự chữa lành (Self-healing Infrastructure) cấp Doanh nghiệp.
+{% endraw %}

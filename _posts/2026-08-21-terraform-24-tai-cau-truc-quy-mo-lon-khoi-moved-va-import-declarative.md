@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=forma
 summary: "Làm chủ các cuộc đại phẫu thuật tái cấu trúc hạ tầng (Large-scale Infrastructure"
 ---
 
+{% raw %}
 # Tái Cấu Trúc Quy Mô Lớn: Khối moved và Import Declarative
 
 Trong vòng đời phát triển hạ tầng đám mây của doanh nghiệp, không có kiến trúc nào là bất biến. Một codebase Terraform ban đầu được viết theo kiểu phẳng (Flat monolithic layout) chỉ sau vài tháng sẽ phình to thành hàng nghìn dòng, đòi hỏi phải được **tái cấu trúc (Refactoring)**: chia nhỏ thành các Modules độc lập, đổi tên tài nguyên cho đúng chuẩn định danh mới, hoặc chuyển đổi từ vòng lặp danh sách số nguyên `count` sang cấu hình khóa định danh `for_each`.
@@ -463,3 +464,4 @@ mindmap
 - **Tiêu chuẩn Refactoring**: Tuyệt đối không chạy lệnh `terraform state mv` thủ công trên môi trường Production. 100% việc đổi tên và chuyển module phải được định nghĩa bằng **khối `moved`**.
 - **Tiêu chuẩn di trú hạ tầng cũ**: Khai thác sức mạnh của **khối `import`** kết hợp với cờ `-generate-config-out` để chuẩn hóa các tài nguyên legacy vào Terraform.
 - **Bước tiếp theo**: Trong [Bài 25: Quản Trị Blast Radius và Tổ Chức Codebase Hạ Tầng Enterprise](./25-quan-tri-blast-radius-va-to-chuc-codebase-ha-tang-enterprise.md), chúng ta sẽ phân tích chiến lược phân rã Monolith State thành Micro-States để cô lập hoàn toàn phạm vi rủi ro khi có sự cố!
+{% endraw %}

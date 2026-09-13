@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "Hướng dẫn làm chủ tư duy lập trình meta trong HCL: giải mã cơ chế sinh lặp"
 ---
 
+{% raw %}
 # Lập Trình HCL Nâng Cao: Làm Chủ Dynamic Blocks, Biểu Thức For (For Expressions) & Toán Tử Ellipsis
 
 Ngôn ngữ cấu hình **HCL (HashiCorp Configuration Language)** được thiết kế theo triết lý **Khai báo (Declarative)**: Kỹ sư chỉ cần mô tả trạng thái mong muốn cuối cùng (**Desired State**) mà không cần phải viết các cấu trúc điều khiển luồng phức tạp như vòng lặp `for` hay câu lệnh `while` của các ngôn ngữ lập trình thủ tục.
@@ -440,3 +441,4 @@ Trả về một <b>Map</b> trong đó mỗi Key là <code>s.id</code> và Value
 Làm chủ **`dynamic` blocks**, **For Expressions**, **toán tử Ellipsis (`...`)** và **`flatten()`** giúp bạn tự tin xử lý mọi cấu trúc dữ liệu phức tạp nhất, đưa mã nguồn IaC lên tầm cao của sự tinh gọn và linh hoạt.
 
 Trong **[Bài 15: Functions, Type Constraints & Custom Variable Validation Nâng Cao: Làm Chủ can(), try() & Regex](15-functions-type-constraints-va-custom-variable-validation-chuan-enterprise.md)**, chúng ta sẽ khép lại Giai đoạn 3 với những kỹ thuật phòng thủ vững chắc: Xử lý an toàn các giá trị không tồn tại với `try()`, kiểm soát lỗi ngoại lệ với `can()`, và xây dựng bộ quy tắc kiểm định toàn diện chuẩn Enterprise!
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=forma
 summary: "[GitLab CI/CD P.10] Hướng dẫn chuyên sâu Tái Sử Dụng & Chuẩn Hóa Cấu Hình CI: include:local/remote/template, extends & YAML YAML Anchors/Aliases: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 10] TÁI SỬ DỤNG & CHUẨN HÓA CẤU HÌNH CI: INCLUDE:LOCAL/REMOTE/TEMPLATE, EXTENDS & YAML YAML ANCHORS/ALIASES
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2346,3 +2347,4 @@ Nếu bạn cung cấp cho các team phát triển một Job mẫu qua `extends`
 1. Không cho phép kế thừa tự do bằng `extends` đối với các job bảo mật.
 2. Ép buộc các job bảo mật chạy ở một **Stage cố định** độc lập (ví dụ `.pre` hoặc `security-audit`).
 3. Sử dụng **CI/CD Components** kết hợp với **Required Pipeline Configurations** ở cấp độ Group/Instance của GitLab để đóng đóng băng hoàn toàn luồng kiểm soát.
+{% endraw %}

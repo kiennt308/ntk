@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=forma
 summary: "Phân tích sâu cơ chế tự động xây dựng đồ thị phụ thuộc (DAG), phân biệt Implicit"
 ---
 
+{% raw %}
 # Làm Chủ Dependency Graph (DAG): Quản Lý Phụ Thuộc Tường Minh vs Ngầm Định & Data Sources
 
 Trong một hệ thống hạ tầng đám mây đa tầng (Multi-Tier Enterprise Infrastructure), mối quan hệ phụ thuộc giữa các thành phần là vô cùng chằng chịt: *EC2 Instance bắt buộc phải đặt trong Subnet, Subnet phải gắn vào VPC, Security Group Rule cần ID của Security Group, và Kubernetes EKS Node Group chỉ có thể khởi động sau khi IAM Policy Attachment đã hoàn tất trên AWS IAM Service*.
@@ -481,3 +482,4 @@ Sử dụng lệnh <code>terraform graph | dot -Tsvg -o graph.svg</code> kết h
 Làm chủ **Dependency Graph (DAG)**, phân biệt rõ ràng **Implicit vs Explicit Dependencies** và nắm vững quy tắc vận hành của **Data Sources** giúp bạn tự tin thiết kế những hệ sinh thái hạ tầng khổng lồ mà không bao giờ gặp phải các lỗi bế tắc vòng lặp.
 
 Trong **[Bài 05: Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Type Constraints, Validation Rules & Sensitive Data Masking](05-thiet-ke-variables-locals-outputs-chuan-enterprise.md)**, chúng ta sẽ hoàn thiện chặng 1 với nghệ thuật thiết kế giao diện hạ tầng: Tùy biến biến đầu vào với các quy tắc kiểm tra biểu thức chính quy (Regex Validation), quản lý biến nội bộ bất biến `locals` và che giấu dữ liệu nhạy cảm với cờ `sensitive = true`.
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=fo
 summary: "[GitLab CI/CD P.16] Hướng dẫn chuyên sâu Pipeline Chuyên Sâu Cho Node.js & TypeScript: PNPM/NPM Cache, Vitest/Jest, SonarQube & Build Bundle: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 16] PIPELINE CHUYÊN SÂU CHO NODE.JS & TYPESCRIPT: PNPM/NPM CACHE, VITEST/JEST, SONARQUBE & BUILD BUNDLE
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2013,3 +2014,4 @@ build_package:
 - **Ứng viên:** *"Dạ thưa anh, em phản đối dựa trên hai bằng chứng kỹ thuật đo đạc được:*
   1. *Thứ nhất: Lệnh `npm ci` chuẩn sẽ luôn xóa sạch `node_modules` trước khi nạp gói. Nếu ta giữ `node_modules` từ Cache thì ta bắt buộc phải dùng `npm install` hoặc bỏ qua bước cài đặt — điều này phá vỡ tính bất biến của Lockfile.*
   2. *Thứ hai: Thư mục `node_modules` chứa trung bình 40,000 tệp nhỏ, khiến Runner mất 34 giây chỉ để giải nén zip. Trong khi đó, Cache kho tarball `.npm-cache` chỉ có 12,000 tệp, giải nén mất 11 giây và `npm ci` mất 14 giây (tổng 25 giây, nhanh hơn 9 giây). Do đó, Cache `~/.npm` vừa đúng đắn về kiến trúc vừa nhanh hơn về mặt thời gian."*
+{% endraw %}

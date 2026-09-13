@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "Hướng dẫn thiết kế Terraform Module chuẩn sản xuất theo quy chuẩn HashiCorp:"
 ---
 
+{% raw %}
 # Tự Viết Module Terraform Chuẩn Enterprise: Cấu Trúc File, Hợp Đồng Giao Tiếp & Semantic Versioning
 
 Khi hạ tầng của một doanh nghiệp phát triển từ vài chục tài nguyên lên hàng nghìn tài nguyên phân tán, việc viết toàn bộ mã nguồn HCL trong một thư mục gốc nguyên khối (**Root Module Monolith**) sẽ biến codebase thành một "mớ bòng bong" không thể bảo trì:
@@ -469,3 +470,4 @@ Sử dụng tham số <code>providers</code> khi gọi module:
 Khép lại **Giai Đoạn 2: Quản Trị State & Modules Chuyên Sâu**, bạn đã nắm vững cấu trúc State Schema v4, kỹ thuật Remote Backend S3 + DynamoDB Locking, phẫu thuật State Subcommands, chiến lược chế ngự Drift và nghệ thuật đóng gói Enterprise Module.
 
 Trong **Giai Đoạn 3 (Lập Trình Nâng Cao & Tự Động Hóa Đa Môi Trường)** mở đầu với **[Bài 11: Module Composition & Quản Lý Phụ Thuộc Module Đa Tầng: Private Registry, Git Submodules & Nested Modules](11-module-composition-private-registry-va-quan-ly-phu-thuoc-module-da-tang.md)**, chúng ta sẽ bước vào thế giới của kiến trúc phân tầng: Kỹ thuật kết hợp Module Composition, quản trị Private Module Registry và cách xử lý luồng dữ liệu giữa các module độc lập!
+{% endraw %}

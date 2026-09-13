@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=fo
 summary: "[Ansible P.01] Hướng dẫn chuyên sâu Tư Duy Configuration Management & Triết Lý Agentless Của Ansible: Push-Based vs Pull-Based & Idempotency: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 01] TƯ DUY CONFIGURATION MANAGEMENT & TRIẾT LÝ AGENTLESS CỦA ANSIBLE: PUSH-BASED VS PULL-BASED & IDEMPOTENCY
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -762,3 +763,4 @@ Quy đổi: ≥ 30 giỏi · 24–29 khá · 18–23 đạt · < 18 chưa đạt
 
 Ba câu này dẫn vào buổi 02 — *Cài đặt, kiến trúc, lệnh ad-hoc*: control node, `ansible.cfg`, SSH,
 module setup/facts, và các module ad-hoc thường dùng.
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "Hướng dẫn xây dựng kiến trúc GitOps Đa Cụm (Multi-Cluster GitOps) theo mô hình Hub-and-Spoke: Cơ chế xác thực an toàn với ServiceAccount argocd-manager, phân tích cấu trúc Cluster Secret, cấu hình Sharding Controller cho 100+ cụm, quản trị triển khai chéo hạ tầng và xử lý sự cố đứt gãy kết nối mạng cụm từ xa."
 ---
 
+{% raw %}
 # Quản Trị Đa Cụm: Multi-Cluster GitOps & Triển Khai Chéo Hạ Tầng Chuẩn Doanh Nghiệp
 
 Trong kỷ nguyên đám mây lai (Hybrid Cloud) và đa vùng (Multi-Region), hầu hết các doanh nghiệp không còn vận hành trên một cụm Kubernetes duy nhất. Một kiến trúc chuẩn mực thường bao gồm nhiều cụm phân tán theo chức năng hoặc địa lý: cụm cho môi trường Phát triển (Dev/Staging), cụm Sản xuất tại Mỹ (Prod-US), cụm Sản xuất tại Châu Á (Prod-APAC), và các cụm tại trung tâm dữ liệu On-Premise.
@@ -425,3 +426,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Multi-Cluster GitO
 Mô hình Multi-Cluster GitOps với kiến trúc Hub-and-Spoke và Sharding Controller là chuẩn mực kiến trúc không thể thiếu cho các tổ chức công nghệ hiện đại, mang lại khả năng mở rộng quy mô toàn cầu, bảo mật tập trung và độ tin cậy tuyệt đối.
 
 Ở bài tiếp theo, chúng ta sẽ đi sâu vào **Phân Quyền & Giới Hạn Phạm Vi Ứng Dụng Với AppProject: Thiết Lập 5 Rào Chắn An Ninh Đa Tenant**!
+{% endraw %}

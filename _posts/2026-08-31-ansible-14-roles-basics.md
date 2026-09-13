@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=fo
 summary: "[Ansible P.14] Hướng dẫn chuyên sâu Đóng Gói Tái Sử Dụng Với Ansible Roles: Cấu Trúc Thư Mục Chuẩn, Tasks, Handlers, Vars, Defaults & Meta: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 14] ĐÓNG GÓI TÁI SỬ DỤNG VỚI ANSIBLE ROLES: CẤU TRÚC THƯ MỤC CHUẨN, TASKS, HANDLERS, VARS, DEFAULTS & META
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1037,3 +1038,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm cấu trúc mã nguồn
 1. **Nghiên cứu trước 1:** Phân biệt sự khác nhau giữa việc nạp Role động `include_role` (Dynamic Re-use) và nạp Role tĩnh `import_role` (Static Re-use)?
 2. **Nghiên cứu trước 2:** Khi nào thì nên dùng `include_role` bên trong một vòng lặp `loop:`?
 3. **Nghiên cứu trước 3:** Làm thế nào để truyền danh sách biến phức tạp khi gọi `include_role` trong Task?
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=forma
 summary: "[GitLab CI/CD P.17] Hướng dẫn chuyên sâu Pipeline Chuyên Sâu Cho Java Enterprise: Maven / Gradle Daemon Cache, JUnit, JaCoCo & SonarQube Scan: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 17] PIPELINE CHUYÊN SÂU CHO JAVA ENTERPRISE: MAVEN / GRADLE DAEMON CACHE, JUNIT, JACOCO & SONARQUBE SCAN
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1930,3 +1931,4 @@ Kết quả: Tổng thời gian Pipeline giảm từ 8 phút xuống còn khoả
 3. **Kiểm tra tệp Lockfile trong Python:**
    - Phân biệt vai trò của `requirements.txt`, `poetry.lock` và `uv.lock`.
    - Vì sao việc thiếu tệp Lockfile trong dự án Python CI lại gây ra sự cố "Hôm nay build xanh, ngày mai build đỏ" tương tự như Node.js thiếu `package-lock.json`?
+{% endraw %}

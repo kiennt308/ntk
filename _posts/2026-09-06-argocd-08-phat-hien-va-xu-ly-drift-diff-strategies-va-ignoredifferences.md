@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=forma
 summary: "Hướng dẫn chuyên sâu về cơ chế phát hiện sai lệch (Drift Detection) trong Argo CD: Phân tích chiến lược Three-way Diff vs Server-Side Diff, làm chủ cú pháp RFC 6901 JSON Pointers, jqPathExpressions và vạch trần cạm bẫy che giấu mã độc do lạm dụng IgnoreDifferences."
 ---
 
+{% raw %}
 # Phát Hiện & Xử Lý Drift: Diff Strategies, IgnoreDifferences & Cạm Bẫy 'Synced Ảo'
 
 Trong mô hình GitOps, **Configuration Drift** (Sự sai lệch cấu hình giữa kho Git và cụm Kubernetes thực tế) được coi là "kẻ thù số một" phá vỡ nguyên lý Single Source of Truth. Một hệ thống GitOps lý tưởng đòi hỏi mọi sai lệch phải bị phát hiện ngay lập tức và dập tắt tự động.
@@ -448,3 +449,4 @@ Dưới đây là 10 câu hỏi phỏng vấn và sát hạch thực chiến gi�
 Khai thác đúng đắn cơ chế phát hiện sai lệch và sử dụng chuẩn xác `ignoreDifferences` là ranh giới giữa một hệ thống GitOps hoạt động ổn định, mượt mà và một hệ thống liên tục báo lỗi giả tạo. Bằng cách kết hợp giữa Server-Side Diff, RFC 6901 Pointers và nguyên tắc Leaf-Node, bạn vừa bảo vệ được tính toàn vẹn của hệ thống, vừa tạo không gian cho các bộ điều khiển tự động như HPA hoạt động tối ưu.
 
 Ở bài tiếp theo, chúng ta sẽ bước sang **Tích Hợp Kustomize Trong Argo CD: Quản Trị Đa Môi Trường DRY Chuẩn Doanh Nghiệp (Base & Overlays Pattern)**!
+{% endraw %}

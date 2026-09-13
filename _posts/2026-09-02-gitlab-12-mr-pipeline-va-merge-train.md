@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "[GitLab CI/CD P.12] Hướng dẫn chuyên sâu Kiểm Soát Nhánh & Hợp Nhất Mã Nguồn: Merge Request Pipelines, Merged Results & Merge Trains Zero-Broken: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 12] KIỂM SOÁT NHÁNH & HỢP NHẤT MÃ NGUỒN: MERGE REQUEST PIPELINES, MERGED RESULTS & MERGE TRAINS ZERO-BROKEN
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2328,3 +2329,4 @@ curl -X POST -H 'Content-type: application/json' \
 - Nắm vững bản chất cây mã nguồn Git mà Job đang đứng trên đó.
 - Không tin tưởng mù quáng vào kết quả báo xanh của Mức bảo vệ 1 khi chưa kiểm thử trên cây đã gộp (Mức bảo vệ 2).
 - Luôn tính toán bài toán chi phí tài nguyên Runner trước khi quyết định áp dụng tính năng Merge Train ở cấp độ tập đoàn.
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=fo
 summary: "[GitLab CI/CD P.49] Đại cẩm nang tổng hợp hơn 500 câu hỏi phỏng vấn GitLab CI/CD và DevSecOps chuyên sâu từ 48 chuyên đề: kiến trúc Runner, DAG needs, child-parent pipeline, monorepo, OIDC federation, SAST/DAST, SLSA SBOM và DORA metrics."
 ---
 
+{% raw %}
 # [BÀI 49] TUYỂN TẬP 100+ CÂU HỎI PHỎNG VẤN GITLAB CI/CD & DEVSECOPS CHUYÊN SÂU (48 BUỔI)
 
 Bộ tài liệu đúc kết toàn bộ câu hỏi phỏng vấn thực chiến, bảng tiêu chí chấm điểm kỹ thuật và các câu hỏi đào sâu (Deep Dive) từ chuỗi 48 chuyên đề đào tạo chuyên gia GitLab CI/CD & DevSecOps Engineering.
@@ -16093,3 +16094,4 @@ Tôi xây dựng hệ thống Actionable Observability cho Pipeline (`QT 48.11`)
 | **Tổng thời gian phần Vấn đáp** | **20 phút** | **ĐẠT** |
 
 ---
+{% endraw %}

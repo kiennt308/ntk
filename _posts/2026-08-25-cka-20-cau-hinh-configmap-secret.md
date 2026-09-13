@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=fo
 summary: "[CKA P.20] Hướng dẫn chuyên sâu Quản Lý Cấu Hình Ứng Dụng: ConfigMap, Secret, EnvFrom, Projected Volumes & Kỹ Thuật Hot Reload: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 20] QUẢN LÝ CẤU HÌNH ỨNG DỤNG: CONFIGMAP, SECRET, ENVFROM, PROJECTED VOLUMES & KỸ THUẬT HOT RELOAD
 
 Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
@@ -1494,3 +1495,4 @@ kubectl get secret <secret-name> -n <namespace> -o jsonpath='{.data.<key>}' | ba
 | T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
 | T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
 | **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=forma
 summary: "Hướng dẫn xây dựng và tích hợp Config Management Plugins (CMP v2) trong Argo CD: Kiến trúc Sidecar gRPC Unix Socket an toàn, bóc tách cấu trúc tệp plugin.yaml, tự động phát hiện với Discovery rules, tích hợp SOPS/Helmfile/Jsonnet và xử lý bẫy lỗi tràn output stream."
 ---
 
+{% raw %}
 # Tùy Biến Engine Render Với Config Management Plugins (CMP v2 Sidecar)
 
 Mặc dù Argo CD hỗ trợ sẵn các công cụ render manifest phổ biến nhất như Helm và Kustomize, nhưng trong thực tế các doanh nghiệp thường có những công cụ và quy trình đặc thù:
@@ -419,3 +420,4 @@ Config Management Plugins v2 (CMP v2) là cánh cửa mở ra khả năng tùy b
 Chúc mừng bạn đã hoàn thành trọn vẹn **Giai Đoạn 3 (Quy Mô Đa Cụm & Quản Lý Hàng Trăm Ứng Dụng)**!
 
 Ở bài tiếp theo mở màn **Giai Đoạn 4**, chúng ta sẽ bước vào lĩnh vực An ninh & Vận hành chuyên sâu với **Kiểm Soát Truy Cập: Argo CD RBAC, Policy Roles & Group Mapping Chuẩn Doanh Nghiệp**!
+{% endraw %}

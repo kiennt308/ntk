@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=forma
 summary: "[Ansible P.08] Hướng dẫn chuyên sâu Thu Thập & Khai Thác Ansible Facts: Setup Module, Custom Facts, Gathers Facts Optimization & Smart Caching: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 08] THU THẬP & KHAI THÁC ANSIBLE FACTS: SETUP MODULE, CUSTOM FACTS, GATHERS FACTS OPTIMIZATION & SMART CACHING
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1066,3 +1067,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm khai thác Ansible Fact
 1. **Nghiên cứu trước 1:** Mệnh đề `when` trong Ansible có tác dụng gì? Nó được đánh giá trước hay sau khi Task thực thi?
 2. **Nghiên cứu trước 2:** Làm thế nào để kết hợp nhiều điều kiện rẽ nhánh bằng các toán tử `and`, `or`, `not` trong mệnh đề `when`?
 3. **Nghiên cứu trước 3:** Phân biệt sự khác nhau về mục đích sử dụng giữa thuộc tính `when` và thuộc tính `failed_when`.
+{% endraw %}

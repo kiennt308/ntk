@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=fo
 summary: "Làm chủ khối lifecycle trong Terraform để can thiệp vào vòng đời tài nguyên:"
 ---
 
+{% raw %}
 # Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy, ignore_changes
 
 Trong hành vi mặc định của Terraform, khi một thay đổi cấu hình buộc phải tái tạo tài nguyên (Replacement), engine sẽ tuân theo quy trình nghiêm ngặt: **Xóa tài nguyên cũ trước (Destroy), sau đó mới tạo tài nguyên mới (Create)**. Cơ chế này đảm bảo giải phóng tài nguyên và tránh xung đột tên định danh, nhưng lại là nguyên nhân hàng đầu gây ra **Downtime** gián đoạn dịch vụ nghiêm trọng trên môi trường Production.
@@ -560,3 +561,4 @@ mindmap
 - **Quy tắc an toàn Production**: Mọi cơ sở dữ liệu (RDS, Mongo, Redis, ElasticSearch) và S3 Data Lake bắt buộc phải có `prevent_destroy = true`.
 - **Quy tắc Zero-Downtime**: Mọi Web Server, ASG, Launch Template, Target Group bắt buộc phải có `create_before_destroy = true` kết hợp với `name_prefix`.
 - **Bước tiếp theo**: Trong [Bài 17: Provisioners, terraform_data và Chuyển Đổi State Không Phá Hủy Hạ Tầng](./17-provisioners-terraform-data-va-chuyen-doi-state-khong-pha-huy-ha-tang.md), chúng ta sẽ phân tích lý do HashiCorp khuyến cáo hạn chế `local-exec`/`remote-exec`, cách thay thế hoàn hảo bằng `terraform_data`, và các kỹ thuật chạy script an toàn chuẩn Cloud-init.
+{% endraw %}

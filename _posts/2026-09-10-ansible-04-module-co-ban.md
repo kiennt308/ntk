@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "[Ansible P.04] Hướng dẫn chuyên sâu Làm Chủ Các Modules Cốt Lõi: File, Copy, Template, Package, Service, Command vs Shell vs Raw: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 04] LÀM CHỦ CÁC MODULES CỐT LÕI: FILE, COPY, TEMPLATE, PACKAGE, SERVICE, COMMAND VS SHELL VS RAW
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -870,3 +871,4 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng sử dụng các module An
 1. **Nghiên cứu trước 1:** Cấu trúc cú pháp tiêu chuẩn của một file Playbook YAML gồm những phần tử cơ bản nào (`name`, `hosts`, `become`, `tasks`)?
 2. **Nghiên cứu trước 2:** Mỗi Task trong Playbook liên hệ thế nào với các module ad-hoc ta đã học ở Buổi 04?
 3. **Nghiên cứu trước 3:** Ý nghĩa của các thông số `ok`, `changed`, `unreachable`, `failed` trong bảng tổng kết `PLAY RECAP` ở cuối lượt chạy Playbook?
+{% endraw %}

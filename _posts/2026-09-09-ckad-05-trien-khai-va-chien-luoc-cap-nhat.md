@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=fo
 summary: "[CKAD P.05] Hướng dẫn chuyên sâu Chiến Lược Triển Khai Ứng Dụng: RollingUpdate, Recreate, Blue-Green Deployment & Canary Releases: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 05] CHIẾN LƯỢC TRIỂN KHAI ỨNG DỤNG: ROLLINGUPDATE, RECREATE, BLUE-GREEN DEPLOYMENT & CANARY RELEASES
 
 Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKAD)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
@@ -1234,3 +1235,4 @@ kubectl patch service <svc-name> -n <ns> -p '{"spec":{"selector":{"version":"v2"
 | T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
 | T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
 | **Tổng** | **30'** | **30'** |
+{% endraw %}

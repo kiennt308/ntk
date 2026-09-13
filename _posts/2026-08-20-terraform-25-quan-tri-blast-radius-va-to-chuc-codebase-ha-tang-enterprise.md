@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=fo
 summary: "Kiểm soát và cô lập bán kính thiệt hại (Blast Radius) khi vận hành Terraform"
 ---
 
+{% raw %}
 # Quản Trị Blast Radius và Tổ Chức Codebase Hạ Tầng Enterprise
 
 Trong lĩnh vực an toàn kỹ thuật và quản trị rủi ro hệ thống, thuật ngữ **Blast Radius (Bán kính Thiệt hại / Vùng Ảnh Hưởng)** mô tả phạm vi tàn phá tối đa của một hệ thống khi một sự cố nghiêm trọng xảy ra. Đối với Terraform, Blast Radius được đo lường bằng câu hỏi cốt lõi của các Giám đốc Công nghệ (CTO / Head of Infrastructure): **"Nếu một lệnh `terraform apply` bị lỗi, hoặc một tệp State bị hỏng (Corrupted), có bao nhiêu phần trăm hệ thống của doanh nghiệp sẽ bị sập theo?"**
@@ -462,3 +463,4 @@ mindmap
 - **Quy tắc bất biến**: Không bao giờ để tài nguyên Mạng (Network), Lưu trữ (Data) và Ứng dụng (App) sống chung trong một tệp State duy nhất.
 - **Tiêu chuẩn hiệu năng**: Tối ưu hóa kích thước State file sao cho lệnh `terraform plan` luôn hoàn tất dưới 90 giây trong Pipeline CI/CD.
 - **Bước tiếp theo**: Trong [Bài 26: Gỡ Rối State Lock, Apply Nửa Chừng và Cứu Hộ State Corruption](./26-go-roi-state-lock-apply-nua-chung-va-cuu-ho-state-corruption.md), chúng ta sẽ bước vào khóa huấn luyện SRE Cứu hộ thảm họa: giải cứu State bị khóa chết, khôi phục apply dở dang và phục hồi State file bị hỏng!
+{% endraw %}

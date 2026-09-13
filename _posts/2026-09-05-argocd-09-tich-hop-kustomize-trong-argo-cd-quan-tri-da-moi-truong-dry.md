@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=fo
 summary: "Hướng dẫn tích hợp Kustomize trong Argo CD: Quản trị đa môi trường Dev/Staging/Prod theo triết lý DRY (Don't Repeat Yourself) với Base & Overlays Pattern, Kustomize Components, khai thác sức mạnh của ConfigMapGenerator Content Hash kích hoạt Zero-Downtime Rolling Updates và xử lý bẫy Pod không reload cấu hình."
 ---
 
+{% raw %}
 # Tích Hợp Kustomize Trong Argo CD: Quản Trị Đa Môi Trường DRY Chuẩn Enterprise
 
 Trong thực tế phát triển phần mềm, một ứng dụng microservice không bao giờ chỉ chạy trên một môi trường duy nhất. Hệ thống bắt buộc phải đi qua chuỗi các môi trường: **Dev** (cho lập trình viên thử nghiệm), **Staging / UAT** (cho QA kiểm thử tải) và **Production** (phục vụ khách hàng thực tế).
@@ -413,3 +414,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Kustomize & GitOps
 Kustomize là chuẩn mực vàng để hiện thực hóa triết lý DRY trong quản trị cấu hình Kubernetes đa môi trường. Bằng việc kết hợp Base & Overlays, Kustomize Components và ConfigMapGenerator, đội ngũ kỹ thuật có thể quản lý hàng trăm ứng dụng một cách nhất quán, giảm thiểu sai sót và đảm bảo các bản cập nhật cấu hình luôn được kích hoạt mượt mà trên Production.
 
 Ở bài tiếp theo, chúng ta sẽ khám phá **Quản Lý Helm Charts Với Argo CD & Kỹ Thuật Multiple Sources `$values` Nâng Cao**!
+{% endraw %}

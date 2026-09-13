@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=forma
 summary: "[GitLab CI/CD P.39] Hướng dẫn chuyên sâu Tự Động Hóa Triển Khai Lên GCP: Workload Identity Federation, Google Kubernetes Engine (GKE) & Cloud Run: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 39] TỰ ĐỘNG HÓA TRIỂN KHAI LÊN GCP: WORKLOAD IDENTITY FEDERATION, GOOGLE KUBERNETES ENGINE (GKE) & CLOUD RUN
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1994,3 +1995,4 @@ Cho rằng "JSON Key vẫn an toàn nếu giấu kỹ trong CI Masked Variables"
    - So sánh cơ chế khai báo Federated Credential từng Subject của Azure khác gì với Attribute Condition CEL của GCP và Condition Key của AWS!
    - Thực hành khai báo một Azure Federated Credential trên Entra ID Console chỉ định `subject` chứa `project_path:my-group/my-repo:ref_type:branch:ref:main`.
    - Chuẩn bị danh sách 5 câu hỏi thắc mắc thực chiến về sự khác biệt giữa 3 nhà cung cấp Đám mây AWS, GCP, Azure để trao đổi trực tiếp và giải đáp thắc mắc ở giờ học Buổi 40 sắp tới!
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=forma
 summary: "[CKA P.26] Hướng dẫn chuyên sâu Kiến Trúc Lưu Trữ Bền Vững: Volume, PersistentVolume (PV), PersistentVolumeClaim (PVC) & ReclaimPolicy: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 26] KIẾN TRÚC LƯU TRỮ BỀN VỮNG: VOLUME, PERSISTENTVOLUME (PV), PERSISTENTVOLUMECLAIM (PVC) & RECLAIMPOLICY
 
 Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
@@ -1348,3 +1349,4 @@ kubectl patch pv <pv-name> -p '{"spec":{"claimRef":null}}'
 | T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
 | T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
 | **Tổng** | **30'** | **30'** |
+{% endraw %}

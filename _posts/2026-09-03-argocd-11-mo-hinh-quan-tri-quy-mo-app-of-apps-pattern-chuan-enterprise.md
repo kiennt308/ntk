@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=fo
 summary: "Hướng dẫn làm chủ mô hình App-of-Apps Pattern trong Argo CD: Quản lý hàng trăm ứng dụng phân cấp qua một Root Application duy nhất, thiết lập cấu trúc phân tầng Hạ tầng vs Nghiệp vụ, quản trị vòng đời Cascade Deletion, cấu hình Lua Health Bubble Up và cách đánh bại bẫy 'Root App Synced xanh nhưng Child App nổ lỗi đỏ'."
 ---
 
+{% raw %}
 # Mô Hình Quản Trị Quy Mô: App-of-Apps Pattern Chuẩn Enterprise
 
 Khi số lượng microservices trong doanh nghiệp vượt qua con số 20, 50 hoặc hàng trăm dịch vụ phân tán trên nhiều môi trường, việc kỹ sư phải dùng lệnh `kubectl apply` hoặc tạo thủ công từng đối tượng `Application CRD` trên giao diện web của Argo CD sẽ nhanh chóng biến thành một "cơn ác mộng" vận hành.
@@ -410,3 +411,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về mô hình App-of-A
 Mô hình App-of-Apps là bước tiến vượt bậc đưa GitOps từ cấp độ quản trị từng ứng dụng đơn lẻ lên cấp độ quản trị toàn diện một hệ sinh thái phân tán phức tạp. Bằng cách kết hợp cấu trúc thư mục phân tầng, Finalizer an toàn và Lua Health Check lan truyền, doanh nghiệp có thể mở rộng quy mô lên hàng trăm dịch vụ một cách tự tin.
 
 Ở bài tiếp theo, chúng ta sẽ nâng cấp lên cấp độ tự động hóa đỉnh cao với **ApplicationSet Engine: Tự Động Sinh Ứng Dụng Hàng Loạt Với List & Cluster Generators**!
+{% endraw %}

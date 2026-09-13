@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=fo
 summary: "Làm chủ nghệ thuật Module Composition: giải mã sự khác biệt giữa Flat Composition"
 ---
 
+{% raw %}
 # Ghép Nối Module (Module Composition) & Kiến Trúc Phân Tầng Multi-Tier Trên Terraform Registry
 
 Khi một kỹ sư đã làm chủ kỹ năng tự viết các Module đơn chức năng (**Single-Purpose Modules**), thử thách kiến trúc tiếp theo của một Platform Architect là: *Làm thế nào để liên kết các khối module độc lập này lại với nhau để dựng nên một hệ sinh thái hạ tầng đám mây hoàn chỉnh (Multi-Tier Enterprise Architecture) bao gồm Mạng VPC, Tường lửa, Cơ sở dữ liệu và Cụm Kubernetes?*
@@ -433,3 +434,4 @@ Tạo một thư mục <code>examples/basic</code> bên trong chính module đó
 Làm chủ nghệ thuật **Ghép Nối Module Phẳng (Flat Module Composition)** và kiến trúc phân tầng đa lớp giúp bạn thiết kế những hệ sinh thái hạ tầng đám mây đồ sộ, linh hoạt và sẵn sàng mở rộng cho hàng trăm dịch vụ vi mô.
 
 Trong **[Bài 12: Quản Trị Đa Môi Trường: So Sánh Thực Chiến Terraform Workspaces vs Directory Layout vs Terragrunt](12-quan-tri-da-moi-truong-terraform-workspaces-vs-directory-layout-terragrunt.md)**, chúng ta sẽ bước vào cuộc tranh luận kiến trúc kinh điển nhất thế giới DevOps: Khi nào nên dùng Workspaces, khi nào nên chia thư mục File-based Layout, và tại sao các tập đoàn hàng đầu lại lựa chọn Terragrunt!
+{% endraw %}

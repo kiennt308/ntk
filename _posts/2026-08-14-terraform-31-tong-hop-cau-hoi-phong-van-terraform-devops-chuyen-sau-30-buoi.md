@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=fo
 summary: "Kho tàng 100+ câu hỏi phỏng vấn tuyển chọn từ các kỳ phỏng vấn Senior Cloud"
 ---
 
+{% raw %}
 # Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu (30 Buổi)
 
 Trong các buổi phỏng vấn kỹ thuật cho vị trí **Senior DevOps Engineer**, **Cloud Platform Lead** hay **Principal Infrastructure Architect**, Terraform luôn là một trong những chủ đề trọng tâm chiếm thời lượng lớn nhất. Người phỏng vấn tại các tập đoàn công nghệ lớn (FAANG / Big Tech / Fintech Unicorns) sẽ không chỉ hỏi các câu hỏi lý thuyết cơ bản (như "Terraform là gì?" hay "Kể tên các lệnh CLI"), mà họ sẽ đưa bạn vào những **tình huống sự cố nghẹt thở (Scenario-based & War-room Incidents)**:
@@ -425,3 +426,4 @@ mindmap
 ```
 
 - **Lời kết**: Chúc mừng bạn đã hoàn thành trọn vẹn khóa huấn luyện chuyên sâu 31 bài về Terraform và Infrastructure as Code! Với khối lượng tri thức, kinh nghiệm thực chiến và tư duy kiến trúc đã tích lũy, bạn đã sẵn sàng tự tin dẫn dắt các dự án hạ tầng đám mây quy mô lớn và chinh phục những đỉnh cao mới trong sự nghiệp DevOps / Cloud Architect!
+{% endraw %}

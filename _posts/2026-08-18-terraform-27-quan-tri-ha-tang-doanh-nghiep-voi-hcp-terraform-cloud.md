@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=forma
 summary: "Khám phá toàn diện nền tảng SaaS quản trị hạ tầng doanh nghiệp HCP Terraform"
 ---
 
+{% raw %}
 # Quản Trị Hạ Tầng Doanh Nghiệp Với HCP Terraform & Terraform Cloud
 
 Khi doanh nghiệp phát triển từ một vài nhóm nhỏ lên quy mô hàng chục bộ phận độc lập (Platform Engineering, Data Platform, Security, Application Teams), việc tự vận hành hệ thống lưu trữ State trên S3/DynamoDB kết hợp với các pipeline CI/CD tự chế (Custom Scripts trên Jenkins hoặc GitHub Actions) bắt đầu bộc lộ các điểm nghẽn nghiêm trọng:
@@ -450,3 +451,4 @@ mindmap
 - **Tiêu chuẩn vận hành hiện đại**: Chuyển đổi từ mô hình tự quản lý S3 Backend sang **HCP Terraform Workspaces** để đạt được tính minh bạch, kiểm soát chi phí và bảo mật tuyệt đối.
 - **Tiêu chuẩn Module Doanh Nghiệp**: 100% Shared Modules phải được xuất bản và quản trị phiên bản thông qua **Private Module Registry**.
 - **Bước tiếp theo**: Trong [Bài 28: CDKTF và Kiến Trúc Phát Triển Custom Terraform Provider](./28-cdktf-va-kien-truc-phat-trien-custom-terraform-provider.md), chúng ta sẽ bước ra khỏi giới hạn của HCL để viết hạ tầng bằng Python/TypeScript với CDKTF và tự lập trình một Terraform Provider tùy biến bằng ngôn ngữ Golang!
+{% endraw %}

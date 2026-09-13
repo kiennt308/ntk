@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=forma
 summary: "Phân tích toàn diện đối tượng cốt lõi Application CRD trong Argo CD: Bóc tách hợp đồng bộ ba Source-Destination-Project, giải mã chuyên sâu danh mục Sync Options (ServerSideApply, CreateNamespace, ApplyOutOfSyncOnly) và cơ chế Cascade Deletion với Finalizers."
 ---
 
+{% raw %}
 # Giải Mã Application CRD: Hợp Đồng Nguồn Đích, Sync Options & Tracking IDs
 
 Trong hệ sinh thái Argo CD, đối tượng Custom Resource Definition (**CRD**) quan trọng và xuất hiện nhiều nhất chính là **`Application`** (`argoproj.io/v1alpha1`). Đây là bản giao kèo khai báo (Declarative Contract) gắn kết chặt chẽ giữa một kho lưu trữ mã nguồn Git và một cụm Kubernetes mục tiêu.
@@ -415,3 +416,4 @@ argocd app get ecommerce-payment-api -o json | jq '.status.resources[] | {kind: 
 `Application CRD` là trái tim của kiến trúc GitOps trên Argo CD — nơi mọi quy tắc về nguồn mã, đích triển khai, phương thức áp dụng và an toàn vòng đời được định nghĩa tường minh.
 
 Ở bài tiếp theo, chúng ta sẽ đi sâu vào **Đồng Bộ Tự Động: Sync Policy, Prune, Self-Heal & Vạch Trần Toàn Bộ Các Biến Thể Của Cạm Bẫy "Synced Nhưng Sai"**!
+{% endraw %}

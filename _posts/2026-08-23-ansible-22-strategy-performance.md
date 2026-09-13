@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=forma
 summary: "[Ansible P.22] Hướng dẫn chuyên sâu Tối Ưu Hiệu Năng & Tốc Độ Thực Thi: Forks, Free Strategy, Pipelining, ControlPersist SSH & Mitogen Accelerator: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 22] TỐI ƯU HIỆU NĂNG & TỐC ĐỘ THỰC THI: FORKS, FREE STRATEGY, PIPELINING, CONTROLPERSIST SSH & MITOGEN ACCELERATOR
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1061,3 +1062,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tối ưu hóa hiệu n
 1. **Nghiên cứu trước 1:** Thuộc tính `ignore_errors: true` khác gì với `failed_when:` trong việc xử lý lỗi Task?
 2. **Nghiên cứu trước 2:** Từ khóa `any_errors_fatal: true` ở cấp Playbook có tác dụng gì khi 1 host trong cụm bị fail?
 3. **Nghiên cứu trước 3:** Làm thế nào để cấu hình tự động thử lại (Retry mechanism) cho một Task bị lỗi mạng bằng `until:`, `retries:`, và `delay:`?
+{% endraw %}

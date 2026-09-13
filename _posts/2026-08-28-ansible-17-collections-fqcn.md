@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=forma
 summary: "[Ansible P.17] Hướng dẫn chuyên sâu Ansible Collections & Fully Qualified Collection Name (FQCN): Tách Biệt Core Engine & Tích Hợp Đa Nền Tảng Đám Mây: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 17] ANSIBLE COLLECTIONS & FULLY QUALIFIED COLLECTION NAME (FQCN): TÁCH BIỆT CORE ENGINE & TÍCH HỢP ĐA NỀN TẢNG ĐÁM MÂY
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1005,3 +1006,4 @@ Khi nhà tuyển dụng phỏng vấn về tiêu chuẩn viết mã Ansible hi�
 1. **Nghiên cứu trước 1:** Phân biệt sự khác nhau giữa `include_tasks` vs `import_tasks` và `include_playbook` vs `import_playbook`?
 2. **Nghiên cứu trước 2:** Tại sao khi dùng `import_tasks` (Static), ta không thể sử dụng biến được tạo ra ở Runtime (như biến từ `register`) trong điều kiện `when:`?
 3. **Nghiên cứu trước 3:** Khi nào thì nên chia nhỏ tệp Playbook thành nhiều tệp task con bằng `include_tasks`?
+{% endraw %}

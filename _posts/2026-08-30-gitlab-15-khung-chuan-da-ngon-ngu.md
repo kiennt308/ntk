@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=forma
 summary: "[GitLab CI/CD P.15] Hướng dẫn chuyên sâu Thiết Kế Khung CI/CD Chuẩn Đa Ngôn Ngữ: Kiến Trúc Polyglot Pipeline Cho Hệ Thống Microservices: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 15] THIẾT KẾ KHUNG CI/CD CHUẨN ĐA NGÔN NGỮ: KIẾN TRÚC POLYGLOT PIPELINE CHO HỆ THỐNG MICROSERVICES
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2180,3 +2181,4 @@ Học viên nghiên cứu trước 3 câu hỏi sau để chuẩn bị cho **Bu�
    - *Gợi ý trả lời:* Job ở stage đầu (`build`) dùng `policy: pull-push` để nạp và cập nhật Cache mới. Các Job ở stage sau (`test`, `lint`) chỉ dùng `policy: pull` để đọc đệm mà không nén đè lại, giảm bớt I/O đĩa và tiết kiệm thời gian chạy Pipeline.
 
 6. **Câu 6 (Kiểm tra lại hệ thống):** Ôn tập lại 14 Checkpoints của Buổi 15 và đảm bảo tất cả các script tự động `diff-pipeline.sh`, `so-thu-chi-cache.sh`, `run-cac-ca-hong.sh`, `kiem-khung.sh` đều thực thi trơn tru trên môi trường máy chủ GitLab Runner.
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=forma
 summary: "[Ansible P.03] Hướng dẫn chuyên sâu Thiết Kế Inventory Chuẩn Enterprise: Static vs Dynamic Inventory, Host Groups, Group Vars & Host Vars: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 03] THIẾT KẾ INVENTORY CHUẨN ENTERPRISE: STATIC VS DYNAMIC INVENTORY, HOST GROUPS, GROUP VARS & HOST VARS
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -927,3 +928,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý Inventory v�
 1. **Nghiên cứu trước 1:** Các module cốt lõi `ansible.builtin.copy`, `ansible.builtin.file`, `ansible.builtin.lineinfile` khác nhau thế nào khi quản lý tệp tin trên máy đích?
 2. **Nghiên cứu trước 2:** Module `ansible.builtin.cron` giúp quản trị viên tạo và quản lý các tác vụ định kỳ trên Linux như thế nào?
 3. **Nghiên cứu trước 3:** Làm thế nào để sử dụng module `ansible.builtin.stat` kiểm tra sự tồn tại của một file trước khi quyết định thực thi các bước tiếp theo?
+{% endraw %}

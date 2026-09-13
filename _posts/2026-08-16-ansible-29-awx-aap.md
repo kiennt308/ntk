@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=forma
 summary: "[Ansible P.29] Hướng dẫn chuyên sâu Quản Trị Tự Động Hóa Doanh Nghiệp Với AWX & Red Hat Ansible Automation Platform (AAP): RBAC, Job Templates & Workflows: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 29] QUẢN TRỊ TỰ ĐỘNG HÓA DOANH NGHIỆP VỚI AWX & RED HAT ANSIBLE AUTOMATION PLATFORM (AAP): RBAC, JOB TEMPLATES & WORKFLOWS
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1080,3 +1081,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm vận hành nền tản
 1. **Nghiên cứu trước 1:** Kiến trúc hệ thống Web-App-DB 3 tầng (Multi-tier Infrastructure) gồm Load Balancer Nginx, Web Node Python/NodeJS và Database PostgreSQL được phối hợp như thế nào bằng Ansible Roles?
 2. **Nghiên cứu trước 2:** Làm thế nào để hợp nhất toàn bộ các kỹ năng đã học (Inventory, Variables, Vault, System Roles, Performance, Error Handling, Testing, CI/CD, Systemd, Firewall, AWX) vào tệp Playbook Capstone tổng thể?
 3. **Nghiên cứu trước 3:** Kịch bản kiểm thử Idempotency toàn diện từ đầu tới cuối (End-to-End Idempotency Test) cho một hạ tầng 3 tầng phức tạp đòi hỏi các bước đối soát CLI và `docker exec` ra sao để đạt điểm tuyệt đối 100% của khóa học?
+{% endraw %}

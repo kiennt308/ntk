@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=fo
 summary: "Bộ cẩm nang 100+ câu hỏi phỏng vấn tuyển dụng kỹ thuật chuyên sâu về Argo CD & GitOps Enterprise dành cho DevOps Engineer, SRE và Platform Architect: Bao phủ 5 cấp độ từ Kiến trúc cốt lõi, Kustomize/Helm, Multi-Cluster ApplicationSet, Security/RBAC/Secrets đến Progressive Delivery và Troubleshooting sự cố Production."
 ---
 
+{% raw %}
 # Đại Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Argo CD & GitOps Chuyên Sâu (24 Chuyên Đề)
 
 Chào mừng bạn đến với chuyên đề tổng kết đặc biệt của toàn bộ Series **Argo CD & GitOps Enterprise Architecture**. 
@@ -476,3 +477,4 @@ flowchart LR
 Chúc mừng bạn đã hoàn thành trọn vẹn **Series 25 Chuyên Đề Argo CD & GitOps Enterprise Architecture**! 
 
 Hành trình từ những dòng manifest đầu tiên cho tới việc thiết kế và vận hành hệ thống E-commerce đa cụm cấp doanh nghiệp là một bước tiến vượt bậc trong sự nghiệp kỹ thuật của bạn. Hãy lưu giữ bộ cẩm nang 100+ câu hỏi phỏng vấn này, liên tục thực hành trên các môi trường lab thực tế và tự tin khẳng định vị thế **GitOps Platform Lead** trong mọi dự án công nghệ lớn!
+{% endraw %}

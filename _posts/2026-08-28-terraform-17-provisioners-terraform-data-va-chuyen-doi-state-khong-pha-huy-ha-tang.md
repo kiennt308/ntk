@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=fo
 summary: "Giải mã bản chất của Terraform Provisioners (local-exec, remote-exec, file),"
 ---
 
+{% raw %}
 # Provisioners, terraform_data và Chuyển Đổi State Không Phá Hủy Hạ Tầng
 
 Trong những ngày đầu tiếp cận Infrastructure as Code, hầu hết các kỹ sư đều có xu hướng sử dụng **Provisioners** (`local-exec`, `remote-exec`, `file`) để cài đặt phần mềm, chạy lệnh Bash, hoặc kích hoạt các script cấu hình ngay sau khi máy chủ vừa được khởi tạo. Tuy nhiên, trong tài liệu chính thức của mình, HashiCorp đã đưa ra lời cảnh báo đanh thép: **"Provisioners are a Last Resort" (Provisioners là giải pháp đường cùng)**.
@@ -520,3 +521,4 @@ mindmap
 - **Quy tắc bất biến**: Tuyệt đối không dùng `remote-exec` để cài đặt phần mềm trên Production. Hãy đóng gói sẵn vào AMI/Image bằng **Packer** hoặc chuyển giao cho **Cloud-init / Ansible**.
 - **Tiêu chuẩn Terraform 1.4+**: Xóa bỏ vĩnh viễn `null_resource` khỏi codebase và chuyển sang sử dụng `terraform_data`.
 - **Bước tiếp theo**: Trong [Bài 18: Provider Alias, Multi-Region và Multi-Account Enterprise Architecture](./18-provider-alias-multi-region-va-multi-account-enterprise-architecture.md), chúng ta sẽ khám phá cách quản trị hạ tầng xuyên lục địa (Multi-Region Disaster Recovery) và mở rộng mô hình Multi-Account chuẩn AWS Landing Zone!
+{% endraw %}

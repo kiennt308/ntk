@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=fo
 summary: "Làm chủ hệ sinh thái Kiểm thử Hạ tầng (Infrastructure Testing) toàn diện"
 ---
 
+{% raw %}
 # Kiểm Thử Hạ Tầng: terraform test, TFLint, Trivy và Validate
 
 Trong kỹ nghệ phần mềm truyền thống, không lập trình viên nào dám đẩy code lên Production mà không chạy qua bộ kiểm thử Unit Tests và Integration Tests. Thế nhưng trong lĩnh vực Infrastructure as Code, suốt một thời gian dài, phương pháp kiểm thử phổ biến nhất của các kỹ sư DevOps lại là... **chạy `terraform apply` trực tiếp lên Cloud thật rồi cầu nguyện (Hope-Driven Development)**!
@@ -539,3 +540,4 @@ mindmap
 - **Quy tắc phát triển Module**: 100% Terraform Shared Modules dùng chung trong doanh nghiệp bắt buộc phải có thư mục `tests/` chứa ít nhất 2 kịch bản kiểm thử `.tftest.hcl` (1 Unit Test logic và 1 Negative Test kiểm tra Validation).
 - **Tiêu chuẩn CI Pipeline**: Tích hợp chuỗi kiểm tra Shift-Left: `fmt` -> `validate` -> `tflint` -> `trivy` -> `terraform test`.
 - **Bước tiếp theo**: Trong [Bài 22: Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest và Checkov](./22-quan-tri-chinh-sach-policy-as-code-opa-rego-conftest-va-checkov.md), chúng ta sẽ bước lên đỉnh cao của quản trị hạ tầng với ngôn ngữ Rego và Open Policy Agent để xây dựng các rào chắn Guardrails bất khả xâm phạm!
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "Dự án tốt nghiệp Capstone tổng hợp toàn bộ 23 chuyên đề: Thiết kế và triển khai kiến trúc E-commerce Multi-Cluster GitOps Enterprise hoàn chỉnh với Hub-and-Spoke, Root App-of-Apps, ApplicationSet Matrix, AppProject đa tenant, SealedSecrets, Argo Rollouts Canary tự động Rollback và quy trình nghiệm thu Production Handover Audit."
 ---
 
+{% raw %}
 # Capstone Project: Xây Dựng Nền Tảng GitOps Enterprise Đa Đội, Đa Cụm End-to-End
 
 Chào mừng bạn đến với **Capstone Project** — dự án tổng hợp đỉnh cao trong hành trình chinh phục **Argo CD & GitOps Enterprise Architecture**! 
@@ -449,3 +450,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về kiến trúc Capst
 Dự án Capstone đã đưa bạn từ một kỹ sư làm quen với các khái niệm GitOps cơ bản trở thành một **Kiến trúc sư Nền tảng GitOps Cấp cao (Principal Platform Architect)**. Bạn đã làm chủ khả năng thiết kế, bảo vệ và vận hành các hệ thống phân phối phần mềm khổng lồ, an toàn tuyệt đối và có khả năng phục hồi thần tốc.
 
 Để củng cố toàn diện tri thức và sẵn sàng cho các buổi phỏng vấn tuyển dụng vị trí SRE / DevOps Lead, hãy bước tiếp vào **Bài 25 — Đại Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Argo CD & GitOps Chuyên Sâu**!
+{% endraw %}

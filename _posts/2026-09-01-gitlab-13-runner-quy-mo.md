@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=fo
 summary: "[GitLab CI/CD P.13] Hướng dẫn chuyên sâu Vận Hành GitLab Runner Quy Mô Lớn: Autoscaling Runner Với Docker Machine & Kubernetes Pod Autoscaling: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 13] VẬN HÀNH GITLAB RUNNER QUY MÔ LỚN: AUTOSCALING RUNNER VỚI DOCKER MACHINE & KUBERNETES POD AUTOSCALING
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2411,3 +2412,4 @@ Triển khai đăng ký hàng chục máy chủ Runner tự động:
 - Luôn đo đạc 3 đại lượng $\lambda, S, \text{queued\_duration}$ bằng REST API trước khi đưa ra quyết định hạ tầng.
 - Nhớ rõ công thức đếm Slot $c = \min(\text{concurrent}, \sum \text{limit})$.
 - Áp dụng các giải pháp giảm $\lambda$ miễn phí (0 USD) trước khi tính đến việc mua thêm máy chủ Runner.
+{% endraw %}

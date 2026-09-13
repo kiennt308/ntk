@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=forma
 summary: "Hướng dẫn thiết lập toàn diện hệ sinh thái Observability cho Argo CD Control Plane: Cấu hình Prometheus ServiceMonitor trên 4 cổng metrics chuyên biệt, xây dựng các câu truy vấn PromQL vàng cho SRE, nạp Grafana Dashboard chuẩn và thiết lập cảnh báo Reconcile Storm làm sập API server."
 ---
 
+{% raw %}
 # Giám Sát & Đo Lường: Argo CD Observability, Prometheus & Grafana Chuẩn SRE
 
 Khi hệ thống GitOps trở thành "xương sống" phân phối toàn bộ hạ tầng và vi dịch vụ của một tổ chức, bản thân **Argo CD Control Plane** phải được giám sát nghiêm ngặt như một dịch vụ cấp 0 (Tier-0 Critical Infrastructure).
@@ -409,3 +410,4 @@ Grafana Dashboard ID <b><code>14584</code></b> (Argo CD Overview Dashboard) do c
 Thiết lập một hệ thống **Observability** toàn diện với Prometheus, ServiceMonitor, PromQL và Grafana giúp bạn chuyển đổi từ thế bị động (chờ developer báo cáo khi app không deploy được) sang thế chủ động (phát hiện sớm suy giảm hiệu năng trước khi xảy ra sự cố).
 
 Trong **Bài 23: Bảo Mật, Hardening, Sao Lưu DR & Xử Lý Sự Cố Argo CD Production**, chúng ta sẽ tiến vào các chiến lược bảo mật tối thượng: Network Policies, Non-root containers, sao lưu `argocd-util backup` và kịch bản khôi phục thảm họa (Disaster Recovery) sau thảm họa sập toàn bộ cụm Control Plane!
+{% endraw %}

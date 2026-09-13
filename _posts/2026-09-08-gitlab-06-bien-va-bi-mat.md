@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=fo
 summary: "[GitLab CI/CD P.06] Hướng dẫn chuyên sâu Quản Lý Biến & Bảo Mật Secrets: CI/CD Variables, Masked / Protected Variables & File-type Variables: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 06] QUẢN LÝ BIẾN & BẢO MẬT SECRETS: CI/CD VARIABLES, MASKED / PROTECTED VARIABLES & FILE-TYPE VARIABLES
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2865,3 +2866,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. Chọn **một** pipeline hỏng mà bạn từng mất nhiều thời gian nhất. Viết lại theo mẫu **bốn dòng**: *triệu chứng → bằng chứng → nguyên nhân → cách sửa*. Mỗi dòng một câu, và dòng "bằng chứng" bắt buộc có một con số hoặc một lệnh.
 
 **Ba câu này dẫn vào đâu:** câu 1 dẫn thẳng vào **§4 buổi 07 — cấu trúc log job theo tám pha**; cái đáng giá không phải bảng tám pha (buổi 01 đã có) mà là việc tự tìm ranh giới trên log thật, vì phần **không xếp được vào pha nào** chính là phần buổi 07 sẽ mổ. Câu 2 dẫn vào **§5 buổi 07 — `retry` sửa được nhóm lỗi nào và không sửa được nhóm nào**: `retry` chỉ có tác dụng với lỗi **không xác định** (mạng, runner chết, hạn giờ), còn biến rỗng là lỗi **xác định**. Câu 3 dẫn vào **§6 buổi 07 và mẫu báo cáo gỡ rối bốn dòng** mà cả buổi 07 dùng — ca thật học viên mang tới sẽ thành ca thứ bảy của lớp.
+{% endraw %}

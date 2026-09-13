@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=forma
 summary: "Hướng dẫn thiết kế Remote Backend chuẩn Enterprise với AWS S3 (KMS Encryption,"
 ---
 
+{% raw %}
 # Xây Dựng Remote State Enterprise: AWS S3 Backend, DynamoDB State Locking & Di Trú State An Toàn
 
 Khi quy mô dự án mở rộng với nhiều kỹ sư DevOps và các pipeline CI/CD (GitHub Actions, GitLab CI, Jenkins) cùng tham gia quản trị hạ tầng, mô hình **Local State** (`local backend`) trở thành "quả bom nổ chậm". Hai kỹ sư hoặc hai pipeline chạy `terraform apply` gần như đồng thời có thể ghi đè state lẫn nhau (**Race Condition**), làm sai lệch chỉ số `serial` và khiến dữ liệu ánh xạ hạ tầng bị mất đồng bộ hoàn toàn (State Corruption).
@@ -414,3 +415,4 @@ Hạ tầng thực tế trên Cloud hoàn toàn không bị ảnh hưởng. Dữ
 Thiết lập một hệ thống **Remote State Backend** vững chắc với S3, DynamoDB State Locking và chiến lược nạp cấu hình động `-backend-config` là bước bảo vệ tối quan trọng giúp đội ngũ kỹ thuật tự tin mở rộng quy mô mà không bao giờ lo lắng về Race Condition hay mất mát dữ liệu State.
 
 Trong **[Bài 08: Phẫu Thuật State Chuyên Sâu: Kỹ Thuật State mv, rm, replace & Declarative Import Khôi Phục Hạ Tầng](08-phau-thuat-state-state-mv-rm-replace-declarative-import-giai-cuu-ha-tang.md)**, chúng ta sẽ bước vào thế giới của những kỹ thuật giải cứu hạ tầng đỉnh cao: Đổi tên tài nguyên không gây recreate với `state mv`, tách tài nguyên ra khỏi quản lý với `state rm`, và làm chủ khối `import` khai báo mới nhất trong Terraform 1.5+!
+{% endraw %}

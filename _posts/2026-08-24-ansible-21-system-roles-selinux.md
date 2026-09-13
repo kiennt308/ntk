@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=forma
 summary: "[Ansible P.21] Hướng dẫn chuyên sâu Triển Khai System Roles & Tự Động Hóa SELinux / Firewalld: Quản Trị Chính Sách An Ninh OS Chuẩn RHEL/Ubuntu: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 21] TRIỂN KHAI SYSTEM ROLES & TỰ ĐỘNG HÓA SELINUX / FIREWALLD: QUẢN TRỊ CHÍNH SÁCH AN NINH OS CHUẨN RHEL/UBUNTU
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1073,3 +1074,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản trị bảo mậ
 1. **Nghiên cứu trước 1:** Tham số `forks` trong `ansible.cfg` có tác dụng gì đối với số lượng máy chủ thi hành song song? Mặc định `forks` bằng bao nhiêu?
 2. **Nghiên cứu trước 2:** Phân biệt sự khác nhau giữa 2 chiến lược thi hành Playbook (Execution Strategy): `strategy: linear` vs `strategy: free`?
 3. **Nghiên cứu trước 3:** Từ khóa `serial:` ở cấp Playbook được áp dụng ra sao trong bài toán Rolling Update (nâng cấp cuốn chiếu từng cụm server)?
+{% endraw %}

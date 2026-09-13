@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=fo
 summary: "Phân tích chuyên sâu bộ ba chống Drift trong Argo CD: Automated Sync, Prune và Self-Heal. Vạch trần toàn bộ 5 biến thể cạm bẫy 'Synced nhưng sai' khi xoá file trên Git nhưng Live Cluster không đổi, ConfigMap đổi nhưng Pod không restart hoặc Mutation Webhook gây vòng lặp Reconcile vô tận."
 ---
 
+{% raw %}
 # Đồng Bộ Tự Động: Sync Policy, Prune, Self-Heal & Cạm Bẫy 'Synced Nhưng Sai'
 
 Một trong những lời hứa hẹn hấp dẫn nhất của GitOps là khả năng tự động hóa hoàn toàn: bạn chỉ cần merge một Pull Request trên Git, hệ thống sẽ tự động triển khai, tự động dọn dẹp các tài nguyên cũ và tự động khôi phục nếu có ai đó vô tình hay cố ý sửa đổi trái phép trên cụm Kubernetes.
@@ -416,3 +417,4 @@ Làm chủ bộ ba **Automated Sync, Prune và Self-Heal** kết hợp với cá
 Chúc mừng bạn đã hoàn thành trọn vẹn **Giai Đoạn 1 (Nền Tảng & Bản Chất GitOps)**! 
 
 Ở bài viết tiếp theo mở màn **Giai Đoạn 2**, chúng ta sẽ bước vào thế giới điều phối triển khai phức tạp với **Sync Waves & Resource Hooks: Quản Trị Thứ Tự Triển Khai Microservices & Database Migration Chuyên Sâu**!
+{% endraw %}

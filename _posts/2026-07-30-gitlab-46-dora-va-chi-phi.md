@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=forma
 summary: "[GitLab CI/CD P.46] Hướng dẫn chuyên sâu Đo Lường Hiệu Suất DevOps Bằng Chỉ Số DORA: Deployment Frequency, Lead Time, Change Failure Rate & MTTR: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 46] ĐO LƯỜNG HIỆU SUẤT DEVOPS BẰNG CHỈ SỐ DORA: DEPLOYMENT FREQUENCY, LEAD TIME, CHANGE FAILURE RATE & MTTR
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1984,3 +1985,4 @@ Cho rằng "Để giảm CFR thì bắt dev phải test thủ công kỹ hơn tr
 
 3. **Bài tập chuẩn bị trước giờ học:**
    - Viết một đoạn script Bash tự động kiểm tra dung lượng ổ đĩa `/var/lib/docker` trên máy chủ Runner và tự động thực thi dọn dẹp dời bớt log/image cũ khi ổ đĩa đầy trên 85%!
+{% endraw %}

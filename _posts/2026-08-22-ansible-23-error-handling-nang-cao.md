@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=forma
 summary: "[Ansible P.23] Hướng dẫn chuyên sâu Quản Trị Lỗi Nâng Cao: failed_when, changed_when, ignore_errors, ignore_unreachable & any_errors_fatal: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 23] QUẢN TRỊ LỖI NÂNG CAO: FAILED_WHEN, CHANGED_WHEN, IGNORE_ERRORS, IGNORE_UNREACHABLE & ANY_ERRORS_FATAL
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1075,3 +1076,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm xử lý lỗi nâng ca
 1. **Nghiên cứu trước 1:** Dynamic Inventory là gì? Tại sao trong môi trường Cloud (AWS, Azure, GCP), việc dùng Static Inventory lại trở nên bất khả thi?
 2. **Nghiên cứu trước 2:** Sự khác nhau giữa Dynamic Inventory Script (kiểu cũ) và Dynamic Inventory Plugin (kiểu mới đuôi `.aws_ec2.yml`) trong Ansible là gì?
 3. **Nghiên cứu trước 3:** Plugin `ansible.builtin.constructed` dùng để tự động tạo các nhóm máy chủ động dựa trên các thông số Tags và Facts như thế nào?
+{% endraw %}

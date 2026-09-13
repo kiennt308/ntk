@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=fo
 summary: "[CKA P.22] Hướng dẫn chuyên sâu Dịch Vụ Mạng Service & Kube-Proxy: ClusterIP, NodePort, LoadBalancer & So Sánh iptables vs IPVS: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 22] DỊCH VỤ MẠNG SERVICE & KUBE-PROXY: CLUSTERIP, NODEPORT, LOADBALANCER & SO SÁNH IPTABLES VS IPVS
 
 Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
@@ -1521,3 +1522,4 @@ ipvsadm -ln
 | T2 | Bộ câu hỏi kiểu đề thi (4 câu) | 15 phút (900s) |
 | T3–T6 | Chấm, chữa đề và kho lệnh rút gọn | 13 phút |
 | **Tổng** | **Khối luyện đề bấm giờ** | **30'** |
+{% endraw %}

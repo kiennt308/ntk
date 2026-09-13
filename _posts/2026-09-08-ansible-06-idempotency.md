@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=fo
 summary: "[Ansible P.06] Hướng dẫn chuyên sâu Giải Mã Tính Bất Biến (Idempotency): Cơ Chế Kiểm Tra Trạng Thái Đích & Tránh Cạm Bẫy 'Always Changed': Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 06] GIẢI MÃ TÍNH BẤT BIẾN (IDEMPOTENCY): CƠ CHẾ KIỂM TRA TRẠNG THÁI ĐÍCH & TRÁNH CẠM BẪY 'ALWAYS CHANGED'
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -991,3 +992,4 @@ Khi nhà tuyển dụng phỏng vấn về tư duy kiểm soát Idempotency tron
 1. **Nghiên cứu trước 1:** Biến trong Ansible có thể được định nghĩa ở những vị trí nào (Playbook vars, Inventory vars, Extra vars, Role defaults)?
 2. **Nghiên cứu trước 2:** Trong 22 tầng ưu tiên biến của Ansible, tầng nạp biến nào có quyền lực cao nhất (thắng tất cả các tầng khác)?
 3. **Nghiên cứu trước 3:** Cờ CLI `-e` (hoặc `--extra-vars`) được sử dụng như thế nào khi muốn ghi đè giá trị biến ngay tại thời điểm thực thi Playbook?
+{% endraw %}

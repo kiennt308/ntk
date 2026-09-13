@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=fo
 summary: "[GitLab CI/CD P.38] Hướng dẫn chuyên sâu Tự Động Hóa Triển Khai Lên AWS: OIDC Role Assume, CloudFormation, AWS ECS / EKS Deploy & S3 / CloudFront Sync: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 38] TỰ ĐỘNG HÓA TRIỂN KHAI LÊN AWS: OIDC ROLE ASSUME, CLOUDFORMATION, AWS ECS / EKS DEPLOY & S3 / CLOUDFRONT SYNC
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2161,3 +2162,4 @@ Trả lời rằng AWS không thể ghi log các cuộc gọi API từ bên ngo�
 
 3. **Bài tập chuẩn bị trước giờ học:**
    - So sánh vị trí cài đặt ràng buộc quyền (Attribute Condition Expression) trên GCP WIF khác gì với `Condition` trong AWS IAM Trust Policy!
+{% endraw %}

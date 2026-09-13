@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "Phân tích chuyên sâu tư duy Declarative Desired State, cơ chế Reconcile Loop"
 ---
 
+{% raw %}
 # Tư Duy Declarative IaC & So Sánh Thực Chiến: Terraform vs Ansible vs Pulumi vs CloudFormation
 
 Khi hạ tầng đám mây (Cloud Infrastructure) mở rộng từ vài chục lên hàng ngàn máy chủ ảo, cụm Kubernetes, mạng VPC đa vùng và cơ sở dữ liệu phân tán, việc cấu hình thủ công qua giao diện web (**ClickOps**) hoặc các script Shell/Python tuần tự trở thành nguyên nhân số 1 gây ra hiện tượng **Configuration Drift** (lệch cấu hình ngầm) và những thảm họa sập hệ thống do sai sót con người.
@@ -456,3 +457,4 @@ Khi một kỹ sư phát lệnh <code>plan</code> hoặc <code>apply</code>, Ter
 Tư duy **Declarative Desired State** là nền móng tư tưởng quan trọng nhất giúp bạn làm chủ toàn bộ hệ sinh thái Terraform. Hiểu rõ chu trình Reconcile Loop và mối liên hệ giữa Code HCL, State File và Cloud Actual State sẽ giúp bạn luôn tự tin trước mọi thay đổi hạ tầng phức tạp.
 
 Trong **[Bài 02: Giải Mã Workflow Init, Plan, Apply - Cơ Chế Two-Phase Execution & Đồ Thị DAG Chuyên Sâu](02-giai-ma-workflow-init-plan-apply-two-phase-execution-dag.md)**, chúng ta sẽ mở nắp "cỗ máy bên trong" của Terraform Core: Khám phá cách đồ thị có hướng không chu trình (**Directed Acyclic Graph - DAG**) được xây dựng, cơ chế Provider Plugin RPC qua gRPC và cách tối ưu hóa hiệu năng song song với tham số `-parallelism`.
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=fo
 summary: "[GitLab CI/CD P.36] Hướng dẫn chuyên sâu Quản Trị Môi Trường Triển Khai (Environments): Dynamic Review Apps, URL Mapping & Manual Approval Gates: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 36] QUẢN TRỊ MÔI TRƯỜNG TRIỂN KHAI (ENVIRONMENTS): DYNAMIC REVIEW APPS, URL MAPPING & MANUAL APPROVAL GATES
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1875,3 +1876,4 @@ Cho rằng `when: manual` đã là phương pháp bảo mật tuyệt đối r�
 
 3. **Bài tập chuẩn bị trước giờ học:**
    - Hãy thử viết câu lệnh `curl` trích xuất thông tin JWT Token từ biến `$MY_OIDC_TOKEN` và giải mã (decode) phần payload trên trang `jwt.io` để xem thông tin `sub` claim!
+{% endraw %}

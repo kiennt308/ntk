@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=fo
 summary: "[GitLab CI/CD P.14] Hướng dẫn chuyên sâu Chiến Lược Tối Ưu Hóa Thời Gian Pipeline: Caching Đa Tầng, Layer Caching, Docker-in-Docker vs Kaniko: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 14] CHIẾN LƯỢC TỐI ƯU HÓA THỜI GIAN PIPELINE: CACHING ĐA TẦNG, LAYER CACHING, DOCKER-IN-DOCKER VS KANIKO
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2369,3 +2370,4 @@ Giữ vững sự bình tĩnh, áp dụng chuẩn xác 4 công cụ chẩn đoá
 ## §V17. Tổng kết toàn bộ lộ trình khóa học từ Buổi 01 đến Buổi 14
 
 Hoàn thành Buổi 14 cùng bài Kiểm tra Giữa kỳ 1 đánh dấu việc học viên đã tích lũy trọn vẹn 100% kiến thức nền tảng và tư duy kiến trúc Pipeline của khóa học `ntkgitlab`. Học viên đã sẵn sàng cho Giai đoạn 3 (Buổi 15–30) — triển khai các bộ Pipeline chuẩn sản xuất cho từng ngôn ngữ lập trình thực tế.
+{% endraw %}

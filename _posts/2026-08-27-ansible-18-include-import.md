@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=fo
 summary: "[Ansible P.18] Hướng dẫn chuyên sâu So Sánh Thực Chiến Include vs Import: Dynamic Runtime Evaluation vs Static Pre-Processing Của Tasks/Roles: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 18] SO SÁNH THỰC CHIẾN INCLUDE VS IMPORT: DYNAMIC RUNTIME EVALUATION VS STATIC PRE-PROCESSING CỦA TASKS/ROLES
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1056,3 +1057,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tổ chức mã nguồn
 1. **Nghiên cứu trước 1:** Cấu trúc tổ chức hai thư mục inventory riêng biệt `inventory/staging/` và `inventory/production/` khác gì so với dùng 1 file inventory duy nhất?
 2. **Nghiên cứu trước 2:** Thứ tự ghi đè biến (Precedence) giữa `group_vars/all.yml`, `group_vars/web.yml`, và `host_vars/target1.yml` diễn ra như thế nào?
 3. **Nghiên cứu trước 3:** Làm thế nào để chỉ định tệp inventory khi chạy lệnh `ansible-playbook` cho môi trường Staging vs Production bằng cờ `-i`?
+{% endraw %}

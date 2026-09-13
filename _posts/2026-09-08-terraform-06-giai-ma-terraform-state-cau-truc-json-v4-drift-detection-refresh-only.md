@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=forma
 summary: "Phân tích cấu trúc nội tại JSON Schema v4 của terraform.tfstate, giải mã"
 ---
 
+{% raw %}
 # Giải Mã Terraform State: Cấu Trúc JSON Schema v4, Cơ Chế Drift Detection & Kỹ Thuật Refresh-Only
 
 Trong toàn bộ hệ sinh thái **Terraform**, không có thành phần nào đóng vai trò "trái tim" nhưng cũng dễ bị hiểu lầm và gây ra thảm họa vận hành nhiều như **Terraform State (`terraform.tfstate`)**. Nhiều kỹ sư mới bắt đầu thường ngộ nhận rằng Terraform là một công cụ "stateless" kết nối trực tiếp mã HCL với Cloud API, hoặc coi file state chỉ là một bộ nhớ cache tạm thời có thể xóa đi tạo lại tùy ý.
@@ -413,3 +414,4 @@ Vì State File chứa toàn bộ thông tin nhạy cảm của hạ tầng ở d
 Làm chủ cấu trúc nội tại của **Terraform State JSON Schema v4**, cơ chế **Drift Detection** và quy trình đối soát an toàn với **`-refresh-only`** là hành trang bắt buộc để bạn bảo vệ và duy trì tính toàn vẹn của hạ tầng đám mây.
 
 Trong **[Bài 07: Remote State Nâng Cao: S3 Backend, DynamoDB State Locking & Chiến Lược Di Trú Backend](07-remote-state-s3-backend-dynamodb-state-locking-di-tru-backend.md)**, chúng ta sẽ bước vào thiết lập hạ tầng lưu trữ State chuẩn Enterprise: Cấu hình mã hóa đa tầng KMS, cơ chế phân xử tương tranh bằng DynamoDB Lock Table và quy trình di trú State không downtime (`terraform init -migrate-state`).
+{% endraw %}

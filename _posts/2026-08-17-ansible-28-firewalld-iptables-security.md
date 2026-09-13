@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=fo
 summary: "[Ansible P.28] Hướng dẫn chuyên sâu Tự Động Hóa An Ninh Mạng Với Firewalld & Iptables: Quản Lý Port, Rich Rules, IP Sets & Chặn IP Độc Hại Tự Động: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 28] TỰ ĐỘNG HÓA AN NINH MẠNG VỚI FIREWALLD & IPTABLES: QUẢN LÝ PORT, RICH RULES, IP SETS & CHẶN IP ĐỘC HẠI TỰ ĐỘNG
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1078,3 +1079,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý tường l�
 1. **Nghiên cứu trước 1:** AWX và Red Hat Ansible Automation Platform (AAP) cung cấp giao diện Web UI, REST API và RBAC quản lý Ansible như thế nào?
 2. **Nghiên cứu trước 2:** Khái niệm Execution Environments (EE), Project, Inventory, Credentials và Job Templates trong AWX hoạt động ra sao?
 3. **Nghiên cứu trước 3:** Làm thế nào để kích hoạt tự động chạy Playbook trong AWX qua Webhook từ GitHub / GitLab khi có sự kiện push code?
+{% endraw %}

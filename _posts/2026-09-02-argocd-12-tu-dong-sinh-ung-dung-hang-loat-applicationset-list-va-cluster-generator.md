@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=fo
 summary: "Làm chủ động cơ tự động sinh ứng dụng ApplicationSet trong Argo CD: Phân tích kiến trúc Generators & Templates, cấu hình List Generator cho danh mục Microservices, khai thác Cluster Generator tự động triển khai hạ tầng đa cụm, chiến lược RollingSync an toàn và xử lý các lỗi đồng bộ tham số biến mẫu."
 ---
 
+{% raw %}
 # Tự Động Sinh Ứng Dụng Hàng Loạt: ApplicationSet List & Cluster Generator
 
 Nếu như mô hình **App-of-Apps** (ở bài trước) giúp chúng ta nhóm các ứng dụng con dưới một Root Application, thì nó vẫn tồn tại một hạn chế lớn: Kỹ sư vẫn phải viết từng tệp YAML `Application` thủ công cho từng dịch vụ và từng cụm mục tiêu. Khi doanh nghiệp mở rộng lên 50 microservices chạy trên 10 cụm Kubernetes (Dev, Staging, Prod ở 3 châu lục), số lượng tệp manifest `Application` bạn phải duy trì sẽ lên tới con số $50 \times 10 = 500$ tệp YAML!
@@ -413,3 +414,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về ApplicationSet:
 `ApplicationSet` là bước nhảy vọt về năng suất vận hành, giải phóng đội ngũ Platform Engineering khỏi gánh nặng bảo trì hàng trăm tệp manifest tĩnh và mở ra kỷ nguyên tự động hóa phân phối phần mềm trên quy mô đa cụm. Bằng việc kết hợp List/Cluster Generator và chiến lược RollingSync, hệ thống GitOps của bạn đạt được sự linh hoạt và mức độ an toàn tối đa.
 
 Ở bài tiếp theo, chúng ta sẽ nâng cấp lên mức độ phức tạp cao nhất của ApplicationSet với **Git Directory, Matrix, Merge & Pull Request Preview Generators**!
+{% endraw %}

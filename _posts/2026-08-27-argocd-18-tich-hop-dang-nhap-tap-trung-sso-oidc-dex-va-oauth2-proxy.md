@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "Hướng dẫn tích hợp hệ thống xác thực tập trung Single Sign-On (SSO) vào Argo CD: So sánh Direct OIDC vs Embedded Dex Broker, cấu hình chi tiết kết nối Okta, Azure AD, Keycloak và GitHub OAuth, xử lý luồng xác thực CLI SSO và khắc phục sự cố lỗi Callback Redirect URI."
 ---
 
+{% raw %}
 # Tích Hợp Đăng Nhập Tập Trung: SSO, OIDC, Dex & Okta / Keycloak Chuẩn Doanh Nghiệp
 
 Trong kỷ nguyên chuyển đổi số và tuân thủ an toàn thông tin doanh nghiệp (ISO 27001, SOC 2, HIPAA, PCI-DSS), việc yêu cầu nhân viên phải ghi nhớ mật khẩu tĩnh cục bộ hoặc chia sẻ tài khoản chung là điều bị nghiêm cấm hoàn toàn.
@@ -417,3 +418,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về SSO/OIDC trong Arg
 Tích hợp SSO/OIDC là tiêu chuẩn bắt buộc để đưa Argo CD vào môi trường vận hành chuyên nghiệp, mang lại trải nghiệm đăng nhập liền mạch, kiểm soát quyền hạn tập trung và nâng cao tính tuân thủ an toàn thông tin doanh nghiệp.
 
 Ở bài tiếp theo, chúng ta sẽ bước vào chuyên đề sống còn: **Quản Trị Bí Mật (Secrets Management) Trong GitOps: So Sánh Toàn Diện Sealed Secrets, External Secrets Operator (ESO) & SOPS**!
+{% endraw %}

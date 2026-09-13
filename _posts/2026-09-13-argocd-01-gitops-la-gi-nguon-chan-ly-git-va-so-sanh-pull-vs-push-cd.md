@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=fo
 summary: "Phân tích chuyên sâu về triết lý GitOps, nguyên lý Single Source of Truth, so sánh chi tiết mô hình Push-based CD vs Pull-based GitOps, phân tích rủi ro lộ quyền cluster-admin và mổ xẻ cạm bẫy Synced nhưng sai khi cấu hình sai lệch giữa Git và Live Cluster."
 ---
 
+{% raw %}
 # GitOps Là Gì? Nguồn Chân Lý Git và So Sánh Toàn Diện Pull vs Push CD
 
 Trong kỷ nguyên điện toán đám mây và kiến trúc Cloud Native, việc quản lý hàng trăm microservices trên nhiều cụm Kubernetes phân tán đã trở thành một bài toán sống còn đối với các tổ chức công nghệ. Các phương pháp CI/CD truyền thống dựa trên mô hình "Push" dần bộc lộ những giới hạn nghiêm trọng về bảo mật, khả năng kiểm toán và nguy cơ sai lệch cấu hình âm thầm (**Configuration Drift**).
@@ -419,3 +420,4 @@ kubectl logs -n argocd -l app.kubernetes.io/name=argocd-application-controller -
 GitOps không chỉ là một công cụ, mà là một bước chuyển đổi tư duy sâu sắc trong kỹ nghệ phần mềm: biến Git thành trung tâm điều khiển của toàn bộ hạ tầng đám mây. Việc áp dụng mô hình Pull-based GitOps giúp triệt tiêu rủi ro lộ quyền quản trị, tự động hóa dập tắt Configuration Drift và nâng cao tính minh bạch cho toàn bộ hệ thống.
 
 Ở bài tiếp theo, chúng ta sẽ đi sâu vào mổ xẻ **Kiến Trúc Nội Tại Của Argo CD: Cơ Chế Microservices & Vòng Lặp Điều Hòa Reconciliation Loop Chuyên Sâu**!
+{% endraw %}

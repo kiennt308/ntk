@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=forma
 summary: "Hướng dẫn toàn diện về quản lý Secrets an toàn trong GitOps: So sánh chuyên sâu 3 giải pháp Bitnami Sealed Secrets, External Secrets Operator (ESO kết nối Vault/AWS/GCP) và Mozilla SOPS, bóc tách cấu trúc CRDs và cách xử lý bẫy giải mã Secret sập ngầm."
 ---
 
+{% raw %}
 # Quản Lý Bí Mật Trong GitOps: Sealed Secrets, External Secrets (ESO) & SOPS
 
 Triết lý nền tảng của GitOps là: *"Toàn bộ cấu hình hệ thống phải được khai báo và lưu trữ công khai trên kho Git (Single Source of Truth)"*.
@@ -421,3 +422,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Secrets Management
 Lựa chọn đúng giải pháp quản lý bí mật (Sealed Secrets cho cụm độc lập, ESO cho kiến trúc Enterprise Vault/Cloud) là điều kiện tiên quyết để xây dựng một nền tảng GitOps an toàn, tuân thủ các chuẩn mực an ninh thông tin khắt khe nhất.
 
 Ở bài tiếp theo, chúng ta sẽ khám phá **Hệ Thống Cảnh Báo Thông Minh: Argo CD Notifications, Slack, Telegram & Webhook Automation**!
+{% endraw %}

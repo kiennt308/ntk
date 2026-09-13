@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "Đồ án tốt nghiệp Capstone Project đỉnh cao: Xây dựng toàn diện một nền tảng"
 ---
 
+{% raw %}
 # Capstone Project: Xây Dựng Nền Tảng Hạ Tầng Enterprise Đa Tầng End-to-End
 
 Chào mừng bạn đến với **Capstone Project** — Đồ án tốt nghiệp thực chiến đỉnh cao của toàn bộ series chuyên sâu về Terraform & Infrastructure as Code! 
@@ -536,3 +537,4 @@ mindmap
 ```
 
 - **Bước tiếp theo**: Trong [Bài 31: Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu](./31-tong-hop-cau-hoi-phong-van-terraform-devops-chuyen-sau-30-buoi.md), chúng ta sẽ tổng hợp trọn bộ các câu hỏi phỏng vấn hóc búa nhất từ các tập đoàn công nghệ hàng đầu (FAANG/Big Tech) để giúp bạn tự tin chinh phục mọi buổi phỏng vấn vị trí Senior Cloud / DevOps / SRE Architect!
+{% endraw %}

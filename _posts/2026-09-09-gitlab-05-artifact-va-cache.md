@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "[GitLab CI/CD P.05] Hướng dẫn chuyên sâu Quản Trị Dữ Liệu Tạm Thời: Phân Biệt Artifacts vs Caching, S3 MinIO Backend & Tối Ưu Tốc Độ Build: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 05] QUẢN TRỊ DỮ LIỆU TẠM THỜI: PHÂN BIỆT ARTIFACTS VS CACHING, S3 MINIO BACKEND & TỐI ƯU TỐC ĐỘ BUILD
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -3224,3 +3225,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. Hôm nay QT 5.3 dựng cả buổi quanh chuyện *hiện vật không có nội dung mà job vẫn xanh*. Ghi lại **một** ca thật *"biến không có giá trị đúng"* bạn đã từng gặp: **giá trị mong đợi**, **giá trị thật**, và **cách bạn đã phát hiện**. Nếu chưa gặp, ghi rõ "chưa gặp" và mô tả ca bạn cho là dễ gặp nhất trong repo hiện tại của mình.
 
 **Ba câu này dẫn vào đâu:** câu 1 dẫn thẳng vào **§4 buổi 06** với bảng **9 nguồn biến** — cái đáng giá không phải danh sách 9 dòng, mà là việc học viên tự đoán thứ tự trước rồi đối chiếu, vì chỗ đoán sai chính là chỗ sẽ gây sự cố ở nơi làm việc. Câu 2 dẫn vào **§4 buổi 06 (QT 4.3)**, nơi khoá học chốt `dotenv` nằm ở **nấc 5** trong 9 nấc đó, nó ghi đè được gì và không ghi đè được gì — nối trực tiếp với trục `t0` của buổi 04 và với đường vào thứ tư của buổi 01 QT 5.1. Câu 3 dẫn vào **lab buổi 06, bước 2 và bước 4**, nơi ta tái hiện **5** ca *"biến không có giá trị đúng"* — ca thật mà học viên mang tới gần như luôn trùng với một trong năm ca đó, nên hãy ghi cụ thể chứ đừng ghi chung chung; nó sẽ được dùng làm **ca thứ sáu** của lớp.
+{% endraw %}

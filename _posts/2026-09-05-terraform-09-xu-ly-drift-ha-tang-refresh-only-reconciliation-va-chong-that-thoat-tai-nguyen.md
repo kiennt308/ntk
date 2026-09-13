@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=fo
 summary: "Phân tích nguồn gốc sinh ra Configuration Drift, giải mã sự khác biệt giữa"
 ---
 
+{% raw %}
 # Quản Trị Drift Hạ Tầng: Làm Chủ Refresh-Only, Chiến Lược Reconcile Hai Chiều & Tự Động Hóa Quét Lệch Cấu Hình
 
 Trong môi trường điện toán đám mây doanh nghiệp với hàng trăm kỹ sư cùng làm việc, dù bạn có áp dụng quy trình kiểm duyệt kỷ luật đến đâu, hiện tượng **Lệch cấu hình hạ tầng (Configuration Drift)** vẫn luôn âm thầm diễn ra từng ngày:
@@ -442,3 +443,4 @@ Có 2 cách: (1) Sử dụng Cloud CLI / Console để xóa thủ công tài ngu
 Kiểm soát và chế ngự **Configuration Drift** thông qua **`-refresh-only`**, **`ignore_changes`** và **CI/CD Scheduled Scan** giúp bạn duy trì trạng thái hạ tầng luôn trong tầm kiểm soát 100%, ngăn ngừa các sự cố gián đoạn dịch vụ thảm khốc.
 
 Trong **[Bài 10: Thiết Kế Terraform Module Chuẩn Enterprise: Đóng Gói, Tái Sử Dụng & Biến Số Hóa Toàn Diện](10-thiet-ke-module-chuan-enterprise-dong-goi-tai-su-dung-va-bien-so-hoa.md)**, chúng ta sẽ khép lại Giai đoạn 2 với nghệ thuật đóng gói kiến trúc hạ tầng: Cấu trúc thư mục Module chuẩn HashiCorp, xây dựng hợp đồng giao tiếp (Module Contracts), và kỹ thuật kiểm soát phiên bản Semantic Versioning!
+{% endraw %}

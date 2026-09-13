@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=fo
 summary: "[GitLab CI/CD P.18] Hướng dẫn chuyên sâu Pipeline Chuyên Sâu Cho Python: Poetry / Pipenv Cache, Pytest, Flake8, Black, Bandit & Wheel Packaging: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 18] PIPELINE CHUYÊN SÂU CHO PYTHON: POETRY / PIPENV CACHE, PYTEST, FLAKE8, BLACK, BANDIT & WHEEL PACKAGING
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1928,3 +1929,4 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 1. **Dựa trên QT 6.2 (Hai kho đệm có bản chất khác nhau):** Trên máy tính của bạn, hãy chạy lệnh `go env GOMODCACHE GOCACHE` và thực thi `go build ./...` 2 lần liên tiếp. Ghi lại kích thước `du -sh` của 2 thư mục này. Bạn đoán 2 thư mục đệm đệm này của Go tương ứng với những gì ở ngôn ngữ Python (`.cache/pip` hay `.venv`)? *(Dẫn vào §4 Buổi 19)*.
 2. **Dựa trên QT 6.1 (Năm biến đệm đệm ép về project dir):** Ở Buổi 18 ta cần 5 biến để đưa đệm đệm Python về `$CI_PROJECT_DIR`. Đối với ngôn ngữ Go, ta cần những biến môi trường nào để đưa `GOMODCACHE` và `GOCACHE` về dưới không gian làm việc của Runner? *(Dẫn vào §5 Buổi 19)*.
 3. **Dựa trên QT 6.3 (Khóa Cache key) và QT 6.4 (Điểm hòa vốn):** Nếu gộp cả 2 thư mục đệm đệm của Go vào 1 khóa đệm đệm theo `go.sum`, điều gì sẽ xảy ra khi mã nguồn `.go` thay đổi nhưng `go.sum` không thay đổi? Chi phí nén/tải đệm vô ích sẽ làm Pipeline chậm đi bao nhiêu giây? *(Dẫn vào §6 Buổi 19)*.
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=forma
 summary: "Mổ xẻ toàn diện kiến trúc nội tại của Argo CD: Phân tích 4 thành phần cốt lõi API Server, Repository Server, Application Controller và Redis Cache. Đi sâu vào thuật toán Reconciliation Loop chu kỳ 180s, Three-way Diff Engine và cơ chế Resource Tracking ID độc quyền."
 ---
 
+{% raw %}
 # Kiến Trúc Argo CD & Cơ Chế Vòng Lặp Điều Hòa Reconciliation Loop Chuyên Sâu
 
 Để vận hành và làm chủ một nền tảng GitOps cấp doanh nghiệp, kỹ sư Platform và SRE không thể chỉ dừng lại ở việc xem Argo CD như một "hộp đen" (Black Box) chỉ để bấm nút Sync trên giao diện web. Khi hệ thống mở rộng lên quy mô hàng ngàn ứng dụng phân tán trên nhiều cụm Kubernetes, việc hiểu rõ các luồng giao tiếp nội bộ giữa các microservices và thuật toán điều hòa trạng thái là chìa khóa then chốt để tối ưu hóa hiệu năng, xử lý nghẽn mạng và gia cố an ninh.
@@ -453,3 +454,4 @@ kubectl exec -n argocd deploy/argocd-application-controller -- nc -zv argocd-rep
 Kiến trúc phân tán của Argo CD là một kiệt tác kỹ thuật trong thế giới Cloud Native: sự phân tách rạch ròi giữa cửa ngõ giao tiếp (`argocd-server`), động cơ biên dịch độc lập (`repo-server`), bộ nhớ đệm tốc độ cao (`redis`) và bộ não điều hòa trạng thái (`application-controller`).
 
 Ở bài viết tiếp theo, chúng ta sẽ bắt tay vào **Cài Đặt Argo CD Trên Kubernetes: Mô Hình High Availability (HA), Cấu Hình CLI & Xác Thực An Toàn Chuẩn Doanh Nghiệp**!
+{% endraw %}

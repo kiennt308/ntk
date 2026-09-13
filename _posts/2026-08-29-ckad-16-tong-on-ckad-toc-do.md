@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?auto=fo
 summary: "[CKAD P.16] Hướng dẫn chuyên sâu Tổng Ôn Tốc Độ CKAD: Giải Quyết 20 Bài Tập Thực Hành Ứng Dụng Trong 90 Phút: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 16] TỔNG ÔN TỐC ĐỘ CKAD: GIẢI QUYẾT 20 BÀI TẬP THỰC HÀNH ỨNG DỤNG TRONG 90 PHÚT
 
 Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKAD)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
@@ -1280,3 +1281,4 @@ kubectl create secret generic db-pass --from-literal=password=SuperSecret123
 | T2. Làm 4 câu thực hành bấm giờ | 23 phút | 23 phút |
 | T3..T6. Chạy script tự chấm và xem đáp án | 5 phút | 5 phút |
 | **Tổng** | **30'** | **30'** |
+{% endraw %}

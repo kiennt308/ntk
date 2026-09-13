@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=forma
 summary: "[GitLab CI/CD P.44] Hướng dẫn chuyên sâu Quản Trị Cụm Runner Doanh Nghiệp: High Availability Runner, Runner Monitoring Với Prometheus/Grafana & Tuning: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 44] QUẢN TRỊ CỤM RUNNER DOANH NGHIỆP: HIGH AVAILABILITY RUNNER, RUNNER MONITORING VỚI PROMETHEUS/GRAFANA & TUNING
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2004,3 +2005,4 @@ Cho rằng "Shell Executor hoàn toàn vô dụng và bị cấm 100% trong mọ
 3. **Bài tập chuẩn bị trước giờ học:**
    - Trả lời câu hỏi: *"Khi nào nên sử dụng `cache:policy: pull` và khi nào nên dùng `cache:policy: pull-push`?"*
    - Chuẩn bị một ví dụ về pipeline chạy 50 test files song song bằng từ khóa `parallel` trong GitLab CI!
+{% endraw %}

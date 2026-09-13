@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=forma
 summary: "[GitLab CI/CD P.47] Hướng dẫn chuyên sâu Phẫu Thuật Sự Cố Pipeline Thực Chiến: Xử Lý Kẹt Job, Timeout, Runner OOMKilled, Network Glitch & Registry Rate Limit: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 47] PHẪU THUẬT SỰ CỐ PIPELINE THỰC CHIẾN: XỬ LÝ KẸT JOB, TIMEOUT, RUNNER OOMKILLED, NETWORK GLITCH & REGISTRY RATE LIMIT
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1455,3 +1456,4 @@ Viết script `analyze-ci-log.py` đọc tệp log console đầu ra của GitLa
 
 ### BTVN 4: Chuẩn bị kiến thức cho Buổi 48 (Tổng kết & Đồ án Capstone)
 Đọc trước tài liệu Buổi 48 về **"Tổng kết Toàn bộ Khóa học & Bảo vệ Đồ án Capstone CI/CD Production"**. Chuẩn bị sơ đồ kiến trúc tổng thể kết hợp đầy đủ các thành phần: GitLab CI, Dynamic Runner Auto-scaling, Cache Server S3, Security Scanning (SAST/DAST), Release Strategy (Canary/Blue-Green), Terraform IaC, và Troubleshooting Framework.
+{% endraw %}

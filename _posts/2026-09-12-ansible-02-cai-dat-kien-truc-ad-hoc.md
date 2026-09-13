@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=forma
 summary: "[Ansible P.02] Hướng dẫn chuyên sâu Kiến Trúc Ansible & Lệnh Ad-Hoc: Control Node, Managed Nodes, SSH Authentication & Thực Thi Module Tức Thì: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 02] KIẾN TRÚC ANSIBLE & LỆNH AD-HOC: CONTROL NODE, MANAGED NODES, SSH AUTHENTICATION & THỰC THI MODULE TỨC THÌ
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -857,3 +858,4 @@ Khi nhà tuyển dụng phỏng vấn về năng lực vận hành Ansible và l
 1. **Nghiên cứu trước 1:** File Inventory dạng INI và YAML khác nhau như thế nào về mặt cú pháp? Tại sao dự án lớn ưu tiên dùng YAML?
 2. **Nghiên cứu trước 2:** Thư mục `group_vars/` và `host_vars/` đặt ở đâu trong cây thư mục dự án? Ansible tự động nạp biến từ các thư mục này theo cơ chế nào?
 3. **Nghiên cứu trước 3:** Lệnh `ansible-inventory --graph` và `ansible <pattern> --list-hosts` giúp ích gì cho quản trị viên trước khi thực thi một Playbook tác động hạ tầng lớn?
+{% endraw %}

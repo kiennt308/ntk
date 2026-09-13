@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=forma
 summary: "[GitLab CI/CD P.48] Hướng dẫn chuyên sâu Đồ Án Capstone: Xây Dựng Hệ Thống CI/CD & DevSecOps Doanh Nghiệp Đa Môi Trường Chuẩn Enterprise End-to-End: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 48] ĐỒ ÁN CAPSTONE: XÂY DỰNG HỆ THỐNG CI/CD & DEVSECOPS DOANH NGHIỆP ĐA MÔI TRƯỜNG CHUẨN ENTERPRISE END-TO-END
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2101,3 +2102,4 @@ Tôi xây dựng hệ thống Actionable Observability cho Pipeline (`QT 48.11`)
 | V3. Các câu chốt khi phỏng vấn | 3 phút | ĐẠT |
 | V4 & V5. Bảng ghi điểm & Bài tập về nhà | 3 phút | ĐẠT |
 | **Tổng thời gian phần Vấn đáp** | **20 phút** | **ĐẠT** |
+{% endraw %}

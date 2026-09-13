@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=forma
 summary: "Làm chủ hệ thống Built-in Functions mạnh mẽ trong HCL, xây dựng Type Constraints"
 ---
 
+{% raw %}
 # Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise
 
 Trong hành trình xây dựng các Terraform Modules dùng chung cho hàng trăm kỹ sư trong doanh nghiệp, thách thức lớn nhất không nằm ở việc viết code chạy được, mà là ngăn chặn người dùng truyền vào các tham số sai lệch, vi phạm tiêu chuẩn bảo mật, hoặc gây sập toàn bộ hệ thống ngay trong giai đoạn `terraform plan`.
@@ -717,3 +718,4 @@ mindmap
 - **Nguyên tắc vàng**: "Fail Fast, Fail Loudly" — Mọi biến số của Shared Module phải có Type Constraint chi tiết và ít nhất một Custom Validation Rule để bắt lỗi ngay tại máy trạm của Developer trước khi kích hoạt CI/CD Pipeline.
 - **Tiêu chuẩn Error Message**: Luôn viết thông báo lỗi theo công thức: **[Lý do vi phạm] + [Quy định chuẩn] + [Ví dụ giá trị đúng]**.
 - **Bước tiếp theo**: Trong [Bài 16: Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy, ignore_changes](./16-lifecycle-meta-arguments-create-before-destroy-prevent-destroy-ignore-changes.md), chúng ta sẽ khám phá cách can thiệp trực tiếp vào chu kỳ sống của tài nguyên để thực hiện Zero-Downtime Deployment và bảo vệ tài nguyên trọng yếu khỏi nguy cơ vô tình bị xóa sổ!
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=fo
 summary: "[GitLab CI/CD P.09] Hướng dẫn chuyên sâu Điều Phối Pipeline Phức Tạp: Multi-Project Pipelines, Child-Parent Pipelines & Trigger API Tokens: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 09] ĐIỀU PHỐI PIPELINE PHỨC TẠP: MULTI-PROJECT PIPELINES, CHILD-PARENT PIPELINES & TRIGGER API TOKENS
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -2485,3 +2486,4 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 3. `ci/lint` trả về tệp **sau phân giải** (QT 6.2). Hãy lấy một repo có `include` rồi so tệp thô với tệp sau phân giải: khối nào bị **ghi đè**, khối nào được **trộn**?
 
 **Ba câu này dẫn vào đâu:** cả ba dẫn vào cùng một luận đề của buổi 10 — **ba cơ chế dùng lại có ba thời điểm hợp nhất khác nhau, và nhầm thời điểm là gốc của lỗi ghi đè**. Câu 1 dẫn vào **§4 buổi 10 — ba thời điểm hợp nhất (QT 4.1)**: các cơ chế bạn kể ra (anchor · `include` · `extends` · `!reference`) được xử lý ở **ba** thời điểm theo một thứ tự cố định, và cột "đoán thời điểm" của bạn được đối chiếu ngay tại chỗ. Câu 2 dẫn vào **§5 buổi 10 — bốn loại `include` (QT 5.1)**: câu trả lời là `include:project`, không phải `trigger`, và bốn loại `include` khác nhau đúng ở **ba câu hỏi sở hữu** của hôm nay — trong đó `include:remote` là loại duy nhất nội dung đổi được **mà không có commit nào**. Câu 3 dẫn vào **§4 buổi 10 QT 4.3 cùng bước lab 1 của buổi 10**: `merged_yaml` thành công cụ **chính**, và hai ca ghi đè bạn tìm được sẽ được giải thích ở **§5 QT 5.2** (job cùng tên trộn theo **khoá**, tệp gốc thắng chỉ ở khoá nó khai) và **§6 QT 6.1** (`extends` trộn sâu từ điển nhưng **thay thế** mảng: `script` **3** dòng thành **1** dòng, **0** cảnh báo).
+{% endraw %}

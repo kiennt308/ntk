@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=fo
 summary: "Hướng dẫn xây dựng hệ thống cảnh báo và truyền thông tự động với Argo CD Notifications Engine: Cấu hình tích hợp Slack, Telegram, Webhook và PagerDuty, làm chủ cú pháp Go Template, thiết lập Triggers điều kiện và kiểm soát triệt để thảm họa Notification Storm spam kênh chat."
 ---
 
+{% raw %}
 # Hệ Thống Cảnh Báo: Argo CD Notifications, Slack, Telegram & Webhook Automation
 
 Trong quy trình vận hành Continuous Delivery, việc triển khai tự động chỉ hoàn chỉnh khi toàn bộ các bên liên quan (Developers, QA, SRE, Tech Leads) được cập nhật trạng thái hệ thống theo thời gian thực:
@@ -419,3 +420,4 @@ Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Argo CD Notificati
 Một hệ thống cảnh báo thông minh, chính xác và có khả năng tự kiểm soát tần suất là cầu nối hoàn hảo giữa cỗ máy tự động hóa GitOps và con người, giúp đội ngũ kỹ thuật luôn làm chủ tình hình và phản ứng thần tốc trước mọi sự cố.
 
 Ở bài tiếp theo, chúng ta sẽ bước vào đỉnh cao của kỹ thuật phát hành phần mềm: **Progressive Delivery: Triển Khai Canary & Blue-Green Với Argo Rollouts & Prometheus Analysis**!
+{% endraw %}

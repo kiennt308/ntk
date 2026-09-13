@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=forma
 summary: "[Ansible P.27] Hướng dẫn chuyên sâu Quản Lý Systemd Unit & Custom Services: Tạo Daemon, Quản Trị Vòng Đời Tiến Trình & Health Check Tự Phục Hồi: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 27] QUẢN LÝ SYSTEMD UNIT & CUSTOM SERVICES: TẠO DAEMON, QUẢN TRỊ VÒNG ĐỜI TIẾN TRÌNH & HEALTH CHECK TỰ PHỤC HỒI
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1064,3 +1065,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm đóng gói ứng dụn
 1. **Nghiên cứu trước 1:** Ansible Collection `ansible.posix.firewalld` quản lý các vùng bảo mật (Zones) và cổng dịch vụ (Ports / Services) như thế nào?
 2. **Nghiên cứu trước 2:** Sự khác biệt giữa thuộc tính `permanent: yes` và `immediate: yes` trong module `ansible.posix.firewalld` là gì?
 3. **Nghiên cứu trước 3:** Làm thế nào để mở cổng 80/4000 cho Web Server và cổng 22 cho SSH một cách an toàn mà không làm đứt kết nối quản trị?
+{% endraw %}

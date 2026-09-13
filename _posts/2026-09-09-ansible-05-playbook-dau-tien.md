@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=forma
 summary: "[Ansible P.05] Hướng dẫn chuyên sâu Xây Dựng Playbook Đầu Tiên: Cấu Trúc YAML, Plays, Tasks, Become Privilege Escalation & Đọc PLAY RECAP: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 05] XÂY DỰNG PLAYBOOK ĐẦU TIÊN: CẤU TRÚC YAML, PLAYS, TASKS, BECOME PRIVILEGE ESCALATION & ĐỌC PLAY RECAP
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -981,3 +982,4 @@ Khi nhà tuyển dụng phỏng vấn về năng lực viết và vận hành An
 1. **Nghiên cứu trước 1:** Tại sao một Task lạm dụng module `command`/`shell` lại khiến cho Playbook không bao giờ đạt tính Idempotency ở lượt chạy lần 2?
 2. **Nghiên cứu trước 2:** Thuộc tính `creates` và `removes` trong module `command` giúp biến tác vụ lệnh thô thành tác vụ đạt tính Idempotency như thế nào?
 3. **Nghiên cứu trước 3:** Làm thế nào để tự định nghĩa lại khi nào một Task được coi là thay đổi bằng thuộc tính `changed_when`?
+{% endraw %}

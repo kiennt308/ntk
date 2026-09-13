@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=fo
 summary: "[Ansible P.26] Hướng dẫn chuyên sâu Tích Hợp Ansible Trong CI/CD: GitLab CI, GitHub Actions, Jenkins Automation & Quản Lý SSH Private Keys Không Để Lộ: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 26] TÍCH HỢP ANSIBLE TRONG CI/CD: GITLAB CI, GITHUB ACTIONS, JENKINS AUTOMATION & QUẢN LÝ SSH PRIVATE KEYS KHÔNG ĐỂ LỘ
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1099,3 +1100,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tích hợp Ansible và
 1. **Nghiên cứu trước 1:** Cấu trúc tệp Unit File của Systemd (gồm các phần `[Unit]`, `[Service]`, `[Install]`) được quản lý bằng Ansible module nào?
 2. **Nghiên cứu trước 2:** Lệnh `systemctl daemon-reload` bắt buộc phải chạy khi nào? Module `ansible.builtin.systemd` hỗ trợ cờ `daemon_reload: yes` ra sao?
 3. **Nghiên cứu trước 3:** Làm thế nào để tạo một Custom Systemd Service chạy ứng dụng Python/NodeJS ngầm dưới quyền user không phải root?
+{% endraw %}

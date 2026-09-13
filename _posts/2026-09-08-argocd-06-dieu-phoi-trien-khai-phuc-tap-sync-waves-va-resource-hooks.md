@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=fo
 summary: "Làm chủ nghệ thuật điều phối triển khai ứng dụng đa tầng trong Argo CD: Phân tích cơ chế Wave Barrier của Sync Waves, vòng đời 5 giai đoạn Resource Hooks, thiết kế kịch bản Database Migration an toàn với Hook Deletion Policies và cách xử lý bẫy treo Sync do Hook thất bại."
 ---
 
+{% raw %}
 # Điều Phối Triển Khai Phức Tạp: Sync Waves, Resource Hooks & Quản Trị Vòng Đời
 
 Trong môi trường phân tán microservices thực tế, hiếm khi một ứng dụng có thể triển khai thành công nếu tất cả tài nguyên được nạp đồng loạt cùng một lúc. Hãy tưởng tượng kịch bản: Kubernetes Pod ứng dụng backend khởi động trước khi cơ sở dữ liệu (Database) hoàn tất việc nâng cấp cấu trúc bảng (Schema Migration), hoặc ứng dụng cố gắng đọc một `Secret` từ Vault trước khi Namespace và ServiceAccount kịp tạo ra. Kết quả tất yếu là Pod sẽ rơi vào trạng thái `CrashLoopBackOff` và gây gián đoạn dịch vụ diện rộng.
@@ -409,3 +410,4 @@ argocd app terminate-op ecommerce-platform
 Sync Waves và Resource Hooks là hai công cụ không thể thiếu để biến các kịch bản triển khai microservices phức tạp thành những quy trình tự động hóa mượt mà, tin cậy và có khả năng tự bảo vệ cao.
 
 Ở bài tiếp theo, chúng ta sẽ khám phá **Kiểm Soát Sức Khỏe Tài Nguyên: Built-in Health Checks, Bẫy "Healthy Ảo" & Viết Custom Lua Scripts Cho Mọi Loại CRD**!
+{% endraw %}

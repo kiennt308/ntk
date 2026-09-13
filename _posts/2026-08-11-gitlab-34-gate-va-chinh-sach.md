@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "[GitLab CI/CD P.34] Hướng dẫn chuyên sâu Thiết Kế Quality Gates & Security Policy: Chặn Merge Tự Động Khi Phát Hiện Lỗ Hổng Nghiêm Trọng (Critical CVEs): Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 34] THIẾT KẾ QUALITY GATES & SECURITY POLICY: CHẶN MERGE TỰ ĐỘNG KHI PHÁT HIỆN LỖ HỔNG NGHIÊM TRỌNG (CRITICAL CVES)
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
@@ -1887,3 +1888,4 @@ Nói dev tự chụp ảnh màn hình CI rồi lên JIRA tạo ticket thủ côn
 
 3. **Nhiệm vụ tự giải kịch bản tổng hợp trước:**
    - Hãy thử tự tay tạo một tệp `.gitlab-ci.yml` tích hợp **đủ 6 công cụ scan** (Secret, SAST, IaC, Container, SBOM, Audit), gom toàn bộ báo cáo về một stage `quality-gate`, và viết script shell kiểm tra nếu tổng số CVE Critical $> 0$ hoặc phát hiện Secret bị lộ thì ngắt pipeline ngắt ngay tức khắc!
+{% endraw %}

@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "Làm chủ kỹ thuật Provider Configuration, khai thác Provider Alias để quản"
 ---
 
+{% raw %}
 # Provider Alias, Multi-Region và Multi-Account Enterprise Architecture
 
 Trong các tập đoàn công nghệ và doanh nghiệp tài chính quy mô lớn, hạ tầng không bao giờ gói gọn trong một vùng địa lý (Single-Region) hay một tài khoản Cloud duy nhất (Single-Account). Để đạt được các tiêu chuẩn khắt khe về **Disaster Recovery (RPO/RTO tính bằng giây)**, **Phân lập bảo mật (Blast Radius Isolation)** và **Tuân thủ quy định dữ liệu (Data Residency Compliance)**, các kiến trúc sư buộc phải thiết kế hạ tầng trải dài trên nhiều Region và phân bổ trên hàng chục tài khoản AWS/GCP/Azure độc lập.
@@ -538,3 +539,4 @@ mindmap
 - **Quy tắc thiết kế Child Module**: Luôn giữ Child Module "vô tính" (Provider-agnostic), chỉ khai báo `configuration_aliases` và nhận provider instance từ Root Module.
 - **Tiêu chuẩn bảo mật Multi-Account**: 100% kết nối xuyên tài khoản phải thông qua **IAM AssumeRole** và có chính sách Session Name tường minh để phục vụ kiểm toán CloudTrail.
 - **Bước tiếp theo**: Trong [Bài 19: Terraform trong CI/CD: GitLab CI, GitHub Actions và OIDC Authentication](./19-terraform-trong-cicd-gitlab-ci-github-actions-va-oidc.md), chúng ta sẽ tự động hóa hoàn toàn quy trình Plan/Apply và loại bỏ vĩnh viễn Long-lived Cloud Credentials bằng OpenID Connect (OIDC)!
+{% endraw %}

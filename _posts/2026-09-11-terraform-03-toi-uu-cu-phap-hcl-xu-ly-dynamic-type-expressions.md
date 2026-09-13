@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=fo
 summary: "Hướng dẫn thực chiến làm chủ ngôn ngữ HCL: Cấu trúc dữ liệu phức hợp, kỹ"
 ---
 
+{% raw %}
 # Tối Ưu Cú Pháp HCL: Làm Chủ Dynamic Type, Heredoc, For Expressions & Type Constraints
 
 Ngôn ngữ cấu hình **HCL (HashiCorp Configuration Language)** được thiết kế để cân bằng hoàn hảo giữa tính trực quan dễ đọc của con người (như YAML) và sức mạnh lập trình khai báo có cấu trúc dữ liệu chặt chẽ (như JSON). Tuy nhiên, khi xây dựng các Module Enterprise phục vụ hàng chục đội ngũ kỹ thuật, nhiều kỹ sư vẫn gặp khó khăn khi phải xử lý các cấu trúc dữ liệu lồng nhau phức tạp (`list(object)`), chuyển đổi mảng thành map bằng `for` expressions với toán tử nhóm Ellipsis (`...`), hoặc định dạng các tệp cấu hình JSON/YAML động bằng Heredoc templates mà không bị lỗi escape ký tự.
@@ -518,3 +519,4 @@ Thường dùng khi duyệt qua cấu trúc dữ liệu 2 tầng lồng nhau (Ne
 Làm chủ cú pháp **HCL**, hệ thống **Type Constraints**, kỹ thuật **For Expressions** và kho hàm **Built-in Functions** là bước nhảy vọt biến bạn từ một người chỉ biết copy/paste code mẫu thành một kỹ sư Platform có khả năng kiến tạo những Module hạ tầng linh hoạt và mạnh mẽ.
 
 Trong **[Bài 04: Đồ Thị Phụ Thuộc (Dependency Graph): Quản Lý Phụ Thuộc Tường Minh, Ngầm Định & Xử Lý Lỗi Vòng Lặp Tuần Hoàn (Cycle)](04-dependency-graph-dag-quan-ly-phu-thuoc-tuong-minh-ngam-dinh.md)**, chúng ta sẽ chuyên sâu vào việc xử lý các tình huống phức tạp nhất của đồ thị DAG: Tách rời tài nguyên với Security Group Rules hai chiều, kỹ thuật phá vỡ Cycle và tối ưu hóa thứ tự triển khai tài nguyên đa tầng.
+{% endraw %}

@@ -17,6 +17,7 @@ thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=fo
 summary: "[Ansible P.25] Hướng dẫn chuyên sâu Kiểm Thử Tự Động Playbooks & Roles: Ansible-Lint, Syntax Check, Molecule Testing Framework & Docker Scenario Test: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 ---
 
+{% raw %}
 # [BÀI 25] KIỂM THỬ TỰ ĐỘNG PLAYBOOKS & ROLES: ANSIBLE-LINT, SYNTAX CHECK, MOLECULE TESTING FRAMEWORK & DOCKER SCENARIO TEST
 
 Trong kỷ nguyên **Infrastructure as Code (IaC)** và tự động hóa vận hành hạ tầng đám mây (Cloud Infrastructure Automation), **Ansible** khẳng định vị thế dẫn đầu nhờ triết lý **Agentless** (không cần cài đặt agent nền trên máy đích), giao thức điều khiển an toàn qua **SSH / WinRM**, định dạng khai báo **YAML** trực quan và nguyên lý bất biến **Idempotency** mạnh mẽ. Việc làm chủ Ansible không chỉ dừng lại ở các câu lệnh Ad-hoc đơn giản, mà đòi hỏi kỹ sư phải nắm vững kiến trúc Module tầng thấp, Variable Precedence 22 tầng, Jinja2 Templates, tối ưu hóa Forks & Pipelining cho tới thiết kế Roles / Collections và tích hợp CI/CD tự động hóa chuẩn Doanh nghiệp.
@@ -1022,3 +1023,4 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm kiểm thử kịch b�
 1. **Nghiên cứu trước 1:** Pipeline CI/CD trong Gitlab CI (`.gitlab-ci.yml`) được chia làm các giai đoạn (Stages) như thế nào để tích hợp Ansible tự động?
 2. **Nghiên cứu trước 2:** Làm thế nào để truyền mật khẩu Vault giải mã an toàn trong Runner execution của CI/CD mà không bị rò rỉ log console?
 3. **Nghiên cứu trước 3:** Kỹ thuật Rolling Deployment kết hợp với cờ `serial:` và Load Balancer unregister/register trong pipeline CI/CD diễn ra ra sao?
+{% endraw %}

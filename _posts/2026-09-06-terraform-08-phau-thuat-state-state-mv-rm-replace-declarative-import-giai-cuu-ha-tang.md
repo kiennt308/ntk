@@ -16,6 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=forma
 summary: "Hướng dẫn thực chiến phẫu thuật Terraform State: làm chủ các lệnh ngoại"
 ---
 
+{% raw %}
 # Phẫu Thuật State: Làm Chủ State Subcommands (mv, rm, replace) & Declarative Import Block
 
 Trong hành trình quản trị hạ tầng bằng mã (**Infrastructure as Code**), sẽ có những thời điểm bạn bắt buộc phải thực hiện các thao tác "can thiệp ngoại khoa" trực tiếp vào file State. Đó là khi bạn cần:
@@ -422,3 +423,4 @@ Khai báo khối <code>lifecycle { prevent_destroy = true }</code> trực tiếp
 Làm chủ bộ công cụ **State Subcommands (`mv`, `rm`, `replace`)** và tính năng **Declarative `import {}` Block** biến bạn thành một "bác sĩ phẫu thuật hạ tầng" thực thụ, có khả năng tái cấu trúc và giải cứu mọi hệ sinh thái IaC mà không gây ra bất kỳ giây phút gián đoạn dịch vụ nào.
 
 Trong **[Bài 09: Xử Lý Configuration Drift: Kỹ Thuật Reconcile, Ignore Changes & Chống Thất Thoát Tài Nguyên Mồ Côi](09-xu-ly-drift-ha-tang-refresh-only-reconciliation-va-chong-that-thoat-tai-nguyen.md)**, chúng ta sẽ đi sâu vào nghệ thuật chế ngự Drift: Phân loại Drift ác tính vs lành tính, sử dụng `ignore_changes` chuẩn mực cho Auto-Scaling / Mutating Webhooks và dọn dẹp các tài nguyên mồ côi (Orphaned Resources).
+{% endraw %}

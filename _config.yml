@@ -348,10 +348,12 @@ about_page:
       degrees:
         - degree: "Master of Science in Telecommunications Engineering"
           institution: "Bach Khoa University (HCMUT - Ho Chi Minh City University of Technology)"
+          logo: "/assets/imgs/logobachkhoasang.png"
           period: "Aug 2014 – Feb 2016"
           desc: "Advanced research in digital signal processing, distributed communication networks, and protocol optimization."
         - degree: "Bachelor of Engineering (BE) in Electrical & Electronics Engineering"
           institution: "Bach Khoa University (HCMUT - Ho Chi Minh City University of Technology)"
+          logo: "/assets/imgs/logobachkhoasang.png"
           period: "Sep 2009 – Feb 2014"
           desc: "Solid foundational engineering principles, embedded systems, microprocessors, and circuit design."
     certifications:
@@ -452,9 +454,13 @@ about_page:
       title: "Languages"
       items:
         - name: "Vietnamese"
+          native_name: "Tiếng Việt"
           level: "Native or Bilingual Proficiency"
+          flag_image: "/assets/imgs/flags/vietnam.svg"
         - name: "English"
+          native_name: "English"
           level: "Professional Working Proficiency (British Council APTIS B2)"
+          flag_image: "/assets/imgs/flags/uk.svg"
 
   # Section 5: Khung tải CV / Resume
   resume_download:

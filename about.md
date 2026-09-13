@@ -161,20 +161,24 @@ permalink: /about.html
 <div class="grid grid--2col" style="gap: 1.5rem; margin: 1.5rem 0 2.5rem 0;">
   {% for edu in about.education_and_certifications.education.degrees %}
     <div class="card" style="padding: 1.75rem;">
-      <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
-        <div style="width: 46px; height: 46px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; padding: 4px; flex-shrink: 0; box-shadow: var(--shadow-sm);">
-          <img src="{{ '/assets/imgs/logobachkhoasang.png' | relative_url }}" alt="Bach Khoa University" style="width: 100%; height: 100%; object-fit: contain;">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.85rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.85rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; padding: 5px; flex-shrink: 0; box-shadow: var(--shadow-sm);">
+          {% if edu.logo %}
+            <img src="{{ edu.logo | relative_url }}" alt="{{ edu.institution }}" style="width: 100%; height: 100%; object-fit: contain;">
+          {% else %}
+            {% include icon.html name="book" size=22 %}
+          {% endif %}
         </div>
         <div style="flex: 1;">
-          <h4 style="margin: 0; font-size: 1.05rem; color: var(--text-primary); line-height: 1.35;">{{ edu.degree }}</h4>
+          <h4 style="margin: 0; font-size: 1.08rem; color: var(--text-primary); line-height: 1.35; font-weight: 750;">{{ edu.degree }}</h4>
           <span class="badge badge--primary" style="font-size: 0.72rem; margin-top: 0.35rem;">{{ edu.period }}</span>
         </div>
       </div>
       <div>
-        <div style="font-size: 0.925rem; font-weight: 600; color: var(--accent-primary); margin-bottom: 0.35rem;">
+        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 0.35rem;">
           {{ edu.institution }}
         </div>
-        <p style="font-size: 0.885rem; color: var(--text-secondary); margin-bottom: 0; line-height: 1.5;">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0; line-height: 1.55;">
           {{ edu.desc }}
         </p>
       </div>
@@ -223,15 +227,24 @@ permalink: /about.html
 <!-- Languages Section -->
 {% if about.education_and_certifications.languages %}
   <h3>{{ about.education_and_certifications.languages.title }}</h3>
-  <div class="grid grid--2col" style="gap: 1rem; margin: 1rem 0 2.5rem 0;">
+  <div class="grid grid--2col" style="gap: 1.25rem; margin: 1.25rem 0 2.5rem 0;">
     {% for lang in about.education_and_certifications.languages.items %}
-      <div class="card" style="padding: 1.25rem; display: flex; align-items: center; gap: 1rem;">
-        <div style="width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--accent-primary); flex-shrink: 0;">
-          {% include icon.html name="code" size=18 %}
+      <div class="card" style="padding: 1.35rem 1.5rem; display: flex; align-items: center; gap: 1.25rem;">
+        <div style="width: 52px; height: 36px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-sm); background: var(--bg-subtle);">
+          {% if lang.flag_image %}
+            <img src="{{ lang.flag_image | relative_url }}" alt="{{ lang.name }} Flag" style="width: 100%; height: 100%; object-fit: cover;">
+          {% else %}
+            {% include icon.html name="code" size=20 %}
+          {% endif %}
         </div>
-        <div>
-          <div style="font-weight: 700; color: var(--text-primary); font-size: 1rem;">{{ lang.name }}</div>
-          <div style="font-size: 0.85rem; color: var(--text-muted);">{{ lang.level }}</div>
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem;">
+            <div style="font-weight: 750; color: var(--text-primary); font-size: 1.05rem;">{{ lang.name }}</div>
+            {% if lang.native_name %}
+              <span style="font-size: 0.82rem; color: var(--text-muted);">({{ lang.native_name }})</span>
+            {% endif %}
+          </div>
+          <div style="font-size: 0.875rem; color: var(--accent-primary); font-weight: 600;">{{ lang.level }}</div>
         </div>
       </div>
     {% endfor %}

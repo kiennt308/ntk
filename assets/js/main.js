@@ -736,10 +736,6 @@ document.addEventListener('DOMContentLoaded', () => {
       function openModal(svgElement) {
         if (!svgElement) return;
         content.innerHTML = '';
-        
-        // Use clone or innerHTML to preserve all SVG structures
-        const clonedSvg = svgElement.cloneNode(true);
-        clonedSvg.removeAttribute('id');
 
         let widthVal = 800;
         let heightVal = 500;
@@ -756,15 +752,28 @@ document.addEventListener('DOMContentLoaded', () => {
           if (bcr.height > 0) heightVal = bcr.height;
         }
 
-        clonedSvg.setAttribute('width', widthVal);
-        clonedSvg.setAttribute('height', heightVal);
-        clonedSvg.style.width = `${widthVal}px`;
-        clonedSvg.style.height = `${heightVal}px`;
-        clonedSvg.style.maxWidth = 'none';
-        clonedSvg.style.maxHeight = 'none';
-        clonedSvg.style.display = 'block';
+        // Clone and rename all IDs in defs/markers to prevent DOM collision and fix missing arrows
+        let svgString = svgElement.outerHTML;
+        const modalPrefix = 'lb-' + Math.floor(Math.random() * 100000) + '-';
+        svgString = svgString.replace(/\bid="([^"]+)"/g, (match, id) => `id="${modalPrefix}${id}"`);
+        svgString = svgString.replace(/url\(["']?#([^"')]+)["']?\)/g, (match, id) => `url(#${modalPrefix}${id})`);
+        svgString = svgString.replace(/xlink:href=["']?#([^"')]+)["']?/g, (match, id) => `xlink:href="#${modalPrefix}${id}"`);
+        svgString = svgString.replace(/href=["']?#([^"')]+)["']?/g, (match, id) => `href="#${modalPrefix}${id}"`);
 
-        content.appendChild(clonedSvg);
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = svgString;
+        const clonedSvg = tempDiv.querySelector('svg');
+
+        if (clonedSvg) {
+          clonedSvg.setAttribute('width', widthVal);
+          clonedSvg.setAttribute('height', heightVal);
+          clonedSvg.style.width = `${widthVal}px`;
+          clonedSvg.style.height = `${heightVal}px`;
+          clonedSvg.style.maxWidth = 'none';
+          clonedSvg.style.maxHeight = 'none';
+          clonedSvg.style.display = 'block';
+          content.appendChild(clonedSvg);
+        }
 
         scale = 1.1;
         panX = 0;
@@ -876,11 +885,25 @@ document.addEventListener('DOMContentLoaded', () => {
       theme: isDark ? 'dark' : 'default',
       themeVariables: {
         darkMode: isDark,
-        fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-        background: 'transparent',
+        fontFamily: 'Plus Jakarta Sans, Inter, system-ui, -apple-system, sans-serif',
+        fontSize: '13px',
+        primaryTextColor: isDark ? '#f1f5f9' : '#0f172a',
+        secondaryTextColor: isDark ? '#cbd5e1' : '#334155',
+        lineColor: isDark ? '#94a3b8' : '#64748b',
+        arrowheadColor: isDark ? '#94a3b8' : '#64748b',
+        edgeLabelBackground: isDark ? '#1e293b' : '#f8fafc',
+        clusterBkg: 'transparent',
+        clusterBorder: isDark ? '#334155' : '#cbd5e1',
         mainBkg: 'transparent',
-        nodeBkg: 'transparent',
-        clusterBkg: 'transparent'
+        nodeBkg: 'transparent'
+      },
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        padding: 24,
+        nodeSpacing: 55,
+        rankSpacing: 55,
+        useMaxWidth: false
       },
       securityLevel: 'loose'
     });

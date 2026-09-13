@@ -2510,7 +2510,82 @@ mark.search-highlight {
 .mermaid svg {
   max-width: 100%;
   height: auto;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Ensure text in Mermaid nodes does not overlap borders */
+.mermaid .node rect,
+.mermaid .node polygon,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid-lightbox-content .node rect,
+.mermaid-lightbox-content .node polygon,
+.mermaid-lightbox-content .node circle,
+.mermaid-lightbox-content .node ellipse {
+  rx: 6px;
+  ry: 6px;
+}
+
+.mermaid .node .label,
+.mermaid-lightbox-content .node .label {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.mermaid foreignObject,
+.mermaid-lightbox-content foreignObject {
+  overflow: visible !important;
+}
+
+.mermaid foreignObject div,
+.mermaid-lightbox-content foreignObject div {
+  padding: 8px 16px !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+/* Fix arrowheads and edge lines in normal view & lightbox modal */
+.mermaid .edgePath .path,
+.mermaid-lightbox-content .edgePath .path,
+.mermaid .flowchart-link,
+.mermaid-lightbox-content .flowchart-link {
+  stroke: var(--text-secondary, #94a3b8) !important;
+  stroke-width: 1.75px !important;
+}
+
+.mermaid marker,
+.mermaid-lightbox-content marker {
+  overflow: visible !important;
+}
+
+.mermaid marker path,
+.mermaid-lightbox-content marker path,
+.mermaid .marker,
+.mermaid-lightbox-content .marker,
+.mermaid .arrowMarkerPath,
+.mermaid-lightbox-content .arrowMarkerPath,
+.mermaid path.arrowheadPath,
+.mermaid-lightbox-content path.arrowheadPath {
+  fill: var(--text-secondary, #94a3b8) !important;
+  stroke: var(--text-secondary, #94a3b8) !important;
+  stroke-width: 1px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.mermaid .edgeLabel,
+.mermaid-lightbox-content .edgeLabel {
+  background-color: var(--bg-surface-elevated, #1e293b) !important;
+  color: var(--text-secondary, #cbd5e1) !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  border-radius: var(--radius-sm, 4px) !important;
+  border: 1px solid var(--border-color, rgba(255,255,255,0.12)) !important;
 }
 
 .mermaid-zoom-btn {

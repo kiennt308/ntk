@@ -86,9 +86,13 @@ permalink: /blog.html
       <!-- Widget 1: Author Spotlight -->
       <div class="blog-sidebar-widget">
         <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-          <div class="author-avatar" style="width: 52px; height: 52px; font-size: 1.25rem;">
-            {{ site.author.initials | default: "KN" }}
-          </div>
+          {% if site.author.avatar %}
+            <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}" style="width: 52px; height: 52px; border-radius: var(--radius-md); object-fit: cover; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); display: block;">
+          {% else %}
+            <div class="author-avatar" style="width: 52px; height: 52px; font-size: 1.25rem;">
+              {{ site.author.initials | default: "KN" }}
+            </div>
+          {% endif %}
           <div>
             <h3 style="font-size: 1.05rem; margin: 0 0 0.2rem 0;">{{ site.author.name }}</h3>
             <div style="font-size: 0.775rem; font-weight: 600; color: var(--accent-primary);">{{ site.author.title }}</div>

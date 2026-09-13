@@ -9,6 +9,7 @@ description: >-
 baseurl: "/ntk"
 url: "https://kiennt308.github.io"
 repository: "kiennt308/ntk"
+favicon: "/assets/imgs/logo.jpg"
 show_ads: false
 
 # ==============================================================================
@@ -16,6 +17,7 @@ show_ads: false
 # ==============================================================================
 author:
   name: "Kien Nguyen"
+  avatar: "/assets/imgs/logo.jpg"
   initials: "KN"
   title: "Senior DevOps / SRE"
   subtitle: "Cloud Architect & Platform Engineer"

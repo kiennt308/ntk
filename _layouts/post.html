@@ -168,9 +168,13 @@ layout: default
 
       <!-- Author Bio Section -->
       <div class="author-bio no-print">
-        <div class="author-avatar">
-          {{ site.author.initials | default: "KN" }}
-        </div>
+        {% if site.author.avatar %}
+          <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}" style="width: 64px; height: 64px; border-radius: var(--radius-md); object-fit: cover; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); display: block; flex-shrink: 0;">
+        {% else %}
+          <div class="author-avatar">
+            {{ site.author.initials | default: "KN" }}
+          </div>
+        {% endif %}
         <div class="author-info">
           <h3>{{ page_cfg.written_by_prefix }} {{ site.author.name }}</h3>
           <div class="author-role">{{ page_cfg.author_role | default: site.author.title }}</div>

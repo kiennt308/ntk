@@ -8,9 +8,13 @@ permalink: /about.html
 
 <!-- Author Spotlight Hero Card -->
 <div class="about-hero-card" style="display: flex; gap: 2rem; align-items: center; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.25rem; box-shadow: var(--shadow-sm); margin-bottom: 3rem; flex-wrap: wrap;">
-  <div class="author-avatar" style="width: 88px; height: 88px; font-size: 2rem; border-radius: var(--radius-lg);">
-    {{ site.author.initials | default: "KN" }}
-  </div>
+  {% if site.author.avatar %}
+    <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}" style="width: 88px; height: 88px; border-radius: var(--radius-lg); object-fit: cover; box-shadow: var(--shadow-sm); border: 2px solid var(--border-color); display: block;">
+  {% else %}
+    <div class="author-avatar" style="width: 88px; height: 88px; font-size: 2rem; border-radius: var(--radius-lg);">
+      {{ site.author.initials | default: "KN" }}
+    </div>
+  {% endif %}
   <div style="flex: 1; min-width: 280px;">
     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
       <h2 style="font-size: 1.85rem; margin: 0; color: var(--text-primary);">{{ site.author.name }}</h2>

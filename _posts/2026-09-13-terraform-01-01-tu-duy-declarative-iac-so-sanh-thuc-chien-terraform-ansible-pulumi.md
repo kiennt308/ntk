@@ -16,7 +16,7 @@ thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=fo
 summary: "Phân tích chuyên sâu tư duy Declarative Desired State, cơ chế toán học của Reconcile Loop, bảng so sánh thực chiến 10 tiêu chí (Terraform vs Ansible vs Pulumi vs CloudFormation), mổ xẻ mã nguồn HCL 1.7+ chuẩn Enterprise và bài học xương máu chống ClickOps Drift."
 tldr:
   - "Declarative (Khai báo trạng thái mong muốn) giúp hệ thống tự phục hồi và loại bỏ hoàn toàn các rủi ro Partial State so với Imperative (Mệnh lệnh)."
-  - "Chu trình Reconcile Loop toán học Delta = S_desired \\ S_actual so khớp 3 ngôi giữa Code HCL, State File và Cloud Actual State."
+  - "Chu trình Reconcile Loop so khớp 3 ngôi giữa Code HCL, State File và Cloud Actual State để tự động đưa hạ tầng về trạng thái mong muốn."
   - "Bộ tứ công cụ: Terraform (hạ tầng nền móng đa đám mây) + Ansible (cấu hình OS/phần mềm) + Pulumi (hạ tầng bằng code lập trình đa năng) + CloudFormation (AWS Native)."
   - "Triển khai Production an toàn bắt buộc có: State Locking (DynamoDB), Server-Side Encryption (KMS CMK), prevent_destroy và cấm cờ -auto-approve."
 ---

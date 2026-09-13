@@ -113,11 +113,19 @@ Mọi sơ đồ Mermaid (bao gồm `flowchart`, `graph`, và `sequenceDiagram`) 
 
 ## 6. Chuẩn Hóa Bảng So Sánh & Bảng Thực Hành (Tables)
 
-1. **Bảng so sánh kỹ thuật**:
+Mọi bảng Markdown trong bài viết phải đảm bảo tính co giãn linh hoạt (**Responsive Width 100%**), không gây tràn chiều ngang hay xuất hiện thanh cuộn ngang (scrollbar) trên màn hình chuẩn:
+
+1. **Kích thước & Khoảng đệm nhỏ gọn (Compact Text & Padding)**:
+   - Font chữ trong bảng sử dụng cỡ `0.8rem` (~12.8px - 13px), tiêu đề bảng `0.775rem` in hoa nhẹ nhàng.
+   - Khoảng đệm ô `padding: 0.55rem 0.7rem` giúp tối ưu diện tích hiển thị.
+   - Thẻ `code` trong bảng được định dạng `word-break: break-all` và `white-space: normal` để các câu lệnh dài tự động xuống dòng linh hoạt, không đẩy dãn chiều rộng của cột.
+2. **Cột Thứ tự / Badge (First Column)**:
+   - Cột chứa số thứ tự bước thực hành (`01`, `02`, ...) hoặc Badge phân loại được thiết lập chiều rộng tối thiểu tự động (`width: 1%; white-space: nowrap; text-align: center;`) để dành trọn vẹn không gian cho các cột nội dung và câu lệnh.
+3. **Bảng so sánh kỹ thuật**:
    - Đặt tên cột rõ ràng: `| Tiêu Chí Kỹ Thuật | Công Cụ A | Công Cụ B | ... |`
    - Cột tiêu chí dùng in đậm: `**Tiêu chí**`
    - Các từ khóa giá trị dùng Code span hoặc in đậm có màu.
-2. **Bảng Hands-on Lab (Các bước thực hành)**:
+4. **Bảng Hands-on Lab (Các bước thực hành)**:
    - Cột bước đánh số bằng Badge pill căn giữa:
      `| <span class="badge badge--primary">01</span> | \`lenh-cli\` | Mục đích thực thi chi tiết |`
 

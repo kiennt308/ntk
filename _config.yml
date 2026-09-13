@@ -613,6 +613,7 @@ post_page:
   date_format: "%B %d, %Y"
   date_format_short: "%b %d, %Y"
   updated_label: "Updated:"
+  tldr_title: "Tóm Tắt Nhanh & Điểm Cốt Lõi (TL;DR)"
   learning_path_series_badge: "Learning Path Series"
   parts_unit: "Parts"
   current_article_note: "(This article)"

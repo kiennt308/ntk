@@ -254,6 +254,7 @@ html.dark-theme header.navbar {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  position: relative;
 }
 
 .logo {
@@ -265,6 +266,7 @@ html.dark-theme header.navbar {
   font-weight: 800;
   color: var(--text-primary);
   text-decoration: none;
+  flex-shrink: 0;
 }
 .logo-badge {
   display: flex;
@@ -289,6 +291,14 @@ html.dark-theme header.navbar {
   align-items: center;
   gap: 1.5rem;
   list-style: none;
+}
+
+@media (min-width: 768px) {
+  .nav-menu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 .nav-link {

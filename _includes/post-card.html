@@ -25,11 +25,6 @@
       <a href="{{ '/categories.html' | relative_url }}#{{ post_cat | downcase }}" class="badge {{ cat_class }}">
         {{ post_cat }}
       </a>
-      {% if include.post.difficulty %}
-        <span class="badge badge-diff badge-diff--{{ include.post.difficulty | downcase }}">
-          {{ include.post.difficulty }}
-        </span>
-      {% endif %}
     </div>
 
     <div class="card__meta">

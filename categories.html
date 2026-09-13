@@ -76,15 +76,10 @@ permalink: /categories.html
               {% endif %}
             </div>
 
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              {% if post.difficulty %}
-                <span class="badge badge-diff badge-diff--{{ post.difficulty | downcase }}">{{ post.difficulty }}</span>
-              {% endif %}
-              <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
-                {{ read_time }}
-              </span>
-              <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
-                {{ post.date | date: page_cfg.date_format }}
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; display: inline-flex; align-items: center; gap: 0.35rem;">
+                {% include icon.html name="calendar" size=12 %}
+                <span>{{ post.date | date: page_cfg.date_format }}</span>
               </span>
             </div>
           </div>

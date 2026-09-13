@@ -6,6 +6,9 @@ date: 2026-08-10 09:00:00 +0700
 last_updated: 2026-08-11 07:00:00 +0700
 categories: [AWS]
 tags: [Control Tower, Multi-Account, Security, Cloud Architecture]
+difficulty: Advanced
+series: "AWS Landing Zone & Governance"
+series_order: 2
 ---
 
 Managing a single AWS account is straightforward. But as your engineering organization scales, operating within a single account introduces severe security, boundary, and rate-limiting issues. To isolate blast radiuses and manage billing boundaries, a multi-account organization is the industry standard.

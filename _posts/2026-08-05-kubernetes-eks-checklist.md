@@ -5,6 +5,9 @@ description: "A comprehensive security, networking, and scaling checklist for de
 date: 2026-08-05 14:00:00 +0700
 categories: [Kubernetes]
 tags: [Kubernetes, EKS, Security, Production, AWS]
+difficulty: Intermediate
+series: "Kubernetes Production Guide"
+series_order: 1
 ---
 
 Amazon Elastic Kubernetes Service (EKS) handles the control plane setup, high availability, and patching of Kubernetes masters. However, out of the box, EKS defaults are not designed for enterprise production security or performance.

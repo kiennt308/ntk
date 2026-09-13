@@ -1,22 +1,31 @@
 ---
 layout: default
-title: "Search Guides"
+title: "Search Guides & Tutorials"
 permalink: /search.html
 ---
 
-<div class="container container--narrow" style="margin-top: 2rem;">
+<div class="container" style="margin-top: 1rem;">
   <div style="margin-bottom: 3rem; text-align: center;">
-    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Search Guides</h1>
-    <p style="color: var(--text-muted);">Instantly search across titles, descriptions, categories, tags, and content bodies.</p>
+    <span class="badge badge--primary" style="margin-bottom: 0.75rem;">FULL-TEXT SEARCH</span>
+    <h1 style="font-size: 2.75rem; font-weight: 800; margin-top: 0; margin-bottom: 0.75rem; letter-spacing: -0.03em;">Search Knowledge Base</h1>
+    <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+      Instant search across titles, descriptions, categories, tags, and content bodies.
+    </p>
   </div>
 
-  <div class="search-container" style="margin-bottom: 3rem;">
-    <input type="text" id="search-input" placeholder="Type keywords (e.g. AWS, EKS, Terraform)..." class="search-input" autofocus>
+  <div class="search-wrapper" style="max-width: 700px; margin-bottom: 3.5rem;">
+    <svg class="search-icon-inside" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    <input type="text" id="search-input" data-search-url="{{ '/search.json' | relative_url }}" placeholder="Type keywords (e.g. AWS, Control Tower, EKS, Terraform, OpenTelemetry)..." class="search-input-box" autofocus>
   </div>
 
   <section>
-    <div id="search-results" class="grid grid--2col">
-      <p class="text-center" style="grid-column: 1/-1; color: var(--text-muted);">Start typing to search articles...</p>
+    <div id="search-results" class="grid grid--3col">
+      <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⌨️</div>
+        <p>Start typing keywords to search the engineering documentation...</p>
+      </div>
     </div>
   </section>
 </div>

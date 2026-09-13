@@ -1,25 +1,68 @@
-<article class="card">
-  <div class="card__meta">
-    <span class="badge badge--accent">{{ include.post.categories | first }}</span>
-    <span>•</span>
-    {% assign words = include.post.content | number_of_words %}
-    {% if words < 360 %}
-      {% assign read_time = "1 min" %}
-    {% else %}
-      {% assign read_time = words | divided_by: 180 | append: " min" %}
-    {% endif %}
-    <span>{{ read_time }} read</span>
-    <span>•</span>
-    <span>{{ include.post.date | date: "%b %d, %Y" }}</span>
+{% assign words = include.post.content | number_of_words %}
+{% if words < 360 %}
+  {% assign read_time = "1 min read" %}
+{% else %}
+  {% assign read_time = words | divided_by: 180 | append: " min read" %}
+{% endif %}
+
+{% assign post_cat = include.post.categories | first %}
+{% assign cat_class = "badge--primary" %}
+{% if post_cat == "AWS" or post_cat == "Cloud" %}
+  {% assign cat_class = "badge--amber" %}
+{% elsif post_cat == "Kubernetes" or post_cat == "Docker" %}
+  {% assign cat_class = "badge--cyan" %}
+{% elsif post_cat == "Terraform" or post_cat == "IaC" %}
+  {% assign cat_class = "badge--primary" %}
+{% elsif post_cat == "Observability" or post_cat == "SRE" %}
+  {% assign cat_class = "badge--emerald" %}
+{% elsif post_cat == "DevOps" or post_cat == "Security" %}
+  {% assign cat_class = "badge--rose" %}
+{% endif %}
+
+<article class="card post-card-item" 
+  data-categories="{{ include.post.categories | join: ' ' }}" 
+  data-tags="{{ include.post.tags | join: ' ' }}" 
+  data-title="{{ include.post.title }}" 
+  data-desc="{{ include.post.description | default: include.post.excerpt | strip_html | strip_newlines | escape }}">
+  
+  <div class="card__top">
+    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+      <a href="{{ '/categories.html' | relative_url }}#{{ post_cat | downcase }}" class="badge {{ cat_class }}">
+        {{ post_cat }}
+      </a>
+      {% if include.post.difficulty %}
+        <span class="badge badge-diff badge-diff--{{ include.post.difficulty | downcase }}">
+          {{ include.post.difficulty }}
+        </span>
+      {% endif %}
+    </div>
+
+    <div class="card__meta">
+      <span>{{ read_time }}</span>
+      <span class="card__meta-dot"></span>
+      <span>{{ include.post.date | date: "%b %d, %Y" }}</span>
+    </div>
   </div>
+
+  {% if include.post.series %}
+    <div class="card__series-tag">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+      <span>{{ include.post.series }}{% if include.post.series_order %} · Part {{ include.post.series_order }}{% endif %}</span>
+    </div>
+  {% endif %}
+
   <h3 class="card__title">
     <a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
   </h3>
+
   <p class="card__description">
-    {{ include.post.description | default: include.post.excerpt | strip_html | strip_newlines | truncate: 120 }}
+    {{ include.post.description | default: include.post.excerpt | strip_html | strip_newlines | truncate: 140 }}
   </p>
+
   <div class="card__tags">
-    {% for tag in include.post.tags limit:4 %}
+    {% for tag in include.post.tags limit:3 %}
       <a href="{{ '/tags.html' | relative_url }}#{{ tag | downcase }}" class="badge">#{{ tag }}</a>
     {% endfor %}
   </div>

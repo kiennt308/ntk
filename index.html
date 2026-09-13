@@ -1,61 +1,158 @@
 ---
 layout: default
-title: "Cloud. DevOps. SRE. Engineering at Scale."
+title: "Cloud. DevOps. SRE. Platform Engineering at Scale."
 permalink: /
 ---
 
+<!-- Hero Section -->
 <section class="hero">
+  <div class="hero-glow"></div>
   <div class="container">
+    <div class="hero-pill">
+      <span class="hero-pill-dot"></span>
+      <span>Open for Cloud Architecture & SRE Consulting</span>
+    </div>
+
     <h1 class="hero__title">
-      Cloud. DevOps. SRE.<br>
-      <span>Engineering at Scale.</span>
+      Engineering Cloud & Platform<br>
+      <span class="gradient-text">Systems at Scale.</span>
     </h1>
+
     <p class="hero__subtitle">
-      Sharing practical knowledge about AWS, Kubernetes, Terraform, Cloud Architecture, Observability, Automation and modern infrastructure.
+      Practical guides, architecture deep-dives, and production playbooks covering AWS, Kubernetes, Terraform, Observability, and Modern DevOps.
     </p>
+
     <div class="hero__ctas">
-      <a href="{{ '/blog.html' | relative_url }}" class="btn btn--accent">Read My Blog</a>
-      <a href="{{ '/projects.html' | relative_url }}" class="btn btn--secondary">View My Projects</a>
+      <a href="{{ '/blog.html' | relative_url }}" class="btn btn--accent">Explore All Guides</a>
+      <a href="{{ '/categories.html' | relative_url }}" class="btn btn--secondary">Browse Topic Hubs</a>
     </div>
 
-    <!-- Skills badging grid -->
-    <div class="skills-hero-grid">
-      <span class="badge badge--primary">AWS</span>
-      <span class="badge badge--primary">Kubernetes</span>
-      <span class="badge badge--primary">Terraform</span>
-      <span class="badge badge--primary">Docker</span>
-      <span class="badge badge--primary">Linux</span>
-      <span class="badge badge--primary">CI/CD</span>
-      <span class="badge badge--primary">GitOps</span>
-      <span class="badge badge--primary">Observability</span>
-      <span class="badge badge--primary">Infrastructure as Code</span>
-      <span class="badge badge--primary">Automation</span>
+    <!-- Quick Stats Grid -->
+    <div class="hero-stats-grid">
+      <div class="hero-stat-card">
+        <div class="hero-stat-value">5</div>
+        <div class="hero-stat-label">Core Topic Pillars</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hero-stat-value">{{ site.posts.size }}</div>
+        <div class="hero-stat-label">Production Guides</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hero-stat-value">100%</div>
+        <div class="hero-stat-label">Real-World Tested</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hero-stat-value">IaC</div>
+        <div class="hero-stat-label">GitOps Driven</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- About Quick Section -->
-<section style="padding: 5rem 0; background-color: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-  <div class="container container--narrow text-center">
-    <h2 style="font-size: 2rem; margin-bottom: 1.5rem;">Automating Operations, Accelerating Innovation</h2>
-    <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 650px; margin: 0 auto 2.5rem auto;">
-      I design, build, and maintain secure, reliable, and scalable cloud-native architectures. By treating infrastructure as code and implementing continuous deployment practices, I bridge the gap between software development and platform operations.
-    </p>
-    <a href="{{ '/about.html' | relative_url }}" class="btn btn--primary">More About Me</a>
+<!-- Topic Pillars (Category Hubs) Section -->
+<section style="padding: 4.5rem 0; background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+  <div class="container">
+    <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem auto;">
+      <span class="badge badge--primary" style="margin-bottom: 0.75rem;">STRUCTURED KNOWLEDGE</span>
+      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem;">Core Engineering Pillars</h2>
+      <p style="color: var(--text-secondary); font-size: 1.05rem;">
+        Master cloud-native platform engineering through our categorized domains and step-by-step learning paths.
+      </p>
+    </div>
+
+    <div class="grid grid--3col">
+      <!-- Pillar 1: AWS & Cloud -->
+      <a href="{{ '/categories.html' | relative_url }}#aws" class="pillar-card">
+        <div class="pillar-icon" style="color: var(--accent-amber);">☁️</div>
+        <h3 class="pillar-title">AWS & Cloud Architecture</h3>
+        <p class="pillar-desc">
+          Multi-account governance with Control Tower, Landing Zones, VPC networking, security guardrails, and cost optimization.
+        </p>
+        <div class="pillar-footer">
+          <span>Explore Guides</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <!-- Pillar 2: Kubernetes -->
+      <a href="{{ '/categories.html' | relative_url }}#kubernetes" class="pillar-card">
+        <div class="pillar-icon" style="color: var(--accent-cyan);">🚢</div>
+        <h3 class="pillar-title">Kubernetes & Containers</h3>
+        <p class="pillar-desc">
+          Production EKS checklists, CNI networking deep-dives, ingress controllers, pod security standards, and GitOps deployments.
+        </p>
+        <div class="pillar-footer">
+          <span>Explore Guides</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <!-- Pillar 3: Terraform & IaC -->
+      <a href="{{ '/categories.html' | relative_url }}#terraform" class="pillar-card">
+        <div class="pillar-icon" style="color: var(--accent-primary);">🏗️</div>
+        <h3 class="pillar-title">Infrastructure as Code</h3>
+        <p class="pillar-desc">
+          Zero-to-hero Terraform state management, reusable modules, multi-environment pipelines, and drift detection.
+        </p>
+        <div class="pillar-footer">
+          <span>Explore Guides</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <!-- Pillar 4: Observability & SRE -->
+      <a href="{{ '/categories.html' | relative_url }}#observability" class="pillar-card">
+        <div class="pillar-icon" style="color: var(--accent-emerald);">📊</div>
+        <h3 class="pillar-title">Observability & SRE</h3>
+        <p class="pillar-desc">
+          OpenTelemetry distributed tracing, metric aggregation, incident triage playbooks, and blameless postmortem templates.
+        </p>
+        <div class="pillar-footer">
+          <span>Explore Guides</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <!-- Pillar 5: DevOps & CI/CD -->
+      <a href="{{ '/categories.html' | relative_url }}#devops" class="pillar-card">
+        <div class="pillar-icon" style="color: var(--accent-rose);">⚡</div>
+        <h3 class="pillar-title">DevOps & Platform Eng</h3>
+        <p class="pillar-desc">
+          High-velocity CI/CD workflows, developer self-service platforms, automated security scanning, and release automation.
+        </p>
+        <div class="pillar-footer">
+          <span>Explore Guides</span>
+          <span>→</span>
+        </div>
+      </a>
+
+      <!-- Pillar 6: All Categories -->
+      <a href="{{ '/categories.html' | relative_url }}" class="pillar-card" style="background: var(--bg-subtle);">
+        <div class="pillar-icon">📚</div>
+        <h3 class="pillar-title">Complete Topic Hub</h3>
+        <p class="pillar-desc">
+          Browse all tags, topics, frameworks, and curated roadmaps across our full technical knowledge base.
+        </p>
+        <div class="pillar-footer">
+          <span>View All Categories</span>
+          <span>→</span>
+        </div>
+      </a>
+    </div>
   </div>
 </section>
 
-<!-- Recent Blog Posts Section -->
+<!-- Latest Articles Section -->
 <section style="padding: 5rem 0;">
   <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
       <div>
-        <h2 style="margin-bottom: 0.5rem; font-size: 2rem;">Latest Technical Guides</h2>
-        <p style="color: var(--text-muted); margin-bottom: 0;">Practical walkthroughs and engineering case studies.</p>
+        <span class="badge badge--cyan" style="margin-bottom: 0.5rem;">FRESH ARTICLES</span>
+        <h2 style="margin: 0; font-size: 2.25rem;">Latest Technical Guides</h2>
       </div>
-      <a href="{{ '/blog.html' | relative_url }}" class="no-print" style="font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
-        All Articles
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      <a href="{{ '/blog.html' | relative_url }}" class="btn btn--secondary btn--sm">
+        <span>View All Articles ({{ site.posts.size }})</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
       </a>
     </div>
 
@@ -69,6 +166,21 @@ permalink: /
           No articles published yet. Check back soon!
         </p>
       {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Engineering Mindset & Bio Callout -->
+<section style="padding: 4.5rem 0; background: var(--bg-surface); border-top: 1px solid var(--border-color);">
+  <div class="container container--narrow text-center">
+    <span class="badge badge--emerald" style="margin-bottom: 1rem;">ENGINEERING EXCELLENCE</span>
+    <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 1.25rem;">Automating Operations, Accelerating Velocity</h2>
+    <p style="font-size: 1.1rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 2.5rem;">
+      I design, build, and maintain resilient multi-cloud architectures. By treating infrastructure as versioned code and enforcing robust observability guardrails, I help engineering organizations deliver reliable software at scale.
+    </p>
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <a href="{{ '/about.html' | relative_url }}" class="btn btn--primary">Read My Story</a>
+      <a href="{{ '/cv.html' | relative_url }}" class="btn btn--secondary">View Detailed Resume</a>
     </div>
   </div>
 </section>

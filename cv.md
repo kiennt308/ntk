@@ -27,7 +27,7 @@ permalink: /cv.html
     <h2 style="font-size: 2.2rem; margin-bottom: 0.25rem;">Kien Nguyen</h2>
     <p style="font-size: 1.15rem; font-weight: 600; color: var(--accent); margin-bottom: 0.5rem;">Senior DevOps / SRE / Cloud Engineer</p>
     <div style="font-size: 0.9rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 1rem;">
-      <span><strong>Email:</strong> kien.nguyen@example.com</span>
+      <span><strong>Email:</strong> kiennt.sg@gmail.com</span>
       <span><strong>Location:</strong> Vietnam</span>
       <span><strong>GitHub:</strong> github.com/kiennt308</span>
       <span><strong>LinkedIn:</strong> linkedin.com/in/kiennt308</span>

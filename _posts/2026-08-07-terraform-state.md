@@ -5,6 +5,9 @@ description: "A production-grade guide to managing Terraform state files safely,
 date: 2026-08-07 12:00:00 +0700
 categories: [Terraform]
 tags: [Terraform, IaC, State, Automation, DevOps]
+difficulty: Intermediate
+series: "Terraform in Production"
+series_order: 1
 ---
 
 In Terraform, the state file (`terraform.tfstate`) is the single source of truth that maps your configuration resources to real-world cloud API instances. If you lose or corrupt this file, Terraform loses track of what it built, leading to orphaned resources, duplicate deployments, or accidental deletions.

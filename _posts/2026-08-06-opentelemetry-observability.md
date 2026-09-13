@@ -5,6 +5,9 @@ description: "A practical guide to building an enterprise-grade observability pl
 date: 2026-08-06 13:00:00 +0700
 categories: [Observability]
 tags: [OpenTelemetry, Observability, Grafana, Prometheus, SRE]
+difficulty: Intermediate
+series: "Observability & SRE Mastery"
+series_order: 1
 ---
 
 In modern distributed microservice systems, understanding *why* a transaction failed or *where* latency is occurring is a massive challenge. Traditional monitoring is no longer sufficient. We need **Observability**—the ability to infer the internal state of a system based on its external outputs: Metrics, Logs, and Traces.

@@ -5,6 +5,9 @@ description: "A comprehensive guide to planning and deploying a production-ready
 date: 2026-08-09 10:00:00 +0700
 categories: [AWS]
 tags: [AWS, Terraform, Networking, Security, Cloud Architecture]
+difficulty: Intermediate
+series: "AWS Landing Zone & Governance"
+series_order: 1
 ---
 
 Designing a production environment on AWS is about balancing cost, redundancy, security, and developer ergonomics. A poorly planned network topology or account structure can cost tens of thousands of dollars in NAT Gateway fees and introduce major security vectors.

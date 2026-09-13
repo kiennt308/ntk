@@ -4,7 +4,10 @@ title: "DevOps Incident Response: From Alert to Postmortem"
 description: "A playbook for handling high-priority production incidents, covering alerting, triage, hot mitigation, and writing blameless postmortems."
 date: 2026-08-04 15:00:00 +0700
 categories: [DevOps]
-tags: [SRE, Incident Response, Postmortem, Monitoring]
+tags: [SRE, Incident Response, Postmortem, Monitoring, DevOps]
+difficulty: Intermediate
+series: "SRE Incident Management"
+series_order: 1
 ---
 
 In modern operations, outages are an inevitable reality of running systems at scale. No matter how many redundant regions you deploy, software will crash, configurations will drift, and cloud providers will experience underlying hardware failures.

@@ -5,6 +5,9 @@ description: "Demystifying the Kubernetes networking model, covering Pod-to-Pod 
 date: 2026-08-08 11:00:00 +0700
 categories: [Kubernetes]
 tags: [Kubernetes, Networking, Pod, Service, Ingress]
+difficulty: Advanced
+series: "Kubernetes Production Guide"
+series_order: 2
 ---
 
 Kubernetes networking is often considered one of the most complex components of container orchestration. It requires coordinating virtual network interfaces, routing tables, DNS resolution, and packet filtering across a cluster of bare-metal or virtual nodes.

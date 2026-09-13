@@ -1,5 +1,10 @@
 <div class="toc" id="toc-container" style="display: none;">
-  <h3 class="toc__title">Table of Contents</h3>
+  <h3 class="toc__title">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+    </svg>
+    On This Page
+  </h3>
   <ul id="toc-list"></ul>
 </div>
 
@@ -15,33 +20,50 @@
     
     if (headers.length > 0) {
       tocContainer.style.display = 'block';
+      const tocLinks = [];
+
       headers.forEach((header, index) => {
-        // Generate an ID if one does not exist
         if (!header.id) {
           header.id = 'section-' + index;
         }
         
         const li = document.createElement('li');
-        li.style.lineHeight = '1.4';
-        li.style.marginBottom = '0.5rem';
-        
         if (header.tagName.toLowerCase() === 'h3') {
-          li.style.paddingLeft = '1rem';
+          li.className = 'toc-h3';
         }
         
         const a = document.createElement('a');
         a.href = '#' + header.id;
-        a.textContent = header.textContent.replace('¶', '').trim(); // Strip any anchor link characters if present
-        a.style.fontSize = '0.85rem';
-        a.style.color = 'var(--text-secondary)';
-        a.style.transition = 'var(--transition)';
-        
-        a.addEventListener('mouseenter', () => a.style.color = 'var(--accent)');
-        a.addEventListener('mouseleave', () => a.style.color = 'var(--text-secondary)');
+        a.textContent = header.textContent.replace('¶', '').trim();
         
         li.appendChild(a);
         tocList.appendChild(li);
+        tocLinks.push({ header, link: a });
       });
+
+      // Scrollspy using IntersectionObserver
+      const observerOptions = {
+        root: null,
+        rootMargin: '-80px 0px -70% 0px',
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            tocLinks.forEach(item => {
+              if (item.header.id === id) {
+                item.link.classList.add('active');
+              } else {
+                item.link.classList.remove('active');
+              }
+            });
+          }
+        });
+      }, observerOptions);
+
+      headers.forEach(header => observer.observe(header));
     }
   });
 </script>

@@ -175,21 +175,124 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     7. Live Blog Category Filtering & Instant Search (blog.html)
+     7. Live Blog Category Filtering, Instant Search & Dynamic Pagination (blog.html)
      ========================================================================== */
   const filterButtons = document.querySelectorAll('.live-filter-btn');
-  const postCards = document.querySelectorAll('.post-card-item');
+  const postCards = Array.from(document.querySelectorAll('.post-card-item'));
   const blogSearchInput = document.getElementById('blog-live-search');
   const postCountDisplay = document.getElementById('visible-post-count');
+  const paginationWrapper = document.getElementById('blog-pagination');
+  const paginationControls = document.getElementById('pagination-controls');
+  const paginationInfo = document.getElementById('pagination-info');
+  const postsGrid = document.getElementById('posts-grid');
 
-  if (filterButtons.length > 0 && postCards.length > 0) {
+  if (postCards.length > 0) {
+    const POSTS_PER_PAGE = 4; // 4 bài viết trên mỗi trang cho bố cục 2 cột thoáng đẹp
     let currentCategory = 'all';
     let searchQuery = '';
+    let currentPage = 1;
+    let matchingCards = [];
+
+    function scrollToGrid() {
+      if (postsGrid) {
+        const yOffset = -90;
+        const y = postsGrid.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+
+    function renderPagination() {
+      const totalPosts = matchingCards.length;
+      const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE) || 1;
+
+      if (currentPage > totalPages) {
+        currentPage = 1;
+      }
+
+      // Hide all cards first
+      postCards.forEach(card => {
+        card.style.display = 'none';
+      });
+
+      // Show cards for the current page
+      const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+      const endIndex = startIndex + POSTS_PER_PAGE;
+      const pageCards = matchingCards.slice(startIndex, endIndex);
+
+      pageCards.forEach(card => {
+        card.style.display = 'flex';
+      });
+
+      if (postCountDisplay) {
+        postCountDisplay.textContent = totalPosts;
+      }
+
+      const emptyNotice = document.getElementById('no-filter-results');
+      if (emptyNotice) {
+        emptyNotice.style.display = totalPosts === 0 ? 'block' : 'none';
+      }
+
+      if (!paginationWrapper || !paginationControls || !paginationInfo) return;
+
+      if (totalPosts <= POSTS_PER_PAGE) {
+        paginationWrapper.style.display = 'none';
+        return;
+      }
+
+      paginationWrapper.style.display = 'flex';
+      paginationControls.innerHTML = '';
+
+      // Previous Page Button
+      const prevBtn = document.createElement('button');
+      prevBtn.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
+      prevBtn.innerHTML = '‹ Prev';
+      prevBtn.setAttribute('aria-label', 'Previous Page');
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderPagination();
+          scrollToGrid();
+        }
+      });
+      paginationControls.appendChild(prevBtn);
+
+      // Page Number Buttons
+      for (let p = 1; p <= totalPages; p++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
+        pageBtn.textContent = p;
+        pageBtn.setAttribute('aria-label', `Page ${p}`);
+        pageBtn.addEventListener('click', () => {
+          if (currentPage !== p) {
+            currentPage = p;
+            renderPagination();
+            scrollToGrid();
+          }
+        });
+        paginationControls.appendChild(pageBtn);
+      }
+
+      // Next Page Button
+      const nextBtn = document.createElement('button');
+      nextBtn.className = `page-btn ${currentPage === totalPages ? 'disabled' : ''}`;
+      nextBtn.innerHTML = 'Next ›';
+      nextBtn.setAttribute('aria-label', 'Next Page');
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderPagination();
+          scrollToGrid();
+        }
+      });
+      paginationControls.appendChild(nextBtn);
+
+      // Info text display
+      const displayedEnd = Math.min(endIndex, totalPosts);
+      paginationInfo.textContent = `Showing ${startIndex + 1}–${displayedEnd} of ${totalPosts} articles (Page ${currentPage} of ${totalPages})`;
+    }
 
     function updateFilteredPosts() {
-      let visibleCount = 0;
-
-      postCards.forEach(card => {
+      matchingCards = postCards.filter(card => {
         const categories = (card.getAttribute('data-categories') || '').toLowerCase();
         const tags = (card.getAttribute('data-tags') || '').toLowerCase();
         const title = (card.getAttribute('data-title') || '').toLowerCase();
@@ -202,22 +305,11 @@ document.addEventListener('DOMContentLoaded', () => {
           tags.includes(searchQuery) || 
           categories.includes(searchQuery);
 
-        if (matchesCategory && matchesSearch) {
-          card.style.display = 'flex';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
+        return matchesCategory && matchesSearch;
       });
 
-      if (postCountDisplay) {
-        postCountDisplay.textContent = visibleCount;
-      }
-
-      const emptyNotice = document.getElementById('no-filter-results');
-      if (emptyNotice) {
-        emptyNotice.style.display = visibleCount === 0 ? 'block' : 'none';
-      }
+      currentPage = 1; // Reset to page 1 on category/search query changes
+      renderPagination();
     }
 
     filterButtons.forEach(btn => {
@@ -246,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetBtn = Array.from(filterButtons).find(b => b.getAttribute('data-filter')?.toLowerCase() === filterVal);
         if (targetBtn) {
           targetBtn.click();
-          window.scrollTo({ top: 120, behavior: 'smooth' });
+          scrollToGrid();
         }
       });
     });
@@ -257,7 +349,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetBtn = Array.from(filterButtons).find(b => b.getAttribute('data-filter')?.toLowerCase() === hash);
       if (targetBtn) {
         targetBtn.click();
+      } else {
+        updateFilteredPosts();
       }
+    } else {
+      updateFilteredPosts();
     }
   }
 });

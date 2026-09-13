@@ -345,11 +345,11 @@ sequenceDiagram
 ```
 
 ### 7.1. Phân Tích Nguyên Nhân Gốc Rễ (5-Whys)
-1. **Tại sao UI hiển thị Synced trong khi code chưa update?** $\rightarrow$ Vì UI giữ nguyên trạng thái so khớp thành công của commit cũ trước khi bị ngắt kết nối.
-2. **Tại sao Controller không so khớp được commit mới?** $\rightarrow$ Vì cuộc gọi gRPC sang Repo Server cổng 8081 bị Timeout.
-3. **Tại sao gRPC bị Timeout?** $\rightarrow$ Vì NetworkPolicy mới đã chặn nhầm luồng kết nối nội bộ giữa Controller và Repo Server.
-4. **Tại sao gói tin bị chặn âm thầm (Silent Drop)?** $\rightarrow$ Vì NetworkPolicy hoạt động ở tầng nhân Linux iptables/eBPF không gửi cờ TCP RST về cho client.
-5. **Quy tắc SRE là gì?** $\rightarrow$ Luôn kiểm tra tính thông suốt của cổng gRPC `8081` và `6379` (Redis) ngay sau khi chỉnh sửa NetworkPolicy.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao UI hiển thị Synced trong khi code chưa update?** $\rightarrow$ Vì UI giữ nguyên trạng thái so khớp thành công của commit cũ trước khi bị ngắt kết nối.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Controller không so khớp được commit mới?** $\rightarrow$ Vì cuộc gọi gRPC sang Repo Server cổng 8081 bị Timeout.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao gRPC bị Timeout?** $\rightarrow$ Vì NetworkPolicy mới đã chặn nhầm luồng kết nối nội bộ giữa Controller và Repo Server.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao gói tin bị chặn âm thầm (Silent Drop)?** $\rightarrow$ Vì NetworkPolicy hoạt động ở tầng nhân Linux iptables/eBPF không gửi cờ TCP RST về cho client.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:** Luôn kiểm tra tính thông suốt của cổng gRPC `8081` và `6379` (Redis) ngay sau khi chỉnh sửa NetworkPolicy.
 
 ---
 
@@ -370,108 +370,145 @@ Trước khi chính thức bàn giao hệ thống Argo CD cho môi trường Pro
 
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Tại sao Pod argocd-repo-server lại là thành phần cần gia cố bảo mật (Hardening) nghiêm ngặt nhất?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <code>argocd-repo-server</code> là nơi thực thi các công cụ biên dịch mẫu bên ngoài (Helm, Kustomize, CMP scripts). Nếu một kẻ tấn công lợi dụng lỗ hổng RCE trong một plugin để thực thi mã độc, việc container chạy với quyền non-root (UID 999) và <code>readOnlyRootFilesystem: true</code> sẽ ngăn chặn kẻ tấn công ghi mã độc vào hệ điều hành hoặc leo quyền chiếm máy chủ vật lý (Host Takeover).
   </div>
-  
-<code>argocd-repo-server</code> là nơi thực thi các công cụ biên dịch mẫu bên ngoài (Helm, Kustomize, CMP scripts). Nếu một kẻ tấn công lợi dụng lỗ hổng RCE trong một plugin để thực thi mã độc, việc container chạy với quyền non-root (UID 999) và <code>readOnlyRootFilesystem: true</code> sẽ ngăn chặn kẻ tấn công ghi mã độc vào hệ điều hành hoặc leo quyền chiếm máy chủ vật lý (Host Takeover).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Sự khác biệt cốt lõi giữa sao lưu etcd của cụm và sao lưu qua lệnh argocd admin export là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sao lưu etcd lưu trữ toàn bộ trạng thái của cả cụm (dung lượng lớn, khó khôi phục riêng lẻ). <code>argocd admin export</code> chỉ xuất đúng các đối tượng cấu hình tĩnh thuộc về Argo CD (CRD, Secret, ConfigMap) thành một tệp YAML nhỏ gọn, cho phép nhập lại vào bất kỳ cụm Kubernetes mới nào chỉ trong vài giây.
   </div>
-  
-Sao lưu etcd lưu trữ toàn bộ trạng thái của cả cụm (dung lượng lớn, khó khôi phục riêng lẻ). <code>argocd admin export</code> chỉ xuất đúng các đối tượng cấu hình tĩnh thuộc về Argo CD (CRD, Secret, ConfigMap) thành một tệp YAML nhỏ gọn, cho phép nhập lại vào bất kỳ cụm Kubernetes mới nào chỉ trong vài giây.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Cơ chế Controller Sharding trong Argo CD phân chia cụm quản lý cho các Controller Replicas như thế nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng hàm băm nhất quán (<b style="color: var(--accent-primary);">Consistent Hash Ring</b>) dựa trên <code>Cluster Server URL</code> hoặc <code>Cluster UUID</code> để gán cố định cụm cho một chỉ số Shard cụ thể (<code>Shard 0</code>, <code>Shard 1</code>...). Điều này đảm bảo mỗi cụm từ xa chỉ do duy nhất 1 Controller quản lý, loại bỏ hoàn toàn hiện tượng xung đột tài nguyên.
   </div>
-  
-Sử dụng hàm băm nhất quán (<b style="color: var(--accent-primary);">Consistent Hash Ring</b>) dựa trên <code>Cluster Server URL</code> hoặc <code>Cluster UUID</code> để gán cố định cụm cho một chỉ số Shard cụ thể (<code>Shard 0</code>, <code>Shard 1</code>...). Điều này đảm bảo mỗi cụm từ xa chỉ do duy nhất 1 Controller quản lý, loại bỏ hoàn toàn hiện tượng xung đột tài nguyên.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Khi thiết lập NetworkPolicy Egress cho repo-server, những cổng ngoại vi nào bắt buộc phải mở?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Bắt buộc mở: (1) Cổng UDP/TCP <code>53</code> (truy vấn CoreDNS nội bộ), (2) Cổng TCP <code>443</code> (kéo mã nguồn từ GitHub/GitLab qua HTTPS), và (3) Cổng TCP <code>22</code> (nếu sử dụng giao thức Git SSH).
   </div>
-  
-Bắt buộc mở: (1) Cổng UDP/TCP <code>53</code> (truy vấn CoreDNS nội bộ), (2) Cổng TCP <code>443</code> (kéo mã nguồn từ GitHub/GitLab qua HTTPS), và (3) Cổng TCP <code>22</code> (nếu sử dụng giao thức Git SSH).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Làm thế nào để tự động hóa quy trình sao lưu Disaster Recovery định kỳ lên AWS S3 KMS?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Tạo một Kubernetes <code>CronJob</code> chạy hàng đêm trong namespace <code>argocd</code>. CronJob thực thi lệnh <code>argocd admin export</code>, mã hóa tệp kết quả bằng GPG/SOPS và sử dụng AWS CLI (gắn IAM Role qua IRSA) để đẩy tệp lên S3 Bucket có bật Object Versioning.
   </div>
-  
-Tạo một Kubernetes <code>CronJob</code> chạy hàng đêm trong namespace <code>argocd</code>. CronJob thực thi lệnh <code>argocd admin export</code>, mã hóa tệp kết quả bằng GPG/SOPS và sử dụng AWS CLI (gắn IAM Role qua IRSA) để đẩy tệp lên S3 Bucket có bật Object Versioning.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Tại sao nên vô hiệu hóa tài khoản quản trị cục bộ admin.enabled trong môi trường Production?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Thiết lập cờ <code>admin.enabled: "false"</code> trong ConfigMap <code>argocd-cm</code> để đóng hoàn toàn cơ chế đăng nhập bằng tài khoản cục bộ.
   </div>
-  
-Thiết lập cờ <code>admin.enabled: "false"</code> trong ConfigMap <code>argocd-cm</code> để đóng hoàn toàn cơ chế đăng nhập bằng tài khoản cục bộ.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Vai trò của Redis Sentinel trong kiến trúc High Availability của Argo CD Control Plane là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Trong môi trường Production High Availability (HA) quy mô lớn, Redis Sentinel cung cấp cơ chế tự động Failover khi Pod Redis Master gặp sự cố, đảm bảo bộ đệm cache không bị gián đoạn và tránh gây Reconcile Storm.
   </div>
-  
-Trong môi trường Production High Availability (HA) quy mô lớn, Redis Sentinel cung cấp cơ chế tự động Failover khi Pod Redis Master gặp sự cố, đảm bảo bộ đệm cache không bị gián đoạn và tránh gây Reconcile Storm.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Ý nghĩa kỹ thuật của thiết lập allowPrivilegeEscalation: false trong Container Security Context là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Ngăn chặn các tiến trình con bên trong container giành thêm quyền hạn cao hơn tiến trình cha (ví dụ thông qua các tệp thực thi có cờ <code>setuid</code> hoặc <code>setgid</code>).
   </div>
-  
-Ngăn chặn các tiến trình con bên trong container giành thêm quyền hạn cao hơn tiến trình cha (ví dụ thông qua các tệp thực thi có cờ <code>setuid</code> hoặc <code>setgid</code>).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Làm thế nào để xử lý sự cố một Application bị kẹt vô hạn ở trạng thái Terminating khi xóa?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Gỡ bỏ Finalizer của Application bằng lệnh:
+    <pre><code class="language-bash">kubectl patch app &lt;app-name&gt; -n argocd -p '{"metadata":{"finalizers":null}}' --type=merge</code></pre>
   </div>
-  
-Gỡ bỏ Finalizer của Application bằng lệnh:
-  ```bash
-  kubectl patch app <app-name> -n argocd -p '{"metadata":{"finalizers":null}}' --type=merge
-  ```
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Tại sao các tổ chức bắt buộc phải định kỳ diễn tập kịch bản khôi phục DR (Disaster Recovery Drill)?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Để đảm bảo bản sao lưu không bị hỏng, các Secret và Token giải mã vẫn còn hiệu lực, và quy trình khôi phục thực tế đạt chỉ số thời gian mục tiêu RTO (Recovery Time Objective) &lt; 60 giây khi có thảm họa thật xảy ra.
   </div>
-  
-Để đảm bảo bản sao lưu không bị hỏng, các Secret và Token giải mã vẫn còn hiệu lực, và quy trình khôi phục thực tế đạt chỉ số thời gian mục tiêu RTO (Recovery Time Objective) < 60 giây khi có thảm họa thật xảy ra.
-</div>
 </details>
 
 ---
@@ -480,5 +517,6 @@ Gỡ bỏ Finalizer của Application bằng lệnh:
 
 Bảo mật và gia cố vận hành là ranh giới phân định giữa một hệ thống GitOps thử nghiệm và một nền tảng GitOps cấp độ Doanh nghiệp (Enterprise-Grade). Bằng cách thiết lập mô hình phòng thủ đa tầng kết hợp NetworkPolicy, Pod Security Standards, Controller Sharding và chiến lược Disaster Recovery bài bản, bạn đã biến Argo CD thành một cỗ máy phân phối phần mềm an toàn, tin cậy và sẵn sàng chịu đựng mọi biến cố hạ tầng.
 
-Ở bài viết tiếp theo, chúng ta sẽ bước vào **Bài 24 — Capstone Project**, nơi toàn bộ 23 bài học sẽ được hợp nhất để xây dựng một nền tảng E-commerce Multi-Cluster GitOps Enterprise hoàn chỉnh từ A-Z!
+> [!TIP]
+> **Bài tiếp theo:** [Bài 24: Capstone Project - Xây Dựng Nền Tảng GitOps Enterprise Đa Đội, Đa Cụm End-to-End](argocd-24-24-capstone-xay-dung-nen-tang-gitops-enterprise-da-doi-da-cum-end-to-end.html)
 {% endraw %}

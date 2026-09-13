@@ -363,6 +363,14 @@ flowchart TD
 
 ## 6. Quy Trình Nghiệm Thu Production Readiness Handover Audit (5 Bước)
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **01** | `argocd app list -o wide` | Kiểm tra trạng thái đồng bộ và sức khỏe của toàn bộ Application con |
+| **02** | `argocd app get root-ecommerce-app --hard-refresh` | Ép buộc Hard Refresh Root Application và xác minh không có tài nguyên kẹt |
+| **03** | `kubectl get sealedsecrets -n ecommerce-prod` | Đối soát trạng thái giải mã SealedSecrets thành Native Secret trên Production |
+| **04** | `kubectl argo rollouts get rollout ...` | Kiểm tra trạng thái phân bổ Traffic và kết quả AnalysisRun của Rollout Canary |
+| **05** | `kubectl logs -n argocd -l ...argocd-notifications-controller` | Kiểm tra luồng cảnh báo sự cố Notifications gửi tới kênh Telegram/Slack |
+
 Dưới đây là đoạn script bash hoàn chỉnh mà kỹ sư SRE thực thi để nghiệm thu 100% hệ thống trước khi ký biên bản bàn giao:
 
 ```bash
@@ -415,105 +423,144 @@ Dự án Capstone này trang bị cho bạn 100% kiến thức trọng tâm củ
 
 ## 8. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Tại sao trong dự án Capstone lại kết hợp đồng thời cả Root App-of-Apps và ApplicationSet?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Đây là kiến trúc tối ưu nhất: <b style="color: var(--accent-primary);">Root App-of-Apps</b> quản lý các thành phần tĩnh cấp hạ tầng (AppProject, NetworkPolicy, Notification ConfigMap) và bản thân tệp <code>ApplicationSet CRD</code>. Còn <b style="color: var(--accent-primary);">ApplicationSet</b> chịu trách nhiệm quét và tự động sinh ra hàng chục Microservices động theo ma trận Cụm $\times$ Dịch vụ.
   </div>
-  
-Đây là kiến trúc tối ưu nhất: <b style="color: var(--accent-primary);">Root App-of-Apps</b> quản lý các thành phần tĩnh cấp hạ tầng (AppProject, NetworkPolicy, Notification ConfigMap) và bản thân tệp <code>ApplicationSet CRD</code>. Còn <b style="color: var(--accent-primary);">ApplicationSet</b> chịu trách nhiệm quét và tự động sinh ra hàng chục Microservices động theo ma trận Cụm $\times$ Dịch vụ.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Làm thế nào để hệ thống tự động nhận diện và triển khai microservice mới khi developer tạo thư mục trên Git?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Nhờ vào <b style="color: var(--accent-primary);">Matrix Generator</b> trong ApplicationSet. Matrix Generator liên tục quét thư mục <code>03-services/*</code> trên Git và nhân với 2 cụm có nhãn <code>tier: ecommerce</code>, tự động tạo ra 2 Application con độc lập cho Dev và Prod trong vòng dưới 3 giây.
   </div>
-  
-Nhờ vào <b style="color: var(--accent-primary);">Matrix Generator</b> trong ApplicationSet. Matrix Generator liên tục quét thư mục <code>03-services/*</code> trên Git và nhân với 2 cụm có nhãn <code>tier: ecommerce</code>, tự động tạo ra 2 Application con độc lập cho Dev và Prod trong vòng dưới 3 giây.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Khi Canary Analysis thất bại (Error Rate > 1%), chuỗi hành động tự động nào sẽ diễn ra?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Chuỗi tự động hóa khép kín: (1) <code>AnalysisRun</code> của Argo Rollouts truy vấn PromQL thấy tỷ lệ lỗi > 1% $\rightarrow$ (2) Đánh dấu Analysis Failed $\rightarrow$ (3) Argo Rollouts Controller lập tức cắt toàn bộ traffic Canary và chuyển 100% traffic về phiên bản v1.0 cũ trong 1 giây $\rightarrow$ (4) Notifications Controller gửi tin nhắn báo động đỏ tới kênh Slack/Telegram.
   </div>
-  
-Chuỗi tự động hóa khép kín: (1) <code>AnalysisRun</code> của Argo Rollouts truy vấn PromQL thấy tỷ lệ lỗi > 1% $\rightarrow$ (2) Đánh dấu Analysis Failed $\rightarrow$ (3) Argo Rollouts Controller lập tức cắt toàn bộ traffic Canary và chuyển 100% traffic về phiên bản v1.0 cũ trong 1 giây $\rightarrow$ (4) Notifications Controller gửi tin nhắn báo động đỏ tới kênh Slack/Telegram.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Những tiêu chí cốt lõi nào cần kiểm tra trong quy trình nghiệm thu Production Readiness Handover Audit?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    (1) Danh mục và trạng thái Sync của toàn bộ Apps, (2) Hard Refresh kiểm tra kẹt Progressing, (3) Đối soát giải mã SealedSecrets thành Native Secret, (4) Kiểm tra trạng thái phân bổ Traffic của Rollout, và (5) Kiểm tra luồng cảnh báo Notifications tới kênh chat.
   </div>
-  
-(1) Danh mục và trạng thái Sync của toàn bộ Apps, (2) Hard Refresh kiểm tra kẹt Progressing, (3) Đối soát giải mã SealedSecrets thành Native Secret, (4) Kiểm tra trạng thái phân bổ Traffic của Rollout, và (5) Kiểm tra luồng cảnh báo Notifications tới kênh chat.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Dự án Capstone này bao phủ những miền kiến thức trọng tâm nào của chứng chỉ quốc tế CAPA?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Nắm vững lý thuyết kiến trúc vi dịch vụ của Argo CD, thực hành thành thạo các tệp manifest <code>Application</code>, <code>ApplicationSet</code>, <code>AppProject</code>, <code>Rollout</code>, <code>AnalysisTemplate</code>, hiểu rõ cú pháp Casbin RBAC và quy trình xử lý sự cố thực chiến đã được bao phủ trong 24 bài viết của Series.
   </div>
-  
-Nắm vững lý thuyết kiến trúc vi dịch vụ của Argo CD, thực hành thành thạo các tệp manifest <code>Application</code>, <code>ApplicationSet</code>, <code>AppProject</code>, <code>Rollout</code>, <code>AnalysisTemplate</code>, hiểu rõ cú pháp Casbin RBAC và quy trình xử lý sự cố thực chiến đã được bao phủ trong 24 bài viết của Series.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Làm thế nào để bảo vệ hệ thống tránh bị xóa hàng loạt toàn bộ ứng dụng con khi xóa nhầm Root Application?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Quản lý cẩn thận Finalizer <code>resources-finalizer.argocd.argoproj.io</code>. Nếu muốn xóa Root App nhưng giữ lại các ứng dụng con đang chạy trên cụm, hãy gỡ bỏ Finalizer này trước khi chạy lệnh delete.
   </div>
-  
-Quản lý cẩn thận Finalizer <code>resources-finalizer.argocd.argoproj.io</code>. Nếu muốn xóa Root App nhưng giữ lại các ứng dụng con đang chạy trên cụm, hãy gỡ bỏ Finalizer này trước khi chạy lệnh delete.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Lợi thế kiến trúc lớn nhất của mô hình Hub-and-Spoke trong dự án Capstone là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Kiến trúc Hub-and-Spoke tách biệt mặt phẳng điều khiển (Management Plane) khỏi mặt phẳng dữ liệu (Data Plane). Nếu Production Cluster gặp sự cố sập hạ tầng, Hub Cluster vẫn hoạt động độc lập để điều phối khắc phục thảm họa hoặc chuyển hướng lưu lượng sang Region khác.
   </div>
-  
-Kiến trúc Hub-and-Spoke tách biệt mặt phẳng điều khiển (Management Plane) khỏi mặt phẳng dữ liệu (Data Plane). Nếu Production Cluster gặp sự cố sập hạ tầng, Hub Cluster vẫn hoạt động độc lập để điều phối khắc phục thảm họa hoặc chuyển hướng lưu lượng sang Region khác.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Làm thế nào để đảm bảo Database Migration chạy hoàn tất trước khi phiên bản mới của Microservice được khởi chạy?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Đặt database migration Job ở <code>wave: "0"</code> và Microservices Deployment ở <code>wave: "1"</code>. Argo CD sẽ đợi Job migration hoàn thành với mã thoát <code>0</code> mới bắt đầu khởi tạo Pods ứng dụng.
   </div>
-  
-Đặt database migration Job ở <code>wave: "0"</code> và Microservices Deployment ở <code>wave: "1"</code>. Argo CD sẽ đợi Job migration hoàn thành với mã thoát <code>0</code> mới bắt đầu khởi tạo Pods ứng dụng.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Cơ chế nào giúp tự động sinh ra môi trường Preview/Ephemeral Environment cho từng Pull Request của developer?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng <b style="color: var(--accent-primary);">Pull Request Generator</b> kết hợp với TTL (Time-To-Live) Controller hoặc cấu hình tự động xóa Application con ngay khi Pull Request bị đóng (Merged/Closed).
   </div>
-  
-Sử dụng <b style="color: var(--accent-primary);">Pull Request Generator</b> kết hợp với TTL (Time-To-Live) Controller hoặc cấu hình tự động xóa Application con ngay khi Pull Request bị đóng (Merged/Closed).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Tại sao mô hình GitOps Pull-based lại an toàn và bảo mật hơn mô hình CI Push-based truyền thống?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Push Model đòi hỏi CI Server phải nắm giữ Private Key/Kubeconfig của cụm Production (lỗ hổng bảo mật lớn). Pull Model chạy Agent bên trong cụm (hoặc Hub quản lý) chủ động kéo cấu hình về và tự động phát hiện/sửa chữa sai lệch (<b style="color: var(--accent-primary);">Self-Healing</b>) liên tục 24/7.
   </div>
-  
-Push Model đòi hỏi CI Server phải nắm giữ Private Key/Kubeconfig của cụm Production (lỗ hổng bảo mật lớn). Pull Model chạy Agent bên trong cụm (hoặc Hub quản lý) chủ động kéo cấu hình về và tự động phát hiện/sửa chữa sai lệch (<b style="color: var(--accent-primary);">Self-Healing</b>) liên tục 24/7.
-</div>
 </details>
 
 ---
@@ -522,5 +569,6 @@ Push Model đòi hỏi CI Server phải nắm giữ Private Key/Kubeconfig của
 
 Dự án Capstone đã đưa bạn từ một kỹ sư làm quen với các khái niệm GitOps cơ bản trở thành một **Kiến trúc sư Nền tảng GitOps Cấp cao (Principal Platform Architect)**. Bạn đã làm chủ khả năng thiết kế, bảo vệ và vận hành các hệ thống phân phối phần mềm khổng lồ, an toàn tuyệt đối và có khả năng phục hồi thần tốc.
 
-Để củng cố toàn diện tri thức và sẵn sàng cho các buổi phỏng vấn tuyển dụng vị trí SRE / DevOps Lead, hãy bước tiếp vào **Bài 25 — Đại Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Argo CD & GitOps Chuyên Sâu**!
+> [!TIP]
+> **Bài tiếp theo:** [Bài 25: Tổng Hợp 100+ Câu Hỏi Phỏng Vấn Argo CD & GitOps Chuyên Sâu](argocd-25-25-tong-hop-cau-hoi-phong-van-argo-cd-gitops-chuyen-sau-24-buoi.html)
 {% endraw %}

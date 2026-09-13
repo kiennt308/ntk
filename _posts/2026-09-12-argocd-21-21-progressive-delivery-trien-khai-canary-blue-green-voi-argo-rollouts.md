@@ -337,15 +337,24 @@ sequenceDiagram
 ```
 
 ### 5.1. Phân Tích Nguyên Nhân Gốc Rễ (5-Whys)
-1. **Tại sao người dùng vẫn chạy v2.4.0 trong khi Git báo v2.5.0?** $\rightarrow$ Vì Argo Rollouts Controller đã kích hoạt quy trình Rollback khẩn cấp.
-2. **Tại sao Rollouts lại Rollback?** $\rightarrow$ Vì AnalysisRun phát hiện tỷ lệ lỗi HTTP 500 đạt 8.5%, vượt quá ngưỡng an toàn 1%.
-3. **Tại sao Argo CD UI lại báo xanh (`Synced`)?** $\rightarrow$ Vì tệp YAML của Rollout đã được nạp thành công vào API Server Kubernetes.
-4. **Tại sao Argo CD không báo đỏ khi Rollout bị Abort?** $\rightarrow$ Vì thiếu cấu hình **Custom Lua Health Check** cho `argoproj.io/Rollout` trong ConfigMap `argocd-cm`.
-5. **Giải pháp khắc phục là gì?** $\rightarrow$ Cài đặt Lua Health Script cho Rollout trong `argocd-cm` để Argo CD UI tự động chuyển sang trạng thái `Degraded` màu đỏ khi AnalysisRun thất bại.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao người dùng vẫn chạy v2.4.0 trong khi Git báo v2.5.0?** $\rightarrow$ Vì Argo Rollouts Controller đã kích hoạt quy trình Rollback khẩn cấp.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Rollouts lại Rollback?** $\rightarrow$ Vì AnalysisRun phát hiện tỷ lệ lỗi HTTP 500 đạt 8.5%, vượt quá ngưỡng an toàn 1%.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Argo CD UI lại báo xanh (`Synced`)?** $\rightarrow$ Vì tệp YAML của Rollout đã được nạp thành công vào API Server Kubernetes.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao Argo CD không báo đỏ khi Rollout bị Abort?** $\rightarrow$ Vì thiếu cấu hình **Custom Lua Health Check** cho `argoproj.io/Rollout` trong ConfigMap `argocd-cm`.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:** Cài đặt Lua Health Script cho Rollout trong `argocd-cm` để Argo CD UI tự động chuyển sang trạng thái `Degraded` màu đỏ khi AnalysisRun thất bại.
 
 ---
 
 ## 6. Hướng Dẫn Thực Hành CLI: Điều Khiển Argo Rollouts (Step-by-Step Lab)
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **01** | `kubectl argo rollouts get rollout ... --watch` | Theo dõi bảng điều khiển trực quan thời gian thực của Rollout trên Terminal |
+| **02** | `kubectl argo rollouts dashboard ... &` | Khởi chạy Web UI Dashboard trực quan của Argo Rollouts trên cổng cục bộ |
+| **03** | `kubectl argo rollouts promote ...` | Thúc đẩy đợt Rollout vượt qua bước Pause thủ công (Promote) |
+| **04** | `kubectl argo rollouts abort ...` | Hủy bỏ khẩn cấp đợt deploy và ép buộc Rollback ngay lập tức (Abort) |
+| **05** | `kubectl argo rollouts retry rollout ...` | Khôi phục lại trạng thái để thử nghiệm lại đợt phát hành mới sau khi sửa lỗi code |
+| **06** | `kubectl get analysisruns ...` | Xem danh sách các AnalysisRuns và kết quả đo lường Prometheus chi tiết |
 
 ```bash
 # Bước 1: Theo dõi bảng điều khiển trực quan thời gian thực của Rollout trên Terminal
@@ -371,105 +380,144 @@ kubectl get analysisruns -n payment-production
 
 ## 7. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Sự khác biệt cốt lõi giữa AnalysisTemplate và AnalysisRun trong Argo Rollouts là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <code>AnalysisTemplate</code> là bản khai báo khuôn mẫu tĩnh định nghĩa câu truy vấn PromQL, ngưỡng đo lường và khoảng thời gian kiểm tra. <code>AnalysisRun</code> là <b style="color: var(--accent-primary);">thực thể đang chạy thực tế</b> được Argo Rollouts Controller tự động sinh ra trong quá trình deploy để thực thi câu truy vấn và ghi lại kết quả đo lường.
   </div>
-  
-<code>AnalysisTemplate</code> là bản khai báo khuôn mẫu tĩnh định nghĩa câu truy vấn PromQL, ngưỡng đo lường và khoảng thời gian kiểm tra. <code>AnalysisRun</code> là <b style="color: var(--accent-primary);">thực thể đang chạy thực tế</b> được Argo Rollouts Controller tự động sinh ra trong quá trình deploy để thực thi câu truy vấn và ghi lại kết quả đo lường.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Điều gì sẽ xảy ra nếu một bước trong Rollout Canary được khai báo chỉ với pause: {} (không có thuộc tính duration)?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Đợt Rollout sẽ <b style="color: var(--accent-primary);">tạm dừng vô hạn</b> tại bước đó và chuyển sang trạng thái <code>Suspended</code>. Nó đòi hỏi con người (kỹ sư phát hành) phải vào phê duyệt thủ công bằng lệnh <code>kubectl argo rollouts promote</code> hoặc bấm nút trên giao diện thì mới được đi tiếp.
   </div>
-  
-Đợt Rollout sẽ <b style="color: var(--accent-primary);">tạm dừng vô hạn</b> tại bước đó và chuyển sang trạng thái <code>Suspended</code>. Nó đòi hỏi con người (kỹ sư phát hành) phải vào phê duyệt thủ công bằng lệnh <code>kubectl argo rollouts promote</code> hoặc bấm nút trên giao diện thì mới được đi tiếp.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Cơ chế nào giúp NGINX Ingress Controller điều hướng chính xác tỷ lệ phần trăm traffic vào phiên bản Canary?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Argo Rollouts tự động tạo một Ingress phụ (Canary Ingress) có gắn annotation <code>nginx.ingress.kubernetes.io/canary: "true"</code> và <code>nginx.ingress.kubernetes.io/canary-weight: "10"</code> để NGINX Controller tự động phân bổ đúng 10% request vào Canary Service.
   </div>
-  
-Argo Rollouts tự động tạo một Ingress phụ (Canary Ingress) có gắn annotation <code>nginx.ingress.kubernetes.io/canary: "true"</code> và <code>nginx.ingress.kubernetes.io/canary-weight: "10"</code> để NGINX Controller tự động phân bổ đúng 10% request vào Canary Service.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Khi AnalysisRun thất bại (Failed), Argo Rollouts có tự động chuyển lưu lượng về phiên bản Stable cũ không?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Có! Argo Rollouts Controller sẽ lập tức chuyển trọng số traffic về 0%, scale số lượng Pods Canary về 0, và giữ nguyên 100% các Pods Stable phiên bản cũ để đảm bảo dịch vụ không bị gián đoạn dù chỉ 1 giây.
   </div>
-  
-Có! Argo Rollouts Controller sẽ lập tức chuyển trọng số traffic về 0%, scale số lượng Pods Canary về 0, và giữ nguyên 100% các Pods Stable phiên bản cũ để đảm bảo dịch vụ không bị gián đoạn dù chỉ 1 giây.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Có thể kết hợp đồng thời Argo CD và Argo Rollouts trong cùng một quy trình GitOps tự động không?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Hoàn toàn được và là chuẩn mực cao nhất của GitOps!</b> Khi có commit mới, Argo CD sẽ sync tệp Rollout mới xuống cụm, và Argo Rollouts Controller sẽ tiếp quản để thực thi quy trình Canary Release từng bước an toàn.
   </div>
-  
-<b style="color: var(--accent-primary);">Hoàn toàn được và là chuẩn mực cao nhất của GitOps!</b> Khi có commit mới, Argo CD sẽ sync tệp Rollout mới xuống cụm, và Argo Rollouts Controller sẽ tiếp quản để thực thi quy trình Canary Release từng bước an toàn.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Trong chiến lược Blue-Green, giai đoạn prePromotionAnalysis được kích hoạt vào thời điểm nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Được thực thi sau khi các Pods Green (phiên bản mới) đã sẵn sàng nhưng <b style="color: var(--accent-primary);">TRƯỚC KHI</b> chuyển 100% traffic từ Blue sang Green. Nếu bài kiểm tra này thành công, hệ thống mới chính thức trỏ Service sang Green.
   </div>
-  
-Được thực thi sau khi các Pods Green (phiên bản mới) đã sẵn sàng nhưng <b style="color: var(--accent-primary);">TRƯỚC KHI</b> chuyển 100% traffic từ Blue sang Green. Nếu bài kiểm tra này thành công, hệ thống mới chính thức trỏ Service sang Green.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Làm thế nào để cấu hình Canary chỉ định tuyến cho các request có header nội bộ thử nghiệm (A/B Testing)?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Cấu hình <code>setCanaryScale</code> kết hợp với <code>match: - headers: { "X-Canary-Internal": "true" }</code> trong khối traffic routing của Rollout.
   </div>
-  
-Cấu hình <code>setCanaryScale</code> kết hợp với <code>match: - headers: { "X-Canary-Internal": "true" }</code> trong khối traffic routing của Rollout.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Thuộc tính failureLimit trong AnalysisTemplate có vai trò kỹ thuật gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Cho phép bỏ qua một số lần lỗi truy vấn mạng tạm thời tới Prometheus Server (ví dụ: mất kết nối 1-2 lần) trước khi đánh dấu bài kiểm tra là Thất bại hoàn toàn (Failed).
   </div>
-  
-Cho phép bỏ qua một số lần lỗi truy vấn mạng tạm thời tới Prometheus Server (ví dụ: mất kết nối 1-2 lần) trước khi đánh dấu bài kiểm tra là Thất bại hoàn toàn (Failed).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Tại sao nên kết hợp đo lường cả Error Rate và P99 Latency trong cùng một AnalysisTemplate?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Vì một phiên bản mới có thể không ném ra mã lỗi HTTP 500 nhưng lại bị rò rỉ bộ nhớ hoặc nghẽn database khiến thời gian phản hồi (Latency) tăng từ 50ms lên 3000ms. Kết hợp cả 2 chỉ số giúp bảo vệ toàn diện chất lượng dịch vụ (SLA/SLO).
   </div>
-  
-Vì một phiên bản mới có thể không ném ra mã lỗi HTTP 500 nhưng lại bị rò rỉ bộ nhớ hoặc nghẽn database khiến thời gian phản hồi (Latency) tăng từ 50ms lên 3000ms. Kết hợp cả 2 chỉ số giúp bảo vệ toàn diện chất lượng dịch vụ (SLA/SLO).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Làm thế nào để tích hợp gửi thông báo Slack/Webhook khi một đợt Rollout bị Abort hoặc Degraded?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Gắn Annotation Notifications của Argo CD Notifications lên đối tượng <code>Rollout CRD</code> hoặc cài đặt tính năng Notifications tích hợp sẵn của Argo Rollouts Controller.
   </div>
-  
-Gắn Annotation Notifications của Argo CD Notifications lên đối tượng <code>Rollout CRD</code> hoặc cài đặt tính năng Notifications tích hợp sẵn của Argo Rollouts Controller.
-</div>
 </details>
 
 ---
@@ -478,5 +526,7 @@ Gắn Annotation Notifications của Argo CD Notifications lên đối tượng 
 
 Argo Rollouts là "vũ khí tối thượng" đưa nền tảng phân phối phần mềm của doanh nghiệp lên cấp độ **Progressive Delivery** đỉnh cao — nơi mọi đợt phát hành mã nguồn đều được bảo vệ bởi các rào chắn số liệu thông minh và khả năng tự phục hồi thần tốc.
 
-Ở bài tiếp theo, chúng ta sẽ bước vào chuyên đề: **Giám Sát & Đo Lường Hệ Thống: Argo CD Observability, Prometheus Metrics & Grafana Dashboard Chuẩn SRE**!
+> [!TIP]
+> **Bài tiếp theo:** [Bài 22: Giám Sát & Đo Lường: Argo CD Observability, Metrics, Prometheus & Grafana](argocd-22-22-giam-sat-va-do-luong-argo-cd-observability-metrics-prometheus-grafana.html)
 {% endraw %}
+

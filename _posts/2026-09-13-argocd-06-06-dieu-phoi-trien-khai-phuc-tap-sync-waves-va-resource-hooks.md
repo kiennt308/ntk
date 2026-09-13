@@ -359,6 +359,13 @@ sequenceDiagram
 
 ## 9. Hướng Dẫn Thực Hành CLI: Kiểm Chứng Cơ Chế Sync Waves
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+|---|---|---|
+| **1. Kích Hoạt Đồng Bộ** | `argocd app sync ecommerce-platform` | Khởi chạy tiến trình triển khai ứng dụng có cấu trúc nhiều Wave |
+| **2. Giám Sát Thời Gian Thực** | `argocd app get ecommerce-platform --watch` | Quan sát trực tiếp từng Wave được apply tuần tự qua Wave Barrier |
+| **3. Kiểm Tra Hook Jobs** | `kubectl get jobs -n payment-production -l app.kubernetes.io/name=payment-db-migration` | Xác minh trạng thái thực thi và chính sách xóa của Hook Job |
+| **4. Hủy Đợt Sync Treo** | `argocd app terminate-op ecommerce-platform` | Hủy khẩn cấp đợt đồng bộ đang bị kẹt do Hook gặp lỗi hoặc deadlock |
+
 ```bash
 # 1. Triển khai một ứng dụng có cấu trúc nhiều Wave
 argocd app sync ecommerce-platform
@@ -377,105 +384,144 @@ argocd app terminate-op ecommerce-platform
 
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Sự khác biệt cốt lõi giữa Sync Waves và Resource Hooks là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sync Waves là cơ chế sắp xếp thứ tự đồng bộ giữa các <b style="color: var(--accent-primary);">tài nguyên Kubernetes dài hạn</b> (Persistent Resources như Namespace, Secret, Deployment) dựa trên rào chắn trạng thái <code>Healthy</code>. Resource Hooks là các <b style="color: var(--accent-primary);">tác vụ ngắn hạn</b> (thường là Job chạy một lần) được chèn vào các thời điểm cụ thể (<code>PreSync</code>, <code>PostSync</code>, <code>SyncFail</code>) để thực thi logic nghiệp vụ.
   </div>
-  
-Sync Waves là cơ chế sắp xếp thứ tự đồng bộ giữa các <b style="color: var(--accent-primary);">tài nguyên Kubernetes dài hạn</b> (Persistent Resources như Namespace, Secret, Deployment) dựa trên rào chắn trạng thái <code>Healthy</code>. Resource Hooks là các <b style="color: var(--accent-primary);">tác vụ ngắn hạn</b> (thường là Job chạy một lần) được chèn vào các thời điểm cụ thể (<code>PreSync</code>, <code>PostSync</code>, <code>SyncFail</code>) để thực thi logic nghiệp vụ.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Điều gì xảy ra khi một Pod ở Wave 1 bị CrashLoopBackOff trong khi đang triển khai ứng dụng?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Quá trình đồng bộ sẽ bị <b style="color: var(--accent-primary);">dừng lại ngay lập tức tại rào chắn Wave 1</b>. Toàn bộ tài nguyên ở Wave 2 sẽ không bao giờ được apply xuống cụm, giúp ngăn chặn lỗi lan rộng.
   </div>
-  
-Quá trình đồng bộ sẽ bị <b style="color: var(--accent-primary);">dừng lại ngay lập tức tại rào chắn Wave 1</b>. Toàn bộ tài nguyên ở Wave 2 sẽ không bao giờ được apply xuống cụm, giúp ngăn chặn lỗi lan rộng.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Làm thế nào để cấu hình một Hook tự động gửi thông báo khẩn cấp tới SRE khi quá trình Sync thất bại?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Tạo một Kubernetes Job với annotation <code>argocd.argoproj.io/hook: SyncFail</code>. Job này chứa đoạn script curl gửi payload cảnh báo đến Webhook của Telegram/Slack kèm theo thông tin lỗi.
   </div>
-  
-Tạo một Kubernetes Job với annotation <code>argocd.argoproj.io/hook: SyncFail</code>. Job này chứa đoạn script curl gửi payload cảnh báo đến Webhook của Telegram/Slack kèm theo thông tin lỗi.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Tại sao nên luôn khai báo hook-delete-policy: BeforeHookCreation cho các Kubernetes Job Hooks?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Kubernetes mặc định không cho phép tạo một Job mới nếu đã có một Job trùng tên đang tồn tại trong namespace. <code>BeforeHookCreation</code> chỉ thị Argo CD tự động xóa bản ghi Job của lần deploy trước TRƯỚC KHI tạo Job mới, tránh lỗi <code>Job already exists</code>.
   </div>
-  
-Kubernetes mặc định không cho phép tạo một Job mới nếu đã có một Job trùng tên đang tồn tại trong namespace. <code>BeforeHookCreation</code> chỉ thị Argo CD tự động xóa bản ghi Job của lần deploy trước TRƯỚC KHI tạo Job mới, tránh lỗi <code>Job already exists</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Có thể thiết lập giá trị số âm (như wave: "-1", "-2") cho Sync Waves không và khi nào nên dùng?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Hoàn toàn được!</b> Sync Wave nhận mọi giá trị số nguyên. Các wave số âm (nhỏ hơn 0) được sử dụng cho các tài nguyên hạ tầng nền móng (Namespace, CRD, Secret) cần phải sẵn sàng trước các tài nguyên mặc định (Wave 0).
   </div>
-  
-<b style="color: var(--accent-primary);">Hoàn toàn được!</b> Sync Wave nhận mọi giá trị số nguyên. Các wave số âm (nhỏ hơn 0) được sử dụng cho các tài nguyên hạ tầng nền móng (Namespace, CRD, Secret) cần phải sẵn sàng trước các tài nguyên mặc định (Wave 0).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Có thể kết hợp Sync Waves bên trong một nhóm Resource Hooks cùng loại (ví dụ nhiều PreSync Hooks) không?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Hoàn toàn được!</b> Nếu bạn có 3 PreSync Hooks cần chạy theo thứ tự nghiêm ngặt (ví dụ: Hook 1 Backup DB $\rightarrow$ Hook 2 Schema Migration $\rightarrow$ Hook 3 Seed Data), bạn có thể gán <code>sync-wave: "1"</code>, <code>sync-wave: "2"</code>, <code>sync-wave: "3"</code> cho từng PreSync Job đó.
   </div>
-  
-<b style="color: var(--accent-primary);">Hoàn toàn được!</b> Nếu bạn có 3 PreSync Hooks cần chạy theo thứ tự nghiêm ngặt (ví dụ: Hook 1 Backup DB $\rightarrow$ Hook 2 Schema Migration $\rightarrow$ Hook 3 Seed Data), bạn có thể gán <code>sync-wave: "1"</code>, <code>sync-wave: "2"</code>, <code>sync-wave: "3"</code> cho từng PreSync Job đó.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Để tránh thảm họa Downtime khi chạy Database Migration qua PreSync Hook, kiến trúc sư cần tuân thủ quy tắc thiết kế nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Mẫu thiết kế <b style="color: var(--accent-primary);">Expand and Contract Pattern (Non-breaking Database Changes)</b>. Luôn đảm bảo code phiên bản cũ và code phiên bản mới đều có thể chạy song song với cấu trúc Database mới trong quá trình RollingUpdate. Không bao giờ xóa hoặc đổi tên cột đang dùng ngay trong một bước migration.
   </div>
-  
-Mẫu thiết kế <b style="color: var(--accent-primary);">Expand and Contract Pattern (Non-breaking Database Changes)</b>. Luôn đảm bảo code phiên bản cũ và code phiên bản mới đều có thể chạy song song với cấu trúc Database mới trong quá trình RollingUpdate. Không bao giờ xóa hoặc đổi tên cột đang dùng ngay trong một bước migration.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Tại sao activeDeadlineSeconds lại là tham số bắt buộc phải có trong mọi PreSync Migration Job?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Vì nếu không có timeout, một Hook Job bị treo (do deadlock database, kẹt I/O hoặc lỗi network) sẽ khiến tiến trình Sync của Argo CD bị khóa vô thời hạn, không thể tiếp tục deploy và cũng không kích hoạt <code>SyncFail</code> Hook.
   </div>
-  
-Vì nếu không có timeout, một Hook Job bị treo (do deadlock database, kẹt I/O hoặc lỗi network) sẽ khiến tiến trình Sync của Argo CD bị khóa vô thời hạn, không thể tiếp tục deploy và cũng không kích hoạt <code>SyncFail</code> Hook.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Lệnh argocd app terminate-op khác biệt thế nào so với việc kubectl delete pod của Job đang bị treo?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Xóa Pod Job bằng tay chỉ khiến Kubernetes tạo Pod mới nếu Job chưa hết <code>backoffLimit</code>. Lệnh <code>argocd app terminate-op</code> phát tín hiệu hủy bỏ trực tiếp vào tầng điều phối của Argo CD Controller, lập tức kết thúc đợt Sync đang chạy và đưa trạng thái về <code>Failed</code>.
   </div>
-  
-Xóa Pod Job bằng tay chỉ khiến Kubernetes tạo Pod mới nếu Job chưa hết <code>backoffLimit</code>. Lệnh <code>argocd app terminate-op</code> phát tín hiệu hủy bỏ trực tiếp vào tầng điều phối của Argo CD Controller, lập tức kết thúc đợt Sync đang chạy và đưa trạng thái về <code>Failed</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Khi nào nên sử dụng loại Hook argocd.argoproj.io/hook: Skip?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Được dùng để tạm thời bỏ qua một tài nguyên cụ thể trong thư mục Git mà không cần phải xóa file hoặc tạo commit mới trên Git, rất hữu ích khi gỡ lỗi hoặc khi một tài nguyên đang được bảo trì riêng biệt.
   </div>
-  
-Được dùng để tạm thời bỏ qua một tài nguyên cụ thể trong thư mục Git mà không cần phải xóa file hoặc tạo commit mới trên Git, rất hữu ích khi gỡ lỗi hoặc khi một tài nguyên đang được bảo trì riêng biệt.
-</div>
 </details>
 
 ---
@@ -484,5 +530,7 @@ Xóa Pod Job bằng tay chỉ khiến Kubernetes tạo Pod mới nếu Job chưa
 
 Sync Waves và Resource Hooks là hai công cụ không thể thiếu để biến các kịch bản triển khai microservices phức tạp thành những quy trình tự động hóa mượt mà, tin cậy và có khả năng tự bảo vệ cao.
 
-Ở bài tiếp theo, chúng ta sẽ khám phá **Kiểm Soát Sức Khỏe Tài Nguyên: Built-in Health Checks, Bẫy "Healthy Ảo" & Viết Custom Lua Scripts Cho Mọi Loại CRD**!
+> [!TIP]
+> **Khám phá bài học tiếp theo:**  
+> Đọc tiếp bài [Bài 07: Kiểm Soát Sức Khỏe Tài Nguyên: Built-in Health Checks, Bẫy "Healthy Ảo" & Viết Custom Lua Scripts Cho Mọi Loại CRD](argocd-07-07-kiem-soat-suc-khoe-tai-nguyen-health-checks-va-custom-lua-scripts.html) để làm chủ cơ chế thẩm định sức khỏe của tài nguyên và viết Health Check Script tùy biến.
 {% endraw %}

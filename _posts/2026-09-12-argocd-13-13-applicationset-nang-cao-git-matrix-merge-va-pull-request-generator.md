@@ -346,17 +346,27 @@ flowchart TD
 ```
 
 ### 7.1. Phân Tích Nguyên Nhân Gốc Rễ (5-Whys)
-1. **Tại sao Preview Environments không được tạo?** $\rightarrow$ Vì ApplicationSet Controller bị GitHub chặn truy vấn.
-2. **Tại sao bị GitHub chặn?** $\rightarrow$ Do mã phản hồi HTTP 403 Rate Limit Exceeded.
-3. **Tại sao lại vượt ngưỡng Rate Limit?** $\rightarrow$ Vì Controller sử dụng truy vấn nặc danh (Unauthenticated) chỉ có hạn mức 60 requests/giờ trong khi có 10 PRs được quét liên tục.
-4. **Tại sao không có token xác thực?** $\rightarrow$ Do kỹ sư quên khai báo khối `tokenRef` trong ApplicationSet manifest.
-5. **Giải pháp chuẩn hóa là gì?** $\rightarrow$ Cấu hình GitHub App Token hoặc Personal Access Token với quyền hạn tối thiểu (Read-Only PRs) để nâng hạn mức lên 5,000 requests/giờ.
+
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Preview Environments không được tạo?** $\rightarrow$ Vì ApplicationSet Controller bị GitHub chặn truy vấn.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao bị GitHub chặn?** $\rightarrow$ Do mã phản hồi HTTP 403 Rate Limit Exceeded.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao lại vượt ngưỡng Rate Limit?** $\rightarrow$ Vì Controller sử dụng truy vấn nặc danh (Unauthenticated) chỉ có hạn mức 60 requests/giờ trong khi có 10 PRs được quét liên tục.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao không có token xác thực?** $\rightarrow$ Do kỹ sư quên khai báo khối `tokenRef` trong ApplicationSet manifest.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:** Cấu hình GitHub App Token hoặc Personal Access Token với quyền hạn tối thiểu (Read-Only PRs) để nâng hạn mức lên 5,000 requests/giờ và cấu hình Webhooks để giảm tối đa số lần polling.
 
 ---
 
 ## 8. Hướng Dẫn Thực Hành CLI: Quản Trị Matrix & PR Applications (Step-by-Step Lab)
 
-Dưới đây là quy trình thực hành từ dòng lệnh để triển khai và quản trị Matrix & PR Generators:
+Dưới đây là bảng tổng hợp các bước thực hành và quy trình dòng lệnh để triển khai và quản trị Matrix & PR Generators:
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **01** | `kubectl create secret generic github-token-secret ...` | Lưu trữ GitHub Token an toàn để ApplicationSet xác thực API |
+| **02** | `kubectl apply -f appset-matrix-ecommerce.yaml` | Khởi tạo ma trận ứng dụng đa dịch vụ trên nhiều cụm |
+| **03** | `argocd app list -l "app.kubernetes.io/managed-by=..."` | Kiểm tra danh sách các Application con được sinh tự động |
+| **04** | `kubectl apply -f appset-pull-request-preview.yaml` | Kích hoạt bộ điều khiển tự động tạo môi trường xem trước cho PR |
+| **05** | `argocd app get frontend-preview-pr-142` | Kiểm tra chi tiết thông số và tài nguyên gắn với PR 142 |
+| **06** | `kubectl annotate appset ... argocd.argoproj.io/refresh=now` | Kích hoạt quét tức thì kho Git và danh sách PRs mà không cần chờ chu kỳ polling |
 
 ```bash
 # Bước 1: Tạo Secret chứa GitHub Personal Access Token để xác thực PR Generator
@@ -384,113 +394,150 @@ kubectl annotate applicationset frontend-pr-preview-environments -n argocd \
 
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Cơ chế hoạt động toán học đằng sau Matrix Generator là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Phép <b style="color: var(--accent-primary);">nhân tích Descartes (Cartesian Product)</b>. Nếu Generator A sinh ra 4 phần tử và Generator B sinh ra 3 phần tử, Matrix Generator sẽ kết hợp từng phần tử của A với từng phần tử của B để tạo ra tổng cộng $4 \times 3 = 12$ bộ tham số cho Template.
   </div>
-  
-Phép <b style="color: var(--accent-primary);">nhân tích Descartes (Cartesian Product)</b>. Nếu Generator A sinh ra 4 phần tử và Generator B sinh ra 3 phần tử, Matrix Generator sẽ kết hợp từng phần tử của A với từng phần tử của B để tạo ra tổng cộng $4 \times 3 = 12$ bộ tham số cho Template.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Sự khác nhau giữa hai biến {{branch}} và {{branch_slug}} trong Pull Request Generator là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Biến <code>{{branch}}</code> giữ nguyên tên nhánh gốc (có thể chứa ký tự <code>/</code>, <code>_</code> hoặc chữ hoa, ví dụ <code>feat/Fix_Bug_#1</code>). Biến <code>{{branch_slug}}</code> tự động chuẩn hóa chuỗi này thành định dạng an toàn cho Kubernetes DNS (đổi chữ hoa thành chữ thường, đổi <code>/</code> và <code>_</code> thành dấu <code>-</code>, ví dụ <code>feat-fix-bug-1</code>).
   </div>
-  
-Biến <code>{{branch}}</code> giữ nguyên tên nhánh gốc (có thể chứa ký tự <code>/</code>, <code>_</code> hoặc chữ hoa, ví dụ <code>feat/Fix_Bug_#1</code>). Biến <code>{{branch_slug}}</code> tự động chuẩn hóa chuỗi này thành định dạng an toàn cho Kubernetes DNS (đổi chữ hoa thành chữ thường, đổi <code>/</code> và <code>_</code> thành dấu <code>-</code>, ví dụ <code>feat-fix-bug-1</code>).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Khi nào nên sử dụng Merge Generator thay vì Matrix Generator?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng <b style="color: var(--accent-primary);">Merge Generator</b> khi bạn muốn gộp 2 generator lại với nhau và cho phép <b style="color: var(--accent-primary);">ghi đè (Override) các tham số cấu hình cục bộ theo điều kiện</b>. Ví dụ: Áp dụng cấu hình chung cho 10 cụm, nhưng riêng cụm <code>prod-us</code> cần ghi đè số lượng <code>replicas: 10</code>.
   </div>
-  
-Sử dụng <b style="color: var(--accent-primary);">Merge Generator</b> khi bạn muốn gộp 2 generator lại với nhau và cho phép <b style="color: var(--accent-primary);">ghi đè (Override) các tham số cấu hình cục bộ theo điều kiện</b>. Ví dụ: Áp dụng cấu hình chung cho 10 cụm, nhưng riêng cụm <code>prod-us</code> cần ghi đè số lượng <code>replicas: 10</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Làm thế nào để ngăn chặn các Pull Request độc hại từ các tài khoản Fork lạ tự động kích hoạt tạo Preview Environment?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng bộ lọc bảo mật trong <code>pullRequest.github.filters</code>:
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>labels</code>: Chỉ tạo môi trường khi PR được gắn nhãn <code>safe-to-test</code> bởi Maintainer.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>forkMatch</code>: Cấm hoặc giới hạn các PR xuất phát từ các kho fork bên ngoài.</div>
   </div>
-  
-Sử dụng bộ lọc bảo mật trong <code>pullRequest.github.filters</code>:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>labels</code>: Chỉ tạo môi trường khi PR được gắn nhãn <code>safe-to-test</code> bởi Maintainer.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>forkMatch</code>: Cấm hoặc giới hạn các PR xuất phát từ các kho fork bên ngoài.</div>
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Cấu hình nào bắt buộc phải có để khi đóng PR, toàn bộ Namespace và Pods của PR đó bị xóa sạch trên cụm Kubernetes?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    (1) Đảm bảo <code>spec.syncPolicy.preserveResourcesOnDeletion</code> là <code>false</code>, (2) Gắn <code>finalizers: [resources-finalizer.argocd.argoproj.io]</code> vào <code>template.metadata.finalizers</code>, và (3) Khai báo <code>destination.namespace: "preview-pr-{{number}}"</code> kèm <code>syncPolicy.automated.prune: true</code>.
   </div>
-  
-(1) Đảm bảo <code>spec.syncPolicy.preserveResourcesOnDeletion</code> là <code>false</code>, (2) Gắn <code>finalizers: [resources-finalizer.argocd.argoproj.io]</code> vào <code>template.metadata.finalizers</code>, và (3) Khai báo <code>destination.namespace: "preview-pr-{{number}}"</code> kèm <code>syncPolicy.automated.prune: true</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Làm thế nào để cấu hình các tham số môi trường khác nhau cho từng Microservice khi sử dụng Git File Generator kết hợp Matrix Generator?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Đặt Git File Generator vào một nhánh của Matrix Generator để đọc cấu hình từ các tệp <code>config.json</code> nằm trong từng thư mục dịch vụ, sau đó nhân chéo với Cluster Generator để áp dụng các tham số riêng biệt cho từng cụm.
   </div>
-  
-Đặt Git File Generator vào một nhánh của Matrix Generator để đọc cấu hình từ các tệp <code>config.json</code> nằm trong từng thư mục dịch vụ, sau đó nhân chéo với Cluster Generator để áp dụng các tham số riêng biệt cho từng cụm.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Tham số requeueAfterSeconds trong Pull Request Generator có ý nghĩa gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Chỉ định chu kỳ thời gian (tính bằng giây) mà Controller sẽ chủ động gửi request lên GitHub API để kiểm tra danh sách PRs mới hoặc trạng thái đóng/mở PR (mặc định là 1800 giây - 30 phút).
   </div>
-  
-Chỉ định chu kỳ thời gian (tính bằng giây) mà Controller sẽ chủ động gửi request lên GitHub API để kiểm tra danh sách PRs mới hoặc trạng thái đóng/mở PR (mặc định là 1800 giây - 30 phút).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Tại sao nên sử dụng GitHub App Authentication thay vì Personal Access Token (PAT) cho Pull Request Generator trong môi trường Production?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    GitHub App có cơ chế cấp quyền theo tổ chức và repo cụ thể (Least Privilege), hỗ trợ hạn mức API lớn hơn (lên tới 15,000 requests/giờ) và không bị phụ thuộc vào tài khoản cá nhân của kỹ sư (tránh lỗi khi nhân viên nghỉ việc).
   </div>
-  
-GitHub App có cơ chế cấp quyền theo tổ chức và repo cụ thể (Least Privilege), hỗ trợ hạn mức API lớn hơn (lên tới 15,000 requests/giờ) và không bị phụ thuộc vào tài khoản cá nhân của kỹ sư (tránh lỗi khi nhân viên nghỉ việc).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Điểm khác biệt giữa cú pháp đường dẫn services/* và services/** trong Git Directory Generator là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <code>services/*</code> chỉ quét các thư mục con cấp 1 trực tiếp bên trong <code>services/</code>. Cú pháp <code>services/**</code> quét đệ quy toàn bộ mọi cấp thư mục lồng nhau bên trong.
   </div>
-  
-<code>services/*</code> chỉ quét các thư mục con cấp 1 trực tiếp bên trong <code>services/</code>. Cú pháp <code>services/**</code> quét đệ quy toàn bộ mọi cấp thư mục lồng nhau bên trong.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Làm thế nào để loại trừ (Exclude) một số thư mục con nhất định khỏi quá trình quét tự động của Git Directory Generator?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng thuộc tính <code>exclude: true</code> trong danh sách <code>directories</code>:
+    <pre><code class="language-yaml">directories:
+  - path: "services/*"
+  - path: "services/archive"
+    exclude: true</code></pre>
   </div>
-  
-Sử dụng trường <code>exclude: true</code> trong danh sách <code>directories</code>:
-  ```yaml
-  directories:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: "services/*"</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: "services/archive"</div>
-      exclude: true
-  ```
-</div>
 </details>
 
 ---
@@ -499,5 +546,7 @@ Sử dụng trường <code>exclude: true</code> trong danh sách <code>director
 
 Các Generator nâng cao của `ApplicationSet` là đỉnh cao của tự động hóa GitOps hiện đại, mang lại trải nghiệm phát triển phần mềm mượt mà, tối ưu hóa chi phí hạ tầng và mở rộng quy mô không giới hạn.
 
-Ở bài tiếp theo, chúng ta sẽ đi sâu vào **Quản Trị Đa Cụm: Multi-Cluster GitOps & Kỹ Thuật Triển Khai Chéo Hạ Tầng Chuẩn Enterprise**!
+> [!TIP]
+> **Tài liệu tiếp theo**: Chuyển sang [Bài 14: Quản Trị Đa Cụm: Multi-Cluster GitOps & Kỹ Thuật Triển Khai Chéo Hạ Tầng](argocd-14-14-quan-tri-da-cum-multi-cluster-gitops-va-deploy-cheo-ha-tang.html) để làm chủ kỹ thuật quản trị kết nối đa cụm Kubernetes từ một giao diện Argo CD duy nhất!
 {% endraw %}
+

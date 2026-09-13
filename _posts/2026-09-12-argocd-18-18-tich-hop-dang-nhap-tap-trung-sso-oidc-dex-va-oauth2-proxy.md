@@ -354,7 +354,16 @@ flowchart TD
 
 ## 8. Hướng Dẫn Thực Hành CLI: Kiểm Tra Token Và Đăng Nhập (Step-by-Step Lab)
 
-Dưới đây là quy trình kiểm tra và xác thực kết nối SSO:
+Dưới đây là bảng tổng hợp các bước thực hành và quy trình dòng lệnh để kiểm tra và xác thực kết nối SSO:
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **01** | `kubectl run oidc-test ... curl -s .../.well-known/openid-configuration` | Kiểm tra kết nối mạng và tính hợp lệ của OIDC Discovery endpoint từ IdP |
+| **02** | `kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-dex-server` | Xác nhận pod Dex Broker đang ở trạng thái Running sẵn sàng phục vụ |
+| **03** | `argocd login ... --sso --grpc-web` | Thực hiện luồng xác thực đăng nhập một lần từ giao diện terminal |
+| **04** | `argocd account get-user-info` | Kiểm tra chi tiết claims groups, email và quyền hạn nhận được từ JWT token |
+| **05** | `kubectl logs -n argocd deploy/argocd-server ...` | Giám sát luồng log trao đổi authorization code và token của OIDC |
+| **06** | `cat ~/.argocd/config | grep -A 5 "auth-token"` | Kiểm tra JWT token đã được lưu an toàn trong file cấu hình client |
 
 ```bash
 # Bước 1: Kiểm tra cấu hình OIDC Discovery của IdP từ bên trong cụm
@@ -381,106 +390,145 @@ cat ~/.argocd/config | grep -A 5 "auth-token"
 
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Điểm khác biệt cốt lõi về Callback Redirect URI giữa Direct OIDC và Embedded Dex Broker là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Direct OIDC sử dụng endpoint: <code>https://&lt;argocd-url&gt;/auth/callback</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Embedded Dex Broker sử dụng endpoint: <code>https://&lt;argocd-url&gt;/api/dex/callback</code>.</div>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Direct OIDC sử dụng endpoint: <code>https://<argocd-url>/auth/callback</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Embedded Dex Broker sử dụng endpoint: <code>https://<argocd-url>/api/dex/callback</code>.</div>
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Tại sao trường requestedScopes trong cấu hình OIDC bắt buộc phải có scope groups?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Vì nếu thiếu Scope <code>groups</code>, hệ thống Identity Provider (Okta/Azure AD) sẽ không đính kèm danh sách các nhóm của người dùng vào bên trong ID Token (JWT). Không có thông tin nhóm, động cơ RBAC của Argo CD sẽ không thể thực hiện ánh xạ (<code>g rules</code>) và sẽ đẩy người dùng về quyền mặc định <code>role:readonly</code>.
   </div>
-  
-Vì nếu thiếu Scope <code>groups</code>, hệ thống Identity Provider (Okta/Azure AD) sẽ không đính kèm danh sách các nhóm của người dùng vào bên trong ID Token (JWT). Không có thông tin nhóm, động cơ RBAC của Argo CD sẽ không thể thực hiện ánh xạ (<code>g rules</code>) và sẽ đẩy người dùng về quyền mặc định <code>role:readonly</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Làm thế nào để bảo mật thông tin OIDC Client Secret mà không lưu bản rõ (Plaintext) trong ConfigMap argocd-cm?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng cú pháp tham chiếu biến bí mật: <code>clientSecret: $oidc.clientSecret</code>. Sau đó, lưu giá trị bí mật thực tế vào trường <code>oidc.clientSecret</code> bên trong Kubernetes <code>Secret</code> <code>argocd-secret</code>.
   </div>
-  
-Sử dụng cú pháp tham chiếu biến bí mật: <code>clientSecret: $oidc.clientSecret</code>. Sau đó, lưu giá trị bí mật thực tế vào trường <code>oidc.clientSecret</code> bên trong Kubernetes <code>Secret</code> <code>argocd-secret</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Khi một nhân viên bị vô hiệu hóa tài khoản trên Okta/Azure AD, phiên đăng nhập (Session) hiện tại của họ trên Argo CD sẽ tồn tại trong bao lâu?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Tồn tại tối đa bằng thời hạn sống của JWT Session Token (mặc định là 24 giờ). Muốn thu hồi quyền ngay lập tức, SRE có thể xóa phiên làm việc của người dùng đó trong bộ nhớ đệm <code>argocd-redis</code> hoặc khởi động lại cụm Redis.
   </div>
-  
-Tồn tại tối đa bằng thời hạn sống của JWT Session Token (mặc định là 24 giờ). Muốn thu hồi quyền ngay lập tức, SRE có thể xóa phiên làm việc của người dùng đó trong bộ nhớ đệm <code>argocd-redis</code> hoặc khởi động lại cụm Redis.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Có thể cấu hình vừa cho phép đăng nhập qua SSO vừa duy trì tài khoản admin cục bộ (Local admin account) không?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Hoàn toàn được!</b> Trên giao diện đăng nhập của Argo CD sẽ hiển thị đồng thời cả form nhập User/Password cục bộ và nút bấm "Log in via SSO". Tuy nhiên, mật khẩu admin cục bộ phải được bảo vệ cực kỳ nghiêm ngặt và chỉ dùng trong các tình huống khẩn cấp (Break-glass scenario).
   </div>
-  
-<b style="color: var(--accent-primary);">Hoàn toàn được!</b> Trên giao diện đăng nhập của Argo CD sẽ hiển thị đồng thời cả form nhập User/Password cục bộ và nút bấm "Log in via SSO". Tuy nhiên, mật khẩu admin cục bộ phải được bảo vệ cực kỳ nghiêm ngặt và chỉ dùng trong các tình huống khẩn cấp (Break-glass scenario).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Ý nghĩa của trường requestedIDTokenClaims trong cấu hình oidc.config là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Tham số này yêu cầu Identity Provider bắt buộc phải nhúng các thông tin bổ sung (như <code>groups</code>, <code>email_verified</code>) trực tiếp vào trong ID Token thay vì phải gọi thêm một HTTP request tới endpoint <code>/userinfo</code>.
   </div>
-  
-Tham số này yêu cầu Identity Provider bắt buộc phải nhúng các thông tin bổ sung (như <code>groups</code>, <code>email_verified</code>) trực tiếp vào trong ID Token thay vì phải gọi thêm một HTTP request tới endpoint <code>/userinfo</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Tại sao khi đăng nhập CLI qua SSO (argocd login --sso) nên kết hợp thêm cờ --grpc-web?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Nhiều Ingress Controller hoặc Reverse Proxy (như AWS ALB hoặc Cloudflare) không hỗ trợ gRPC thuần qua HTTP/2 một cách hoàn chỉnh. Cờ <code>--grpc-web</code> đóng gói các cuộc gọi gRPC qua giao thức HTTP/1.1 Web standard để đảm bảo kết nối luôn thông suốt.
   </div>
-  
-Nhiều Ingress Controller hoặc Reverse Proxy (như AWS ALB hoặc Cloudflare) không hỗ trợ gRPC thuần qua HTTP/2 một cách hoàn chỉnh. Cờ <code>--grpc-web</code> đóng gói các cuộc gọi gRPC qua giao thức HTTP/1.1 Web standard để đảm bảo kết nối luôn thông suốt.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Dex Broker lưu trữ dữ liệu phiên làm việc và trạng thái kết nối IdP ở đâu?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Dex Broker trong Argo CD mặc định sử dụng cơ chế lưu trữ trong bộ nhớ (In-Memory) hoặc sử dụng Kubernetes Custom Resources / ConfigMaps nội bộ để quản lý trạng thái.
   </div>
-  
-Dex Broker trong Argo CD mặc định sử dụng cơ chế lưu trữ trong bộ nhớ (In-Memory) hoặc sử dụng Kubernetes Custom Resources / ConfigMaps nội bộ để quản lý trạng thái.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Làm thế nào để giới hạn thời gian tồn tại của một phiên đăng nhập SSO Session trong Argo CD?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Có thể cấu hình tham số <code>users.session.duration</code> trong ConfigMap <code>argocd-cm</code> (ví dụ: <code>24h</code> hoặc <code>8h</code> theo ca làm việc của doanh nghiệp).
   </div>
-  
-Có thể cấu hình tham số <code>users.session.duration</code> trong ConfigMap <code>argocd-cm</code> (ví dụ: <code>24h</code> hoặc <code>8h</code> theo ca làm việc của doanh nghiệp).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Trong môi trường On-Premise với chứng chỉ SSL tự ký (Self-signed CA), làm sao để Argo CD tin tưởng IdP HTTPS endpoint?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Thêm chuỗi chứng chỉ CA Certificate nội bộ vào trường <code>rootCA</code> bên trong khối <code>oidc.config</code> hoặc mount tệp CA vào thư mục <code>/etc/ssl/certs</code> của container <code>argocd-server</code>.
   </div>
-  
-Thêm chuỗi chứng chỉ CA Certificate nội bộ vào trường <code>rootCA</code> bên trong khối <code>oidc.config</code> hoặc mount tệp CA vào thư mục <code>/etc/ssl/certs</code> của container <code>argocd-server</code>.
-</div>
 </details>
 
 ---
@@ -489,5 +537,7 @@ Thêm chuỗi chứng chỉ CA Certificate nội bộ vào trường <code>rootC
 
 Tích hợp SSO/OIDC là tiêu chuẩn bắt buộc để đưa Argo CD vào môi trường vận hành chuyên nghiệp, mang lại trải nghiệm đăng nhập liền mạch, kiểm soát quyền hạn tập trung và nâng cao tính tuân thủ an toàn thông tin doanh nghiệp.
 
-Ở bài tiếp theo, chúng ta sẽ bước vào chuyên đề sống còn: **Quản Trị Bí Mật (Secrets Management) Trong GitOps: So Sánh Toàn Diện Sealed Secrets, External Secrets Operator (ESO) & SOPS**!
+> [!TIP]
+> **Tài liệu tiếp theo**: Chuyển sang [Bài 19: Quản Trị Bí Mật (Secrets Management) Trong GitOps: So Sánh Toàn Diện Sealed Secrets, External Secrets Operator (ESO) & SOPS](argocd-19-19-quan-ly-secrets-trong-gitops-sealed-secrets-external-secrets-va-sops.html) để làm chủ kiến trúc quản lý bí mật an toàn trong GitOps!
 {% endraw %}
+

@@ -358,6 +358,15 @@ increase(argocd_app_sync_total{phase="Succeeded", reason="SelfHeal"}[5m]) > 10
 
 ## 10. Hướng Dẫn Thực Hành CLI: Kiểm Chứng Vòng Lặp Self-Healing
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+|---|---|---|
+| **1. Kiểm Tra Cấu Hình** | `argocd app get order-processing-service \| grep -A 10 "Sync Policy"` | Xác minh trạng thái kích hoạt của Automated Sync, Prune và Self-Heal |
+| **2. Giả Lập Sai Lệch** | `kubectl delete deployment order-processing-api -n order-prod` | Xóa tài nguyên thủ công trên cụm để kích hoạt kiểm thử Drift |
+| **3. Quan Sát Tự Phục Hồi** | `kubectl get pods -n order-prod -w` | Theo dõi Argo CD Self-Healing tự động tái tạo lại Deployment sau 3s |
+| **4. Kiểm Tra Nhật Ký** | `kubectl logs -n argocd -l app.kubernetes.io/name=argocd-application-controller ...` | Xác thực nhật ký controller đã nhận diện và thực thi Self-Heal |
+| **5. Ép Buộc Đồng Bộ** | `argocd app sync order-processing-service --prune --force` | Kích hoạt Sync thủ công cưỡng chế dọn dẹp tài nguyên rác |
+| **6. Gán Khóa Bảo Vệ** | `argocd app set order-processing-service --sync-option Prune=false` | Gán cờ bảo vệ chống xóa nhầm tài nguyên quan trọng |
+
 ```bash
 # 1. Kiểm tra cấu hình Sync Policy của ứng dụng
 argocd app get order-processing-service | grep -A 10 "Sync Policy"
@@ -382,105 +391,144 @@ argocd app set order-processing-service --sync-option Prune=false
 
 ## 11. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Tại sao việc tắt prune: false lại đi ngược lại triết lý cốt lõi của GitOps?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Vì nếu tắt Prune, Git không còn là "Nguồn Chân Lý Duy Nhất". Một tài nguyên đã bị xóa trên Git nhưng vẫn tồn tại trên Live Cluster tạo ra sự sai lệch ngầm, dẫn đến rủi ro bảo mật và lãng phí tài nguyên máy chủ.
   </div>
-  
-Vì nếu tắt Prune, Git không còn là "Nguồn Chân Lý Duy Nhất". Một tài nguyên đã bị xóa trên Git nhưng vẫn tồn tại trên Live Cluster tạo ra sự sai lệch ngầm, dẫn đến rủi ro bảo mật và lãng phí tài nguyên máy chủ.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Thuộc tính allowEmpty: false đóng vai trò như thế nào trong việc bảo vệ dữ liệu?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Bảo vệ hệ thống khỏi thảm họa xóa sạch toàn bộ cụm khi: (1) Kỹ sư trỏ nhầm <code>path</code> sang thư mục rỗng, (2) Nhánh Git mới tạo chưa kịp copy manifests, hoặc (3) Lỗi script tự động hóa làm trắng thư mục Git.
   </div>
-  
-Bảo vệ hệ thống khỏi thảm họa xóa sạch toàn bộ cụm khi: (1) Kỹ sư trỏ nhầm <code>path</code> sang thư mục rỗng, (2) Nhánh Git mới tạo chưa kịp copy manifests, hoặc (3) Lỗi script tự động hóa làm trắng thư mục Git.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Làm thế nào để ngăn chặn hiện tượng "tranh chấp" (Fighting Loop) giữa Argo CD Self-Heal và HPA?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng <code>ignoreDifferences</code> với <code>jsonPointers: [/spec/replicas]</code> trên Deployment, đồng thời khuyến nghị xóa hẳn dòng <code>spec.replicas</code> trong file YAML trên Git để nhường toàn quyền điều khiển số lượng Pod cho Kubernetes HPA.
   </div>
-  
-Sử dụng <code>ignoreDifferences</code> với <code>jsonPointers: [/spec/replicas]</code> trên Deployment, đồng thời khuyến nghị xóa hẳn dòng <code>spec.replicas</code> trong file YAML trên Git để nhường toàn quyền điều khiển số lượng Pod cho Kubernetes HPA.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Tác dụng của tùy chọn PruneLast=true trong spec.syncPolicy.syncOptions là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Nó điều phối thứ tự: Argo CD sẽ tạo và chờ toàn bộ các tài nguyên mới đạt trạng thái <code>Healthy</code> trước, sau đó mới thực hiện lệnh xóa các tài nguyên cũ cần prune. Điều này đảm bảo quá trình chuyển đổi dịch vụ diễn ra liền mạch không có thời gian chết (Zero-Downtime).
   </div>
-  
-Nó điều phối thứ tự: Argo CD sẽ tạo và chờ toàn bộ các tài nguyên mới đạt trạng thái <code>Healthy</code> trước, sau đó mới thực hiện lệnh xóa các tài nguyên cũ cần prune. Điều này đảm bảo quá trình chuyển đổi dịch vụ diễn ra liền mạch không có thời gian chết (Zero-Downtime).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Điều gì xảy ra khi một Application bật retry với limit: 5 và hệ thống gặp lỗi kết nối?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Controller sẽ kích hoạt thuật toán <b style="color: var(--accent-primary);">Exponential Backoff</b>: Thử lại sau các khoảng thời gian tăng dần (<code>duration: 10s</code>, <code>20s</code>, <code>40s</code>...) cho đến khi chạm ngưỡng <code>limit: 5</code>. Sau đó, nó sẽ dừng thử lại, đánh dấu trạng thái <code>Sync: Failed</code> và gửi cảnh báo tới hệ thống Notifications.
   </div>
-  
-Controller sẽ kích hoạt thuật toán <b style="color: var(--accent-primary);">Exponential Backoff</b>: Thử lại sau các khoảng thời gian tăng dần (<code>duration: 10s</code>, <code>20s</code>, <code>40s</code>...) cho đến khi chạm ngưỡng <code>limit: 5</code>. Sau đó, nó sẽ dừng thử lại, đánh dấu trạng thái <code>Sync: Failed</code> và gửi cảnh báo tới hệ thống Notifications.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Tại sao việc sử dụng Docker Image tag :latest lại là cạm bẫy lớn nhất trong mô hình GitOps?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Vì Argo CD so sánh trạng thái dựa trên Git manifest. Nếu file YAML trên Git vẫn ghi <code>image: app:latest</code> không đổi, Argo CD sẽ coi như không có sự thay đổi nào và bỏ qua, dẫn đến việc Pods trên cụm không bao giờ được cập nhật lên phiên bản Docker image mới nhất.
   </div>
-  
-Vì Argo CD so sánh trạng thái dựa trên Git manifest. Nếu file YAML trên Git vẫn ghi <code>image: app:latest</code> không đổi, Argo CD sẽ coi như không có sự thay đổi nào và bỏ qua, dẫn đến việc Pods trên cụm không bao giờ được cập nhật lên phiên bản Docker image mới nhất.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Làm thế nào để giải quyết vấn đề Pod không tự reload cấu hình khi ConfigMap thay đổi?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng Kustomize <code>configMapGenerator</code> để sinh ra tên ConfigMap có gắn hash đuôi (ví dụ <code>app-config-8f9c1b</code>). Khi nội dung đổi, tên ConfigMap đổi, khiến <code>spec.template</code> của Deployment thay đổi theo và kích hoạt Kubernetes RollingUpdate tự nhiên.
   </div>
-  
-Sử dụng Kustomize <code>configMapGenerator</code> để sinh ra tên ConfigMap có gắn hash đuôi (ví dụ <code>app-config-8f9c1b</code>). Khi nội dung đổi, tên ConfigMap đổi, khiến <code>spec.template</code> của Deployment thay đổi theo và kích hoạt Kubernetes RollingUpdate tự nhiên.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Sự khác biệt cơ bản giữa cơ chế tự phục hồi của Kubernetes ReplicaSet và Argo CD Self-Heal là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Kubernetes ReplicaSet chỉ tự phục hồi khi Pod bị chết hoặc bị xóa. Nếu có ai đó sửa cấu hình của chính Deployment (ví dụ sửa image, thêm biến môi trường), ReplicaSet không thể biết đó là đúng hay sai. <code>selfHeal: true</code> của Argo CD kiểm tra sự sai lệch của toàn bộ bản vẽ cấu hình và ghi đè lại cấu hình từ Git.
   </div>
-  
-Kubernetes ReplicaSet chỉ tự phục hồi khi Pod bị chết hoặc bị xóa. Nếu có ai đó sửa cấu hình của chính Deployment (ví dụ sửa image, thêm biến môi trường), ReplicaSet không thể biết đó là đúng hay sai. <code>selfHeal: true</code> của Argo CD kiểm tra sự sai lệch của toàn bộ bản vẽ cấu hình và ghi đè lại cấu hình từ Git.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Nếu một kỹ sư cố tình dùng kubectl edit để sửa trực tiếp biến môi trường trên cụm Production khi Application đang bật selfHeal: true, điều gì sẽ diễn ra?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sau khi bạn lưu file trong <code>kubectl edit</code>, Kubernetes API Server sẽ áp dụng thay đổi trong tích tắc. Nhưng chỉ 1-3 giây sau, Argo CD Controller phát hiện Drift và tự động gửi lệnh <code>kubectl apply</code> đè lại cấu hình trên Git, xóa bỏ toàn bộ chỉnh sửa thủ công của bạn.
   </div>
-  
-Sau khi bạn lưu file trong <code>kubectl edit</code>, Kubernetes API Server sẽ áp dụng thay đổi trong tích tắc. Nhưng chỉ 1-3 giây sau, Argo CD Controller phát hiện Drift và tự động gửi lệnh <code>kubectl apply</code> đè lại cấu hình trên Git, xóa bỏ toàn bộ chỉnh sửa thủ công của bạn.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Ý nghĩa kỹ thuật của annotation argocd.argoproj.io/sync-options: Prune=false là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Nó hoạt động như một lá bùa hộ mệnh (Safety Lock) gắn vào từng tài nguyên cụ thể. Ngay cả khi Application có bật <code>automated.prune: true</code> và file YAML của tài nguyên đó bị xóa khỏi Git, Argo CD vẫn sẽ bỏ qua không gửi lệnh xóa tài nguyên đó trên cụm Kubernetes.
   </div>
-  
-Nó hoạt động như một lá bùa hộ mệnh (Safety Lock) gắn vào từng tài nguyên cụ thể. Ngay cả khi Application có bật <code>automated.prune: true</code> và file YAML của tài nguyên đó bị xóa khỏi Git, Argo CD vẫn sẽ bỏ qua không gửi lệnh xóa tài nguyên đó trên cụm Kubernetes.
-</div>
 </details>
 
 ---
@@ -489,7 +537,7 @@ Nó hoạt động như một lá bùa hộ mệnh (Safety Lock) gắn vào từ
 
 Làm chủ bộ ba **Automated Sync, Prune và Self-Heal** kết hợp với các chốt chặn an toàn (`allowEmpty: false`, `ignoreDifferences`, Immutable Tags, Reloader, `Prune=false`) giúp bạn khai phóng toàn bộ sức mạnh tự động hóa của GitOps mà vẫn duy trì sự an toàn tuyệt đối cho môi trường Production.
 
-Chúc mừng bạn đã hoàn thành trọn vẹn **Giai Đoạn 1 (Nền Tảng & Bản Chất GitOps)**! 
-
-Ở bài viết tiếp theo mở màn **Giai Đoạn 2**, chúng ta sẽ bước vào thế giới điều phối triển khai phức tạp với **Sync Waves & Resource Hooks: Quản Trị Thứ Tự Triển Khai Microservices & Database Migration Chuyên Sâu**!
+> [!TIP]
+> **Khám phá bài học tiếp theo:**  
+> Đọc tiếp bài [Bài 06: Điều Phối Triển Khai Phức Tạp: Sync Waves & Resource Hooks: Quản Trị Thứ Tự Triển Khai Microservices & Database Migration Chuyên Sâu](argocd-06-06-dieu-phoi-trien-khai-phuc-tap-sync-waves-va-resource-hooks.html) để làm chủ kỹ thuật điều phối thứ tự khởi chạy tuần tự và chạy migration tự động an toàn.
 {% endraw %}

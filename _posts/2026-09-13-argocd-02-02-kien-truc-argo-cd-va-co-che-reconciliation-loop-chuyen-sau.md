@@ -398,6 +398,14 @@ time="2026-03-22T08:16:00Z" level=warning msg="Reconciliation failed for 48 appl
 
 ## 9. Hướng Dẫn Thực Hành CLI: Giám Sát Và Tương Tác Trực Tiếp Với Control Plane
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| **Bước 1** | `kubectl get pods -n argocd -l app.kubernetes.io/part-of=argocd` | Kiểm tra trạng thái hoạt động của toàn bộ 4 vi dịch vụ Argo CD |
+| **Bước 2** | `kubectl logs -n argocd -l app.kubernetes.io/name=argocd-application-controller -f` | Xem trực tiếp nhật ký điều hòa trạng thái của Application Controller |
+| **Bước 3** | `argocd app get payment-api --hard-refresh` | Ép buộc Controller xóa bỏ Cache cũ và thực hiện Hard Refresh tức thì |
+| **Bước 4** | `kubectl exec ... curl http://localhost:8082/metrics` | Kiểm tra các chỉ số hiệu năng gRPC và độ trễ Reconcile qua Metrics API |
+| **Bước 5** | `kubectl exec ... nc -zv argocd-repo-server 8081` | Kiểm tra kết nối mạng gRPC trực tiếp từ Controller sang Repo Server |
+
 ```bash
 # 1. Kiểm tra trạng thái hoạt động của toàn bộ 4 vi dịch vụ Argo CD
 kubectl get pods -n argocd -l app.kubernetes.io/part-of=argocd
@@ -419,113 +427,204 @@ kubectl exec -n argocd deploy/argocd-application-controller -- nc -zv argocd-rep
 
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao <code>argocd-repo-server</code> lại bị cô lập hoàn toàn và không được cấp quyền truy cập vào Kubernetes API Server?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Đây là nguyên lý <b style="color: var(--accent-primary);">Least Privilege</b> trong kiến trúc an ninh. <code>repo-server</code> là nơi thực thi các công cụ render manifest bên ngoài (Helm, Kustomize, Plugins) có nguy cơ chứa mã độc hoặc lỗ hổng thực thi lệnh tùy ý (RCE). Việc cô lập hoàn toàn <code>repo-server</code> khỏi Kubernetes API ngăn chặn kẻ tấn công lợi dụng lỗ hổng render để chiếm quyền điều khiển cụm.
+  <p style="margin: 0.4rem 0;">Đây là nguyên lý <b style="color: var(--accent-primary);">Least Privilege</b> trong kiến trúc an ninh. <code>repo-server</code> là nơi thực thi các công cụ render manifest bên ngoài (Helm, Kustomize, Plugins) có nguy cơ chứa mã độc hoặc lỗ hổng thực thi lệnh tùy ý (RCE). Việc cô lập hoàn toàn <code>repo-server</code> khỏi Kubernetes API ngăn chặn kẻ tấn công lợi dụng lỗ hổng render để chiếm quyền điều khiển cụm.</p>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt bản chất giữa việc chạy <code>argocd app get --refresh</code> và <code>argocd app get --hard-refresh</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--refresh</code> (Soft Refresh): Controller kiểm tra lại Git Revision trên remote server, nhưng vẫn có thể tái sử dụng manifest đã render trong Redis cache nếu Commit SHA không đổi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--refresh</code> (Soft Refresh): Controller kiểm tra lại Git Revision trên remote server, nhưng vẫn có thể tái sử dụng manifest đã render trong Redis cache nếu Commit SHA không đổi.</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>--hard-refresh</code>: Xóa bỏ hoàn toàn bộ nhớ đệm manifest trong Redis, ép buộc <code>repo-server</code> phải clone lại Git repo và render lại toàn bộ manifest từ đầu.</div>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khi số lượng ứng dụng tăng lên hàng trăm microservices, làm thế nào để giảm thiểu độ trễ phát hiện thay đổi mà không làm quá tải Git Server?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Cấu hình <b style="color: var(--accent-primary);">Git Webhook</b> trên GitHub/GitLab trỏ về <code>/api/webhook</code> của Argo CD Server. Webhook hoạt động theo cơ chế Push-Notification Event, chỉ kích hoạt reconcile đúng ứng dụng có commit mới mà không cần hạ thấp tham số polling <code>timeout.reconciliation</code>.
+  <p style="margin: 0.4rem 0;">Cấu hình <b style="color: var(--accent-primary);">Git Webhook</b> trên GitHub/GitLab trỏ về <code>/api/webhook</code> của Argo CD Server. Webhook hoạt động theo cơ chế Push-Notification Event, chỉ kích hoạt reconcile đúng ứng dụng có commit mới mà không cần hạ thấp tham số polling <code>timeout.reconciliation</code>.</p>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Khi nào một tổ chức bắt buộc phải chuyển đổi phương pháp Resource Tracking từ <code>label</code> sang <code>annotation</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Bắt buộc phải đổi sang <code>annotation</code> trong các môi trường doanh nghiệp có nhiều Application quản lý các tài nguyên trùng tên ở nhiều namespace khác nhau, hoặc khi tên Application dài vượt quá 63 ký tự (giới hạn của Kubernetes Label).
+  <p style="margin: 0.4rem 0;">Bắt buộc phải đổi sang <code>annotation</code> trong các môi trường doanh nghiệp có nhiều Application quản lý các tài nguyên trùng tên ở nhiều namespace khác nhau, hoặc khi tên Application dài vượt quá 63 ký tự (giới hạn của Kubernetes Label).</p>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span><code>argocd-server</code> lưu trữ các phiên đăng nhập (User Sessions) và quy tắc phân quyền RBAC ở đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Phiên làm việc (Session Tokens) được lưu trong <code>argocd-redis</code>, còn quy tắc phân quyền RBAC được <code>argocd-server</code> đọc trực tiếp từ ConfigMap <code>argocd-rbac-cm</code> và nạp vào bộ nhớ qua thư viện Casbin.
+  <p style="margin: 0.4rem 0;">Phiên làm việc (Session Tokens) được lưu trong <code>argocd-redis</code>, còn quy tắc phân quyền RBAC được <code>argocd-server</code> đọc trực tiếp từ ConfigMap <code>argocd-rbac-cm</code> và nạp vào bộ nhớ qua thư viện Casbin.</p>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Thuật toán Three-Way Diff của Argo CD vượt trội hơn Two-Way Diff truyền thống như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Two-Way Diff chỉ so sánh trực tiếp Git Desired State và Live State, dễ dẫn đến xung đột khi Kubernetes API Server hoặc Admission Webhooks tự động bổ sung các trường mặc định (như <code>status</code>, <code>metadata.creationTimestamp</code>, <code>spec.template.spec.serviceAccount</code>). Three-Way Diff đối chiếu thêm <code>last-applied-configuration</code> để xác định chính xác trường nào do người dùng thực sự thay đổi trên Git.
+  <p style="margin: 0.4rem 0;">Two-Way Diff chỉ so sánh trực tiếp Git Desired State và Live State, dễ dẫn đến xung đột khi Kubernetes API Server hoặc Admission Webhooks tự động bổ sung các trường mặc định (như <code>status</code>, <code>metadata.creationTimestamp</code>, <code>spec.template.spec.serviceAccount</code>). Three-Way Diff đối chiếu thêm <code>last-applied-configuration</code> để xác định chính xác trường nào do người dùng thực sự thay đổi trên Git.</p>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tại sao cơ chế Controller Sharding lại cần thiết khi quản trị hệ thống GitOps quy mô lớn trên 20 cụm Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Một Pod Controller duy nhất phải mở kết nối Informer Watcher tới từng cụm K8s. Khi số lượng cụm quá lớn, giới hạn I/O mạng, CPU và bộ nhớ của một Node sẽ bị quá tải. Sharding cho phép chia cụm Kubernetes mục tiêu cho nhiều Pod Controller phân tán xử lý song song.
+  <p style="margin: 0.4rem 0;">Một Pod Controller duy nhất phải mở kết nối Informer Watcher tới từng cụm K8s. Khi số lượng cụm quá lớn, giới hạn I/O mạng, CPU và bộ nhớ của một Node sẽ bị quá tải. Sharding cho phép chia cụm Kubernetes mục tiêu cho nhiều Pod Controller phân tán xử lý song song.</p>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Sự khác nhau về vai trò giữa hai ConfigMap <code>argocd-cm</code> và <code>argocd-cmd-params-cm</code> là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>argocd-cm</code> quản lý các cấu hình nghiệp vụ cấp ứng dụng (như SSO, Resource Exclusion, URL, Theme, Tracking Method). Trong khi đó, <code>argocd-cmd-params-cm</code> dùng để truyền các tham số dòng lệnh khởi động tiến trình (Command-Line Flags) cho các container như số worker thread, timeout, insecure mode.
+  <p style="margin: 0.4rem 0;"><code>argocd-cm</code> quản lý các cấu hình nghiệp vụ cấp ứng dụng (như SSO, Resource Exclusion, URL, Theme, Tracking Method). Trong khi đó, <code>argocd-cmd-params-cm</code> dùng để truyền các tham số dòng lệnh khởi động tiến trình (Command-Line Flags) cho các container như số worker thread, timeout, insecure mode.</p>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Nếu bộ nhớ đệm <code>argocd-redis</code> bị sập đột ngột (CrashLoopBackOff), hệ thống GitOps và các ứng dụng trên cụm sẽ bị ảnh hưởng như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Khi Redis sập, người dùng sẽ bị đăng xuất khỏi Web UI và thời gian render manifest sẽ chậm lại do bị Cache Miss toàn bộ. Tuy nhiên, các ứng dụng đang chạy trên Kubernetes vẫn hoạt động bình thường và Controller sẽ tự phục hồi kết nối ngay khi Redis Pod được khởi động lại.
+  <p style="margin: 0.4rem 0;">Khi Redis sập, người dùng sẽ bị đăng xuất khỏi Web UI và thời gian render manifest sẽ chậm lại do bị Cache Miss toàn bộ. Tuy nhiên, các ứng dụng đang chạy trên Kubernetes vẫn hoạt động bình thường và Controller sẽ tự phục hồi kết nối ngay khi Redis Pod được khởi động lại.</p>
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để loại trừ các tài nguyên tạm thời hoặc CRD có tần suất cập nhật liên tục (như CiliumEndpoint) khỏi vòng lặp Reconcile của Argo CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Khai báo cấu hình <code>resource.exclusions</code> trong ConfigMap <code>argocd-cm</code> với <code>apiGroups</code> và <code>kinds</code> tương ứng. Điều này ngăn Controller mở Watcher theo dõi các CRD biến động tần suất cao, giúp tiết kiệm bộ nhớ RAM đáng kể.
+  <p style="margin: 0.4rem 0;">Khai báo cấu hình <code>resource.exclusions</code> trong ConfigMap <code>argocd-cm</code> với <code>apiGroups</code> và <code>kinds</code> tương ứng. Điều này ngăn Controller mở Watcher theo dõi các CRD biến động tần suất cao, giúp tiết kiệm bộ nhớ RAM đáng kể.</p>
 </div>
 </details>
 
 ---
 
-## Tổng Kết
+## 11. Tổng Kết
 
 Kiến trúc phân tán của Argo CD là một kiệt tác kỹ thuật trong thế giới Cloud Native: sự phân tách rạch ròi giữa cửa ngõ giao tiếp (`argocd-server`), động cơ biên dịch độc lập (`repo-server`), bộ nhớ đệm tốc độ cao (`redis`) và bộ não điều hòa trạng thái (`application-controller`).
 
-Ở bài viết tiếp theo, chúng ta sẽ bắt tay vào **Cài Đặt Argo CD Trên Kubernetes: Mô Hình High Availability (HA), Cấu Hình CLI & Xác Thực An Toàn Chuẩn Doanh Nghiệp**!
+> [!TIP]
+> **Bước tiếp theo:**
+> Chuyển sang **[[Bài 03] Cài Đặt Argo CD Trên Kubernetes: CLI & Xác Thực An Toàn](argocd-03-03-cai-dat-argo-cd-tren-kubernetes-cli-va-xac-thuc-an-toan.html)** để bắt tay vào triển khai cụm Argo CD High Availability (HA) chuẩn Production!
 {% endraw %}

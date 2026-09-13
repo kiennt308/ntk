@@ -350,7 +350,14 @@ Sau khi thêm script này, nếu bất kỳ Child App nào bị `Degraded`, Root
 
 ## 7. Hướng Dẫn Thực Hành CLI: Triển Khai Cây App-of-Apps Từ A-Z (Step-by-Step Lab)
 
-Dưới đây là quy trình thực hành từ dòng lệnh để triển khai và quản trị cây ứng dụng phân cấp:
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+|---|---|---|
+| **1. Khởi Tạo Root App** | `kubectl apply -f 00-root-app.yaml` | Khởi chạy Root Application duy nhất để kích hoạt toàn bộ hệ thống |
+| **2. Liệt Kê Ứng Dụng** | `argocd app list` | Xác minh danh sách toàn bộ các Child Applications được tự động sinh ra |
+| **3. Đồng Bộ Cây Ứng Dụng** | `argocd app sync root-ecommerce-platform` | Ép buộc đồng bộ toàn bộ cây ứng dụng từ tầng Root xuống các tầng con |
+| **4. Kiểm Tra Phân Cấp** | `argocd app get root-ecommerce-platform --show-params` | Trích xuất cây tài nguyên và các tham số điều phối phân cấp |
+| **5. Giám Sát Sức Khỏe Con** | `argocd app get payment-microservice` | Kiểm tra chi tiết trạng thái sức khỏe của từng ứng dụng nghiệp vụ |
+| **6. Xóa An Toàn Không Lan** | `argocd app delete root-ecommerce-platform --cascade=false` | Xóa đối tượng quản lý Root App mà giữ nguyên 100% các ứng dụng con |
 
 ```bash
 # Bước 1: Triển khai Root Application duy nhất để kích hoạt toàn bộ hệ thống
@@ -376,105 +383,144 @@ argocd app delete root-ecommerce-platform --cascade=false
 
 ## 8. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Tại sao trường spec.destination.namespace trong Root Application bắt buộc phải đặt là argocd?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Vì các đối tượng <code>Application CRD</code> con là tài nguyên nằm trong namespace quản trị của Argo CD (mặc định là namespace <code>argocd</code>). Root App cần tạo các Child App CRD vào đúng namespace này để Argo CD Controller nhận diện và quản lý.
   </div>
-  
-Vì các đối tượng <code>Application CRD</code> con là tài nguyên nằm trong namespace quản trị của Argo CD (mặc định là namespace <code>argocd</code>). Root App cần tạo các Child App CRD vào đúng namespace này để Argo CD Controller nhận diện và quản lý.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Vai trò của tùy chọn directory.recurse: true trong cấu hình Root Application là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Cho phép tổ chức cây thư mục <code>apps/</code> thành nhiều cấp thư mục con phân theo nhóm (ví dụ: <code>apps/01-infrastructure/</code>, <code>apps/02-monitoring/</code>, <code>apps/03-services/</code>). Root App sẽ tự động quét đệ quy qua toàn bộ các thư mục con để nạp mọi tệp manifest mà không cần khai báo từng thư mục thủ công.
   </div>
-  
-Cho phép tổ chức cây thư mục <code>apps/</code> thành nhiều cấp thư mục con phân theo nhóm (ví dụ: <code>apps/01-infrastructure/</code>, <code>apps/02-monitoring/</code>, <code>apps/03-services/</code>). Root App sẽ tự động quét đệ quy qua toàn bộ các thư mục con để nạp mọi tệp manifest mà không cần khai báo từng thư mục thủ công.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Làm thế nào để thêm một microservice mới vào cụm thông qua mô hình App-of-Apps?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Lập trình viên chỉ cần tạo một nhánh Git mới, tạo một tệp <code>new-service.yaml</code> bên trong thư mục <code>apps/</code> và tạo Pull Request. Khi PR được merge vào nhánh chính, Root App sẽ tự động phát hiện tệp mới trong chu kỳ Reconcile và khởi tạo Child Application tương ứng.
   </div>
-  
-Lập trình viên chỉ cần tạo một nhánh Git mới, tạo một tệp <code>new-service.yaml</code> bên trong thư mục <code>apps/</code> và tạo Pull Request. Khi PR được merge vào nhánh chính, Root App sẽ tự động phát hiện tệp mới trong chu kỳ Reconcile và khởi tạo Child Application tương ứng.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Điều gì xảy ra nếu bạn xóa tệp payment-service.yaml khỏi thư mục apps/ trên Git khi Root App có prune: true?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Root App sẽ tự động xóa đối tượng <code>Application</code> <code>payment-service</code> trên Argo CD. Nếu <code>payment-service</code> có gắn <code>resources-finalizer</code>, toàn bộ các Pods, Services của payment service trên cụm cũng sẽ được tự động dọn dẹp sạch sẽ.
   </div>
-  
-Root App sẽ tự động xóa đối tượng <code>Application</code> <code>payment-service</code> trên Argo CD. Nếu <code>payment-service</code> có gắn <code>resources-finalizer</code>, toàn bộ các Pods, Services của payment service trên cụm cũng sẽ được tự động dọn dẹp sạch sẽ.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Giới hạn lớn nhất của mô hình App-of-Apps thuần túy khi so sánh với ApplicationSet Controller là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    App-of-Apps thuần túy vẫn đòi hỏi phải viết từng tệp YAML <code>Application</code> tĩnh cho mỗi microservice. Nó không có khả năng tự động tạo ứng dụng dựa trên khuôn mẫu (Templating) hoặc quét danh mục Cụm/Thư mục động như <b style="color: var(--accent-primary);">ApplicationSet Generator</b>.
   </div>
-  
-App-of-Apps thuần túy vẫn đòi hỏi phải viết từng tệp YAML <code>Application</code> tĩnh cho mỗi microservice. Nó không có khả năng tự động tạo ứng dụng dựa trên khuôn mẫu (Templating) hoặc quét danh mục Cụm/Thư mục động như <b style="color: var(--accent-primary);">ApplicationSet Generator</b>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Làm thế nào để giải quyết vấn đề Root Application hiển thị trạng thái Healthy trong khi các Child Application con đang bị lỗi Degraded?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Thêm Custom Lua Health Check cho Custom Resource <code>argoproj.io/Application</code> trong ConfigMap <code>argocd-cm</code> để ép buộc Controller đánh giá trạng thái sức khỏe của Root App dựa trên trạng thái <code>obj.status.health.status</code> của từng Child App.
   </div>
-  
-Thêm Custom Lua Health Check cho Custom Resource <code>argoproj.io/Application</code> trong ConfigMap <code>argocd-cm</code> để ép buộc Controller đánh giá trạng thái sức khỏe của Root App dựa trên trạng thái <code>obj.status.health.status</code> của từng Child App.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Để ngăn chặn việc xóa nhầm toàn bộ các ứng dụng con khi xóa Root Application, kỹ sư cần thực hiện thao tác gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Chạy lệnh <code>argocd app delete &lt;root-app-name&gt; --cascade=false</code> hoặc thực hiện gỡ bỏ <code>resources-finalizer.argocd.argoproj.io</code> khỏi <code>metadata.finalizers</code> của Root App trước khi xóa.
   </div>
-  
-Chạy lệnh <code>argocd app delete <root-app-name> --cascade=false</code> hoặc thực hiện gỡ bỏ <code>resources-finalizer.argocd.argoproj.io</code> khỏi <code>metadata.finalizers</code> của Root App trước khi xóa.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Tại sao nên kích hoạt cờ ApplyOutOfSyncOnly=true trong syncOptions của Root Application?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Tùy chọn này giúp tối ưu hóa đáng kể tốc độ Sync và giảm tải cho Kubernetes API Server. Khi Root App đồng bộ, Controller chỉ gửi request cập nhật các Child App nào thực sự bị <code>OutOfSync</code> thay vị apply lại toàn bộ hàng trăm Child Apps.
   </div>
-  
-Tùy chọn này giúp tối ưu hóa đáng kể tốc độ Sync và giảm tải cho Kubernetes API Server. Khi Root App đồng bộ, Controller chỉ gửi request cập nhật các Child App nào thực sự bị <code>OutOfSync</code> thay vị apply lại toàn bộ hàng trăm Child Apps.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Lợi ích của việc kết hợp cấu trúc thư mục phân tầng (01-infra, 02-monitoring, 03-apps) với tính năng GitHub CODEOWNERS là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Giúp phân quyền kiểm soát chặt chẽ: Đội Hạ tầng chỉ được approve PR vào <code>01-infra</code>, đội Nền tảng phụ trách <code>02-monitoring</code>, và các đội Dev chỉ được tạo/sửa file trong <code>03-apps</code>, đảm bảo tính an toàn phân quyền trong doanh nghiệp.
   </div>
-  
-Giúp phân quyền kiểm soát chặt chẽ: Đội Hạ tầng chỉ được approve PR vào <code>01-infra</code>, đội Nền tảng phụ trách <code>02-monitoring</code>, và các đội Dev chỉ được tạo/sửa file trong <code>03-apps</code>, đảm bảo tính an toàn phân quyền trong doanh nghiệp.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Điều gì xảy ra nếu một Child Application khai báo sai địa chỉ Git URL trong file cấu hình của nó?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Root App vẫn tạo được đối tượng <code>Application</code> con vào namespace <code>argocd</code>, nhưng Child App đó sẽ bị lỗi <code>ComparisonError</code> và không thể sync. Với Lua health check đã cấu hình, Root App sẽ phản ánh trạng thái lỗi này thành <code>Degraded</code>.
   </div>
-  
-Root App vẫn tạo được đối tượng <code>Application</code> con vào namespace <code>argocd</code>, nhưng Child App đó sẽ bị lỗi <code>ComparisonError</code> và không thể sync. Với Lua health check đã cấu hình, Root App sẽ phản ánh trạng thái lỗi này thành <code>Degraded</code>.
-</div>
 </details>
 
 ---
@@ -483,5 +529,7 @@ Root App vẫn tạo được đối tượng <code>Application</code> con vào 
 
 Mô hình App-of-Apps là bước tiến vượt bậc đưa GitOps từ cấp độ quản trị từng ứng dụng đơn lẻ lên cấp độ quản trị toàn diện một hệ sinh thái phân tán phức tạp. Bằng cách kết hợp cấu trúc thư mục phân tầng, Finalizer an toàn và Lua Health Check lan truyền, doanh nghiệp có thể mở rộng quy mô lên hàng trăm dịch vụ một cách tự tin.
 
-Ở bài tiếp theo, chúng ta sẽ nâng cấp lên cấp độ tự động hóa đỉnh cao với **ApplicationSet Engine: Tự Động Sinh Ứng Dụng Hàng Loạt Với List & Cluster Generators**!
+> [!TIP]
+> **Khám phá bài học tiếp theo:**  
+> Đọc tiếp bài [Bài 12: Tự Động Sinh Ứng Dụng Hàng Loạt: ApplicationSet List & Cluster Generator](argocd-12-12-tu-dong-sinh-ung-dung-hang-loat-applicationset-list-va-cluster-generator.html) để làm chủ kỹ thuật tự động hóa sinh Application CRD hàng loạt trên quy mô lớn.
 {% endraw %}

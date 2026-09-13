@@ -340,17 +340,28 @@ sequenceDiagram
 ```
 
 ### 7.1. Phân Tích Nguyên Nhân Gốc Rễ (5-Whys)
-1. **Tại sao toàn bộ kỹ sư bị mất quyền?** $\rightarrow$ Vì Casbin kích hoạt chế độ Fallback về `policy.default` (`role:readonly`).
-2. **Tại sao Casbin kích hoạt Fallback?** $\rightarrow$ Vì bộ parser gặp lỗi cú pháp khi nạp bảng `policy.csv`.
-3. **Tại sao lại có lỗi cú pháp?** $\rightarrow$ Kỹ sư gõ nhầm tên tài nguyên `apps` thay vì định danh chuẩn `applications`.
-4. **Tại sao lỗi không được phát hiện trước khi nạp?** $\rightarrow$ Kỹ sư sửa trực tiếp ConfigMap bằng `kubectl edit` trên production mà không chạy công cụ kiểm tra tính hợp lệ trước.
-5. **Giải pháp ngăn ngừa tận gốc là gì?** $\rightarrow$ Bắt buộc kiểm thử cấu hình bằng `argocd admin settings rbac validate` trong GitOps PR Pipeline trước khi merge vào nhánh chính.
+
+1. <span class="badge badge--primary">Why 1</span> **Tại sao toàn bộ kỹ sư bị mất quyền?** $\rightarrow$ Vì Casbin kích hoạt chế độ Fallback về `policy.default` (`role:readonly`).
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Casbin kích hoạt Fallback?** $\rightarrow$ Vì bộ parser gặp lỗi cú pháp khi nạp bảng `policy.csv`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao lại có lỗi cú pháp?** $\rightarrow$ Kỹ sư gõ nhầm tên tài nguyên `apps` thay vì định danh chuẩn `applications`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao lỗi không được phát hiện trước khi nạp?** $\rightarrow$ Kỹ sư sửa trực tiếp ConfigMap bằng `kubectl edit` trên production mà không chạy công cụ kiểm tra tính hợp lệ trước.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:** Bắt buộc kiểm thử cấu hình bằng `argocd admin settings rbac validate` trong GitOps PR Pipeline trước khi merge vào nhánh chính.
 
 ---
 
-## 8. Hướng Dẫn Thực Hành CLI: Kiểm Tra Quyền Hạn Bằng Lệnh `can-i`
+## 8. Hướng Dẫn Thực Hành CLI: Kiểm Tra Quyền Hạn Bằng Lệnh `can-i` (Step-by-Step Lab)
 
-Argo CD cung cấp công cụ kiểm tra quyền hạn tương tự như `kubectl auth can-i`:
+Dưới đây là bảng tổng hợp các bước thực hành và quy trình dòng lệnh để kiểm thử, mô phỏng và vận hành chính sách RBAC:
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **01** | `argocd admin settings rbac validate ...` | Kiểm tra cú pháp bảng phân quyền CSV tránh lỗi fallback |
+| **02** | `argocd admin settings rbac can role:... sync ...` | Mô phỏng quyền thực thi lệnh sync của vai trò cụ thể |
+| **03** | `argocd admin settings rbac can role:... create exec ...` | Kiểm tra cơ chế chặn truy cập Terminal đối với vai trò |
+| **04** | `argocd proj role create-token ...` | Cấp phát API token với thời hạn xác định cho CI/CD pipeline |
+| **05** | `argocd account can-i sync applications ...` | Xác thực quyền hạn của chính tài khoản đang đăng nhập |
+| **06** | `argocd account get-user-info` | Hiển thị chi tiết vai trò, nhóm OIDC và quyền hạn của session |
+| **07** | `argocd admin settings rbac can <oidc-group> ...` | Mô phỏng quyết định truy cập cho một nhóm OIDC từ IdP |
 
 ```bash
 # Bước 1: Kiểm tra tính hợp lệ của tệp RBAC CSV trước khi apply
@@ -379,114 +390,149 @@ argocd admin settings rbac can okta-payment-engineers sync applications "payment
 
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Tại sao nên thiết lập policy.default: role:readonly trong argocd-rbac-cm?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Theo nguyên lý <b style="color: var(--accent-primary);">Defense-in-Depth</b> và <b style="color: var(--accent-primary);">Zero Trust</b>, khi một người dùng mới đăng nhập vào hệ thống mà chưa được gán vào nhóm cụ thể nào, họ chỉ nên có quyền xem thông tin cơ bản (<code>role:readonly</code>) để không gây ra bất kỳ xáo trộn nào cho hạ tầng cho đến khi được cấp quyền chính thức.
   </div>
-  
-Theo nguyên lý <b style="color: var(--accent-primary);">Defense-in-Depth</b> và <b style="color: var(--accent-primary);">Zero Trust</b>, khi một người dùng mới đăng nhập vào hệ thống mà chưa được gán vào nhóm cụ thể nào, họ chỉ nên có quyền xem thông tin cơ bản (<code>role:readonly</code>) để không gây ra bất kỳ xáo trộn nào cho hạ tầng cho đến khi được cấp quyền chính thức.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Cú pháp chuẩn của một đối tượng (object) trong trường thứ 5 của một dòng Casbin policy rule là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Định dạng chuẩn là <code>&lt;AppProjectName&gt;/&lt;ApplicationName&gt;</code>. Ví dụ: <code>payment-project/payment-api</code>, hoặc sử dụng ký tự đại diện <code>ecommerce-*/*</code> để đại diện cho toàn bộ ứng dụng nằm trong các project bắt đầu bằng <code>ecommerce-</code>.
   </div>
-  
-Định dạng chuẩn là <code><AppProjectName>/<ApplicationName></code>. Ví dụ: <code>payment-project/payment-api</code>, hoặc sử dụng ký tự đại diện <code>ecommerce-*/*</code> để đại diện cho toàn bộ ứng dụng nằm trong các project bắt đầu bằng <code>ecommerce-</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Làm thế nào để cho phép Developer xem Logs của Pod nhưng cấm hoàn toàn tính năng mở Terminal Exec?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Khai báo 2 dòng policy:
+    <pre><code class="language-csv">p, role:dev, logs, get, my-project/*, allow
+p, role:dev, exec, create, my-project/*, deny</code></pre>
   </div>
-  
-Khai báo 2 dòng policy:
-  ```csv
-  p, role:dev, logs, get, my-project/*, allow
-  p, role:dev, exec, create, my-project/*, deny
-  ```
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Cơ chế ánh xạ nhóm (Group Mapping) bằng quy tắc g hoạt động như thế nào khi người dùng đăng nhập qua SSO OIDC?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Khi người dùng đăng nhập qua SSO, token OIDC chứa mảng <code>groups</code>. <code>argocd-server</code> sẽ so khớp từng tên nhóm trong token với trường thứ hai của quy tắc <code>g, &lt;OIDC_Group_Name&gt;, &lt;Role_Name&gt;</code> để tự động trao các quyền tương ứng của vai trò đó cho người dùng.
   </div>
-  
-Khi người dùng đăng nhập qua SSO, token OIDC chứa mảng <code>groups</code>. <code>argocd-server</code> sẽ so khớp từng tên nhóm trong token với trường thứ hai của quy tắc <code>g, <OIDC_Group_Name>, <Role_Name></code> để tự động trao các quyền tương ứng của vai trò đó cho người dùng.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Công cụ CLI nào của Argo CD giúp kiểm tra tính hợp lệ của tệp RBAC trước khi áp dụng lên cụm Production?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Lệnh <code>argocd admin settings rbac validate</code>. Lệnh này sẽ phân tích cú pháp từng dòng CSV và báo lỗi nếu có dòng bị thiếu trường hoặc sai định dạng.
   </div>
-  
-Lệnh <code>argocd admin settings rbac validate</code>. Lệnh này sẽ phân tích cú pháp từng dòng CSV và báo lỗi nếu có dòng bị thiếu trường hoặc sai định dạng.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Có thể thiết lập cơ chế kế thừa quyền hạn giữa các vai trò (Role Inheritance) trong Casbin không?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Có!</b> Sử dụng cú pháp <code>g, &lt;Child_Role&gt;, &lt;Parent_Role&gt;</code>. Ví dụ: <code>g, role:lead-dev, role:payment-dev</code> giúp <code>role:lead-dev</code> kế thừa toàn bộ quyền của <code>role:payment-dev</code> và có thể khai báo thêm các quyền mở rộng.
   </div>
-  
-<b style="color: var(--accent-primary);">Có!</b> Sử dụng cú pháp <code>g, <Child_Role>, <Parent_Role></code>. Ví dụ: <code>g, role:lead-dev, role:payment-dev</code> giúp <code>role:lead-dev</code> kế thừa toàn bộ quyền của <code>role:payment-dev</code> và có thể khai báo thêm các quyền mở rộng.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Quyền override trên tài nguyên applications cho phép người dùng thực hiện những hành vi gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Quyền <code>override</code> cho phép người dùng ghi đè các tham số (parameters, values) của Helm hoặc Kustomize trực tiếp từ giao diện Web UI hoặc CLI mà không cần commit vào Git repo. Đây là quyền nguy hiểm và nên hạn chế tối đa trên Production.
   </div>
-  
-Quyền <code>override</code> cho phép người dùng ghi đè các tham số (parameters, values) của Helm hoặc Kustomize trực tiếp từ giao diện Web UI hoặc CLI mà không cần commit vào Git repo. Đây là quyền nguy hiểm và nên hạn chế tối đa trên Production.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Làm thế nào để cấp quyền cho một nhóm OIDC vừa có quyền role:readonly trên toàn bộ hệ thống vừa có quyền sync trên tất cả ứng dụng?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Khai báo:
+    <pre><code class="language-csv">p, role:readonly, applications, get, */*, allow
+p, role:sre, applications, sync, */*, allow
+g, sre-team, role:sre</code></pre>
   </div>
-  
-Khai báo:
-  ```csv
-  p, role:readonly, applications, get, */*, allow
-  p, role:sre, applications, sync, */*, allow
-  g, sre-team, role:sre
-  ```
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Nếu một người dùng vừa thuộc nhóm có quyền allow vừa thuộc nhóm có quyền deny trên cùng một tài nguyên, Argo CD sẽ xử lý ra sao?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Trong động cơ Casbin của Argo CD, quy tắc <code>deny</code> luôn có độ ưu tiên cao hơn (<b style="color: var(--accent-primary);">Deny takes precedence</b>). Nếu có bất kỳ quy tắc nào khớp với <code>deny</code>, yêu cầu sẽ bị từ chối ngay lập tức.
   </div>
-  
-Trong động cơ Casbin của Argo CD, quy tắc <code>deny</code> luôn có độ ưu tiên cao hơn (<b style="color: var(--accent-primary);">Deny takes precedence</b>). Nếu có bất kỳ quy tắc nào khớp với <code>deny</code>, yêu cầu sẽ bị từ chối ngay lập tức.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Cách tốt nhất để cấp quyền hạn tự động đồng bộ cho một Pipeline CI/CD (GitHub Actions / GitLab CI) mà không cần cấp quyền tài khoản cá nhân là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Tạo một Project Role trong <code>AppProject</code> với quyền <code>sync</code>, sau đó tạo JWT Token cục bộ (<code>argocd proj role create-token &lt;project&gt; &lt;role&gt;</code>) và lưu token vào Secret của CI/CD pipeline.
   </div>
-  
-Tạo một Project Role trong <code>AppProject</code> với quyền <code>sync</code>, sau đó tạo JWT Token cục bộ (<code>argocd proj role create-token <project> <role></code>) và lưu token vào Secret của CI/CD pipeline.
-</div>
 </details>
 
 ---
@@ -495,5 +541,7 @@ Tạo một Project Role trong <code>AppProject</code> với quyền <code>sync<
 
 Một ma trận RBAC chặt chẽ kết hợp với cơ chế ánh xạ nhóm OIDC tập trung là "tấm khiên" bảo vệ vững chắc cho nền tảng GitOps doanh nghiệp, bảo đảm mọi hành vi can thiệp vào hệ thống đều nằm trong tầm kiểm soát và tuân thủ tuyệt đối các tiêu chuẩn an ninh quốc tế.
 
-Ở bài tiếp theo, chúng ta sẽ đi sâu vào **Tích Hợp Đăng Nhập Tập Trung: SSO, OIDC, Dex & Okta / Keycloak Chuẩn Doanh Nghiệp**!
+> [!TIP]
+> **Tài liệu tiếp theo**: Chuyển sang [Bài 18: Tích Hợp Đăng Nhập Tập Trung: SSO, OIDC, Dex & Okta / Keycloak Chuẩn Doanh Nghiệp](argocd-18-18-tich-hop-dang-nhap-tap-trung-sso-oidc-dex-va-oauth2-proxy.html) để làm chủ kiến trúc đăng nhập một lần (Single Sign-On), cấu hình Dex Connector và xác thực OIDC an toàn!
 {% endraw %}
+

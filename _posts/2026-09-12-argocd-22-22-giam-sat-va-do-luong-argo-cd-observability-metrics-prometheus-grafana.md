@@ -287,11 +287,11 @@ Tại một công ty tài chính với 800 Microservices quản lý qua Argo CD.
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao Kubernetes API Server bị sập?** $\rightarrow$ Vì nhận hơn 15,000 requests/giây từ `argocd-application-controller`.
-2. **Tại sao Controller lại gửi nhiều request như vậy?** $\rightarrow$ Vì 800 ứng dụng được kích hoạt chế độ Auto-Sync cùng với `selfHeal: true` nhưng thiếu `ignoreDifferences` cho một Mutating Webhook tự chèn annotation vào Pod.
-3. **Tại sao lại tạo ra vòng lặp vô tận?** $\rightarrow$ Argo CD phát hiện Drift (do Webhook) $\rightarrow$ Ép Sync đè lại $\rightarrow$ Webhook lại chèn annotation $\rightarrow$ Tạo ra hiện tượng **Reconcile Storm**.
-4. **Tại sao Redis Cache không giảm tải được?** $\rightarrow$ Vì Redis bị cấu hình RAM mặc định 256MB, dẫn đến tràn bộ nhớ (OOM) và liên tục kích hoạt cơ chế `eviction`, làm Cache Hit Rate giảm từ 95% xuống còn 12%.
-5. **Biện pháp khắc phục tận gốc:**
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Kubernetes API Server bị sập?** $\rightarrow$ Vì nhận hơn 15,000 requests/giây từ `argocd-application-controller`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Controller lại gửi nhiều request như vậy?** $\rightarrow$ Vì 800 ứng dụng được kích hoạt chế độ Auto-Sync cùng với `selfHeal: true` nhưng thiếu `ignoreDifferences` cho một Mutating Webhook tự chèn annotation vào Pod.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao lại tạo ra vòng lặp vô tận?** $\rightarrow$ Argo CD phát hiện Drift (do Webhook) $\rightarrow$ Ép Sync đè lại $\rightarrow$ Webhook lại chèn annotation $\rightarrow$ Tạo ra hiện tượng **Reconcile Storm**.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao Redis Cache không giảm tải được?** $\rightarrow$ Vì Redis bị cấu hình RAM mặc định 256MB, dẫn đến tràn bộ nhớ (OOM) và liên tục kích hoạt cơ chế `eviction`, làm Cache Hit Rate giảm từ 95% xuống còn 12%.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
    - **Tăng giới hạn QPS/Burst của Controller:** Thiết lập `--kube-api-qps=150` và `--kube-api-burst=300`.
    - **Cấu hình `ignoreDifferences`:** Bỏ qua các metadata/annotation được sinh tự động bởi Mutating Admission Webhooks.
    - **Mở rộng tài nguyên Redis:** Chuyển sang cụm Redis HA Sentinel với dung lượng RAM 4GB và thuật toán `allkeys-lru`.
@@ -300,6 +300,15 @@ Tại một công ty tài chính với 800 Microservices quản lý qua Argo CD.
 ---
 
 ## 7. Hands-on Lab: Triển Khai Giám Sát Argo CD Với Prometheus & Grafana
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **01** | `kubectl port-forward -n argocd svc/argocd-metrics ...` | Kiểm tra và thu thập mẫu metrics nội bộ từ Application Controller qua cổng TCP 8082 |
+| **02** | `kubectl apply -f argocd-servicemonitor.yaml` | Triển khai ServiceMonitor để Prometheus Operator tự động nhận diện và scrape metrics |
+| **03** | `Truy cập Prometheus UI http://prometheus:9090/targets` | Kiểm tra trạng thái Target hiển thị UP (1/1) màu xanh lá trên giao diện Web |
+| **04** | `curl -s -G .../api/v1/query --data-urlencode ...` | Thực thi các câu truy vấn PromQL kiểm tra số lượng ứng dụng đang quản lý qua API |
+| **05** | `Grafana Dashboards -> Import ID 14584` | Nạp Grafana Dashboard chuẩn ID 14584 để trực quan hóa toàn diện hệ thống GitOps |
+| **06** | `kubectl apply -f argocd-alerting-rules.yaml` | Cấu hình bộ quy tắc PrometheusRule cảnh báo khẩn cấp tới kênh Slack/Telegram |
 
 ### Bước 1: Kiểm tra các cổng Metrics nội bộ của Argo CD Pods
 ```bash
@@ -341,111 +350,150 @@ curl -s -G "http://localhost:9090/api/v1/query" \
 
 ## 8. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Argo CD xuất bản metrics qua 4 cổng TCP chuyên biệt nào và mỗi cổng phục vụ vi dịch vụ gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">argocd-application-controller:</b> Cổng TCP <code>:8082</code> (Chứa reconcile metrics, app status, workqueue).<br/></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">argocd-server:</b> Cổng TCP <code>:8083</code> (Chứa API request metrics, latency, user auth).<br/></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">argocd-repo-server:</b> Cổng TCP <code>:8084</code> (Chứa Git clone/fetch latency, manifest render duration).<br/></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">argocd-redis / redis-exporter:</b> Cổng TCP <code>:9121</code> (Chứa Redis cache memory, connections, hit/miss ratio).</div>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">argocd-application-controller:</b> Cổng TCP <code>:8082</code> (Chứa reconcile metrics, app status, workqueue).<br/></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">argocd-server:</b> Cổng TCP <code>:8083</code> (Chứa API request metrics, latency, user auth).<br/></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">argocd-repo-server:</b> Cổng TCP <code>:8084</code> (Chứa Git clone/fetch latency, manifest render duration).<br/></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">argocd-redis / redis-exporter:</b> Cổng TCP <code>:9121</code> (Chứa Redis cache memory, connections, hit/miss ratio).</div>
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Làm thế nào để phát hiện số lượng ứng dụng đang bị rơi vào trạng thái lỗi Degraded bằng PromQL?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Metric <code>argocd_app_health_status{health_status="Degraded"}</code> với giá trị trả về bằng 1. Ta dùng hàm PromQL: <code>sum(argocd_app_health_status{health_status="Degraded"})</code> để đếm tổng số ứng dụng lỗi trên toàn hệ thống.
   </div>
-  
-Metric <code>argocd_app_health_status{health_status="Degraded"}</code> với giá trị trả về bằng 1. Ta dùng hàm PromQL: <code>sum(argocd_app_health_status{health_status="Degraded"})</code> để đếm tổng số ứng dụng lỗi trên toàn hệ thống.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Hiện tượng Reconcile Storm là gì và những chỉ số Prometheus nào giúp phát hiện sớm hiện tượng này?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Reconcile Storm là hiện tượng controller liên tục thực hiện vòng lặp điều hòa với tần suất cực cao (hàng trăm lần/giây), thường do xung đột giữa GitOps Auto-Sync và mutating webhook trên cụm Kubernetes. Metric phát hiện sớm nhất là <code>argocd_app_reconcile_count</code> (tốc độ gia tăng đột biến) và <code>workqueue_depth</code> (hàng đợi dồn ứ).
   </div>
-  
-Reconcile Storm là hiện tượng controller liên tục thực hiện vòng lặp điều hòa với tần suất cực cao (hàng trăm lần/giây), thường do xung đột giữa GitOps Auto-Sync và mutating webhook trên cụm Kubernetes. Metric phát hiện sớm nhất là <code>argocd_app_reconcile_count</code> (tốc độ gia tăng đột biến) và <code>workqueue_depth</code> (hàng đợi dồn ứ).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Chỉ số workqueue_depth của Application Controller phản ánh điều gì và khi nào cần cảnh báo?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <code>workqueue_depth</code> đo lường số lượng nhiệm vụ đang xếp hàng chờ controller xử lý. Nếu metric này tăng cao liên tục, chứng tỏ Controller đang bị quá tải CPU/RAM, nghẽn mạng tới cụm đích hoặc bị giới hạn QPS từ Kubernetes API Server.
   </div>
-  
-<code>workqueue_depth</code> đo lường số lượng nhiệm vụ đang xếp hàng chờ controller xử lý. Nếu metric này tăng cao liên tục, chứng tỏ Controller đang bị quá tải CPU/RAM, nghẽn mạng tới cụm đích hoặc bị giới hạn QPS từ Kubernetes API Server.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Để Prometheus Operator tự động scrape metrics của Argo CD, ServiceMonitor cần nhãn (label) gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Tệp <code>ServiceMonitor</code> phải có <code>metadata.labels</code> khớp chính xác với <code>serviceMonitorSelector</code> được định nghĩa trong tài nguyên <code>Prometheus</code> Custom Resource (thường là nhãn <code>release: prometheus-stack</code>).
   </div>
-  
-Tệp <code>ServiceMonitor</code> phải có <code>metadata.labels</code> khớp chính xác với <code>serviceMonitorSelector</code> được định nghĩa trong tài nguyên <code>Prometheus</code> Custom Resource (thường là nhãn <code>release: prometheus-stack</code>).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Làm sao để giám sát độ trễ render manifest (Helm/Kustomize) của vi dịch vụ repo-server?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng metric dạng Histogram của repo-server: <code>argocd_git_request_duration_seconds_bucket</code> hoặc <code>argocd_repo_pending_request_total</code> để giám sát thời gian xử lý và số lượng request đang chờ worker render.
   </div>
-  
-Sử dụng metric dạng Histogram của repo-server: <code>argocd_git_request_duration_seconds_bucket</code> hoặc <code>argocd_repo_pending_request_total</code> để giám sát thời gian xử lý và số lượng request đang chờ worker render.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Tại sao tỷ lệ Redis Cache Hit Rate thấp lại ảnh hưởng trực tiếp đến tốc độ đồng bộ của Argo CD?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Nếu Redis Hit Rate thấp (&lt; 80%), repo-server sẽ liên tục phải clone lại Git repo và controller phải liên tục gọi API Server để đọc toàn bộ tài nguyên, gây nghẽn băng thông mạng và làm chậm thời gian đồng bộ gấp 5 - 10 lần.
   </div>
-  
-Nếu Redis Hit Rate thấp (< 80%), repo-server sẽ liên tục phải clone lại Git repo và controller phải liên tục gọi API Server để đọc toàn bộ tài nguyên, gây nghẽn băng thông mạng và làm chậm thời gian đồng bộ gấp 5 - 10 lần.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Những tham số cấu hình nào giúp tối ưu hóa hiệu năng của Application Controller khi quản lý hàng trăm ứng dụng?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tăng số luồng xử lý: <code>--status-processors</code> (mặc định 20, có thể tăng lên 50).<br/></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tăng số luồng đồng bộ: <code>--operation-processors</code> (mặc định 10, tăng lên 30).<br/></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tăng giới hạn API Client: <code>--kube-api-qps</code> và <code>--kube-api-burst</code>.<br/></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kích hoạt Controller Sharding: <code>ARGOCD_CONTROLLER_REPLICAS</code> kết hợp sharding algorithm.</div>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tăng số luồng xử lý: <code>--status-processors</code> (mặc định 20, có thể tăng lên 50).<br/></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tăng số luồng đồng bộ: <code>--operation-processors</code> (mặc định 10, tăng lên 30).<br/></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tăng giới hạn API Client: <code>--kube-api-qps</code> và <code>--kube-api-burst</code>.<br/></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kích hoạt Controller Sharding: <code>ARGOCD_CONTROLLER_REPLICAS</code> kết hợp sharding algorithm.</div>
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Lợi ích kỹ thuật của việc cấu hình OpenTelemetry Tracing so với việc chỉ dùng Prometheus Metrics là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Metrics chỉ cho biết con số tổng quát (thời gian trung bình, tỷ lệ lỗi), trong khi OpenTelemetry Tracing cung cấp chi tiết toàn bộ hành trình của một lần Sync cụ thể: mất bao nhiêu ms ở Git clone, bao nhiêu ms ở Helm template render, và bao nhiêu ms khi gửi từng manifest tới Kubernetes API Server.
   </div>
-  
-Metrics chỉ cho biết con số tổng quát (thời gian trung bình, tỷ lệ lỗi), trong khi OpenTelemetry Tracing cung cấp chi tiết toàn bộ hành trình của một lần Sync cụ thể: mất bao nhiêu ms ở Git clone, bao nhiêu ms ở Helm template render, và bao nhiêu ms khi gửi từng manifest tới Kubernetes API Server.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Grafana Dashboard chuẩn khuyến nghị cho Argo CD trên Grafana Marketplace có ID là bao nhiêu?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Grafana Dashboard ID <b style="color: var(--accent-primary);"><code>14584</code></b> (Argo CD Overview Dashboard) do cộng đồng Argo Project và Red Hat bảo trợ, cung cấp đầy đủ thông số Controller, Repo Server, API Server và Kubernetes clusters.
   </div>
-  
-Grafana Dashboard ID <b style="color: var(--accent-primary);"><code>14584</code></b> (Argo CD Overview Dashboard) do cộng đồng Argo Project và Red Hat bảo trợ, cung cấp đầy đủ thông số Controller, Repo Server, API Server và Kubernetes clusters.
-</div>
 </details>
 
 ---
@@ -454,5 +502,6 @@ Grafana Dashboard ID <b style="color: var(--accent-primary);"><code>14584</code>
 
 Thiết lập một hệ thống **Observability** toàn diện với Prometheus, ServiceMonitor, PromQL và Grafana giúp bạn chuyển đổi từ thế bị động (chờ developer báo cáo khi app không deploy được) sang thế chủ động (phát hiện sớm suy giảm hiệu năng trước khi xảy ra sự cố).
 
-Trong **Bài 23: Bảo Mật, Hardening, Sao Lưu DR & Xử Lý Sự Cố Argo CD Production**, chúng ta sẽ tiến vào các chiến lược bảo mật tối thượng: Network Policies, Non-root containers, sao lưu `argocd-util backup` và kịch bản khôi phục thảm họa (Disaster Recovery) sau thảm họa sập toàn bộ cụm Control Plane!
+> [!TIP]
+> **Bài tiếp theo:** [Bài 23: Bảo Mật, Hardening, Sao Lưu DR & Xử Lý Sự Cố Argo CD Production](argocd-23-23-bao-mat-hardening-sao-luu-dr-va-xu-ly-su-co-argo-cd-production.html)
 {% endraw %}

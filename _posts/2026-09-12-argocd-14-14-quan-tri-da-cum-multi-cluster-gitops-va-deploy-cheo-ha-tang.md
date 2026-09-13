@@ -336,11 +336,12 @@ sequenceDiagram
 ```
 
 ### 8.1. Phân Tích Nguyên Nhân Gốc Rễ (5-Whys)
-1. **Tại sao cụm Spoke báo Unauthorized?** $\rightarrow$ Vì Kube API Server từ chối Bearer Token gửi từ Hub.
-2. **Tại sao Token bị từ chối?** $\rightarrow$ Vì Token đã hết hạn sống (Expired).
-3. **Tại sao Token bị hết hạn?** $\rightarrow$ Từ Kubernetes 1.24+, tính năng `BoundServiceAccountTokenVolume` tự động gán TTL ngắn hạn cho token tạm thời.
-4. **Tại sao trước đây không bị?** $\rightarrow$ Do các phiên bản Kubernetes cũ hơn 1.24 tạo Token vĩnh viễn không bao giờ hết hạn.
-5. **Giải pháp chuẩn hóa là gì?** $\rightarrow$ Tạo Secret tĩnh gắn `kubernetes.io/service-account.name` hoặc sử dụng cơ chế AWS IRSA / GCP Workload Identity để xoay vòng token tự động.
+
+1. <span class="badge badge--primary">Why 1</span> **Tại sao cụm Spoke báo Unauthorized?** $\rightarrow$ Vì Kube API Server từ chối Bearer Token gửi từ Hub.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Token bị từ chối?** $\rightarrow$ Vì Token đã hết hạn sống (Expired).
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Token bị hết hạn?** $\rightarrow$ Từ Kubernetes 1.24+, tính năng `BoundServiceAccountTokenVolume` tự động gán TTL ngắn hạn cho token tạm thời.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao trước đây không bị?** $\rightarrow$ Do các phiên bản Kubernetes cũ hơn 1.24 tạo Token vĩnh viễn không bao giờ hết hạn.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:** Tạo Secret tĩnh gắn `kubernetes.io/service-account.name` hoặc sử dụng cơ chế AWS IRSA / GCP Workload Identity để xoay vòng token tự động.
 
 ### 8.2. Giải Pháp Khắc Phục Triệt Để
 
@@ -363,7 +364,16 @@ Sau đó, trích xuất token này và cập nhật lại vào `Cluster Secret` 
 
 ## 9. Hướng Dẫn Thực Hành CLI: Kết Nối Và Quản Trị Cụm Từ Xa (Step-by-Step Lab)
 
-Dưới đây là quy trình thực hành từ dòng lệnh để kết nối, kiểm thử và vận hành cụm từ xa:
+Dưới đây là bảng tổng hợp các bước thực hành và quy trình dòng lệnh để kết nối, kiểm thử và vận hành cụm từ xa:
+
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **01** | `argocd cluster list` | Kiểm tra danh sách và trạng thái toàn bộ các cụm được quản lý |
+| **02** | `argocd cluster add kind-spoke-cluster --name spoke-staging-01` | Đăng ký cụm Kubernetes từ xa vào Hub Control Plane |
+| **03** | `kubectl label secret -n argocd -l ... environment=staging ...` | Gán nhãn môi trường và vùng địa lý cho Cluster Secret |
+| **04** | `argocd cluster get https://10.0.100.50:6443` | Xem chi tiết thông số kết nối, tài nguyên và phiên bản cụm |
+| **05** | `kubectl exec -it ... curl -k -m 5 https://10.0.100.50:6443/version` | Kiểm tra kết nối mạng và độ trễ phản hồi từ Pod controller |
+| **06** | `argocd cluster rm production-us-east` | Xóa cụm an toàn khỏi danh mục quản lý của Argo CD |
 
 ```bash
 # Bước 1: Liệt kê toàn bộ danh sách cụm Kubernetes đang được quản lý bởi Argo CD
@@ -391,105 +401,144 @@ argocd cluster rm production-us-east
 
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Nếu cụm Hub Argo CD bị sự cố sập hoàn toàn (Crash/Network Outage), các ứng dụng đang chạy trên các cụm Spoke có bị ảnh hưởng hay dừng hoạt động không?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Không!</b> Các ứng dụng trên cụm Spoke vẫn tiếp tục hoạt động độc lập và ổn định 100%. Trong thời gian Hub sập, chỉ có tính năng tự động đồng bộ phiên bản mới bị tạm dừng; toàn bộ hạ tầng thực tế trên Spoke không hề bị gián đoạn.
   </div>
-  
-<b style="color: var(--accent-primary);">Không!</b> Các ứng dụng trên cụm Spoke vẫn tiếp tục hoạt động độc lập và ổn định 100%. Trong thời gian Hub sập, chỉ có tính năng tự động đồng bộ phiên bản mới bị tạm dừng; toàn bộ hạ tầng thực tế trên Spoke không hề bị gián đoạn.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Lợi ích lớn nhất của mô hình Hub-and-Spoke so với việc cài đặt từng cụm Argo CD độc lập trên mỗi cluster là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Hub-and-Spoke giúp: (1) <b style="color: var(--accent-primary);">Quản trị tập trung:</b> Một giao diện duy nhất để giám sát toàn bộ tài nguyên toàn cầu, (2) <b style="color: var(--accent-primary);">Bảo mật:</b> Quản lý SSO, RBAC và Audit Log tại 1 điểm, (3) <b style="color: var(--accent-primary);">Tiết kiệm tài nguyên:</b> Không cần tốn RAM/CPU để chạy bộ Controller trên từng cụm Spoke nhỏ.
   </div>
-  
-Hub-and-Spoke giúp: (1) <b style="color: var(--accent-primary);">Quản trị tập trung:</b> Một giao diện duy nhất để giám sát toàn bộ tài nguyên toàn cầu, (2) <b style="color: var(--accent-primary);">Bảo mật:</b> Quản lý SSO, RBAC và Audit Log tại 1 điểm, (3) <b style="color: var(--accent-primary);">Tiết kiệm tài nguyên:</b> Không cần tốn RAM/CPU để chạy bộ Controller trên từng cụm Spoke nhỏ.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Làm thế nào để giới hạn quyền hạn của argocd-manager trên cụm Spoke chỉ trong một số namespace cụ thể thay vì cấp quyền ClusterAdmin toàn cụm?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Khi chạy lệnh <code>argocd cluster add</code>, sử dụng cờ <code>--namespace &lt;ns1&gt;,&lt;ns2&gt;</code> hoặc thay thế <code>ClusterRoleBinding</code> bằng các <code>RoleBinding</code> cục bộ trong các namespace đích trên cụm Spoke.
   </div>
-  
-Khi chạy lệnh <code>argocd cluster add</code>, sử dụng cờ <code>--namespace <ns1>,<ns2></code> hoặc thay thế <code>ClusterRoleBinding</code> bằng các <code>RoleBinding</code> cục bộ trong các namespace đích trên cụm Spoke.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Cần mở những cổng mạng (Firewall / Security Group) nào giữa cụm Hub và cụm Spoke để Argo CD kết nối thành công?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Chỉ cần mở kết nối một chiều (Egress) từ <b style="color: var(--accent-primary);">Hub Cluster tới cổng TCP <code>:6443</code> (Kubernetes API Server)</b> của Spoke Cluster. Spoke Cluster hoàn toàn không cần mở bất kỳ luồng mạng Inbound nào kết nối ngược lại Hub.
   </div>
-  
-Chỉ cần mở kết nối một chiều (Egress) từ <b style="color: var(--accent-primary);">Hub Cluster tới cổng TCP <code>:6443</code> (Kubernetes API Server)</b> của Spoke Cluster. Spoke Cluster hoàn toàn không cần mở bất kỳ luồng mạng Inbound nào kết nối ngược lại Hub.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Dữ liệu đồng bộ và lệnh triển khai giữa Hub và Spoke được truyền tải qua giao thức nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Thông qua giao thức <b style="color: var(--accent-primary);">HTTPS / REST API / mTLS</b> chuẩn của Kubernetes API Server, được bảo vệ bằng chứng chỉ TLS CA của cụm Spoke và xác thực bằng Bearer Token của ServiceAccount <code>argocd-manager</code>.
   </div>
-  
-Thông qua giao thức <b style="color: var(--accent-primary);">HTTPS / REST API / mTLS</b> chuẩn của Kubernetes API Server, được bảo vệ bằng chứng chỉ TLS CA của cụm Spoke và xác thực bằng Bearer Token của ServiceAccount <code>argocd-manager</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Dynamic Controller Sharding hoạt động như thế nào khi Argo CD quản lý từ 50-100+ cụm Kubernetes cùng lúc?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Khi có nhiều bản sao Controller chạy dạng StatefulSet (Shard 0, Shard 1, Shard 2), mỗi Shard sẽ nhận trách nhiệm giám sát và điều hòa một tập hợp các cụm Spoke riêng biệt dựa trên thuật toán băm (Hash Ring / Round-Robin), giúp chia đều tải bộ nhớ Informers và CPU.
   </div>
-  
-Khi có nhiều bản sao Controller chạy dạng StatefulSet (Shard 0, Shard 1, Shard 2), mỗi Shard sẽ nhận trách nhiệm giám sát và điều hòa một tập hợp các cụm Spoke riêng biệt dựa trên thuật toán băm (Hash Ring / Round-Robin), giúp chia đều tải bộ nhớ Informers và CPU.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Tại sao phương thức xác thực AWS IRSA lại bảo mật hơn việc lưu trữ Bearer Token tĩnh trong Cluster Secret?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    IRSA sử dụng OpenID Connect (OIDC) để cấp phát IAM Role động ngắn hạn (STS Temporary Credentials), loại bỏ hoàn toàn nguy cơ rò rỉ token bí mật tĩnh trong Kubernetes Secret.
   </div>
-  
-IRSA sử dụng OpenID Connect (OIDC) để cấp phát IAM Role động ngắn hạn (STS Temporary Credentials), loại bỏ hoàn toàn nguy cơ rò rỉ token bí mật tĩnh trong Kubernetes Secret.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Điều gì xảy ra với trạng thái Reconcile của ứng dụng khi đường truyền mạng giữa Hub và Spoke bị đứt tạm thời?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Trong thời gian mất mạng, các Application trên cụm đó chuyển sang <code>Unknown</code>. Khi mạng phục hồi, Controller Shard phụ trách cụm đó sẽ tự động tái thiết lập kết nối WebSocket Informer và chạy lại chu kỳ Reconciliation để kiểm tra drift.
   </div>
-  
-Trong thời gian mất mạng, các Application trên cụm đó chuyển sang <code>Unknown</code>. Khi mạng phục hồi, Controller Shard phụ trách cụm đó sẽ tự động tái thiết lập kết nối WebSocket Informer và chạy lại chu kỳ Reconciliation để kiểm tra drift.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Làm thế nào để cấu hình Argo CD bỏ qua việc xác thực chứng chỉ TLS tự ký (Self-signed TLS CA) của cụm Spoke trong môi trường Lab/Dev?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Trong trường <code>config</code> của Cluster Secret, sửa thuộc tính JSON <code>"tlsClientConfig": { "insecure": true }</code>.
   </div>
-  
-Trong trường <code>config</code> của Cluster Secret, sửa thuộc tính JSON <code>"tlsClientConfig": { "insecure": true }</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Cách tốt nhất để tự động triển khai cùng 1 ứng dụng lên 10 cụm Spoke mới mà không cần tạo 10 file Application CRD thủ công là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng <b style="color: var(--accent-primary);">ApplicationSet với Cluster Generator</b> kết hợp selector nhãn cụm thay vì tạo 10 Application CRD thủ công.
   </div>
-  
-Sử dụng <b style="color: var(--accent-primary);">ApplicationSet với Cluster Generator</b> kết hợp selector nhãn cụm thay vì tạo 10 Application CRD thủ công.
-</div>
 </details>
 
 ---
@@ -498,5 +547,7 @@ Sử dụng <b style="color: var(--accent-primary);">ApplicationSet với Cluste
 
 Mô hình Multi-Cluster GitOps với kiến trúc Hub-and-Spoke và Sharding Controller là chuẩn mực kiến trúc không thể thiếu cho các tổ chức công nghệ hiện đại, mang lại khả năng mở rộng quy mô toàn cầu, bảo mật tập trung và độ tin cậy tuyệt đối.
 
-Ở bài tiếp theo, chúng ta sẽ đi sâu vào **Phân Quyền & Giới Hạn Phạm Vi Ứng Dụng Với AppProject: Thiết Lập 5 Rào Chắn An Ninh Đa Tenant**!
+> [!TIP]
+> **Tài liệu tiếp theo**: Chuyển sang [Bài 15: Phân Quyền & Giới Hạn Phạm Vi Ứng Dụng Với AppProject: Thiết Lập 5 Rào Chắn An Ninh Đa Tenant](argocd-15-15-phan-quyen-va-gioi-han-pham-vi-ung-dung-voi-appproject.html) để làm chủ kỹ thuật thiết lập các rào chắn an ninh đa người dùng (Multi-Tenancy) và phân quyền chặt chẽ trong Argo CD!
 {% endraw %}
+

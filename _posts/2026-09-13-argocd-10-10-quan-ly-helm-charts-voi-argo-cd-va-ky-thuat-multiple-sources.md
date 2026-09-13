@@ -352,7 +352,14 @@ sequenceDiagram
 
 ## 9. Hướng Dẫn Thực Hành CLI: Kiểm Thử Helm Template Với Multiple Sources (Step-by-Step Lab)
 
-Dưới đây là quy trình thực hành từ dòng lệnh để kiểm tra, gỡ lỗi và kiểm chứng ứng dụng Helm trong Argo CD:
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+|---|---|---|
+| **1. Kiểm Tra Trạng Thái** | `argocd app get production-redis-cluster` | Xem tổng quan trạng thái kết nối nguồn và trạng thái đồng bộ Helm |
+| **2. Liệt Kê Tham Số** | `argocd app get production-redis-cluster --show-params` | Trích xuất toàn bộ các biến cấu hình Helm đang nạp từ các nguồn |
+| **3. Override Tham Số** | `argocd app set production-redis-cluster --parameter auth.sentinel=false` | Thử nghiệm ghi đè giá trị tham số trực tiếp qua dòng lệnh |
+| **4. Làm Mới Bộ Nhớ Đệm** | `argocd app get production-redis-cluster --hard-refresh` | Ép buộc xóa sạch cache của Repo Server và kéo lại Chart / Values mới |
+| **5. So Sánh Trước Sync** | `argocd app diff production-redis-cluster` | Xem chi tiết sai lệch giữa manifest render từ Chart và cụm thực tế |
+| **6. Kích Hoạt Đồng Bộ** | `argocd app sync production-redis-cluster --server-side` | Áp dụng cấu hình hoàn chỉnh xuống cụm bằng Server-Side Apply |
 
 ```bash
 # Bước 1: Kiểm tra trạng thái ứng dụng Helm đang chạy trên Argo CD
@@ -378,105 +385,144 @@ argocd app sync production-redis-cluster --server-side
 
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Tại sao lệnh helm list chạy trên cụm Kubernetes lại không hiển thị các ứng dụng được triển khai bởi Argo CD?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Vì Argo CD sử dụng động cơ <code>helm template</code> để biên dịch Chart thành các đối tượng Kubernetes YAML thô và áp dụng trực tiếp qua Kubernetes API. Argo CD không tạo ra đối tượng Secret chứa Release metadata của Helm, do đó công cụ Helm CLI độc lập sẽ không nhận biết được các Release này.
   </div>
-  
-Vì Argo CD sử dụng động cơ <code>helm template</code> để biên dịch Chart thành các đối tượng Kubernetes YAML thô và áp dụng trực tiếp qua Kubernetes API. Argo CD không tạo ra đối tượng Secret chứa Release metadata của Helm, do đó công cụ Helm CLI độc lập sẽ không nhận biết được các Release này.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Bản chất của biến tham chiếu $alias-name trong tính năng Multiple Sources là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Khi một nguồn Git được định danh bằng trường <code>ref: &lt;alias-name&gt;</code>, Argo CD sẽ tự động clone nguồn đó về và tạo một biến môi trường đại diện cho đường dẫn thư mục của nguồn đó (dạng <code>$alias-name</code>). Các nguồn khác trong cùng Application có thể sử dụng biến này để trỏ tới các tệp cấu hình (như <code>$alias-name/path/to/values.yaml</code>).
   </div>
-  
-Khi một nguồn Git được định danh bằng trường <code>ref: <alias-name></code>, Argo CD sẽ tự động clone nguồn đó về và tạo một biến môi trường đại diện cho đường dẫn thư mục của nguồn đó (dạng <code>$alias-name</code>). Các nguồn khác trong cùng Application có thể sử dụng biến này để trỏ tới các tệp cấu hình (như <code>$alias-name/path/to/values.yaml</code>).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Làm thế nào để quản lý các giá trị Secret nhạy cảm khi sử dụng Helm Chart trong Argo CD?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Có 3 cách chuẩn mực: (1) Kết hợp với <b style="color: var(--accent-primary);">Bitnami Sealed Secrets</b> hoặc <b style="color: var(--accent-primary);">External Secrets Operator</b> để tạo ra Secret trước, sau đó Helm Chart chỉ tham chiếu qua <code>existingSecret</code>, (2) Sử dụng <b style="color: var(--accent-primary);">Helm Secrets Plugin (SOPS)</b>, hoặc (3) Truyền qua Argo CD Parameter Overrides đọc từ Secret.
   </div>
-  
-Có 3 cách chuẩn mực: (1) Kết hợp với <b style="color: var(--accent-primary);">Bitnami Sealed Secrets</b> hoặc <b style="color: var(--accent-primary);">External Secrets Operator</b> để tạo ra Secret trước, sau đó Helm Chart chỉ tham chiếu qua <code>existingSecret</code>, (2) Sử dụng <b style="color: var(--accent-primary);">Helm Secrets Plugin (SOPS)</b>, hoặc (3) Truyền qua Argo CD Parameter Overrides đọc từ Secret.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Khi cả valueFiles và parameters cùng khai báo một biến cấu hình, giá trị nào sẽ được ưu tiên áp dụng?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Có độ ưu tiên <b style="color: var(--accent-primary);">CAO HƠN</b>. Thứ tự ghi đè cấu hình của Helm trong Argo CD là: <code>values.yaml mặc định của Chart</code> $\rightarrow$ <code>valueFiles khai báo trong Application</code> $\rightarrow$ <code>parameters khai báo trực tiếp (Tương đương cờ --set của Helm)</code>.
   </div>
-  
-Có độ ưu tiên <b style="color: var(--accent-primary);">CAO HƠN</b>. Thứ tự ghi đè cấu hình của Helm trong Argo CD là: <code>values.yaml mặc định của Chart</code> $\rightarrow$ <code>valueFiles khai báo trong Application</code> $\rightarrow$ <code>parameters khai báo trực tiếp (Tương đương cờ --set của Helm)</code>.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Làm thế nào để giới hạn kích thước tệp values.yaml được phép render để tránh quá tải bộ nhớ RAM của argocd-repo-server?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Cấu hình tham số <code>helm.valuesFileMaxBytes</code> trong ConfigMap <code>argocd-cm</code> (ví dụ: <code>helm.valuesFileMaxBytes: "2097152"</code> để giới hạn kích thước tối đa là 2MB).
   </div>
-  
-Cấu hình tham số <code>helm.valuesFileMaxBytes</code> trong ConfigMap <code>argocd-cm</code> (ví dụ: <code>helm.valuesFileMaxBytes: "2097152"</code> để giới hạn kích thước tối đa là 2MB).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Cách đăng ký một kho OCI Helm Registry riêng tư (Private Harbor/ECR) vào Argo CD là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Tạo một Secret thuộc namespace <code>argocd</code> có nhãn <code>argocd.argoproj.io/secret-type: repository</code>, trường <code>type: helm</code>, <code>enableOCI: "true"</code> và <code>url: "harbor.domain.com/charts"</code> (không kèm tên chart).
   </div>
-  
-Tạo một Secret thuộc namespace <code>argocd</code> có nhãn <code>argocd.argoproj.io/secret-type: repository</code>, trường <code>type: helm</code>, <code>enableOCI: "true"</code> và <code>url: "harbor.domain.com/charts"</code> (không kèm tên chart).
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Vai trò của thuộc tính ignoreMissingValueFiles: true trong cấu hình Helm của Argo CD là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Giúp Argo CD bỏ qua và không báo lỗi build thất bại nếu một tệp <code>values.yaml</code> được khai báo trong danh sách <code>valueFiles</code> không tìm thấy trong kho lưu trữ Git.
   </div>
-  
-Giúp Argo CD bỏ qua và không báo lỗi build thất bại nếu một tệp <code>values.yaml</code> được khai báo trong danh sách <code>valueFiles</code> không tìm thấy trong kho lưu trữ Git.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Cú pháp fileParameters trong cấu hình Helm của Argo CD có tác dụng gì đặc biệt?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Cho phép truyền nội dung của một tệp thô bất kỳ (như script cấu hình <code>.sh</code>, chứng chỉ SSL <code>.pem</code>, hoặc tệp config phức tạp) từ repo vào một biến template Helm dưới dạng chuỗi string, tương đương cờ <code>--set-file</code> của Helm CLI.
   </div>
-  
-Cho phép truyền nội dung của một tệp thô bất kỳ (như script cấu hình <code>.sh</code>, chứng chỉ SSL <code>.pem</code>, hoặc tệp config phức tạp) từ repo vào một biến template Helm dưới dạng chuỗi string, tương đương cờ <code>--set-file</code> của Helm CLI.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Tại sao việc đặt targetRevision: "" hoặc dùng range * cho Helm Chart trên Production lại bị coi là phản mẫu (Anti-pattern)?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Vì điều đó vi phạm nguyên tắc Bất Biến (Immutability) của GitOps. Khi kho Helm phát hành bản mới, cụm có thể tự động nâng cấp mà không có commit nào trên Git, gây khó khăn cho việc rollback và tái lập môi trường.
   </div>
-  
-Vì điều đó vi phạm nguyên tắc Bất Biến (Immutability) của GitOps. Khi kho Helm phát hành bản mới, cụm có thể tự động nâng cấp mà không có commit nào trên Git, gây khó khăn cho việc rollback và tái lập môi trường.
-</div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Điều gì xảy ra nếu một trong các nguồn dữ liệu (Sources) trong Application bị lỗi kết nối hoặc repository không tồn tại?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Argo CD sẽ đánh dấu Application ở trạng thái <code>ComparisonError</code> và không thực hiện bất kỳ hành động đồng bộ nào cho đến khi toàn bộ các nguồn được kéo về thành công, đảm bảo tính toàn vẹn của bản build manifest.
   </div>
-  
-Argo CD sẽ đánh dấu Application ở trạng thái <code>ComparisonError</code> và không thực hiện bất kỳ hành động đồng bộ nào cho đến khi toàn bộ các nguồn được kéo về thành công, đảm bảo tính toàn vẹn của bản build manifest.
-</div>
 </details>
 
 ---
@@ -485,7 +531,7 @@ Argo CD sẽ đánh dấu Application ở trạng thái <code>ComparisonError</c
 
 Làm chủ Helm trong Argo CD kết hợp với kỹ thuật **Multiple Sources** giúp các tổ chức công nghệ tận dụng tối đa hệ sinh thái hàng ngàn Helm Charts mã nguồn mở, đồng thời bảo đảm tính riêng tư, bảo mật và khả năng kiểm soát tập trung cho các cấu hình doanh nghiệp.
 
-Chúc mừng bạn đã hoàn thành trọn vẹn **Giai Đoạn 2 (Đồng Bộ Nâng Cao & Quản Trị Đa Môi Trường)**!
-
-Ở bài tiếp theo mở màn **Giai Đoạn 3**, chúng ta sẽ bước lên cấp độ quy mô khổng lồ với **Mô Hình Quản Trị Quy Mô App-of-Apps Pattern Chuẩn Enterprise**!
+> [!TIP]
+> **Khám phá bài học tiếp theo:**  
+> Đọc tiếp bài [Bài 11: Mô Hình Quản Trị Quy Mô App-of-Apps Pattern Chuẩn Enterprise](argocd-11-11-mo-hinh-quan-tri-quy-mo-app-of-apps-pattern-chuan-enterprise.html) để làm chủ kiến trúc quản lý hàng trăm microservices bằng mô hình App-of-Apps phân cấp.
 {% endraw %}

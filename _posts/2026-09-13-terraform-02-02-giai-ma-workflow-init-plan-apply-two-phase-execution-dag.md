@@ -381,104 +381,194 @@ terraform destroy -auto-approve
 
 ## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tệp <code>.terraform.lock.hcl</code> đóng vai trò gì và có nên đưa vào Git không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Tệp này lưu trữ chính xác phiên bản và mã băm SHA-256 (Checksum) của các Provider Plugins đã được sử dụng. <b style="color: var(--accent-emerald);">BẮT BUỘC</b> phải đưa tệp này vào Git để đảm bảo tính bất biến (Reproducibility), ngăn chặn việc các môi trường CI/CD khác nhau vô tình tải về phiên bản Provider mới hơn có chứa breaking changes.
+  Tệp này lưu trữ chính xác phiên bản và mã băm SHA-256 (Checksum) của các Provider Plugins đã được sử dụng. <b style="color: var(--accent-emerald);">BẮT BUỘC</b> phải đưa tệp này vào Git để đảm bảo tính bất biến (Reproducibility), ngăn chặn việc các môi trường CI/CD khác nhau vô tình tải về phiên bản Provider mới hơn có chứa breaking changes.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Trong giao thức nội bộ, Terraform Core giao tiếp với các Provider Plugins thông qua cơ chế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Terraform Core và Provider Plugins là các tiến trình (OS Processes) riêng biệt. Chúng giao tiếp với nhau thông qua cơ chế <b style="color: var(--accent-primary);">gRPC over Local Sockets (Unix Domain Socket trên Linux/Mac hoặc Named Pipes trên Windows)</b> sử dụng thư viện mã nguồn mở <code>hashicorp/go-plugin</code>.
+  Terraform Core và Provider Plugins là các tiến trình (OS Processes) riêng biệt. Chúng giao tiếp với nhau thông qua cơ chế <b style="color: var(--accent-primary);">gRPC over Local Sockets (Unix Domain Socket trên Linux/Mac hoặc Named Pipes trên Windows)</b> sử dụng thư viện mã nguồn mở <code>hashicorp/go-plugin</code>.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khái niệm "Directed Acyclic Graph (DAG)" nghĩa là gì và tại sao Terraform bắt buộc phải dùng đồ thị không tuần hoàn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-DAG là đồ thị có hướng và <b style="color: var(--accent-rose);">không chứa bất kỳ vòng lặp khép kín nào</b>. Terraform bắt buộc phải dùng DAG vì nếu tồn tại chu trình tuần hoàn (tài nguyên A phụ thuộc B và B phụ thuộc A), thuật toán sẽ không thể xác định điểm bắt đầu và rơi vào bế tắc vô tận (<b style="color: var(--accent-rose);">Deadlock</b>).
+  DAG là đồ thị có hướng và <b style="color: var(--accent-rose);">không chứa bất kỳ vòng lặp khép kín nào</b>. Terraform bắt buộc phải dùng DAG vì nếu tồn tại chu trình tuần hoàn (tài nguyên A phụ thuộc B và B phụ thuộc A), thuật toán sẽ không thể xác định điểm bắt đầu và rơi vào bế tắc vô tận (<b style="color: var(--accent-rose);">Deadlock</b>).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tham chiếu ngầm định (Implicit Dependency) khác gì so với tham chiếu tường minh (Explicit Dependency)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Implicit Dependency:</b> Được tạo tự động khi một tài nguyên sử dụng trực tiếp thuộc tính đầu ra của tài nguyên khác (ví dụ <code>subnet_id = aws_subnet.public.id</code>).<br/></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-emerald);">Explicit Dependency:</b> Được kỹ sư khai báo thủ công thông qua thuộc tính <code style="color: var(--accent-emerald); font-weight: 700;">depends_on = [...]</code> khi không có sự ràng buộc dữ liệu trực tiếp nhưng bắt buộc phải có thứ tự khởi tạo trước sau.</div>
+  - <b style="color: var(--accent-primary);">Implicit Dependency:</b> Được tạo tự động khi một tài nguyên sử dụng trực tiếp thuộc tính đầu ra của tài nguyên khác (ví dụ <code>subnet_id = aws_subnet.public.id</code>).<br/>
+  - <b style="color: var(--accent-emerald);">Explicit Dependency:</b> Được kỹ sư khai báo thủ công thông qua thuộc tính <code style="color: var(--accent-emerald); font-weight: 700;">depends_on = [...]</code> khi không có sự ràng buộc dữ liệu trực tiếp nhưng bắt buộc phải có thứ tự khởi tạo trước sau.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Điều gì xảy ra trong pha "Refresh" khi chạy <code>terraform plan</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Terraform Core sẽ gửi các yêu cầu <code>ReadResource</code> tới Provider để gọi các API đọc (Describe/Get) từ Cloud, sau đó cập nhật dữ liệu mới nhất vào bộ nhớ đệm State nhằm phát hiện xem có sự sai lệch nào giữa thực tế và State (<b style="color: var(--accent-amber);">Drift Detection</b>) trước khi tính toán Diff.
+  Terraform Core sẽ gửi các yêu cầu <code>ReadResource</code> tới Provider để gọi các API đọc (Describe/Get) từ Cloud, sau đó cập nhật dữ liệu mới nhất vào bộ nhớ đệm State nhằm phát hiện xem có sự sai lệch nào giữa thực tế và State (<b style="color: var(--accent-amber);">Drift Detection</b>) trước khi tính toán Diff.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Khi nào nên sử dụng cờ <code>-refresh=false</code> trong các lệnh Terraform?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Nên dùng khi hạ tầng có số lượng tài nguyên quá lớn (hàng ngàn resources) khiến bước Refresh mất hàng chục phút, hoặc khi Cloud API đang bị chậm/nghẽn mà bạn chỉ cần thực hiện một thay đổi nhỏ đã biết chắc chắn trạng thái. Tuy nhiên cần thận trọng vì nó bỏ qua việc kiểm tra Drift.
+  Nên dùng khi hạ tầng có số lượng tài nguyên quá lớn (hàng ngàn resources) khiến bước Refresh mất hàng chục phút, hoặc khi Cloud API đang bị chậm/nghẽn mà bạn chỉ cần thực hiện một thay đổi nhỏ đã biết chắc chắn trạng thái. Tuy nhiên cần thận trọng vì nó bỏ qua việc kiểm tra Drift.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lệnh <code>terraform force-unlock &lt;LOCK-ID&gt;</code> nên được sử dụng trong tình huống nào và rủi ro của nó là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Chỉ sử dụng khi một tiến trình Terraform trước đó bị crash/kill bất ngờ khiến bản ghi Lock vẫn còn kẹt trong Backend (DynamoDB). <b style="color: var(--accent-rose);">Rủi ro lớn nhất:</b> Nếu tiến trình cũ thực tế vẫn đang âm thầm chạy và ghi dữ liệu, việc force-unlock sẽ cho phép tiến trình thứ hai nhảy vào ghi đè, gây hỏng hoàn toàn tệp State (<b style="color: var(--accent-rose);">State Corruption</b>).
+  Chỉ sử dụng khi một tiến trình Terraform trước đó bị crash/kill bất ngờ khiến bản ghi Lock vẫn còn kẹt trong Backend (DynamoDB). <b style="color: var(--accent-rose);">Rủi ro lớn nhất:</b> Nếu tiến trình cũ thực tế vẫn đang âm thầm chạy và ghi dữ liệu, việc force-unlock sẽ cho phép tiến trình thứ hai nhảy vào ghi đè, gây hỏng hoàn toàn tệp State (<b style="color: var(--accent-rose);">State Corruption</b>).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tham số <code>-parallelism=10</code> kiểm soát điều gì trong chu trình <code>terraform apply</code>?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Kiểm soát số lượng tác vụ (Goroutines) độc lập trên đồ thị DAG có thể được thực thi đồng thời. Giảm tham số này giúp tránh lỗi <b style="color: var(--accent-amber);">API Throttling</b> của Cloud Provider; tăng tham số này giúp rút ngắn thời gian triển khai khi có nhiều tài nguyên độc lập (như DNS records, S3 buckets).
+  Kiểm soát số lượng tác vụ (Goroutines) độc lập trên đồ thị DAG có thể được thực thi đồng thời. Giảm tham số này giúp tránh lỗi <b style="color: var(--accent-amber);">API Throttling</b> của Cloud Provider; tăng tham số này giúp rút ngắn thời gian triển khai khi có nhiều tài nguyên độc lập (như DNS records, S3 buckets).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh <code>terraform graph</code> xuất ra định dạng gì và công cụ nào được dùng để xem hình ảnh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Lệnh <code>terraform graph</code> xuất ra dữ liệu mô tả đồ thị dưới định dạng ngôn ngữ <b style="color: var(--accent-primary);">DOT</b>. Ta sử dụng công cụ mã nguồn mở <b style="color: var(--accent-primary);">Graphviz</b> (lệnh <code>dot -Tpng graph.dot -o graph.png</code>) để chuyển đổi sang hình ảnh SVG/PNG.
+  Lệnh <code>terraform graph</code> xuất ra dữ liệu mô tả đồ thị dưới định dạng ngôn ngữ <b style="color: var(--accent-primary);">DOT</b>. Ta sử dụng công cụ mã nguồn mở <b style="color: var(--accent-primary);">Graphviz</b> (lệnh <code>dot -Tpng graph.dot -o graph.png</code>) để chuyển đổi sang hình ảnh SVG/PNG.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tùy chọn <code>-replace="resource_address"</code> có công dụng gì trong Terraform 0.15.2+?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Dùng để thay thế lệnh cũ <code>terraform taint</code>. Nó yêu cầu Terraform trong đợt apply tiếp theo phải hủy bỏ (destroy) và tạo mới lại (recreate) chính xác tài nguyên được chỉ định mà không cần chỉnh sửa bất kỳ dòng mã nguồn HCL nào.
+  Dùng để thay thế lệnh cũ <code>terraform taint</code>. Nó yêu cầu Terraform trong đợt apply tiếp theo phải hủy bỏ (destroy) và tạo mới lại (recreate) chính xác tài nguyên được chỉ định mà không cần chỉnh sửa bất kỳ dòng mã nguồn HCL nào.
 </div>
 </details>
 

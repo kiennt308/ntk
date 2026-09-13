@@ -158,6 +158,14 @@ homepage:
     secondary_btn_text: "View Experience & Resume"
     secondary_btn_url: "/about.html#resume-download"
 
+  # Khối Liên hệ & Kết nối cuối trang chủ (Contact Section)
+  contact_section:
+    badge: "GET IN TOUCH"
+    title: "Let's Connect & Collaborate"
+    subtitle: "Have questions about cloud architectures, Kubernetes best practices, or looking for DevOps / SRE consulting? Reach out directly via the channels below."
+    view_all_btn_text: "View Full Contact Page"
+    view_all_btn_url: "/contact.html"
+
 # ==============================================================================
 # 📖 8. NỘI DUNG TRANG ABOUT (ABOUT ME & CV PROFILE)
 # ==============================================================================

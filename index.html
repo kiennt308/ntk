@@ -94,7 +94,7 @@ permalink: /
   </div>
 </section>
 
-<!-- Latest Articles Section -->
+<!-- Latest Technical Guides Section -->
 <section style="padding: 5rem 0;">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
@@ -140,3 +140,54 @@ permalink: /
     </div>
   </div>
 </section>
+
+<!-- Dedicated Homepage Contact Section -->
+{% if home.contact_section %}
+<section style="padding: 5rem 0; border-top: 1px solid var(--border-color);">
+  <div class="container">
+    <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem auto;">
+      <span class="badge badge--amber" style="margin-bottom: 0.75rem;">{{ home.contact_section.badge }}</span>
+      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem;">{{ home.contact_section.title }}</h2>
+      <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
+        {{ home.contact_section.subtitle }}
+      </p>
+    </div>
+
+    <!-- Contact Channels 4-Column Grid -->
+    <div class="grid grid--4col" style="margin-bottom: 2.5rem;">
+      {% for channel in site.contact_page.channels %}
+        <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; text-align: left;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: {{ channel.icon_bg }}; color: {{ channel.icon_color }}; display: flex; align-items: center; justify-content: center;">
+                {% include icon.html name=channel.icon size=20 %}
+              </div>
+              <span class="badge {{ channel.badge_class }}">{{ channel.badge }}</span>
+            </div>
+            <h3 style="font-size: 1.1rem; margin: 0 0 0.35rem 0; color: var(--text-primary);">{{ channel.title }}</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              {{ channel.desc }}
+            </p>
+          </div>
+
+          <div style="padding-top: 0.85rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;">
+              {{ channel.display_label }}
+            </span>
+            <a href="{{ channel.btn_url | relative_url }}" class="btn {{ channel.btn_class | default: 'btn--secondary' }} btn--sm" style="font-size: 0.775rem; padding: 0.35rem 0.65rem;" {% if channel.is_external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+              {{ channel.btn_text }}
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div style="text-align: center;">
+      <a href="{{ home.contact_section.view_all_btn_url | default: '/contact.html' | relative_url }}" class="btn btn--secondary">
+        <span>{{ home.contact_section.view_all_btn_text }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}

@@ -1,8 +1,10 @@
 ---
 layout: default
-title: "Technical Engineering Blog"
+title: "{{ site.blog_page.title | default: 'Technical Engineering Blog' }}"
 permalink: /blog.html
 ---
+
+{% assign page_cfg = site.blog_page %}
 
 <div class="container container--wide" style="margin-top: 1rem;">
   
@@ -13,10 +15,10 @@ permalink: /blog.html
       
       <!-- Page Header -->
       <div style="margin-bottom: 2.5rem;">
-        <span class="badge badge--primary" style="margin-bottom: 0.75rem;">KNOWLEDGE HUB</span>
-        <h1 style="font-size: 2.75rem; font-weight: 800; margin-top: 0; margin-bottom: 0.75rem; letter-spacing: -0.03em;">Engineering Insights</h1>
+        <span class="badge badge--primary" style="margin-bottom: 0.75rem;">{{ page_cfg.badge }}</span>
+        <h1 style="font-size: 2.75rem; font-weight: 800; margin-top: 0; margin-bottom: 0.75rem; letter-spacing: -0.03em;">{{ page_cfg.heading }}</h1>
         <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 700px; margin: 0;">
-          Production-tested guides, deep dives, and practical walk-throughs for Cloud, DevOps & SRE engineers.
+          {{ page_cfg.subtitle }}
         </p>
       </div>
 
@@ -25,13 +27,13 @@ permalink: /blog.html
         <svg class="search-icon-inside" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <input type="text" id="blog-live-search" class="search-input-box" placeholder="Filter articles by title, keyword, technology (e.g. AWS, EKS, Terraform)..." aria-label="Search articles">
+        <input type="text" id="blog-live-search" class="search-input-box" placeholder="{{ page_cfg.search_placeholder }}" aria-label="{{ page_cfg.search_aria_label | default: 'Search articles' }}">
       </div>
 
       <!-- Category & Pillar Filter Tabs (Real-time dynamic filtering) -->
       <div class="filter-wrapper no-print" style="margin-bottom: 2.5rem;">
         <div class="filter-bar">
-          <button class="filter-btn live-filter-btn active" data-filter="all">All Topics ({{ site.posts.size }})</button>
+          <button class="filter-btn live-filter-btn active" data-filter="all">{{ page_cfg.all_topics_label }} ({{ site.posts.size }})</button>
           {% for topic in site.topics %}
             <button class="filter-btn live-filter-btn" data-filter="{{ topic.id }}">
               {{ topic.icon }} {{ topic.category_name }} ({{ site.categories[topic.category_name] | size | default: 0 }})
@@ -43,9 +45,9 @@ permalink: /blog.html
       <!-- Blog Publications Grid -->
       <section>
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 2rem;">
-          <h2 style="font-size: 1.5rem; margin: 0;">All Publications</h2>
+          <h2 style="font-size: 1.5rem; margin: 0;">{{ page_cfg.publications_heading }}</h2>
           <div style="font-size: 0.9rem; color: var(--text-muted);">
-            Showing <span id="visible-post-count" style="font-weight: 700; color: var(--text-primary);">{{ site.posts.size }}</span> articles
+            {{ page_cfg.showing_label }} <span id="visible-post-count" style="font-weight: 700; color: var(--text-primary);">{{ site.posts.size }}</span> {{ page_cfg.articles_unit }}
           </div>
         </div>
         
@@ -55,7 +57,7 @@ permalink: /blog.html
               {% include post-card.html post=post %}
             {% endfor %}
           {% else %}
-            <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 4rem 0;">No articles written yet.</p>
+            <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 4rem 0;">{{ page_cfg.empty_written_message }}</p>
           {% endif %}
         </div>
 
@@ -68,10 +70,10 @@ permalink: /blog.html
 
         <!-- Empty search/filter state -->
         <div id="no-filter-results" style="display: none; text-align: center; padding: 4rem 1rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); margin-top: 1.5rem;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
-          <h3 style="margin-top: 0; margin-bottom: 0.5rem;">No matching articles found</h3>
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">{{ page_cfg.no_results_icon }}</div>
+          <h3 style="margin-top: 0; margin-bottom: 0.5rem;">{{ page_cfg.no_results_title }}</h3>
           <p style="color: var(--text-secondary); max-width: 450px; margin: 0 auto 1.5rem auto;">
-            Try searching for other keywords like AWS, Kubernetes, Terraform, or select "All Topics".
+            {{ page_cfg.no_results_desc }}
           </p>
         </div>
       </section>
@@ -96,7 +98,7 @@ permalink: /blog.html
           {{ site.author.bio }}
         </p>
         <div style="display: flex; gap: 0.5rem;">
-          <a href="{{ '/about.html' | relative_url }}" class="btn btn--secondary btn--sm" style="flex: 1; justify-content: center; font-size: 0.8rem;">About Me</a>
+          <a href="{{ '/about.html' | relative_url }}" class="btn btn--secondary btn--sm" style="flex: 1; justify-content: center; font-size: 0.8rem;">{{ page_cfg.sidebar.about_btn_text }}</a>
           <a href="https://github.com/{{ site.social.github }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="padding: 0.4rem 0.65rem;" aria-label="GitHub">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           </a>
@@ -112,7 +114,7 @@ permalink: /blog.html
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
-          Topic Pillars
+          {{ page_cfg.sidebar.pillars_title }}
         </h3>
         <ul class="blog-topic-list">
           {% for topic in site.topics %}
@@ -132,7 +134,7 @@ permalink: /blog.html
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
-          Popular Tags
+          {{ page_cfg.sidebar.tags_title }}
         </h3>
         <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
           {% for tag in site.tags limit:10 %}

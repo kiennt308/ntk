@@ -349,7 +349,30 @@ categories_page:
   date_format: "%b %d, %Y"
 
 # ==============================================================================
-# ⚙️ 11. JEKYLL PLUGINS & BUILD SETTINGS
+# 📝 11. NỘI DUNG TRANG BLOG & BÀI VIẾT (BLOG PAGE)
+# ==============================================================================
+blog_page:
+  title: "Technical Engineering Blog"
+  badge: "KNOWLEDGE HUB"
+  heading: "Engineering Insights"
+  subtitle: "Production-tested guides, deep dives, and practical walk-throughs for Cloud, DevOps & SRE engineers."
+  search_placeholder: "Filter articles by title, keyword, technology (e.g. AWS, EKS, Terraform)..."
+  search_aria_label: "Search articles"
+  all_topics_label: "All Topics"
+  publications_heading: "All Publications"
+  showing_label: "Showing"
+  articles_unit: "articles"
+  empty_written_message: "No articles written yet."
+  no_results_icon: "🔍"
+  no_results_title: "No matching articles found"
+  no_results_desc: "Try searching for other keywords like AWS, Kubernetes, Terraform, or select 'All Topics'."
+  sidebar:
+    about_btn_text: "About Me"
+    pillars_title: "Topic Pillars"
+    tags_title: "Popular Tags"
+
+# ==============================================================================
+# ⚙️ 12. JEKYLL PLUGINS & BUILD SETTINGS
 # ==============================================================================
 twitter:
   username: kiennt308

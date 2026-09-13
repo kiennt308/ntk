@@ -257,7 +257,7 @@ galaxy_info:
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do các task trong Role nạp động bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency mốc 50% khóa học:
-```
+```bash
 # Lần 1: changed=3 (Role common & app_server thi hành render file thành công)
 target1 : ok=6 changed=3 unreachable=0 failed=0
 

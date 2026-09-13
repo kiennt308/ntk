@@ -1313,7 +1313,7 @@ apt-mark showhold
 
 Tiếp theo là **phần học viên phải điền, không ai điền hộ**: `JFROG_REGISTRY` trong `labs/phien-ban.env` đang trống. Giá trị đúng là địa chỉ registry JFrog của tổ chức, lấy từ người quản trị hoặc từ tài liệu nội bộ. Điền sao cho **đường ảnh đầy đủ** của khoá ghép lại đúng dạng này:
 
-```
+```bash
 ${JFROG_REGISTRY}/docker-remote/nginx:1.27-alpine
 ```
 
@@ -2783,7 +2783,7 @@ Không yêu cầu Service, probe, tệp hiện vật.
 1. Ghi ra tệp `~/k8s-portfolio/buoi-01/o-thi/pod-app.txt` một dòng cho mỗi Pod trong namespace `lab-01` **có nhãn `app`** — bất kể giá trị của nhãn đó.
 2. Mỗi dòng đúng định dạng sau, ba trường, phân cách bằng đúng một ký tự `|`, không khoảng trắng quanh dấu phân cách:
 
-   ```
+   ```bash
    <metadata.name>|<spec.nodeName>|<spec.containers[0].image>
    ```
 

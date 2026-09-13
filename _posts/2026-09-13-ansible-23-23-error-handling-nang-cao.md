@@ -283,7 +283,7 @@ remote_user = ansible
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do task retry bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của Playbook Error Handling:
-```
+```bash
 # Lần 1: changed=2 (Tự động retry và khôi phục xử lý lỗi thành công)
 target1 : ok=6 changed=2 unreachable=0 failed=0
 

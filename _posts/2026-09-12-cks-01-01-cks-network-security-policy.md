@@ -589,7 +589,7 @@ graph TD
     
     Frontend -->|"ALLOWED: Port 8080"| NetPolBackend --> Backend
     Attacker -.->|"BLOCKED: Dropped Packet"| NetPolBackend
-```
+```yaml
 
 ---
 
@@ -600,13 +600,13 @@ graph TD
 ```bash
 kubectl create namespace lab46
 kubectl label namespace lab46 env=lab --overwrite
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab46`.**
 
 ```bash
 kubectl get ns lab46 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 ### Thao tác 1.2: Triển khai 4 Pods microservices
 
@@ -664,20 +664,20 @@ spec:
       image: busybox:1.36
       command: ["sh", "-c", "sleep 3600"]
 EOF
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra đủ 4 Pods khởi tạo.**
 
 ```bash
 sleep 4
 kubectl get pod -n lab46 -o jsonpath='{.items[*].metadata.name}' | grep -q "external-attacker" && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```bash
 
 **CHECKPOINT 3 — Xác minh ban đầu chưa có NetworkPolicy thì kết nối tự do.**
 
 ```bash
 kubectl exec frontend -n lab46 -- nc -z -w 2 backend 8080 && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```yaml
 
 ---
 
@@ -700,19 +700,19 @@ spec:
 EOF
 
 kubectl apply -f /tmp/lab46-deny.yaml
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra `policyTypes: ["Ingress", "Egress"]`.**
 
 ```bash
 kubectl get netpol default-deny-all -n lab46 -o jsonpath='{.spec.policyTypes[*]}' | grep -q "Egress" && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Xác minh lệnh `nc` từ `frontend` sang `backend` bị kẹt timeout (bị CHẶN).**
 
 ```bash
 kubectl exec frontend -n lab46 -- nc -z -w 2 backend 8080 2>&1 | grep -q -E "timed out|exit code|1" && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -742,13 +742,13 @@ spec:
         - protocol: TCP
           port: 53
 EOF
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra cổng UDP `53` trong `allow-dns-egress`.**
 
 ```bash
 kubectl get netpol allow-dns-egress -n lab46 -o jsonpath='{.spec.egress[0].ports[0].port}' | grep -qx 53 && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 ### Thao tác 3.2: Triển khai NetworkPolicy `backend-policy` mở Ingress duy nhất cho `app=frontend`
 
@@ -774,25 +774,25 @@ spec:
         - protocol: TCP
           port: 8080
 EOF
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra `podSelector.matchLabels.app: frontend`.**
 
 ```bash
 kubectl get netpol backend-policy -n lab46 -o jsonpath='{.spec.ingress[0].from[0].podSelector.matchLabels.app}' | grep -qx "frontend" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```bash
 
 **CHECKPOINT 8 — Xác minh `frontend` truy cập `backend` THÀNH CÔNG.**
 
 ```bash
 kubectl exec frontend -n lab46 -- nc -z -w 2 backend 8080 && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Xác minh `external-attacker` truy cập `backend` BỊ CHẶN.**
 
 ```bash
 kubectl exec external-attacker -n lab46 -- nc -z -w 2 backend 8080 2>&1 | grep -q -E "timed out|exit code|1" && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```yaml
 
 ---
 
@@ -822,13 +822,13 @@ spec:
             matchLabels:
               app: client
 EOF
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra thuộc tính AND selector trong `and-policy`.**
 
 ```bash
 kubectl get netpol and-policy -n lab46 -o jsonpath='{.spec.ingress[0].from[0].podSelector.matchLabels.app}' | grep -qx "client" && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 ### Thao tác 4.2: Triển khai NetworkPolicy `ipblock-policy` lọc dải IP
 
@@ -852,13 +852,13 @@ spec:
             except:
               - 10.0.0.0/8
 EOF
-```
+```bash
 
 **CHECKPOINT 11 — Kiểm tra cờ `except: ["10.0.0.0/8"]` trong `ipblock-policy`.**
 
 ```bash
 kubectl get netpol ipblock-policy -n lab46 -o jsonpath='{.spec.egress[0].to[0].ipBlock.except[0]}' | grep -qx "10.0.0.0/8" && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```yaml
 
 ---
 
@@ -868,7 +868,7 @@ kubectl get netpol ipblock-policy -n lab46 -o jsonpath='{.spec.egress[0].to[0].i
 
 ```bash
 kubectl describe netpol backend-policy -n lab46 | grep -q "frontend" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -879,13 +879,13 @@ kubectl describe netpol backend-policy -n lab46 | grep -q "frontend" && echo "CH
 ```bash
 kubectl delete namespace lab46
 rm -f /tmp/lab46-deny.yaml
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/lab46-deny.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -1054,7 +1054,7 @@ spec:
       ports:
         - protocol: TCP
           port: 8080
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Cấu hình sai cú pháp podSelector hoặc ingress rules.
@@ -1253,7 +1253,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ingress</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Egress</div>
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1285,7 +1285,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• protocol: TCP</div>
           port: 5432
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1322,7 +1322,7 @@ spec:
             except:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 192.168.1.50/32</div>
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1357,7 +1357,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• protocol: TCP</div>
           port: 8080
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1428,7 +1428,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1447,7 +1447,7 @@ spec:
 from:
   - namespaceSelector: {matchLabels: {env: prod}}
     podSelector: {matchLabels: {app: client}}
-```
+```yaml
 
 ---
 

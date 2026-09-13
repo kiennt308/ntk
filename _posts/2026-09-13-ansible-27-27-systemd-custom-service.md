@@ -260,7 +260,7 @@ handlers:
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do task thi hành bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency khi quản lý Systemd Service:
-```
+```bash
 # Lần 1: changed=3 (Tạo user, render Unit File, daemon-reload và start service)
 target1 : ok=5 changed=3 unreachable=0 failed=0
 

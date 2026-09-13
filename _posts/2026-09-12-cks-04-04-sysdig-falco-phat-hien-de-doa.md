@@ -525,7 +525,7 @@ graph TD
     Kernel -->|"eBPF / Syscall Probe"| FalcoEngine[Falco Threat Engine]
     FalcoEngine -->|"Match Local Rule"| LocalRule[/etc/falco/falco_rules.local.yaml]
     LocalRule -->|"Trigger Alert"| LogOutput[Journalctl / Log File /tmp/falco-alerts.txt]
-```
+```yaml
 
 ---
 
@@ -537,25 +537,25 @@ graph TD
 kubectl create namespace lab49
 sudo mkdir -p /etc/falco
 sudo touch /etc/falco/falco_rules.local.yaml
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab49`.**
 
 ```bash
 kubectl get ns lab49 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra tệp luật local `/etc/falco/falco_rules.local.yaml`.**
 
 ```bash
 test -f /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```bash
 
 **CHECKPOINT 3 — Khởi tạo tệp luật local.**
 
 ```bash
 test -f /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```yaml
 
 ---
 
@@ -574,25 +574,25 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Falco Alert: Terminal shell (%proc.name) spawned in container (id=%container.id pod=%k8s.pod.name ns=%k8s.ns.name)"
   priority: WARNING
 EOF
-```
+```bash
 
 **CHECKPOINT 4 — Trích xuất luật `Notice Terminal Shell Spawned`.**
 
 ```bash
 grep -q "Notice Terminal Shell Spawned" /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 ### Thao tác 2.2: Khởi động lại Falco hoặc kiểm tra tệp luật
 
 ```bash
 sudo systemctl restart falco 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 5 — Xác minh tệp luật hợp lệ.**
 
 ```bash
 test -f /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -602,33 +602,33 @@ test -f /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 5 — ĐẠT" || e
 
 ```bash
 kubectl run test-app --image=nginx:alpine -n lab49
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra Pod `test-app` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod test-app -n lab49 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 ### Thao tác 3.2: Thực hiện mô phỏng mở terminal shell trong Pod
 
 ```bash
 kubectl exec test-app -n lab49 -- sh -c "echo ATTACK_SHELL_TEST"
 echo "Falco Alert: Terminal shell (sh) spawned in container (id=abc123 pod=test-app ns=lab49)" >> /tmp/falco-alerts.txt
-```
+```bash
 
 **CHECKPOINT 7 — Xác minh lệnh exec mở shell mô phỏng.**
 
 ```bash
 kubectl exec test-app -n lab49 -- sh -c "echo ATTACK_SHELL_TEST" | grep -q "ATTACK_SHELL_TEST" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```bash
 
 **CHECKPOINT 8 — Xác minh nhật ký log `/tmp/falco-alerts.txt`.**
 
 ```bash
 test -f /tmp/falco-alerts.txt && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```yaml
 
 ---
 
@@ -648,26 +648,26 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Falco Alert: Unauthorized write to /etc (file=%fd.name cmd=%proc.cmdline pod=%k8s.pod.name)"
   priority: ERROR
 EOF
-```
+```bash
 
 **CHECKPOINT 9 — Trích xuất luật `Unauthorized Write to /etc`.**
 
 ```bash
 grep -q "Unauthorized Write to /etc" /etc/falco/falco_rules.local.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 ### Thao tác 4.2: Mô phỏng tấn công 2 (Tạo file giả lập)
 
 ```bash
 kubectl exec test-app -n lab49 -- touch /tmp/hacked_etc.txt 2>/dev/null || true
 echo "Falco Alert: Unauthorized write to /etc (file=/etc/hacked cmd=touch pod=test-app)" >> /tmp/falco-alerts.txt
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra mô phỏng tấn công 2.**
 
 ```bash
 test -f /tmp/falco-alerts.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -677,13 +677,13 @@ test -f /tmp/falco-alerts.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKP
 
 ```bash
 test -s /tmp/falco-alerts.txt && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Trích xuất dòng cảnh báo từ `/tmp/falco-alerts.txt`.**
 
 ```bash
 grep -q "Falco" /tmp/falco-alerts.txt && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -694,13 +694,13 @@ grep -q "Falco" /tmp/falco-alerts.txt && echo "CHECKPOINT 12 — ĐẠT" || echo
 ```bash
 kubectl delete namespace lab49
 rm -f /tmp/falco-alerts.txt /tmp/hacked_etc.txt
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/falco-alerts.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -832,7 +832,7 @@ condition: >
   evt.type = execve and
   container.id != host and
   proc.name in (bash, sh, zsh, ksh)
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai tên sự kiện kernel hoặc sai proc.name.
@@ -853,7 +853,7 @@ condition: >
   container.id != host and
   evt.arg.flags contains O_WRONLY and
   fd.name prefix /etc
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Không biết điều kiện soi ghi file /etc.
@@ -905,7 +905,7 @@ condition: >
     proc.name in (nc, nmap, netstat, tcpdump)
   output: "Falco Alert: Network tool (%proc.name) executed (pod=%k8s.pod.name ns=%k8s.ns.name user=%user.name)"
   priority: WARNING
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Cấu hình sai cú pháp luật Falco.
@@ -1075,7 +1075,7 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Terminal shell spawned in container (id=%container.id pod=%k8s.pod.name)"
   priority: WARNING
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1093,7 +1093,7 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Sensitive file /etc/shadow opened (user=%user.name pod=%k8s.pod.name)"
   priority: CRITICAL
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1111,7 +1111,7 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   output: "Network tool %proc.name executed in container (pod=%k8s.pod.name)"
   priority: WARNING
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1124,7 +1124,7 @@ EOF
 ```bash
 sudo systemctl restart falco 2>/dev/null || true
 echo "Falco Alert: Terminal shell spawned in container (id=abc123 pod=test-pod)" > /tmp/falco-exam.txt
-```
+```yaml
 
 ---
 </div>
@@ -1194,7 +1194,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1211,7 +1211,7 @@ fi
 # Restart & Tra cứu Log
 sudo systemctl restart falco
 sudo journalctl -fu falco
-```
+```yaml
 
 ---
 

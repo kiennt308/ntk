@@ -60,7 +60,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 - Kiểm tra SHA256 Hash hiện vật (Buổi 01 QT 7.2): Khóa kết quả tối ưu. Dùng lại tại §6 QT 6.3 (Lần thứ 6).
 - Bảng hai thuộc tính hỏng (Buổi 01 QT 7.1): Dùng lại tại §6 (Lần thứ 14).
 
-```
+```ini
    BA NHÓM THỜI GIAN — ĐO TRƯỚC, TỐI ƯU SAU
 
    [1] CHỜ         queued_duration                      → buổi 13: ρ = λ·S/c
@@ -231,7 +231,7 @@ echo "Biên độ dao động hệ thống: ±8% (Ví dụ: 1200s ± 96s)"
 > **CẠM BẪY THỰC CHIẾN:**
 > Tối ưu Docker Image mỏng ở bước 1 rồi mới thêm `needs:` ở bước 2, dẫn đến con số tiết kiệm của Image mỏng đo lại bị lệch 40% so với báo cáo ban đầu.
 **Minh hoạ.**
-```
+```bash
 Trình tự áp dụng bắt buộc:
 [Bước 1: Bỏ hàng rào stage] ──> [Bước 2: Song song hóa] ──> [ĐỔI CẤU TRÚC]
                                                                  │
@@ -247,7 +247,7 @@ Trình tự áp dụng bắt buộc:
 > **CẠM BẪY THỰC CHIẾN:**
 > Dành cả tuần nghiên cứu đóng gói Image Alpine mỏng cho một Job mà pha kéo Image hiện tại chỉ mất đúng 4 giây do máy chủ Runner đã lưu sẵn Layer Cache trong ổ đĩa local.
 **Minh hoạ.**
-```
+```bash
 BẢNG TÍNH TRẦN LÝ THUYẾT TRƯỚC KHI THỰC HIỆN PIPELINE MẪU (22 PHÚT = 1320S):
 1. Trần needs:      300s  (Thời gian chờ chuyển Stage 1 -> Stage 2 -> Stage 3)
 2. Trần parallel:   260s  (Giới hạn bởi Amdahl Law trên 4 Worker)
@@ -311,7 +311,7 @@ unit-test-job:
 > **CẠM BẪY THỰC CHIẾN:**
 > Pha `Preparing environment` giảm xuống còn 6 giây nhưng thời gian thực thi `script:` tăng vọt từ 30 giây lên 75 giây.
 **Minh hoạ.**
-```
+```bash
 BẢNG SO SÁNH 3 PHƯƠNG ÁN DOCKER IMAGE:
 Phương án Image         Pull Time   Script Time   TỔNG THỜI GIAN   Đánh giá
 --------------------------------------------------------------------------------
@@ -387,7 +387,7 @@ check-time-budget:
 > **CẠM BẪY THỰC CHIẾN:**
 > Sau một đợt tối ưu, thông tin chỉ được gửi qua tin nhắn chat, 3 tháng sau Pipeline chậm trở lại 20 phút mà không ai biết cấu hình cũ đã bị thay đổi ở đâu.
 **Minh hoạ.**
-```
+```bash
 BÁO CÁO TỐI ƯU HÓA PIPELINE MẪU (bao-cao-toi-uu.tsv):
 Mốc cấu hình       Thời gian   Delta (s)   Trần lý thuyết   SHA256 Hash Check
 --------------------------------------------------------------------------------
@@ -593,7 +593,7 @@ EOF
 
 Dưới đây là bảng tiêu chí nghiệm thu kỹ thuật bắt buộc cho toàn bộ bài thực hành và bài kiểm tra Buổi 14:
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │               BUỔI 14 TECHNICAL ACCEPTANCE CRITERIA MATRIX             │
 ├───────────────────────────────────┬────────────────────────────────────┤
@@ -2041,7 +2041,7 @@ test-spring:
 
 ## §L55. Bảng đối soát thời lượng và Tiêu chí Đạt 12 Checkpoint bài Lab
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │             BUỔI 14 LAB CHECKPOINT VERIFICATION COMPLETE MATRIX        │
 ├───────────────────────────────────┬────────────────────────────────────┤
@@ -2282,7 +2282,7 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 Trong 20 phút cuối của Buổi 14, giảng viên gọi ngẫu nhiên học viên trả lời 6 câu hỏi rút từ Ngân hàng 156 câu hỏi của Buổi 01 đến Buổi 13:
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │             NGÂN HÀNG CÂU HỎI THI VẤN ĐÁP GIỮA KỲ 1 (BUỔI 01–13)       │
 ├───────────────────────────────────┬────────────────────────────────────┤
@@ -2324,7 +2324,7 @@ Trong 20 phút cuối của Buổi 14, giảng viên gọi ngẫu nhiên học v
 
 ## §V6. Tổng hợp bảng đối soát các thuật ngữ và công thức toán học Buổi 14
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │             BUỔI 14 FORMULA AND TERMINOLOGY ACCEPTANCE MATRIX          │
 ├───────────────────────────────────┬────────────────────────────────────┤

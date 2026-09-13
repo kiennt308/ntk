@@ -514,7 +514,7 @@ graph TD
     CosignSign -->|"5. Verify Signature"| K8sAdmission[Admission Controller / CLI Verify]
     Keys -->|"Public Key"| K8sAdmission
     K8sAdmission -->|"Match: SUCCESS"| Deploy[Pod Deployed in lab59]
-```
+```yaml
 
 ---
 
@@ -537,31 +537,31 @@ cosign generate-key-pair --output-key-prefix /tmp/cosign 2>/dev/null || {
   echo "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0w..." >> /tmp/cosign.key
   echo "-----END PRIVATE KEY-----" >> /tmp/cosign.key
 }
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab59`.**
 
 ```bash
 kubectl get ns lab59 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra sự tồn tại của cặp khóa Cosign.**
 
 ```bash
 test -f /tmp/cosign.key && test -f /tmp/cosign.pub && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra tệp khóa công khai `/tmp/cosign.pub`.**
 
 ```bash
 grep -q "PUBLIC KEY" /tmp/cosign.pub && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra tệp khóa bí mật `/tmp/cosign.key`.**
 
 ```bash
 grep -q "PRIVATE KEY" /tmp/cosign.key && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```yaml
 
 ---
 
@@ -572,25 +572,25 @@ grep -q "PRIVATE KEY" /tmp/cosign.key && echo "CHECKPOINT 4 — ĐẠT" || echo 
 ```bash
 export COSIGN_PASSWORD=""
 test -f /tmp/cosign.key && echo "IMAGE_SIGNED_OK" >/dev/null
-```
+```bash
 
 **CHECKPOINT 5 — Xác minh cờ Image Digest bất biến.**
 
 ```bash
 test -f /tmp/cosign.pub && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra thao tác ký số `cosign sign`.**
 
 ```bash
 test -f /tmp/cosign.key && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Xác minh chữ ký hình ảnh bằng `cosign verify`.**
 
 ```bash
 test -f /tmp/cosign.pub && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -615,31 +615,31 @@ cat <<EOF > /tmp/sbom.spdx.json
   ]
 }
 EOF
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra tệp SBOM dạng SPDX JSON.**
 
 ```bash
 grep -q "SPDXID" /tmp/sbom.spdx.json && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra tệp `/tmp/sbom.spdx.json` sẵn sàng.**
 
 ```bash
 test -f /tmp/sbom.spdx.json && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 ### Thao tác 3.2: Đính kèm tệp SBOM lên OCI Registry qua `cosign attach sbom`
 
 ```bash
 test -f /tmp/sbom.spdx.json && echo "ATTACHED_SUCCESS" >/dev/null
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra cờ `cosign attach sbom`.**
 
 ```bash
 test -f /tmp/cosign.pub && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -649,19 +649,19 @@ test -f /tmp/cosign.pub && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 1
 
 ```bash
 test -f /tmp/cosign.key && echo "ATTESTED_SUCCESS" >/dev/null
-```
+```bash
 
 **CHECKPOINT 11 — Kiểm tra ký số chứng thực SBOM `cosign attest`.**
 
 ```bash
 test -f /tmp/cosign.key && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Thử nghiệm xác minh Image chưa ký và kiểm tra báo lỗi.**
 
 ```bash
 test -f /tmp/cosign.pub && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -669,7 +669,7 @@ test -f /tmp/cosign.pub && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 1
 
 ```bash
 test -f /tmp/cosign.pub && echo "LIST_ATTESTATION_OK" >/dev/null
-```
+```yaml
 
 ---
 
@@ -680,13 +680,13 @@ test -f /tmp/cosign.pub && echo "LIST_ATTESTATION_OK" >/dev/null
 ```bash
 kubectl delete namespace lab59
 rm -f /tmp/cosign.key /tmp/cosign.pub /tmp/sbom.spdx.json
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/cosign.key && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -923,7 +923,7 @@ syft myregistry.io/app:v1 -o spdx-json > /tmp/sbom.json
 cosign sign --key /tmp/cosign.key myregistry.io/app@sha256:a1b2c3...
 cosign attach sbom --sbom /tmp/sbom.json myregistry.io/app@sha256:a1b2c3...
 cosign verify --key /tmp/cosign.pub myregistry.io/app@sha256:a1b2c3...
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai lệnh cosign hoặc thiếu cờ --key.
@@ -1047,7 +1047,7 @@ cosign generate-key-pair --output-key-prefix /tmp/cosign 2>/dev/null || {
   echo "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0w..." >> /tmp/cosign.key
   echo "-----END PRIVATE KEY-----" >> /tmp/cosign.key
 }
-```
+```bash
 </div>
 </details>
 
@@ -1060,7 +1060,7 @@ cosign generate-key-pair --output-key-prefix /tmp/cosign 2>/dev/null || {
 ```bash
 export COSIGN_PASSWORD=""
 test -f /tmp/cosign.key && echo "SIGNED_SUCCESS" > /tmp/cosign-sign.log
-```
+```bash
 </div>
 </details>
 
@@ -1081,7 +1081,7 @@ cat <<EOF > /tmp/app-sbom.spdx.json
   }
 }
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1107,7 +1107,7 @@ cat <<EOF > /tmp/verify-report.json
   }
 ]
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1176,7 +1176,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1196,7 +1196,7 @@ cosign attach sbom --sbom /tmp/sbom.spdx.json <image-digest>
 
 # Signature Verification CLI
 cosign verify --key /tmp/cosign.pub <image-digest>
-```
+```yaml
 
 ---
 

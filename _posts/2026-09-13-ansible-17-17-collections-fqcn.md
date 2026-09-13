@@ -125,7 +125,7 @@ amazon.aws.ec2_instance
 > Lầm tưởng Ansible Collection chỉ chứa các Role (thực tế Collection chứa toàn bộ hệ sinh thái Modules + Plugins + Roles).
 
 **Minh hoạ.** Cấu trúc thư mục chuẩn của một Ansible Collection:
-```
+```bash
 namespace/collection_name/
 ├── docs/
 ├── galaxy.yml
@@ -269,7 +269,7 @@ ansible-galaxy collection install -r requirements.yml
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do module trong Collection bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của Playbook FQCN:
-```
+```bash
 # Lần 1: changed=2 (Các module FQCN ansible.builtin và community.general ghi đĩa)
 target1 : ok=5 changed=2 unreachable=0 failed=0
 

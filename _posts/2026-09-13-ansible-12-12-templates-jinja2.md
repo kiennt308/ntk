@@ -244,7 +244,7 @@ ALLOWED_HOSTS={{ allowed_hosts | join(', ') }}
 > Tệp template chứa biến thời gian tự do (như `{{ ansible_date_time.iso8601 }}`) làm file bị thay đổi liên tục ở mọi lượt chạy Lần 2 (hỏng tính Idempotent).
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` lượt 2 đạt Idempotency của module `template`:
-```
+```bash
 # Lần 1: changed=1 (Render và chép file cấu hình mới)
 target1 : ok=2 changed=1 unreachable=0 failed=0
 

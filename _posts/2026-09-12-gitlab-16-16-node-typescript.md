@@ -117,7 +117,7 @@ Hôm nay chúng ta tiến hành điền đầy **cột Node.js & TypeScript** v�
 
 ### 3.2. Bốn mô hình tư duy cốt lõi
 
-```
+```bash
     RANH GIỚI LOCKFILE trong CI/CD (Mô hình 1)
     ┌─────────────────────────────────────────────────────────────┐
     │ BÊN ĐỌC (Tái lập 100%)    │ BÊN GHI (Hỏng ngầm/Drift)       │

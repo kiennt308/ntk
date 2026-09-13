@@ -194,7 +194,7 @@ extra_vars:
 > Viết 1 file Playbook siêu khổng lồ dài 2000 dòng gộp chung tất cả các bước thay vì chia nhỏ thành các Job Templates và nối bằng Workflow.
 
 **Minh hoạ.** Đồ thị phân nhánh trong Workflow Job Template:
-```
+```yaml
 [Job 1: Provision VM] 
      │
      ├── (On Success) ──> [Job 2: Deploy Web App] ── (On Success) ──> [Job 3: Notify Success]
@@ -263,7 +263,7 @@ curl -X POST \
 > Nhìn bảng log trên giao diện AWX Web UI Lần 2 báo `changed > 0` do kịch bản bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu giao diện log AWX Job Details Lần 2 đạt Idempotency:
-```
+```bash
 # AWX Job Details Output - Job #1042
 target1 : ok=4 changed=0 unreachable=0 failed=0
 Status: Successful | Elapsed Time: 12s | Idempotency: 100% PASSED

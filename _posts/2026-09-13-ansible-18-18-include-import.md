@@ -124,7 +124,7 @@ graph TD
 > Viết 1 file Playbook phẳng dài 1000 dòng chứa tất cả cấu hình Firewall, User, Web, DB gây cực kỳ rườm rà và khó đọc.
 
 **Minh hoạ.** Cấu trúc thư mục chia nhỏ task:
-```
+```bash
 project/
 ├── site.yml
 └── tasks/
@@ -259,7 +259,7 @@ project/
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do task trong tệp con bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của Playbook chia nhỏ:
-```
+```bash
 # Lần 1: changed=2 (Nạp tệp task con và thi hành chép file cấu hình)
 target1 : ok=5 changed=2 unreachable=0 failed=0
 
@@ -961,7 +961,7 @@ Khi chạy trên RedHat, nó nạp `tasks/redhat_tasks.yml`; khi chạy trên De
 **Hỏi:** Trình bày cấu trúc thư mục tiêu chuẩn của một dự án Ansible Playbook mô-đun hóa được chia nhỏ thành nhiều tệp task con. *(Liên quan QT 4.2)*
 **Đáp án chuẩn:**
 Cấu trúc tiêu chuẩn:
-```
+```bash
 project/
 ├── ansible.cfg
 ├── inventory.ini

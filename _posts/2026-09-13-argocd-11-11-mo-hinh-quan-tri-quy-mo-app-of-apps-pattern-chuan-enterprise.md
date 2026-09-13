@@ -99,7 +99,7 @@ flowchart TD
 
 Cấu trúc thư mục được khuyến nghị cho các tổ chức quy mô lớn kết hợp phân quyền Git CODEOWNERS:
 
-```
+```bash
 ecommerce-gitops/
 ├── 00-root-app.yaml                     # Manifest của Root Application (Platform Admin)
 ├── apps/                                # Danh mục toàn bộ Child Applications

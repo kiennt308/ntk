@@ -38,7 +38,7 @@ Bài viết này sẽ hướng dẫn bạn toàn bộ quy chuẩn thiết kế M
 
 Một Module chuyên nghiệp bắt buộc phải tuân thủ bố cục cây thư mục chuẩn hóa sau:
 
-```
+```bash
 terraform-aws-secure-storage/
 ├── README.md               # Tài liệu hướng dẫn sử dụng, bảng inputs/outputs (tự động sinh)
 ├── LICENSE                 # Giấy phép mã nguồn (Apache-2.0 / MIT / Proprietary)

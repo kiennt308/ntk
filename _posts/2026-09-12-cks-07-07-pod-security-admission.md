@@ -552,7 +552,7 @@ graph TD
     
     EnforcePath -->|"Vi phạm: Root / Privileged"| Block[REJECT 403 Forbidden]
     EnforcePath -->|"Đạt Restricted PSS"| Allow[ACCEPT Pod Created]
-```
+```yaml
 
 ---
 
@@ -563,25 +563,25 @@ graph TD
 ```bash
 kubectl create namespace lab52
 kubectl label ns lab52 pod-security.kubernetes.io/warn=restricted pod-security.kubernetes.io/warn-version=latest
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab52`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra nhãn `warn: restricted`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/warn}' | grep -qx restricted && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra nhãn `warn-version: latest`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/warn-version}' | grep -qx latest && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```yaml
 
 ---
 
@@ -601,13 +601,13 @@ spec:
     - name: app
       image: nginx:alpine
 EOF
-```
+```bash
 
 **CHECKPOINT 4 — Áp dụng `bad-pod.yaml` vào Namespace `lab52` (Kiểm chứng cảnh báo `warn`).**
 
 ```bash
 kubectl apply -f /tmp/bad-pod.yaml 2>&1 | grep -i "warning" >/dev/null && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```yaml
 
 ---
 
@@ -619,25 +619,25 @@ kubectl apply -f /tmp/bad-pod.yaml 2>&1 | grep -i "warning" >/dev/null && echo "
 kubectl delete pod bad-pod -n lab52 --force --grace-period=0 2>/dev/null || true
 
 kubectl label ns lab52 pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=latest --overwrite
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra nhãn `enforce: restricted`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/enforce}' | grep -qx restricted && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra nhãn `enforce-version: latest`.**
 
 ```bash
 kubectl get ns lab52 -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/enforce-version}' | grep -qx latest && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Xác minh API Server CHẶN THẲNG Pod vi phạm.**
 
 ```bash
 kubectl apply -f /tmp/bad-pod.yaml 2>&1 | grep -q "forbidden" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -667,32 +667,32 @@ spec:
           drop:
             - ALL
 EOF
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra thuộc tính `allowPrivilegeEscalation: false` trong `/tmp/good-pod.yaml`.**
 
 ```bash
 grep -q "allowPrivilegeEscalation: false" /tmp/good-pod.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 ### Thao tác 4.2: Triển khai Pod `good-pod` vào Namespace `lab52`
 
 ```bash
 kubectl apply -f /tmp/good-pod.yaml
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra Pod `good-pod` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod good-pod -n lab52 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 **CHECKPOINT 10 — Xác minh `capabilities.drop: ["ALL"]` trong Pod `good-pod`.**
 
 ```bash
 kubectl get pod good-pod -n lab52 -o jsonpath='{.spec.containers[0].securityContext.capabilities.drop[0]}' | grep -qx ALL && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -703,19 +703,19 @@ kubectl get pod good-pod -n lab52 -o jsonpath='{.spec.containers[0].securityCont
 ```bash
 kubectl create namespace lab52-baseline
 kubectl label ns lab52-baseline pod-security.kubernetes.io/enforce=baseline --overwrite
-```
+```bash
 
 **CHECKPOINT 11 — Kiểm tra nhãn `enforce: baseline`.**
 
 ```bash
 kubectl get ns lab52-baseline -o jsonpath='{.metadata.labels.pod-security\.kubernetes\.io/enforce}' | grep -qx baseline && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Tra cứu danh sách nhãn PSA tất cả các Namespace.**
 
 ```bash
 kubectl get ns -L pod-security.kubernetes.io/enforce | grep -q "lab52" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -726,13 +726,13 @@ kubectl get ns -L pod-security.kubernetes.io/enforce | grep -q "lab52" && echo "
 ```bash
 kubectl delete namespace lab52 lab52-baseline
 rm -f /tmp/bad-pod.yaml /tmp/good-pod.yaml
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/bad-pod.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -988,7 +988,7 @@ spec:
         capabilities:
           drop:
             - ALL
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc YAML hoặc thiếu 1 trong 4 thuộc tính PSS restricted.
@@ -1105,7 +1105,7 @@ Chẩn đoán và sửa Deployment `payment-dep` trong Namespace `staging` bị 
 ```bash
 kubectl create ns staging --dry-run=client -o yaml | kubectl apply -f -
 kubectl label ns staging pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=latest --overwrite
-```
+```bash
 </div>
 </details>
 
@@ -1118,7 +1118,7 @@ kubectl label ns staging pod-security.kubernetes.io/enforce=restricted pod-secur
 ```bash
 kubectl create ns finance --dry-run=client -o yaml | kubectl apply -f -
 kubectl label ns finance pod-security.kubernetes.io/warn=restricted pod-security.kubernetes.io/audit=restricted --overwrite
-```
+```bash
 </div>
 </details>
 
@@ -1152,7 +1152,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/unsafe-pod.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1193,7 +1193,7 @@ spec:
               drop:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1264,7 +1264,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1290,7 +1290,7 @@ spec:
         capabilities:
           drop:
             - ALL
-```
+```yaml
 
 ---
 

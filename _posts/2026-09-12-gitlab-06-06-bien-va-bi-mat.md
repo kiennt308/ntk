@@ -60,7 +60,7 @@ Buổi 05 khép lại hai đường ở giữa của bốn đường vào một 
 
 > **Biến trong GitLab CI đến từ CHÍN nguồn, và thứ tự ưu tiên giữa chúng là thuộc tính của NỀN TẢNG, không phải của tệp `.gitlab-ci.yml`. Vì vậy không ai đọc được giá trị thật của một biến bằng cách đọc YAML — mọi ca "biến không có giá trị đúng" đều giải được bằng đúng một bảng chín nấc, và bảng đó phải tự tay đo mới tin được.**
 
-```
+```bash
    NẤC CAO GHI ĐÈ NẤC THẤP — 9 nấc, cao nhất trước:
 
    1  pipeline variables      (trigger · schedule · bấm tay · API)   ← ngoài repo, khó thấy nhất

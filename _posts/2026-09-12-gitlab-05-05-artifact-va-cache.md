@@ -62,7 +62,7 @@ Buổi 04 chốt: danh sách job đóng băng tại `t0`. Câu hỏi tiếp theo
 
 Buổi 01 QT 5.2 đã **phát biểu** câu này nhưng chưa mở cơ chế — đó là lần thứ nhất. Hôm nay là **lần thứ hai**, và lần này ta mở nắp: ai lưu, lưu ở đâu, tính khoá lúc nào, tốn bao nhiêu giây.
 
-```
+```yaml
    Server GitLab  ─┐  artifacts: upload cuối job → download đầu job sau
                    │  ĐẢM BẢO · kiểm chứng được bằng API · tính vào dung lượng project
                    │
@@ -199,7 +199,7 @@ Giá trị thực dụng: khi cần **chứng minh** một việc đã xảy ra 
 
 Cache **không** miễn phí. Nó là khoản đầu tư có giá đọc được bằng giây, ghi sổ bằng một bất đẳng thức:
 
-```
+```bash
 tiết kiệm mỗi lần chạy = p × (tạo_lại − giải_nén) − nén_và_tải
 
 p            tỉ lệ trúng, từ 0 đến 1
@@ -735,7 +735,7 @@ Cách đọc bảng, ba điều:
 
 Và đây là con số của ca lỗ, cạnh con số của ca lãi:
 
-```
+```bash
 Cache 380 MB, policy pull-push ở CẢ 4 job, khoá = $CI_COMMIT_SHA:
    chi phí ghi = 4 × 61 s = 244 s mỗi pipeline · lợi ích đọc = 0 (p = 0)
    → LỖ 244 giây mỗi pipeline, MÃI MÃI, và không có dòng lỗi nào trong log.
@@ -2978,7 +2978,7 @@ Phần phải nói để đạt 3 điểm, và đây là đại lượng loại 
 
 **Đáp án chuẩn:** Cache là một khoản đầu tư và nó có **sổ thu chi**. Ba con số phải đo bằng cách đọc giây từng pha trong `trace`: tạo lại từ đầu (`npm ci`) **95 s**; nén + tải lên (`Creating cache`) **61 s**; tải + giải nén (`Restoring cache`) **44 s**. Suy ra lãi mỗi lần **trúng** là 95 − 44 = **+51 s**, lỗ mỗi lần **trượt** là **−61 s** (vẫn phải ghi cache mà không được lợi gì). Điểm hoà vốn là một phép chia:
 
-```
+```bash
 số lần trúng để hoà vốn = nén_và_tải / (tạo_lại − giải_nén) = 61 / 51 = 1,196 → làm tròn lên = 2
 ```
 
@@ -3011,7 +3011,7 @@ Giới hạn phải nêu để đạt 3 điểm: bốn dòng này đo trên exec
 
 **Đáp án chuẩn:** `policy` tách **quyền đọc** khỏi **quyền ghi**. Mặc định là `pull-push`: đầu job phục hồi cache, **cuối job nén lại toàn bộ thư mục cache và ghi lên** — dù `script` không đổi một byte nào trong đó. `policy: pull` bỏ hẳn phần ghi. Với cache 380 MB của câu 7 (pha `Creating cache` mất **61 giây**):
 
-```
+```bash
 3 job test × 61 s = 183 giây tiết kiệm mỗi pipeline
 ```
 

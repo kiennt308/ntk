@@ -151,7 +151,7 @@ ansible-galaxy role init webserver
 > Đặt tệp `.j2` vào thư mục `files/` hoặc đặt file handler vào `tasks/main.yml` làm mất đi tính chuẩn hóa của Role.
 
 **Minh hoạ.** Cây thư mục Role `webserver` sau khi init:
-```
+```bash
 roles/webserver/
 ├── defaults/
 │   └── main.yml
@@ -268,7 +268,7 @@ dependencies:
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do task trong Role bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency khi gọi Role:
-```
+```bash
 # Lần 1: changed=2 (Role webserver thực thi cài đặt và render template)
 target1 : ok=5 changed=2 unreachable=0 failed=0
 

@@ -566,7 +566,7 @@ graph TD
     
     Quota & RBAC & NetPol & GitOps -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Vận Hành]
     GradeScript -->|"Score >= 80%: PASS"| OpsReady[Enterprise Operations Certified!]
-```
+```yaml
 
 ---
 
@@ -580,19 +580,19 @@ kubectl create namespace team-beta
 kubectl create namespace team-secops
 
 mkdir -p /tmp/multi-tenant
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespaces `team-alpha`, `team-beta`, `team-secops`.**
 
 ```bash
 kubectl get ns team-alpha -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/multi-tenant`.**
 
 ```bash
 test -d /tmp/multi-tenant && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -634,19 +634,19 @@ spec:
         memory: 256Mi
       type: Container
 EOF
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra tệp ResourceQuota Câu 1.**
 
 ```bash
 grep -q "quota-alpha" /tmp/multi-tenant/quota.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra tệp LimitRange Câu 2.**
 
 ```bash
 grep -q "limit-alpha" /tmp/multi-tenant/limits.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```yaml
 
 ---
 
@@ -701,25 +701,25 @@ spec:
             matchLabels:
               kubernetes.io/metadata.name: team-secops
 EOF
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra tệp Role Câu 3.**
 
 ```bash
 grep -q "developer-role" /tmp/multi-tenant/role.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra tệp RoleBinding Câu 4.**
 
 ```bash
 grep -q "dev-alpha-binding" /tmp/multi-tenant/binding.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra tệp NetworkPolicy Câu 5.**
 
 ```bash
 grep -q "team-secops" /tmp/multi-tenant/netpol.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -753,25 +753,25 @@ echo "Error: pods exceed quota limit in team-alpha (rejected by apiserver)" > /t
 
 # Câu 8: GitOps PR Approval Log
 echo "PR #102: Verified by Trivy/Checkov -> Approved by SecOps -> Synced by ArgoCD" > /tmp/multi-tenant/gitops-pr.log
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra tệp Mutation Policy Câu 6.**
 
 ```bash
 grep -q "owner" /tmp/multi-tenant/mutate.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra nhật ký Quota Test Câu 7.**
 
 ```bash
 test -f /tmp/multi-tenant/quota-test.log && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra nhật ký GitOps PR Approval Câu 8.**
 
 ```bash
 test -f /tmp/multi-tenant/gitops-pr.log && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -795,19 +795,19 @@ TỔNG ĐIỂM: 100 / 100
 TỐC ĐỘ TRUNG BÌNH: 4.2 PHÚT / CÂU
 ĐÁNH GIÁ: PASS - BẠN ĐÃ ĐẠT TIÊU CHUẨN VẬN HÀNH DOANH NGHIỆP!
 EOF
-```
+```bash
 
 **CHECKPOINT 11 — Chạy script tự động chấm điểm.**
 
 ```bash
 test -f /tmp/multi-tenant/results.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Xác minh tổng điểm đạt mức PASS.**
 
 ```bash
 grep -q "PASS" /tmp/multi-tenant/results.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -818,13 +818,13 @@ grep -q "PASS" /tmp/multi-tenant/results.log && echo "CHECKPOINT 12 — ĐẠT" 
 ```bash
 kubectl delete namespace team-alpha team-beta team-secops 2>/dev/null || true
 rm -rf /tmp/multi-tenant
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/multi-tenant/quota.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -1050,7 +1050,7 @@ spec:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: team-secops
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai NetworkPolicy syntax.
@@ -1080,7 +1080,7 @@ spec:
         cpu: 200m
         memory: 256Mi
       type: Container
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc LimitRange.
@@ -1207,7 +1207,7 @@ spec:
     requests.cpu: "2"
     requests.memory: 4Gi
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1243,7 +1243,7 @@ roleRef:
   name: pod-reader
   apiGroup: rbac.authorization.k8s.io
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1269,7 +1269,7 @@ spec:
             matchLabels:
               kubernetes.io/metadata.name: team-secops
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1298,7 +1298,7 @@ spec:
             labels:
               team: alpha
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1369,7 +1369,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1384,7 +1384,7 @@ kubectl create quota quota-alpha --hard=pods=10,requests.cpu=2,requests.memory=4
 
 # Imperative Role Generation
 kubectl create role pod-reader --verb=get,list,watch --resource=pods -n team-beta --dry-run=client -o yaml
-```
+```yaml
 
 ---
 

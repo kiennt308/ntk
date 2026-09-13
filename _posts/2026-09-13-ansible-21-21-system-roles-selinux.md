@@ -273,7 +273,7 @@ collections:
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do dùng lệnh shell thô thay thế cho module SELinux.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của System Roles & SELinux:
-```
+```bash
 # Lần 1: changed=3 (Thiết lập trạng thái SELinux, Port 8080 và tạo User)
 target1 : ok=6 changed=3 unreachable=0 failed=0
 

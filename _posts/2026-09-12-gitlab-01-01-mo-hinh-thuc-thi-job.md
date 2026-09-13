@@ -63,7 +63,7 @@ Không có mô hình đó, mọi lỗi CI đều trở thành thử-và-sai: th�
 
 Toàn bộ buổi hôm nay là việc dựng và kiểm chứng sơ đồ này:
 
-```
+```bash
         BỐN ĐƯỜNG VÀO                MÔI TRƯỜNG DÙNG MỘT LẦN            HAI ĐƯỜNG RA
    ┌──────────────────────┐        ┌────────────────────────┐      ┌──────────────────┐
    │ 1. git clone/fetch   │───────▶│                        │─────▶│ 1. artifacts     │

@@ -132,7 +132,7 @@ graph TD
 > Thắc mắc tại sao ở lượt chạy Lần 2 file cấu hình giữ nguyên mà Handler lại không chạy (đây là tính năng đúng của Ansible!).
 
 **Minh hoạ.** So sánh hành vi lượt chạy Lần 1 và Lần 2:
-```
+```bash
 # Lần 1: Task copy báo changed=1 -> Handler "Restart Nginx Service" được kích hoạt ở cuối Play
 # Lần 2: Task copy báo changed=0 -> Handler KHÔNG bị kích hoạt -> RECAP báo changed=0
 ```
@@ -291,7 +291,7 @@ tasks:
 > Bảng `PLAY RECAP` lượt 2 vẫn xuất hiện dòng chạy của Handler và chỉ số `changed > 0`.
 
 **Minh hoạ.** Kiểm tra bảng `PLAY RECAP` lượt 2 sạch sẽ không có Handler bị kích hoạt thừa:
-```
+```bash
 # Lần 1: changed=1, RUNNING HANDLER [Restart Nginx] -> changed=1
 target1 : ok=3 changed=1 unreachable=0 failed=0
 

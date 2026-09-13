@@ -267,7 +267,7 @@ ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o StrictHostKeyChecking=
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do task bất đồng bộ bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của Playbook Performance Tuning:
-```
+```bash
 # Lần 1: changed=2 (Tốc độ chạy siêu nhanh nhờ Pipelining & Free Strategy)
 target1 : ok=5 changed=2 unreachable=0 failed=0
 

@@ -543,7 +543,7 @@ graph TD
     Encrypt -->|"3. Save Encrypted k8s:enc:aescbc:v1"| ETCD[etcd Database Disk]
     
     ETCDCTL[etcdctl CLI with mTLS Certs] -->|"4. Read etcd directly"| Audit[Verify Header k8s:enc:aescbc:v1]
-```
+```yaml
 
 ---
 
@@ -558,25 +558,25 @@ sudo mkdir -p /etc/kubernetes/enc
 # Sinh khóa 32-byte Base64 ngẫu nhiên:
 KEY=$(head -c 32 /dev/urandom | base64)
 echo "$KEY" > /tmp/lab51-key.txt
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab51`.**
 
 ```bash
 kubectl get ns lab51 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra tệp khóa `/tmp/lab51-key.txt`.**
 
 ```bash
 test -f /tmp/lab51-key.txt && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra thư mục `/etc/kubernetes/enc`.**
 
 ```bash
 test -d /etc/kubernetes/enc && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```yaml
 
 ---
 
@@ -600,19 +600,19 @@ resources:
               secret: ${KEY_VAL}
       - identity: {}
 EOF
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra provider `aescbc` trong tệp `/etc/kubernetes/enc/enc.yaml`.**
 
 ```bash
 grep -q "aescbc" /etc/kubernetes/enc/enc.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra manifest Static Pod `kube-apiserver.yaml`.**
 
 ```bash
 test -f /etc/kubernetes/manifests/kube-apiserver.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -624,26 +624,26 @@ test -f /etc/kubernetes/manifests/kube-apiserver.yaml && echo "CHECKPOINT 5 — 
 
 ```bash
 test -f /etc/kubernetes/enc/enc.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 ### Thao tác 3.2: Tạo Secrets trong Namespace `lab51`
 
 ```bash
 kubectl create secret generic old-secret --from-literal=pass=OldPassword123 -n lab51
 kubectl create secret generic new-secret --from-literal=pass=NewPassword456 -n lab51
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra Secret `new-secret`.**
 
 ```bash
 kubectl get secret new-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx new-secret && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra Secret `old-secret`.**
 
 ```bash
 kubectl get secret old-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx old-secret && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```yaml
 
 ---
 
@@ -654,19 +654,19 @@ kubectl get secret old-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx
 ```bash
 kubectl get secrets -n lab51 -o json | kubectl replace -f -
 echo "k8s:enc:aescbc:v1:key1:audited-encrypted-secret-data" > /tmp/etcd-secret-audit.txt
-```
+```bash
 
 **CHECKPOINT 9 — Thực thi `kubectl replace`.**
 
 ```bash
 kubectl get secrets -n lab51 -o json | kubectl replace -f - >/dev/null 2>&1 && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra tệp kiểm toán `/tmp/etcd-secret-audit.txt`.**
 
 ```bash
 test -f /tmp/etcd-secret-audit.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -676,13 +676,13 @@ test -f /tmp/etcd-secret-audit.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "C
 
 ```bash
 kubectl get secret new-secret -n lab51 -o jsonpath='{.data.pass}' | grep -q "TmV3UGFzc3dvcmQ0NTY=" && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Xác minh API Server đọc Secret bình thường.**
 
 ```bash
 kubectl get secret new-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx new-secret && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -693,13 +693,13 @@ kubectl get secret new-secret -n lab51 -o jsonpath='{.metadata.name}' | grep -qx
 ```bash
 kubectl delete namespace lab51
 rm -f /tmp/lab51-key.txt /tmp/etcd-secret-audit.txt
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/lab51-key.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -846,7 +846,7 @@ ETCDCTL_API=3 etcdctl \
   --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key \
   get /registry/secrets/<namespace>/<secret-name>
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Không biết lệnh etcdctl hoặc thiếu cờ chứng chỉ TLS.
@@ -871,7 +871,7 @@ volumes:
       path: /etc/kubernetes/enc
       type: DirectoryOrCreate
     name: enc-vol
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Quên khai báo Volume Mount cho apiserver.
@@ -915,7 +915,7 @@ resources:
             - name: key1
               secret: c2VjcmV0IGlzIGEgc2VjcmV0IGlzIGEgc2VjcmV0IGlzIGE=
       - identity: {}
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Cấu hình sai apiVersion hoặc sai cấu trúc providers.
@@ -1087,7 +1087,7 @@ resources:
               secret: c2VjcmV0IGlzIGEgc2VjcmV0IGlzIGEgc2VjcmV0IGlzIGE=
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• identity: {}</div>
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1100,7 +1100,7 @@ EOF
 ```bash
 # Thêm cờ --encryption-provider-config và volumeMounts vào /etc/kubernetes/manifests/kube-apiserver.yaml
 # (Học viên chỉnh sửa trực tiếp qua vim hoặc yq/sed)
-```
+```bash
 </div>
 </details>
 
@@ -1112,7 +1112,7 @@ EOF
   
 ```bash
 kubectl get secrets --all-namespaces -o json | kubectl replace -f -
-```
+```bash
 </div>
 </details>
 
@@ -1131,7 +1131,7 @@ ETCDCTL_API=3 etcdctl \
   --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key \
   get /registry/secrets/prod/db-pass > /tmp/etcd-check.txt 2>&1 || echo "k8s:enc:aescbc:v1:key1" > /tmp/etcd-check.txt
-```
+```yaml
 
 ---
 </div>
@@ -1200,7 +1200,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1225,7 +1225,7 @@ kubectl get secrets --all-namespaces -o json | kubectl replace -f -
 
 # etcdctl Audit
 ETCDCTL_API=3 etcdctl --cacert=... --cert=... --key=... get /registry/secrets/<ns>/<name>
-```
+```yaml
 
 ---
 

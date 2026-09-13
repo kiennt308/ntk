@@ -238,7 +238,7 @@ exclude_paths:
 > Lệnh `molecule test` bị báo lỗi ở bước `idempotence` do có Task lặp changed ở Lần 2.
 
 **Minh hoạ.** Đọc hiểu bảng log Molecule Idempotence Test đạt chuẩn:
-```
+```yaml
 INFO     Running default > idempotence
 INFO     Executing Playbook idempotence...
 target1 : ok=5 changed=0 unreachable=0 failed=0

@@ -61,7 +61,7 @@ Giai đoạn 1 khép lại với một món nợ ghi rõ ngày. Buổi 03 QT 5.3
 
 > **Bỏ hàng rào `stage` đổi công thức tính thời gian pipeline: từ TỔNG THEO STAGE của job chậm nhất mỗi stage, sang ĐƯỜNG GĂNG DÀI NHẤT theo quan hệ dữ liệu. Chênh lệch giữa hai con số đó là lãng phí hàng rào — nó có thật, đo được bằng giây, và `needs` là cách duy nhất lấy lại. Nhưng đổi lại, thứ tự chạy không còn được nền tảng bảo đảm hộ ta nữa: cạnh nào ta quên khai thì job đó chạy sớm, và nó chạy sớm một cách IM LẶNG.**
 
-```
+```yaml
    TUẦN TỰ (hàng rào stage)                DAG (needs)
    ────────────────────────                ────────────────────
    T = Σ  max(job trong stage)             T = max  Σ(job trên một đường)
@@ -381,7 +381,7 @@ Phép đo: chạy pipeline **một** lần khi `deploy` chưa có `needs`, **m�
 
 **Minh hoạ.**
 
-```
+```bash
 # ban-do-phu-thuoc.md của buổi 03 — 8 mũi tên = 7 cạnh DỮ LIỆU + 1 cạnh CỔNG
 
   build-be  -> test-unit  : đọc be/dau-thoi-gian.txt   needs: [build-be]
@@ -1090,7 +1090,7 @@ Còn `cau-hinh/app.json` là tệp **có sẵn trong git** với giá trị `0.0
 
 Ba phép cộng phải làm **bằng tay trước khi chạy**, rồi máy sẽ xác nhận:
 
-```
+```bash
 Tổng theo stage = max(60,90,20,150) + max(45,120) + 30 + 25
                 = 150 + 120 + 30 + 25 = 325 giây          <- công thức TUẦN TỰ
 Đường găng      = build-be 90 -> test-e2e 120 -> deploy 25 = 235 giây   <- công thức DAG
@@ -1878,7 +1878,7 @@ grep -v $'^test-e2e\tbuild-be' canh.tsv > canh-thieu.tsv
 awk -F'\t' '!/^#/ && NF>=2 {n++} END {print "so canh con lai =", n}' canh-thieu.tsv   # 7
 ```
 
-```
+```bash
 Đường găng khi CÒN cạnh : build-be 90 -> test-e2e 120 -> deploy 25 = 235 s
 Đường găng khi MẤT cạnh : build-fe 60 -> test-e2e 120 -> deploy 25 = 205 s
 Hiệu phần 1 (chạy sớm hơn)     = 235 - 205 = 30 s   <- test-e2e thôi chờ build-be
@@ -2363,7 +2363,7 @@ column -t -s $'\t' bang-parallel.tsv
 
 Bây giờ **tự tính phần cố định** từ hai điểm đo, không tra bảng. Công thức đến từ mô hình `T(N) = C + B/N`: viết nó cho `N = 1` và cho `N` bất kỳ rồi khử `B`:
 
-```
+```bash
 C = (N · T(N) − T(1)) / (N − 1)
 ```
 

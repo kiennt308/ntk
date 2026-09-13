@@ -114,7 +114,7 @@ Sau khi hoàn thành Buổi 13, học viên đạt được 5 năng lực kỹ t
 
 Hầu hết các kỹ sư khi thấy Pipeline bị chậm hoặc xuất hiện trạng thái chờ (Pending) đều nghĩ ngay tới việc "mua thêm máy" hoặc "tăng số lượng Runner". Đây là cách tư duy thiếu định lượng. Vấn đề xử lý hàng đợi của hệ thống CI/CD tuân theo lý thuyết xếp hàng (Queueing Theory) với **3 đại lượng đầu vào chính và 1 tỉ số duy nhất**.
 
-```
+```bash
     CÔNG THỨC MỨC NO HỆ THỐNG (UTILISATION):
 
               λ · S
@@ -138,7 +138,7 @@ Hầu hết các kỹ sư khi thấy Pipeline bị chậm hoặc xuất hiện t
 > Ban quản lý phê duyệt ngân sách mua thêm 50% số lượng máy chủ Runner nhưng thời gian chờ `queued_duration` của lập trình viên không giảm được dù chỉ 1 giây — nguyên nhân do hệ thống đang ở mức $\rho = 0.5$ (nút cổ chai không nằm ở số Slot). Hoặc ngược lại, chỉ cần thêm 1 Slot ở mức $\rho = 0.95$ làm thời gian chờ giảm ngay **10 lần** nhưng không ai trong đội giải thích được lý do.
 
 **Minh hoạ.** Bảng quan hệ phi tuyến giữa Mức no $\rho$ và Thời gian chờ trung bình:
-```
+```bash
 ┌──────────────┬─────────────────────────────┬─────────────────────────────────┐
 │ Mức no (ρ)   │ Thời gian chờ ước tính     │ Trạng thái trải nghiệm Dev      │
 ├──────────────┼─────────────────────────────┼─────────────────────────────────┤
@@ -222,7 +222,7 @@ concurrent = 4 # <--- TRẦN TOÀN CỤC BẮT BUỘC!
 
 ### 1.2. Autoscaling và Executor Kubernetes: Cái gì Scale, Cái gì Không
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   MÔ HÌNH VÒNG ĐỜI KHI AUTOSCALING RUNNER              │
 ├────────────────────────────────────────────────────────────────────────┤
@@ -419,7 +419,7 @@ workflow:
 > Kỹ sư thực hiện sửa đổi tham số `concurrent` trong `config.toml` và ghi log commit ngắn gọn: "Tăng concurrent cho CI chạy nhanh hơn". Ba tháng sau không ai biết thay đổi đó có thực sự làm giảm thời gian chờ hay không.
 
 **Minh hoạ.** Mẫu nhật ký đối soát 3 con số trước và sau khi thay đổi cấu hình hạ tầng (`bang-cho.tsv`):
-```
+```bash
 ┌─────────────────────────┬──────────────┬──────────────────┬─────────────────┐
 │ Mốc kiểm tra           │ Mức no (ρ)   │ Queued P95 (sec) │ Chi phí (USD/mo)│
 ├─────────────────────────┼──────────────┼──────────────────┼─────────────────┤
@@ -1330,7 +1330,7 @@ fi
 
 Sử dụng GitLab Runner Prometheus Metrics:
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │               GRAFANA GITLAB RUNNER QUEUE & UTILISATION                │
 │                                                                        │
@@ -1982,7 +1982,7 @@ Tỉ số duy nhất điều khiển thời gian chờ là <b style="color: var(
 #### Phân tích chuyên sâu từ góc độ Kỹ sư SRE:
 Lý thuyết xếp hàng (M/M/c Queueing Model) khẳng định rằng đồ thị mối quan hệ giữa Mức no $\rho$ và thời gian chờ là một đường cong tiệm cận. Hãy xem bảng mô phỏng giá trị chờ theo các mốc mức no:
 
-```
+```bash
 ┌──────────────┬─────────────────────────────┬─────────────────────────────────┐
 │ Mức no (ρ)   │ Thời gian chờ ước tính     │ Trạng thái trải nghiệm Dev      │
 ├──────────────┼─────────────────────────────┼─────────────────────────────────┤

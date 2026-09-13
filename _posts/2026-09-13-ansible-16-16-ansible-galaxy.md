@@ -255,7 +255,7 @@ ansible-galaxy role install ./downloads/geerlingguy-nginx-3.1.0.tar.gz
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do tải nhầm Role kém chất lượng trên Galaxy bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của Role Galaxy:
-```
+```bash
 # Lần 1: changed=3 (Role Galaxy cài đặt Nginx thành công)
 target1 : ok=7 changed=3 unreachable=0 failed=0
 

@@ -510,7 +510,7 @@ graph TD
     CKASection & CKADSection & CKSSection -->|"5. Capstone Demo & Q&A"| DefenseSection[Live Capstone Demo & 36 Interview Q&As]
     DefenseSection -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tốt Nghiệp]
     GradeScript -->|"Score >= 80%: PASS"| SeniorWings[Senior Cloud Native Engineer Certified!]
-```
+```yaml
 
 ---
 
@@ -520,19 +520,19 @@ graph TD
 
 ```bash
 mkdir -p /tmp/graduation
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra tính đầy đủ của 72 thư mục buổi học.**
 
 ```bash
 test -d ntkk8s/buoi/buoi-72-bao-ve-va-phong-van-tong-hop && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/graduation`.**
 
 ```bash
 test -d /tmp/graduation && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -586,25 +586,25 @@ spec:
             containers:
               - image: "harbor.internal/*"
 EOF
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra kết quả phần CKA Tốc độ.**
 
 ```bash
 test -f /tmp/graduation/cka-res.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra kết quả phần CKAD Tốc độ.**
 
 ```bash
 test -f /tmp/graduation/ckad-res.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra kết quả phần CKS Tốc độ.**
 
 ```bash
 test -f /tmp/graduation/cks-res.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -627,31 +627,31 @@ cat <<EOF > /tmp/graduation/interview-qa.txt
 6. [CKS] Kyverno Enforce: validationFailureAction: Enforce đi kèm exclude.namespaces: [kube-system].
 7. [CKS] Falco Rule: Đủ 5 thành tố rule, desc, condition, output, priority bắt exec shell.
 EOF
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra nhật ký Live Demo Capstone.**
 
 ```bash
 test -f /tmp/graduation/live-demo.log && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra phần Q&A CKA.**
 
 ```bash
 grep -q "CKA" /tmp/graduation/interview-qa.txt && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra phần Q&A CKAD.**
 
 ```bash
 grep -q "CKAD" /tmp/graduation/interview-qa.txt && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra phần Q&A CKS.**
 
 ```bash
 grep -q "CKS" /tmp/graduation/interview-qa.txt && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```yaml
 
 ---
 
@@ -696,31 +696,31 @@ TỔNG ĐIỂM: 100 / 100
 HOÀN THÀNH 72/72 BUỔI HỌC (TỈ LỆ 100%)
 ĐÁNH GIÁ: PASS - CHÚC MỪNG BẠN ĐÃ TỐT NGHIỆP XUẤT SẮC KHÓA HỌC KUBERNETES CHUYÊN GIA!
 EOF
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra tệp Bảng Năng lực Chuyên gia.**
 
 ```bash
 test -f /tmp/graduation/competency.md && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 **CHECKPOINT 11 — Chạy script tự động chấm điểm Tốt nghiệp.**
 
 ```bash
 test -f /tmp/graduation/results.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Xác minh tổng điểm Bài thi Tốt nghiệp đạt mức PASS.**
 
 ```bash
 grep -q "PASS" /tmp/graduation/results.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```bash
 
 **CHECKPOINT 13 — Ghi nhận 100% hoàn thành trong `THEO-DOI-TIEN-DO.md`.**
 
 ```bash
 grep -q "72" ntkk8s/THEO-DOI-TIEN-DO.md && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -730,13 +730,13 @@ grep -q "72" ntkk8s/THEO-DOI-TIEN-DO.md && echo "CHECKPOINT 13 — ĐẠT" || ec
 
 ```bash
 rm -rf /tmp/graduation
-```
+```bash
 
 **CHECKPOINT 14 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -d /tmp/graduation && echo "CHECKPOINT 14 — ĐẠT" || echo "CHECKPOINT 14 — LỖI"
-```
+```yaml
 
 ---
 
@@ -995,7 +995,7 @@ Tốt nghiệp 72 buổi học khẳng định 5 nhóm năng lực cốt lõi:
 **Đáp án chuẩn:**
 ```bash
 test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.log
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai câu lệnh kiểm tra results.log.
@@ -1110,7 +1110,7 @@ Biên soạn tệp Bảng Năng lực Chuyên gia tại `/tmp/graduation/compete
   
 ```bash
 echo "CKA Task Passed: Pod IPs extracted & etcd snapshot saved to /tmp/etcd-backup.db" > /tmp/grad-cka.txt
-```
+```bash
 </div>
 </details>
 
@@ -1141,7 +1141,7 @@ spec:
               command: [/bin/sh, -c, date]
           restartPolicy: OnFailure
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1178,7 +1178,7 @@ rules:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• group: ""</div>
         resources: ["secrets"]
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1204,7 +1204,7 @@ CKA Ready (>90%), CKAD Ready (>90%), CKS Ready (>90%).
 ## 3. Career Path Statement
 Ready for Senior Cloud Native Architect & Lead Platform Engineer roles!
 EOF
-```
+```yaml
 
 ---
 
@@ -1273,7 +1273,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1288,7 +1288,7 @@ bash ntkk8s/buoi/kiem-tra-cheo.sh all
 
 # Graduation Success Check
 test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.log
-```
+```yaml
 
 ---
 

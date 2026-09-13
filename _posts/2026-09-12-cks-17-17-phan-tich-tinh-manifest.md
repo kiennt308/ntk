@@ -575,7 +575,7 @@ graph TD
     Scanner -->|"Score +10: PASSED"| PassedGate[Pass CI/CD Gatekeeper]
     
     PassedGate -->|"5. Deploy to Cluster"| PodRunning[Pod Started in lab62]
-```
+```yaml
 
 ---
 
@@ -600,19 +600,19 @@ spec:
         privileged: true
         runAsUser: 0
 EOF
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab62`.**
 
 ```bash
 kubectl get ns lab62 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra tệp `/tmp/bad-pod.yaml`.**
 
 ```bash
 grep -q "bad-pod" /tmp/bad-pod.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -636,19 +636,19 @@ kubesec scan /tmp/bad-pod.yaml 2>/dev/null || {
 ]
 EOF
 }
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra chạy `kubesec scan`.**
 
 ```bash
 test -f /tmp/bad-pod.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra phân tích danh sách lỗi Kubesec.**
 
 ```bash
 test -f /tmp/bad-pod.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```yaml
 
 ---
 
@@ -664,25 +664,25 @@ ADD https://example.com/app.tar.gz /app/
 ENV API_KEY="SuperSecretKey123"
 CMD ["sh"]
 EOF
-```
+```bash
 
 **CHECKPOINT 5 — Chạy `trivy config` trên `/tmp/bad-pod.yaml`.**
 
 ```bash
 test -f /tmp/bad-pod.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra tệp `/tmp/Dockerfile.bad`.**
 
 ```bash
 test -f /tmp/Dockerfile.bad && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Quét tệp Dockerfile bằng `hadolint`.**
 
 ```bash
 test -f /tmp/Dockerfile.bad && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -725,31 +725,31 @@ spec:
 EOF
 
 kubectl apply -f /tmp/good-pod.yaml 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra cờ `readOnlyRootFilesystem` trong `/tmp/good-pod.yaml`.**
 
 ```bash
 grep -q "readOnlyRootFilesystem" /tmp/good-pod.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Chạy lại `kubesec scan` đạt điểm dương (+10đ).**
 
 ```bash
 test -f /tmp/good-pod.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 **CHECKPOINT 10 — Apply Pod an toàn `/tmp/good-pod.yaml`.**
 
 ```bash
 test -f /tmp/good-pod.yaml && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 **CHECKPOINT 11 — Kiểm tra Pod `good-pod` ở trạng thái `Running`.**
 
 ```bash
 test -f /tmp/good-pod.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```yaml
 
 ---
 
@@ -757,13 +757,13 @@ test -f /tmp/good-pod.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOIN
 
 ```bash
 test -f /tmp/good-pod.yaml && echo "SCAN_CLEAN_VERIFIED" >/dev/null
-```
+```bash
 
 **CHECKPOINT 12 — Tra cứu báo cáo quét tĩnh sạch.**
 
 ```bash
 test -f /tmp/good-pod.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -774,13 +774,13 @@ test -f /tmp/good-pod.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOIN
 ```bash
 kubectl delete namespace lab62 2>/dev/null || true
 rm -f /tmp/bad-pod.yaml /tmp/Dockerfile.bad /tmp/good-pod.yaml
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/bad-pod.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -1046,7 +1046,7 @@ spec:
         limits:
           cpu: "200m"
           memory: "128Mi"
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc YAML hoặc thiếu securityContext.
@@ -1171,7 +1171,7 @@ kubesec scan /tmp/insecure-pod.yaml > /tmp/kubesec-report.json 2>/dev/null || {
 ]
 EOF
 }
-```
+```bash
 </div>
 </details>
 
@@ -1212,7 +1212,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: tmp-vol</div>
       emptyDir: {}
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1230,7 +1230,7 @@ cat <<EOF > /tmp/trivy-config-report.json
   "Status": "PASSED"
 }
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1248,7 +1248,7 @@ COPY app.tar.gz /app/
 USER 10001
 CMD ["sh"]
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1319,7 +1319,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1347,7 +1347,7 @@ spec:
         allowPrivilegeEscalation: false
         capabilities:
           drop: ["ALL"]
-```
+```yaml
 
 ---
 

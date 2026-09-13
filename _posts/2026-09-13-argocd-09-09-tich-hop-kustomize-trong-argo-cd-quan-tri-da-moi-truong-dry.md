@@ -116,7 +116,7 @@ flowchart TD
 
 Dưới đây là cấu trúc cây thư mục chuẩn mực trong kho GitOps quản trị microservice:
 
-```
+```bash
 services/payment-service/
 ├── base/
 │   ├── deployment.yaml
@@ -230,7 +230,7 @@ Một vấn đề "nhức nhối" trong Kubernetes là: **Khi bạn sửa nội 
 
 Khi sử dụng `configMapGenerator`, Kustomize tự động tính toán mã băm SHA256 của nội dung tệp `config.env` và gắn vào đuôi của tên ConfigMap:
 
-```
+```bash
 Lần 1: payment-config-7b8f9g4k2m  (Nội dung: DB_TIMEOUT=30)
 Lần 2: Sửa DB_TIMEOUT=60
   -> Kustomize tự sinh tên mới: payment-config-9h3k8d1w5p

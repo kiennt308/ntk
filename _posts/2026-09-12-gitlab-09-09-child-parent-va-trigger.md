@@ -67,7 +67,7 @@ Hôm nay ta không sửa từng giới hạn một. Ta đổi cái sinh ra cả 
 
 Đọc sơ đồ này trước khi vào §4. Toàn bộ buổi học là đọc đúng bốn dòng trong nó.
 
-```
+```bash
    PIPELINE CHA                                    PIPELINE CON
    t0 (cha) ─ rules của job cha đánh giá
         │

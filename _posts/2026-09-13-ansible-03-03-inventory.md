@@ -142,7 +142,7 @@ db
 > **Lệnh:** `ansible-inventory --host target1` · **Output phải thấy:** Không chứa các biến dự kiến do đặt sai tên thư mục (nhầm thành `groups_vars` có chữ s) hoặc đặt sai vị trí thư mục.
 
 **Minh hoạ.** Cấu trúc thư mục dự án chuẩn hóa:
-```
+```bash
 project/
 ├── ansible.cfg
 ├── inventory.ini

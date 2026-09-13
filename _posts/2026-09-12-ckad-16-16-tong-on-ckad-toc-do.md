@@ -546,7 +546,7 @@ graph TD
     
     Q1 & Q2 & Q3 & Q4 -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tự Động]
     GradeScript -->|"Score >= 80%: PASS"| CKADReady[CKAD Exam Ready!]
-```
+```yaml
 
 ---
 
@@ -558,19 +558,19 @@ graph TD
 kubectl create namespace lab67-ckad
 
 mkdir -p /tmp/ckad-speed
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab67-ckad`.**
 
 ```bash
 kubectl get ns lab67-ckad -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/ckad-speed`.**
 
 ```bash
 test -d /tmp/ckad-speed && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -620,25 +620,25 @@ spec:
         - secretRef:
             name: db-pass
 EOF
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra tệp ConfigMap Câu 1.**
 
 ```bash
 grep -q "app-config" /tmp/ckad-speed/cm.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra tệp Secret Câu 2.**
 
 ```bash
 grep -q "db-pass" /tmp/ckad-speed/secret.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra tệp Pod envFrom Câu 3.**
 
 ```bash
 grep -q "configMapRef" /tmp/ckad-speed/pod-env.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -685,19 +685,19 @@ spec:
               command: [/bin/sh, -c, date]
           restartPolicy: OnFailure
 EOF
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra tệp Pod Probes Câu 4.**
 
 ```bash
 grep -q "livenessProbe" /tmp/ckad-speed/pod-probe.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra tệp CronJob Câu 5.**
 
 ```bash
 grep -q "cron-lab67" /tmp/ckad-speed/cronjob.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -747,25 +747,25 @@ EOF
 
 # Câu 8: Previous Log Output
 echo "Application Error: Fatal exception in main thread" > /tmp/ckad-speed/prev-log.txt
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra tệp Canary Deployment Câu 6.**
 
 ```bash
 grep -q "app-v2" /tmp/ckad-speed/canary.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra tệp Service Câu 7.**
 
 ```bash
 grep -q "web-svc" /tmp/ckad-speed/svc.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra Previous Log Câu 8.**
 
 ```bash
 test -f /tmp/ckad-speed/prev-log.txt && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -789,19 +789,19 @@ TỔNG ĐIỂM: 100 / 100
 TỐC ĐỘ TRUNG BÌNH: 3.6 PHÚT / CÂU
 ĐÁNH GIÁ: PASS - BẠN ĐÃ ĐẠT TỐC ĐỘ PHẢN XẠ THI CKAD TỐI ƯU!
 EOF
-```
+```bash
 
 **CHECKPOINT 11 — Chạy script tự động chấm điểm.**
 
 ```bash
 test -f /tmp/ckad-speed/results.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Xác minh tổng điểm đạt mức PASS.**
 
 ```bash
 grep -q "PASS" /tmp/ckad-speed/results.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -812,13 +812,13 @@ grep -q "PASS" /tmp/ckad-speed/results.log && echo "CHECKPOINT 12 — ĐẠT" ||
 ```bash
 kubectl delete namespace lab67-ckad 2>/dev/null || true
 rm -rf /tmp/ckad-speed
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/ckad-speed/cm.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -995,7 +995,7 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 **Đáp án chuẩn:**
 ```bash
 kubectl create secret generic db-secret --from-literal=username=admin --from-literal=password=SuperSecret123
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai lệnh create secret.
@@ -1075,7 +1075,7 @@ spec:
           port: 8080
         initialDelaySeconds: 15
         periodSeconds: 10
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc YAML hoặc sai vị trí probe/envFrom.
@@ -1211,7 +1211,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• configMapRef:</div>
             name: web-cm
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1238,7 +1238,7 @@ spec:
           port: 8080
         initialDelaySeconds: 15
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1267,7 +1267,7 @@ spec:
               command: [/bin/sh, -c, date]
           restartPolicy: OnFailure
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1300,7 +1300,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
           image: nginx:1.25
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1371,7 +1371,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1386,7 +1386,7 @@ kubectl create cronjob daily-backup --image=busybox --schedule="0 0 * * *" --dry
 
 # Imperative Secret Creation
 kubectl create secret generic db-pass --from-literal=password=SuperSecret123
-```
+```yaml
 
 ---
 

@@ -65,7 +65,7 @@ Hiểu trục thời gian ấy giải thích được toàn bộ phần còn l�
 
 > **`rules` được đánh giá ĐÚNG MỘT LẦN — lúc pipeline được TẠO, không phải lúc job sắp chạy. Danh sách job của một pipeline được chốt tại thời điểm ấy và không gì đổi được nó sau đó. Mọi thứ khó hiểu về `rules` đều là hệ quả trực tiếp của một câu đó.**
 
-```
+```bash
    t0: git push / MR / tag / schedule / API / trigger
         │
         ├─► workflow:rules đánh giá  →  KHÔNG khớp → KHÔNG CÓ PIPELINE (im lặng)

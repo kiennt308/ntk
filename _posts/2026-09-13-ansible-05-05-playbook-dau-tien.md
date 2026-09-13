@@ -171,7 +171,7 @@ tasks:
 > **Lệnh:** `ansible-playbook site.yml` · **Output phải thấy:** Dòng `PLAY RECAP` báo `failed=1` hoặc `unreachable=1` nhưng quản trị viên bỏ qua không xử lý.
 
 **Minh hoạ.** Mẫu thông báo `PLAY RECAP` chuẩn trên terminal:
-```
+```yaml
 PLAY RECAP *********************************************************************
 target1                    : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 target2                    : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0

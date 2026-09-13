@@ -729,7 +729,7 @@ List Generator chỉ duyệt qua 1 danh sách tĩnh 1 chiều; Matrix Generator 
   </div>
   
 Định dạng chuẩn gồm 6 trường:
-```
+```bash
 p, <subject/role>, <resource>, <action>, <object>, <effect>
 ```
 Ví dụ:

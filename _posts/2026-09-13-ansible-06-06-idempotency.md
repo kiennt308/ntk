@@ -122,7 +122,7 @@ graph TD
 > Thấy lượt chạy lần 2 hiển thị `changed > 0` mà vẫn nghĩ rằng Playbook đã hoàn thành đúng chuẩn.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP`:
-```
+```bash
 # Lần 1: changed=2 (Đã thực hiện cài gói và chép file)
 target1 : ok=3 changed=2 unreachable=0 failed=0
 

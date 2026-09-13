@@ -138,7 +138,7 @@ db
 > Viết 1 file Playbook siêu phẳng gộp hàng trăm task rải rác không chia Roles.
 
 **Minh hoạ.** Cấu trúc thư mục Roles Capstone chuẩn:
-```
+```bash
 roles/
 ├── role_common_security/
 │   ├── tasks/main.yml
@@ -293,7 +293,7 @@ server {
 > Re-run Playbook Capstone Lần 2 mà bảng `PLAY RECAP` xuất hiện `changed > 0` trên bất kỳ node nào.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency Tốt nghiệp Capstone:
-```
+```bash
 # PLAY RECAP - Capstone Master Playbook (Run #2)
 lb1   : ok=8  changed=0  unreachable=0  failed=0
 web1  : ok=10 changed=0  unreachable=0  failed=0

@@ -62,7 +62,7 @@ Ghép hai điều ấy lại thì `stage` còn lại đúng một chức năng, 
 
 > **`stage` là ràng buộc THỨ TỰ, không phải ràng buộc DỮ LIỆU. Nó nói "job này chạy sau job kia"; nó KHÔNG nói "job này nhận được gì từ job kia". Nhầm hai thứ ấy sinh ra cả hai loại lỗi cùng lúc: pipeline CHẬM vì hàng rào không cần thiết, và pipeline SAI vì tưởng có dữ liệu chảy qua hàng rào.**
 
-```
+```yaml
    HIỂU SAI (rất phổ biến)              HIỂU ĐÚNG
    stage: build ──dữ liệu──▶ stage: test    stage chỉ là HÀNG RÀO THỜI GIAN
         │                                    ├── dữ liệu đi bằng artifacts (buổi 01 QT 5.1)
@@ -163,7 +163,7 @@ Mô hình này quay lại ở buổi 10, 11, 44 — và ở đó nó không còn
 
 Ba nguồn có thể khai cùng một thứ — ví dụ `image`. Chúng xếp theo **khoảng cách tới job**:
 
-```
+```bash
    xa nhất ──────────────────────────────────────► gần nhất
    config.toml           default:              trong chính job
    (mặc định của runner)  (mặc định của tệp)    (khai riêng)
@@ -399,7 +399,7 @@ curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
 
 Định lượng được bằng phép trừ:
 
-```
+```bash
 lãng phí hàng rào = tổng thời gian pipeline − đường găng dữ liệu thật
 ```
 
@@ -682,7 +682,7 @@ in-bien:
 
 **Việc 2 — 20 phút, rủi ro bằng 0.** Đo **lãng phí hàng rào**:
 
-```
+```bash
 lãng phí = tổng thời gian pipeline − đường găng dữ liệu thật
 ```
 
@@ -2234,7 +2234,7 @@ Rủi ro cần nêu: quên dấu chấm thì khuôn mẫu **chạy thật** và 
 
 **Nhịp 2 — tính lãng phí hàng rào.**
 
-```
+```bash
 lãng phí = tổng thời gian pipeline − đường găng dữ liệu
 ```
 

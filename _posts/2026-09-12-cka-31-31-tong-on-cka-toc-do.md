@@ -522,7 +522,7 @@ graph TD
     
     Q1 & Q2 & Q3 & Q4 -->|"6. Auto-Grading Script"| GradeScript[Script Chấm Điểm Tự Động]
     GradeScript -->|"Score >= 80%: PASS"| CKAReady[CKA Exam Ready!]
-```
+```yaml
 
 ---
 
@@ -534,19 +534,19 @@ graph TD
 kubectl create namespace lab66-cka
 
 mkdir -p /tmp/cka-speed
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab66-cka`.**
 
 ```bash
 kubectl get ns lab66-cka -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/cka-speed`.**
 
 ```bash
 test -d /tmp/cka-speed && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -567,25 +567,25 @@ EOF
 
 # Câu 3: Kubelet Status
 echo "active (running)" > /tmp/cka-speed/kubelet-status.txt
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra tệp Pod IPs Câu 1.**
 
 ```bash
 test -f /tmp/cka-speed/pod-ips.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra tệp etcd backup Câu 2.**
 
 ```bash
 test -f /tmp/cka-speed/etcd-backup.db && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra Kubelet status Câu 3.**
 
 ```bash
 test -f /tmp/cka-speed/kubelet-status.txt && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -644,25 +644,25 @@ spec:
                 port:
                   number: 80
 EOF
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra tệp PV Câu 4.**
 
 ```bash
 grep -q "pv-lab66" /tmp/cka-speed/pv.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra tệp PVC Câu 5.**
 
 ```bash
 grep -q "pvc-lab66" /tmp/cka-speed/pvc.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra tệp Ingress Câu 6.**
 
 ```bash
 grep -q "app.internal" /tmp/cka-speed/ingress.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```yaml
 
 ---
 
@@ -686,13 +686,13 @@ spec:
       image: busybox
       args: [/bin/sh, -c, 'while true; do date >> /var/log/app.log; sleep 1; done']
 EOF
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra tệp Sidecar Pod Câu 7.**
 
 ```bash
 grep -q "sidecar" /tmp/cka-speed/pod-sidecar.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```yaml
 
 ---
 
@@ -716,25 +716,25 @@ TỔNG ĐIỂM: 100 / 100
 TỐC ĐỘ TRUNG BÌNH: 3.8 PHÚT / CÂU
 ĐÁNH GIÁ: PASS - BẠN ĐÃ ĐẠT TỐC ĐỘ PHẢN XẠ THI CKA TỐI ƯU!
 EOF
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra Rollout Undo Câu 8.**
 
 ```bash
 test -f /tmp/cka-speed/results.log && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 **CHECKPOINT 11 — Chạy script tự động chấm điểm.**
 
 ```bash
 test -f /tmp/cka-speed/results.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Xác minh tổng điểm đạt mức PASS.**
 
 ```bash
 grep -q "PASS" /tmp/cka-speed/results.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -745,13 +745,13 @@ grep -q "PASS" /tmp/cka-speed/results.log && echo "CHECKPOINT 12 — ĐẠT" || 
 ```bash
 kubectl delete namespace lab66-cka 2>/dev/null || true
 rm -rf /tmp/cka-speed
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/cka-speed/pv.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -937,7 +937,7 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 **Đáp án chuẩn:**
 ```bash
 kubectl create ingress test-ing --rule="host.test.com/=svc-test:8080" --dry-run=client -o yaml > /tmp/ing.yaml
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai lệnh create ingress.
@@ -1000,7 +1000,7 @@ kubectl create ingress test-ing --rule="host.test.com/=svc-test:8080" --dry-run=
 **Đáp án chuẩn:**
 ```bash
 kubectl get pods -A -o jsonpath='{range .items[?(@.status.phase!="Running")]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}'
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cú pháp jsonpath.
@@ -1117,7 +1117,7 @@ Biên soạn PV và PVC tại `/tmp/pv-pvc.yaml`:
 kubectl get pods -n kube-system -o jsonpath='{.items[*].metadata.name}' > /tmp/failed-pods.txt 2>/dev/null || {
   echo "coredns-123 kube-proxy-456" > /tmp/failed-pods.txt
 }
-```
+```bash
 </div>
 </details>
 
@@ -1131,7 +1131,7 @@ kubectl get pods -n kube-system -o jsonpath='{.items[*].metadata.name}' > /tmp/f
 cat <<EOF > /tmp/etcd-snap.db
 ETCD_SNAPSHOT_BACKUP_BINARY_DATA_OK
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1161,7 +1161,7 @@ spec:
                 port:
                   number: 80
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1197,7 +1197,7 @@ spec:
     requests:
       storage: 3Gi
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1268,7 +1268,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1287,7 +1287,7 @@ ETCDCTL_API=3 etcdctl snapshot save /tmp/etcd-backup.db \
   --cacert=/etc/kubernetes/pki/etcd/ca.crt \
   --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key
-```
+```yaml
 
 ---
 

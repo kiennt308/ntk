@@ -530,7 +530,7 @@ graph TD
     
     FalcoRules -->|"5. Output Alert Level: CRITICAL"| Syslog[/tmp/falco-config/syslog.log]
     Analyst[Security Analyst] -->|"6. Query Log via grep"| Syslog
-```
+```yaml
 
 ---
 
@@ -542,19 +542,19 @@ graph TD
 kubectl create namespace lab64
 
 mkdir -p /tmp/falco-config
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab64`.**
 
 ```bash
 kubectl get ns lab64 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/falco-config`.**
 
 ```bash
 test -d /tmp/falco-config && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -595,37 +595,37 @@ cat <<EOF > /tmp/falco-config/rules.yaml
     Phát hiện Đọc tệp mật /etc/shadow (user=%user.name container=%container.name)
   priority: CRITICAL
 EOF
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra từ khóa `rule:` trong tệp quy tắc.**
 
 ```bash
 grep -q "rule:" /tmp/falco-config/rules.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra quy tắc `Detect Shell in Container`.**
 
 ```bash
 grep -q "Detect Shell" /tmp/falco-config/rules.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra quy tắc `Detect Write Below Bin`.**
 
 ```bash
 grep -q "Detect Write" /tmp/falco-config/rules.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra quy tắc `Detect Read Shadow File`.**
 
 ```bash
 grep -q "Detect Read Shadow" /tmp/falco-config/rules.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra trường `priority:` đủ 5 thành tố.**
 
 ```bash
 grep -q "priority:" /tmp/falco-config/rules.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -639,19 +639,19 @@ cat <<EOF > /tmp/falco-config/syslog.log
 2026-08-20T05:30:05Z falco: Critical Phát hiện Ghi vào thư mục binary (user=root file=/bin/malware container=app)
 2026-08-20T05:30:10Z falco: Critical Phát hiện Đọc tệp mật /etc/shadow (user=root container=app)
 EOF
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra tệp `/tmp/falco-config/syslog.log`.**
 
 ```bash
 test -f /tmp/falco-config/syslog.log && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra giả lập sự kiện mở shell.**
 
 ```bash
 test -f /tmp/falco-config/syslog.log && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```yaml
 
 ---
 
@@ -661,25 +661,25 @@ test -f /tmp/falco-config/syslog.log && echo "CHECKPOINT 9 — ĐẠT" || echo "
 
 ```bash
 grep -i "Critical" /tmp/falco-config/syslog.log 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra lệnh lọc log cảnh báo.**
 
 ```bash
 test -f /tmp/falco-config/syslog.log && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 **CHECKPOINT 11 — Trích xuất thông tin kẻ tấn công.**
 
 ```bash
 test -f /tmp/falco-config/syslog.log && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Kiểm tra mức `CRITICAL` trong log.**
 
 ```bash
 grep -q "Critical" /tmp/falco-config/syslog.log && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -687,7 +687,7 @@ grep -q "Critical" /tmp/falco-config/syslog.log && echo "CHECKPOINT 12 — ĐẠ
 
 ```bash
 test -f /tmp/falco-config/rules.yaml && echo "FALCO_LAB_VERIFIED" >/dev/null
-```
+```yaml
 
 ---
 
@@ -698,13 +698,13 @@ test -f /tmp/falco-config/rules.yaml && echo "FALCO_LAB_VERIFIED" >/dev/null
 ```bash
 kubectl delete namespace lab64 2>/dev/null || true
 rm -rf /tmp/falco-config
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/falco-config/rules.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -857,7 +857,7 @@ condition: >
   spawned_process and
   container and
   proc.name in (bash, sh, zsh, ksh)
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai điều kiện hoặc thiếu container.
@@ -878,7 +878,7 @@ condition: >
   evt.arg.flags contains O_WRONLY and
   container and
   fd.name startswith /bin/
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai điều kiện hoặc sai cú pháp startswith.
@@ -961,7 +961,7 @@ condition: >
   output: >
     Phát hiện Đọc tệp mật /etc/shadow (user=%user.name pod=%k8s.pod.name container=%container.name)
   priority: CRITICAL
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc 5 thành tố.
@@ -1087,7 +1087,7 @@ cat <<EOF > /tmp/falco-rule1.yaml
     Phát hiện Terminal Shell trong container (user=%user.name container=%container.name)
   priority: WARNING
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1110,7 +1110,7 @@ cat <<EOF > /tmp/falco-rule2.yaml
     Phát hiện Ghi vào /bin (user=%user.name file=%fd.name container=%container.name)
   priority: CRITICAL
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1124,7 +1124,7 @@ EOF
 falco -r /tmp/falco-rule1.yaml 2>/dev/null || {
   echo "Validation OK: /tmp/falco-rule1.yaml parsed successfully"
 }
-```
+```bash
 </div>
 </details>
 
@@ -1141,7 +1141,7 @@ cat <<EOF > /tmp/syslog.log
 EOF
 
 grep -i "Critical" /tmp/syslog.log > /tmp/falco-critical-alerts.log
-```
+```yaml
 
 ---
 </div>
@@ -1211,7 +1211,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1230,7 +1230,7 @@ falco -r /etc/falco/falco_rules.local.yaml
 
 # Query Syslog Alert Logs
 grep -i "Falco" /var/log/syslog | grep "Critical"
-```
+```yaml
 
 ---
 

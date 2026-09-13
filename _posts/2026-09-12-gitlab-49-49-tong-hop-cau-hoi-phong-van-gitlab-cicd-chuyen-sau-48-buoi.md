@@ -541,7 +541,7 @@ Ai sửa: người có quyền trên **máy runner**, không phải người có
 
 **Đáp án chuẩn:** Theo **một trục duy nhất: mức cô lập**. Không phải theo tốc độ.
 
-```
+```bash
    thấp ◄────────────── MỨC CÔ LẬP ──────────────► cao
    shell        docker        docker-autoscaler      kubernetes
 ```
@@ -1267,7 +1267,7 @@ Rủi ro cần nêu: quên dấu chấm thì khuôn mẫu **chạy thật** và 
 
 **Nhịp 2 — tính lãng phí hàng rào.**
 
-```
+```bash
 lãng phí = tổng thời gian pipeline − đường găng dữ liệu
 ```
 
@@ -2096,7 +2096,7 @@ Phần phải nói để đạt 3 điểm, và đây là đại lượng loại 
 
 **Đáp án chuẩn:** Cache là một khoản đầu tư và nó có **sổ thu chi**. Ba con số phải đo bằng cách đọc giây từng pha trong `trace`: tạo lại từ đầu (`npm ci`) **95 s**; nén + tải lên (`Creating cache`) **61 s**; tải + giải nén (`Restoring cache`) **44 s**. Suy ra lãi mỗi lần **trúng** là 95 − 44 = **+51 s**, lỗ mỗi lần **trượt** là **−61 s** (vẫn phải ghi cache mà không được lợi gì). Điểm hoà vốn là một phép chia:
 
-```
+```bash
 số lần trúng để hoà vốn = nén_và_tải / (tạo_lại − giải_nén) = 61 / 51 = 1,196 → làm tròn lên = 2
 ```
 
@@ -2129,7 +2129,7 @@ Giới hạn phải nêu để đạt 3 điểm: bốn dòng này đo trên exec
 
 **Đáp án chuẩn:** `policy` tách **quyền đọc** khỏi **quyền ghi**. Mặc định là `pull-push`: đầu job phục hồi cache, **cuối job nén lại toàn bộ thư mục cache và ghi lên** — dù `script` không đổi một byte nào trong đó. `policy: pull` bỏ hẳn phần ghi. Với cache 380 MB của câu 7 (pha `Creating cache` mất **61 giây**):
 
-```
+```bash
 3 job test × 61 s = 183 giây tiết kiệm mỗi pipeline
 ```
 
@@ -4484,7 +4484,7 @@ CI/CD Component là bước tiến hóa kiến trúc vượt trội so với cá
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Khả năng đăng ký và hiển thị trên CI/CD Catalog UI:</b> Các tệp YAML include nằm rải rác trong các repository phụ thuộc, không thể tìm kiếm tập trung. Component được đăng ký thành Catalog Resource, cho phép toàn bộ kỹ sư trong tập đoàn tìm kiếm, xem tài liệu, giao diện inputs và ví dụ sử dụng trực quan trên giao diện Web của GitLab.</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Quản lý phiên bản chặt chẽ theo Semantic Versioning (SemVer):</b> Tệp include truyền thống thường trỏ vào branch (<code>ref: main</code> hoặc <code>ref: master</code>), dẫn tới rủi ro pipeline bị đứt gãy bất ngờ khi tệp nguồn thay đổi. Component bắt buộc xuất bản qua Git Tag và Release Tag (<code>@1.0.0</code>, <code>@2.1.0</code>), đảm bảo tính bất biến (immutability) cho hạ tầng CI/CD.</div>
 
-```
+```yaml
 Include truyền thống:  [User .gitlab-ci.yml] ---> (Chèn văn bản thô t0) ---> [Local/Remote YAML]
 CI/CD Component:       [User .gitlab-ci.yml] ---> (Truyền inputs t1)     ---> [Component @1.0.0 + spec:inputs]
 ```
@@ -4776,7 +4776,7 @@ Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp
 
 ## §V6. Tổng kết kiến thức trọng tâm Buổi 11
 
-```
+```yaml
                     ┌─────────────────────────────────────────┐
                     │     CI/CD COMPONENTS & CATALOG UI       │
                     └────────────────────┬────────────────────┘
@@ -4987,7 +4987,7 @@ fi
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Mức bảo vệ 3 (Merge Train):</b> Kiểm thử trên cây mã nguồn <code>main</code> ⊕ <code>Xe_trước_1</code> ⊕ <code>Xe_trước_2</code> ⊕ <code>HEAD nhánh nguồn</code>. Nó bảo vệ khỏi xung đột giữa các Merge Request đang cùng xếp hàng chờ gộp đồng thời vào nhánh đích.</div>
 
 #### Mô hình so sánh 3 cây Git Tree:
-```
+```bash
 [Mức 1]  HEAD (feature/mr-a)
 [Mức 2]  origin/main  +  HEAD (feature/mr-a)
 [Mức 3]  origin/main  +  HEAD (MR 1)  +  HEAD (MR 2)  +  HEAD (feature/mr-a)
@@ -5294,7 +5294,7 @@ Tỉ số duy nhất điều khiển thời gian chờ là <b style="color: var(
 #### Phân tích chuyên sâu từ góc độ Kỹ sư SRE:
 Lý thuyết xếp hàng (M/M/c Queueing Model) khẳng định rằng đồ thị mối quan hệ giữa Mức no $\rho$ và thời gian chờ là một đường cong tiệm cận. Hãy xem bảng mô phỏng giá trị chờ theo các mốc mức no:
 
-```
+```bash
 ┌──────────────┬─────────────────────────────┬─────────────────────────────────┐
 │ Mức no (ρ)   │ Thời gian chờ ước tính     │ Trạng thái trải nghiệm Dev      │
 ├──────────────┼─────────────────────────────┼─────────────────────────────────┤
@@ -5987,7 +5987,7 @@ Triển khai đăng ký hàng chục máy chủ Runner tự động:
 
 Trong 20 phút cuối của Buổi 14, giảng viên gọi ngẫu nhiên học viên trả lời 6 câu hỏi rút từ Ngân hàng 156 câu hỏi của Buổi 01 đến Buổi 13:
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │             NGÂN HÀNG CÂU HỎI THI VẤN ĐÁP GIỮA KỲ 1 (BUỔI 01–13)       │
 ├───────────────────────────────────┬────────────────────────────────────┤
@@ -6029,7 +6029,7 @@ Trong 20 phút cuối của Buổi 14, giảng viên gọi ngẫu nhiên học v
 
 ## §V6. Tổng hợp bảng đối soát các thuật ngữ và công thức toán học Buổi 14
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │             BUỔI 14 FORMULA AND TERMINOLOGY ACCEPTANCE MATRIX          │
 ├───────────────────────────────────┬────────────────────────────────────┤

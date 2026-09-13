@@ -61,7 +61,7 @@ Trả lời câu đó là bước ra khỏi tệp YAML và nhìn thấy **tệp 
 
 > **Một job được cấu hình bởi HAI tệp do HAI người viết, và hai người ấy thường không nói chuyện với nhau: `.gitlab-ci.yml` nói job LÀM GÌ, `config.toml` nói job CHẠY Ở ĐÂU VÀ VỚI QUYỀN GÌ. Ranh giới giữa hai tệp chính là ranh giới giữa "lỗi của tôi" và "lỗi của hạ tầng" — và phần lớn thời gian gỡ lỗi CI bị mất vì người ta đi tìm ở nhầm tệp.**
 
-```
+```yaml
   NGƯỜI VIẾT PIPELINE                          NGƯỜI VẬN HÀNH RUNNER
   .gitlab-ci.yml                               config.toml
   ├── job làm gì (script)                      ├── executor nào
@@ -163,7 +163,7 @@ Mô hình này quay lại ở buổi 07 (gỡ rối có hệ thống), buổi 44
 
 Bốn executor thường được trình bày như một danh sách tính năng. Cách nhìn ấy không giúp chọn. Cách nhìn giúp chọn là xếp chúng trên **một trục**: mức cô lập giữa job và mọi thứ khác.
 
-```
+```bash
    thấp ◄───────────────── MỨC CÔ LẬP ─────────────────► cao
    shell        docker        docker-autoscaler      kubernetes
    ▲                                                       ▲
@@ -1866,7 +1866,7 @@ Ai sửa: người có quyền trên **máy runner**, không phải người có
 
 **Đáp án chuẩn:** Theo **một trục duy nhất: mức cô lập**. Không phải theo tốc độ.
 
-```
+```bash
    thấp ◄────────────── MỨC CÔ LẬP ──────────────► cao
    shell        docker        docker-autoscaler      kubernetes
 ```

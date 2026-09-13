@@ -252,7 +252,7 @@ when: (ansible_facts.os_family == "RedHat" or ansible_facts.os_family == "Debian
 > Thắc mắc tại sao lượt chạy Lần 2 bảng RECAP báo `skipped=2` mà lại cho rằng Playbook bị lỗi.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` có chứa chỉ số `skipped`:
-```
+```bash
 # Lần 1: changed=1, skipped=1 (1 task thực thi, 1 task rẽ nhánh bị bỏ qua)
 target1 : ok=2 changed=1 unreachable=0 failed=0 skipped=1
 

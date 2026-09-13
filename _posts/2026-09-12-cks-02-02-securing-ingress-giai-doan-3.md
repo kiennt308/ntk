@@ -540,7 +540,7 @@ graph TD
     
     WAF -->|"Packet Sạch"| PodWeb[Pod secure-web Backend]
     WAF -.->|"Phát hiện SQLi/XSS"| BlockWAF[CHẶN THẲNG: Trả về HTTP 403]
-```
+```yaml
 
 ---
 
@@ -552,19 +552,19 @@ graph TD
 kubectl create namespace lab47
 kubectl create deployment secure-web --image=nginx:alpine --replicas=2 -n lab47
 kubectl expose deployment secure-web --name=secure-svc --port=80 --target-port=80 -n lab47
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab47`.**
 
 ```bash
 kubectl get ns lab47 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra Deployment `secure-web` 2 replicas.**
 
 ```bash
 kubectl get deploy secure-web -n lab47 -o jsonpath='{.spec.replicas}' | grep -qx 2 && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -578,13 +578,13 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 
 kubectl create secret tls lab47-tls-secret \
   --cert=/tmp/lab47-tls.crt --key=/tmp/lab47-tls.key -n lab47
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra Secret `lab47-tls-secret` kiểu `kubernetes.io/tls`.**
 
 ```bash
 kubectl get secret lab47-tls-secret -n lab47 -o jsonpath='{.type}' | grep -qx "kubernetes.io/tls" && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 ### Thao tác 2.2: Triển khai Ingress có annotation `ssl-redirect: "true"`
 
@@ -615,19 +615,19 @@ spec:
                 port:
                   number: 80
 EOF
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra annotation `ssl-redirect: "true"`.**
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.metadata.annotations.nginx\.ingress\.kubernetes\.io/ssl-redirect}' | grep -qx true && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Xác minh TLS Secret đính kèm.**
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.spec.tls[0].secretName}' | grep -qx "lab47-tls-secret" && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -639,31 +639,31 @@ kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.spec.tls[0].secretNam
 kubectl annotate ingress secure-ingress -n lab47 \
   nginx.ingress.kubernetes.io/whitelist-source-range="127.0.0.1/32" \
   nginx.ingress.kubernetes.io/limit-rps="2" --overwrite
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra annotation `whitelist-source-range`.**
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.metadata.annotations.nginx\.ingress\.kubernetes\.io/whitelist-source-range}' | grep -qx "127.0.0.1/32" && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Xác minh Ingress `secure-ingress` tồn tại sau khi nạp Whitelist.**
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.metadata.name}' | grep -qx secure-ingress && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra annotation `limit-rps: "2"`.**
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.metadata.annotations.nginx\.ingress\.kubernetes\.io/limit-rps}' | grep -qx 2 && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Xác minh cấu hình `limit-rps` nạp thành công.**
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.metadata.annotations.nginx\.ingress\.kubernetes\.io/limit-rps}' | grep -qx 2 && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```yaml
 
 ---
 
@@ -704,19 +704,19 @@ spec:
                 port:
                   number: 80
 EOF
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra annotation `enable-modsecurity: "true"`.**
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.metadata.annotations.nginx\.ingress\.kubernetes\.io/enable-modsecurity}' | grep -qx true && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 **CHECKPOINT 11 — Trích xuất cờ `SecRuleEngine On` trong `modsecurity-snippet`.**
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.metadata.annotations.nginx\.ingress\.kubernetes\.io/modsecurity-snippet}' | grep -q "SecRuleEngine On" && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```yaml
 
 ---
 
@@ -726,7 +726,7 @@ kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.metadata.annotations.
 
 ```bash
 kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.spec.rules[0].host}' | grep -qx "app.lab47.com" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -737,13 +737,13 @@ kubectl get ingress secure-ingress -n lab47 -o jsonpath='{.spec.rules[0].host}' 
 ```bash
 kubectl delete namespace lab47
 rm -f /tmp/lab47-tls.crt /tmp/lab47-tls.key
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/lab47-tls.crt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -919,7 +919,7 @@ metadata:
     nginx.ingress.kubernetes.io/enable-owasp-modsecurity-crs: "true"
     nginx.ingress.kubernetes.io/modsecurity-snippet: |
       SecRuleEngine On
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Cấu hình sai cú pháp modsecurity-snippet.
@@ -1118,7 +1118,7 @@ spec:
                 port:
                   number: 80
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1132,7 +1132,7 @@ EOF
 kubectl annotate ingress hardened-ingress -n prod \
   nginx.ingress.kubernetes.io/limit-rps="5" \
   nginx.ingress.kubernetes.io/limit-connections="10" --overwrite
-```
+```bash
 </div>
 </details>
 
@@ -1165,7 +1165,7 @@ spec:
                 port:
                   number: 80
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1201,7 +1201,7 @@ spec:
                 port:
                   number: 80
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1272,7 +1272,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1293,7 +1293,7 @@ metadata:
     nginx.ingress.kubernetes.io/enable-owasp-modsecurity-crs: "true"
     nginx.ingress.kubernetes.io/modsecurity-snippet: |
       SecRuleEngine On
-```
+```yaml
 
 ---
 

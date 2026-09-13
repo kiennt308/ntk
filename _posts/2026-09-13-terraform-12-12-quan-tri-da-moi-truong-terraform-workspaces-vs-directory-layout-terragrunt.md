@@ -128,7 +128,7 @@ flowchart TD
 
 Mô hình chuẩn mực nhất là phân tách rõ ràng thành các thư mục riêng biệt cho từng môi trường, kết hợp với các **Reusable Modules** dùng chung:
 
-```
+```bash
 terraform-enterprise-root/
 ├── modules/                        # Kho lưu trữ các Modules dùng chung
 │   ├── vpc/

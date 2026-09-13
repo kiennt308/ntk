@@ -65,7 +65,7 @@ Hôm nay trả lời câu đó, và trả lời bằng cách nối hai trục **
 
 **Bảng thu hẹp — ba mươi hai ô.** Trục ngang là **tám pha** của buổi 01 QT 4.2, gộp thành bốn cột cho vừa trang; trục dọc là **bốn đường vào** của buổi 01 QT 5.1. Bốn hàng nhân tám pha là **32 ô**. Không ô nào mới: cả ba mươi hai ô đều đã đi qua trong sáu buổi trước.
 
-```
+```bash
    BẢNG THU HẸP — mọi pipeline hỏng nằm ở một ô
 
                     │ pha 1–3      │ pha 4–5      │ pha 6        │ pha 7–8

@@ -266,7 +266,7 @@ Khi tiếp quản một repository CI/CD mới trong doanh nghiệp, kỹ sư De
 
 Khi cần thiết kế lại một module cấu hình CI/CD dùng chung, kỹ sư DevOps sử dụng bảng ma trận câu hỏi sau:
 
-```
+```bash
                                   MA TRẬN CHỌN CƠ CHẾ TÁI SỬ DỤNG
                                   
                        ┌──────────────────────────────────────────────┐
@@ -698,7 +698,7 @@ graph TD
     APIEngine -->|"Trả về"| MergedYAML["merged_yaml (Bức tranh sự thật)"]
 ```
 
-```
+```bash
                                   HẠ TẦNG THỰC HÀNH BUỔI 10
 
    ┌────────────────────────────────────────────────────────────────────────────────────────┐

@@ -542,7 +542,7 @@ graph TD
     RC -->|"3. Invoke CRI containerd"| Containerd[containerd CRI Plugin]
     Containerd -->|"4. Launch runsc Sandbox"| gVisorSentry[gVisor Sentry User-Space Kernel]
     gVisorSentry -->|"5. Isolated Execution"| UntrustedApp[Untrusted Pod Container]
-```
+```yaml
 
 ---
 
@@ -560,19 +560,19 @@ metadata:
   name: gvisor
 handler: gvisor
 EOF
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab56`.**
 
 ```bash
 kubectl get ns lab56 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra tệp `/tmp/runtimeclass-gvisor.yaml`.**
 
 ```bash
 grep -q "handler: gvisor" /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -582,19 +582,19 @@ grep -q "handler: gvisor" /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 2 �
 
 ```bash
 kubectl apply -f /tmp/runtimeclass-gvisor.yaml
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra `RuntimeClass` gvisor qua jsonpath.**
 
 ```bash
 kubectl get runtimeclass gvisor -o jsonpath='{.metadata.name}' | grep -qx gvisor && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra cờ `handler: gvisor`.**
 
 ```bash
 kubectl get runtimeclass gvisor -o jsonpath='{.handler}' | grep -qx gvisor && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```yaml
 
 ---
 
@@ -617,25 +617,25 @@ spec:
 EOF
 
 kubectl apply -f /tmp/pod-untrusted.yaml 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra tệp `/tmp/pod-untrusted.yaml`.**
 
 ```bash
 grep -q "runtimeClassName: gvisor" /tmp/pod-untrusted.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra lệnh apply Pod `untrusted-pod`.**
 
 ```bash
 test -f /tmp/pod-untrusted.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra Pod `untrusted-pod` sẵn sàng.**
 
 ```bash
 test -f /tmp/pod-untrusted.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -645,13 +645,13 @@ test -f /tmp/pod-untrusted.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECK
 
 ```bash
 test -f /tmp/runtimeclass-gvisor.yaml && echo "SANDBOX_VERIFIED" >/dev/null
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra đối soát kernel sandbox.**
 
 ```bash
 test -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```yaml
 
 ---
 
@@ -673,31 +673,31 @@ overhead:
 EOF
 
 kubectl apply -f /tmp/runtimeclass-kata.yaml 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra cờ `handler: kata` trong `/tmp/runtimeclass-kata.yaml`.**
 
 ```bash
 grep -q "handler: kata" /tmp/runtimeclass-kata.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra nạp `RuntimeClass` kata.**
 
 ```bash
 test -f /tmp/runtimeclass-kata.yaml && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 **CHECKPOINT 11 — Tra cứu danh sách tất cả `RuntimeClass`.**
 
 ```bash
 kubectl get runtimeclass | grep -q "gvisor" && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — So sánh runtime tiêu chuẩn và sandbox.**
 
 ```bash
 test -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -709,13 +709,13 @@ test -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo
 kubectl delete namespace lab56
 kubectl delete runtimeclass gvisor kata 2>/dev/null || true
 rm -f /tmp/runtimeclass-gvisor.yaml /tmp/pod-untrusted.yaml /tmp/runtimeclass-kata.yaml
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/runtimeclass-gvisor.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -948,7 +948,7 @@ kind: RuntimeClass
 metadata:
   name: gvisor
 handler: gvisor
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai apiVersion hoặc thiếu cờ handler.
@@ -1073,7 +1073,7 @@ handler: gvisor
 EOF
 
 kubectl apply -f /tmp/gvisor-rc.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1098,7 +1098,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1123,7 +1123,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/failed-sandbox.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1145,7 +1145,7 @@ overhead:
     memory: "120Mi"
     cpu: "250m"
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1216,7 +1216,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1239,7 +1239,7 @@ spec:
 
 # Verify Sandbox Kernel
 kubectl exec <pod-name> -- dmesg
-```
+```yaml
 
 ---
 

@@ -111,7 +111,7 @@ graph TD
 > Gom chung IP máy chủ Staging và Production vào chung 1 tệp `inventory.ini` và phân biệt bằng tên nhóm rườm rà.
 
 **Minh hoạ.** Cấu trúc thư mục đa môi trường tiêu chuẩn:
-```
+```bash
 project/
 ├── ansible.cfg
 ├── site-env.yml
@@ -175,7 +175,7 @@ ansible-playbook -i inventory/production site-env.yml
 > Khai báo lặp đi lặp lại cùng một biến `dns_server` ở từng file host thay vì đưa lên `all.yml`.
 
 **Minh hoạ.** Phân tầng biến trong `inventory/staging/`:
-```
+```yaml
 inventory/staging/
 ├── hosts.ini
 └── group_vars/
@@ -234,7 +234,7 @@ log_level: "WARN"
 > Để tồn tại thư mục `group_vars/` song song ở cả cấp root dự án và trong thư mục `inventory/staging/`.
 
 **Minh hoạ.** Loại bỏ thư mục `group_vars/` ở root khi dùng mô hình đa môi trường:
-```
+```bash
 # CẤU TRÚC ĐÚNG:
 project/
 ├── site-env.yml
@@ -269,7 +269,7 @@ roles_path = ./roles
 > Bảng `PLAY RECAP` Lần 2 ở môi trường Production báo `changed > 0` do biến môi trường bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency trên môi trường Production:
-```
+```bash
 # Lần 1: changed=2 (Nạp biến Production và ghi cấu hình Production)
 target1 : ok=4 changed=2 unreachable=0 failed=0
 

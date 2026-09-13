@@ -576,7 +576,7 @@ graph TD
     CSIDriver -->|"2. Process SPC Config"| SPC[SecretProviderClass vault-db-secrets]
     SPC -->|"3. Mount to Pod Memory tmpfs"| Pod[Pod app-csi-pod in lab57]
     Pod -->|"4. Access Secrets"| SecretFile[/mnt/secrets-store/db-password]
-```
+```yaml
 
 ---
 
@@ -603,19 +603,19 @@ spec:
         secretPath: "secret/data/dbconfig"
         secretKey: "password"
 EOF
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab57`.**
 
 ```bash
 kubectl get ns lab57 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra tệp `/tmp/spc-vault.yaml`.**
 
 ```bash
 grep -q "vault-db-secrets" /tmp/spc-vault.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -625,19 +625,19 @@ grep -q "vault-db-secrets" /tmp/spc-vault.yaml && echo "CHECKPOINT 2 — ĐẠT"
 
 ```bash
 kubectl apply -f /tmp/spc-vault.yaml 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra apply `SecretProviderClass`.**
 
 ```bash
 test -f /tmp/spc-vault.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra tệp `SecretProviderClass` ready.**
 
 ```bash
 test -f /tmp/spc-vault.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```yaml
 
 ---
 
@@ -670,25 +670,25 @@ spec:
 EOF
 
 kubectl apply -f /tmp/pod-csi-secret.yaml 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra driver `secrets-store.csi.k8s.io` trong `/tmp/pod-csi-secret.yaml`.**
 
 ```bash
 grep -q "secrets-store.csi.k8s.io" /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra lệnh apply Pod `app-csi-pod`.**
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra Pod `app-csi-pod` ở trạng thái `Running`.**
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -698,19 +698,19 @@ test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHEC
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "SECRET_READ_TEST" >/dev/null
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra đường dẫn mount Secret.**
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra tệp secret nằm trên hệ thống tệp RAM `tmpfs`.**
 
 ```bash
 test -f /tmp/pod-csi-secret.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```yaml
 
 ---
 
@@ -724,25 +724,25 @@ FROM alpine:3.19
 RUN apk add --no-cache curl
 CMD ["sh"]
 EOF
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra tệp `/tmp/Dockerfile.clean`.**
 
 ```bash
 test -f /tmp/Dockerfile.clean && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 **CHECKPOINT 11 — Quét rà soát bí mật nhúng.**
 
 ```bash
 test -f /tmp/Dockerfile.clean && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Đồng bộ Secret thành K8s Secret qua `secretObjects`.**
 
 ```bash
 test -f /tmp/spc-vault.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -753,13 +753,13 @@ test -f /tmp/spc-vault.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOI
 ```bash
 kubectl delete namespace lab57
 rm -f /tmp/spc-vault.yaml /tmp/pod-csi-secret.yaml /tmp/Dockerfile.clean
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/spc-vault.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -1001,7 +1001,7 @@ spec:
       - objectName: "db-password"
         secretPath: "secret/data/dbconfig"
         secretKey: "password"
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.
@@ -1135,7 +1135,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/app-spc.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1168,7 +1168,7 @@ spec:
         volumeAttributes:
           secretProviderClass: "app-spc"
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1203,7 +1203,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/broken-spc-pod.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1219,7 +1219,7 @@ FROM alpine:3.19
 RUN apk add --no-cache curl
 CMD ["sh"]
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1290,7 +1290,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1322,7 +1322,7 @@ spec:
         readOnly: true
         volumeAttributes:
           secretProviderClass: "spc-name"
-```
+```yaml
 
 ---
 

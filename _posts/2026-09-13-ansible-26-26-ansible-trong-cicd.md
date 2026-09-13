@@ -257,7 +257,7 @@ after_script:
 > Re-run lại pipeline CI/CD mà bảng `PLAY RECAP` liên tục báo `changed > 0` do kịch bản bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của pipeline CI/CD:
-```
+```bash
 # Lần 1: changed=2 (CI/CD Runner giải mã Vault và deploy mã nguồn thành công)
 target1 : ok=4 changed=2 unreachable=0 failed=0
 

@@ -3777,7 +3777,7 @@ Khi chạy trên RedHat, nó nạp `tasks/redhat_tasks.yml`; khi chạy trên De
 **Hỏi:** Trình bày cấu trúc thư mục tiêu chuẩn của một dự án Ansible Playbook mô-đun hóa được chia nhỏ thành nhiều tệp task con. *(Liên quan QT 4.2)*
 **Đáp án chuẩn:**
 Cấu trúc tiêu chuẩn:
-```
+```bash
 project/
 ├── ansible.cfg
 ├── inventory.ini

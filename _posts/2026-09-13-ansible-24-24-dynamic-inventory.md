@@ -259,7 +259,7 @@ enable_plugins = host_list, script, auto, yaml, ini, constructed, amazon.aws.aws
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do task thi hành bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency khi dùng Dynamic Inventory:
-```
+```bash
 # Lần 1: changed=2 (Phát hiện máy chủ qua Dynamic Inventory và nạp cấu hình)
 target1 : ok=4 changed=2 unreachable=0 failed=0
 

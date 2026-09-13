@@ -262,7 +262,7 @@ before_script:
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do biến mã hóa Vault bị lặp changed mạo danh.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency của Playbook Vault:
-```
+```bash
 # Lần 1: changed=2 (Giải mã Vault trong RAM và ghi file cấu hình bảo mật)
 target1 : ok=4 changed=2 unreachable=0 failed=0
 

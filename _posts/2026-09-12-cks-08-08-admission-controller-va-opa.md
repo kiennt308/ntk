@@ -545,7 +545,7 @@ graph TD
     PolicyEngine -->|"Biểu thức CEL: 'owner' in labels"| CheckLabels{"Có nhãn owner?"}
     CheckLabels -.->|"No: false"| Block[REJECT 403 Forbidden: Pod bắt buộc phải có nhãn owner]
     CheckLabels -->|"Yes: true"| Allow[ACCEPT Pod Created in Namespace lab53]
-```
+```yaml
 
 ---
 
@@ -572,19 +572,19 @@ spec:
     - expression: "has(object.metadata.labels) && 'owner' in object.metadata.labels"
       message: "LỖI AN NINH: Pod bắt buộc phải có nhãn 'owner'!"
 EOF
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab53`.**
 
 ```bash
 kubectl get ns lab53 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra tệp `/tmp/policy-check-owner.yaml`.**
 
 ```bash
 grep -q "check-owner-policy" /tmp/policy-check-owner.yaml && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -606,32 +606,32 @@ spec:
       matchLabels:
         kubernetes.io/metadata.name: lab53
 EOF
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra tệp `/tmp/binding-check-owner.yaml`.**
 
 ```bash
 grep -q "check-owner-binding" /tmp/binding-check-owner.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 ### Thao tác 2.2: Apply Policy và Binding vào cụm Kubernetes
 
 ```bash
 kubectl apply -f /tmp/policy-check-owner.yaml 2>/dev/null || true
 kubectl apply -f /tmp/binding-check-owner.yaml 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra lệnh apply Policy/Binding.**
 
 ```bash
 test -f /tmp/policy-check-owner.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra tệp policy ready.**
 
 ```bash
 test -f /tmp/binding-check-owner.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -651,19 +651,19 @@ spec:
     - name: app
       image: nginx:alpine
 EOF
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra tệp `/tmp/pod-no-owner.yaml`.**
 
 ```bash
 test -f /tmp/pod-no-owner.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm chứng thử nghiệm apply Pod vi phạm.**
 
 ```bash
 test -f /tmp/pod-no-owner.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -687,26 +687,26 @@ spec:
 EOF
 
 kubectl apply -f /tmp/pod-with-owner.yaml
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra nhãn `owner: devteam` trong `/tmp/pod-with-owner.yaml`.**
 
 ```bash
 grep -q "owner: devteam" /tmp/pod-with-owner.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra Pod `pod-with-owner` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod pod-with-owner -n lab53 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 **CHECKPOINT 10 — Xác minh nhãn `owner` qua jsonpath.**
 
 ```bash
 kubectl get pod pod-with-owner -n lab53 -o jsonpath='{.metadata.labels.owner}' | grep -qx devteam && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -731,19 +731,19 @@ spec:
     - expression: "object.spec.containers.all(c, c.image.startsWith('myregistry.io/'))"
       message: "LỖI AN NINH: Ảnh container bắt buộc phải lấy từ myregistry.io/!"
 EOF
-```
+```bash
 
 **CHECKPOINT 11 — Kiểm tra tệp `/tmp/policy-check-image.yaml`.**
 
 ```bash
 grep -q "check-image-policy" /tmp/policy-check-image.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Trích xuất tệp policy sẵn sàng.**
 
 ```bash
 test -f /tmp/policy-check-image.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -754,13 +754,13 @@ test -f /tmp/policy-check-image.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo 
 ```bash
 kubectl delete namespace lab53
 rm -f /tmp/policy-check-owner.yaml /tmp/binding-check-owner.yaml /tmp/pod-no-owner.yaml /tmp/pod-with-owner.yaml /tmp/policy-check-image.yaml
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/policy-check-owner.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -920,7 +920,7 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 **Đáp án chuẩn:**
 ```yaml
 expression: "object.spec.containers.all(c, c.image.startsWith('myregistry.io/'))"
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Không biết viết biểu thức CEL lọc container image.
@@ -1006,7 +1006,7 @@ spec:
   validations:
     - expression: "object.spec.containers.all(c, !c.image.endsWith(':latest'))"
       message: "LỖI: Cấm tuyệt đối sử dụng tag ảnh :latest trong Production!"
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai biểu thức CEL cấm tag latest.
@@ -1141,7 +1141,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/policy-team.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1167,7 +1167,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/binding-team.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1208,7 +1208,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/policy-no-latest.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1237,7 +1237,7 @@ spec:
 EOF
 
 kubectl apply -f /tmp/policy-fixed.yaml
-```
+```yaml
 
 ---
 </div>
@@ -1308,7 +1308,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1339,7 +1339,7 @@ metadata:
 spec:
   policyName: policy-name
   validationActions: [Deny]
-```
+```yaml
 
 ---
 

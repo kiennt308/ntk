@@ -121,7 +121,7 @@ sequenceDiagram
 
 Dự án Capstone được tổ chức theo cấu trúc phân tách trách nhiệm (Separation of Concerns) rõ ràng:
 
-```
+```bash
 ecommerce-gitops/
 ├── 00-root-app.yaml                     # Root Application CRD (App-of-Apps)
 ├── 01-infrastructure/                   # Hạ tầng cốt lõi & Bảo mật

@@ -94,7 +94,7 @@ Argo CD quản lý phân quyền trên **8 nhóm tài nguyên** chính với **7
 Cấu trúc một dòng phân quyền chuẩn trong Argo CD bao gồm 2 loại quy tắc:
 
 ### 3.1. Quy Tắc Phân Quyền (Policy Rule - `p`)
-```
+```bash
 p, <Subject/Role>, <Resource>, <Action>, <Object>, <Effect>
 ```
 - **`<Subject/Role>`:** Tên vai trò hoặc định danh người dùng (ví dụ: `role:developer`, `role:qa-lead`, `admin`).
@@ -104,7 +104,7 @@ p, <Subject/Role>, <Resource>, <Action>, <Object>, <Effect>
 - **`<Effect>`:** `allow` (cho phép) hoặc `deny` (từ chối tường minh).
 
 ### 3.2. Quy Tắc Gán Nhóm (Group Mapping Rule - `g`)
-```
+```bash
 g, <User/OIDC_Group>, <Role>
 ```
 Ánh xạ một người dùng cụ thể hoặc một nhóm trả về từ SSO (OIDC Group claim) vào một vai trò đã định nghĩa trong hệ thống.

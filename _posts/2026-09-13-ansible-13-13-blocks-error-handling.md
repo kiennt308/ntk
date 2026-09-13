@@ -135,7 +135,7 @@ graph TD
 > Thắc mắc tại sao khi Playbook chạy bình thường thì các Task trong `rescue:` lại không xuất hiện trên terminal (đây là tính năng đúng!).
 
 **Minh hoạ.** Hành vi của khối `rescue:` khi `block:` thành công và thất bại:
-```
+```bash
 # Trường hợp Block thành công: Block tasks RUN -> Rescue SKIPPED -> Always RUN
 # Trường hợp Block thất bại: Block Task 1 FAILED -> Rescue Task 1 RUN -> Always RUN
 ```
@@ -259,7 +259,7 @@ rescue:
 > Bảng `PLAY RECAP` Lần 2 báo `changed > 0` do các task kiểm tra lỗi không có `changed_when: false`.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency chuẩn hóa:
-```
+```bash
 # Lần 1: changed=1 (Tạo file và khắc phục lỗi qua rescue)
 target1 : ok=4 changed=1 unreachable=0 failed=0
 

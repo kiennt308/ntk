@@ -106,7 +106,7 @@ Sau khi hoàn thành Buổi 12, học viên đạt được 5 năng lực kỹ t
 
 Trong quy trình phát triển phần mềm doanh nghiệp, xoay quanh một yêu cầu gộp mã (Merge Request) có 4 loại Pipeline có thể được kích hoạt. Tuy nhiên, dưới góc độ hệ thống quản lý mã nguồn Git, **chỉ có 3 cây nội dung Git (Git Trees) khác nhau** được đem ra kiểm thử.
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │               MA TRẬN BỐN LOẠI PIPELINE - BA NỘI DUNG GIT               │
 ├─────────────────────────┬──────────────────────────┬───────────────────┤
@@ -188,7 +188,7 @@ workflow:
 
 Một trong những thảm hoạ nhức nhối nhất trong quản trị CI/CD doanh nghiệp là kịch bản: Hai lập trình viên làm việc trên 2 Merge Request riêng biệt, cả 2 MR đều được hệ thống CI kiểm thử báo **Xanh 100%**, nhưng ngay sau khi gộp cả 2 MR vào nhánh `main`, nhánh `main` bị **Đỏ rực**!
 
-```
+```bash
 CA SỰ CỐ: XUNG ĐỘT NGỮ NGHĨA (SEMANTIC CONFLICT)
 
 [Nhánh main gốc] ───► chứa hàm tinh_thue(tier)
@@ -393,7 +393,7 @@ release-image:
 - Tổng số phút Runner bị lãng phí thêm: `4 xe × 20 phút = 80 phút Runner`!
 - Con số chốt: Điều kiện ngưỡng thực chiến để bật Merge Train: Thời gian Pipeline **≤ 10 phút** và Tỉ lệ Pipeline hỏng **≤ 5%**.
 
-```
+```bash
 MÔ HÌNH HÀNG ĐỢI MERGE TRAIN
 
 Đoàn tàu:  [Xe 1: MR A] ──► [Xe 2: MR B (HỎNG!)] ──► [Xe 3: MR C] ──► [Xe 4: MR D]
@@ -1404,7 +1404,7 @@ fi
 
 Kỹ sư SRE có thể sử dụng GitLab REST API trích xuất thời gian từ lúc tạo MR đến lúc merge hoàn tất:
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   GRAFANA CI/CD MR CYCLE TIME DASHBOARD                 │
 │                                                                        │
@@ -1881,7 +1881,7 @@ fi
 
 Kết thúc buổi lab, thư mục làm việc của học viên phải đáp ứng đầy đủ cấu trúc sau:
 
-```
+```bash
 $HOME/lab12/
 ├── so-job.sh                           (Script so sánh tập hiệu danh sách Job)
 ├── inspect-sha.sh                      (Script kiểm tra 3 biến SHA trong MR Pipeline)
@@ -2108,7 +2108,7 @@ fi
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Mức bảo vệ 3 (Merge Train):</b> Kiểm thử trên cây mã nguồn <code>main</code> ⊕ <code>Xe_trước_1</code> ⊕ <code>Xe_trước_2</code> ⊕ <code>HEAD nhánh nguồn</code>. Nó bảo vệ khỏi xung đột giữa các Merge Request đang cùng xếp hàng chờ gộp đồng thời vào nhánh đích.</div>
 
 #### Mô hình so sánh 3 cây Git Tree:
-```
+```bash
 [Mức 1]  HEAD (feature/mr-a)
 [Mức 2]  origin/main  +  HEAD (feature/mr-a)
 [Mức 3]  origin/main  +  HEAD (MR 1)  +  HEAD (MR 2)  +  HEAD (feature/mr-a)

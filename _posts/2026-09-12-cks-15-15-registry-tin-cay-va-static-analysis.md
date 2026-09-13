@@ -563,7 +563,7 @@ graph TD
     
     WebhookServer -->|"Image Digest Valid"| Approve[Pod Created in lab60]
     WebhookServer -.->|"Mutable Tag :latest"| Reject[REJECT 403 Forbidden]
-```
+```yaml
 
 ---
 
@@ -575,19 +575,19 @@ graph TD
 kubectl create namespace lab60
 
 mkdir -p /tmp/admission
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab60`.**
 
 ```bash
 kubectl get ns lab60 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra thư mục `/tmp/admission`.**
 
 ```bash
 test -d /tmp/admission && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```yaml
 
 ---
 
@@ -609,13 +609,13 @@ plugins:
         retryBackoff: 500
         defaultAllow: false
 EOF
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra tệp `/tmp/admission/admission-config.yaml`.**
 
 ```bash
 grep -q "ImagePolicyWebhook" /tmp/admission/admission-config.yaml && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```bash
 
 ### Thao tác 2.2: Biên soạn tệp `/tmp/admission/image-policy-kubeconfig.yaml`
 
@@ -637,25 +637,25 @@ contexts:
       user: api-server
 current-context: default
 EOF
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra tệp `/tmp/admission/image-policy-kubeconfig.yaml`.**
 
 ```bash
 grep -q "image-checker" /tmp/admission/image-policy-kubeconfig.yaml && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra cờ plugin `ImagePolicyWebhook`.**
 
 ```bash
 grep -q "ImagePolicyWebhook" /tmp/admission/admission-config.yaml && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra cờ `defaultAllow: false`.**
 
 ```bash
 grep -q "defaultAllow: false" /tmp/admission/admission-config.yaml && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```yaml
 
 ---
 
@@ -677,25 +677,25 @@ spec:
 EOF
 
 kubectl apply -f /tmp/pod-digest.yaml 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra việc CHẶN image tag `:latest`.**
 
 ```bash
 test -f /tmp/admission/admission-config.yaml && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra cờ `@sha256:` trong `/tmp/pod-digest.yaml`.**
 
 ```bash
 grep -q "@sha256:" /tmp/pod-digest.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra apply Pod manifest `/tmp/pod-digest.yaml`.**
 
 ```bash
 test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```yaml
 
 ---
 
@@ -705,19 +705,19 @@ test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOI
 
 ```bash
 test -f /tmp/pod-digest.yaml && echo "STATIC_SCAN_PASSED" >/dev/null
-```
+```bash
 
 **CHECKPOINT 10 — Phân tích tĩnh tệp YAML thành công.**
 
 ```bash
 test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```bash
 
 **CHECKPOINT 11 — Tra cứu nhật ký apiserver.**
 
 ```bash
 test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```yaml
 
 ---
 
@@ -725,13 +725,13 @@ test -f /tmp/pod-digest.yaml && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPO
 
 ```bash
 test -f /tmp/admission/admission-config.yaml && echo "FAIL_CLOSED_VERIFIED" >/dev/null
-```
+```bash
 
 **CHECKPOINT 12 — Kiểm tra Fail-Closed mode.**
 
 ```bash
 test -f /tmp/admission/admission-config.yaml && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -742,13 +742,13 @@ test -f /tmp/admission/admission-config.yaml && echo "CHECKPOINT 12 — ĐẠT" 
 ```bash
 kubectl delete namespace lab60
 rm -rf /tmp/admission /tmp/pod-digest.yaml
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/pod-digest.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -945,7 +945,7 @@ spec:
   containers:
     - name: app
       image: harbor.internal/apps/nginx@sha256:a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai định dạng image digest.
@@ -1000,7 +1000,7 @@ plugins:
         denyTTL: 50
         retryBackoff: 500
         defaultAllow: false
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc YAML hoặc sai apiVersion.
@@ -1130,7 +1130,7 @@ plugins:
         retryBackoff: 500
         defaultAllow: false
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1158,7 +1158,7 @@ contexts:
       user: api-server
 current-context: default
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1180,7 +1180,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx@sha256:a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1198,7 +1198,7 @@ cat <<EOF > /tmp/static-scan.json
   "Status": "PASSED_STATIC_ANALYSIS"
 }
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1269,7 +1269,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1296,7 +1296,7 @@ image: harbor.internal/app@sha256:a1b2c3d4e5f6...
 # Static Analysis
 trivy config /path/to/manifest.yaml
 kube-linter lint /path/to/manifest.yaml
-```
+```yaml
 
 ---
 

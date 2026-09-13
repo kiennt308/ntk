@@ -573,7 +573,7 @@ graph TD
     
     Audit[kubectl auth can-i CLI] -->|"Audit Request"| APIServer{"Kube-APIServer RBAC"}
     APIServer -->|"Verify app-sa"| AuditResult[list pods: YES | get secrets: NO]
-```
+```yaml
 
 ---
 
@@ -592,25 +592,25 @@ metadata:
   namespace: lab55
 automountServiceAccountToken: false
 EOF
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab55`.**
 
 ```bash
 kubectl get ns lab55 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra ServiceAccount `app-sa`.**
 
 ```bash
 kubectl get sa app-sa -n lab55 -o jsonpath='{.metadata.name}' | grep -qx app-sa && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```bash
 
 **CHECKPOINT 3 — Xác minh thuộc tính `automountServiceAccountToken: false`.**
 
 ```bash
 kubectl get sa app-sa -n lab55 -o jsonpath='{.automountServiceAccountToken}' | grep -qx false && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```yaml
 
 ---
 
@@ -644,19 +644,19 @@ roleRef:
   name: pod-reader
   apiGroup: rbac.authorization.k8s.io
 EOF
-```
+```bash
 
 **CHECKPOINT 4 — Kiểm tra Role `pod-reader`.**
 
 ```bash
 kubectl get role pod-reader -n lab55 -o jsonpath='{.metadata.name}' | grep -qx pod-reader && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra RoleBinding `bind-pod-reader`.**
 
 ```bash
 kubectl get rolebinding bind-pod-reader -n lab55 -o jsonpath='{.roleRef.name}' | grep -qx pod-reader && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```yaml
 
 ---
 
@@ -667,19 +667,19 @@ kubectl get rolebinding bind-pod-reader -n lab55 -o jsonpath='{.roleRef.name}' |
 ```bash
 kubectl auth can-i list pods --as=system:serviceaccount:lab55:app-sa -n lab55
 kubectl auth can-i get secrets --as=system:serviceaccount:lab55:app-sa -n lab55
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra quyền list pods của `app-sa` (Kỳ vọng: `yes`).**
 
 ```bash
 kubectl auth can-i list pods --as=system:serviceaccount:lab55:app-sa -n lab55 | grep -qx yes && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra quyền get secrets của `app-sa` (Kỳ vọng: `no`).**
 
 ```bash
 kubectl auth can-i get secrets --as=system:serviceaccount:lab55:app-sa -n lab55 | grep -qx no && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -700,31 +700,31 @@ rules:
 EOF
 
 kubectl apply -f /tmp/bad-role.yaml 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra tệp `/tmp/bad-role.yaml`.**
 
 ```bash
 test -f /tmp/bad-role.yaml && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 **CHECKPOINT 9 — Phân tích các ClusterRoles chứa cờ nguy hiểm.**
 
 ```bash
 test -f /tmp/bad-role.yaml && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 ### Thao tác 4.2: Thu hồi và xóa bỏ ClusterRole nguy hiểm khỏi cụm
 
 ```bash
 kubectl delete clusterrole bad-role 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 10 — Kiểm tra ClusterRole `bad-role` đã bị xóa khỏi cụm.**
 
 ```bash
 kubectl get clusterrole bad-role 2>&1 | grep -q "NotFound" || test ! -f /tmp/bad-role.yaml && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -745,20 +745,20 @@ spec:
     - name: app
       image: nginx:alpine
 EOF
-```
+```bash
 
 **CHECKPOINT 11 — Kiểm tra Pod `app-pod` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod app-pod -n lab55 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Xác minh Pod `app-pod` dùng `serviceAccountName: app-sa`.**
 
 ```bash
 kubectl get pod app-pod -n lab55 -o jsonpath='{.spec.serviceAccountName}' | grep -qx app-sa && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -769,13 +769,13 @@ kubectl get pod app-pod -n lab55 -o jsonpath='{.spec.serviceAccountName}' | grep
 ```bash
 kubectl delete namespace lab55
 rm -f /tmp/bad-role.yaml
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/bad-role.yaml && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -1018,7 +1018,7 @@ rules:
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
-```
+```diff
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc YAML hoặc dùng cờ đại diện `*`.
@@ -1144,7 +1144,7 @@ automountServiceAccountToken: false
 EOF
 
 kubectl apply -f /tmp/sa-prod.yaml
-```
+```bash
 </div>
 </details>
 
@@ -1181,7 +1181,7 @@ roleRef:
   name: secret-reader
   apiGroup: rbac.authorization.k8s.io
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1193,7 +1193,7 @@ EOF
   
 ```bash
 kubectl delete clusterrole dangerous-role 2>/dev/null || true
-```
+```bash
 </div>
 </details>
 
@@ -1216,7 +1216,7 @@ spec:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
 EOF
-```
+```yaml
 
 ---
 </div>
@@ -1287,7 +1287,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1314,7 +1314,7 @@ rules:
 
 # RBAC Audit CLI
 kubectl auth can-i <verb> <resource> --as=system:serviceaccount:<ns>:<sa> -n <ns>
-```
+```yaml
 
 ---
 

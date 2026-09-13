@@ -527,7 +527,7 @@ graph TD
     
     PodApp[Pod test-pod in Namespace lab54] -->|"4. Egress Request"| NetPol{"NetworkPolicy block-metadata-egress"}
     NetPol -.->|"Block 169.254.169.254/32"| Drop[Egress Traffic Dropped]
-```
+```yaml
 
 ---
 
@@ -543,25 +543,25 @@ sudo mkdir -p /etc/kubernetes/manifests
 echo "=== KUBE-BENCH AUDIT REPORT ===" > /tmp/kubebench-master.txt
 echo "[FAIL] 1.1.1 Ensure permissions for /etc/kubernetes/manifests are 600" >> /tmp/kubebench-master.txt
 echo "[FAIL] 1.1.2 Ensure permissions for /etc/kubernetes/admin.conf are 600" >> /tmp/kubebench-master.txt
-```
+```bash
 
 **CHECKPOINT 1 — Kiểm tra Namespace `lab54`.**
 
 ```bash
 kubectl get ns lab54 -o jsonpath='{.status.phase}' | grep -qx Active && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
+```bash
 
 **CHECKPOINT 2 — Kiểm tra tệp báo cáo `/tmp/kubebench-master.txt`.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
+```bash
 
 **CHECKPOINT 3 — Kiểm tra tệp báo cáo sẵn sàng.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+```yaml
 
 ---
 
@@ -575,31 +575,31 @@ sudo chmod 600 /etc/kubernetes/manifests/* 2>/dev/null || true
 
 sudo chown root:root /etc/kubernetes/admin.conf 2>/dev/null || true
 sudo chmod 600 /etc/kubernetes/admin.conf 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 4 — Phân tích tệp báo cáo `kube-bench`.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```bash
 
 **CHECKPOINT 5 — Kiểm tra phân quyền `/etc/kubernetes/manifests/`.**
 
 ```bash
 sudo stat -c "%a" /etc/kubernetes/manifests/kube-apiserver.yaml 2>/dev/null | grep -q "600\|644" || echo "600" | grep -q "600" && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
+```bash
 
 **CHECKPOINT 6 — Kiểm tra phân quyền `/etc/kubernetes/admin.conf`.**
 
 ```bash
 sudo stat -c "%a" /etc/kubernetes/admin.conf 2>/dev/null | grep -q "600\|644" || echo "600" | grep -q "600" && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
+```bash
 
 **CHECKPOINT 7 — Kiểm tra quyền sở hữu `root:root` trên `admin.conf`.**
 
 ```bash
 sudo stat -c "%U:%G" /etc/kubernetes/admin.conf 2>/dev/null | grep -q "root:root" || echo "root:root" | grep -q "root:root" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
+```yaml
 
 ---
 
@@ -625,32 +625,32 @@ spec:
             except:
               - 169.254.169.254/32
 EOF
-```
+```bash
 
 **CHECKPOINT 8 — Kiểm tra NetworkPolicy `block-metadata-egress`.**
 
 ```bash
 kubectl get netpol block-metadata-egress -n lab54 -o jsonpath='{.metadata.name}' | grep -qx block-metadata-egress && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
+```bash
 
 ### Thao tác 3.2: Triển khai Pod `test-pod` kiểm chứng rào chắn Egress
 
 ```bash
 kubectl run test-pod --image=nginx:alpine -n lab54
-```
+```bash
 
 **CHECKPOINT 9 — Kiểm tra Pod `test-pod` ở trạng thái `Running`.**
 
 ```bash
 sleep 4
 kubectl get pod test-pod -n lab54 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
+```bash
 
 **CHECKPOINT 10 — Xác minh truy cập IP Metadata bị CHẶN.**
 
 ```bash
 kubectl get pod test-pod -n lab54 -o jsonpath='{.status.phase}' | grep -qx Running && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
+```yaml
 
 ---
 
@@ -661,19 +661,19 @@ kubectl get pod test-pod -n lab54 -o jsonpath='{.status.phase}' | grep -qx Runni
 ```bash
 systemctl list-units --type=service > /dev/null 2>&1 || true
 sudo systemctl disable avahi-daemon 2>/dev/null || true
-```
+```bash
 
 **CHECKPOINT 11 — Kiểm tra danh sách dịch vụ qua `systemctl`.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
+```bash
 
 **CHECKPOINT 12 — Kiểm tra vô hiệu hóa dịch vụ thừa.**
 
 ```bash
 test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+```yaml
 
 ---
 
@@ -682,7 +682,7 @@ test -f /tmp/kubebench-master.txt && echo "CHECKPOINT 12 — ĐẠT" || echo "CH
 ```bash
 echo "[PASS] 1.1.1 File permissions set to 600" >> /tmp/kubebench-master.txt
 echo "[PASS] 1.1.2 File permissions set to 600" >> /tmp/kubebench-master.txt
-```
+```yaml
 
 ---
 
@@ -693,13 +693,13 @@ echo "[PASS] 1.1.2 File permissions set to 600" >> /tmp/kubebench-master.txt
 ```bash
 kubectl delete namespace lab54
 rm -f /tmp/kubebench-master.txt
-```
+```bash
 
 **CHECKPOINT 13 — Kiểm tra dọn dẹp sạch sẽ.**
 
 ```bash
 test ! -f /tmp/kubebench-master.txt && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
+```yaml
 
 ---
 
@@ -1045,7 +1045,7 @@ Chẩn đoán và khắc phục phân quyền tệp Kubelet Config chuẩn CIS B
   
 ```bash
 sudo kube-bench run --targets master 2>/dev/null | grep "FAIL" > /tmp/kubebench-fails.txt || echo "[FAIL] 1.1.1 manifests permissions" > /tmp/kubebench-fails.txt
-```
+```bash
 </div>
 </details>
 
@@ -1061,7 +1061,7 @@ sudo chmod 600 /etc/kubernetes/manifests/* 2>/dev/null || true
 
 sudo chown root:root /etc/kubernetes/admin.conf 2>/dev/null || true
 sudo chmod 600 /etc/kubernetes/admin.conf 2>/dev/null || true
-```
+```bash
 </div>
 </details>
 
@@ -1091,7 +1091,7 @@ spec:
             except:
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 169.254.169.254/32</div>
 EOF
-```
+```bash
 </div>
 </details>
 
@@ -1107,7 +1107,7 @@ sudo chmod 600 /var/lib/kubelet/config.yaml 2>/dev/null || true
 
 sudo chown root:root /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 2>/dev/null || true
 sudo chmod 600 /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 2>/dev/null || true
-```
+```yaml
 
 ---
 </div>
@@ -1177,7 +1177,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```
+```yaml
 
 ---
 
@@ -1200,7 +1200,7 @@ spec:
         - ipBlock:
             cidr: 0.0.0.0/0
             except: [169.254.169.254/32]
-```
+```yaml
 
 ---
 

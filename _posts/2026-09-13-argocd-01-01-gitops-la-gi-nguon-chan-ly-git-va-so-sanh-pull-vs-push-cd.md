@@ -189,7 +189,7 @@ graph TD
 
 Thay vì dùng nhánh (`branch-per-environment`) rất dễ bị "Git Merge Hell", chuẩn công nghiệp hiện nay là sử dụng **Directory-per-Environment** kết hợp với **Kustomize Overlays**:
 
-```
+```bash
 gitops-manifests-repo/
 ├── apps/
 │   └── payment-service/

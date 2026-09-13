@@ -1270,14 +1270,14 @@ Giải lập 1 Job trong Child Pipeline bị nổ lỗi đỏ:
 ```bash
 echo "CHECKPOINT 9: ĐẠT (Thuộc tính strategy: depend truyền trung thực trạng thái xanh/đỏ từ con lên cha)"
 ```ucceeded
-```
+```bash
 
 ### **CHECKPOINT 7**
 **Mục tiêu:** Tệp `dynamic-pipeline.yml` chỉ chứa duy nhất các Job của `go-worker`.
 **Lệnh thực thi kiểm tra:**
 ```bash
 echo "CHECKPOINT 7: ĐẠT (Child Pipeline chỉ chứa Job của microservice bị sửa đổi)"
-```
+```yaml
 
 ---
 
@@ -1292,14 +1292,14 @@ Detected shared dependency change! Triggering all services...
 Services to include in dynamic pipeline: {'node-api', 'go-worker', 'python-ml', 'php-web'}
 Successfully generated dynamic-pipeline.yml
 Job succeeded
-```
+```bash
 
 ### **CHECKPOINT 8**
 **Mục tiêu:** Tệp `dynamic-pipeline.yml` chứa đầy đủ 100% các Job của cả 4 microservice.
 **Lệnh thực thi kiểm tra:**
 ```bash
 echo "CHECKPOINT 8: ĐẠT (Sửa thư mục shared/ kích hoạt 100% Child Pipelines của tất cả dịch vụ)"
-```
+```yaml
 
 ---
 
@@ -1311,7 +1311,7 @@ Giả lập 1 Job trong Child Pipeline bị nổ lỗi đỏ:
 **Lệnh thực thi kiểm tra:**
 ```bash
 echo "CHECKPOINT 9: ĐẠT (Thuộc tính strategy: depend truyền trung thực trạng thái xanh/đỏ từ con lên cha)"
-```
+```yaml
 
 ---
 
@@ -1344,7 +1344,7 @@ go-worker-build:
       - services/go-worker/.go-cache/
   script:
     - cd services/go-worker && go build -o bin/app main.go
-```
+```bash
 
 #### Mẫu Trace Log nén đệm đệm phân tách theo tiền tố microservice:
 ```text
@@ -1356,14 +1356,14 @@ Creating cache go-worker-f1e2d3c...
 services/go-worker/.go-cache/: found 180 files
 Created cache go-worker-f1e2d3c (42 MB)
 Job succeeded
-```
+```bash
 
 ### **CHECKPOINT 10**
 **Mục tiêu:** Runner khởi tạo các kho đệm đệm `node-api-...` và `go-worker-...` hoàn toàn độc lập.
 **Lệnh thực thi kiểm tra:**
 ```bash
 echo "CHECKPOINT 10: ĐẠT (Phân tách Cache key độc lập theo tiền tố microservice thành công)"
-```
+```yaml
 
 ---
 
@@ -1386,7 +1386,7 @@ go-worker-test:
     - job: go-worker-build
   script:
     - cd services/go-worker && go test ./...
-```
+```bash
 
 #### Mẫu Trace Log thi hành DAG không chờ đợi giữa các Stage:
 ```text
@@ -1394,14 +1394,14 @@ Job go-worker-test started immediately after go-worker-build succeeded (Stage bu
 Passed!  - Failed: 0, Passed: 8, Skipped: 0
 Time Elapsed 00:00:02.14
 Job succeeded
-```
+```bash
 
 ### **CHECKPOINT 11**
 **Mục tiêu:** Job `go-worker-test` thi hành ngay sau khi `go-worker-build` xong mà không đứng chờ `node-api-build`.
 **Lệnh thực thi kiểm tra:**
 ```bash
 echo "CHECKPOINT 11: ĐẠT (Áp dụng sơ đồ DAG needs: tối ưu đường găng thi hành Monorepo thành công)"
-```
+```yaml
 
 ---
 
@@ -1431,14 +1431,14 @@ artifacts:
         - services/go-worker/coverage.xml
         - services/python-ml/coverage.xml
         - services/php-web/coverage.xml
-```
+```bash
 
 ### **CHECKPOINT 12**
 **Mục tiêu:** Tab Tests trên GitLab CE hiển thị đầy đủ chi tiết testcase của cả 4 microservice.
 **Lệnh thực thi kiểm tra:**
 ```bash
 echo "CHECKPOINT 12: ĐẠT (Phân tách báo cáo JUnit XML của 4 microservice trên GitLab UI thành công)"
-```
+```yaml
 
 ---
 
@@ -1447,7 +1447,7 @@ echo "CHECKPOINT 12: ĐẠT (Phân tách báo cáo JUnit XML của 4 microservic
 **Lệnh thực thi kiểm tra:**
 ```bash
 echo "CHECKPOINT 13: ĐẠT (Hợp nhất báo cáo Cobertura XML từ 4 ngôn ngữ lên GitLab MR Diff thành công)"
-```
+```yaml
 
 ---
 
@@ -1464,7 +1464,7 @@ python	python:3.11-slim	pip install --cache-dir .pip-cache -r requirements.txt	.
 go	golang:1.22-alpine	go build -o app main.go	.go-cache/
 dotnet	mcr.microsoft.com/dotnet/sdk:8.0	dotnet restore --locked-mode && dotnet build --no-restore -c Release	.nuget/packages/
 php	composer:2.7	composer install --no-interaction --prefer-dist --optimize-autoloader	.composer/cache/
-```
+```bash
 
 ### **CHECKPOINT 14**
 **Mục tiêu:** Kiểm tra tệp `bang-3-truc-6-ngon-ngu.tsv` chứa đầy đủ 6 ngôn ngữ lập trình không thiếu thông số nào.
@@ -1478,7 +1478,7 @@ if [ "$LINES" -ge 7 ]; then
 else
   echo "CHECKPOINT 14: LỖI (Tệp hiện vật bị thiếu dữ liệu)"
 fi
-```
+```yaml
 
 ---
 
@@ -1560,7 +1560,7 @@ fi
 echo "========================================================"
 echo "KẾT QUẢ KIỂM TRA BUỔI 22: $DAT ĐẠT, $LOI LỖI"
 echo "========================================================"
-```
+```diff
 
 ---
 

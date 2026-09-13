@@ -397,7 +397,7 @@ node:test_matrix:
 > Log hiển thị `Successfully extracted cache` nhưng câu lệnh `install` mất nguyên 100% thời gian chạy; hoặc dung lượng cache nạp về không khớp với bảng dung lượng chuẩn của ngôn ngữ.
 **Minh hoạ.** So sánh dung lượng đĩa và tính chính xác giữa khóa cache sai và khóa cache 3 phần:
 
-```
+```bash
 [CA SAI] Hai ngôn ngữ Node và Java cùng dùng key: "$CI_COMMIT_REF_SLUG"
   - Node build: Nén .npm (210 MB) đẩy lên key "main"
   - Java build: Tải key "main" (giải nén 210 MB của Node vào .m2 -> LỖI ÂM THẦM!)
@@ -424,7 +424,7 @@ node:test_matrix:
 > Dòng log `Created cache` báo dung lượng đĩa dưới **1 MB** (hoặc đúng 4 KB); tỉ lệ trúng Cache (Cache Hit Rate) luôn bằng **0%** bất kể chạy lại bao nhiêu lần.
 **Minh hoạ.** So sánh kết quả log giữa hai cách khai báo Cache cho Java Maven:
 
-```
+```bash
 # CA SAI: Trỏ đường dẫn ngoài dự án
 cache:
   paths:
@@ -604,7 +604,7 @@ variables:
 
 ### 1.7. Tóm tắt và sơ đồ tư duy
 
-```
+```bash
                         KHUNG CHUẨN BUILD ĐA NGÔN NGỮ
                                       │
      ┌────────────────────────────────┼────────────────────────────────┐

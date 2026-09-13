@@ -98,7 +98,7 @@ graph TD
 
 ### Mô hình tư duy 1: Hai mức thay thế và Hai thời điểm
 
-```
+```bash
 $[[ inputs.x ]]     <--- Thay ở t1 (Thời điểm hợp nhất, Server, trước khi tạo Job)
                          Thiếu input/Sai tên ---> PIPELINE KHÔNG ĐƯỢC TẠO (ồn ào)
 
@@ -346,7 +346,7 @@ Trong tệp Component, tuyệt đối **KHÔNG** khai báo khối `default:` ho�
 
 ## §15. Kiến trúc phân tầng Component trong Doanh nghiệp
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      GITLAB CI/CD CATALOG CENTRAL                      │
 │                                                                        │
@@ -967,7 +967,7 @@ include:
     inputs:
       job_prefix: "payment"
       environment: "staging"
-```
+```yaml
 EOF
 
 git init
@@ -1821,7 +1821,7 @@ echo "[STYLE CHECK] ĐẠT 100% QUY CHUẨN SẢN XUẤT!"
 
 Trong các bài toán phức tạp, một Component có thể chứa nhiều tệp template trong thư mục `templates/`:
 
-```
+```bash
 lab11-component/
 ├── templates/
 │   ├── build-docker.yml
@@ -1880,7 +1880,7 @@ Khi tất cả các dịch vụ trong tập đoàn sử dụng chung Component `
 
 Kỹ sư SRE có thể cấu hình Grafana Dashboard đọc dữ liệu từ REST API Audit (`dem-nguoi-dung.sh`) để vẽ biểu đồ tỉ lệ phủ Component trong tập đoàn:
 
-```
+```bash
 ┌────────────────────────────────────────────────────────────────────────┐
 │               GRAFANA CI/CD COMPONENT ADOPTION DASHBOARD               │
 │                                                                        │
@@ -1976,7 +1976,7 @@ release-catalog:
 
 Kết thúc buổi lab, thư mục làm việc của học viên phải đáp ứng đầy đủ cấu trúc sau:
 
-```
+```yaml
 $HOME/lab11/
 ├── dem-nguoi-dung.sh                    (Script audit dự án tiêu thụ qua REST API)
 ├── run-all-checkpoints.sh              (Suite tự động hoá kiểm tra 12 checkpoint)
@@ -2043,7 +2043,7 @@ CI/CD Component là bước tiến hóa kiến trúc vượt trội so với cá
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Khả năng đăng ký và hiển thị trên CI/CD Catalog UI:</b> Các tệp YAML include nằm rải rác trong các repository phụ thuộc, không thể tìm kiếm tập trung. Component được đăng ký thành Catalog Resource, cho phép toàn bộ kỹ sư trong tập đoàn tìm kiếm, xem tài liệu, giao diện inputs và ví dụ sử dụng trực quan trên giao diện Web của GitLab.</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Quản lý phiên bản chặt chẽ theo Semantic Versioning (SemVer):</b> Tệp include truyền thống thường trỏ vào branch (<code>ref: main</code> hoặc <code>ref: master</code>), dẫn tới rủi ro pipeline bị đứt gãy bất ngờ khi tệp nguồn thay đổi. Component bắt buộc xuất bản qua Git Tag và Release Tag (<code>@1.0.0</code>, <code>@2.1.0</code>), đảm bảo tính bất biến (immutability) cho hạ tầng CI/CD.</div>
 
-```
+```yaml
 Include truyền thống:  [User .gitlab-ci.yml] ---> (Chèn văn bản thô t0) ---> [Local/Remote YAML]
 CI/CD Component:       [User .gitlab-ci.yml] ---> (Truyền inputs t1)     ---> [Component @1.0.0 + spec:inputs]
 ```
@@ -2335,7 +2335,7 @@ Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp
 
 ## §V6. Tổng kết kiến thức trọng tâm Buổi 11
 
-```
+```yaml
                     ┌─────────────────────────────────────────┐
                     │     CI/CD COMPONENTS & CATALOG UI       │
                     └────────────────────┬────────────────────┘

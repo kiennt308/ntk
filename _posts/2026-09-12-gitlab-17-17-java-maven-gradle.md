@@ -56,7 +56,7 @@ Khi bước sang Java với hai trình quản lý dự án hàng đầu là **Ap
 1. **Về vị trí:** Thư mục kho chứa mặc định của Java (`~/.m2/repository` đối với Maven và `~/.gradle` đối với Gradle) nằm ở thư mục Home người dùng, hoàn toàn nằm **ngoài hàng rào `$CI_PROJECT_DIR`**. Nếu khai báo trực tiếp các đường dẫn này vào `cache:paths`, GitLab Runner sẽ tạo ra tệp zip Cache rỗng (0 bytes) nhưng Job **vẫn báo XANH im lặng**.
 2. **Về số loại Cache:** Maven chỉ quản lý một kho duy nhất (tiết kiệm thời gian tải dependencies). Gradle quản lý 3 thư mục riêng biệt với 2 loại Cache (tiết kiệm cả thời gian tải dependencies VÀ thời gian biên dịch mã nguồn).
 
-```
+```bash
    RANH GIỚI HÀNG RÀO $CI_PROJECT_DIR VÀ HAI CÔNG CỤ BUILD JAVA
 
    BÊN NGOÀI HÀNG RÀO (Mặc định - Cache 0 bytes)  │  BÊN TRONG HÀNG RÀO (Đã di chuyển)
@@ -876,7 +876,7 @@ fi
 ### Task 2.1: Tải và kiểm tra hiệu quả của cờ `-ntp` chống nổ trần log
 Chạy hai Job so sánh: một Job không có `-ntp` và một Job có `-ntp`.
 
-```
+```ini
 TRACE LOG SO SÁNH DUNG LƯỢNG TRACE LOG:
 
 [Mặc định KHÔNG có -ntp] -> 4,194,304 bytes log limit exceeded:

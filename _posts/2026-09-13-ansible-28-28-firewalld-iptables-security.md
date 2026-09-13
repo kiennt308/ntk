@@ -276,7 +276,7 @@ tasks:
 > Chạy lại Playbook tường lửa Lần 2 mà terminal báo `changed > 0` do dùng lệnh shell thô để thêm quy tắc.
 
 **Minh hoạ.** Đọc hiểu bảng `PLAY RECAP` Lần 2 đạt Idempotency khi quản lý Tường lửa:
-```
+```bash
 # Lần 1: changed=3 (Bật service firewalld, mở cổng 22, mở service http & rich rule)
 target1 : ok=5 changed=3 unreachable=0 failed=0
 

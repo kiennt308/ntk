@@ -1,10 +1,12 @@
 ---
-layout: page
+layout: default
 title: "About"
 permalink: /about.html
 ---
 
 {% assign about = site.about_page %}
+
+<div class="container container--narrow" style="margin-top: 1rem;">
 
 <!-- Author Spotlight Hero Card -->
 <div class="about-hero-card" style="display: flex; gap: 2rem; align-items: center; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.25rem; box-shadow: var(--shadow-sm); margin-bottom: 3rem; flex-wrap: wrap;">
@@ -170,4 +172,6 @@ permalink: /about.html
   <div style="font-size: 0.9rem; color: var(--text-muted);">
     {{ resume.cta_text }} <a href="{{ resume.cta_link_url | relative_url }}" style="font-weight: 600;">{{ resume.cta_link_text }}</a>
   </div>
+</div>
+
 </div>

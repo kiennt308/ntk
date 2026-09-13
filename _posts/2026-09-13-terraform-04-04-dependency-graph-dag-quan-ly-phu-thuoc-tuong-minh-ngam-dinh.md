@@ -289,7 +289,7 @@ data "aws_subnets" "created_subnets" {
 }
 ```
 
-### Log Lỗi Trả Về Khi Chạy `terraform plan`:
+### Hậu Quả & Log Lỗi Thực Tế:
 ```diff
 # Trích đoạn log lỗi từ Terraform Core Engine
 ! [CRITICAL ERROR] Error: Invalid data source query during plan

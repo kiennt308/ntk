@@ -260,7 +260,7 @@ output "db_master_password" {
 ### Tình Huống Sự Cố Thực Tế:
 Một nhóm kỹ sư phát triển triển khai hệ thống thông báo nội bộ. Kỹ sư đã xuất thông tin kết nối Database qua `output "connection_string"` mà quên không đánh dấu `sensitive = true`.
 
-Khi pipeline CI/CD chạy lệnh `terraform apply`, toàn bộ chuỗi kết nối chứa mật khẩu rõ ràng:
+### Hậu Quả & Log Lỗi Thực Tế:
 ```log
 # Trích đoạn log nguy hiểm bị rò rỉ trên GitLab CI Runner công khai
 Outputs:

@@ -277,7 +277,7 @@ module "databases" {
 }
 ```
 
-### Log Lỗi Trả Về Khi Chạy `terraform init` / `plan`:
+### Hậu Quả & Log Lỗi Thực Tế:
 ```log
 Error: Module is incompatible with count, for_each, and depends_on
 

@@ -229,8 +229,7 @@ terraform init -backend-config="env/prod-backend.hcl" -reconfigure
 ### Tình Huống Sự Cố Thực Tế:
 Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Trên một đường ống CI/CD GitLab, tiến trình `terraform apply` đang chạy thì Kubernetes Worker Node bị hết bộ nhớ (OOMKilled) khiến container bị tiêu diệt ngay lập tức.
 
-Bản ghi khóa trong DynamoDB vẫn còn lưu nguyên `LockID`. Khi các đợt chạy tiếp theo được kích hoạt, toàn bộ pipeline bị chặn đứng với thông báo lỗi:
-
+### Hậu Quả & Log Lỗi Thực Tế:
 ```log
 # Trích đoạn log lỗi từ Terraform CLI
 Acquiring state lock. This may take a few moments...

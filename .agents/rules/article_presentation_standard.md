@@ -167,14 +167,25 @@ Mọi bảng Markdown trong bài viết phải đảm bảo tính co giãn linh 
 
 ## 7. Chuẩn Hóa Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
-Mỗi bài viết phân tích sự cố phải bao gồm đủ 3 phần:
-1. **Tình Huống Sự Cố Thực Tế**: Có timeline badge mốc thời gian rõ ràng (`<span class="badge badge--rose">🕒 02:00 AM</span>`).
-2. **Hậu Quả & Log Lỗi Thực Tế**:
-   - Sử dụng khối ````diff` để hiển thị trực quan các thay đổi: `+` (thêm/xanh), `-` (xóa/đỏ), `~` (sửa/vàng), `!` (lỗi nghiêm trọng).
-   - Đi kèm sơ đồ Mermaid mô tả diễn biến sự cố từ nguyên nhân đến hậu quả gián đoạn dịch vụ.
-3. **5-Whys Root Cause Analysis**:
-   - Đánh số câu hỏi bằng badge: `1. <span class="badge badge--primary">Why 1</span> **Tại sao...?** $\rightarrow$ Lời giải.`
-   - Biện pháp khắc phục: `5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục tận gốc:**` kèm các badge chính sách (`<span class="badge badge--rose">Enforce IaC-Only</span>`, `<span class="badge badge--cyan">Drift Detection</span>`, `<span class="badge badge--amber">Plan Review Gate</span>`).
+Mỗi bài viết phân tích sự cố / cạm bẫy thực chiến bắt buộc phải bao gồm đầy đủ cấu trúc 4 phần chuẩn hóa:
+1. **Tình Huống Sự Cố Thực Tế (`### Tình Huống Sự Cố Thực Tế:`)**:
+   - Khởi đầu bằng timeline badge mốc thời gian rõ ràng (`<span class="badge badge--rose">🕒 02:00 AM</span>` hoặc `<span class="badge badge--rose">🕒 10:30 AM</span>`).
+   - Nêu rõ bối cảnh thao tác sai sót (ví dụ: ClickOps trên Console, copy State file, sai workspace, thiếu cờ sensitive, dùng count thay vì for_each...).
+2. **Hậu Quả & Log Lỗi Thực Tế (`### Hậu Quả & Log Lỗi Thực Tế:`)**:
+   - **BẮT BUỘC ĐƯỢC CHỨA TRONG FENCED CODE BLOCK** (như ```` ```diff ````, ```` ```log ````, ```` ```json ````, hoặc ```` ```bash ````).
+   - **TUYỆT ĐỐI KHÔNG** mô tả log lỗi hoặc hậu quả bằng văn bản thường (plain text) hoặc danh sách gạch đầu dòng thô sơ.
+   - Nội dung code block phải mô phỏng chân thực và sống động log lỗi từ Terraform Engine CLI, AWS API error response, stack trace, hoặc bản diff kế hoạch hủy diệt hạ tầng (với ký tự `+`, `-`, `~`, `!` và ghi chú outage rõ ràng).
+   - Đi kèm sơ đồ Mermaid trực quan hóa chuỗi phản ứng dây chuyền từ sai lầm ban đầu đến hậu quả sập hệ thống / gián đoạn dịch vụ.
+3. **Phân Tích Nguyên Nhân Gốc Rễ 5-Whys (`### 5-Whys Root Cause Analysis:`)**:
+   - Đánh số câu hỏi bằng badge:
+     - `1. <span class="badge badge--primary">Why 1</span> **Tại sao...?** $\rightarrow$ Phân tích chi tiết.`
+     - `2. <span class="badge badge--primary">Why 2</span> **Tại sao...?** $\rightarrow$ Phân tích chi tiết.`
+     - `3. <span class="badge badge--primary">Why 3</span> **Tại sao...?** $\rightarrow$ Phân tích chi tiết.`
+     - `4. <span class="badge badge--primary">Why 4</span> **Tại sao...?** $\rightarrow$ Phân tích chi tiết.`
+   - Biện pháp khắc phục chuẩn SRE:
+     - `5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**`
+     - Kèm theo các badge chính sách giải pháp (`<span class="badge badge--rose">Enforce IaC-Only</span>`, `<span class="badge badge--cyan">Drift Detection</span>`, `<span class="badge badge--amber">Plan Review Gate</span>`, `<span class="badge badge--emerald">CBD Propagation</span>`).
+   - **Lưu ý**: Tuyệt đối không để xảy ra hiện tượng lặp lại trùng lặp badge (duplicate badges).
 
 ---
 

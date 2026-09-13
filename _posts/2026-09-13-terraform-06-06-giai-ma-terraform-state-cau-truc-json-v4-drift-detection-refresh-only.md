@@ -283,7 +283,7 @@ and ownership of existing resources in the target environment.
 2. <span class="badge badge--primary">Why 2</span> **Tại sao `lineage` bị sai lệch?** $\rightarrow$ Do kỹ sư sao chép file State của Production sang Staging.
 3. <span class="badge badge--primary">Why 3</span> **Tại sao việc này cực kỳ nguy hiểm?** $\rightarrow$ Nếu Terraform cho phép chạy tiếp, State của Staging sẽ chứa Resource ID của Production (ví dụ ID cơ sở dữ liệu `rds-prod-db`). Khi Staging chạy lệnh hủy (`terraform destroy`), **nó sẽ xóa sạch cơ sở dữ liệu của Production**!
 4. <span class="badge badge--primary">Why 4</span> **Tại sao kỹ sư lại sao chép State?** $\rightarrow$ Do thiếu kiến thức về kiến trúc State và không hiểu vai trò của mã UUID `lineage`.
-5. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
    - **Tuyệt đối không sao chép State giữa các môi trường.**
    - **Luôn khởi tạo môi trường mới bằng một State trống** (`terraform init` trên Backend S3 riêng biệt).
    - **Phân tách quyền truy cập S3 Bucket State bằng IAM Policy riêng biệt** giữa Production và Staging.

@@ -35,6 +35,29 @@ Bài viết này sẽ mổ xẻ toàn diện các góc khuất bảo mật của
 
 ## 1. Mổ Xẻ Cạm Bẫy: "Bí Mật Trần Trụi" Trong Terraform State
 
+### Hậu Quả & Log Lỗi Thực Tế:
+```json
+# Trích đoạn tệp terraform.tfstate lưu Plaintext Secret
+{
+  "version": 4,
+  "resources": [
+    {
+      "type": "aws_db_instance",
+      "name": "db",
+      "instances": [
+        {
+          "attributes": {
+            "username": "dbadmin",
+            "password": "P@ssw0rd99Enterprise!",
+            "endpoint": "rds-prod.c9a1b2c3.ap-southeast-1.rds.amazonaws.com"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
 Khi bạn định nghĩa một biến số với thuộc tính `sensitive = true`:
 
 ```hcl

@@ -238,8 +238,7 @@ Vào lúc <span class="badge badge--rose">🕒 10:30 AM</span>, Một nhóm kỹ
 - Trong `module "network"`, kỹ sư muốn tạo VPC Flow Logs và cần truyền ID của Security Group từ `module.security.flow_logs_sg_id`.
 - Trong `module "security"`, kỹ sư lại cần `module.network.vpc_id` để tạo Security Group.
 
-Khi chạy lệnh `terraform plan`:
-
+### Hậu Quả & Log Lỗi Thực Tế:
 ```log
 Error: Cycle: module.network (expand), module.security (expand), module.network (expand)
 

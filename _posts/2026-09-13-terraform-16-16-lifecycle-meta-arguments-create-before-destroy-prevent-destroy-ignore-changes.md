@@ -304,7 +304,14 @@ Khi bạn sửa đổi Security Group buộc phải thay thế:
 - Nhưng `aws_instance` mới lại cần `aws_security_group` mới.
 - `aws_security_group` mới lại không thể tạo trước vì nó có `create_before_destroy = false` (nó phải đợi xóa cái cũ trước).
 - Nhưng `aws_security_group` cũ lại không thể xóa vì `aws_instance` cũ vẫn đang dùng nó!
-- **Hậu quả**: Terraform báo lỗi `Error: Cycle: aws_instance.app, aws_security_group.app_sg`.
+### Hậu Quả & Log Lỗi Thực Tế:
+```log
+Error: Cycle: aws_instance.app, aws_security_group.app_sg
+
+A cycle occurred between the resources during plan creation.
+Dependency chain:
+  aws_instance.app (create_before_destroy) -> aws_security_group.app_sg (destroy) -> aws_instance.app
+```
 
 ### 3.2. Quy Tắc Khắc Phục Chuẩn Enterprise
 > [!IMPORTANT]

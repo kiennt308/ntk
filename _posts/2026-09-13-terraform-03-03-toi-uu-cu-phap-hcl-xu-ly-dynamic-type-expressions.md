@@ -368,7 +368,7 @@ resource "aws_iam_policy" "bad_policy" {
 }
 ```
 
-### Log Lỗi Trả Về Khi Apply:
+### Hậu Quả & Log Lỗi Thực Tế:
 ```diff
 # Trích đoạn log lỗi từ AWS API
 ! [CRITICAL ERROR] Error creating IAM Policy bad-policy: MalformedPolicyDocument: 

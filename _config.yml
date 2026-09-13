@@ -10,7 +10,19 @@ baseurl: "/ntk"
 url: "https://kiennt308.github.io"
 repository: "kiennt308/ntk"
 favicon: "/assets/imgs/logo.jpg"
-show_ads: false
+show_ads: false                     # Cờ tương thích ngược cũ (khuyến nghị dùng mục ads bên dưới)
+
+# ==============================================================================
+# 📢 CẤU HÌNH QUẢNG CÁO (ADS & MONETIZATION SETTINGS)
+# ==============================================================================
+ads:
+  enabled: false                    # CỜ CHÍNH: true để bật, false để tắt toàn bộ quảng cáo trên web
+  client_id: ""                     # Mã Google AdSense Client ID (ví dụ: "ca-pub-1234567890123456")
+  sidebar_slot: ""                  # Slot ID quảng cáo cho Sidebar (ví dụ: "1234567890")
+  in_article_slot: ""               # Slot ID quảng cáo trong thân bài viết
+  banner_slot: ""                   # Slot ID quảng cáo Banner ngang cuối bài viết
+  ad_notice_text: "Advertisement"   # Chữ nhãn tiêu đề khung quảng cáo
+
 
 # ==============================================================================
 # 👤 2. THÔNG TIN TÁC GIẢ (AUTHOR PROFILE)

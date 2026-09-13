@@ -18,6 +18,12 @@
   <!-- Feed Meta Plugin Tags -->
   {% feed_meta %}
 
+  {% assign ads_on = site.ads.enabled | default: site.show_ads %}
+  {% if ads_on and site.ads.client_id and site.ads.client_id != "" %}
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.ads.client_id }}" crossorigin="anonymous"></script>
+  {% endif %}
+
   <!-- Prevent theme flashing during initial render -->
   <script>
     (function() {

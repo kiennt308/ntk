@@ -3,6 +3,7 @@ layout: default
 ---
 
 {% assign page_cfg = site.post_page %}
+{% assign ads_on = site.ads.enabled | default: site.show_ads %}
 
 <!-- Calculate Reading Time -->
 {% assign words = content | number_of_words %}
@@ -48,7 +49,7 @@ layout: default
         </a>
       </div>
 
-      {% if site.show_ads %}
+      {% if ads_on %}
       <div style="margin-top: 2rem;">
         {% include ads/sidebar.html %}
       </div>
@@ -142,7 +143,7 @@ layout: default
       {% endif %}
 
       <!-- Ad slot top -->
-      {% if site.show_ads %}
+      {% if ads_on %}
       <div class="no-print">
         {% include ads/in-article.html %}
       </div>
@@ -154,7 +155,7 @@ layout: default
       </div>
 
       <!-- Ad slot bottom -->
-      {% if site.show_ads %}
+      {% if ads_on %}
       <div class="no-print" style="margin-top: 2.5rem;">
         {% include ads/banner.html %}
       </div>
@@ -287,7 +288,7 @@ layout: default
         </div>
       </div>
 
-      {% if site.show_ads %}
+      {% if ads_on %}
       {% include ads/sidebar.html %}
       {% endif %}
     </aside>

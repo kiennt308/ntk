@@ -1,5 +1,25 @@
-<div class="ad-wrapper ad-sidebar">
-  <div class="ad-placeholder" style="min-height: 250px;">
-    <span>Sidebar Ad Slot (300x250 / 300x600)</span>
+{% assign ads_on = site.ads.enabled | default: site.show_ads %}
+{% if ads_on %}
+  {% assign client_id = site.ads.client_id | default: "" %}
+  {% assign slot_id = site.ads.sidebar_slot | default: "" %}
+  {% assign ad_label = site.ads.ad_notice_text | default: "Advertisement" %}
+
+  <div class="ad-wrapper ad-sidebar no-print">
+    <span class="ad-label">{{ ad_label }}</span>
+    {% if client_id != "" and slot_id != "" %}
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="{{ client_id }}"
+           data-ad-slot="{{ slot_id }}"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    {% else %}
+      <div class="ad-placeholder" style="min-height: 250px;">
+        <span>Sidebar Ad Slot (300x250 / 300x600)</span>
+      </div>
+    {% endif %}
   </div>
-</div>
+{% endif %}

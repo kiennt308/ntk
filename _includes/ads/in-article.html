@@ -1,5 +1,25 @@
-<div class="ad-wrapper" style="margin: 1.5rem 0;">
-  <div class="ad-placeholder" style="min-height: 80px;">
-    <span>In-Article Native Ad Slot (Responsive)</span>
+{% assign ads_on = site.ads.enabled | default: site.show_ads %}
+{% if ads_on %}
+  {% assign client_id = site.ads.client_id | default: "" %}
+  {% assign slot_id = site.ads.in_article_slot | default: "" %}
+  {% assign ad_label = site.ads.ad_notice_text | default: "Advertisement" %}
+
+  <div class="ad-wrapper ad-in-article no-print" style="margin: 2rem 0;">
+    <span class="ad-label">{{ ad_label }}</span>
+    {% if client_id != "" and slot_id != "" %}
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="{{ client_id }}"
+           data-ad-slot="{{ slot_id }}"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    {% else %}
+      <div class="ad-placeholder" style="min-height: 90px;">
+        <span>In-Article Native Ad Slot</span>
+      </div>
+    {% endif %}
   </div>
-</div>
+{% endif %}

@@ -904,7 +904,82 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initial render
+  /* ==========================================================================
+     Article Enhancements: Convert GitHub Alerts & Responsive Tables
+     ========================================================================== */
+  function initArticleEnhancements() {
+    const articleBody = document.querySelector('.article-body');
+    if (!articleBody) return;
+
+    // 1. Wrap all tables in .table-responsive if not already wrapped
+    articleBody.querySelectorAll('table').forEach((table) => {
+      if (!table.parentElement.classList.contains('table-responsive')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'table-responsive';
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      }
+    });
+
+    // 2. Transform GitHub Alert Blockquotes (> [!WARNING], > [!IMPORTANT], etc.)
+    const alertTypes = {
+      'WARNING': {
+        typeClass: 'callout-warning',
+        title: 'CẢNH BÁO QUAN TRỌNG (WARNING)',
+        icon: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+      },
+      'IMPORTANT': {
+        typeClass: 'callout-important',
+        title: 'LƯU Ý CỐT LÕI (IMPORTANT)',
+        icon: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
+      },
+      'TIP': {
+        typeClass: 'callout-tip',
+        title: 'MẸO THỰC CHIẾN (PRO TIP)',
+        icon: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path></svg>'
+      },
+      'NOTE': {
+        typeClass: 'callout-note',
+        title: 'GHI CHÚ (NOTE)',
+        icon: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>'
+      },
+      'CAUTION': {
+        typeClass: 'callout-caution',
+        title: 'CHÚ Ý RỦI RO (CAUTION)',
+        icon: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>'
+      }
+    };
+
+    articleBody.querySelectorAll('blockquote').forEach((bq) => {
+      const text = bq.textContent.trim();
+      const match = text.match(/^\[!(WARNING|IMPORTANT|TIP|NOTE|CAUTION|DANGER)\]/i);
+      if (match) {
+        let key = match[1].toUpperCase();
+        if (key === 'DANGER') key = 'CAUTION';
+        const meta = alertTypes[key] || alertTypes['NOTE'];
+
+        let rawHtml = bq.innerHTML;
+        rawHtml = rawHtml.replace(/\[!(WARNING|IMPORTANT|TIP|NOTE|CAUTION|DANGER)\]/i, '').trim();
+        rawHtml = rawHtml.replace(/^(<br\s*\/?>|\s)+/i, '');
+
+        const callout = document.createElement('div');
+        callout.className = `callout-box ${meta.typeClass}`;
+        callout.innerHTML = `
+          <div class="callout-header">
+            ${meta.icon}
+            <span>${meta.title}</span>
+          </div>
+          <div class="callout-body">
+            ${rawHtml}
+          </div>
+        `;
+        bq.parentNode.replaceChild(callout, bq);
+      }
+    });
+  }
+
+  // Initial enhancements & render
+  initArticleEnhancements();
   initMermaidDiagrams();
 
   // Re-initialize MathJax if needed on dynamic changes

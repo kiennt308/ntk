@@ -156,6 +156,10 @@ permalink: /blog.html
         </div>
       </div>
 
+      {% if site.ads.enabled or site.show_ads %}
+        {% include ads/sidebar.html %}
+      {% endif %}
+
     </aside>
 
   </div>

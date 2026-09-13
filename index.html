@@ -119,6 +119,12 @@ permalink: /
         </p>
       {% endif %}
     </div>
+
+    {% if site.ads.enabled or site.show_ads %}
+      <div style="margin-top: 3.5rem;">
+        {% include ads/banner.html %}
+      </div>
+    {% endif %}
   </div>
 </section>
 

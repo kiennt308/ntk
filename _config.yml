@@ -143,7 +143,7 @@ homepage:
   # Khối Hero đầu trang
   hero:
     pill_text: "Open for Cloud Architecture & SRE Consulting"
-    title_line1: "Engineering Cloud & Platform"
+    title_line1: "Engineering Cloud & DevOps"
     title_highlight: "Systems at Scale."
     subtitle: "Practical guides, architecture deep-dives, and production playbooks covering AWS, Kubernetes, Terraform, Observability, and Modern DevOps."
     primary_cta_text: "Explore All Guides"

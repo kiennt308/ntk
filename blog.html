@@ -33,12 +33,16 @@ permalink: /blog.html
       <!-- Category & Pillar Filter Tabs (Real-time dynamic filtering) -->
       <div class="filter-wrapper no-print" style="margin-bottom: 2.5rem;">
         <div class="filter-bar">
-          <button class="filter-btn live-filter-btn active" data-filter="all">{{ page_cfg.all_topics_label }} ({{ site.posts.size }})</button>
+          <button class="filter-btn live-filter-btn active" data-filter="all" style="display: inline-flex; align-items: center; gap: 0.45rem;">
+            {% include icon.html name="book" size=15 %}
+            <span>{{ page_cfg.all_topics_label }}</span>
+            <span style="opacity: 0.75; font-size: 0.75rem; margin-left: 0.15rem;">({{ site.posts.size }})</span>
+          </button>
           {% for topic in site.topics %}
-            <button class="filter-btn live-filter-btn" data-filter="{{ topic.id }}" style="display: inline-flex; align-items: center; gap: 0.4rem;">
-              {% include icon.html name=topic.icon size=14 %}
+            <button class="filter-btn live-filter-btn" data-filter="{{ topic.id }}" style="display: inline-flex; align-items: center; gap: 0.45rem;">
+              {% include icon.html name=topic.icon size=15 %}
               <span>{{ topic.category_name }}</span>
-              <span style="opacity: 0.75; font-size: 0.75rem;">({{ site.categories[topic.category_name] | size | default: 0 }})</span>
+              <span style="opacity: 0.75; font-size: 0.75rem; margin-left: 0.15rem;">({{ site.categories[topic.category_name] | size | default: 0 }})</span>
             </button>
           {% endfor %}
         </div>
@@ -111,7 +115,7 @@ permalink: /blog.html
             {% include icon.html name="github" size=15 %}
           </a>
           <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm" style="padding: 0.4rem 0.65rem;" aria-label="LinkedIn">
-            {% include icon.html name="linkedin" size=15 %}
+            {% include icon.html name="briefcase" size=15 %}
           </a>
         </div>
       </div>
@@ -119,16 +123,18 @@ permalink: /blog.html
       <!-- Widget 2: Topic Pillars -->
       <div class="blog-sidebar-widget">
         <h3 class="blog-sidebar-title">
-          {% include icon.html name="book" size=15 %}
+          {% include icon.html name="book" size=16 %}
           <span>{{ page_cfg.sidebar.pillars_title }}</span>
         </h3>
         <ul class="blog-topic-list">
           {% for topic in site.topics %}
             <li class="blog-topic-item">
-              <a href="#{{ topic.id }}" class="sidebar-filter-trigger" data-filter="{{ topic.id }}" style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
-                <span style="display: inline-flex; align-items: center; gap: 0.45rem;">
-                  {% include icon.html name=topic.icon size=14 %}
-                  <span>{{ topic.category_name }}</span>
+              <a href="#{{ topic.id }}" class="sidebar-filter-trigger" data-filter="{{ topic.id }}" style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.65rem 0.85rem;">
+                <span style="display: inline-flex; align-items: center; gap: 0.65rem;">
+                  <span style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-color); display: inline-flex; align-items: center; justify-content: center; color: var(--accent-primary); flex-shrink: 0;">
+                    {% include icon.html name=topic.icon size=14 %}
+                  </span>
+                  <span style="font-weight: 600;">{{ topic.category_name }}</span>
                 </span>
                 <span class="badge {{ topic.badge_class }}">{{ site.categories[topic.category_name] | size | default: 0 }}</span>
               </a>
@@ -140,7 +146,7 @@ permalink: /blog.html
       <!-- Widget 3: Popular Tags -->
       <div class="blog-sidebar-widget">
         <h3 class="blog-sidebar-title">
-          {% include icon.html name="tag" size=15 %}
+          {% include icon.html name="tag" size=16 %}
           <span>{{ page_cfg.sidebar.tags_title }}</span>
         </h3>
         <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">

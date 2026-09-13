@@ -47,9 +47,9 @@ flowchart TD
     subgraph Provisioner_Model ["Mô Hình Imperative: Provisioners Phá Vỡ Luồng"]
         P1["Tạo Xong Resource Thô"] --> P2["Mở Kết Nối SSH / WinRM / Local Subprocess"]
         P2 --> P3["Chạy Shell Script Mệnh Lệnh"]
-        P3 -->|"Nếu Mất Mạng Hoặc Script Lỗi"| P4["Terraform Đánh Dấu Resource Là TAINTED"]
+        P3 -->|Nếu Mất Mạng Hoặc Script Lỗi| P4["Terraform Đánh Dấu Resource Là TAINTED"]
         P4 --> P5["Lần Chạy Sau: BẮT BUỘC HỦY & TẠO LẠI TOÀN BỘ MÁY CHỦ!"]
-        P3 -->|"Thành công"| P6["Không Lưu Lại Lịch Sử Script Vào State"]
+        P3 -->|Thành công| P6["Không Lưu Lại Lịch Sử Script Vào State"]
     end
 
     style D4 fill:none,stroke:#28a745,stroke-width:2px
@@ -79,9 +79,9 @@ graph LR
     P --> R["remote-exec"]
     P --> F["file"]
 
-    L -->|"Chạy subprocess"| L1["Local Machine / CI Runner OS"]
-    R -->|"Kết nối SSH / WinRM"| R1["Remote Target Virtual Machine"]
-    F -->|"Copy file/folder"| F1["Remote Target Virtual Machine"]
+    L -->|Chạy subprocess| L1["Local Machine / CI Runner OS"]
+    R -->|Kết nối SSH / WinRM| R1["Remote Target Virtual Machine"]
+    F -->|Copy file/folder| F1["Remote Target Virtual Machine"]
 
     style R1 fill:none,stroke:#3b82f6,stroke-width:2px
     style R fill:none,stroke:#0ea5e9,stroke-width:2px
@@ -463,66 +463,121 @@ rm -rf terraform-lab17-provisioners
 
 ## 6. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao `remote-exec` thất bại lại khiến máy chủ bị đánh dấu là "Tainted"?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Vì Terraform coi việc khởi tạo tài nguyên bao gồm cả hai bước: Tạo phần cứng Cloud và chạy Provisioner cấu hình. Nếu provisioner ném ra exit code khác 0, Terraform hiểu rằng máy chủ đang ở trạng thái lỗi/chưa sẵn sàng phục vụ. Để đảm bảo tính toàn vẹn (integrity), Terraform taint máy chủ đó để buộc phải xóa và dựng lại ở lần chạy sau.
+  : Vì Terraform coi việc khởi tạo tài nguyên bao gồm cả hai bước: Tạo phần cứng Cloud và chạy Provisioner cấu hình. Nếu provisioner ném ra exit code khác 0, Terraform hiểu rằng máy chủ đang ở trạng thái lỗi/chưa sẵn sàng phục vụ. Để đảm bảo tính toàn vẹn (integrity), Terraform taint máy chủ đó để buộc phải xóa và dựng lại ở lần chạy sau.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Khối `connection` bên trong resource có tác dụng gì và hỗ trợ những giao thức nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Khối <code>connection</code> định nghĩa phương thức và thông tin xác thực để các provisioner <code>file</code> và <code>remote-exec</code> kết nối vào máy chủ đích. Nó hỗ trợ 2 giao thức chính: <b style="color: var(--accent-primary);">SSH</b> (mặc định cho Linux, port 22) và <b style="color: var(--accent-primary);">WinRM</b> (dành cho Windows Server, port 5985/5986).
+  : Khối `connection` định nghĩa phương thức và thông tin xác thực để các provisioner `file` và `remote-exec` kết nối vào máy chủ đích. Nó hỗ trợ 2 giao thức chính: **SSH** (mặc định cho Linux, port 22) và **WinRM** (dành cho Windows Server, port 5985/5986).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>destroy-time provisioner` (`when = destroy`) có những hạn chế nghiêm trọng nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Trong destroy-time provisioner:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khối provisioner chỉ có thể truy cập <code>self.*</code> và <code>count.index</code>, <b style="color: var(--accent-primary);">hoàn toàn không thể tham chiếu</b> đến các resource khác (vì các resource khác có thể đã bị xóa trước đó).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu destroy-time provisioner gặp lỗi thất bại, lệnh <code>terraform destroy</code> sẽ dừng lại và tài nguyên không bị xóa khỏi State, dễ dẫn đến tình trạng State bị kẹt.</div>
+  : Trong destroy-time provisioner:
+  - Khối provisioner chỉ có thể truy cập `self.*` và `count.index`, **hoàn toàn không thể tham chiếu** đến các resource khác (vì các resource khác có thể đã bị xóa trước đó).
+  - Nếu destroy-time provisioner gặp lỗi thất bại, lệnh `terraform destroy` sẽ dừng lại và tài nguyên không bị xóa khỏi State, dễ dẫn đến tình trạng State bị kẹt.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Điểm khác nhau căn bản giữa `triggers` trong `null_resource` và `triggers_replace` trong `terraform_data`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>null_resource.triggers</code> chỉ chấp nhận một map các chuỗi string (<code>map(string)</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>terraform_data.triggers_replace</code> chấp nhận bất kỳ kiểu dữ liệu nào (<code>any</code>), bao gồm complex objects, lists, sets, hoặc kết quả băm sha256, mang lại sự linh hoạt tối đa.</div>
+  : 
+  - `null_resource.triggers` chỉ chấp nhận một map các chuỗi string (`map(string)`).
+  - `terraform_data.triggers_replace` chấp nhận bất kỳ kiểu dữ liệu nào (`any`), bao gồm complex objects, lists, sets, hoặc kết quả băm sha256, mang lại sự linh hoạt tối đa.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao HashiCorp Packer (Golden Images) được coi là giải pháp tối ưu hơn cả Provisioners lẫn Cloud-init khi scale lớn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Packer thực hiện việc cài đặt phần mềm, vá lỗi bảo mật OS (OS Hardening), và cấu hình runtime <b style="color: var(--accent-primary);">ngay trong giai đoạn Build Image</b> (Bake time). Khi máy chủ khởi động (Boot time), nó chỉ mất 30-45 giây để sẵn sàng nhận traffic thay vì mất 10-15 phút để chạy script tải packages qua mạng, giúp Auto-scaling phản ứng tức thì khi có đột biến lưu lượng.
+  : Packer thực hiện việc cài đặt phần mềm, vá lỗi bảo mật OS (OS Hardening), và cấu hình runtime **ngay trong giai đoạn Build Image** (Bake time). Khi máy chủ khởi động (Boot time), nó chỉ mất 30-45 giây để sẵn sàng nhận traffic thay vì mất 10-15 phút để chạy script tải packages qua mạng, giúp Auto-scaling phản ứng tức thì khi có đột biến lưu lượng.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Nếu bạn bắt buộc phải dùng `local-exec`, làm thế nào để truyền các biến môi trường bí mật (Secrets) vào script an toàn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Sử dụng khối <code>environment</code> bên trong <code>provisioner "local-exec"</code> thay vì chèn trực tiếp chuỗi vào <code>command</code>:
+  : Sử dụng khối `environment` bên trong `provisioner "local-exec"` thay vì chèn trực tiếp chuỗi vào `command`:
 ```hcl
 provisioner "local-exec" {
   command = "bash ./deploy.sh"
@@ -534,43 +589,79 @@ provisioner "local-exec" {
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Thuộc tính `on_failure = continue` trong provisioner hoạt động ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Nếu script của provisioner trả về mã lỗi (non-zero exit code), Terraform sẽ ghi lại cảnh báo (Warning) trong terminal nhưng <b style="color: var(--accent-primary);">vẫn coi như tài nguyên thành công</b>, không đánh dấu tainted và tiếp tục thực thi các bước tiếp theo của pipeline.
+  : Nếu script của provisioner trả về mã lỗi (non-zero exit code), Terraform sẽ ghi lại cảnh báo (Warning) trong terminal nhưng **vẫn coi như tài nguyên thành công**, không đánh dấu tainted và tiếp tục thực thi các bước tiếp theo của pipeline.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Có thể dùng `terraform_data` để thay thế một resource mà không làm thay đổi ID hạ tầng trên Cloud không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Có thể. <code>terraform_data</code> là một logical resource chỉ tồn tại trong State của Terraform. Bạn có thể thêm, sửa, xóa, hoặc recreate <code>terraform_data</code> tùy ý mà không gửi bất kỳ API call nào làm ảnh hưởng đến các tài nguyên thực tế trên AWS/GCP/Azure.
+  : Có thể. `terraform_data` là một logical resource chỉ tồn tại trong State của Terraform. Bạn có thể thêm, sửa, xóa, hoặc recreate `terraform_data` tùy ý mà không gửi bất kỳ API call nào làm ảnh hưởng đến các tài nguyên thực tế trên AWS/GCP/Azure.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác biệt giữa `user_data` thông thường và `data.cloudinit_config` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<code>user_data</code> thông thường chỉ là một chuỗi shell script đơn lẻ. <code>cloudinit_config</code> là cơ chế đa thành phần (multi-part MIME), cho phép kết hợp song song Cloud-Config YAML (quản lý files, users, packages) và nhiều đoạn Shell Scripts độc lập, hỗ trợ nén <code>gzip</code> và mã hóa <code>base64</code> tự động.
+  : `user_data` thông thường chỉ là một chuỗi shell script đơn lẻ. `cloudinit_config` là cơ chế đa thành phần (multi-part MIME), cho phép kết hợp song song Cloud-Config YAML (quản lý files, users, packages) và nhiều đoạn Shell Scripts độc lập, hỗ trợ nén `gzip` và mã hóa `base64` tự động.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi nào thì việc sử dụng `local-exec` được coi là chấp nhận được (Acceptable Practice)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Khi dùng để thực hiện các tác vụ điều phối bên ngoài (Orchestration glue) không can thiệp vào bên trong máy chủ, ví dụ: kích hoạt Webhook thông báo Slack khi hạ tầng tạo xong, ghi file output cục bộ cho tool khác sử dụng, hoặc gọi CLI công cụ bảo mật nội bộ để quét tuân thủ.
+  : Khi dùng để thực hiện các tác vụ điều phối bên ngoài (Orchestration glue) không can thiệp vào bên trong máy chủ, ví dụ: kích hoạt Webhook thông báo Slack khi hạ tầng tạo xong, ghi file output cục bộ cho tool khác sử dụng, hoặc gọi CLI công cụ bảo mật nội bộ để quét tuân thủ.
 </div>
 </details>
 

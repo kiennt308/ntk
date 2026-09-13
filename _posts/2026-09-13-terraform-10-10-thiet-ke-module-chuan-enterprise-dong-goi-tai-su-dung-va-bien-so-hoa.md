@@ -38,7 +38,7 @@ Bài viết này sẽ hướng dẫn bạn toàn bộ quy chuẩn thiết kế M
 
 Một Module chuyên nghiệp bắt buộc phải tuân thủ bố cục cây thư mục chuẩn hóa sau:
 
-```bash
+```text
 terraform-aws-secure-storage/
 ├── README.md               # Tài liệu hướng dẫn sử dụng, bảng inputs/outputs (tự động sinh)
 ├── LICENSE                 # Giấy phép mã nguồn (Apache-2.0 / MIT / Proprietary)
@@ -419,104 +419,194 @@ cd .. && rm -rf /tmp/module-lab
 ## 9. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao không bao giờ được khai báo khối `provider "aws" {}` bên trong Child Module?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Vì sẽ làm mất tính năng quan trọng nhất của Module: <b style="color: var(--accent-primary);">Không thể sử dụng <code>count</code> hoặc <code>for_each</code> trên Module đó</b>. Child Module chỉ được phép nhận Provider từ Root Module truyền xuống (Provider Inversion of Control).
+  Vì sẽ làm mất tính năng quan trọng nhất của Module: <b style="color: var(--accent-primary);">Không thể sử dụng `count` hoặc `for_each` trên Module đó</b>. Child Module chỉ được phép nhận Provider từ Root Module truyền xuống (Provider Inversion of Control).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tệp `versions.tf` trong Child Module có nhiệm vụ gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Dùng để khai báo ràng buộc phiên bản tối thiểu của Terraform CLI (<code>required_version</code>) và phiên bản của các Provider plugins (<code>required_providers</code>) mà Module này tương thích, giúp cảnh báo sớm cho người dùng nếu dùng sai phiên bản.
+  Dùng để khai báo ràng buộc phiên bản tối thiểu của Terraform CLI (<code>required_version</code>) và phiên bản của các Provider plugins (<code>required_providers</code>) mà Module này tương thích, giúp cảnh báo sớm cho người dùng nếu dùng sai phiên bản.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Quy tắc đặt tên Git Tag chuẩn Semantic Versioning cho Module là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Phải theo định dạng <code>vMAJOR.MINOR.PATCH</code> (ví dụ: <code>v1.2.0</code>). Khi có Breaking Change (ví dụ đổi tên biến bắt buộc), bắt buộc phải tăng MAJOR version (<code>v2.0.0</code>).
+  Phải theo định dạng <code>vMAJOR.MINOR.PATCH</code> (ví dụ: <code>v1.2.0</code>). Khi có Breaking Change (ví dụ đổi tên biến bắt buộc), bắt buộc phải tăng MAJOR version (<code>v2.0.0</code>).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Làm thế nào để tự động sinh tài liệu Markdown `README.md` chuyên nghiệp cho Module?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Sử dụng công cụ mã nguồn mở tiêu chuẩn <b style="color: var(--accent-primary);"><code>terraform-docs</code></b> (lệnh: <code>terraform-docs markdown table --output-file README.md .</code>) để tự động quét toàn bộ variables, outputs, providers và render thành bảng trực quan.
+  Sử dụng công cụ mã nguồn mở tiêu chuẩn <b style="color: var(--accent-primary);"><code>terraform-docs</code></b> (lệnh: <code>terraform-docs markdown table --output-file README.md .</code>) để tự động quét toàn bộ variables, outputs, providers và render thành bảng trực quan.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Sự khác nhau giữa việc gọi Module qua Local Path và qua Git Tag là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Local Path:</b> Thay đổi code module có hiệu lực ngay lập tức trong lần chạy plan tiếp theo, không kiểm soát được phiên bản.<br/></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Git Tag:</b> Module được khóa cứng vào một phiên bản bất biến (Immutable Version Tag), giúp các môi trường Staging/Production được bảo vệ an toàn khỏi các thay đổi chưa kiểm duyệt.</div>
+  - <b style="color: var(--accent-primary);">Local Path:</b> Thay đổi code module có hiệu lực ngay lập tức trong lần chạy plan tiếp theo, không kiểm soát được phiên bản.<br/>
+- <b style="color: var(--accent-primary);">Git Tag:</b> Module được khóa cứng vào một phiên bản bất biến (Immutable Version Tag), giúp các môi trường Staging/Production được bảo vệ an toàn khỏi các thay đổi chưa kiểm duyệt.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Biến `path.module` trong HCL trả về đường dẫn nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Trả về đường dẫn thư mục nơi tệp mã nguồn HCL hiện tại đang được định nghĩa (thư mục của chính Module con đó), rất hữu ích khi dùng với các hàm <code>file("${path.module}/template.json")</code>.
+  Trả về đường dẫn thư mục nơi tệp mã nguồn HCL hiện tại đang được định nghĩa (thư mục của chính Module con đó), rất hữu ích khi dùng với các hàm <code>file("${path.module}/template.json")</code>.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Khi nào nên tách một đoạn code HCL thành một Module riêng biệt?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Khi đoạn code đó: (1) Được tái sử dụng ở từ 2 nơi trở lên; (2) Đại diện cho một mẫu kiến trúc logic độc lập (VPC, EKS, RDS Cluster); (3) Cần được phân quyền quản lý hoặc kiểm thử độc lập bởi một nhóm chuyên môn.
+  Khi đoạn code đó: (1) Được tái sử dụng ở từ 2 nơi trở lên; (2) Đại diện cho một mẫu kiến trúc logic độc lập (VPC, EKS, RDS Cluster); (3) Cần được phân quyền quản lý hoặc kiểm thử độc lập bởi một nhóm chuyên môn.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Toán tử `~>` (Pessimistic Constraint Operator) trong khai báo phiên bản hoạt động như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Ví dụ <code>~> 1.2.0</code> cho phép tự động cập nhật các bản vá lỗi PATCH (từ <code>1.2.0</code> đến <code>1.2.99</code>) nhưng <b style="color: var(--accent-primary);">chặn đứng việc nâng lên MINOR 1.3.0</b>. Còn <code>~> 1.2</code> cho phép nâng cấp đến <code>1.99.0</code> nhưng chặn MAJOR <code>2.0.0</code>.
+  Ví dụ <code>~> 1.2.0</code> cho phép tự động cập nhật các bản vá lỗi PATCH (từ <code>1.2.0</code> đến <code>1.2.99</code>) nhưng <b style="color: var(--accent-primary);">chặn đứng việc nâng lên MINOR 1.3.0</b>. Còn <code>~> 1.2</code> cho phép nâng cấp đến <code>1.99.0</code> nhưng chặn MAJOR <code>2.0.0</code>.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Thư mục `examples/` bên trong Module đóng vai trò gì trong việc kiểm thử?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Cung cấp các kịch bản triển khai mẫu thực tế (Working Examples) giúp người dùng dễ dàng hiểu cách sử dụng, đồng thời đóng vai trò là mã nguồn kiểm thử đầu vào cho các framework kiểm thử tự động như <code>terraform test</code> hoặc <code>Terratest</code>.
+  Cung cấp các kịch bản triển khai mẫu thực tế (Working Examples) giúp người dùng dễ dàng hiểu cách sử dụng, đồng thời đóng vai trò là mã nguồn kiểm thử đầu vào cho các framework kiểm thử tự động như <code>terraform test</code> hoặc <code>Terratest</code>.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để truyền một Provider Alias khác Region vào trong Child Module?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Sử dụng tham số <code>providers</code> khi gọi module:
+  Sử dụng tham số <code>providers</code> khi gọi module:
 <pre><code>module "us_storage" {
   source    = "./modules/s3"
   providers = {

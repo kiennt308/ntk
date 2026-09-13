@@ -81,11 +81,11 @@ Khung kiểm thử `terraform test` hoạt động dựa trên các tệp kịch
 flowchart LR
     A["Chạy lệnh terraform test"] --> B["Tìm các file *.tftest.hcl trong tests/"]
     B --> C["Khởi tạo Run Block 1: Unit Test với command = plan"]
-    C -->|"Kiểm tra assertions"| D{"Assert == true?"}
-    D -->|"Fail"| ERR1["Báo Lỗi Test Block 1 & Dừng/Tiếp tục"]
-    D -->|"Pass"| E["Khởi tạo Run Block 2: Integration Test với command = apply"]
-    E -->|"Tạo tài nguyên thực trên Sandbox"| F{"Assert == true?"}
-    F -->|"Pass"| G["Tự động Destroy tài nguyên Sandbox (Teardown)"]
+    C -->|Kiểm tra assertions| D{Assert == true?}
+    D -->|Fail| ERR1["Báo Lỗi Test Block 1 & Dừng/Tiếp tục"]
+    D -->|Pass| E["Khởi tạo Run Block 2: Integration Test với command = apply"]
+    E -->|Tạo tài nguyên thực trên Sandbox| F{Assert == true?}
+    F -->|Pass| G["Tự động Destroy tài nguyên Sandbox (Teardown)"]
     G --> H["In Báo Cáo Tổng Thể: ALL TESTS PASSED"]
 
     style ERR1 fill:none,stroke:#ff0000,stroke-width:2px
@@ -158,9 +158,9 @@ Một trong những tính năng đột phá nhất của **Terraform 1.7+** là 
 flowchart TD
     subgraph Mock_Test_Engine ["Terraform Test Engine với Mocking"]
         TC["Test Case: verify_ec2_tags"] --> MP["Mock Provider: aws"]
-        MP -->|"Trả về Data Giả Lập"| TF["Terraform Evaluation"]
-        TF -->|"Tính toán Tags & Security Group"| ASS["Khối Assert: Kiểm tra Tags"]
-        ASS -->|"Thành công"| OUT["Pass: 0.12 giây - Không Tốn Chi Phí"]
+        MP -->|Trả về Data Giả Lập| TF["Terraform Evaluation"]
+        TF -->|Tính toán Tags & Security Group| ASS["Khối Assert: Kiểm tra Tags"]
+        ASS -->|Thành công| OUT["Pass: 0.12 giây - Không Tốn Chi Phí"]
     end
 
     style Mock_Test_Engine fill:none,stroke:#2e7d32,stroke-width:2px
@@ -267,10 +267,10 @@ rule "terraform_deprecated_interpolation" {
 ```mermaid
 flowchart TD
     TF_CODE["Mã Nguồn Terraform: S3, SG, RDS, IAM"] --> TRIVY["Trivy IaC Scanner Engine"]
-    TRIVY -->|"Quét Cơ Sở Dữ Liệu Lỗ Hổng DefSec"| SCAN{"Đánh Giá Mức Độ Rủi Ro"}
-    SCAN -->|"HIGH / CRITICAL: S3 Public / SG 0.0.0.0/0 Port 22"| FAIL["Chặn Pipeline Ngay Lập Tức: Exit Code 1"]
-    SCAN -->|"LOW / MEDIUM"| WARN["Cảnh Báo & Ghi Log Audit"]
-    SCAN -->|"Clean: 0 Lỗ Hổng"| PASS["Cho Phép Tiếp Tục Bước Plan"]
+    TRIVY -->|Quét Cơ Sở Dữ Liệu Lỗ Hổng DefSec| SCAN{Đánh Giá Mức Độ Rủi Ro}
+    SCAN -->|HIGH / CRITICAL: S3 Public / SG 0.0.0.0/0 Port 22| FAIL["Chặn Pipeline Ngay Lập Tức: Exit Code 1"]
+    SCAN -->|LOW / MEDIUM| WARN["Cảnh Báo & Ghi Log Audit"]
+    SCAN -->|Clean: 0 Lỗ Hổng| PASS["Cho Phép Tiếp Tục Bước Plan"]
 
     style FAIL fill:none,stroke:#ff0000,stroke-width:2px
     style PASS fill:none,stroke:#28a745,stroke-width:2px
@@ -484,106 +484,198 @@ rm -rf terraform-lab21-testing
 
 ## 7. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Framework `terraform test` bản địa (kể từ 1.6+) có ưu điểm vượt trội gì so với Terratest (viết bằng Golang)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cú pháp HCL quen thuộc</b>: Không đòi hỏi kỹ sư DevOps phải học ngôn ngữ Go.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tích hợp sâu trong Core</b>: Không cần cài đặt Go Runtime hay compile binary, chạy trực tiếp bằng lệnh <code>terraform test</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hỗ trợ Unit Test với <code>command = plan</code> và Mocking (1.7+)</b>: Kiểm thử logic module trong vài mili-giây mà không cần Cloud Account thực tế, trong khi Terratest gần như bắt buộc phải tạo tài nguyên thực trên Cloud.</div>
+  : 
+  - **Cú pháp HCL quen thuộc**: Không đòi hỏi kỹ sư DevOps phải học ngôn ngữ Go.
+  - **Tích hợp sâu trong Core**: Không cần cài đặt Go Runtime hay compile binary, chạy trực tiếp bằng lệnh `terraform test`.
+  - **Hỗ trợ Unit Test với `command = plan` và Mocking (1.7+)**: Kiểm thử logic module trong vài mili-giây mà không cần Cloud Account thực tế, trong khi Terratest gần như bắt buộc phải tạo tài nguyên thực trên Cloud.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Khối `expect_failures` trong một `run` block của `terraform test` được sử dụng khi nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Được dùng khi bạn muốn viết <b style="color: var(--accent-primary);">Negative Test Cases</b> (Kiểm thử các trường hợp dữ liệu xấu). Nó thông báo cho Terraform biết rằng khối test này được thiết kế có chủ đích để kiểm tra xem hệ thống có chặn đứng các giá trị sai phạm hay không. Nếu câu lệnh ném ra đúng lỗi mong đợi tại biến hoặc check đã chỉ định, test case sẽ được tính là <b style="color: var(--accent-primary);">PASS</b>.
+  : Được dùng khi bạn muốn viết **Negative Test Cases** (Kiểm thử các trường hợp dữ liệu xấu). Nó thông báo cho Terraform biết rằng khối test này được thiết kế có chủ đích để kiểm tra xem hệ thống có chặn đứng các giá trị sai phạm hay không. Nếu câu lệnh ném ra đúng lỗi mong đợi tại biến hoặc check đã chỉ định, test case sẽ được tính là **PASS**.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Sự khác biệt mấu chốt giữa `terraform validate` và `tflint` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>terraform validate</code>: Chỉ kiểm tra cú pháp HCL hợp lệ và đối chiếu với Provider Schema tĩnh (xem tên thuộc tính có tồn tại không).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>tflint</code>: Phân tích sâu hơn bằng các bộ quy tắc (Rulesets). Nó kiểm tra được giá trị thực tế của thuộc tính có hợp lệ trên Cloud hay không (ví dụ: phát hiện EC2 <code>instance_type</code> không tồn tại, phát hiện thiếu tags bắt buộc theo chính sách doanh nghiệp).</div>
+  : 
+  - `terraform validate`: Chỉ kiểm tra cú pháp HCL hợp lệ và đối chiếu với Provider Schema tĩnh (xem tên thuộc tính có tồn tại không).
+  - `tflint`: Phân tích sâu hơn bằng các bộ quy tắc (Rulesets). Nó kiểm tra được giá trị thực tế của thuộc tính có hợp lệ trên Cloud hay không (ví dụ: phát hiện EC2 `instance_type` không tồn tại, phát hiện thiếu tags bắt buộc theo chính sách doanh nghiệp).
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Khi chạy `terraform test` với `command = apply`, điều gì xảy ra với các tài nguyên vừa được tạo ra sau khi kịch bản test kết thúc?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Terraform Test Engine sẽ <b style="color: var(--accent-primary);">tự động kích hoạt cơ chế Teardown (tương đương <code>terraform destroy</code>)</b> để xóa toàn bộ các tài nguyên tạm thời đã tạo trong bài test, đảm bảo không để lại tài nguyên rác (Orphaned Resources) và không gây phát sinh chi phí duy trì.
+  : Terraform Test Engine sẽ **tự động kích hoạt cơ chế Teardown (tương đương `terraform destroy`)** để xóa toàn bộ các tài nguyên tạm thời đã tạo trong bài test, đảm bảo không để lại tài nguyên rác (Orphaned Resources) và không gây phát sinh chi phí duy trì.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Mock Providers trong `terraform test` (Terraform 1.7+) giải quyết rào cản lớn nào trong quy trình CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Nó giải quyết bài toán <b style="color: var(--accent-primary);">Bảo mật và Chi phí</b>: CI/CD Pipeline có thể chạy hàng trăm bài kiểm thử Unit Tests cho Terraform Modules trên môi trường cô lập (Isolated Runners) mà không cần cấp quyền truy cập AWS IAM Credentials, không lo vượt hạn mức API Rate Limit, và hoàn toàn miễn phí.
+  : Nó giải quyết bài toán **Bảo mật và Chi phí**: CI/CD Pipeline có thể chạy hàng trăm bài kiểm thử Unit Tests cho Terraform Modules trên môi trường cô lập (Isolated Runners) mà không cần cấp quyền truy cập AWS IAM Credentials, không lo vượt hạn mức API Rate Limit, và hoàn toàn miễn phí.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Trong file `.tftest.hcl`, bạn có thể kiểm tra giá trị của một Output bằng cách nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Bạn có thể tham chiếu trực tiếp thông qua cú pháp <code>output.<output_name></code> bên trong khối <code>assert.condition</code>. Ví dụ: <code>condition = output.vpc_id != ""</code>.
+  : Bạn có thể tham chiếu trực tiếp thông qua cú pháp `output.<output_name>` bên trong khối `assert.condition`. Ví dụ: `condition = output.vpc_id != ""`.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Công cụ Trivy quét mã nguồn Terraform dựa trên những tiêu chuẩn bảo mật quốc tế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Trivy tích hợp bộ quy tắc đối chiếu với các khung tiêu chuẩn hàng đầu: <b style="color: var(--accent-primary);">CIS Benchmarks (Center for Internet Security)</b>, <b style="color: var(--accent-primary);">NIST SP 800-53</b>, <b style="color: var(--accent-primary);">PCI-DSS</b> (bảo mật thanh toán thẻ), và <b style="color: var(--accent-primary);">AWS Well-Architected Framework Security Pillar</b>.
+  : Trivy tích hợp bộ quy tắc đối chiếu với các khung tiêu chuẩn hàng đầu: **CIS Benchmarks (Center for Internet Security)**, **NIST SP 800-53**, **PCI-DSS** (bảo mật thanh toán thẻ), và **AWS Well-Architected Framework Security Pillar**.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Có thể chia sẻ biến số giữa nhiều khối `run` trong cùng một file `.tftest.hcl` không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Có thể. Khối <code>variables</code> ở cấp cao nhất (Root Level của file test) sẽ áp dụng giá trị mặc định cho toàn bộ các khối <code>run</code>. Nếu một khối <code>run</code> cụ thể khai báo lại <code>variables</code>, giá trị đó sẽ ghi đè cục bộ chỉ riêng cho khối <code>run</code> đó.
+  : Có thể. Khối `variables` ở cấp cao nhất (Root Level của file test) sẽ áp dụng giá trị mặc định cho toàn bộ các khối `run`. Nếu một khối `run` cụ thể khai báo lại `variables`, giá trị đó sẽ ghi đè cục bộ chỉ riêng cho khối `run` đó.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>assert` block trong `terraform test` có thể chứa tối đa bao nhiêu điều kiện?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Mỗi khối <code>assert</code> chỉ chứa duy nhất một biểu thức <code>condition</code> và một <code>error_message</code>. Tuy nhiên, trong một khối <code>run</code>, bạn có thể định nghĩa <b style="color: var(--accent-primary);">không giới hạn số lượng khối <code>assert</code></b> để kiểm tra song song nhiều thuộc tính khác nhau của hạ tầng.
+  : Mỗi khối `assert` chỉ chứa duy nhất một biểu thức `condition` và một `error_message`. Tuy nhiên, trong một khối `run`, bạn có thể định nghĩa **không giới hạn số lượng khối `assert`** để kiểm tra song song nhiều thuộc tính khác nhau của hạ tầng.
 </div>
 </details>
 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao nên chạy `trivy config` trước khi chạy `terraform test` trong Pipeline CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-Vì <code>trivy config</code> là công cụ Static SAST cực nhanh (mất vài giây), giúp chặn đứng ngay lập tức các lỗi cấu hình hổng bảo mật nghiêm trọng (như mở CIDR 0.0.0.0/0 cho SSH) trước khi tiêu tốn thời gian và tài nguyên để chạy các bài test chức năng sâu hơn.
+  : Vì `trivy config` là công cụ Static SAST cực nhanh (mất vài giây), giúp chặn đứng ngay lập tức các lỗi cấu hình hổng bảo mật nghiêm trọng (như mở CIDR 0.0.0.0/0 cho SSH) trước khi tiêu tốn thời gian và tài nguyên để chạy các bài test chức năng sâu hơn.
 </div>
 </details>
 

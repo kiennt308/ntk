@@ -15,8 +15,12 @@ series_order: 24
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.24] Hướng dẫn chuyên sâu Định Tuyến Lớp 7 Với Ingress Controller & Gateway API: TLS Termination, Path Routing & HTTPRoute: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Định Tuyến Lớp 7 Với Ingress Controller & Gateway API: TLS Termination, Path Routing & HTTPRoute."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 24] ĐỊNH TUYẾN LỚP 7 VỚI INGRESS CONTROLLER & GATEWAY API: TLS TERMINATION, PATH ROUTING & HTTPROUTE
 
@@ -181,8 +185,8 @@ graph TD
         SVC_WEB --> POD_WEB["Pod Web (containerPort: 80)"]
     end
 
-    style External_World fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Cluster_Internal fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style External_World fill:none,stroke:#f57c00,stroke-width:2px
+    style Cluster_Internal fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -405,10 +409,10 @@ graph TD
 
     C --> G["Phân quyền 3 vai trò: GatewayClass (Cloud), Gateway (DevOps), HTTPRoute (Dev)"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#c8e6c9,stroke:#333,stroke-width:2px
-    style G fill:#ffe0b2,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style G fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -538,8 +542,8 @@ graph TD
         SVC_WEB --> POD_WEB["Pod web-app (10.244.2.B:80)"]
     end
 
-    style Client_Requests fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Backend_Routing fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Client_Requests fill:none,stroke:#f57c00,stroke-width:2px
+    style Backend_Routing fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -936,12 +940,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Phân biệt sự khác nhau cốt lõi về bản chất kĩ thuật giữa Ingress Resource và Ingress Controller trong Kubernetes.
-
-**Đáp án chuẩn:**
-- **1. Ingress Resource (`kind: Ingress`):**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phân biệt sự khác nhau cốt lõi về bản chất kĩ thuật giữa Ingress Resource và Ingress Controller trong Kubernetes.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **1. Ingress Resource (`kind: Ingress`):**
   - Chỉ là một **tệp khai báo định nghĩa cấu hình (Declarative YAML Spec)** nằm trong API Server.
   - Chứa các quy tắc định tuyến như Host-based, Path-based, TLS secret name. Tệp YAML này KHÔNG có khả năng tự nhận hay chuyển tiếp gói tin mạng.
 - **2. Ingress Controller (Nginx / Traefik / HAProxy):**
@@ -955,6 +970,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, chỉ ra ví dụ NGINX Ingress Controller.
 
 **Câu hỏi đào sâu:** Nếu trong cụm chưa cài Ingress Controller mà ta apply 10 tệp Ingress YAML thì chuyện gì sẽ xảy ra? *(Đáp án: Các tệp Ingress được lưu thành công trong API Server nhưng cột ADDRESS bị rỗng vĩnh viễn và không định tuyến được traffic).*
+</div>
+</details>
 
 ---
 

@@ -15,8 +15,12 @@ series_order: 6
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.06] Hướng dẫn chuyên sâu Giải Mã Tính Bất Biến (Idempotency): Cơ Chế Kiểm Tra Trạng Thái Đích & Tránh Cạm Bẫy 'Always Changed': Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Giải Mã Tính Bất Biến (Idempotency): Cơ Chế Kiểm Tra Trạng Thái Đích & Tránh Cạm Bẫy 'Always Changed."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 06] GIẢI MÃ TÍNH BẤT BIẾN (IDEMPOTENCY): CƠ CHẾ KIỂM TRA TRẠNG THÁI ĐÍCH & TRÁNH CẠM BẪY 'ALWAYS CHANGED'
 
@@ -810,8 +814,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Triết lý Idempotency trong Quản trị Cấu hình 🔥
-**Hỏi:** Tại sao tính Idempotency (tính bất biến) lại được coi là tiêu chuẩn vàng định nghĩa một công cụ Quản trị Cấu hình (Configuration Management)? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Triết lý Idempotency trong Quản trị Cấu hình 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Tại sao tính Idempotency (tính bất biến) lại được coi là tiêu chuẩn vàng định nghĩa một công cụ Quản trị Cấu hình (Configuration Management)? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Idempotency đảm bảo rằng việc thực thi một kịch bản cấu hình một lần hay nhiều lần trên cùng một hệ thống đều mang lại KẾT QUẢ TRẠNG THÁI CUỐI CÙNG GIỐNG NHAU, mà không gây ra tác dụng phụ (như đè đúp dữ liệu, tạo file rác trùng lặp, làm sập dịch vụ). Nó chuyển đổi tư duy từ "gõ chuỗi lệnh thủ công" (Imperative) sang "khai báo trạng thái muốn có" (Declarative), giúp kịch bản chạy an toàn định kỳ trên hạ tầng quy mô lớn.
 **Tiêu chí chấm:**
 - 0: Không biết định nghĩa Idempotency.
@@ -819,6 +837,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Giải thích đúng cơ chế Declarative và tính an toàn khi chạy lại nhiều lần.
 - 3: Phân tích xuất sắc sự khác biệt giữa Script Bash (Imperative) và Ansible Playbook (Declarative) kèm ví dụ thực tế.
 **Câu hỏi đào sâu:** Nếu một script Bash gõ lệnh `echo "export PATH=$PATH:/opt/bin" >> /etc/profile` được chạy 10 lần, điều gì sẽ xảy ra? *(Dòng cấu hình bị nối thêm 10 lần vào file profile làm hỏng file, thể hiện sự thiếu Idempotency.)*
+</div>
+</details>
 
 ---
 

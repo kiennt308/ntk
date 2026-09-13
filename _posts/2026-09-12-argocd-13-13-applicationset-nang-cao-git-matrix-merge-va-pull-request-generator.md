@@ -15,8 +15,12 @@ series_order: 13
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?auto=format&fit=crop&w=1200&q=80"
 summary: "Khai phóng toàn bộ sức mạnh của Argo CD ApplicationSet: Tự động hóa Zero-Touch với Git Directory/File Generator, nhân ma trận đa dịch vụ đa cụm với Matrix & Merge Generator, và thiết lập môi trường thử nghiệm tạm thời Ephemeral Preview Environments cho từng Pull Request."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về ApplicationSet Nâng Cao: Git Matrix, Merge & Pull Request Preview Generator."
+  - "Ứng dụng triết lý GitOps với Git làm nguồn chân lý duy nhất (Single Source of Truth), đồng bộ tự động 24/7."
+  - "Kiểm soát chặt chẽ quy trình triển khai đa cụm Kubernetes, phát hiện và triệt tiêu Configuration Drift."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # ApplicationSet Nâng Cao: Git Matrix, Merge & Pull Request Preview Generator
 
@@ -380,45 +384,204 @@ kubectl annotate applicationset frontend-pr-preview-environments -n argocd \
 
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Matrix, Merge & PR Generators:
 
-### Câu 1: Phép tính toán nào được thực hiện bên trong Matrix Generator?
-- **Đáp án:** Phép **nhân tích Descartes (Cartesian Product)**. Nếu Generator A sinh ra 4 phần tử và Generator B sinh ra 3 phần tử, Matrix Generator sẽ kết hợp từng phần tử của A với từng phần tử của B để tạo ra tổng cộng $4 \times 3 = 12$ bộ tham số cho Template.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phép tính toán nào được thực hiện bên trong Matrix Generator?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Phép **nhân tích Descartes (Cartesian Product)**. Nếu Generator A sinh ra 4 phần tử và Generator B sinh ra 3 phần tử, Matrix Generator sẽ kết hợp từng phần tử của A với từng phần tử của B để tạo ra tổng cộng $4 \times 3 = 12$ bộ tham số cho Template.
+</div>
+</details>
 
-### Câu 2: Biến `{{branch_slug}}` khác gì so với biến `{{branch}}` trong Pull Request Generator?
-- **Đáp án:** Biến `{{branch}}` giữ nguyên tên nhánh gốc (có thể chứa ký tự `/`, `_` hoặc chữ hoa, ví dụ `feat/Fix_Bug_#1`). Biến `{{branch_slug}}` tự động chuẩn hóa chuỗi này thành định dạng an toàn cho Kubernetes DNS (đổi chữ hoa thành chữ thường, đổi `/` và `_` thành dấu `-`, ví dụ `feat-fix-bug-1`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Biến `{{branch_slug}}` khác gì so với biến `{{branch}}` trong Pull Request Generator?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Biến `{{branch}}` giữ nguyên tên nhánh gốc (có thể chứa ký tự `/`, `_` hoặc chữ hoa, ví dụ `feat/Fix_Bug_#1`). Biến `{{branch_slug}}` tự động chuẩn hóa chuỗi này thành định dạng an toàn cho Kubernetes DNS (đổi chữ hoa thành chữ thường, đổi `/` và `_` thành dấu `-`, ví dụ `feat-fix-bug-1`).
+</div>
+</details>
 
-### Câu 3: Khi nào nên sử dụng Merge Generator thay vì Matrix Generator?
-- **Đáp án:** Sử dụng **Merge Generator** khi bạn muốn gộp 2 generator lại với nhau và cho phép **ghi đè (Override) các tham số cấu hình cục bộ theo điều kiện**. Ví dụ: Áp dụng cấu hình chung cho 10 cụm, nhưng riêng cụm `prod-us` cần ghi đè số lượng `replicas: 10`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khi nào nên sử dụng Merge Generator thay vì Matrix Generator?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng **Merge Generator** khi bạn muốn gộp 2 generator lại với nhau và cho phép **ghi đè (Override) các tham số cấu hình cục bộ theo điều kiện**. Ví dụ: Áp dụng cấu hình chung cho 10 cụm, nhưng riêng cụm `prod-us` cần ghi đè số lượng `replicas: 10`.
+</div>
+</details>
 
-### Câu 4: Làm thế nào để ngăn chặn Pull Request Generator tự động tạo môi trường cho các PR của người lạ (tránh bị đào Bitcoin trái phép)?
-- **Đáp án:** Sử dụng bộ lọc bảo mật trong `pullRequest.github.filters`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Làm thế nào để ngăn chặn Pull Request Generator tự động tạo môi trường cho các PR của người lạ (tránh bị đào Bitcoin trái phép)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng bộ lọc bảo mật trong `pullRequest.github.filters`:
   - `labels`: Chỉ tạo môi trường khi PR được gắn nhãn `safe-to-test` bởi Maintainer.
   - `forkMatch`: Cấm hoặc giới hạn các PR xuất phát từ các kho fork bên ngoài.
+</div>
+</details>
 
-### Câu 5: Cần làm gì để đảm bảo toàn bộ tài nguyên của PR Preview bị xóa sạch khi PR đóng lại?
-- **Đáp án:** (1) Đảm bảo `spec.syncPolicy.preserveResourcesOnDeletion` là `false`, (2) Gắn `finalizers: [resources-finalizer.argocd.argoproj.io]` vào `template.metadata.finalizers`, và (3) Khai báo `destination.namespace: "preview-pr-{{number}}"` kèm `syncPolicy.automated.prune: true`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cần làm gì để đảm bảo toàn bộ tài nguyên của PR Preview bị xóa sạch khi PR đóng lại?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  (1) Đảm bảo `spec.syncPolicy.preserveResourcesOnDeletion` là `false`, (2) Gắn `finalizers: [resources-finalizer.argocd.argoproj.io]` vào `template.metadata.finalizers`, và (3) Khai báo `destination.namespace: "preview-pr-{{number}}"` kèm `syncPolicy.automated.prune: true`.
+</div>
+</details>
 
-### Câu 6: Làm thế nào để kết hợp Git File Generator với Matrix Generator?
-- **Đáp án:** Đặt Git File Generator vào một nhánh của Matrix Generator để đọc cấu hình từ các tệp `config.json` nằm trong từng thư mục dịch vụ, sau đó nhân chéo với Cluster Generator để áp dụng các tham số riêng biệt cho từng cụm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để kết hợp Git File Generator với Matrix Generator?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đặt Git File Generator vào một nhánh của Matrix Generator để đọc cấu hình từ các tệp `config.json` nằm trong từng thư mục dịch vụ, sau đó nhân chéo với Cluster Generator để áp dụng các tham số riêng biệt cho từng cụm.
+</div>
+</details>
 
-### Câu 7: `requeueAfterSeconds` trong Pull Request Generator có tác dụng gì?
-- **Đáp án:** Chỉ định chu kỳ thời gian (tính bằng giây) mà Controller sẽ chủ động gửi request lên GitHub API để kiểm tra danh sách PRs mới hoặc trạng thái đóng/mở PR (mặc định là 1800 giây - 30 phút).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>`requeueAfterSeconds` trong Pull Request Generator có tác dụng gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chỉ định chu kỳ thời gian (tính bằng giây) mà Controller sẽ chủ động gửi request lên GitHub API để kiểm tra danh sách PRs mới hoặc trạng thái đóng/mở PR (mặc định là 1800 giây - 30 phút).
+</div>
+</details>
 
-### Câu 8: Tại sao nên sử dụng GitHub App thay vì Personal Access Token (PAT) cho Pull Request Generator?
-- **Đáp án:** GitHub App có cơ chế cấp quyền theo tổ chức và repo cụ thể (Least Privilege), hỗ trợ hạn mức API lớn hơn (lên tới 15,000 requests/giờ) và không bị phụ thuộc vào tài khoản cá nhân của kỹ sư (tránh lỗi khi nhân viên nghỉ việc).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao nên sử dụng GitHub App thay vì Personal Access Token (PAT) cho Pull Request Generator?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  GitHub App có cơ chế cấp quyền theo tổ chức và repo cụ thể (Least Privilege), hỗ trợ hạn mức API lớn hơn (lên tới 15,000 requests/giờ) và không bị phụ thuộc vào tài khoản cá nhân của kỹ sư (tránh lỗi khi nhân viên nghỉ việc).
+</div>
+</details>
 
-### Câu 9: Trong Git Directory Generator, cú pháp `path: "services/*"` khác gì với `path: "services/**"`?
-- **Đáp án:** `services/*` chỉ quét các thư mục con cấp 1 trực tiếp bên trong `services/`. Cú pháp `services/**` quét đệ quy toàn bộ mọi cấp thư mục lồng nhau bên trong.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Trong Git Directory Generator, cú pháp `path: "services/*"` khác gì với `path: "services/**"`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `services/*` chỉ quét các thư mục con cấp 1 trực tiếp bên trong `services/`. Cú pháp `services/**` quét đệ quy toàn bộ mọi cấp thư mục lồng nhau bên trong.
+</div>
+</details>
 
-### Câu 10: Làm thế nào để loại trừ một thư mục cụ thể (như thư mục `services/archive`) khỏi Git Directory Generator?
-- **Đáp án:** Sử dụng trường `exclude: true` trong danh sách `directories`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để loại trừ một thư mục cụ thể (như thư mục `services/archive`) khỏi Git Directory Generator?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng trường `exclude: true` trong danh sách `directories`:
   ```yaml
   directories:
     - path: "services/*"
     - path: "services/archive"
       exclude: true
   ```
+</div>
+</details>
 
 ---
 

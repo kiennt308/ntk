@@ -15,8 +15,12 @@ series_order: 14
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.14] Hướng dẫn chuyên sâu Mạng Ứng Dụng Dành Cho Developer: Service Discovery, Ingress Routing Theo Host/Path & Chứng Chỉ TLS: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Mạng Ứng Dụng Dành Cho Developer: Service Discovery, Ingress Routing Theo Host/Path & Chứng Chỉ TLS."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 14] MẠNG ỨNG DỤNG DÀNH CHO DEVELOPER: SERVICE DISCOVERY, INGRESS ROUTING THEO HOST/PATH & CHỨNG CHỈ TLS
 
@@ -362,41 +366,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Sự khác biệt bản chất giữa loại Service `ClusterIP` và `NodePort` trong Kubernetes là gì?
-   - **Đáp án:** `ClusterIP` chỉ cho phép truy cập nội bộ trong cụm qua IP ảo; `NodePort` mở cổng cố định (30000-32767) trên tất cả các Node để truy cập từ ngoài.
 
-2. Cổng `port` và `targetPort` trong bản khai báo Service spec khác nhau như thế nào?
-   - **Đáp án:** `port` là cổng ảo của Service cho các client gọi vào; `targetPort` là cổng thực tế container ứng dụng đang lắng nghe bên trong Pod.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt bản chất giữa loại Service `ClusterIP` và `NodePort` trong Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `ClusterIP` chỉ cho phép truy cập nội bộ trong cụm qua IP ảo; `NodePort` mở cổng cố định (30000-32767) trên tất cả các Node để truy cập từ ngoài.
+</div>
+</details>
 
-3. Điểm khác nhau giữa `pathType: Prefix` và `pathType: Exact` trong Ingress spec là gì?
-   - **Đáp án:** `Prefix` so khớp mọi đường dẫn bắt đầu bằng tiền tố đó (như `/api`, `/api/v1`); `Exact` yêu cầu so khớp chính xác 100% đường dẫn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cổng `port` và `targetPort` trong bản khai báo Service spec khác nhau như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `port` là cổng ảo của Service cho các client gọi vào; `targetPort` là cổng thực tế container ứng dụng đang lắng nghe bên trong Pod.
+</div>
+</details>
 
-4. Cơ chế HTTPS TLS Termination trong Ingress mang lại lợi ích gì cho container ứng dụng backend?
-   - **Đáp án:** Giải mã HTTPS tại cấp Ingress Controller và gửi HTTP thông thường vào Pod, giúp giảm tải CPU xử lý mã hóa SSL cho container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Điểm khác nhau giữa `pathType: Prefix` và `pathType: Exact` trong Ingress spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `Prefix` so khớp mọi đường dẫn bắt đầu bằng tiền tố đó (như `/api`, `/api/v1`); `Exact` yêu cầu so khớp chính xác 100% đường dẫn.
+</div>
+</details>
 
-5. Để cấu hình HTTPS trên Ingress, tệp TLS Secret trỏ tới trong `secretName` phải thuộc loại Secret nào và chứa 2 khóa nào?
-   - **Đáp án:** Thuộc loại Secret `kubernetes.io/tls` và chứa đúng 2 khóa `tls.crt` và `tls.key`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cơ chế HTTPS TLS Termination trong Ingress mang lại lợi ích gì cho container ứng dụng backend?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giải mã HTTPS tại cấp Ingress Controller và gửi HTTP thông thường vào Pod, giúp giảm tải CPU xử lý mã hóa SSL cho container.
+</div>
+</details>
 
-6. Nguyên nhân phổ biến nhất dẫn đến lỗi HTTP 502 Bad Gateway khi truy cập ứng dụng qua Ingress là gì?
-   - **Đáp án:** Service backend có selector gõ sai nhãn Pod làm danh sách Endpoints bị rỗng (`<none>`), Service không tìm thấy Pod nào.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Để cấu hình HTTPS trên Ingress, tệp TLS Secret trỏ tới trong `secretName` phải thuộc loại Secret nào và chứa 2 khóa nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thuộc loại Secret `kubernetes.io/tls` và chứa đúng 2 khóa `tls.crt` và `tls.key`.
+</div>
+</details>
 
-7. Câu lệnh CLI nào dùng để xem danh sách các địa chỉ IP Pod thực tế đang được một Service đính kèm?
-   - **Đáp án:** Lệnh `kubectl get endpoints <service-name>` (hoặc `kubectl get ep <service-name>`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Nguyên nhân phổ biến nhất dẫn đến lỗi HTTP 502 Bad Gateway khi truy cập ứng dụng qua Ingress là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Service backend có selector gõ sai nhãn Pod làm danh sách Endpoints bị rỗng (`<none>`), Service không tìm thấy Pod nào.
+</div>
+</details>
 
-8. Trường thuộc tính nào trong Ingress spec bắt buộc phải có để chỉ định Nginx Ingress Controller xử lý tệp Ingress đó?
-   - **Đáp án:** Trường `ingressClassName: nginx`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu lệnh CLI nào dùng để xem danh sách các địa chỉ IP Pod thực tế đang được một Service đính kèm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl get endpoints <service-name>` (hoặc `kubectl get ep <service-name>`).
+</div>
+</details>
 
-9. Loại Service nào trong Kubernetes được dùng để tạo bản ghi CNAME trỏ tới một tên miền bên ngoài cụm?
-   - **Đáp án:** Loại Service `ExternalName`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Trường thuộc tính nào trong Ingress spec bắt buộc phải có để chỉ định Nginx Ingress Controller xử lý tệp Ingress đó?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trường `ingressClassName: nginx`.
+</div>
+</details>
 
-10. Làm thế nào để kiểm tra địa chỉ IP công cộng hoặc IP Node được Ingress Controller gán cho một Ingress?
-    - **Đáp án:** Chạy lệnh `kubectl get ingress <ingress-name> -n <namespace>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Loại Service nào trong Kubernetes được dùng để tạo bản ghi CNAME trỏ tới một tên miền bên ngoài cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Loại Service `ExternalName`.
+</div>
+</details>
 
-11. Tại sao không nên sử dụng loại Service `NodePort` cho các microservice giao tiếp nội bộ trong cụm?
-    - **Đáp án:** Để tránh làm cạn kiệt dải port 30000-32767 của Node và tránh mở toang cổng kết nối ra ngoài internet gây rủi ro bảo mật.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để kiểm tra địa chỉ IP công cộng hoặc IP Node được Ingress Controller gán cho một Ingress?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chạy lệnh `kubectl get ingress <ingress-name> -n <namespace>`.
+</div>
+</details>
 
-12. Cú pháp gõ cờ `curl` nào dùng để giả lập Host header khi kiểm tra Ingress định tuyến theo tên miền qua IP của Ingress Controller?
-    - **Đáp án:** Cú pháp `curl -H "Host: app.example.com" http://<ingress-ip>/`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không nên sử dụng loại Service `NodePort` cho các microservice giao tiếp nội bộ trong cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để tránh làm cạn kiệt dải port 30000-32767 của Node và tránh mở toang cổng kết nối ra ngoài internet gây rủi ro bảo mật.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp gõ cờ `curl` nào dùng để giả lập Host header khi kiểm tra Ingress định tuyến theo tên miền qua IP của Ingress Controller?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cú pháp `curl -H "Host: app.example.com" http://<ingress-ip>/`.
+</div>
+</details>
 
 ---
 
@@ -731,10 +928,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Sự khác biệt về kịch bản áp dụng của 4 loại Service trong Kubernetes (`ClusterIP`, `NodePort`, `LoadBalancer`, `ExternalName`) là gì?
 
-**Đáp án chuẩn:** `ClusterIP` chỉ cho phép giao tiếp nội bộ trong cụm; `NodePort` mở cổng cố định (30000-32767) trên tất cả các Node phục vụ testing; `LoadBalancer` tích hợp Cloud Provider tạo IP công cộng cho Production; `ExternalName` trả về bản ghi CNAME trỏ tới tên miền bên ngoài cụm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt về kịch bản áp dụng của 4 loại Service trong Kubernetes (`ClusterIP`, `NodePort`, `LoadBalancer`, `ExternalName`) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `ClusterIP` chỉ cho phép giao tiếp nội bộ trong cụm; `NodePort` mở cổng cố định (30000-32767) trên tất cả các Node phục vụ testing; `LoadBalancer` tích hợp Cloud Provider tạo IP công cộng cho Production; `ExternalName` trả về bản ghi CNAME trỏ tới tên miền bên ngoài cụm.
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được 4 loại Service.
@@ -742,6 +952,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích chuẩn xác kịch bản áp dụng của cả 4 loại Service.
 
 **Câu hỏi đào sâu:** (Loại Service nào là loại mặc định khi gõ `kubectl expose` mà không chỉ định cờ `--type`? — Loại `ClusterIP`).
+</div>
+</details>
 
 ---
 
@@ -995,9 +1207,22 @@ Chẩn đoán và sửa lỗi Service `backend-svc` rỗng Endpoints trong Names
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Service `front-svc`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Service `front-svc</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1015,10 +1240,25 @@ spec:
     app: frontend
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo Ingress `web-ingress`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo Ingress `web-ingress</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -1040,10 +1280,25 @@ spec:
                   number: 8080
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Cấu hình HTTPS TLS Termination
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Cấu hình HTTPS TLS Termination</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Giả lập TLS Secret nếu chưa có:
 kubectl create secret tls shop-tls-secret --cert=/tmp/dummy.crt --key=/tmp/dummy.key -n prod 2>/dev/null || true
 
@@ -1072,10 +1327,25 @@ spec:
                   number: 8080
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Sửa lỗi Service `backend-svc` selector
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Sửa lỗi Service `backend-svc` selector</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Giả lập Deployment backend:
 kubectl create deployment backend-app --image=nginx:alpine --replicas=1 -n prod 2>/dev/null || true
 
@@ -1095,6 +1365,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

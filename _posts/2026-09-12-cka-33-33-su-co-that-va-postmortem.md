@@ -15,8 +15,12 @@ series_order: 33
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.33] Hướng dẫn chuyên sâu Game Day Diễn Tập Sự Cố Thực Tế: Phản Ứng Với 4 Sự Cố Cấy Sẵn & Báo Cáo Postmortem Phi Quy Trách: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Game Day Diễn Tập Sự Cố Thực Tế: Phản Ứng Với 4 Sự Cố Cấy Sẵn & Báo Cáo Postmortem Phi Quy Trách."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 33] GAME DAY DIỄN TẬP SỰ CỐ THỰC TẾ: PHẢN ỨNG VỚI 4 SỰ CỐ CẤY SẴN & BÁO CÁO POSTMORTEM PHI QUY TRÁCH
 
@@ -310,41 +314,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Bốn kịch bản sự cố hạ tầng được cấy sẵn trong bài thực hành Game Day Buổi 70 là gì?
-   - **Đáp án:** **Node NotReady** (Kubelet crash), **Pod OOMKilled** (Exit Code 137), **Certificate Expired** (TLS cert hết hạn), và **CoreDNS Resolution Failure**.
 
-2. Bốn bước tiêu chuẩn trong Quy trình ứng phó sự cố khẩn cấp (Incident Response Workflow) là gì?
-   - **Đáp án:** 1) **Detect** (Nhận diện), 2) **Contain** (Khoanh vùng), 3) **Remediate** (Khắc phục), 4) **Review** (Đánh giá Postmortem).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Bốn kịch bản sự cố hạ tầng được cấy sẵn trong bài thực hành Game Day Buổi 70 là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Node NotReady** (Kubelet crash), **Pod OOMKilled** (Exit Code 137), **Certificate Expired** (TLS cert hết hạn), và **CoreDNS Resolution Failure**.
+</div>
+</details>
 
-3. Lệnh Linux CLI nào được dùng để soi 50 dòng log cuối cùng của dịch vụ Kubelet mà không bị nghẽn màn hình?
-   - **Đáp án:** Lệnh `journalctl -u kubelet -n 50 --no-pager`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Bốn bước tiêu chuẩn trong Quy trình ứng phó sự cố khẩn cấp (Incident Response Workflow) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1) **Detect** (Nhận diện), 2) **Contain** (Khoanh vùng), 3) **Remediate** (Khắc phục), 4) **Review** (Đánh giá Postmortem).
+</div>
+</details>
 
-4. Mã thoát (Exit Code) nào của container thể hiện sự cố tiến trình bị Linux OOM Killer tiêu diệt do hết bộ nhớ RAM?
-   - **Đáp án:** Mã thoát **Exit Code 137**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Lệnh Linux CLI nào được dùng để soi 50 dòng log cuối cùng của dịch vụ Kubelet mà không bị nghẽn màn hình?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `journalctl -u kubelet -n 50 --no-pager`.
+</div>
+</details>
 
-5. Lệnh CLI nào được dùng để kiểm tra thời hạn hết hạn của tất cả các chứng chỉ TLS cụm Control Plane?
-   - **Đáp án:** Lệnh `sudo kubeadm certs check-expiration`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Mã thoát (Exit Code) nào của container thể hiện sự cố tiến trình bị Linux OOM Killer tiêu diệt do hết bộ nhớ RAM?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mã thoát **Exit Code 137**.
+</div>
+</details>
 
-6. Lệnh CLI nào được dùng để gia hạn toàn bộ các chứng chỉ TLS của cụm `kubeadm` trong 1 câu lệnh duy nhất?
-   - **Đáp án:** Lệnh `sudo kubeadm certs renew all`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Lệnh CLI nào được dùng để kiểm tra thời hạn hết hạn của tất cả các chứng chỉ TLS cụm Control Plane?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `sudo kubeadm certs check-expiration`.
+</div>
+</details>
 
-7. Sáu phần bắt buộc phải có trong một báo cáo sự cố không quy trách nhiệm (Blameless Postmortem Report) là gì?
-   - **Đáp án:** 6 phần: **Summary**, **Impact**, **Root Cause Analysis**, **Incident Timeline**, **Lessons Learned**, và **Action Items**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Lệnh CLI nào được dùng để gia hạn toàn bộ các chứng chỉ TLS của cụm `kubeadm` trong 1 câu lệnh duy nhất?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `sudo kubeadm certs renew all`.
+</div>
+</details>
 
-8. Tại sao văn hóa "Phi quy trách nhiệm" (Blameless Culture) lại cực kỳ quan trọng trong báo cáo Postmortem SRE?
-   - **Đáp án:** Vì giúp **tập trung tìm và sửa lỗ hổng quy trình/hệ thống** thay vì trừng phạt cá nhân, giúp kỹ sư tự tin báo cáo sự cố sớm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Sáu phần bắt buộc phải có trong một báo cáo sự cố không quy trách nhiệm (Blameless Postmortem Report) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  6 phần: **Summary**, **Impact**, **Root Cause Analysis**, **Incident Timeline**, **Lessons Learned**, và **Action Items**.
+</div>
+</details>
 
-9. Chỉ số MTTR trong vận hành hệ thống là viết tắt của từ gì và có ý nghĩa như thế nào?
-   - **Đáp án:** MTTR là **Mean Time To Recovery** (Thời gian trung bình từ khi xảy ra sự cố tới khi hệ thống được phục hồi thành công).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao văn hóa "Phi quy trách nhiệm" (Blameless Culture) lại cực kỳ quan trọng trong báo cáo Postmortem SRE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì giúp **tập trung tìm và sửa lỗ hổng quy trình/hệ thống** thay vì trừng phạt cá nhân, giúp kỹ sư tự tin báo cáo sự cố sớm.
+</div>
+</details>
 
-10. Khối tài nguyên nào dưới Pod spec cần điều chỉnh khi ứng dụng liên tục gặp lỗi OOMKilled?
-    - **Đáp án:** Khối **`resources.limits.memory`**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Chỉ số MTTR trong vận hành hệ thống là viết tắt của từ gì và có ý nghĩa như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  MTTR là **Mean Time To Recovery** (Thời gian trung bình từ khi xảy ra sự cố tới khi hệ thống được phục hồi thành công).
+</div>
+</details>
 
-11. Tại sao phải khởi động lại Kubelet service sau khi thực hiện gia hạn chứng chỉ TLS bằng kubeadm?
-    - **Đáp án:** Để Kubelet **nạp các tệp chứng chỉ TLS mới từ đĩa đệm vào bộ nhớ RAM**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khối tài nguyên nào dưới Pod spec cần điều chỉnh khi ứng dụng liên tục gặp lỗi OOMKilled?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khối **`resources.limits.memory`**.
+</div>
+</details>
 
-12. Cú pháp CLI chuẩn để xem log của các Pods CoreDNS trong namespace `kube-system` là gì?
-    - **Đáp án:** Lệnh `kubectl logs -n kube-system -l k8s-app=kube-dns`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao phải khởi động lại Kubelet service sau khi thực hiện gia hạn chứng chỉ TLS bằng kubeadm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để Kubelet **nạp các tệp chứng chỉ TLS mới từ đĩa đệm vào bộ nhớ RAM**.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp CLI chuẩn để xem log của các Pods CoreDNS trong namespace `kube-system` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl logs -n kube-system -l k8s-app=kube-dns`.
+</div>
+</details>
 
 ---
 
@@ -717,10 +914,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Ý nghĩa và mục tiêu cốt lõi của hoạt động diễn tập sự cố (Game Day & Chaos Engineering) trong vận hành SRE doanh nghiệp?
 
-**Đáp án chuẩn:** Giúp **chủ động cấy sự cố giả lập để kiểm thử phản xạ ứng phó của đội ngũ kỹ sư**, giảm thời gian khôi phục sự cố trung bình (MTTR), phát hiện các lỗ hổng hệ thống ẩn giấu trước khi nó gây ra gián đoạn thực tế trên môi trường Production.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ý nghĩa và mục tiêu cốt lõi của hoạt động diễn tập sự cố (Game Day & Chaos Engineering) trong vận hành SRE doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giúp **chủ động cấy sự cố giả lập để kiểm thử phản xạ ứng phó của đội ngũ kỹ sư**, giảm thời gian khôi phục sự cố trung bình (MTTR), phát hiện các lỗ hổng hệ thống ẩn giấu trước khi nó gây ra gián đoạn thực tế trên môi trường Production.
 
 **Tiêu chí chấm:**
 - 0đ: Không hiểu ý nghĩa Game Day.
@@ -728,6 +938,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích chuẩn xác mục tiêu và ý nghĩa cốt lõi của hoạt động Game Day SRE.
 
 **Câu hỏi đào sâu:** (Tên 4 sự cố được cấy sẵn trong bài thực hành Game Day Buổi 70 là gì? — **Node NotReady**, **Pod OOMKilled**, **Certificate Expired**, và **CoreDNS Failure**).
+</div>
+</details>
 
 ---
 
@@ -886,6 +1098,7 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 **Đáp án chuẩn:**
 ```markdown
 ## 6. Action Items
+
 - [ ] Gia hạn chứng chỉ TLS tự động qua cert-manager (Người làm: SRE Team - Hạn: 7 ngày)
 - [ ] Cập nhật LimitRange RAM 256Mi cho mọi Namespace (Người làm: DevOps Team - Hạn: 3 ngày)
 ```
@@ -899,8 +1112,22 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-### Câu 12 — 🔥
-**Hỏi:** Bộ 4 quy tắc vàng để làm chủ Game Day và Biên soạn Báo cáo Postmortem SRE là gì?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Bộ 4 quy tắc vàng để làm chủ Game Day và Biên soạn Báo cáo Postmortem SRE là gì?
 
 **Đáp án chuẩn:**
 1. Tham gia diễn tập Game Day định kỳ để duy trì phản xạ khôi phục sự cố MTTR dưới 15 phút.
@@ -916,6 +1143,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 **Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 71 là gì? — Học về `Capstone: Dựng nền tảng Kubernetes hoàn chỉnh bảo vệ thiết kế với đủ ba lớp kiểm soát`).
 
 ---
+</div>
+</details>
 
 ## V3. Câu chốt để nói khi phỏng vấn
 
@@ -995,15 +1224,43 @@ Biên soạn tệp Blameless Postmortem tại `/tmp/postmortem.md`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Ghi log khắc phục Kubelet
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Ghi log khắc phục Kubelet</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 echo "Kubelet service active (running) on worker-01 after systemctl restart" > /tmp/kubelet-fix.log
 ```
+</div>
+</details>
 
-### Câu 2 — Sửa Pod manifest tăng RAM limit
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Sửa Pod manifest tăng RAM limit</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/oom-fixed.yaml
 apiVersion: v1
 kind: Pod
@@ -1019,18 +1276,51 @@ spec:
           memory: 256Mi
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Gia hạn chứng chỉ TLS
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Gia hạn chứng chỉ TLS</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 echo "kubeadm certs renew all completed successfully. Certificates valid for 1 year." > /tmp/cert-renew.log
 ```
+</div>
+</details>
 
-### Câu 4 — Biên soạn Blameless Postmortem
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>— Biên soạn Blameless Postmortem</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/postmortem.md
 # BÁO CÁO SỰ CỐ KHÔNG QUY TRÁCH NHIỆM (BLAMELESS POSTMORTEM)
+</div>
+</details>
+
 ## 1. Summary
 Game Day drill successfully executed and remediated 4 planted incidents.
 

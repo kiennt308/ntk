@@ -15,8 +15,12 @@ series_order: 10
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.10] Hướng dẫn chuyên sâu Phân Quyền RBAC Chuẩn Enterprise: Role, ClusterRole, RoleBinding, ClusterRoleBinding & auth can-i: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Phân Quyền RBAC Chuẩn Enterprise: Role, ClusterRole, RoleBinding, ClusterRoleBinding & auth can-i."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 10] PHÂN QUYỀN RBAC CHUẨN ENTERPRISE: ROLE, CLUSTERROLE, ROLEBINDING, CLUSTERROLEBINDING & AUTH CAN-I
 
@@ -170,9 +174,9 @@ graph TD
         RB2 --> USER3["User: bob"]
     end
 
-    style Namespace_Scope fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Cluster_Scope fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Cross_Scope fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Namespace_Scope fill:none,stroke:#f57c00,stroke-width:2px
+    style Cluster_Scope fill:none,stroke:#0288d1,stroke-width:2px
+    style Cross_Scope fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -374,9 +378,9 @@ graph TD
     C --> D["API Server: Default Deny (0% quyền mặc định)"]
     D --> E["Kiểm thử an toàn: kubectl auth can-i <verb> <resource> --as=<user> -n <ns>"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#bbf,stroke:#333,stroke-width:2px
-    style E fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style E fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -505,9 +509,9 @@ graph TD
         CROLE_NODE["ClusterRole: node-viewer (verbs: get, list)"] -->|ClusterRoleBinding: dev-node-binding| USER1
     end
 
-    style Dev_NS fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Prod_NS fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Cluster_Scope fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Dev_NS fill:none,stroke:#f57c00,stroke-width:2px
+    style Prod_NS fill:none,stroke:#0288d1,stroke-width:2px
+    style Cluster_Scope fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -792,12 +796,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Hệ thống RBAC của Kubernetes hoạt động theo cơ chế Mặc định cho phép (Default Allow) hay Mặc định từ chối (Default Deny)?
-
-**Đáp án chuẩn:**
-- Hoạt động theo cơ chế **Mặc định từ chối (Default Deny)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Hệ thống RBAC của Kubernetes hoạt động theo cơ chế Mặc định cho phép (Default Allow) hay Mặc định từ chối (Default Deny)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Hoạt động theo cơ chế **Mặc định từ chối (Default Deny)**.
 - Mọi tài khoản User, Group hay ServiceAccount vừa được tạo ra sẽ có **đúng 0% quyền hạn** (không thể gõ bất kỳ lệnh `kubectl` nào hay gọi bất kỳ API nào).
 - Một thao tác chỉ được API Server chấp thuận khi và chỉ khi có ít nhất một quy tắc (Rule) trong RoleBinding hoặc ClusterRoleBinding cho phép rõ ràng thao tác đó.
 
@@ -808,6 +823,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, nêu cờ `--authorization-mode=RBAC` trên API Server.
 
 **Câu hỏi đào sâu:** Nếu 1 User được gán 2 RoleBinding (1 Role cho xem Pod, 1 Role từ chối xem Pod) thì User đó có xem được Pod không? *(Đáp án: Có xem được, vì RBAC Kubernetes chỉ có Deny mặc định chứ không có Explicit Deny rule).*
+</div>
+</details>
 
 ---
 

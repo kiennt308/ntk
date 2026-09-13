@@ -15,8 +15,12 @@ series_order: 40
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.40] Hướng dẫn chuyên sâu Tự Động Hóa Triển Khai Lên Azure: Azure OIDC Federation, Azure Kubernetes Service (AKS) & Azure Container Apps: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tự Động Hóa Triển Khai Lên Azure: Azure OIDC Federation, Azure Kubernetes Service (AKS) & Azure Container Apps."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 40] TỰ ĐỘNG HÓA TRIỂN KHAI LÊN AZURE: AZURE OIDC FEDERATION, AZURE KUBERNETES SERVICE (AKS) & AZURE CONTAINER APPS
 
@@ -1663,10 +1667,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Sự khác biệt cốt lõi giữa cơ chế gán OIDC Subject Matching của Azure Federated Identity Credentials với AWS IAM Role Trust Policy và GCP WIF Provider là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt cốt lõi giữa cơ chế gán OIDC Subject Matching của Azure Federated Identity Credentials với AWS IAM Role Trust Policy và GCP WIF Provider là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Azure Entra ID yêu cầu tạo từng đối tượng Federated Credential riêng biệt khớp 100% từng ký tự Subject Identifier, trong khi AWS dùng `StringLike` wildcard và GCP dùng biểu thức CEL trên WIF Provider.
 
 **Đáp án chuẩn:**
@@ -1678,6 +1694,8 @@ Azure Entra ID yêu cầu tạo từng đối tượng Federated Credential riê
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "Azure cho phép dùng wildcard `*` trong Subject Identifier giống như AWS".
+</div>
+</details>
 
 ---
 

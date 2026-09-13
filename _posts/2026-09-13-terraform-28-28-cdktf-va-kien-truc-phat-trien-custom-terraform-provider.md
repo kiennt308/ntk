@@ -14,8 +14,12 @@ series_order: 28
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
 summary: "Bước ra khỏi giới hạn của HCL: Xây dựng hạ tầng bằng TypeScript/Python với"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về CDKTF và Kiến Trúc Phát Triển Custom Terraform Provider."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # CDKTF và Kiến Trúc Phát Triển Custom Terraform Provider
 
@@ -58,9 +62,9 @@ flowchart TD
     JSON_PLAN --> DAG
     DAG --> EXEC
 
-    style OOP_Code fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style CDKTF_Engine fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style Terraform_Core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style OOP_Code fill:none,stroke:#0288d1,stroke-width:2px
+    style CDKTF_Engine fill:none,stroke:#f57c00,stroke-width:2px
+    style Terraform_Core fill:none,stroke:#2e7d32,stroke-width:2px
 
 
 ```
@@ -197,10 +201,10 @@ graph TD
     CRUD --> U["Update: HTTP PUT/PATCH -&gt; Cập nhật thuộc tính"]
     CRUD --> D["Delete: HTTP DELETE -&gt; Xóa khỏi State"]
 
-    style C fill:#d4edda,stroke:#28a745,stroke-width:2px
-    style R fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style U fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style D fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style C fill:none,stroke:#28a745,stroke-width:2px
+    style R fill:none,stroke:#0288d1,stroke-width:2px
+    style U fill:none,stroke:#f57c00,stroke-width:2px
+    style D fill:none,stroke:#c62828,stroke-width:2px
 
 
 ```
@@ -362,9 +366,9 @@ graph LR
     C --> D["Sinh Tệp JSON: cdktf.out/stacks/my-stack/cdk.tf.json"]
     D --> E["Xác Minh Cấu Trúc JSON Tương Thích 100% Với Terraform Core"]
 
-    style A fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style C fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style D fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style A fill:none,stroke:#0288d1,stroke-width:2px
+    style C fill:none,stroke:#f57c00,stroke-width:2px
+    style D fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -456,47 +460,207 @@ rm -rf cdktf-lab28-typescript
 
 ## 6. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-### Q1: CDKTF có thực hiện việc gọi trực tiếp đến API của Cloud Provider (như AWS hay Azure) không?
-- **Trả lời**: **HOÀN TOÀN KHÔNG**. CDKTF chỉ đóng vai trò là một trình chuyển dịch (Transpiler / Synthesizer). Nó nhận mã TypeScript/Python và biên dịch thành tệp `cdk.tf.json`. Mọi thao tác gửi API, quản lý State và xây dựng DAG vẫn do chính Terraform Core Engine và các Terraform Providers nguyên bản chịu trách nhiệm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>CDKTF có thực hiện việc gọi trực tiếp đến API của Cloud Provider (như AWS hay Azure) không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : **HOÀN TOÀN KHÔNG**. CDKTF chỉ đóng vai trò là một trình chuyển dịch (Transpiler / Synthesizer). Nó nhận mã TypeScript/Python và biên dịch thành tệp `cdk.tf.json`. Mọi thao tác gửi API, quản lý State và xây dựng DAG vẫn do chính Terraform Core Engine và các Terraform Providers nguyên bản chịu trách nhiệm.
+</div>
+</details>
 
-### Q2: Cơ chế giao tiếp giữa Terraform Core và Custom Provider Plugin diễn ra qua giao thức nào?
-- **Trả lời**: Diễn ra qua giao thức **gRPC (Google Remote Procedure Call)** chạy trên nền tảng **HTTP/2** thông qua Unix Domain Sockets (trên Linux/macOS) hoặc Windows Named Pipes. Nhờ gRPC và Protocol Buffers (protobuf), Terraform Core có thể giao tiếp với các Provider viết bằng bất kỳ ngôn ngữ nào với độ trễ cực thấp và tính toàn vẹn dữ liệu cao.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cơ chế giao tiếp giữa Terraform Core và Custom Provider Plugin diễn ra qua giao thức nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Diễn ra qua giao thức **gRPC (Google Remote Procedure Call)** chạy trên nền tảng **HTTP/2** thông qua Unix Domain Sockets (trên Linux/macOS) hoặc Windows Named Pipes. Nhờ gRPC và Protocol Buffers (protobuf), Terraform Core có thể giao tiếp với các Provider viết bằng bất kỳ ngôn ngữ nào với độ trễ cực thấp và tính toàn vẹn dữ liệu cao.
+</div>
+</details>
 
-### Q3: Khi nào một tổ chức nên chuyển dịch từ HCL thuần sang CDKTF?
-- **Trả lời**: Khi:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khi nào một tổ chức nên chuyển dịch từ HCL thuần sang CDKTF?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Khi:
   - Đội ngũ kỹ sư phần mềm (App Developers) chiếm đa số và đã thành thạo TypeScript/Python, không muốn học cú pháp HCL riêng biệt.
   - Hạ tầng có các bài toán logic phức tạp cần xử lý bằng vòng lặp nâng cao, cấu trúc dữ liệu đệ quy, hoặc tích hợp các thư viện bên ngoài (như gọi SDK tính toán toán học, parse YAML bên thứ ba).
   - Doanh nghiệp muốn áp dụng các framework Unit Test phần mềm tiêu chuẩn (Jest, PyTest) để kiểm thử hạ tầng.
+</div>
+</details>
 
-### Q4: Trong Terraform Plugin Framework (Golang), phương thức `Read` được gọi vào những thời điểm nào?
-- **Trả lời**: Phương thức `Read` được gọi:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Trong Terraform Plugin Framework (Golang), phương thức `Read` được gọi vào những thời điểm nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Phương thức `Read` được gọi:
   1. Trong bước **State Refresh** (mỗi khi chạy `terraform plan` hoặc `terraform apply`) để đồng bộ trạng thái thực tế từ Cloud về State.
   2. Ngay sau khi phương thức `Create` hoặc `Update` hoàn tất để đảm bảo các thuộc tính Computed (như ID, ARN) đã được ghi nhận chính xác vào State.
   3. Khi thực hiện lệnh `terraform import`.
+</div>
+</details>
 
-### Q5: Thư viện JSII đóng vai trò gì trong kiến trúc CDKTF?
-- **Trả lời**: JSII (phát triển bởi AWS) cho phép một codebase viết bằng TypeScript có thể tự động sinh ra các gói thư viện (Package Bindings) và chạy mượt mà trên nhiều ngôn ngữ khác nhau như Python, Go, Java, và C# mà không cần viết lại mã nguồn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Thư viện JSII đóng vai trò gì trong kiến trúc CDKTF?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : JSII (phát triển bởi AWS) cho phép một codebase viết bằng TypeScript có thể tự động sinh ra các gói thư viện (Package Bindings) và chạy mượt mà trên nhiều ngôn ngữ khác nhau như Python, Go, Java, và C# mà không cần viết lại mã nguồn.
+</div>
+</details>
 
-### Q6: Làm thế nào để cài đặt và sử dụng một Custom Provider tự viết trên máy cục bộ mà không cần xuất bản lên Terraform Registry công cộng?
-- **Trả lời**: Cấu hình khối `provider_installation` trong tệp cấu hình CLI `~/.terraformrc` (hoặc `terraform.rc` trên Windows) sử dụng cơ chế **`filesystem_mirror`** hoặc **`dev_overrides`** để trỏ trực tiếp đến thư mục chứa file binary đã compile của provider.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để cài đặt và sử dụng một Custom Provider tự viết trên máy cục bộ mà không cần xuất bản lên Terraform Registry công cộng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Cấu hình khối `provider_installation` trong tệp cấu hình CLI `~/.terraformrc` (hoặc `terraform.rc` trên Windows) sử dụng cơ chế **`filesystem_mirror`** hoặc **`dev_overrides`** để trỏ trực tiếp đến thư mục chứa file binary đã compile của provider.
+</div>
+</details>
 
-### Q7: Tại sao việc phát triển Provider bằng Terraform Plugin Framework mới lại được khuyến nghị hơn SDKv2 cũ?
-- **Trả lời**: Plugin Framework mới cung cấp:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tại sao việc phát triển Provider bằng Terraform Plugin Framework mới lại được khuyến nghị hơn SDKv2 cũ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Plugin Framework mới cung cấp:
   - Hệ thống kiểu dữ liệu Type-Safe chặt chẽ hơn bằng Go native types.
   - Hỗ trợ đầy đủ các tính năng hiện đại của Terraform như Structural Types, Optional Attributes with Defaults, Dynamic Expressions, và Unknown Values.
   - Báo cáo lỗi (Diagnostics) chi tiết và trực quan hơn.
+</div>
+</details>
 
-### Q8: Lệnh `cdktf diff` tương đương với câu lệnh nào trong Terraform CLI truyền thống?
-- **Trả lời**: Tương đương với lệnh `terraform plan`. Nó biên dịch mã nguồn thành JSON và so sánh với State hiện tại để hiển thị danh sách các tài nguyên dự kiến sẽ được thêm, sửa, hoặc xóa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Lệnh `cdktf diff` tương đương với câu lệnh nào trong Terraform CLI truyền thống?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Tương đương với lệnh `terraform plan`. Nó biên dịch mã nguồn thành JSON và so sánh với State hiện tại để hiển thị danh sách các tài nguyên dự kiến sẽ được thêm, sửa, hoặc xóa.
+</div>
+</details>
 
-### Q9: Trong Custom Provider, làm thế nào để thông báo cho Terraform biết rằng một thuộc tính khi bị sửa đổi sẽ bắt buộc phải Recreate tài nguyên (Force New)?
-- **Trả lời**: Trong định nghĩa Schema của thuộc tính, sử dụng thuộc tính `PlanModifiers` và gắn thêm modifier `stringplanmodifier.RequiresReplace()` (hoặc modifier tương ứng cho Int/Bool).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Trong Custom Provider, làm thế nào để thông báo cho Terraform biết rằng một thuộc tính khi bị sửa đổi sẽ bắt buộc phải Recreate tài nguyên (Force New)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Trong định nghĩa Schema của thuộc tính, sử dụng thuộc tính `PlanModifiers` và gắn thêm modifier `stringplanmodifier.RequiresReplace()` (hoặc modifier tương ứng cho Int/Bool).
+</div>
+</details>
 
-### Q10: Nhược điểm lớn nhất khi áp dụng CDKTF trong doanh nghiệp là gì?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Nhược điểm lớn nhất khi áp dụng CDKTF trong doanh nghiệp là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - Thêm một tầng trừu tượng (Abstraction Layer) làm tăng thời gian build/synth.
   - Đòi hỏi phải quản lý thêm môi trường runtime (NodeJS / Python Virtualenv / npm dependencies).
   - Khó debug hơn khi có lỗi biên dịch giữa tầng mã nguồn và tầng JSON của Terraform Core.
+</div>
+</details>
 
 ---
 

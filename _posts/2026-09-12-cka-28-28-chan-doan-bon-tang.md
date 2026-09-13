@@ -15,8 +15,12 @@ series_order: 28
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.28] Hướng dẫn chuyên sâu Quy Trình Chẩn Đoán & Gỡ Lỗi Bốn Tầng (4-Tier Troubleshooting): Cụm, Node, Workload và Mạng: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quy Trình Chẩn Đoán & Gỡ Lỗi Bốn Tầng (4-Tier Troubleshooting): Cụm, Node, Workload và Mạng."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 28] QUY TRÌNH CHẨN ĐOÁN & GỠ LỖI BỐN TẦNG (4-TIER TROUBLESHOOTING): CỤM, NODE, WORKLOAD VÀ MẠNG
 
@@ -351,41 +355,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Thứ tự 4 tầng trong mô hình phễu chẩn đoán sự cố Kubernetes là gì?
-   - **Đáp án:** Tầng 1: Control Plane -> Tầng 2: Node -> Tầng 3: Workload Pod -> Tầng 4: Mạng & Service.
 
-2. Lệnh CLI nào giúp hiển thị danh sách sự kiện được sắp xếp theo mốc thời gian tạo?
-   - **Đáp án:** `kubectl get events -n <namespace> --sort-by='.metadata.creationTimestamp'`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thứ tự 4 tầng trong mô hình phễu chẩn đoán sự cố Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tầng 1: Control Plane -> Tầng 2: Node -> Tầng 3: Workload Pod -> Tầng 4: Mạng & Service.
+</div>
+</details>
 
-3. Ý nghĩa của cờ `-p` trong câu lệnh `kubectl logs <pod-name> -p` là gì?
-   - **Đáp án:** Cho phép xem log của instance container đã bị sập (previous terminated container) ngay trước đó.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Lệnh CLI nào giúp hiển thị danh sách sự kiện được sắp xếp theo mốc thời gian tạo?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl get events -n <namespace> --sort-by='.metadata.creationTimestamp'`.
+</div>
+</details>
 
-4. Mã thoát `Exit Code 137` trong `kubectl describe pod` cho biết nguyên nhân sập là gì?
-   - **Đáp án:** Tiến trình bị nhân Linux tiêu diệt do lỗi tràn bộ nhớ `OOMKilled` (Memory Limit Exceeded).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ý nghĩa của cờ `-p` trong câu lệnh `kubectl logs <pod-name> -p` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cho phép xem log của instance container đã bị sập (previous terminated container) ngay trước đó.
+</div>
+</details>
 
-5. Ba nguyên nhân chính khiến một Pod rơi vào trạng thái `Pending` là gì?
-   - **Đáp án:** Node không đủ CPU/RAM, Node bị dính `Taint` không có Toleration, hoặc PVC chưa `Bound`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Mã thoát `Exit Code 137` trong `kubectl describe pod` cho biết nguyên nhân sập là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tiến trình bị nhân Linux tiêu diệt do lỗi tràn bộ nhớ `OOMKilled` (Memory Limit Exceeded).
+</div>
+</details>
 
-6. Ba nguyên nhân dẫn tới lỗi `ImagePullBackOff` là gì?
-   - **Đáp án:** Gõ sai tên/tag ảnh, thiếu `imagePullSecrets` xác thực registry, hoặc Node mất kết nối mạng ra registry.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Ba nguyên nhân chính khiến một Pod rơi vào trạng thái `Pending` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Node không đủ CPU/RAM, Node bị dính `Taint` không có Toleration, hoặc PVC chưa `Bound`.
+</div>
+</details>
 
-7. Làm thế nào để gỡ một Pod bị kẹt ở trạng thái `Terminating` do sập Kubelet Node?
-   - **Đáp án:** Chạy lệnh ép xóa: `kubectl delete pod <pod-name> -n <ns> --force --grace-period=0`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Ba nguyên nhân dẫn tới lỗi `ImagePullBackOff` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Gõ sai tên/tag ảnh, thiếu `imagePullSecrets` xác thực registry, hoặc Node mất kết nối mạng ra registry.
+</div>
+</details>
 
-8. Công cụ nào giúp truy cập shell kiểm tra mạng vào một Pod chạy ảnh `distroless` không có `sh`?
-   - **Đáp án:** Sử dụng lệnh `kubectl debug -it <pod-name> --image=busybox --target=<container-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Làm thế nào để gỡ một Pod bị kẹt ở trạng thái `Terminating` do sập Kubelet Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chạy lệnh ép xóa: `kubectl delete pod <pod-name> -n <ns> --force --grace-period=0`.
+</div>
+</details>
 
-9. Sự cố `Liveness probe failed` liên tục sẽ dẫn đến trạng thái gì của Pod?
-   - **Đáp án:** Kubelet sẽ liên tục khởi động lại container, dẫn tới trạng thái `CrashLoopBackOff`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Công cụ nào giúp truy cập shell kiểm tra mạng vào một Pod chạy ảnh `distroless` không có `sh`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng lệnh `kubectl debug -it <pod-name> --image=busybox --target=<container-name>`.
+</div>
+</details>
 
-10. Lệnh nào giúp kiểm tra nhanh xem một Service có gắn đúng Pod hay không?
-    - **Đáp án:** `kubectl get endpoints <service-name>` (hoặc `kubectl get ep`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự cố `Liveness probe failed` liên tục sẽ dẫn đến trạng thái gì của Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubelet sẽ liên tục khởi động lại container, dẫn tới trạng thái `CrashLoopBackOff`.
+</div>
+</details>
 
-11. Mục nào trong kết quả xuất ra của `kubectl describe pod` chứa thông điệp lỗi trực tiếp từ Kubelet?
-    - **Đáp án:** Mục `Events:` ở cuối trang output.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Lệnh nào giúp kiểm tra nhanh xem một Service có gắn đúng Pod hay không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl get endpoints <service-name>` (hoặc `kubectl get ep`).
+</div>
+</details>
 
-12. Tại sao không nên nhảy thẳng vào chỉnh sửa YAML Pod khi thấy sự cố?
-    - **Đáp án:** Vì nguyên nhân gốc rễ có thể nằm ở các tầng dưới như Node bị `NotReady` hoặc CNI sập, sửa YAML Pod sẽ không giải quyết được vấn đề.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Mục nào trong kết quả xuất ra của `kubectl describe pod` chứa thông điệp lỗi trực tiếp từ Kubelet?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mục `Events:` ở cuối trang output.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Tại sao không nên nhảy thẳng vào chỉnh sửa YAML Pod khi thấy sự cố?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì nguyên nhân gốc rễ có thể nằm ở các tầng dưới như Node bị `NotReady` hoặc CNI sập, sửa YAML Pod sẽ không giải quyết được vấn đề.
+</div>
+</details>
 
 ---
 
@@ -938,10 +1135,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Thứ tự 4 bước trong quy trình phễu chẩn đoán sự cố Kubernetes từ ngoài vào trong là gì?
 
-**Đáp án chuẩn:** Thứ tự phễu gồm 4 tầng: Tầng 1: Control Plane & API Server -> Tầng 2: Sức khỏe Node vật lý (Kubelet/Disk/RAM) -> Tầng 3: Khởi tạo Workload Pod -> Tầng 4: Định tuyến Mạng & Service Endpoints.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thứ tự 4 bước trong quy trình phễu chẩn đoán sự cố Kubernetes từ ngoài vào trong là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thứ tự phễu gồm 4 tầng: Tầng 1: Control Plane & API Server -> Tầng 2: Sức khỏe Node vật lý (Kubelet/Disk/RAM) -> Tầng 3: Khởi tạo Workload Pod -> Tầng 4: Định tuyến Mạng & Service Endpoints.
 
 **Tiêu chí chấm:**
 - 0đ: Không nêu được các tầng hoặc nêu sai thứ tự.
@@ -950,6 +1160,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Trình bày mạch lạc 4 tầng từ Cụm -> Node -> Workload -> Mạng cùng các câu lệnh CLI tương ứng.
 
 **Câu hỏi đào sâu:** (Tại sao không nên kiểm tra tầng Mạng trước tầng Node? — Vì nếu Node đang NotReady thì CNI plugin trên Node đó đã sập, kiểm tra mạng ở tầng 4 sẽ vô nghĩa).
+</div>
+</details>
 
 ---
 
@@ -1192,19 +1404,47 @@ Một Pod đặt tên là `stuck-pod` nằm trong Namespace `prod` đang bị k�
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Cứu Pod `app-frontend` kẹt ImagePullBackOff
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cứu Pod `app-frontend` kẹt ImagePullBackOff</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Kiểm tra lý do lỗi
 kubectl describe pod app-frontend -n prod | grep -i image
 
 # Sửa lại image tag chính xác
 kubectl set image pod/app-frontend app=nginx:alpine -n prod
 ```
+</div>
+</details>
 
-### Câu 2 — Cứu Deployment `db-backend` kẹt Pending
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Cứu Deployment `db-backend` kẹt Pending</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Describe xem sự kiện từ chối của Scheduler
 kubectl describe pod -l app=db-backend -n prod | grep Events -A 5
 
@@ -1213,26 +1453,58 @@ kubectl get deploy db-backend -n prod -o yaml | grep -v "nodeSelector:" | kubect
 # Hoặc patch trực tiếp gỡ nodeSelector:
 kubectl patch deploy db-backend -n prod --type='json' -p='[{"op": "remove", "path": "/spec/template/spec/nodeSelector"}]'
 ```
+</div>
+</details>
 
-### Câu 3 — Cứu Pod `api-server` dính CrashLoopBackOff
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Cứu Pod `api-server` dính CrashLoopBackOff</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Xem log sập trước đó
 kubectl logs api-server -n prod -p
 
 # Tạo Secret db-secret chứa password bị thiếu
 kubectl create secret generic db-secret --from-literal=password=admin123 -n prod
 ```
+</div>
+</details>
 
-### Câu 4 — Gỡ Pod `stuck-pod` kẹt Terminating
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Gỡ Pod `stuck-pod` kẹt Terminating</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Ép xóa khẩn cấp hoặc gỡ finalizer
 kubectl patch pod stuck-pod -n prod -p '{"metadata":{"finalizers":null}}' --type=merge 2>/dev/null || \
 kubectl delete pod stuck-pod -n prod --force --grace-period=0
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy mất điểm
 

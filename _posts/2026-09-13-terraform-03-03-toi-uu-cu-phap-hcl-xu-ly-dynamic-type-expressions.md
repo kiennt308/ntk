@@ -14,8 +14,12 @@ series_order: 3
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "Hướng dẫn thực chiến làm chủ ngôn ngữ HCL: Cấu trúc dữ liệu phức hợp, kỹ"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tối Ưu Cú Pháp HCL: Làm Chủ Dynamic Type, Heredoc, For Expressions."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Tối Ưu Cú Pháp HCL: Làm Chủ Dynamic Type, Heredoc, For Expressions & Type Constraints
 
@@ -450,66 +454,197 @@ terraform console
 
 ## 8. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Sự khác biệt cơ bản giữa kiểu dữ liệu `list` và `set` trong Terraform là gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-- <code>list</code> là danh sách có thứ tự theo chỉ mục (0, 1, 2...) và cho phép các phần tử trùng lặp giá trị.<br/>
-- <code>set</code> là tập hợp các phần tử không có thứ tự và <b>tuyệt đối không chứa phần tử trùng lặp</b>. Khi truyền vào <code>for_each</code>, <code>set</code> an toàn hơn <code>list</code> vì tránh được hiện tượng Index Shifting.
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt cơ bản giữa kiểu dữ liệu `list` và `set` trong Terraform là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - <code>list</code> là danh sách có thứ tự theo chỉ mục (0, 1, 2...) và cho phép các phần tử trùng lặp giá trị.<br/>
+- <code>set</code> là tập hợp các phần tử không có thứ tự và <b style="color: var(--accent-primary);">tuyệt đối không chứa phần tử trùng lặp</b>. Khi truyền vào <code>for_each</code>, <code>set</code> an toàn hơn <code>list</code> vì tránh được hiện tượng Index Shifting.
+</div>
 </details>
 
-### Câu 2: Thuộc tính `optional()` trong kiểu dữ liệu `object` có tác dụng gì từ phiên bản Terraform 1.3+?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Cho phép người gọi Module không bắt buộc phải truyền đủ mọi thuộc tính trong object. Kỹ sư có thể gán giá trị mặc định cho thuộc tính đó, ví dụ: <code>optional(string, "default_val")</code>. Nếu người dùng không truyền, Terraform sẽ tự gán giá trị mặc định.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Thuộc tính `optional()` trong kiểu dữ liệu `object` có tác dụng gì từ phiên bản Terraform 1.3+?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cho phép người gọi Module không bắt buộc phải truyền đủ mọi thuộc tính trong object. Kỹ sư có thể gán giá trị mặc định cho thuộc tính đó, ví dụ: <code>optional(string, "default_val")</code>. Nếu người dùng không truyền, Terraform sẽ tự gán giá trị mặc định.
+</div>
 </details>
 
-### Câu 3: Kỹ thuật nhóm Ellipsis (`...`) trong biểu thức `for` được dùng để làm gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Dùng để gom nhóm nhiều phần tử có cùng một Key vào một mảng giá trị (Value là danh sách). Nếu không có toán tử <code>...</code>, khi gặp 2 phần tử có cùng Key, Terraform sẽ báo lỗi <code>Duplicate key in map</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Kỹ thuật nhóm Ellipsis (`...`) trong biểu thức `for` được dùng để làm gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Dùng để gom nhóm nhiều phần tử có cùng một Key vào một mảng giá trị (Value là danh sách). Nếu không có toán tử <code>...</code>, khi gặp 2 phần tử có cùng Key, Terraform sẽ báo lỗi <code>Duplicate key in map</code>.
+</div>
 </details>
 
-### Câu 4: Vì sao nên dùng `<<-EOT` thay vì `<<EOT` khi viết Heredoc String?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<code><<-EOT</code> (Indented Heredoc) cho phép thụt đầu dòng các dòng chữ bên trong để mã nguồn HCL đẹp và ngay ngắn, nhưng khi biên dịch, Terraform sẽ tự động loại bỏ khoảng trắng thụt lề bằng với vị trí của từ khóa <code>EOT</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Vì sao nên dùng `<<-EOT` thay vì `<<EOT` khi viết Heredoc String?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <code><<-EOT</code> (Indented Heredoc) cho phép thụt đầu dòng các dòng chữ bên trong để mã nguồn HCL đẹp và ngay ngắn, nhưng khi biên dịch, Terraform sẽ tự động loại bỏ khoảng trắng thụt lề bằng với vị trí của từ khóa <code>EOT</code>.
+</div>
 </details>
 
-### Câu 5: Tại sao việc dùng `jsonencode()` lại an toàn hơn nối chuỗi thủ công trong IAM Policy?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<code>jsonencode()</code> biến đổi một HCL Map/Object thành chuỗi JSON chuẩn mực, tự động escape ký tự đặc biệt, không bao giờ để xảy ra lỗi cú pháp (như thiếu ngoặc, thừa dấu phẩy) và được validate kiểu dữ liệu ngay trong quá trình biên dịch HCL.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao việc dùng `jsonencode()` lại an toàn hơn nối chuỗi thủ công trong IAM Policy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <code>jsonencode()</code> biến đổi một HCL Map/Object thành chuỗi JSON chuẩn mực, tự động escape ký tự đặc biệt, không bao giờ để xảy ra lỗi cú pháp (như thiếu ngoặc, thừa dấu phẩy) và được validate kiểu dữ liệu ngay trong quá trình biên dịch HCL.
+</div>
 </details>
 
-### Câu 6: Hàm `cidrsubnet(prefix, newbits, netnum)` hoạt động như thế nào? Cho ví dụ?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Hàm này mở rộng độ dài subnet mask thêm <code>newbits</code> và lấy dải mạng con thứ <code>netnum</code>. Ví dụ: <code>cidrsubnet("10.0.0.0/16", 4, 1)</code> sẽ mở rộng từ /16 thành /20 (16 + 4) và lấy subnet thứ 1, trả về <code>"10.0.16.0/20"</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Hàm `cidrsubnet(prefix, newbits, netnum)` hoạt động như thế nào? Cho ví dụ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Hàm này mở rộng độ dài subnet mask thêm <code>newbits</code> và lấy dải mạng con thứ <code>netnum</code>. Ví dụ: <code>cidrsubnet("10.0.0.0/16", 4, 1)</code> sẽ mở rộng từ /16 thành /20 (16 + 4) và lấy subnet thứ 1, trả về <code>"10.0.16.0/20"</code>.
+</div>
 </details>
 
-### Câu 7: Khi nào nên sử dụng hàm `can()` hoặc `try()` trong xử lý biểu thức HCL?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-- <code>can(expression)</code>: Trả về <code>true</code> nếu biểu thức thực thi thành công không lỗi, trả về <code>false</code> nếu có lỗi (thường dùng trong <code>validation</code> block).<br/>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Khi nào nên sử dụng hàm `can()` hoặc `try()` trong xử lý biểu thức HCL?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - <code>can(expression)</code>: Trả về <code>true</code> nếu biểu thức thực thi thành công không lỗi, trả về <code>false</code> nếu có lỗi (thường dùng trong <code>validation</code> block).<br/>
 - <code>try(expr1, expr2, default)</code>: Trả về kết quả của biểu thức đầu tiên không bị lỗi, giúp xử lý các thuộc tính có thể không tồn tại mà không làm sập tiến trình chạy.
+</div>
 </details>
 
-### Câu 8: Hàm `flatten()` thường được sử dụng kết hợp với `for expressions` trong trường hợp nào?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Thường dùng khi duyệt qua cấu trúc dữ liệu 2 tầng lồng nhau (Nested For), ví dụ duyệt qua danh sách các VPC, trong mỗi VPC lại duyệt qua danh sách các Subnet. Biểu thức For lồng nhau sẽ tạo ra danh sách của danh sách (List of Lists), và <code>flatten()</code> sẽ làm phẳng nó thành một danh sách 1 chiều duy nhất để truyền vào <code>for_each</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Hàm `flatten()` thường được sử dụng kết hợp với `for expressions` trong trường hợp nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thường dùng khi duyệt qua cấu trúc dữ liệu 2 tầng lồng nhau (Nested For), ví dụ duyệt qua danh sách các VPC, trong mỗi VPC lại duyệt qua danh sách các Subnet. Biểu thức For lồng nhau sẽ tạo ra danh sách của danh sách (List of Lists), và <code>flatten()</code> sẽ làm phẳng nó thành một danh sách 1 chiều duy nhất để truyền vào <code>for_each</code>.
+</div>
 </details>
 
-### Câu 9: Lệnh `terraform console` có làm thay đổi hạ tầng thực tế hoặc State file không?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<b>KHÔNG</b>. <code>terraform console</code> chỉ là một môi trường đọc (Read-Only REPL) để kiểm tra cú pháp, đánh giá các biểu thức HCL, kiểm tra giá trị biến và chạy thử các Built-in Functions. Nó không gửi bất kỳ lệnh thay đổi nào lên Cloud.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh `terraform console` có làm thay đổi hạ tầng thực tế hoặc State file không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <b style="color: var(--accent-primary);">KHÔNG</b>. <code>terraform console</code> chỉ là một môi trường đọc (Read-Only REPL) để kiểm tra cú pháp, đánh giá các biểu thức HCL, kiểm tra giá trị biến và chạy thử các Built-in Functions. Nó không gửi bất kỳ lệnh thay đổi nào lên Cloud.
+</div>
 </details>
 
-### Câu 10: Hàm `templatefile(path, vars)` có ưu điểm gì vượt trội so với data source `template_file` cũ?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<code>templatefile()</code> là một hàm built-in chạy trực tiếp trong Terraform Core, không cần cài đặt thêm Provider ngoài (`template` provider), có hiệu năng render cực nhanh và hỗ trợ đầy đủ toàn bộ hệ thống kiểu dữ liệu hiện đại của HCL (Maps, Objects, Tuples).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Hàm `templatefile(path, vars)` có ưu điểm gì vượt trội so với data source `template_file` cũ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <code>templatefile()</code> là một hàm built-in chạy trực tiếp trong Terraform Core, không cần cài đặt thêm Provider ngoài (`template` provider), có hiệu năng render cực nhanh và hỗ trợ đầy đủ toàn bộ hệ thống kiểu dữ liệu hiện đại của HCL (Maps, Objects, Tuples).
+</div>
 </details>
 
 ---

@@ -15,8 +15,12 @@ series_order: 33
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.33] Hướng dẫn chuyên sâu Quy Chuẩn Compliance & Audit Pipeline: Pipeline Execution Policies, Security Approvals & Tuân Thủ SOC2/ISO: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quy Chuẩn Compliance & Audit Pipeline: Pipeline Execution Policies, Security Approvals & Tuân Thủ SOC2/ISO."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 33] QUY CHUẨN COMPLIANCE & AUDIT PIPELINE: PIPELINE EXECUTION POLICIES, SECURITY APPROVALS & TUÂN THỦ SOC2/ISO
 
@@ -1596,47 +1600,110 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quy định bảo mật viết bằng chữ là giấy lộn nếu không tự động hoá thành luật chạy trong pipeline; Conftest và ngôn ngữ Rego biến mọi chính sách tuân thủ an ninh thành mã kiểm thử tự động ngắt pipeline khi vi phạm"**?
-
-**Đáp án chuẩn:**
-- Vì các văn bản quy định bảo mật lưu trên PDF/Word thường không được lập trình viên đọc tới hoặc vô tình bị bỏ qua trong quá trình vội vã release.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quy định bảo mật viết bằng chữ là giấy lộn nếu không tự động hoá thành luật chạy trong pipeline; Conftest và ngôn ngữ Rego biến mọi chính sách tuân thủ an ninh thành mã kiểm thử tự động ngắt pipeline khi vi phạm"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì các văn bản quy định bảo mật lưu trên PDF/Word thường không được lập trình viên đọc tới hoặc vô tình bị bỏ qua trong quá trình vội vã release.
 - **Compliance as Code (Conftest + Rego)** mã hóa 100% các quy chuẩn an ninh văn bản thành mã phần mềm tự động kiểm thử ở Stage test, tự động đánh rớt pipeline (`exit 1`) khi có bất kỳ dòng cấu hình nào vi phạm mà không cần sự can thiệp thủ công của con người.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Security Quality Gate (Trivy/Gitleaks) và Compliance Enforcement (OPA/Conftest)?
-
-**Đáp án chuẩn:**
-- **Security Quality Gate (Trivy/Gitleaks):** Tìm kiếm các lỗ hổng phần mềm CVEs quốc tế hoặc rò rỉ secret key tĩnh do lỗi viết code thô.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Security Quality Gate (Trivy/Gitleaks) và Compliance Enforcement (OPA/Conftest)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Security Quality Gate (Trivy/Gitleaks):** Tìm kiếm các lỗ hổng phần mềm CVEs quốc tế hoặc rò rỉ secret key tĩnh do lỗi viết code thô.
 - **Compliance Enforcement (OPA/Conftest):** Kiểm tra xem các tệp cấu hình (`.gitlab-ci.yml`, `Dockerfile`, `deployment.yaml`) có tuân thủ đúng các quy chuẩn kiến trúc và vận hành nội bộ của công ty hay không (như bắt buộc chứa Job `secret-detection`, bắt buộc cờ `runAsNonRoot: true`, cờ `Protected Environment`).
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý hoạt động của Open Policy Agent (OPA) và ngôn ngữ khai báo chính sách `Rego`?
-
-**Đáp án chuẩn:**
-- OPA nạp dữ liệu đầu vào (tệp JSON/YAML đã parse) và thực thi truy vấn toán học tập hợp (Set Intersections) trên tập các mệnh đề trong tệp chính sách `.rego`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của Open Policy Agent (OPA) và ngôn ngữ khai báo chính sách `Rego`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - OPA nạp dữ liệu đầu vào (tệp JSON/YAML đã parse) và thực thi truy vấn toán học tập hợp (Set Intersections) trên tập các mệnh đề trong tệp chính sách `.rego`.
 - Ngôn ngữ `Rego` là ngôn ngữ khai báo (Declarative Language). Nếu tất cả các mệnh đề điều kiện trong khối `deny[msg]` đều thỏa mãn, khối `deny` sẽ trả về thông điệp lỗi `msg`, làm OPA thông báo trạng thái FAILED.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của công cụ `Conftest` trong việc kiểm thử các tệp cấu hình JSON/YAML/Dockerfile/HCL?
-
-**Đáp án chuẩn:**
-- `Conftest` đóng vai trò là một lớp vỏ Wrapper tích hợp bộ công cụ OPA vào quy trình CI/CD.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `Conftest` trong việc kiểm thử các tệp cấu hình JSON/YAML/Dockerfile/HCL?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Conftest` đóng vai trò là một lớp vỏ Wrapper tích hợp bộ công cụ OPA vào quy trình CI/CD.
 - Conftest tự động nhận diện cú pháp tệp đầu vào (`.gitlab-ci.yml`, `Dockerfile`, `deployment.yaml`, `main.tf`), chuyển đổi toàn bộ thành cấu trúc JSON Data trừu tượng AST, nạp các tệp chính sách `policy/*.rego` để OPA đánh giá và trả về kết quả lỗi kèm exit code 0 (Pass) hoặc exit code 1 (Fail).
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Cách viết luật chính sách Rego `deny[msg]` kiểm tra cấu hình bắt buộc trong tệp `.gitlab-ci.yml`?
-
-**Đáp án chuẩn:**
-- Ta viết luật Rego truy vấn các khối job trong `input`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Cách viết luật chính sách Rego `deny[msg]` kiểm tra cấu hình bắt buộc trong tệp `.gitlab-ci.yml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Ta viết luật Rego truy vấn các khối job trong `input`:
   ```rego
   package main
   deny[msg] {
@@ -1647,12 +1714,25 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
   ```
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Cách viết luật chính sách Rego kiểm tra thuộc tính Pod Security Context trong Kubernetes Manifests?
-
-**Đáp án chuẩn:**
-- Ta viết luật Rego truy vấn mảng `containers`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Cách viết luật chính sách Rego kiểm tra thuộc tính Pod Security Context trong Kubernetes Manifests?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Ta viết luật Rego truy vấn mảng `containers`:
   ```rego
   package main
   deny[msg] {
@@ -1664,20 +1744,46 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
   ```
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Cấu trúc tệp báo cáo kiểm toán tuân thủ an ninh `gl-compliance-report.json`?
-
-**Đáp án chuẩn:**
-- Tệp chứa thuộc tính `version: "1.0.0"`, `status: "FAILED"`, `summary` (tổng số luật đánh giá, số luật pass, số luật vi phạm), và mảng `violations` chi tiết mã điều khoản `policy_id`, tệp vi phạm `target_file`, mức độ `severity`, thông điệp `message` và số dòng code `line_number`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Cấu trúc tệp báo cáo kiểm toán tuân thủ an ninh `gl-compliance-report.json`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tệp chứa thuộc tính `version: "1.0.0"`, `status: "FAILED"`, `summary` (tổng số luật đánh giá, số luật pass, số luật vi phạm), và mảng `violations` chi tiết mã điều khoản `policy_id`, tệp vi phạm `target_file`, mức độ `severity`, thông điệp `message` và số dòng code `line_number`.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Phương pháp quản lý tập trung bộ quy tắc Rego Policies bằng cờ `conftest pull` từ OCI Registry?
-
-**Đáp án chuẩn:**
-- Nhóm Security quản lý một Git Repository chứa toàn bộ chính sách Rego của công ty, thực thi `conftest push` đóng gói thành OCI Policy Bundle trên Private Docker Registry.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Phương pháp quản lý tập trung bộ quy tắc Rego Policies bằng cờ `conftest pull` từ OCI Registry?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nhóm Security quản lý một Git Repository chứa toàn bộ chính sách Rego của công ty, thực thi `conftest push` đóng gói thành OCI Policy Bundle trên Private Docker Registry.
 - Trong CI Job của 100 dự án con, ta khai báo câu lệnh:
   ```bash
   conftest pull $CI_REGISTRY/security/compliance-policy:latest
@@ -1686,21 +1792,47 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - Giúp áp dụng tức thì các chính sách an ninh mới nhất cho toàn hệ thống mà không cần chỉnh sửa code từng repo.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách thiết lập Compliance Quality Gate tự động ngắt pipeline (`exit 1`) khi có bất kỳ luật vi phạm nào?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh `conftest test`, không truyền cờ `--warn-only`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách thiết lập Compliance Quality Gate tự động ngắt pipeline (`exit 1`) khi có bất kỳ luật vi phạm nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh `conftest test`, không truyền cờ `--warn-only`.
 - Đặt thuộc tính `allow_failure: false` trong CI Job `compliance-test-conftest`. Khi có ít nhất 1 luật `deny[msg]` bị thỏa mãn, Conftest sẽ trả về `exit code 1` đánh rớt pipeline lập tức.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp quản lý trường hợp ngoại lệ chính sách (Policy Exceptions) có vết audit giải trình an toàn trong Rego?
-
-**Đáp án chuẩn:**
-- Tạo tệp `policy/exceptions.rego` do nhóm Security quản lý qua `CODEOWNERS`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp quản lý trường hợp ngoại lệ chính sách (Policy Exceptions) có vết audit giải trình an toàn trong Rego?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tạo tệp `policy/exceptions.rego` do nhóm Security quản lý qua `CODEOWNERS`.
 - Định nghĩa luật `exception[msg]` kiểm tra tên dự án và mã Issue phê duyệt:
   ```rego
   exception[msg] {
@@ -1711,26 +1843,54 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
   ```
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi lập trình viên tìm cách bypass bước kiểm thử Compliance bằng cách xóa Job Conftest?
-
-**Đáp án chuẩn:**
-- Áp dụng cơ chế **GitLab Compliance Pipeline Parent-Child Template** ở tầng Admin / Group Level.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi lập trình viên tìm cách bypass bước kiểm thử Compliance bằng cách xóa Job Conftest?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Áp dụng cơ chế **GitLab Compliance Pipeline Parent-Child Template** ở tầng Admin / Group Level.
 - Bắt buộc mọi dự án con đều phải thực thi một Parent Pipeline chứa sẵn Job `compliance-test-conftest` do Security Team quản lý; lập trình viên ở dự án con không có quyền chỉnh sửa hay ghi đè Job này trong `.gitlab-ci.yml`.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước triển khai Compliance as Code chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Define Rego Policy:** Định nghĩa các bộ luật chính sách `policy/*.rego` kiểm tra `.gitlab-ci.yml`, Dockerfile, K8s.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai Compliance as Code chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Define Rego Policy:** Định nghĩa các bộ luật chính sách `policy/*.rego` kiểm tra `.gitlab-ci.yml`, Dockerfile, K8s.
 2. **Central Repository:** Đóng gói và lưu trữ bộ chính sách tập trung trên OCI Registry.
 3. **Conftest Test Stage:** Thực thi `conftest test` ở Stage test trước khi khởi chạy các bước build.
 4. **Quality Gate Enforcement:** Tự động ngắt pipeline (`exit 1`) nếu phát hiện vi phạm và xuất báo cáo `gl-compliance-report.json`.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

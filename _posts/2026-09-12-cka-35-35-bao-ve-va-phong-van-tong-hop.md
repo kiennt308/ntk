@@ -15,8 +15,12 @@ series_order: 35
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.35] Hướng dẫn chuyên sâu Bảo Vệ Đồ Án Tốt Nghiệp & Đại Tuyển Tập 100+ Câu Hỏi Phỏng Vấn CKA Chuyên Sâu: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Bảo Vệ Đồ Án Tốt Nghiệp & Đại Tuyển Tập 100+ Câu Hỏi Phỏng Vấn CKA Chuyên Sâu."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 35] BẢO VỆ ĐỒ ÁN TỐT NGHIỆP & ĐẠI TUYỂN TẬP 100+ CÂU HỎI PHỎNG VẤN CKA CHUYÊN SÂU
 
@@ -303,44 +307,236 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Ba bước tiêu chuẩn trong quy trình 40 phút Bảo vệ Dự án Capstone Tốt nghiệp là gì?
-   - **Đáp án:** 1) **Thuyết minh bản vẽ kiến trúc (10m)**, 2) **Live Terminal Demo (15m)**, 3) **Trả lời phản biện kỹ thuật (15m)**.
 
-2. Ngưỡng điểm phần trăm tối thiểu để đỗ từng chứng chỉ quốc tế chính thức của CNCF (CKA, CKAD, CKS) là bao nhiêu?
-   - **Đáp án:** **CKA (66 %)**, **CKAD (66 %)**, và **CKS (67 %)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ba bước tiêu chuẩn trong quy trình 40 phút Bảo vệ Dự án Capstone Tốt nghiệp là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1) **Thuyết minh bản vẽ kiến trúc (10m)**, 2) **Live Terminal Demo (15m)**, 3) **Trả lời phản biện kỹ thuật (15m)**.
+</div>
+</details>
 
-3. Ba câu hỏi phản biện cốt lõi mà hội đồng chuyên môn LUÔN LUÔN đặt ra trong buổi bảo vệ Capstone là gì?
-   - **Đáp án:** 1) Vì sao chọn mô hình phân chia này? 2) Điểm sập đơn lẻ (SPOF) ở đâu? 3) Cơ chế khôi phục sau sự cố (DR) ra sao?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Ngưỡng điểm phần trăm tối thiểu để đỗ từng chứng chỉ quốc tế chính thức của CNCF (CKA, CKAD, CKS) là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **CKA (66 %)**, **CKAD (66 %)**, và **CKS (67 %)**.
+</div>
+</details>
 
-4. Lệnh CLI nào được dùng để kiểm tra tính toàn vẹn và không lỗi của toàn bộ 72 buổi học trong giáo trình?
-   - **Đáp án:** Lệnh `bash ntkk8s/buoi/kiem-tra.sh all` và `bash ntkk8s/buoi/kiem-tra-cheo.sh all`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ba câu hỏi phản biện cốt lõi mà hội đồng chuyên môn LUÔN LUÔN đặt ra trong buổi bảo vệ Capstone là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1) Vì sao chọn mô hình phân chia này? 2) Điểm sập đơn lẻ (SPOF) ở đâu? 3) Cơ chế khôi phục sau sự cố (DR) ra sao?
+</div>
+</details>
 
-5. Tệp báo cáo tổng kết năng lực kỹ sư chuyên gia sau khi hoàn thành khóa học được lưu tại đường dẫn nào?
-   - **Đáp án:** Đường dẫn **/tmp/graduation/competency.md**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Lệnh CLI nào được dùng để kiểm tra tính toàn vẹn và không lỗi của toàn bộ 72 buổi học trong giáo trình?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `bash ntkk8s/buoi/kiem-tra.sh all` và `bash ntkk8s/buoi/kiem-tra-cheo.sh all`.
+</div>
+</details>
 
-6. Ba miền trọng số điểm cao nhất (mỗi miền 20%) trong kỳ thi CKS cần ghi nhớ khi phỏng vấn là gì?
-   - **Đáp án:** **Minimize Microservice Vulnerabilities**, **Supply Chain Security**, và **Monitoring, Logging and Runtime Security**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tệp báo cáo tổng kết năng lực kỹ sư chuyên gia sau khi hoàn thành khóa học được lưu tại đường dẫn nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đường dẫn **/tmp/graduation/competency.md**.
+</div>
+</details>
 
-7. Lệnh CLI imperatively nào sinh nhanh manifest CronJob chạy 5 phút/lần trong thi CKAD?
-   - **Đáp án:** Lệnh `kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" --dry-run=client -o yaml -- date`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Ba miền trọng số điểm cao nhất (mỗi miền 20%) trong kỳ thi CKS cần ghi nhớ khi phỏng vấn là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Minimize Microservice Vulnerabilities**, **Supply Chain Security**, và **Monitoring, Logging and Runtime Security**.
+</div>
+</details>
 
-8. Ba cờ câu lệnh chứng thực TLS etcd snapshot save bắt buộc phải nhớ khi phỏng vấn CKA là gì?
-   - **Đáp án:** Cờ `--cacert`, `--cert`, và `--key`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lệnh CLI imperatively nào sinh nhanh manifest CronJob chạy 5 phút/lần trong thi CKAD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" --dry-run=client -o yaml -- date`.
+</div>
+</details>
 
-9. Tại sao kỹ năng trình diễn Live Demo terminal trực tiếp lại quan trọng hơn slide thuyết trình trong bảo vệ Capstone?
-   - **Đáp án:** Vì chứng minh được **nền tảng hạ tầng thực tế hoạt động 100% ổn định**, không phải mô hình trên giấy.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Ba cờ câu lệnh chứng thực TLS etcd snapshot save bắt buộc phải nhớ khi phỏng vấn CKA là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--cacert`, `--cert`, và `--key`.
+</div>
+</details>
 
-10. Vai trò tiếp theo của học viên sau khi hoàn thành xuất sắc 72 buổi học Kubernetes này là gì?
-    - **Đáp án:** Trở thành **Chuyên gia Hạ tầng Đám mây (Senior Cloud-Native Platform Engineer / Lead SRE)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao kỹ năng trình diễn Live Demo terminal trực tiếp lại quan trọng hơn slide thuyết trình trong bảo vệ Capstone?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì chứng minh được **nền tảng hạ tầng thực tế hoạt động 100% ổn định**, không phải mô hình trên giấy.
+</div>
+</details>
 
-11. Cú pháp bash script chuẩn kiểm tra kết quả Bài thi Tốt nghiệp 72 buổi là gì?
-    - **Đáp án:**
-      ```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Vai trò tiếp theo của học viên sau khi hoàn thành xuất sắc 72 buổi học Kubernetes này là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trở thành **Chuyên gia Hạ tầng Đám mây (Senior Cloud-Native Platform Engineer / Lead SRE)**.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Cú pháp bash script chuẩn kiểm tra kết quả Bài thi Tốt nghiệp 72 buổi là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
       test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.log
       ```
+</div>
+</details>
 
-12. Cụm từ chốt ấn tượng nhất để khẳng định năng lực trước hội đồng tốt nghiệp là gì?
-    - **Đáp án:** **"Tôi đã làm chủ 100% kỹ năng Kiến trúc CKA, Vận hành CKAD và Bảo mật CKS trên nền tảng Kubernetes Doanh nghiệp!"**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cụm từ chốt ấn tượng nhất để khẳng định năng lực trước hội đồng tốt nghiệp là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **"Tôi đã làm chủ 100% kỹ năng Kiến trúc CKA, Vận hành CKAD và Bảo mật CKS trên nền tảng Kubernetes Doanh nghiệp!"**
+</div>
+</details>
 
 ---
 
@@ -722,11 +918,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Tỉ lệ điểm đỗ và ma trận trọng số của 3 kỳ thi chứng chỉ quốc tế CKA, CKAD, CKS do CNCF quy định được phân bổ như thế nào?
 
-**Đáp án chuẩn:**
-- **CKA**: Điểm đỗ **`66%`** (Troubleshooting 30%, Cluster Arch 25%, Services 20%, Workloads 15%, Storage 10%).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tỉ lệ điểm đỗ và ma trận trọng số của 3 kỳ thi chứng chỉ quốc tế CKA, CKAD, CKS do CNCF quy định được phân bổ như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **CKA**: Điểm đỗ **`66%`** (Troubleshooting 30%, Cluster Arch 25%, Services 20%, Workloads 15%, Storage 10%).
 - **CKAD**: Điểm đỗ **`66%`** (Config & Security 25%, Design 20%, Deployment 20%, Observability 20%, Services 15%).
 - **CKS**: Điểm đỗ **`67%`** (Microservice Vuln 20%, Supply Chain 20%, Monitoring & Runtime 20%, Cluster Hardening 15%, System Hardening 15%, Cluster Setup 10%).
 
@@ -736,6 +944,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Trình bày chuẩn xác 100% điểm đỗ và ma trận trọng số cả 3 chứng chỉ CKA, CKAD, CKS.
 
 **Câu hỏi đào sâu:** (Thời gian thi thực hành của cả 3 bài thi CKA, CKAD, CKS do CNCF tổ chức là bao nhiêu phút? — Thời gian thi do CNCF quy định cho cả 3 bài thi là **`120 phút`**).
+</div>
+</details>
 
 ---
 
@@ -1009,15 +1219,43 @@ Biên soạn tệp Bảng Năng lực Chuyên gia tại `/tmp/graduation/compete
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Thực hiện bài thi CKA Tốc độ
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Thực hiện bài thi CKA Tốc độ</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 echo "CKA Task Passed: Pod IPs extracted & etcd snapshot saved to /tmp/etcd-backup.db" > /tmp/grad-cka.txt
 ```
+</div>
+</details>
 
-### Câu 2 — Biên soạn tệp CKAD Manifest
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Biên soạn tệp CKAD Manifest</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/grad-ckad.yaml
 apiVersion: batch/v1
 kind: CronJob
@@ -1039,10 +1277,25 @@ spec:
           restartPolicy: OnFailure
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Biên soạn tệp CKS Security Policy
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Biên soạn tệp CKS Security Policy</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/grad-cks.yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -1070,13 +1323,31 @@ rules:
         resources: ["secrets"]
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Biên soạn Bảng Năng lực Chuyên gia
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Biên soạn Bảng Năng lực Chuyên gia</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 mkdir -p /tmp/graduation
 cat <<EOF > /tmp/graduation/competency.md
 # BẢNG TỔNG KẾT NĂNG LỰC KỸ SƯ CHUYÊN GIA (SENIOR PLATFORM ARCHITECT MATRIX)
+</div>
+</details>
+
 ## 1. Core Competency Scores
 CKA (10/10), CKAD (10/10), CKS (10/10), SRE (10/10), Platform Ops (10/10).
 

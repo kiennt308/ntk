@@ -15,8 +15,12 @@ series_order: 3
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.03] Hướng dẫn chuyên sâu Cú Pháp YAML Cốt Lõi & Thiết Kế Stages: .gitlab-ci.yml, Pipeline Execution Order & Điều Phối Tuyến Tính: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Cú Pháp YAML Cốt Lõi & Thiết Kế Stages: .gitlab-ci.yml, Pipeline Execution Order & Điều Phối Tuyến Tính."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 03] CÚ PHÁP YAML CỐT LÕI & THIẾT KẾ STAGES: .GITLAB-CI.YML, PIPELINE EXECUTION ORDER & ĐIỀU PHỐI TUYẾN TÍNH
 
@@ -1902,11 +1906,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** `stage` trong GitLab CI cho ta cái gì?
-
-**Đáp án chuẩn:** Cho **một ràng buộc thứ tự**, và **chỉ có thế**. `stage` nói "mọi job của stage này chạy sau khi mọi job của stage trước kết thúc". Nó là một **hàng rào thời gian**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>stage` trong GitLab CI cho ta cái gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cho **một ràng buộc thứ tự**, và **chỉ có thế**. `stage` nói "mọi job của stage này chạy sau khi mọi job của stage trước kết thúc". Nó là một **hàng rào thời gian**.
 
 Hai thứ nó **không** cho:
 
@@ -1921,6 +1937,8 @@ Hai thứ nó **không** cho:
 - 3đ: Như trên, **và** nêu con số 0 byte, **và** giải thích được vì sao mặc định tải artifact stage trước gây hiểu nhầm.
 
 **Câu hỏi đào sâu:** Vậy cái gì bỏ được hàng rào? *(`needs` — buổi 08. Nó biến pipeline từ chuỗi stage thành một đồ thị phụ thuộc, và thời gian pipeline chuyển từ "tổng các stage" sang "đường găng dài nhất".)*
+</div>
+</details>
 
 ---
 

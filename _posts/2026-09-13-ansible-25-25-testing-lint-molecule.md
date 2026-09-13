@@ -15,8 +15,12 @@ series_order: 25
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.25] Hướng dẫn chuyên sâu Kiểm Thử Tự Động Playbooks & Roles: Ansible-Lint, Syntax Check, Molecule Testing Framework & Docker Scenario Test: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiểm Thử Tự Động Playbooks & Roles: Ansible-Lint, Syntax Check, Molecule Testing Framework & Docker Scenario Test."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 25] KIỂM THỬ TỰ ĐỘNG PLAYBOOKS & ROLES: ANSIBLE-LINT, SYNTAX CHECK, MOLECULE TESTING FRAMEWORK & DOCKER SCENARIO TEST
 
@@ -790,8 +794,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Kiểm tra Cú pháp Static với `--syntax-check` 🔥
-**Hỏi:** Cờ `--syntax-check` trong câu lệnh `ansible-playbook` dùng để làm gì? Tại sao việc chạy `--syntax-check` lại là bước đầu tiên trong quy trình CI/CD? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Kiểm tra Cú pháp Static với `--syntax-check` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Cờ `--syntax-check` trong câu lệnh `ansible-playbook` dùng để làm gì? Tại sao việc chạy `--syntax-check` lại là bước đầu tiên trong quy trình CI/CD? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Tác dụng: Dùng để kiểm tra cú pháp tĩnh (Static Syntax Check) của tệp Playbook mà không thực hiện kết nối SSH tới các máy chủ Managed Nodes.
 - Tại sao là bước đầu tiên trong CI/CD: Giúp phát hiện ngay lập tức các lỗi cú pháp cơ bản (như sai khoảng trắng indent YAML, thiếu dấu hai chấm, thiếu từ khóa `hosts:`) chỉ trong 1 giây. Chặn không cho các commit lỗi cú pháp đi tiếp vào các bước build tốn nhiều tài nguyên hơn.
@@ -801,6 +819,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Phân tích chính xác cơ chế Static Syntax Check và vai trò Fail-Fast trong CI/CD.
 - 3: Nêu đúng + viết câu lệnh CLI thực thi `ansible-playbook --syntax-check site-testing.yml`.
 **Câu hỏi đào sâu:** Cờ `--syntax-check` có kiểm tra được biến rỗng hay lỗi SSH connection không? *(Không, nó chỉ kiểm tra cấu trúc cú pháp tĩnh của file YAML.)*
+</div>
+</details>
 
 ---
 

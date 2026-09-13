@@ -15,8 +15,12 @@ series_order: 15
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.15] Hướng dẫn chuyên sâu Quản Trị Deployment & ReplicaSet: Chiến Lược RollingUpdate, MaxSurge/MaxUnavailable & Rollback An Toàn: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Deployment & ReplicaSet: Chiến Lược RollingUpdate, MaxSurge/MaxUnavailable & Rollback An Toàn."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 15] QUẢN TRỊ DEPLOYMENT & REPLICASET: CHIẾN LƯỢC ROLLINGUPDATE, MAXSURGE/MAXUNAVAILABLE & ROLLBACK AN TOÀN
 
@@ -166,8 +170,8 @@ graph TD
         RC_DOWN --> RC_NEW["Khởi tạo 100% Pods v2 mới"]
     end
 
-    style RollingUpdate_Strategy fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
-    style Recreate_Strategy fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style RollingUpdate_Strategy fill:none,stroke:#388e3c,stroke-width:2px
+    style Recreate_Strategy fill:none,stroke:#f57c00,stroke-width:2px
 ```
 
 ---
@@ -373,9 +377,9 @@ graph TD
     A --> D["Chiến lược RollingUpdate: maxSurge (25%) + maxUnavailable (25%)"]
     D --> E["Bộ lệnh kiểm soát: kubectl rollout (status, history, pause, resume, undo)"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style D fill:#bbf,stroke:#333,stroke-width:2px
-    style E fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style D fill:none,stroke:#333,stroke-width:2px
+    style E fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -512,9 +516,9 @@ graph TD
 
     Deploy_Creation --> Rollout_Lifecycle --> Rollback_Lab
 
-    style Deploy_Creation fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Rollout_Lifecycle fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Rollback_Lab fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Deploy_Creation fill:none,stroke:#f57c00,stroke-width:2px
+    style Rollout_Lifecycle fill:none,stroke:#0288d1,stroke-width:2px
+    style Rollback_Lab fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -847,12 +851,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Trình bày mối quan hệ 3 tầng giữa các đối tượng `Deployment`, `ReplicaSet` và `Pod` trong Kubernetes và cho biết cơ chế nào giúp chúng liên kết với nhau.
-
-**Đáp án chuẩn:**
-- **Mối quan hệ 3 tầng:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày mối quan hệ 3 tầng giữa các đối tượng `Deployment`, `ReplicaSet` và `Pod` trong Kubernetes và cho biết cơ chế nào giúp chúng liên kết với nhau.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Mối quan hệ 3 tầng:**
   1. `Deployment`: Đối tượng quản lý cấp cao nhất chịu trách nhiệm về vòng đời ứng dụng, các phiên bản nâng cấp (Revisions) và chiến lược triển khai (`RollingUpdate` / `Recreate`).
   2. `ReplicaSet`: Đối tượng trung gian trực tiếp quản lý số lượng bản sao Pod cố định theo khai báo `replicas`.
   3. `Pod`: Đơn vị thực thi thực tế chứa các container chạy ứng dụng.
@@ -865,6 +880,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl get rs -l app=web`.
 
 **Câu hỏi đào sâu:** Khi bạn xóa trực tiếp 1 Pod thuộc Deployment quản lý thì đối tượng nào sẽ tự động tạo lại Pod mới? *(Đáp án: Đối tượng `ReplicaSet` trực tiếp phát hiện thiếu Pod và spawn Pod mới).*
+</div>
+</details>
 
 ---
 

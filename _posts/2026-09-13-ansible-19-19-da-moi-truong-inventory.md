@@ -15,8 +15,12 @@ series_order: 19
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.19] Hướng dẫn chuyên sâu Quản Trị Đa Môi Trường (Multi-Environment): Tổ Chức Directory Layout Cho Dev, Staging, UAT & Production Không Lặp Code: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Đa Môi Trường (Multi-Environment): Tổ Chức Directory Layout Cho Dev, Staging, UAT & Production Không Lặp Code."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 19] QUẢN TRỊ ĐA MÔI TRƯỜNG (MULTI-ENVIRONMENT): TỔ CHỨC DIRECTORY LAYOUT CHO DEV, STAGING, UAT & PRODUCTION KHÔNG LẶP CODE
 
@@ -812,8 +816,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Tổ chức Thư mục Inventory Đa Môi trường 🔥
-**Hỏi:** Tại sao Red Hat khuyến nghị tổ chức đa môi trường qua cấu trúc thư mục `inventory/staging/` và `inventory/production/` riêng biệt thay vì gom chung vào 1 file inventory? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tổ chức Thư mục Inventory Đa Môi trường 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Tại sao Red Hat khuyến nghị tổ chức đa môi trường qua cấu trúc thư mục `inventory/staging/` và `inventory/production/` riêng biệt thay vì gom chung vào 1 file inventory? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 Lý do cô lập:
 1. **Cô lập 100% dữ liệu:** Tách biệt hoàn toàn danh sách IP máy chủ và các biến cấu hình giữa Staging và Production, triệt tiêu nguy cơ biến Staging bị rò rỉ đè hỏng cấu hình Production.
@@ -824,6 +842,8 @@ Lý do cô lập:
 - 2: Phân tích chính xác vai trò cô lập biến và triệt tiêu nguy cơ rò rỉ cấu hình Production.
 - 3: Nêu đúng + vẽ sơ đồ cây thư mục chuẩn `inventory/staging/` và `inventory/production/`.
 **Câu hỏi đào sâu:** Nếu dự án có thêm môi trường UAT, ta tạo thư mục nào? *(Tạo thư mục `inventory/uat/` chứa `hosts.ini` và `group_vars/` tương tự.)*
+</div>
+</details>
 
 ---
 

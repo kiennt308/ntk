@@ -15,8 +15,12 @@ series_order: 11
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.11] Hướng dẫn chuyên sâu Thiết Lập SecurityContext Cho Ứng Dụng: RunAsNonRoot, ReadOnlyRootFilesystem, Capabilities & fsGroup: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Thiết Lập SecurityContext Cho Ứng Dụng: RunAsNonRoot, ReadOnlyRootFilesystem, Capabilities & fsGroup."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 11] THIẾT LẬP SECURITYCONTEXT CHO ỨNG DỤNG: RUNASNONROOT, READONLYROOTFILESYSTEM, CAPABILITIES & FSGROUP
 
@@ -356,41 +360,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Sự khác biệt chính về phạm vi áp dụng giữa `securityContext` ở cấp Pod và cấp Container là gì?
-   - **Đáp án:** Cấp Pod áp dụng chung cho tất cả container (`runAsUser`, `fsGroup`); Cấp Container áp dụng riêng và ghi đè cấp Pod (`readOnlyRootFilesystem`, `capabilities`).
 
-2. Điều gì xảy ra khi bạn cấu hình `runAsNonRoot: true` cho một Pod chạy ảnh Docker mặc định là root mà không khai báo `runAsUser`?
-   - **Đáp án:** Kubelet từ chối khởi chạy container và báo lỗi `container has runAsNonRoot and image will run as root`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt chính về phạm vi áp dụng giữa `securityContext` ở cấp Pod và cấp Container là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cấp Pod áp dụng chung cho tất cả container (`runAsUser`, `fsGroup`); Cấp Container áp dụng riêng và ghi đè cấp Pod (`readOnlyRootFilesystem`, `capabilities`).
+</div>
+</details>
 
-3. Cờ thuộc tính nào trong container `securityContext` được sử dụng để khóa toàn bộ đĩa gốc container ở chế độ chỉ đọc?
-   - **Đáp án:** Thuộc tính `readOnlyRootFilesystem: true`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Điều gì xảy ra khi bạn cấu hình `runAsNonRoot: true` cho một Pod chạy ảnh Docker mặc định là root mà không khai báo `runAsUser`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubelet từ chối khởi chạy container và báo lỗi `container has runAsNonRoot and image will run as root`.
+</div>
+</details>
 
-4. Khi bật `readOnlyRootFilesystem: true`, giải pháp nào giúp ứng dụng vẫn ghi được các tệp tin tạm thời?
-   - **Đáp án:** Mount một `emptyDir` volume vào các thư mục tạm (như `/tmp` hay `/var/log`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cờ thuộc tính nào trong container `securityContext` được sử dụng để khóa toàn bộ đĩa gốc container ở chế độ chỉ đọc?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thuộc tính `readOnlyRootFilesystem: true`.
+</div>
+</details>
 
-5. Cờ thuộc tính nào được sử dụng để ngăn chặn các tiến trình con bên trong container leo quyền root qua các file suid?
-   - **Đáp án:** Thuộc tính `allowPrivilegeEscalation: false`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Khi bật `readOnlyRootFilesystem: true`, giải pháp nào giúp ứng dụng vẫn ghi được các tệp tin tạm thời?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mount một `emptyDir` volume vào các thư mục tạm (như `/tmp` hay `/var/log`).
+</div>
+</details>
 
-6. Cú pháp YAML chuẩn để tước bỏ toàn bộ các đặc quyền Linux kernel mặc định của container là gì?
-   - **Đáp án:** Khai báo `capabilities.drop: ["ALL"]`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cờ thuộc tính nào được sử dụng để ngăn chặn các tiến trình con bên trong container leo quyền root qua các file suid?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thuộc tính `allowPrivilegeEscalation: false`.
+</div>
+</details>
 
-7. Quyền Linux Capability nào cần được bổ sung (`capabilities.add`) để tài khoản non-root mở được port 80?
-   - **Đáp án:** Quyền `NET_BIND_SERVICE`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cú pháp YAML chuẩn để tước bỏ toàn bộ các đặc quyền Linux kernel mặc định của container là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khai báo `capabilities.drop: ["ALL"]`.
+</div>
+</details>
 
-8. Thuộc tính `fsGroup: 2000` trong Pod `securityContext` có tác dụng gì đối với các Volume được mount?
-   - **Đáp án:** Kubelet tự động thay đổi quyền sở hữu (chown) của các tệp trong Volume sang GID 2000.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Quyền Linux Capability nào cần được bổ sung (`capabilities.add`) để tài khoản non-root mở được port 80?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Quyền `NET_BIND_SERVICE`.
+</div>
+</details>
 
-9. Bốn yếu tố bắt buộc để xây dựng một bản kê khai Pod chuẩn bảo mật cao nhất (Hardened Pod Manifest) là gì?
-   - **Đáp án:** `runAsNonRoot: true`, `readOnlyRootFilesystem: true`, `allowPrivilegeEscalation: false`, và `capabilities.drop: ["ALL"]`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Thuộc tính `fsGroup: 2000` trong Pod `securityContext` có tác dụng gì đối với các Volume được mount?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubelet tự động thay đổi quyền sở hữu (chown) của các tệp trong Volume sang GID 2000.
+</div>
+</details>
 
-10. Giá trị chữ `ALL` trong mảng `capabilities.drop` bắt buộc phải viết thế nào?
-    - **Đáp án:** Bắt buộc phải viết in hoa toàn bộ (`"ALL"`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Bốn yếu tố bắt buộc để xây dựng một bản kê khai Pod chuẩn bảo mật cao nhất (Hardened Pod Manifest) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `runAsNonRoot: true`, `readOnlyRootFilesystem: true`, `allowPrivilegeEscalation: false`, và `capabilities.drop: ["ALL"]`.
+</div>
+</details>
 
-11. Tại sao không nên cho tiến trình container chạy dưới tài khoản root (`UID 0`)?
-    - **Đáp án:** Vì nếu rào chắn container bị phá vỡ (Container Escape), kẻ tấn công sẽ chiếm trọn quyền root của Node host.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Giá trị chữ `ALL` trong mảng `capabilities.drop` bắt buộc phải viết thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Bắt buộc phải viết in hoa toàn bộ (`"ALL"`).
+</div>
+</details>
 
-12. Cờ thuộc tính nào dùng để chỉ định UID của tài khoản Linux chạy tiến trình trong container?
-    - **Đáp án:** Thuộc tính `runAsUser`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không nên cho tiến trình container chạy dưới tài khoản root (`UID 0`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì nếu rào chắn container bị phá vỡ (Container Escape), kẻ tấn công sẽ chiếm trọn quyền root của Node host.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cờ thuộc tính nào dùng để chỉ định UID của tài khoản Linux chạy tiến trình trong container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thuộc tính `runAsUser`.
+</div>
+</details>
 
 ---
 
@@ -800,10 +997,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Sự khác biệt về phạm vi áp dụng giữa `securityContext` được khai báo ở cấp Pod spec và cấp Container spec là gì?
 
-**Đáp án chuẩn:** `securityContext` ở cấp Pod áp dụng chung cho tất cả các container bên trong Pod (bao gồm `runAsUser`, `runAsGroup`, `fsGroup`). `securityContext` ở cấp Container áp dụng riêng và ghi đè cấp Pod, chứa các thuộc tính riêng của container (như `readOnlyRootFilesystem`, `capabilities`, `allowPrivilegeEscalation`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt về phạm vi áp dụng giữa `securityContext` được khai báo ở cấp Pod spec và cấp Container spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `securityContext` ở cấp Pod áp dụng chung cho tất cả các container bên trong Pod (bao gồm `runAsUser`, `runAsGroup`, `fsGroup`). `securityContext` ở cấp Container áp dụng riêng và ghi đè cấp Pod, chứa các thuộc tính riêng của container (như `readOnlyRootFilesystem`, `capabilities`, `allowPrivilegeEscalation`).
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được 2 cấp securityContext.
@@ -811,6 +1021,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích chuẩn xác thuộc tính nào thuộc Pod-level và thuộc tính nào thuộc Container-level.
 
 **Câu hỏi đào sâu:** (Nếu cấp Pod khai báo `runAsUser: 1000` nhưng container A khai báo `runAsUser: 2000` thì container A sẽ chạy dưới UID nào? — Chạy dưới UID 2000 do container-level ghi đè pod-level).
+</div>
+</details>
 
 ---
 
@@ -1062,9 +1274,22 @@ Tạo Pod `net-bind-pod` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Pod `secure-pod` chạy non-root UID 1001
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Pod `secure-pod` chạy non-root UID 1001</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1084,10 +1309,25 @@ spec:
         - containerPort: 8080
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo Pod `readonly-pod` với `readOnlyRootFilesystem` kết hợp `emptyDir`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo Pod `readonly-pod` với `readOnlyRootFilesystem` kết hợp `emptyDir</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1109,10 +1349,25 @@ spec:
       emptyDir: {}
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo Pod `hardened-pod` drop ALL capabilities
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo Pod `hardened-pod` drop ALL capabilities</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1130,10 +1385,25 @@ spec:
             - ALL
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo Pod `net-bind-pod` add `NET_BIND_SERVICE` và `fsGroup`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo Pod `net-bind-pod` add `NET_BIND_SERVICE` và `fsGroup</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1159,6 +1429,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

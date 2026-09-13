@@ -15,8 +15,12 @@ series_order: 9
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
 summary: "Hướng dẫn tích hợp Kustomize trong Argo CD: Quản trị đa môi trường Dev/Staging/Prod theo triết lý DRY (Don't Repeat Yourself) với Base & Overlays Pattern, Kustomize Components, khai thác sức mạnh của ConfigMapGenerator Content Hash kích hoạt Zero-Downtime Rolling Updates và xử lý bẫy Pod không reload cấu hình."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tích Hợp Kustomize Trong Argo CD: Quản Trị Đa Môi Trường DRY Chuẩn Enterprise."
+  - "Ứng dụng triết lý GitOps với Git làm nguồn chân lý duy nhất (Single Source of Truth), đồng bộ tự động 24/7."
+  - "Kiểm soát chặt chẽ quy trình triển khai đa cụm Kubernetes, phát hiện và triệt tiêu Configuration Drift."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Tích Hợp Kustomize Trong Argo CD: Quản Trị Đa Môi Trường DRY Chuẩn Enterprise
 
@@ -369,43 +373,202 @@ diff <(kustomize build ../staging) <(kustomize build .)
 
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Kustomize & GitOps:
 
-### Câu 1: Tại sao Kustomize được gọi là phương pháp quản lý "Template-Free" (Không dùng mẫu)?
-- **Đáp án:** Vì Kustomize không sử dụng cú pháp chèn mẫu như `{{ .Values.name }}` (như Helm). Toàn bộ các file trong Base và Overlays đều là các tệp **Kubernetes YAML hợp lệ 100%** và có thể `kubectl apply` độc lập. Kustomize chỉ thực hiện thao tác sáp nhập và vá cấu trúc JSON/YAML (Patching).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao Kustomize được gọi là phương pháp quản lý "Template-Free" (Không dùng mẫu)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Kustomize không sử dụng cú pháp chèn mẫu như `{{ .Values.name }}` (như Helm). Toàn bộ các file trong Base và Overlays đều là các tệp **Kubernetes YAML hợp lệ 100%** và có thể `kubectl apply` độc lập. Kustomize chỉ thực hiện thao tác sáp nhập và vá cấu trúc JSON/YAML (Patching).
+</div>
+</details>
 
-### Câu 2: Lợi ích lớn nhất của `configMapGenerator` so với việc khai báo tệp `configmap.yaml` truyền thống là gì?
-- **Đáp án:** Là tính năng **Content Hash Suffix**. Mỗi khi nội dung cấu hình thay đổi, Kustomize tự động sinh ra một ConfigMap có tên mới (ví dụ `app-config-8f7d9a`) và cập nhật Deployment trỏ tới tên mới đó, giúp Kubernetes tự động kích hoạt Zero-Downtime Rolling Update mà không cần can thiệp thủ công.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Lợi ích lớn nhất của `configMapGenerator` so với việc khai báo tệp `configmap.yaml` truyền thống là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Là tính năng **Content Hash Suffix**. Mỗi khi nội dung cấu hình thay đổi, Kustomize tự động sinh ra một ConfigMap có tên mới (ví dụ `app-config-8f7d9a`) và cập nhật Deployment trỏ tới tên mới đó, giúp Kubernetes tự động kích hoạt Zero-Downtime Rolling Update mà không cần can thiệp thủ công.
+</div>
+</details>
 
-### Câu 3: Làm thế nào để thay đổi phiên bản Image trong Kustomize mà không cần viết file Patch?
-- **Đáp án:** Sử dụng khối `images:` trong `kustomization.yaml`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Làm thế nào để thay đổi phiên bản Image trong Kustomize mà không cần viết file Patch?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng khối `images:` trong `kustomization.yaml`:
   ```yaml
   images:
     - name: company/app
       newTag: "v2.0.0"
   ```
   Kustomize sẽ tự động quét toàn bộ các Deployment/StatefulSet có chứa image `company/app` và thay thế tag thành `v2.0.0`.
+</div>
+</details>
 
-### Câu 4: Có thể lồng nhiều tầng Overlays trong Kustomize (ví dụ: Base $\rightarrow$ Cloud Overlay $\rightarrow$ Region Overlay) không?
-- **Đáp án:** **Hoàn toàn được!** Kustomize hỗ trợ mô hình đa tầng phân cấp không giới hạn. Một thư mục `kustomization.yaml` có thể tham chiếu đến một thư mục cha khác thông qua trường `resources: [../path]`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Có thể lồng nhiều tầng Overlays trong Kustomize (ví dụ: Base $\rightarrow$ Cloud Overlay $\rightarrow$ Region Overlay) không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hoàn toàn được!** Kustomize hỗ trợ mô hình đa tầng phân cấp không giới hạn. Một thư mục `kustomization.yaml` có thể tham chiếu đến một thư mục cha khác thông qua trường `resources: [../path]`.
+</div>
+</details>
 
-### Câu 5: Khi tích hợp Kustomize vào Argo CD, ta cần trỏ `spec.source.path` vào thư mục Base hay thư mục Overlay?
-- **Đáp án:** Bắt buộc phải trỏ vào **thư mục Overlay tương ứng của môi trường đó** (ví dụ: `services/payment/overlays/production`). Thư mục Overlay sẽ tự động kéo thư mục Base về biên dịch thành bản manifest hoàn chỉnh cho môi trường đó.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Khi tích hợp Kustomize vào Argo CD, ta cần trỏ `spec.source.path` vào thư mục Base hay thư mục Overlay?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Bắt buộc phải trỏ vào **thư mục Overlay tương ứng của môi trường đó** (ví dụ: `services/payment/overlays/production`). Thư mục Overlay sẽ tự động kéo thư mục Base về biên dịch thành bản manifest hoàn chỉnh cho môi trường đó.
+</div>
+</details>
 
-### Câu 6: `Kustomize Components` khác với việc kế thừa thư mục `Base` thông thường như thế nào?
-- **Đáp án:** Kế thừa Base là quan hệ "IS-A" (môi trường này là phiên bản mở rộng của Base). Trong khi đó, `Components` là quan hệ "HAS-A" (mô hình Plug-and-Play), cho phép nhiều Overlays khác nhau tùy ý nhúng hoặc không nhúng một module tính năng (như Tracing, Prometheus Exporter, TLS Ingress) mà không làm ô nhiễm cấu hình Base.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>`Kustomize Components` khác với việc kế thừa thư mục `Base` thông thường như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kế thừa Base là quan hệ "IS-A" (môi trường này là phiên bản mở rộng của Base). Trong khi đó, `Components` là quan hệ "HAS-A" (mô hình Plug-and-Play), cho phép nhiều Overlays khác nhau tùy ý nhúng hoặc không nhúng một module tính năng (như Tracing, Prometheus Exporter, TLS Ingress) mà không làm ô nhiễm cấu hình Base.
+</div>
+</details>
 
-### Câu 7: Khi nào nên sử dụng JSON Patch (RFC 6902) thay vì Strategic Merge Patch trong Kustomize?
-- **Đáp án:** Khi cần thực hiện các thao tác phức tạp trên mảng (Array) mà Strategic Merge không hỗ trợ, chẳng hạn như xóa hoàn toàn một phần tử cụ thể khỏi mảng, thay thế chính xác một biến môi trường ở vị trí index xác định, hoặc sửa trường trong CRD không có strategic merge schema.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Khi nào nên sử dụng JSON Patch (RFC 6902) thay vì Strategic Merge Patch trong Kustomize?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi cần thực hiện các thao tác phức tạp trên mảng (Array) mà Strategic Merge không hỗ trợ, chẳng hạn như xóa hoàn toàn một phần tử cụ thể khỏi mảng, thay thế chính xác một biến môi trường ở vị trí index xác định, hoặc sửa trường trong CRD không có strategic merge schema.
+</div>
+</details>
 
-### Câu 8: Làm cách nào để tắt tính năng băm mã Hash của `configMapGenerator` nếu bắt buộc phải dùng tên cố định?
-- **Đáp án:** Thêm tùy chọn `options: { disableNameSuffixHash: true }` vào khối khai báo trong `kustomization.yaml`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Làm cách nào để tắt tính năng băm mã Hash của `configMapGenerator` nếu bắt buộc phải dùng tên cố định?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thêm tùy chọn `options: { disableNameSuffixHash: true }` vào khối khai báo trong `kustomization.yaml`.
+</div>
+</details>
 
-### Câu 9: Lệnh nào giúp kiểm tra kết quả biên dịch Kustomize từ CLI mà không cần cài đặt công cụ Kustomize riêng biệt?
-- **Đáp án:** Sử dụng lệnh tích hợp sẵn trong Kubectl: `kubectl kustomize <đường_dẫn_thư_mục>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh nào giúp kiểm tra kết quả biên dịch Kustomize từ CLI mà không cần cài đặt công cụ Kustomize riêng biệt?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng lệnh tích hợp sẵn trong Kubectl: `kubectl kustomize <đường_dẫn_thư_mục>`.
+</div>
+</details>
 
-### Câu 10: Khi dùng `commonLabels` trong Kustomize, nhãn này sẽ được gắn vào những đâu?
-- **Đáp án:** `commonLabels` sẽ được Kustomize gắn tự động vào cả hai nơi: `metadata.labels` của toàn bộ tài nguyên (Deployment, Service, Ingress) VÀ `spec.template.metadata.labels` cùng với `spec.selector.matchLabels` của Deployment/StatefulSet.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi dùng `commonLabels` trong Kustomize, nhãn này sẽ được gắn vào những đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `commonLabels` sẽ được Kustomize gắn tự động vào cả hai nơi: `metadata.labels` của toàn bộ tài nguyên (Deployment, Service, Ingress) VÀ `spec.template.metadata.labels` cùng với `spec.selector.matchLabels` của Deployment/StatefulSet.
+</div>
+</details>
 
 ---
 

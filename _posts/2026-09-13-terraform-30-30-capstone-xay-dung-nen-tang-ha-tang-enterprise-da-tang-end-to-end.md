@@ -14,8 +14,12 @@ series_order: 30
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
 summary: "Đồ án tốt nghiệp Capstone Project đỉnh cao: Xây dựng toàn diện một nền tảng"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Capstone Project: Xây Dựng Nền Tảng Hạ Tầng Enterprise Đa Tầng End-to-End."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Capstone Project: Xây Dựng Nền Tảng Hạ Tầng Enterprise Đa Tầng End-to-End
 
@@ -66,10 +70,10 @@ flowchart TD
     Automation_Security --> Layer2_Data
     Automation_Security --> Layer3_Compute
 
-    style Layer1_Network fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Layer2_Data fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style Layer3_Compute fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    style Automation_Security fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style Layer1_Network fill:none,stroke:#0288d1,stroke-width:2px
+    style Layer2_Data fill:none,stroke:#f57c00,stroke-width:2px
+    style Layer3_Compute fill:none,stroke:#2e7d32,stroke-width:2px
+    style Automation_Security fill:none,stroke:#7b1fa2,stroke-width:2px
 
 
 ```

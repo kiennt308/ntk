@@ -14,8 +14,12 @@ series_order: 22
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80"
 summary: "Thiết lập rào chắn bảo vệ hạ tầng tự động (Automated Guardrails) với Policy"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest và Checkov."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest và Checkov
 
@@ -72,9 +76,9 @@ graph TD
     SEN --> SEN_DESC["Độc quyền Terraform Cloud/Enterprise, Tích hợp sâu"]
     CHK --> CHK_DESC["Chuyên biệt Security Best Practices, Out-of-the-box 1000+ rules"]
 
-    style OPA fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style SEN fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style CHK fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style OPA fill:none,stroke:#0288d1,stroke-width:2px
+    style SEN fill:none,stroke:#f57c00,stroke-width:2px
+    style CHK fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -227,9 +231,9 @@ graph LR
     D -->|Có| E["Exit Code 1: In danh sách vi phạm & Dừng Pipeline"]
     D -->|Không| F["Exit Code 0: In 'All policies passed successfully'"]
 
-    style B fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style E fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style F fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style B fill:none,stroke:#0288d1,stroke-width:2px
+    style E fill:none,stroke:#ff0000,stroke-width:2px
+    style F fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -267,8 +271,8 @@ graph TD
     E --> G["Báo Cáo Vi Phạm & Chặn Ngay Lập Tức"]
     F --> G
 
-    style C fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style G fill:#ffcccc,stroke:#ff0000,stroke-width:2px
+    style C fill:none,stroke:#f57c00,stroke-width:2px
+    style G fill:none,stroke:#ff0000,stroke-width:2px
 
 
 ```
@@ -409,19 +413,81 @@ rm -rf terraform-lab22-pac
 
 ## 7. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-### Q1: Tại sao việc kiểm tra chính sách trên `tfplan.json` lại ưu việt hơn việc quét trực tiếp mã nguồn file `.tf` tĩnh?
-- **Trả lời**: File `.tf` tĩnh chỉ chứa các biểu thức khai báo chưa qua tính toán (chứa các biến `var.*`, các hàm `locals`, `dynamic blocks`, và module inputs). Chỉ khi Terraform biên dịch xong và xuất ra `tfplan.json`, tất cả các giá trị động, thuộc tính kế thừa và danh sách hành động thực tế (`create`, `update`, `delete`, `replace`) mới được xác định rõ ràng 100%, giúp chính sách đánh giá chính xác mà không bị bỏ sót.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao việc kiểm tra chính sách trên `tfplan.json` lại ưu việt hơn việc quét trực tiếp mã nguồn file `.tf` tĩnh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : File `.tf` tĩnh chỉ chứa các biểu thức khai báo chưa qua tính toán (chứa các biến `var.*`, các hàm `locals`, `dynamic blocks`, và module inputs). Chỉ khi Terraform biên dịch xong và xuất ra `tfplan.json`, tất cả các giá trị động, thuộc tính kế thừa và danh sách hành động thực tế (`create`, `update`, `delete`, `replace`) mới được xác định rõ ràng 100%, giúp chính sách đánh giá chính xác mà không bị bỏ sót.
+</div>
+</details>
 
-### Q2: Trong ngôn ngữ Rego, từ khóa `deny[msg]` có ý nghĩa gì?
-- **Trả lời**: `deny` là một tập hợp (Set) các thông báo lỗi. Khi tất cả các biểu thức điều kiện bên trong thân khối `{ ... }` đều thỏa mãn là `true` (tức là phát hiện vi phạm), chuỗi `msg` sẽ được thêm vào tập hợp `deny`. Nếu tập hợp `deny` có ít nhất một phần tử, bài test sẽ bị coi là **FAIL**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Trong ngôn ngữ Rego, từ khóa `deny[msg]` có ý nghĩa gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : `deny` là một tập hợp (Set) các thông báo lỗi. Khi tất cả các biểu thức điều kiện bên trong thân khối `{ ... }` đều thỏa mãn là `true` (tức là phát hiện vi phạm), chuỗi `msg` sẽ được thêm vào tập hợp `deny`. Nếu tập hợp `deny` có ít nhất một phần tử, bài test sẽ bị coi là **FAIL**.
+</div>
+</details>
 
-### Q3: Sự khác biệt giữa mức độ thực thi chính sách `Advisory (Cảnh báo)` và `Mandatory / Hard-Mandatory (Bắt buộc)` là gì?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Sự khác biệt giữa mức độ thực thi chính sách `Advisory (Cảnh báo)` và `Mandatory / Hard-Mandatory (Bắt buộc)` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - **Advisory / Soft-Mandatory**: Khi phát hiện vi phạm, hệ thống chỉ in cảnh báo ra terminal nhưng vẫn cho phép pipeline tiếp tục, hoặc cho phép người có thẩm quyền (Tech Lead) bấm nút Override bỏ qua.
   - **Hard-Mandatory**: Chặn đứng Pipeline ngay lập tức với exit code khác 0, tuyệt đối không cho phép chạy `terraform apply` cho đến khi mã nguồn được sửa đúng quy chuẩn.
+</div>
+</details>
 
-### Q4: Làm thế nào để lọc ra những tài nguyên bị XÓA (`destroy`) trong file `tfplan.json` bằng ngôn ngữ Rego?
-- **Trả lời**: Kiểm tra trường `resource.change.actions`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Làm thế nào để lọc ra những tài nguyên bị XÓA (`destroy`) trong file `tfplan.json` bằng ngôn ngữ Rego?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Kiểm tra trường `resource.change.actions`:
 ```rego
 deny[msg] {
     some resource in input.resource_changes
@@ -430,18 +496,82 @@ deny[msg] {
     msg := sprintf("HÀNH ĐỘNG BỊ CẤM: Không được phép xóa tài nguyên '%v'!", [resource.address])
 }
 ```
+</div>
+</details>
 
-### Q5: HashiCorp Sentinel có những ưu thế gì nổi bật khi doanh nghiệp đã mua bản quyền Terraform Cloud (HCP Terraform)?
-- **Trả lời**: Sentinel được tích hợp trực tiếp vào Terraform Cloud Core Engine, có khả năng chặn lệnh trước khi apply tự động mà không cần bước xuất file JSON thủ công, hỗ trợ 3 cấp độ bảo vệ (`advisory`, `soft-mandatory`, `hard-mandatory`), và quản lý chính sách tập trung qua giao diện Web UI và VCS Integration.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>HashiCorp Sentinel có những ưu thế gì nổi bật khi doanh nghiệp đã mua bản quyền Terraform Cloud (HCP Terraform)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Sentinel được tích hợp trực tiếp vào Terraform Cloud Core Engine, có khả năng chặn lệnh trước khi apply tự động mà không cần bước xuất file JSON thủ công, hỗ trợ 3 cấp độ bảo vệ (`advisory`, `soft-mandatory`, `hard-mandatory`), và quản lý chính sách tập trung qua giao diện Web UI và VCS Integration.
+</div>
+</details>
 
-### Q6: Tại sao nên sử dụng Conftest thay vì cài đặt binary OPA thuần túy trong Pipeline CI/CD?
-- **Trả lời**: Conftest được đóng gói sẵn các bộ parser cho hàng chục định dạng tệp (JSON, YAML, HCL, INI), tự động tìm kiếm các tệp chính sách `.rego` trong thư mục mà không cần viết lệnh nạp dữ liệu phức tạp qua OPA REST API, và hỗ trợ xuất báo cáo theo nhiều định dạng chuẩn như JUnit XML, TAP, JSON để tích hợp trực tiếp vào Dashboard của CI/CD.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao nên sử dụng Conftest thay vì cài đặt binary OPA thuần túy trong Pipeline CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Conftest được đóng gói sẵn các bộ parser cho hàng chục định dạng tệp (JSON, YAML, HCL, INI), tự động tìm kiếm các tệp chính sách `.rego` trong thư mục mà không cần viết lệnh nạp dữ liệu phức tạp qua OPA REST API, và hỗ trợ xuất báo cáo theo nhiều định dạng chuẩn như JUnit XML, TAP, JSON để tích hợp trực tiếp vào Dashboard của CI/CD.
+</div>
+</details>
 
-### Q7: Trong tệp `tfplan.json`, thuộc tính `resource.change.after_unknown` đại diện cho điều gì?
-- **Trả lời**: Đại diện cho những thuộc tính mà giá trị của chúng **chỉ được biết sau khi Cloud API hoàn tất việc tạo tài nguyên** (Computed Attributes, ví dụ: `id`, `arn`, `private_ip` được cấp phát động). Khi viết chính sách Rego, cần chú ý rằng những thuộc tính này sẽ không nằm trong `after` mà nằm trong `after_unknown`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Trong tệp `tfplan.json`, thuộc tính `resource.change.after_unknown` đại diện cho điều gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Đại diện cho những thuộc tính mà giá trị của chúng **chỉ được biết sau khi Cloud API hoàn tất việc tạo tài nguyên** (Computed Attributes, ví dụ: `id`, `arn`, `private_ip` được cấp phát động). Khi viết chính sách Rego, cần chú ý rằng những thuộc tính này sẽ không nằm trong `after` mà nằm trong `after_unknown`.
+</div>
+</details>
 
-### Q8: Làm thế nào để viết một chính sách Rego cho phép ngoại lệ (Exemption / Whitelist) cho một số tài nguyên cụ thể?
-- **Trả lời**: Định nghĩa một tập danh sách ngoại lệ và dùng toán tử `not` để loại trừ:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Làm thế nào để viết một chính sách Rego cho phép ngoại lệ (Exemption / Whitelist) cho một số tài nguyên cụ thể?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Định nghĩa một tập danh sách ngoại lệ và dùng toán tử `not` để loại trừ:
 ```rego
 exempt_resources := ["aws_security_group.bastion_ssh_public"]
 
@@ -452,14 +582,48 @@ deny[msg] {
     # Các điều kiện kiểm tra bảo mật khác...
 }
 ```
+</div>
+</details>
 
-### Q9: Checkov hỗ trợ những framework IaC nào ngoài Terraform?
-- **Trả lời**: Checkov hỗ trợ đa nền tảng toàn diện: **Terraform**, **CloudFormation**, **Azure Resource Manager (ARM / Bicep)**, **Kubernetes Manifests & Helm Charts**, **Serverless Framework**, và **Dockerfiles**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Checkov hỗ trợ những framework IaC nào ngoài Terraform?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Checkov hỗ trợ đa nền tảng toàn diện: **Terraform**, **CloudFormation**, **Azure Resource Manager (ARM / Bicep)**, **Kubernetes Manifests & Helm Charts**, **Serverless Framework**, và **Dockerfiles**.
+</div>
+</details>
 
-### Q10: Khi nào nên chuyển một luật từ Variable Validation trong HCL sang Policy as Code (OPA/Rego)?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi nào nên chuyển một luật từ Variable Validation trong HCL sang Policy as Code (OPA/Rego)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - Dùng **Variable Validation**: Cho các ràng buộc kỹ thuật đơn giản của một module cụ thể (regex tên, dải số port).
   - Dùng **Policy as Code**: Cho các chính sách **quản trị toàn doanh nghiệp (Enterprise Governance)** mang tính bắt buộc xuyên suốt hàng trăm modules và repositories khác nhau (chính sách chi phí toàn công ty, tiêu chuẩn an ninh thông tin SOC2/ISO, quản trị thẻ tags kế toán).
+</div>
+</details>
 
 ---
 

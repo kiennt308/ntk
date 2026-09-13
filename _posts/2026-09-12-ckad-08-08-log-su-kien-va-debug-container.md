@@ -15,8 +15,12 @@ series_order: 8
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.08] Hướng dẫn chuyên sâu Giám Sát Log, Truy Vết Sự Kiện & Debug Container: Logs, Events, Describe, Exec & Ephemeral Debug Container: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Giám Sát Log, Truy Vết Sự Kiện & Debug Container: Logs, Events, Describe, Exec & Ephemeral Debug Container."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 08] GIÁM SÁT LOG, TRUY VẾT SỰ KIỆN & DEBUG CONTAINER: LOGS, EVENTS, DESCRIBE, EXEC & EPHEMERAL DEBUG CONTAINER
 
@@ -299,41 +303,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Cờ lệnh nào của `kubectl logs` bắt buộc phải sử dụng để xem nhật ký của một container vừa bị crash ở lần chạy ngay trước đó?
-   - **Đáp án:** Cờ `--previous` (hoặc `-p`).
 
-2. Cờ lệnh nào được dùng để chỉ định tên container cụ thể khi đọc log của Pod đa container?
-   - **Đáp án:** Cờ `-c <container-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cờ lệnh nào của `kubectl logs` bắt buộc phải sử dụng để xem nhật ký của một container vừa bị crash ở lần chạy ngay trước đó?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--previous` (hoặc `-p`).
+</div>
+</details>
 
-3. Cú pháp cờ `--sort-by` chuẩn để sắp xếp danh sách sự kiện `kubectl get events` theo thứ tự thời gian khởi tạo từ cũ đến mới là gì?
-   - **Đáp án:** Cờ `--sort-by='.metadata.creationTimestamp'`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cờ lệnh nào được dùng để chỉ định tên container cụ thể khi đọc log của Pod đa container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `-c <container-name>`.
+</div>
+</details>
 
-4. Ý nghĩa của mã `Exit Code 137` trong mục `Last State` khi xem `kubectl describe pod` là gì?
-   - **Đáp án:** Tiến trình bị Linux Kernel OOM-Killer tiêu diệt do vượt quá giới hạn bộ nhớ RAM (`OOMKilled`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cú pháp cờ `--sort-by` chuẩn để sắp xếp danh sách sự kiện `kubectl get events` theo thứ tự thời gian khởi tạo từ cũ đến mới là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--sort-by='.metadata.creationTimestamp'`.
+</div>
+</details>
 
-5. Ý nghĩa của mã `Exit Code 1` trong mục `Last State` khi xem `kubectl describe pod` là gì?
-   - **Đáp án:** Tiến trình bị sập do lỗi mã nguồn ứng dụng (Application Bug/Unhandled Exception).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Ý nghĩa của mã `Exit Code 137` trong mục `Last State` khi xem `kubectl describe pod` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tiến trình bị Linux Kernel OOM-Killer tiêu diệt do vượt quá giới hạn bộ nhớ RAM (`OOMKilled`).
+</div>
+</details>
 
-6. Tính năng Ephemeral Container trong Kubernetes (`kubectl debug`) có ưu điểm gì vượt trội so với việc sửa tệp YAML Pod?
-   - **Đáp án:** Đính kèm trực tiếp container công cụ vào Pod đang chạy mà không làm khởi động lại Pod hay gián đoạn dịch vụ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Ý nghĩa của mã `Exit Code 1` trong mục `Last State` khi xem `kubectl describe pod` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tiến trình bị sập do lỗi mã nguồn ứng dụng (Application Bug/Unhandled Exception).
+</div>
+</details>
 
-7. Cờ cờ nào của lệnh `kubectl debug` được dùng để soi danh sách tiến trình của một container mỏng (Distroless không có shell)?
-   - **Đáp án:** Cờ `--target=<container-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tính năng Ephemeral Container trong Kubernetes (`kubectl debug`) có ưu điểm gì vượt trội so với việc sửa tệp YAML Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đính kèm trực tiếp container công cụ vào Pod đang chạy mà không làm khởi động lại Pod hay gián đoạn dịch vụ.
+</div>
+</details>
 
-8. Cờ lệnh nào của `kubectl debug` được dùng để nhân bản một Pod đã sập hoặc `Completed` sang một Pod chẩn đoán mới?
-   - **Đáp án:** Cờ `--copy-to=<new-pod-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cờ cờ nào của lệnh `kubectl debug` được dùng để soi danh sách tiến trình của một container mỏng (Distroless không có shell)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--target=<container-name>`.
+</div>
+</details>
 
-9. Cờ lệnh nào của `kubectl logs` được dùng để theo dõi luồng nhật ký thời gian thực continuous stream?
-   - **Đáp án:** Cờ `-f` (hoặc `--follow`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cờ lệnh nào của `kubectl debug` được dùng để nhân bản một Pod đã sập hoặc `Completed` sang một Pod chẩn đoán mới?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--copy-to=<new-pod-name>`.
+</div>
+</details>
 
-10. Cờ lệnh nào của `kubectl logs` dùng để chỉ in ra 20 dòng nhật ký cuối cùng của container?
-    - **Đáp án:** Cờ `--tail=20`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cờ lệnh nào của `kubectl logs` được dùng để theo dõi luồng nhật ký thời gian thực continuous stream?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `-f` (hoặc `--follow`).
+</div>
+</details>
 
-11. Tại sao không nên cài đặt các công cụ gỡ lỗi (như curl, netstat, vim) trực tiếp vào ảnh container Production?
-    - **Đáp án:** Để giữ ảnh mỏng nhẹ, tăng tốc độ boot và triệt tiêu các lỗ hổng bảo mật CVE tiềm ẩn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cờ lệnh nào của `kubectl logs` dùng để chỉ in ra 20 dòng nhật ký cuối cùng của container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--tail=20`.
+</div>
+</details>
 
-12. Câu lệnh CLI nào dùng để xem toàn bộ thông tin chi tiết cấu hình và mốc thời gian sự kiện của Pod `my-pod`?
-    - **Đáp án:** `kubectl describe pod my-pod`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không nên cài đặt các công cụ gỡ lỗi (như curl, netstat, vim) trực tiếp vào ảnh container Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để giữ ảnh mỏng nhẹ, tăng tốc độ boot và triệt tiêu các lỗ hổng bảo mật CVE tiềm ẩn.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu lệnh CLI nào dùng để xem toàn bộ thông tin chi tiết cấu hình và mốc thời gian sự kiện của Pod `my-pod`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl describe pod my-pod`.
+</div>
+</details>
 
 ---
 
@@ -683,10 +880,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Tại sao khi Pod bị restart (cột `RESTARTS` > 0), lệnh `kubectl logs <pod-name>` mặc định lại không thể giúp ta tìm ra nguyên nhân sập, và cờ lệnh nào sẽ giải quyết bài toán này?
 
-**Đáp án chuẩn:** Vì `kubectl logs` mặc định chỉ in ra log của tiến trình container MỚI vừa khởi tạo (vốn chưa có log hoặc chỉ mới in vài dòng khởi động). Cờ `--previous` (hoặc `-p`) giải quyết bài toán bằng cách bắt Kubelet truy xuất tệp log của container VỪA BỊ CRASH ở lần chạy ngay trước đó.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao khi Pod bị restart (cột `RESTARTS` > 0), lệnh `kubectl logs <pod-name>` mặc định lại không thể giúp ta tìm ra nguyên nhân sập, và cờ lệnh nào sẽ giải quyết bài toán này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì `kubectl logs` mặc định chỉ in ra log của tiến trình container MỚI vừa khởi tạo (vốn chưa có log hoặc chỉ mới in vài dòng khởi động). Cờ `--previous` (hoặc `-p`) giải quyết bài toán bằng cách bắt Kubelet truy xuất tệp log của container VỪA BỊ CRASH ở lần chạy ngay trước đó.
 
 **Tiêu chí chấm:**
 - 0đ: Không biết cờ --previous.
@@ -694,6 +904,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo hành vi log mặc định và vai trò truy vết nguyên nhân sập của cờ `--previous`.
 
 **Câu hỏi đào sâu:** (Nếu một Pod đã bị restart 5 lần thì cờ `--previous` sẽ lấy log của lần restart thứ mấy? — Lấy log của lần restart thứ 5 ngay liền trước).
+</div>
+</details>
 
 ---
 
@@ -937,9 +1149,22 @@ Gỡ lỗi container mỏng bằng Ephemeral Container:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Đọc log `--previous` của Pod `bad-pod`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Đọc log `--previous` của Pod `bad-pod</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 # Giả lập tạo Pod bad-pod nếu chưa có:
@@ -948,10 +1173,25 @@ sleep 4
 
 kubectl logs bad-pod --previous -n prod > /tmp/crash.log
 ```
+</div>
+</details>
 
-### Câu 2 — Đọc log `--previous` của container `sidecar` trong Pod đa container
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Đọc log `--previous` của container `sidecar` trong Pod đa container</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Giả lập tạo Pod multi-pod nếu chưa có:
 cat <<EOF | kubectl apply -f - 2>/dev/null || true
 apiVersion: v1
@@ -972,16 +1212,46 @@ sleep 4
 
 kubectl logs multi-pod -c sidecar --previous -n prod > /tmp/sidecar-previous.log
 ```
+</div>
+</details>
 
-### Câu 3 — Lọc sự kiện `--sort-by` trong Namespace `prod`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Lọc sự kiện `--sort-by` trong Namespace `prod</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl get events -n prod --sort-by='.metadata.creationTimestamp' > /tmp/events.txt
 ```
+</div>
+</details>
 
-### Câu 4 — Đính kèm Ephemeral Container bằng `kubectl debug`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Đính kèm Ephemeral Container bằng `kubectl debug</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Giả lập tạo Pod app-pod nếu chưa có:
 kubectl run app-pod --image=registry.k8s.io/pause:3.9 -n prod 2>/dev/null || true
 sleep 3
@@ -990,6 +1260,8 @@ kubectl debug app-pod -n prod -it --image=busybox:1.36 -- echo "DEBUG_OK"
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

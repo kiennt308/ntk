@@ -15,8 +15,12 @@ series_order: 2
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.02] Hướng dẫn chuyên sâu Kiến Trúc Cụm Kubernetes Toàn Diện & Đường Đi Của Một Lệnh Kubectl (API Server, etcd, Kubelet): Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiến Trúc Cụm Kubernetes Toàn Diện & Đường Đi Của Một Lệnh Kubectl (API Server, etcd, Kubelet)."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 02] KIẾN TRÚC CỤM KUBERNETES TOÀN DIỆN & ĐƯỜNG ĐI CỦA MỘT LỆNH KUBECTL (API SERVER, ETCD, KUBELET)
 
@@ -475,10 +479,10 @@ graph TD
     G -->|Watch Event| H["Chặng 7a: Scheduler (Filtering/Scoring & Binding nodeName)"]
     H -->|Watch Event| I["Chặng 7b: Kubelet & CRI (Kéo ảnh & Run container)"]
     
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style F fill:#bfb,stroke:#333,stroke-width:2px
-    style I fill:#fbb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style F fill:none,stroke:#333,stroke-width:2px
+    style I fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -620,8 +624,8 @@ graph TD
     KLET1 <--> APIS
     KLET1 --> CRI1 --> POD1
 
-    style Control_Plane_Node fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Worker_Node_1 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style Control_Plane_Node fill:none,stroke:#0288d1,stroke-width:2px
+    style Worker_Node_1 fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ### Bốn quyết định thiết kế bài lab
@@ -1046,12 +1050,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Trình bày 7 chặng của một lệnh `kubectl apply` từ khi gõ phím đến khi container chạy thực sự trên Worker Node.
-
-**Đáp án chuẩn:**
-1. Chặng 1 (Client Config): `kubectl` đọc Kubeconfig lấy API Server URL (`https://127.0.0.1:6443`) và credentials.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày 7 chặng của một lệnh `kubectl apply` từ khi gõ phím đến khi container chạy thực sự trên Worker Node.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. Chặng 1 (Client Config): `kubectl` đọc Kubeconfig lấy API Server URL (`https://127.0.0.1:6443`) và credentials.
 2. Chặng 2 (AuthN): API Server xác thực danh tính client (X.509 cert/token), thất bại trả `401 Unauthorized`.
 3. Chặng 3 (AuthZ): API Server kiểm tra quyền RBAC, thất bại trả `403 Forbidden`.
 4. Chặng 4 (Admission Control): Mutating Webhooks sửa/bổ sung payload; Validating Webhooks duyệt quy tắc.
@@ -1066,6 +1081,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Nêu đủ 7 chặng, chỉ ra đúng điểm trả về `201 Created` ở Chặng 5 và phân biệt rõ 7a (Scheduler) vs 7b (Kubelet).
 
 **Câu hỏi đào sâu:** Dòng chữ `pod/web created` trả về ở chặng nào trong 7 chặng? *(Đáp án: Trả về ở Chặng 5 ngay sau khi ghi etcd thành công, trước khi Scheduler gán Node ở Chặng 7a).*
+</div>
+</details>
 
 ---
 

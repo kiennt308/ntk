@@ -15,8 +15,12 @@ series_order: 10
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.10] Hướng dẫn chuyên sâu Tái Sử Dụng & Chuẩn Hóa Cấu Hình CI: include:local/remote/template, extends & YAML YAML Anchors/Aliases: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tái Sử Dụng & Chuẩn Hóa Cấu Hình CI: include:local/remote/template, extends & YAML YAML Anchors/Aliases."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 10] TÁI SỬ DỤNG & CHUẨN HÓA CẤU HÌNH CI: INCLUDE:LOCAL/REMOTE/TEMPLATE, EXTENDS & YAML YAML ANCHORS/ALIASES
 
@@ -2012,12 +2016,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. Danh mục 12 câu hỏi Vấn đáp Kỹ thuật
 
----
-
-### Câu 1 (🔥 Câu tủ): Hãy trình bày bốn cơ chế tái sử dụng cấu hình và ba thời điểm hợp nhất trong GitLab CI/CD.
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Trong GitLab CI/CD có 4 cơ chế tái sử dụng cấu hình (`include`, `extends`, YAML Anchor `&`/`*`, `!reference`) và chúng trải qua 3 thời điểm hợp nhất cố định theo thứ tự:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>(🔥 Câu tủ): Hãy trình bày bốn cơ chế tái sử dụng cấu hình và ba thời điểm hợp nhất trong GitLab CI/CD.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Trong GitLab CI/CD có 4 cơ chế tái sử dụng cấu hình (`include`, `extends`, YAML Anchor `&`/`*`, `!reference`) và chúng trải qua 3 thời điểm hợp nhất cố định theo thứ tự:
   1. **Thời điểm 1 (t0 - YAML Parser Phase):** YAML Parser phân giải cú pháp cơ bản nội trong tệp đơn độc. YAML Anchor `&` và Alias `*` được hợp nhất ở thời điểm này.
   2. **Thời điểm 2 (t1 - GitLab Includer Phase):** GitLab nạp toàn bộ các tệp từ danh sách `include` (`local`, `project`, `remote`, `template`) để tạo thành một tệp YAML phân giải phẳng duy nhất (`merged_yaml`).
   3. **Thời điểm 3 (t2 - GitLab Resolver Phase):** Engine xử lý các từ khoá nâng cao của GitLab như `extends` và thẻ custom `!reference` trên cây YAML đã phẳng.
@@ -2043,11 +2057,25 @@ my-job:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 2 (🔥 Câu tủ): Khi một Job dùng `extends` kế thừa từ một Job ẩn và khai báo lại khoá `script`, điều gì sẽ xảy ra với mảng `script` của Job ẩn? Vì sao?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Mảng `script` của Job ẩn (Job cha) sẽ bị **XOÁ SẠCH VÀ THAY THẾ HOÀN TOÀN** bởi mảng `script` mới khai báo ở Job con, chứ **KHÔNG PHẢI ĐƯỢC NỐI (APPEND)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>(🔥 Câu tủ): Khi một Job dùng `extends` kế thừa từ một Job ẩn và khai báo lại khoá `script`, điều gì sẽ xảy ra với mảng `script` của Job ẩn? Vì sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Mảng `script` của Job ẩn (Job cha) sẽ bị **XOÁ SẠCH VÀ THAY THẾ HOÀN TOÀN** bởi mảng `script` mới khai báo ở Job con, chứ **KHÔNG PHẢI ĐƯỢC NỐI (APPEND)**.
 - **Giải thích kỹ thuật:** Quy tắc hợp nhất thuộc tính của `extends` quy định:
   - Tất cả các thuộc tính dạng **từ điển (Dictionary/Hash)** như `variables`, `services`, `cache` sẽ được thực hiện **Trộn sâu (Deep Merge)**.
   - Tất cả các thuộc tính dạng **mảng (Array/Sequence)** như `script`, `before_script`, `after_script`, `tags`, `image` (nếu là list) sẽ bị **Thay thế toàn bộ (Array Replacement)** bởi đối tượng kế thừa.
@@ -2070,11 +2098,25 @@ app-build:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 3 (★★★): YAML Anchor (`&anchor` và `*alias`) có sử dụng được xuyên qua biên giới tệp `include` không? Vì sao?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** **KHÔNG THỂ**. YAML Anchor chỉ có phạm vi hoạt động trong **duy nhất 1 tệp văn bản YAML đơn độc** và hoàn toàn bất lực khi gọi xuyên tệp `include`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>(★★★): YAML Anchor (`&anchor` và `*alias`) có sử dụng được xuyên qua biên giới tệp `include` không? Vì sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** **KHÔNG THỂ**. YAML Anchor chỉ có phạm vi hoạt động trong **duy nhất 1 tệp văn bản YAML đơn độc** và hoàn toàn bất lực khi gọi xuyên tệp `include`.
 - **Giải thích kỹ thuật:** Cú pháp Anchor `&` và Alias `*` là tiêu chuẩn của trình biên dịch YAML gốc (YAML Spec Level), được xử lý tại **Thời điểm 1 (t0 - YAML Parser Phase)**. Lúc này, GitLab Engine chưa hề kích hoạt module `include` (chạy ở t1). Do đó khi Parser đọc tới Alias `*anchor` ở tệp chính, nó không thể tìm thấy định nghĩa `&anchor` nằm ở tệp phụ và sẽ ném lỗi Parser Error: `Unknown alias`.
 - **Thực tế DevOps:** Để tái sử dụng các đoạn mã `script` hoặc cấu hình xuyên tệp `include`, giải pháp thay thế chuẩn xác 100% là chuyển sang dùng thẻ `!reference [.job_an, script]`.
 - **Tham chiếu quy tắc:** Đối chiếu **QT 4.2**.
@@ -2096,11 +2138,25 @@ my-job:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 4 (★★★): Một kỹ sư trong team phàn nàn: "Tôi đã khai báo ghi đè biến ở job con nhưng pipeline chạy vẫn dùng giá trị cũ, ghi đè không ăn". Lệnh terminal đầu tiên bạn chạy để chẩn đoán là gì?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Lệnh terminal đầu tiên cần chạy là trích xuất tệp sau phân giải `merged_yaml` qua API REST `/ci/lint` bằng cờ `include_merged_yaml: true`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>(★★★): Một kỹ sư trong team phàn nàn: "Tôi đã khai báo ghi đè biến ở job con nhưng pipeline chạy vẫn dùng giá trị cũ, ghi đè không ăn". Lệnh terminal đầu tiên bạn chạy để chẩn đoán là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Lệnh terminal đầu tiên cần chạy là trích xuất tệp sau phân giải `merged_yaml` qua API REST `/ci/lint` bằng cờ `include_merged_yaml: true`.
 - **Giải thích kỹ thuật:**
   ```bash
   curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
@@ -2113,11 +2169,25 @@ my-job:
 - **Tham chiếu quy tắc:** Đối chiếu **QT 4.3**.
 
 ---
+</div>
+</details>
 
-### Câu 5 (★★★): Giả sử tệp `.gitlab-ci.yml` gốc và một tệp được `include` cùng khai báo một Job có trùng tên `app-build`. GitLab sẽ trộn hai Job này theo cơ chế nào và tệp nào thắng?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Trộn ở **mức khoá (Key-level merge)** và **tệp gốc (tệp chứa câu lệnh include) BẮT BUỘC THẮNG** ở tất cả các khoá trùng lặp.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>(★★★): Giả sử tệp `.gitlab-ci.yml` gốc và một tệp được `include` cùng khai báo một Job có trùng tên `app-build`. GitLab sẽ trộn hai Job này theo cơ chế nào và tệp nào thắng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Trộn ở **mức khoá (Key-level merge)** và **tệp gốc (tệp chứa câu lệnh include) BẮT BUỘC THẮNG** ở tất cả các khoá trùng lặp.
 - **Giải thích kỹ thuật:**
   - Nếu tệp `include` khai báo `app-build` có: `image: node:16`, `tags: [runner-1]`, `script: [build.sh]`.
   - Tệp gốc khai báo `app-build` có: `image: node:18`, `script: [new_build.sh]`.
@@ -2126,11 +2196,25 @@ my-job:
 - **Tham chiếu quy tắc:** Đối chiếu **QT 5.2**.
 
 ---
+</div>
+</details>
 
-### Câu 6 (★★★): Kịch bản yêu cầu nối 3 khối lệnh `script` từ 3 tệp mẫu khác nhau vào làm 1 `script` duy nhất cho Job chính. Bạn sẽ chọn cơ chế nào? Viết minh hoạ cú pháp.
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Bắt buộc sử dụng thẻ **`!reference`**. Cả `extends` và YAML Anchor đều không thể nối ghép các phần tử mảng từ 3 nguồn khác nhau vào 1 mảng duy nhất.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>(★★★): Kịch bản yêu cầu nối 3 khối lệnh `script` từ 3 tệp mẫu khác nhau vào làm 1 `script` duy nhất cho Job chính. Bạn sẽ chọn cơ chế nào? Viết minh hoạ cú pháp.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Bắt buộc sử dụng thẻ **`!reference`**. Cả `extends` và YAML Anchor đều không thể nối ghép các phần tử mảng từ 3 nguồn khác nhau vào 1 mảng duy nhất.
 - **Giải thích kỹ thuật:** Cú pháp khai báo:
   ```yaml
   include:
@@ -2148,11 +2232,25 @@ my-job:
 - **Tham chiếu quy tắc:** Đối chiếu **QT 6.2** và **QT 7.1**.
 
 ---
+</div>
+</details>
 
-### Câu 7 (★★★): Hai lần chạy pipeline cho cùng một Git Commit SHA chính xác nhưng lại ra hai kết quả thực thi hoàn toàn khác nhau. Nguyên nhân từ đâu?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Do tệp cấu hình có sử dụng đường dẫn `include:project` hoặc `include:remote` mà **KHÔNG GHIM PHIÊN BẢN (Unpinned Reference)**, ví dụ trỏ vào branch `ref: main` hoặc `ref: HEAD`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>(★★★): Hai lần chạy pipeline cho cùng một Git Commit SHA chính xác nhưng lại ra hai kết quả thực thi hoàn toàn khác nhau. Nguyên nhân từ đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Do tệp cấu hình có sử dụng đường dẫn `include:project` hoặc `include:remote` mà **KHÔNG GHIM PHIÊN BẢN (Unpinned Reference)**, ví dụ trỏ vào branch `ref: main` hoặc `ref: HEAD`.
 - **Giải thích kỹ thuật:** Khi `ref` trỏ vào `main`, nội dung tệp ở repo nguồn có thể bị chỉnh sửa bởi team khác bất kỳ lúc nào. Khi Pipeline ở repo chính kích hoạt, GitLab sẽ tải phiên bản mới nhất ở thời điểm `t1`. Do đó, mặc dù Commit SHA ở repo chính không hề thay đổi, nội dung cấu hình bị `include` đã bị biến đổi hoàn toàn.
 - **Thực tế DevOps:** Đây là vi phạm nghiêm trọng tính tái lập (Reproducibility) trong CI/CD. Quy định bắt buộc: Mọi câu lệnh `include:project` hoặc `remote` phải ghim `ref` bằng **Git Tag (ví dụ `ref: 'v1.2.0'`)** hoặc **Commit SHA ngắn**.
 - **Tham chiếu quy tắc:** Đối chiếu **QT 7.2** và **QT 5.1**.
@@ -2172,11 +2270,25 @@ include:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 8 (★★): Hãy phân biệt 4 loại `include` (`local`, `project`, `remote`, `template`) dựa trên góc độ QUYỀN SỞ HỮU và TÍNH BẢO MẬT.
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>(★★): Hãy phân biệt 4 loại `include` (`local`, `project`, `remote`, `template`) dựa trên góc độ QUYỀN SỞ HỮU và TÍNH BẢO MẬT.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:**
   1. `include: local`: Quyền sở hữu 100% nội bộ repo. An toàn tuyệt đối, có đầy đủ vết Git log.
   2. `include: project`: Quyền sở hữu thuộc về team khác trong cùng GitLab Instance. An toàn cao, kiểm soát được qua phân quyền dự án.
   3. `include: template`: Quyền sở hữu thuộc về nhà phát triển GitLab CE/EE. An toàn, tuân theo phiên bản nâng cấp của hệ thống GitLab.
@@ -2197,11 +2309,25 @@ include:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 9 (★★★): Tất cả các Job thuộc một tệp `include: local` bất ngờ biến mất khỏi Pipeline mà không hề có bất kỳ câu lệnh `rules` nào ở cấp độ Job khai báo ngắt. Hãy chẩn đoán nguyên nhân.
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Do thuộc tính **`include:rules`** được khai báo tại đường dẫn `include` tệp đó ở tệp chính bị đánh giá kết quả là `false`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>(★★★): Tất cả các Job thuộc một tệp `include: local` bất ngờ biến mất khỏi Pipeline mà không hề có bất kỳ câu lệnh `rules` nào ở cấp độ Job khai báo ngắt. Hãy chẩn đoán nguyên nhân.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Do thuộc tính **`include:rules`** được khai báo tại đường dẫn `include` tệp đó ở tệp chính bị đánh giá kết quả là `false`.
 - **Giải thích kỹ thuật:** `include:rules` đóng vai trò là **tầng lọc thứ 3** trong hệ thống GitLab CI. Thứ tự lọc 3 tầng như sau:
   1. Tầng 1: `include:rules` (nếu trả về `false`, tệp YAML đó bị bỏ qua hoàn toàn ở thời điểm t1, tất cả job trong tệp bị xoá sạch).
   2. Tầng 2: `workflow:rules` (lọc cấp độ Pipeline ở thời điểm t2).
@@ -2218,11 +2344,25 @@ include:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 10 (★★): Những loại biến môi trường nào ĐƯỢC PHÉP và KHÔNG ĐƯỢC PHÉP sử dụng trong đường dẫn `include`? Vì sao có sự hạn chế này?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>(★★): Những loại biến môi trường nào ĐƯỢC PHÉP và KHÔNG ĐƯỢC PHÉP sử dụng trong đường dẫn `include`? Vì sao có sự hạn chế này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:**
   - **ĐƯỢC PHÉP:** Chỉ có các biến hệ thống định trước của GitLab (như `$CI_COMMIT_REF_NAME`, `$CI_PROJECT_PATH`, `$CI_COMMIT_SHA`) và các biến khai báo ở cấp độ Instance/Group/Project CI/CD Variables.
   - **KHÔNG ĐƯỢC PHÉP:** Tất cả các biến môi trường được khai báo trong khối `variables:` của tệp `.gitlab-ci.yml` hoặc các biến sinh ra từ job runtime.
 - **Giải thích kỹ thuật:** Do `include` được phân giải tại **Thời điểm 2 (t1 - GitLab Includer Phase)**. Lúc này GitLab Engine chưa hề nạp hay phân giải khối `variables:` của tệp `.gitlab-ci.yml` (vốn được xử lý ở t2).
@@ -2239,11 +2379,25 @@ include:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 11 (★★★): Khi review một repository, bạn phát hiện một chuỗi `extends` lồng nhau tới 4 tầng (`job-d` extends `job-c`, `job-c` extends `job-b`, `job-b` extends `job-a`). Bạn sẽ đánh giá và xử lý thế nào?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Đánh giá đây là **MÃ NGUỒN XẤU (Code Smell)** cần phải refactor rút gọn về **tối đa 2 tầng**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>(★★★): Khi review một repository, bạn phát hiện một chuỗi `extends` lồng nhau tới 4 tầng (`job-d` extends `job-c`, `job-c` extends `job-b`, `job-b` extends `job-a`). Bạn sẽ đánh giá và xử lý thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Đánh giá đây là **MÃ NGUỒN XẤU (Code Smell)** cần phải refactor rút gọn về **tối đa 2 tầng**.
 - **Giải thích kỹ thuật:** Mặc dù trần kỹ thuật của GitLab cho phép `extends` lồng nhau tới 11 tầng, nhưng trần nhận thức của con người bị quá tải sau 2 tầng. Với chuỗi 4 tầng, việc theo dõi thuộc tính nào bị ghi đè hay biến nào bị thay thế là cực kỳ phức tạp và dễ gây ra sai sót im lặng.
 - **Quy trình xử lý:**
   1. Trích xuất `merged_yaml` hiện tại để làm mốc đối chứng chuẩn.
@@ -2273,11 +2427,25 @@ my-job:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 12 (🔥 Câu tủ - Tổng hợp): Bạn được giao tiếp quản một Repository microservice với hàng chục tệp `include` phức tạp. Hãy dựng Quy trình 4 bước tiêu chuẩn để trả lời chính xác câu hỏi: "Job này thật sự chạy những câu lệnh gì khi kích hoạt Pipeline?"
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Quy trình 4 bước chuyên nghiệp gồm: Trích xuất `merged_yaml` -> Quét ghim phiên bản -> Kiểm tra mảng bị thay thế -> Xác minh biến môi trường hợp nhất.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>(🔥 Câu tủ - Tổng hợp): Bạn được giao tiếp quản một Repository microservice với hàng chục tệp `include` phức tạp. Hãy dựng Quy trình 4 bước tiêu chuẩn để trả lời chính xác câu hỏi: "Job này thật sự chạy những câu lệnh gì khi kích hoạt Pipeline?"</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Quy trình 4 bước chuyên nghiệp gồm: Trích xuất `merged_yaml` -> Quét ghim phiên bản -> Kiểm tra mảng bị thay thế -> Xác minh biến môi trường hợp nhất.
 - **Quy trình 4 bước chi tiết:**
   1. **Bước 1 (Trích xuất Bức tranh Sự thật):** Chạy `xem-phan-giai.sh --job <tên_job>` gọi API `POST /ci/lint` với param `include_merged_yaml: true`. Đọc trực tiếp cấu hình Job từ tệp `/tmp/current_merged.yml` thu được.
   2. **Bước 2 (Audit Ghim phiên bản):** Chạy lệnh quét `dem-include.sh` hoặc `grep -nE 'ref: *(main|master|HEAD)' .gitlab-ci.yml` để phát hiện các tệp `include` chưa ghim tag, đảm bảo cấu hình không bị biến đổi ngầm ngoài ý muốn.
@@ -2286,6 +2454,8 @@ my-job:
 - **Tham chiếu quy tắc:** Đối chiếu **QT 4.3**, **QT 4.1**, **QT 5.2**, **QT 6.1**.
 
 ---
+</div>
+</details>
 
 ## §V2. Bảng tổng hợp đối chiếu mã quy tắc với 12 câu vấn đáp
 
@@ -2319,8 +2489,22 @@ my-job:
 
 ## §V4. BTVN 4 — Ba câu hỏi chuẩn bị cho Buổi 11
 
-### Bài 1 (Dựa trên QT 5.1):
-`include` hiện tại **không** hỗ trợ truyền tham số trực tiếp, mọi giá trị tuỳ biến đều phải đi qua biến môi trường. Hãy phân tích **ba** điểm yếu lớn nhất của việc dùng biến môi trường làm giao diện truyền dữ liệu (ví dụ: gõ sai tên biến, thiếu giá trị mặc định, không kiểm tra được kiểu dữ liệu). Từ đó dự đoán cơ chế nào ở Buổi 11 sẽ giải quyết triệt để vấn đề này.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>(Dựa trên QT 5.1):</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `include` hiện tại **không** hỗ trợ truyền tham số trực tiếp, mọi giá trị tuỳ biến đều phải đi qua biến môi trường. Hãy phân tích **ba** điểm yếu lớn nhất của việc dùng biến môi trường làm giao diện truyền dữ liệu (ví dụ: gõ sai tên biến, thiếu giá trị mặc định, không kiểm tra được kiểu dữ liệu). Từ đó dự đoán cơ chế nào ở Buổi 11 sẽ giải quyết triệt để vấn đề này.
 
 **Gợi ý phân tích chi tiết:**
 1. **Gõ sai tên biến (Typo risk):** Không có linter nào cảnh báo nếu người dùng truyền `VAR_DEPLOY_ENV` thay vì `DEPLOY_ENV`.
@@ -2329,9 +2513,25 @@ my-job:
 4. **Cơ chế Buổi 11:** Khái niệm **`spec:inputs`** trong **CI/CD Components** sẽ giải quyết triệt để cả 3 điểm yếu này nhờ giao diện tham số khai báo kiểu cứng.
 
 ---
+</div>
+</details>
 
-### Bài 2 (Dựa trên QT 7.2):
-Việc ghim `ref` bằng Git Tag đòi hỏi phải có quy trình phát hành và nâng cấp phiên bản rõ ràng. Hãy xây dựng một quy tắc đánh số phiên bản Semantic Versioning (`vX.Y.Z`) áp dụng cho tệp cấu hình CI/CD dùng chung, và định nghĩa rõ ràng thế nào là một **Thay thế phá vỡ (Breaking Change)** đối với tệp cấu hình CI/CD.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>(Dựa trên QT 7.2):</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Việc ghim `ref` bằng Git Tag đòi hỏi phải có quy trình phát hành và nâng cấp phiên bản rõ ràng. Hãy xây dựng một quy tắc đánh số phiên bản Semantic Versioning (`vX.Y.Z`) áp dụng cho tệp cấu hình CI/CD dùng chung, và định nghĩa rõ ràng thế nào là một **Thay thế phá vỡ (Breaking Change)** đối với tệp cấu hình CI/CD.
 
 **Gợi ý phân tích chi tiết:**
 1. **MAJOR (X):** Khi có Breaking Change — xoá tên job, đổi tên biến bắt buộc, thay đổi hành vi mặc định của pipeline khiến các repo đằng sau bị ngắt ngầm.
@@ -2339,12 +2539,30 @@ Việc ghim `ref` bằng Git Tag đòi hỏi phải có quy trình phát hành v
 3. **PATCH (Z):** Khi sửa lỗi nhỏ (bug fixes) — tối ưu câu lệnh bash, sửa hình ảnh docker image tag nhỏ không ảnh hưởng cú pháp.
 
 ---
+</div>
+</details>
 
-### Bài 3 (Dựa trên QT 6.1):
-Nếu bạn cung cấp cho các team phát triển một Job mẫu qua `extends`, họ chỉ cần khai báo lại thuộc tính `script` là toàn bộ các bước kiểm tra bảo mật ở Job cha bị xoá sạch. Làm thế nào để thiết kế một cấu hình CI/CD dùng chung mà người dùng **KHÔNG THỂ XOÁ HOẶC PHÁ BỎ** các bước kiểm tra lõi của bạn? Hãy ghi lại dự đoán của bạn trước khi bước vào Buổi 11.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>(Dựa trên QT 6.1):</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nếu bạn cung cấp cho các team phát triển một Job mẫu qua `extends`, họ chỉ cần khai báo lại thuộc tính `script` là toàn bộ các bước kiểm tra bảo mật ở Job cha bị xoá sạch. Làm thế nào để thiết kế một cấu hình CI/CD dùng chung mà người dùng **KHÔNG THỂ XOÁ HOẶC PHÁ BỎ** các bước kiểm tra lõi của bạn? Hãy ghi lại dự đoán của bạn trước khi bước vào Buổi 11.
 
 **Gợi ý phân tích chi tiết:**
 1. Không cho phép kế thừa tự do bằng `extends` đối với các job bảo mật.
 2. Ép buộc các job bảo mật chạy ở một **Stage cố định** độc lập (ví dụ `.pre` hoặc `security-audit`).
 3. Sử dụng **CI/CD Components** kết hợp với **Required Pipeline Configurations** ở cấp độ Group/Instance của GitLab để đóng đóng băng hoàn toàn luồng kiểm soát.
 {% endraw %}
+</div>
+</details>

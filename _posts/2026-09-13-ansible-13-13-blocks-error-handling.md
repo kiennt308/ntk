@@ -15,8 +15,12 @@ series_order: 13
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.13] Hướng dẫn chuyên sâu Xử Lý Lỗi Chuyên Sâu Với Blocks: block, rescue, always & Cơ Chế Try-Catch-Finally Trong Hạ Tầng: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Xử Lý Lỗi Chuyên Sâu Với Blocks: block, rescue, always & Cơ Chế Try-Catch-Finally Trong Hạ Tầng."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 13] XỬ LÝ LỖI CHUYÊN SÂU VỚI BLOCKS: BLOCK, RESCUE, ALWAYS & CƠ CHẾ TRY-CATCH-FINALLY TRONG HẠ TẦNG
 
@@ -858,8 +862,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Cấu trúc Xử lý Lỗi Bộ ba `block`, `rescue`, `always` 🔥
-**Hỏi:** Trình bày cơ chế hoạt động của bộ ba khối `block:`, `rescue:`, và `always:` trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cấu trúc Xử lý Lỗi Bộ ba `block`, `rescue`, `always` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày cơ chế hoạt động của bộ ba khối `block:`, `rescue:`, và `always:` trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - `block:` Nơi chứa các Task thực thi chính.
 - `rescue:` Nơi chứa các Task cứu hộ/phục hồi CHỈ CHẠY khi có Task trong `block` bị văng lỗi.
@@ -871,6 +889,8 @@ Cấu trúc này tương đương 100% với mô hình `try...catch...finally` t
 - 2: Phân tích chính xác vai trò và điều kiện thi hành của từng khối `block`, `rescue`, `always`.
 - 3: Nêu đúng + minh họa ví dụ cập nhật Database có Rollback trong `rescue` và xóa file tạm trong `always`.
 **Câu hỏi đào sâu:** Khối `rescue:` và `always:` được đặt cùng cấp thụt lề với từ khóa nào trong YAML? *(Được đặt cùng cấp thụt lề với từ khóa `block:`.)*
+</div>
+</details>
 
 ---
 

@@ -15,8 +15,12 @@ series_order: 5
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.05] Hướng dẫn chuyên sâu Chiến Lược Triển Khai Ứng Dụng: RollingUpdate, Recreate, Blue-Green Deployment & Canary Releases: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Chiến Lược Triển Khai Ứng Dụng: RollingUpdate, Recreate, Blue-Green Deployment & Canary Releases."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 05] CHIẾN LƯỢC TRIỂN KHAI ỨNG DỤNG: ROLLINGUPDATE, RECREATE, BLUE-GREEN DEPLOYMENT & CANARY RELEASES
 
@@ -341,41 +345,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Chiến lược triển khai mặc định của Kubernetes Deployment là gì?
-   - **Đáp án:** Chiến lược `RollingUpdate`.
 
-2. Sự khác biệt cốt lõi về khả năng phục vụ dịch vụ giữa `RollingUpdate` và `Recreate` là gì?
-   - **Đáp án:** `RollingUpdate` đảm bảo không gián đoạn dịch vụ (Zero-Downtime), `Recreate` gây ra Downtime ngắn do tiêu diệt 100% Pod cũ trước.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Chiến lược triển khai mặc định của Kubernetes Deployment là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chiến lược `RollingUpdate`.
+</div>
+</details>
 
-3. Trường `maxSurge` trong cấu hình `RollingUpdate` có ý nghĩa là gì?
-   - **Đáp án:** Định nghĩa số lượng Pod tối đa được phép tạo thừa vượt quá con số `replicas` trong suốt quá trình rollout.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt cốt lõi về khả năng phục vụ dịch vụ giữa `RollingUpdate` và `Recreate` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `RollingUpdate` đảm bảo không gián đoạn dịch vụ (Zero-Downtime), `Recreate` gây ra Downtime ngắn do tiêu diệt 100% Pod cũ trước.
+</div>
+</details>
 
-4. Trường `maxUnavailable` trong cấu hình `RollingUpdate` có ý nghĩa là gì?
-   - **Đáp án:** Định nghĩa số lượng Pod tối đa được phép ở trạng thái không sẵn sàng (down) trong suốt quá trình rollout.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Trường `maxSurge` trong cấu hình `RollingUpdate` có ý nghĩa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Định nghĩa số lượng Pod tối đa được phép tạo thừa vượt quá con số `replicas` trong suốt quá trình rollout.
+</div>
+</details>
 
-5. Điều gì xảy ra nếu thực hiện `RollingUpdate` trên một Deployment không khai báo `readinessProbe`?
-   - **Đáp án:** Kubelet sẽ coi Pod mới sẵn sàng ngay lập tức và tiêu diệt Pod cũ, gây ra lỗi rớt kết nối (502) cho người dùng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Trường `maxUnavailable` trong cấu hình `RollingUpdate` có ý nghĩa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Định nghĩa số lượng Pod tối đa được phép ở trạng thái không sẵn sàng (down) trong suốt quá trình rollout.
+</div>
+</details>
 
-6. Làm thế nào để chuyển đổi toàn bộ lưu lượng người dùng trong mô hình Blue-Green Deployment?
-   - **Đáp án:** Thay đổi trường `spec.selector` của Service (ví dụ đổi từ `version: v1` sang `version: v2`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Điều gì xảy ra nếu thực hiện `RollingUpdate` trên một Deployment không khai báo `readinessProbe`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubelet sẽ coi Pod mới sẵn sàng ngay lập tức và tiêu diệt Pod cũ, gây ra lỗi rớt kết nối (502) cho người dùng.
+</div>
+</details>
 
-7. Mô hình Canary Deployment phân chia tỷ lệ traffic giữa phiên bản cũ và phiên bản mới dựa trên cơ chế nào của Kubernetes?
-   - **Đáp án:** Dựa trên tỷ lệ số lượng bản sao Pod của 2 Deployment cùng mang chung nhãn selector của Service.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để chuyển đổi toàn bộ lưu lượng người dùng trong mô hình Blue-Green Deployment?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thay đổi trường `spec.selector` của Service (ví dụ đổi từ `version: v1` sang `version: v2`).
+</div>
+</details>
 
-8. Câu lệnh CLI nào được dùng để khôi phục lại phiên bản cũ của Deployment khi quá trình rollout bị lỗi?
-   - **Đáp án:** `kubectl rollout undo deployment/<deployment-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Mô hình Canary Deployment phân chia tỷ lệ traffic giữa phiên bản cũ và phiên bản mới dựa trên cơ chế nào của Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Dựa trên tỷ lệ số lượng bản sao Pod của 2 Deployment cùng mang chung nhãn selector của Service.
+</div>
+</details>
 
-9. Câu lệnh CLI nào dùng để tạm dừng quá trình rollout đang diễn ra của Deployment?
-   - **Đáp án:** `kubectl rollout pause deployment/<deployment-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu lệnh CLI nào được dùng để khôi phục lại phiên bản cũ của Deployment khi quá trình rollout bị lỗi?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl rollout undo deployment/<deployment-name>`.
+</div>
+</details>
 
-10. Câu lệnh CLI nào dùng để xem danh sách lịch sử các bản revision của Deployment?
-    - **Đáp án:** `kubectl rollout history deployment/<deployment-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu lệnh CLI nào dùng để tạm dừng quá trình rollout đang diễn ra của Deployment?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl rollout pause deployment/<deployment-name>`.
+</div>
+</details>
 
-11. Nếu Deployment có `replicas: 4`, `maxSurge: 1`, `maxUnavailable: 0` thì trong lúc rollout số Pod tối đa có thể xuất hiện là bao nhiêu?
-    - **Đáp án:** Tối đa 5 Pods (4 + 1).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu lệnh CLI nào dùng để xem danh sách lịch sử các bản revision của Deployment?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl rollout history deployment/<deployment-name>`.
+</div>
+</details>
 
-12. Cờ lệnh CLI nào dùng để cập nhật trực tiếp ảnh container của Deployment từ terminal?
-    - **Đáp án:** `kubectl set image deployment/<deploy-name> <container-name>=<new-image>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Nếu Deployment có `replicas: 4`, `maxSurge: 1`, `maxUnavailable: 0` thì trong lúc rollout số Pod tối đa có thể xuất hiện là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tối đa 5 Pods (4 + 1).
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cờ lệnh CLI nào dùng để cập nhật trực tiếp ảnh container của Deployment từ terminal?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl set image deployment/<deploy-name> <container-name>=<new-image>`.
+</div>
+</details>
 
 ---
 
@@ -830,10 +1027,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Sự khác biệt cốt lõi về cơ chế hoạt động và mức độ ảnh hưởng dịch vụ giữa chiến lược `RollingUpdate` và `Recreate` trong Kubernetes Deployment là gì?
 
-**Đáp án chuẩn:** `RollingUpdate` thay thế từng Pod cũ bằng Pod mới nối tiếp nhau giúp cập nhật Zero-Downtime. `Recreate` tiêu diệt toàn bộ 100% Pod cũ trước rồi mới bắt đầu tạo các Pod mới, gây ra Downtime ngắn trong quá trình rollout nhưng đảm bảo không bao giờ có 2 phiên bản code chạy song song.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt cốt lõi về cơ chế hoạt động và mức độ ảnh hưởng dịch vụ giữa chiến lược `RollingUpdate` và `Recreate` trong Kubernetes Deployment là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `RollingUpdate` thay thế từng Pod cũ bằng Pod mới nối tiếp nhau giúp cập nhật Zero-Downtime. `Recreate` tiêu diệt toàn bộ 100% Pod cũ trước rồi mới bắt đầu tạo các Pod mới, gây ra Downtime ngắn trong quá trình rollout nhưng đảm bảo không bao giờ có 2 phiên bản code chạy song song.
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được 2 chiến lược.
@@ -841,6 +1051,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo sự khác biệt về Zero-Downtime so với Downtime ngắn và bối cảnh ứng dụng tương thích DB.
 
 **Câu hỏi đào sâu:** (Khi nào bắt buộc phải dùng `Recreate` thay vì `RollingUpdate`? — Khi phiên bản mới làm thay đổi cấu trúc database không tương thích ngược với phiên bản cũ).
+</div>
+</details>
 
 ---
 
@@ -1077,9 +1289,22 @@ Thực hiện Switch Blue-Green cho Service `web-service` trong Namespace `prod`
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Deployment `web-deploy` với Strategy RollingUpdate
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Deployment `web-deploy` với Strategy RollingUpdate</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1108,25 +1333,70 @@ spec:
           image: nginx:1.24
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Nâng cấp ảnh và Pause Rollout
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Nâng cấp ảnh và Pause Rollout</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl set image deployment/web-deploy web=nginx:1.25 -n prod
 kubectl rollout pause deployment/web-deploy -n prod
 ```
+</div>
+</details>
 
-### Câu 3 — Rollback về revision cũ bằng `kubectl rollout undo`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Rollback về revision cũ bằng `kubectl rollout undo</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl rollout resume deployment/web-deploy -n prod
 kubectl rollout undo deployment/web-deploy -n prod
 kubectl rollout status deployment/web-deploy -n prod
 ```
+</div>
+</details>
 
-### Câu 4 — Switch Blue-Green Selector Service
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Switch Blue-Green Selector Service</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Giả lập tạo Service ban đầu nếu chưa có:
 kubectl create service clusterip web-service --tcp=80:80 -n prod --dry-run=client -o yaml | sed 's/app: web-service/app: web\n    version: v1/' | kubectl apply -f -
 
@@ -1135,6 +1405,8 @@ kubectl patch service web-service -n prod -p '{"spec":{"selector":{"app":"web","
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

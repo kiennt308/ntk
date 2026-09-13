@@ -15,8 +15,12 @@ series_order: 3
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.03] Hướng dẫn chuyên sâu Đối Tượng API & Vòng Lặp Điều Hòa (Reconciliation Loop): Vì Sao Mọi Thứ Là Khai Báo Declarative: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Đối Tượng API & Vòng Lặp Điều Hòa (Reconciliation Loop): Vì Sao Mọi Thứ Là Khai Báo Declarative."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 03] ĐỐI TƯỢNG API & VÒNG LẶP ĐIỀU HÒA (RECONCILIATION LOOP): VÌ SAO MỌI THỨ LÀ KHAI BÁO DECLARATIVE
 
@@ -202,9 +206,9 @@ graph TD
     E --> F["5. Update Status (Ghi nhận trạng thái mới vào etcd)"]
     F --> A
 
-    style A fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style C fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
-    style E fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style A fill:none,stroke:#0288d1,stroke-width:2px
+    style C fill:none,stroke:#fbc02d,stroke-width:2px
+    style E fill:none,stroke:#f57c00,stroke-width:2px
 ```
 
 ---
@@ -424,9 +428,9 @@ graph TD
     D -->|Compare & Act| F["Sửa lỗi Lệch trạng thái (Drift)"]
     F -->|Cập nhật| E
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style D fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style D fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -567,8 +571,8 @@ graph TD
     KLET <-->|Watch Pod Spec & Update Status| API
     KLET --> PODS
 
-    style Kube_API_Server fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Controller_Manager fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style Kube_API_Server fill:none,stroke:#0288d1,stroke-width:2px
+    style Controller_Manager fill:none,stroke:#fbc02d,stroke-width:2px
 ```
 
 ### Bốn quyết định thiết kế bài lab
@@ -948,12 +952,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Trình bày 3 khối cấu trúc cốt lõi (`metadata`, `spec`, `status`) của một Đối tượng API Kubernetes. Khối nào do người dùng khai báo và khối nào do máy tự động ghi nhận?
-
-**Đáp án chuẩn:**
-- `metadata`: Chứa dữ liệu định danh (name, namespace, uid, labels, annotations) và mối quan hệ sở hữu (`ownerReferences`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày 3 khối cấu trúc cốt lõi (`metadata`, `spec`, `status`) của một Đối tượng API Kubernetes. Khối nào do người dùng khai báo và khối nào do máy tự động ghi nhận?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `metadata`: Chứa dữ liệu định danh (name, namespace, uid, labels, annotations) và mối quan hệ sở hữu (`ownerReferences`).
 - `spec` (Specification): Chứa trạng thái mong muốn (Desired State) do **người dùng khai báo** (ví dụ: số bản sao replicas, tên ảnh container, port).
 - `status`: Chứa trạng thái quan sát thực tế (Actual State) do **các Controller và Kubelet tự động ghi nhận** từ hạ tầng (ví dụ: số readyReplicas, podIP, phase). Người dùng KHÔNG được tự gõ khối status.
 
@@ -964,6 +979,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, nêu ví dụ cụ thể trường trong từng khối và giải thích điều gì xảy ra khi gõ status bằng tay.
 
 **Câu hỏi đào sâu:** Nếu gõ thủ công status trong file YAML rồi apply thì API Server xử lý thế nào? *(Đáp án: API Server/Controller tự động bỏ qua hoặc ghi đè ngay lập tức bằng dữ liệu quan sát thực tế).*
+</div>
+</details>
 
 ---
 

@@ -15,8 +15,12 @@ series_order: 30
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.30] Hướng dẫn chuyên sâu Tích Hợp Quản Trị Bí Mật Với HashiCorp Vault: JWT / OIDC Authentication Không Cần Hardcode Credentials: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tích Hợp Quản Trị Bí Mật Với HashiCorp Vault: JWT / OIDC Authentication Không Cần Hardcode Credentials."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 30] TÍCH HỢP QUẢN TRỊ BÍ MẬT VỚI HASHICORP VAULT: JWT / OIDC AUTHENTICATION KHÔNG CẦN HARDCODE CREDENTIALS
 
@@ -1516,86 +1520,201 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Secret tĩnh trong CI là nợ có lãi; đường thoát duy nhất là secret sinh lúc chạy, hết hạn ngắn và không mật khẩu qua OIDC"**?
-
-**Đáp án chuẩn:**
-- Vì chuỗi Secret tĩnh (như AWS Access Keys dùng nhiều năm) lưu trữ trên CI/CD Variables hay mã nguồn dễ bị lộ qua commit history hoặc Runner logs, tạo nên rủi ro thảm họa an ninh kéo dài.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Secret tĩnh trong CI là nợ có lãi; đường thoát duy nhất là secret sinh lúc chạy, hết hạn ngắn và không mật khẩu qua OIDC"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì chuỗi Secret tĩnh (như AWS Access Keys dùng nhiều năm) lưu trữ trên CI/CD Variables hay mã nguồn dễ bị lộ qua commit history hoặc Runner logs, tạo nên rủi ro thảm họa an ninh kéo dài.
 - Giải pháp triệt để là xóa bỏ hoàn toàn Secret tĩnh, chuyển sang cơ chế **Secret sinh lúc chạy (Dynamic Secret)** có thời hạn sống ngắn (5–15 phút) và xác thực không mật khẩu qua chuẩn **OpenID Connect (OIDC)**.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Masked Variables, Protected Variables và File Variables trong GitLab CI/CD Settings?
-
-**Đáp án chuẩn:**
-- **Masked Variables:** Tự động mã hóa ẩn danh chuỗi bí mật (thay bằng `[MASKED]`) trong console log của CI Runner.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Masked Variables, Protected Variables và File Variables trong GitLab CI/CD Settings?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Masked Variables:** Tự động mã hóa ẩn danh chuỗi bí mật (thay bằng `[MASKED]`) trong console log của CI Runner.
 - **Protected Variables:** Chỉ truyền biến môi trường này vào CI Jobs khi chạy trên các nhánh được bảo vệ (`main`, `production`).
 - **File Variables:** Lưu trữ bí mật (như SSH Private Key, Service Account JSON) dưới dạng tệp tạm thời trên đĩa của CI Runner thay vì chuỗi biến.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý hoạt động của công cụ Gitleaks Secret Scanning và khả năng tìm kiếm Secret lộ trong lịch sử Git Commit?
-
-**Đáp án chuẩn:**
-- Gitleaks truy vết cây cú pháp Git DAG, phân tích toán học toàn bộ lịch sử commit history và diff bằng bộ quy tắc Regex và thuật toán đo độ hỗn loạn Shannon Entropy.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ Gitleaks Secret Scanning và khả năng tìm kiếm Secret lộ trong lịch sử Git Commit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Gitleaks truy vết cây cú pháp Git DAG, phân tích toán học toàn bộ lịch sử commit history và diff bằng bộ quy tắc Regex và thuật toán đo độ hỗn loạn Shannon Entropy.
 - Gitleaks phát hiện được cả các chuỗi AWS Keys, JWT Tokens, SSH Keys nằm ở các commit dở dang cũ từ nhiều tháng trước ngay cả khi file hiện tại đã xóa dòng code đó.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao việc xóa chuỗi Secret rò rỉ bằng commit mới không thể sửa triệt để lỗ hổng nếu không rebase/purge Git history?
-
-**Đáp án chuẩn:**
-- Vì Git lưu trữ lịch sử commit vĩnh viễn (Git Commit History). Tạo commit mới chỉ xóa dòng code ở HEAD commit, còn chuỗi Secret vẫn nằm nguyên vẹn ở các commit cũ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao việc xóa chuỗi Secret rò rỉ bằng commit mới không thể sửa triệt để lỗ hổng nếu không rebase/purge Git history?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì Git lưu trữ lịch sử commit vĩnh viễn (Git Commit History). Tạo commit mới chỉ xóa dòng code ở HEAD commit, còn chuỗi Secret vẫn nằm nguyên vẹn ở các commit cũ.
 - Kẻ tấn công chỉ cần clone repo và checkout về commit SHA cũ là lấy được chuỗi Secret. Muốn sửa triệt để phải lập tức **Thu hồi (Revoke)** key trên Cloud và Purge lịch sử Git bằng `git-filter-repo`.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Nguyên lý hoạt động của HashiCorp Vault trong việc quản lý tập trung và cấp phát Secret động (Dynamic Secrets)?
-
-**Đáp án chuẩn:**
-- HashiCorp Vault lưu trữ toàn bộ chuỗi bí mật mã hóa trong bộ nhớ RAM và điều khiển cấp phát qua các Secrets Engines.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của HashiCorp Vault trong việc quản lý tập trung và cấp phát Secret động (Dynamic Secrets)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - HashiCorp Vault lưu trữ toàn bộ chuỗi bí mật mã hóa trong bộ nhớ RAM và điều khiển cấp phát qua các Secrets Engines.
 - Với Dynamic Secrets, Vault giao tiếp trực tiếp với Cloud Provider / Database để sinh ra Username/Password tạm thời cho mỗi CI Job và tự động gửi câu lệnh `DROP USER` thu hồi tài khoản khi hết hạn TTL (5–15 phút).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Nguyên lý hoạt động của OpenID Connect (OIDC) trong việc xác thực không mật khẩu (Passwordless) giữa GitLab CI và Cloud/Vault?
-
-**Đáp án chuẩn:**
-- Ở mỗi CI Job, GitLab Runner tự động cấp phát một JSON Web Token (`id_tokens`) chứa chữ ký số RS256 của GitLab Server.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của OpenID Connect (OIDC) trong việc xác thực không mật khẩu (Passwordless) giữa GitLab CI và Cloud/Vault?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Ở mỗi CI Job, GitLab Runner tự động cấp phát một JSON Web Token (`id_tokens`) chứa chữ ký số RS256 của GitLab Server.
 - CI Job gửi JWT Token sang Cloud Provider (AWS IAM / HashiCorp Vault). Máy chủ Cloud kiểm tra chữ ký số qua OIDC Discovery Endpoint và cấp một Access Token ngắn hạn mà không cần lưu bất kỳ mật khẩu tĩnh nào trong CI/CD Settings.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Cấu trúc và ý nghĩa của các trường claims trong JSON Web Token (JWT `id_tokens`) do GitLab Runner cấp phát?
-
-**Đáp án chuẩn:**
-- `iss` (Issuer): URL xác thực của GitLab Server (`https://gitlab.example.com`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Cấu trúc và ý nghĩa của các trường claims trong JSON Web Token (JWT `id_tokens`) do GitLab Runner cấp phát?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `iss` (Issuer): URL xác thực của GitLab Server (`https://gitlab.example.com`).
 - `sub` (Subject): Định danh chi tiết CI Job (`project_path:group/project:ref_type:branch:ref:main`).
 - `aud` (Audience): URL đối tượng nhận token (ví dụ `http://localhost:8200`), ngăn chặn token bị lạm dụng giả mạo.
 - `project_path`: Đường dẫn tên dự án dùng để ràng buộc Vault Policy / AWS IAM Role.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Cách thiết lập quyền truy cập tối thiểu (Least Privilege Scope) cho OIDC Role trên AWS IAM hoặc HashiCorp Vault Policy?
-
-**Đáp án chuẩn:**
-- Ràng buộc chính xác trường `aud` trong JWT Token khớp với duy nhất URL của máy chủ Vault/AWS.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Cách thiết lập quyền truy cập tối thiểu (Least Privilege Scope) cho OIDC Role trên AWS IAM hoặc HashiCorp Vault Policy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Ràng buộc chính xác trường `aud` trong JWT Token khớp với duy nhất URL của máy chủ Vault/AWS.
 - Trên Vault / AWS IAM Role, cấu hình điều kiện `bound_claims` chỉ cho phép JWT Token phát ra từ nhánh `main` của repo cụ thể (`project_path: devsecops/web-app`) được quyền đọc secret, từ chối tất cả các nhánh feature branch rác.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách xuất và nạp báo cáo Secret Detection theo định dạng chuẩn `gl-secret-detection-report.json` lên GitLab UI?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh Gitleaks CLI, ta truyền cờ `--report-format json --report-path gl-secret-detection-report.json`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách xuất và nạp báo cáo Secret Detection theo định dạng chuẩn `gl-secret-detection-report.json` lên GitLab UI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh Gitleaks CLI, ta truyền cờ `--report-format json --report-path gl-secret-detection-report.json`.
 - Trong `.gitlab-ci.yml`, ta nộp tệp báo cáo sang GitLab CI bằng thuộc tính:
   ```yaml
   artifacts:
@@ -1605,37 +1724,78 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - GitLab UI sẽ tự động đọc và hiển thị kết quả rò rỉ secret lên giao diện Merge Request Security Widget.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp xử lý và thu hồi khẩn cấp (Emergency Revocation) khi phát hiện AWS Access Key bị rò rỉ công khai?
-
-**Đáp án chuẩn:**
-1. **Revoke Immediately:** Đăng nhập AWS IAM Console, Disable và Delete ngay lập tức AWS Access Key rò rỉ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp xử lý và thu hồi khẩn cấp (Emergency Revocation) khi phát hiện AWS Access Key bị rò rỉ công khai?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Revoke Immediately:** Đăng nhập AWS IAM Console, Disable và Delete ngay lập tức AWS Access Key rò rỉ.
 2. **CloudTrail Audit:** Phân tích nhật ký AWS CloudTrail kiểm tra xem key rò rỉ đã bị kẻ xấu dùng tạo tài nguyên lạ chưa.
 3. **Purge Git History:** Sử dụng `git-filter-repo --invert-paths --path <file>` xóa sạch vết commit lộ key khỏi Git Tree.
 4. **Switch to OIDC:** Chuyển đổi sang xác thực không mật khẩu AWS IAM OIDC Role.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi chuỗi Secret bị in lộ ra log Runner do thiếu ký tự mã hóa Base64 hoặc định dạng đa dòng?
-
-**Đáp án chuẩn:**
-- GitLab Runner chỉ ẩn danh (`[MASKED]`) đúng chính xác chuỗi ký tự thô của biến.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi chuỗi Secret bị in lộ ra log Runner do thiếu ký tự mã hóa Base64 hoặc định dạng đa dòng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - GitLab Runner chỉ ẩn danh (`[MASKED]`) đúng chính xác chuỗi ký tự thô của biến.
 - Nếu chuỗi secret được encode Base64 hoặc chuyển dạng multiline, Runner sẽ không tự động ẩn danh được. Giải pháp là khởi tạo thêm 1 biến CI Variable lưu chuỗi đã encode Base64 và tích chọn cờ `Masked` cho cả 2 biến.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước quản lý Secret chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Secret Scanning:** Chạy Gitleaks phát hiện và chặn đứng Hardcoded Secret ở commit diff của Merge Request.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước quản lý Secret chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Secret Scanning:** Chạy Gitleaks phát hiện và chặn đứng Hardcoded Secret ở commit diff của Merge Request.
 2. **Vault Integration:** Dựng HashiCorp Vault Server quản lý bí mật tập trung trên RAM.
 3. **OIDC Authentication:** Cấp OIDC JWT `id_tokens` xác thực không mật khẩu với Vault / Cloud Provider.
 4. **Dynamic Short-lived Tokens:** Nạp Dynamic Secret có thời hạn sống 5–15 phút vào RAM CI Job, tự động thu hồi khi hết hạn.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

@@ -15,8 +15,12 @@ series_order: 6
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.06] Hướng dẫn chuyên sâu Tự Dựng Cụm Kubernetes Đa Node Bằng Kubeadm: Khởi Tạo Control Plane, Join Worker & Preflight Checks: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tự Dựng Cụm Kubernetes Đa Node Bằng Kubeadm: Khởi Tạo Control Plane, Join Worker & Preflight Checks."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 06] TỰ DỰNG CỤM KUBERNETES ĐA NODE BẰNG KUBEADM: KHỞI TẠO CONTROL PLANE, JOIN WORKER & PREFLIGHT CHECKS
 
@@ -216,9 +220,9 @@ graph TD
     E --> F["Tất cả 3 Node gia nhập cụm (Trạng thái NotReady)"]
     F --> G["Apply CNI Flannel -> 3 Node chuyển sang Ready"]
 
-    style A fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style D fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
-    style G fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style A fill:none,stroke:#0288d1,stroke-width:2px
+    style D fill:none,stroke:#fbc02d,stroke-width:2px
+    style G fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -363,9 +367,9 @@ graph TD
     C --> D["Kubeadm Join 2 Worker Nodes (Token & CA Hash)"]
     D --> E["Apply Flannel CNI -> 3 Node chuyển sang Ready"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#bbf,stroke:#333,stroke-width:2px
-    style E fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style E fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -509,8 +513,8 @@ graph TD
     FLANNEL -->|Chuyển trạng thái| Worker_Node_1
     FLANNEL -->|Chuyển trạng thái| Worker_Node_2
 
-    style Control_Plane_Node fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style CNI_Layer fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Control_Plane_Node fill:none,stroke:#f57c00,stroke-width:2px
+    style CNI_Layer fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ### Bốn quyết định thiết kế bài lab
@@ -876,12 +880,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Tại sao Kubelet mặc định từ chối khởi động trên hệ thống Linux chưa tắt SWAP hoàn toàn?
-
-**Đáp án chuẩn:**
-- Kubernetes được thiết kế dựa trên giả định Kubelet quản lý tài nguyên bộ nhớ RAM tuyệt đối để phân loại các **QoS Classes (Guaranteed, Burstable, BestEffort)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao Kubelet mặc định từ chối khởi động trên hệ thống Linux chưa tắt SWAP hoàn toàn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Kubernetes được thiết kế dựa trên giả định Kubelet quản lý tài nguyên bộ nhớ RAM tuyệt đối để phân loại các **QoS Classes (Guaranteed, Burstable, BestEffort)**.
 - Nếu đĩa SWAP được bật, Linux kernel sẽ tự ý chuyển các trang nhớ RAM xuống đĩa cứng khi cạn RAM.
 - **Hậu quả:**
   1. Độ trễ ứng dụng tăng hàng ngàn lần (Disk IOPS chậm hơn RAM rất nhiều).
@@ -895,6 +910,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, nêu câu lệnh `swapoff -a` và chỉnh sửa tệp `/etc/fstab`.
 
 **Câu hỏi đào sâu:** Nếu bắt buộc phải bật SWAP trên node (ví dụ môi trường dev máy yếu), Kubelet cho phép cờ cấu hình nào để bỏ qua lỗi swap? *(Đáp án: Cờ --fail-swap-on=false trong KubeletConfiguration).*
+</div>
+</details>
 
 ---
 

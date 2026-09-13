@@ -15,8 +15,12 @@ series_order: 11
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.11] Hướng dẫn chuyên sâu ServiceAccount & Token Bảo Mật: Projected Volume, TokenRequest API & Chống Thất Thoát Token: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về ServiceAccount & Token Bảo Mật: Projected Volume, TokenRequest API & Chống Thất Thoát Token."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 11] SERVICEACCOUNT & TOKEN BẢO MẬT: PROJECTED VOLUME, TOKENREQUEST API & CHỐNG THẤT THOÁT TOKEN
 
@@ -160,9 +164,9 @@ graph TD
     D --> E["Pod dùng Token gọi API Server"]
     E --> F["Kubelet tự động xoay vòng Token trước khi hết hạn 80% (Auto-rotation)"]
 
-    style A fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style C fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style F fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style A fill:none,stroke:#f57c00,stroke-width:2px
+    style C fill:none,stroke:#0288d1,stroke-width:2px
+    style F fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -373,9 +377,9 @@ graph TD
     C --> D["Bound Token: Kubelet nạp JWT Token tự động xoay vòng vào /var/run/secrets/..."]
     D --> E["Bảo mật Pod không gọi API: automountServiceAccountToken: false"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#bbf,stroke:#333,stroke-width:2px
-    style E fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style E fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -508,9 +512,9 @@ graph TD
     SA_Management --> Pod_Mount_True
     SA_Management --> Pod_Mount_False
 
-    style SA_Management fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Pod_Mount_True fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Pod_Mount_False fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style SA_Management fill:none,stroke:#f57c00,stroke-width:2px
+    style Pod_Mount_True fill:none,stroke:#0288d1,stroke-width:2px
+    style Pod_Mount_False fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -814,12 +818,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Phân biệt sự khác nhau cơ bản giữa đối tượng `ServiceAccount` và đối tượng `User` trong Kubernetes.
-
-**Đáp án chuẩn:**
-- `ServiceAccount` (Tài khoản dịch vụ dành cho Máy/Pod):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phân biệt sự khác nhau cơ bản giữa đối tượng `ServiceAccount` và đối tượng `User` trong Kubernetes.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `ServiceAccount` (Tài khoản dịch vụ dành cho Máy/Pod):
   - Đại diện cho các tiến trình/ứng dụng chạy bên trong Pod.
   - **LÀ một đối tượng API Kubernetes chính thức** lưu trong etcd (`kind: ServiceAccount`), gắn liền với 1 Namespace cụ thể.
   - Được Kubelet tự động nạp JWT Token vào Pod để ứng dụng gọi API Server.
@@ -834,6 +849,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, minh hoạ bằng định dạng RBAC `system:serviceaccount:<ns>:<name>`.
 
 **Câu hỏi đào sâu:** Ta có thể tạo ServiceAccount bằng lệnh `kubectl create` được không, và có tạo được User bằng lệnh đó không? *(Đáp án: Tạo được ServiceAccount bằng kubectl create serviceaccount; KHÔNG tạo được User bằng kubectl).*
+</div>
+</details>
 
 ---
 

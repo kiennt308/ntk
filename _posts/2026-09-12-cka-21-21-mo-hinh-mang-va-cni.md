@@ -15,8 +15,12 @@ series_order: 21
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.21] Hướng dẫn chuyên sâu Mô Hình Mạng Kubernetes & CNI: Đường Đi Gói Tin Pod-to-Pod, VXLAN Overlay vs BGP Routing: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Mô Hình Mạng Kubernetes & CNI: Đường Đi Gói Tin Pod-to-Pod, VXLAN Overlay vs BGP Routing."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 21] MÔ HÌNH MẠNG KUBERNETES & CNI: ĐƯỜNG ĐI GÓI TIN POD-TO-POD, VXLAN OVERLAY VS BGP ROUTING
 
@@ -188,8 +192,8 @@ graph TD
         TUNNEL2 --> POD_C["Pod C (Node 2: IP 10.244.2.5)"]
     end
 
-    style Intra_Node fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Inter_Node fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style Intra_Node fill:none,stroke:#0288d1,stroke-width:2px
+    style Inter_Node fill:none,stroke:#f57c00,stroke-width:2px
 ```
 
 ---
@@ -369,10 +373,10 @@ graph TD
     B --> D["Intra-Node Packet: Pod A -> veth pair -> Bridge/eBPF -> veth pair -> Pod B (< 1ms)"]
     B --> E["Inter-Node Packet: Pod A -> Encapsulation (VXLAN UDP 4789) -> eth0 -> Decapsulation -> Pod C"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#c8e6c9,stroke:#333,stroke-width:2px
-    style E fill:#ffe0b2,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style E fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -499,8 +503,8 @@ graph TD
 
     TUN1 -->|Physical eth0 Wire| TUN2
 
-    style Node1 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Node2 fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style Node1 fill:none,stroke:#0288d1,stroke-width:2px
+    style Node2 fill:none,stroke:#f57c00,stroke-width:2px
 ```
 
 ---
@@ -837,12 +841,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Trình bày 3 quy tắc bất biến trong Mô hình mạng phẳng (Flat Network Model) của Kubernetes.
-
-**Đáp án chuẩn:**
-- **3 Quy tắc bất biến (Flat Network):**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày 3 quy tắc bất biến trong Mô hình mạng phẳng (Flat Network Model) của Kubernetes.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **3 Quy tắc bất biến (Flat Network):**
   1. **Pod-to-Pod no NAT:** Tất cả các Pods có thể giao tiếp với 100% tất cả các Pods khác trong cụm mà KHÔNG CẦN qua kỹ thuật biên dịch địa chỉ mạng (NAT).
   2. **Node-to-Pod no NAT:** Tất cả các máy chủ Node (bao gồm cả Control Plane và Worker) có thể giao tiếp trực tiếp với 100% tất cả các Pods mà KHÔNG qua NAT.
   3. **IP Consistency:** Địa chỉ IP mà một Pod tự nhìn thấy bên trong Network Namespace của chính nó phải ĐỒNG NHẤT 100% với địa chỉ IP mà các Pods khác nhìn thấy khi giao tiếp với nó.
@@ -854,6 +869,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, chỉ ra sự khác biệt với mô hình Docker port-mapping mặc định.
 
 **Câu hỏi đào sâu:** Tại sao mô hình Docker mặc định lại không phải là Flat Network? *(Đáp án: Vì Docker dùng bridge network nội bộ riêng trên mỗi host và bắt buộc dùng NAT / Port mapping `8080:80` để giao tiếp ra bên ngoài).*
+</div>
+</details>
 
 ---
 

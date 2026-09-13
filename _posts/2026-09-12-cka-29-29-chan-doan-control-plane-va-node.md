@@ -15,8 +15,12 @@ series_order: 29
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.29] Hướng dẫn chuyên sâu Cứu Hộ Control Plane Hỏng, Node NotReady, Kubelet Crash & Sự Cố Hệ Thống Tầng Sâu: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Cứu Hộ Control Plane Hỏng, Node NotReady, Kubelet Crash & Sự Cố Hệ Thống Tầng Sâu."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 29] CỨU HỘ CONTROL PLANE HỎNG, NODE NOTREADY, KUBELET CRASH & SỰ CỐ HỆ THỐNG TẦNG SÂU
 
@@ -319,41 +323,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Lệnh CLI nào trên Linux OS dùng để xem nhật ký trực tiếp của tiến trình Kubelet?
-   - **Đáp án:** `journalctl -u kubelet -n 50 --no-pager`.
 
-2. Thư mục mặc định chứa các tệp manifest của Static Pods trên Control Plane Node là gì?
-   - **Đáp án:** Thư mục `/etc/kubernetes/manifests/`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Lệnh CLI nào trên Linux OS dùng để xem nhật ký trực tiếp của tiến trình Kubelet?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `journalctl -u kubelet -n 50 --no-pager`.
+</div>
+</details>
 
-3. Bốn thành phần cốt lõi nào của Control Plane được khởi chạy dưới dạng Static Pods?
-   - **Đáp án:** `kube-apiserver`, `etcd`, `kube-scheduler`, và `kube-controller-manager`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Thư mục mặc định chứa các tệp manifest của Static Pods trên Control Plane Node là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thư mục `/etc/kubernetes/manifests/`.
+</div>
+</details>
 
-4. Lệnh CLI nào kiểm tra mốc thời gian hết hạn chứng chỉ của cụm `kubeadm`?
-   - **Đáp án:** `kubeadm certs check-expiration`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Bốn thành phần cốt lõi nào của Control Plane được khởi chạy dưới dạng Static Pods?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kube-apiserver`, `etcd`, `kube-scheduler`, và `kube-controller-manager`.
+</div>
+</details>
 
-5. Lệnh CLI nào gia hạn toàn bộ chứng chỉ Control Plane trong cụm `kubeadm`?
-   - **Đáp án:** `kubeadm certs renew all`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Lệnh CLI nào kiểm tra mốc thời gian hết hạn chứng chỉ của cụm `kubeadm`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubeadm certs check-expiration`.
+</div>
+</details>
 
-6. Hai câu lệnh Linux nào cần thực thi để tắt Swap vĩnh viễn trên Node?
-   - **Đáp án:** `swapoff -a` và sửa comment dòng swap trong `/etc/fstab`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Lệnh CLI nào gia hạn toàn bộ chứng chỉ Control Plane trong cụm `kubeadm`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubeadm certs renew all`.
+</div>
+</details>
 
-7. Công cụ CLI nào dùng để xem danh sách container và log trực tiếp ở tầng Container Runtime khi API Server sập?
-   - **Đáp án:** Công cụ `crictl` (`crictl ps` và `crictl logs`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Hai câu lệnh Linux nào cần thực thi để tắt Swap vĩnh viễn trên Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `swapoff -a` và sửa comment dòng swap trong `/etc/fstab`.
+</div>
+</details>
 
-8. Điều gì xảy ra khi bạn xóa một tệp YAML trong thư mục `/etc/kubernetes/manifests/`?
-   - **Đáp án:** Kubelet sẽ tự động tiêu diệt và xóa container Static Pod tương ứng trên Node.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Công cụ CLI nào dùng để xem danh sách container và log trực tiếp ở tầng Container Runtime khi API Server sập?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Công cụ `crictl` (`crictl ps` và `crictl logs`).
+</div>
+</details>
 
-9. Tại sao phải khởi động lại Kubelet sau khi gia hạn chứng chỉ bằng `kubeadm certs renew all`?
-   - **Đáp án:** Để Kubelet giải phóng các chứng chỉ cũ đang lưu trong bộ nhớ RAM và nạp các tệp chứng chỉ mới từ đĩa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Điều gì xảy ra khi bạn xóa một tệp YAML trong thư mục `/etc/kubernetes/manifests/`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubelet sẽ tự động tiêu diệt và xóa container Static Pod tương ứng trên Node.
+</div>
+</details>
 
-10. Sự cố `DiskPressure` xảy ra khi nào và ảnh hưởng gì tới Node?
-    - **Đáp án:** Xảy ra khi dung lượng đĩa chứa `/var/lib/kubelet` vượt ngưỡng 85 %, khiến Kubelet từ chối tạo Pod mới và bắt đầu evict Pod cũ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao phải khởi động lại Kubelet sau khi gia hạn chứng chỉ bằng `kubeadm certs renew all`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để Kubelet giải phóng các chứng chỉ cũ đang lưu trong bộ nhớ RAM và nạp các tệp chứng chỉ mới từ đĩa.
+</div>
+</details>
 
-11. Tại sao không nên chỉnh sửa trực tiếp tệp YAML Static Pod mà nên backup ra `/tmp/` trước?
-    - **Đáp án:** Để tránh mất cấu hình cờ gốc nếu sửa sai cú pháp YAML khiến API Server ngắt vĩnh viễn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Sự cố `DiskPressure` xảy ra khi nào và ảnh hưởng gì tới Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Xảy ra khi dung lượng đĩa chứa `/var/lib/kubelet` vượt ngưỡng 85 %, khiến Kubelet từ chối tạo Pod mới và bắt đầu evict Pod cũ.
+</div>
+</details>
 
-12. Cờ cấu hình nào trong tệp `/var/lib/kubelet/config.yaml` quy định việc Kubelet có cho phép chạy trên máy bật Swap hay không?
-    - **Đáp án:** Cờ `failSwapOn: true` (hoặc `false`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không nên chỉnh sửa trực tiếp tệp YAML Static Pod mà nên backup ra `/tmp/` trước?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để tránh mất cấu hình cờ gốc nếu sửa sai cú pháp YAML khiến API Server ngắt vĩnh viễn.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cờ cấu hình nào trong tệp `/var/lib/kubelet/config.yaml` quy định việc Kubelet có cho phép chạy trên máy bật Swap hay không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `failSwapOn: true` (hoặc `false`).
+</div>
+</details>
 
 ---
 
@@ -702,10 +899,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Khi lệnh `kubectl` báo lỗi `The connection to the server localhost:6443 was refused`, các bước cứu hộ đầu tiên trên Master Node là gì?
 
-**Đáp án chuẩn:** Bước 1: SSH vào Master Node, kiểm tra trạng thái Kubelet qua `systemctl status kubelet`. Bước 2: Đọc log OS bằng `journalctl -u kubelet -n 50 --no-pager`. Bước 3: Dùng `crictl ps -a` kiểm tra xem các container Static Pod (`kube-apiserver`, `etcd`) có đang chạy hay không.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Khi lệnh `kubectl` báo lỗi `The connection to the server localhost:6443 was refused`, các bước cứu hộ đầu tiên trên Master Node là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Bước 1: SSH vào Master Node, kiểm tra trạng thái Kubelet qua `systemctl status kubelet`. Bước 2: Đọc log OS bằng `journalctl -u kubelet -n 50 --no-pager`. Bước 3: Dùng `crictl ps -a` kiểm tra xem các container Static Pod (`kube-apiserver`, `etcd`) có đang chạy hay không.
 
 **Tiêu chí chấm:**
 - 0đ: Tiếp tục gõ lệnh `kubectl` trên máy client.
@@ -714,6 +924,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích mạch lạc luồng 3 bước từ kiểm tra Kubelet service -> log OS -> container runtime tầng thấp.
 
 **Câu hỏi đào sâu:** (Tại sao lệnh `kubectl` lại không hoạt động khi API Server sập? — Vì `kubectl` là API Client gửi HTTP request tới cổng 6443 của API Server, khi API Server chết thì cổng này không mở).
+</div>
+</details>
 
 ---
 
@@ -954,19 +1166,47 @@ Thực hiện kiểm tra hạn chứng chỉ TLS toàn cụm và gia hạn khẩ
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Cứu Node `worker-01` bị NotReady do Swap
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cứu Node `worker-01` bị NotReady do Swap</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # SSH vào worker-01 và kiểm tra log Kubelet
 ssh worker-01 "sudo journalctl -u kubelet -n 20 --no-pager"
 
 # Tắt Swap và restart Kubelet
 ssh worker-01 "sudo swapoff -a && sudo systemctl restart kubelet"
 ```
+</div>
+</details>
 
-### Câu 2 — Cứu API Server bị Connection Refused
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Cứu API Server bị Connection Refused</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Backup file manifest
 cp /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/apiserver.bak
 
@@ -976,20 +1216,50 @@ crictl ps -a | grep apiserver
 # Sửa cờ bị lỗi trong file manifest
 vim /etc/kubernetes/manifests/kube-apiserver.yaml
 ```
+</div>
+</details>
 
-### Câu 3 — Cứu `kube-scheduler` bị crash
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Cứu `kube-scheduler` bị crash</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Xem log container scheduler qua crictl
 crictl logs $(crictl ps -a --name kube-scheduler -q)
 
 # Sửa lại đường dẫn config đúng trong manifest
 sed -i 's|/etc/kubernetes/scheduler-wrong.conf|/etc/kubernetes/scheduler.conf|g' /etc/kubernetes/manifests/kube-scheduler.yaml
 ```
+</div>
+</details>
 
-### Câu 4 — Gia hạn toàn bộ chứng chỉ Control Plane
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Gia hạn toàn bộ chứng chỉ Control Plane</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Kiểm tra hạn chứng chỉ
 kubeadm certs check-expiration
 
@@ -999,6 +1269,8 @@ systemctl restart kubelet
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy mất điểm
 

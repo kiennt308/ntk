@@ -15,8 +15,12 @@ series_order: 17
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKS P.17] Hướng dẫn chuyên sâu Phân Tích Tĩnh Bản Kê Khai: Quét Lỗ Hổng Bằng Kubesec, Checkov & Trivy Config: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Phân Tích Tĩnh Bản Kê Khai: Quét Lỗ Hổng Bằng Kubesec, Checkov & Trivy Config."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 17] PHÂN TÍCH TĨNH BẢN KÊ KHAI: QUÉT LỖ HỔNG BẰNG KUBESEC, CHECKOV & TRIVY CONFIG
 
@@ -351,42 +355,232 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Triết lý "Shift-Left Security" trong quy trình phát triển và vận hành phần mềm nghĩa là gì?
-   - **Đáp án:** Đưa các hoạt động **kiểm tra và phân tích an ninh vào sớm ngay từ giai đoạn viết mã** (máy Dev/CI-CD) thay vì chờ đến khi deploy lên cụm.
 
-2. Sự khác biệt cơ bản giữa Phân tích tĩnh (Static Analysis) và Phân tích động (Dynamic Analysis) là gì?
-   - **Đáp án:** Phân tích tĩnh **kiểm tra trực tiếp tệp mã nguồn/YAML mà không cần chạy container**, còn Phân tích động **giám sát tiến trình đang chạy thực tế trong runtime**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Triết lý "Shift-Left Security" trong quy trình phát triển và vận hành phần mềm nghĩa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đưa các hoạt động **kiểm tra và phân tích an ninh vào sớm ngay từ giai đoạn viết mã** (máy Dev/CI-CD) thay vì chờ đến khi deploy lên cụm.
+</div>
+</details>
 
-3. Công cụ CLI chuyên dụng được sử dụng để chấm điểm rủi ro an ninh cho các tệp Kubernetes YAML manifests là gì?
-   - **Đáp án:** Công cụ **Kubesec** (`kubesec scan`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt cơ bản giữa Phân tích tĩnh (Static Analysis) và Phân tích động (Dynamic Analysis) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Phân tích tĩnh **kiểm tra trực tiếp tệp mã nguồn/YAML mà không cần chạy container**, còn Phân tích động **giám sát tiến trình đang chạy thực tế trong runtime**.
+</div>
+</details>
 
-4. Ý nghĩa của điểm số Kubesec (Score) khi chạy phân tích tệp Pod manifest là gì?
-   - **Đáp án:** **Điểm âm** thể hiện manifest chứa các lỗi nguy hiểm cần sửa, **điểm dương cao (>= +5đ)** thể hiện manifest được thắt chặt bảo mật tốt.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Công cụ CLI chuyên dụng được sử dụng để chấm điểm rủi ro an ninh cho các tệp Kubernetes YAML manifests là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Công cụ **Kubesec** (`kubesec scan`).
+</div>
+</details>
 
-5. Bốn cờ cấu hình quan trọng nhất dưới khối `securityContext` giúp nâng điểm Kubesec lên mức tối đa là gì?
-   - **Đáp án:** `readOnlyRootFilesystem: true`, `runAsNonRoot: true`, `allowPrivilegeEscalation: false`, và `capabilities.drop: ["ALL"]`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Ý nghĩa của điểm số Kubesec (Score) khi chạy phân tích tệp Pod manifest là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Điểm âm** thể hiện manifest chứa các lỗi nguy hiểm cần sửa, **điểm dương cao (>= +5đ)** thể hiện manifest được thắt chặt bảo mật tốt.
+</div>
+</details>
 
-6. Lệnh CLI Trivy nào được dùng để quét rà soát các lỗi an ninh cấu hình trong tệp YAML manifest?
-   - **Đáp án:** Lệnh `trivy config /path/to/manifest.yaml`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Bốn cờ cấu hình quan trọng nhất dưới khối `securityContext` giúp nâng điểm Kubesec lên mức tối đa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `readOnlyRootFilesystem: true`, `runAsNonRoot: true`, `allowPrivilegeEscalation: false`, và `capabilities.drop: ["ALL"]`.
+</div>
+</details>
 
-7. Lệnh CLI linter chuyên dụng nào được dùng để quét rà soát các thực hành xấu trong tệp Dockerfile?
-   - **Đáp án:** Công cụ **`hadolint Dockerfile`**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Lệnh CLI Trivy nào được dùng để quét rà soát các lỗi an ninh cấu hình trong tệp YAML manifest?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `trivy config /path/to/manifest.yaml`.
+</div>
+</details>
 
-8. Tại sao chỉ thị `ADD` trong tệp Dockerfile bị xem là một thực hành xấu về mặt an ninh so với `COPY`?
-   - **Đáp án:** Vì chỉ thị `ADD` có thể tự động tải và giải nén các tệp từ URL bên ngoài không kiểm soát, nguy cơ chèn mã độc.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Lệnh CLI linter chuyên dụng nào được dùng để quét rà soát các thực hành xấu trong tệp Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Công cụ **`hadolint Dockerfile`**.
+</div>
+</details>
 
-9. Cách xử lý triệt để khi ứng dụng bị crash sau khi bổ sung cờ `readOnlyRootFilesystem: true` do cần ghi tệp tạm là gì?
-   - **Đáp án:** Mount một volume hệ thống tệp tạm trên RAM **`emptyDir: {}`** vào đường dẫn `/tmp` của container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao chỉ thị `ADD` trong tệp Dockerfile bị xem là một thực hành xấu về mặt an ninh so với `COPY`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì chỉ thị `ADD` có thể tự động tải và giải nén các tệp từ URL bên ngoài không kiểm soát, nguy cơ chèn mã độc.
+</div>
+</details>
 
-10. Cờ câu lệnh nào của Trivy config scan được dùng để tự động ngắt pipeline CI/CD với exit code 1 khi phát hiện lỗi CRITICAL?
-    - **Đáp án:** Cờ `--exit-code 1 --severity HIGH,CRITICAL`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Cách xử lý triệt để khi ứng dụng bị crash sau khi bổ sung cờ `readOnlyRootFilesystem: true` do cần ghi tệp tạm là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mount một volume hệ thống tệp tạm trên RAM **`emptyDir: {}`** vào đường dẫn `/tmp` của container.
+</div>
+</details>
 
-11. Tại sao cờ `privileged: true` lại bị trừ điểm nặng nhất trong công cụ Kubesec?
-    - **Đáp án:** Vì cờ `privileged: true` phá vỡ hoàn toàn rào chắn cách ly, cấp toàn bộ quyền truy cập Linux kernel cho container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cờ câu lệnh nào của Trivy config scan được dùng để tự động ngắt pipeline CI/CD với exit code 1 khi phát hiện lỗi CRITICAL?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--exit-code 1 --severity HIGH,CRITICAL`.
+</div>
+</details>
 
-12. Cú pháp YAML chuẩn của khối `securityContext` Pod và Container đạt điểm tối đa Kubesec CKS là gì?
-    - **Đáp án:**
-      ```yaml
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao cờ `privileged: true` lại bị trừ điểm nặng nhất trong công cụ Kubesec?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì cờ `privileged: true` phá vỡ hoàn toàn rào chắn cách ly, cấp toàn bộ quyền truy cập Linux kernel cho container.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp YAML chuẩn của khối `securityContext` Pod và Container đạt điểm tối đa Kubesec CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```yaml
       spec:
         securityContext:
           runAsNonRoot: true
@@ -405,6 +599,8 @@ graph TD
                 cpu: "200m"
                 memory: "128Mi"
       ```
+</div>
+</details>
 
 ---
 
@@ -767,10 +963,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Triết lý "Shift-Left Security" đóng vai trò quan trọng như thế nào trong quy trình phân tích tĩnh bản kê khai Kubernetes (YAML Manifests)?
 
-**Đáp án chuẩn:** Giúp phát hiện và xử lý sớm các lỗi cấu hình an ninh ngay từ giai đoạn phát triển (máy Dev/CI-CD) trước khi code được commit hoặc deploy lên cụm. Chi phí sửa lỗi ở giai đoạn Shift-Left rẻ hơn và an toàn hơn gấp 100 lần so với việc xử lý sự cố rò rỉ khi ứng dụng đã chạy Production.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Triết lý "Shift-Left Security" đóng vai trò quan trọng như thế nào trong quy trình phân tích tĩnh bản kê khai Kubernetes (YAML Manifests)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giúp phát hiện và xử lý sớm các lỗi cấu hình an ninh ngay từ giai đoạn phát triển (máy Dev/CI-CD) trước khi code được commit hoặc deploy lên cụm. Chi phí sửa lỗi ở giai đoạn Shift-Left rẻ hơn và an toàn hơn gấp 100 lần so với việc xử lý sự cố rò rỉ khi ứng dụng đã chạy Production.
 
 **Tiêu chí chấm:**
 - 0đ: Không biết triết lý Shift-Left Security.
@@ -778,6 +987,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo triết lý Shift-Left Security và lợi ích trong quy trình CI/CD.
 
 **Câu hỏi đào sâu:** (Công cụ CLI nào chuyên dụng để chấm điểm an toàn cho tệp Kubernetes YAML manifest? — Công cụ **Kubesec** (`kubesec scan`)).
+</div>
+</details>
 
 ---
 
@@ -1059,9 +1270,22 @@ Phân tích và chỉnh sửa tệp `/tmp/Dockerfile.bad` thành `/tmp/Dockerfil
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Chạy `kubesec scan` và lưu kết quả JSON
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Chạy `kubesec scan` và lưu kết quả JSON</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubesec scan /tmp/insecure-pod.yaml > /tmp/kubesec-report.json 2>/dev/null || {
   cat <<EOF > /tmp/kubesec-report.json
 [
@@ -1074,10 +1298,25 @@ kubesec scan /tmp/insecure-pod.yaml > /tmp/kubesec-report.json 2>/dev/null || {
 EOF
 }
 ```
+</div>
+</details>
 
-### Câu 2 — Chỉnh sửa tệp Pod manifest an toàn `/tmp/secured-pod.yaml`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Chỉnh sửa tệp Pod manifest an toàn `/tmp/secured-pod.yaml</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/secured-pod.yaml
 apiVersion: v1
 kind: Pod
@@ -1109,10 +1348,25 @@ spec:
       emptyDir: {}
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Chạy `trivy config` trên `/tmp/secured-pod.yaml`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Chạy `trivy config` trên `/tmp/secured-pod.yaml</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/trivy-config-report.json
 {
   "Target": "/tmp/secured-pod.yaml",
@@ -1121,10 +1375,25 @@ cat <<EOF > /tmp/trivy-config-report.json
 }
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Chỉnh sửa tệp Dockerfile an toàn `/tmp/Dockerfile.clean`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Chỉnh sửa tệp Dockerfile an toàn `/tmp/Dockerfile.clean</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/Dockerfile.clean
 FROM alpine:3.19
 RUN apk add --no-cache curl
@@ -1135,6 +1404,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

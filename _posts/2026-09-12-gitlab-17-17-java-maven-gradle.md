@@ -15,8 +15,12 @@ series_order: 17
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.17] Hướng dẫn chuyên sâu Pipeline Chuyên Sâu Cho Java Enterprise: Maven / Gradle Daemon Cache, JUnit, JaCoCo & SonarQube Scan: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Pipeline Chuyên Sâu Cho Java Enterprise: Maven / Gradle Daemon Cache, JUnit, JaCoCo & SonarQube Scan."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 17] PIPELINE CHUYÊN SÂU CHO JAVA ENTERPRISE: MAVEN / GRADLE DAEMON CACHE, JUNIT, JACOCO & SONARQUBE SCAN
 
@@ -1666,10 +1670,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Danh sách 12 câu hỏi phỏng vấn thực chiến
 
-### Câu 1: Tại sao khai báo `cache:paths: - ~/.m2/repository` trong `.gitlab-ci.yml` vẫn sinh ra tệp zip Cache có dung lượng 0 bytes mà Job vẫn báo XANH?
-
-**Đáp án chuẩn:**
-Nguyên nhân gốc rễ là do cơ chế an toàn của GitLab Runner. Động cơ Runner thực thi trong Docker Executor được thiết kế chỉ đóng gói Cache từ các thư mục con nằm trong không gian làm việc dự án (`$CI_PROJECT_DIR`). Thư mục `~/.m2/repository` mặc định nằm ở thư mục nhà của người dùng root/maven trong container (`/root/.m2/repository`), hoàn toàn nằm ngoài không gian làm việc này. 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao khai báo `cache:paths: - ~/.m2/repository` trong `.gitlab-ci.yml` vẫn sinh ra tệp zip Cache có dung lượng 0 bytes mà Job vẫn báo XANH?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nguyên nhân gốc rễ là do cơ chế an toàn của GitLab Runner. Động cơ Runner thực thi trong Docker Executor được thiết kế chỉ đóng gói Cache từ các thư mục con nằm trong không gian làm việc dự án (`$CI_PROJECT_DIR`). Thư mục `~/.m2/repository` mặc định nằm ở thư mục nhà của người dùng root/maven trong container (`/root/.m2/repository`), hoàn toàn nằm ngoài không gian làm việc này. 
 
 Khi Runner quét thư mục `~/.m2/repository`, nó phát hiện đường dẫn nằm ngoài `$CI_PROJECT_DIR` nên bỏ qua, phát cảnh báo `WARNING: ~/.m2/repository: no matching files` và nén một zip đệm rỗng (dung lượng 0-42 bytes). Theo nguyên lý của GitLab CI, thiếu Cache hoặc nén Cache rỗng **không được xem là lỗi chết** nên Job vẫn tiếp tục thực thi và báo XANH. Hậu quả là mọi Job tiếp theo đều phải tải lại toàn bộ thư mục phụ thuộc từ Remote Registry, tiêu tốn 155 giây mỗi lượt chạy mà không ai phát hiện nếu không soi trace log.
 
@@ -1682,11 +1698,25 @@ Khi Runner quét thư mục `~/.m2/repository`, nó phát hiện đường dẫn
 > **Ứng viên (Candidate):** *"Thưa anh, đây chính là sự cố 'Hỏng im lặng' kinh điển của GitLab Runner khi làm việc với Java. Động cơ GitLab Runner chỉ cho phép nén đệm các đường dẫn con thuộc không gian làm việc `$CI_PROJECT_DIR`. Thư mục `~/.m2/repository` nằm ở `/root/.m2`, tức nằm ngoài hàng rào này. Do đó, Runner sẽ in dòng cảnh báo `WARNING: ~/.m2/repository: no matching files` và đẩy một tệp zip đệm rỗng 42 bytes lên MinIO S3 Server. Vì thiếu Cache không làm sập Job, nên Job vẫn XANH nhưng Maven buộc phải nạp lại 250 MB thư viện từ Internet ở mọi lượt chạy, ngốn đúng 155 giây. Cách sửa duy nhất là truyền biến `MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"` để di chuyển kho vào dự án trước khi khai báo Cache."*
 
 ---
+</div>
+</details>
 
-### Câu 2: Sự khác biệt giữa Maven và Gradle về khả năng tiết kiệm thời gian thực thi Pipeline trong GitLab CI là gì?
-
-**Đáp án chuẩn:**
-Maven và Gradle có bản chất tối ưu hoàn toàn khác nhau trong môi trường CI:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt giữa Maven và Gradle về khả năng tiết kiệm thời gian thực thi Pipeline trong GitLab CI là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Maven và Gradle có bản chất tối ưu hoàn toàn khác nhau trong môi trường CI:
 1. **Maven (Chỉ tiết kiệm 1 loại - TẢI):** Maven chỉ hỗ trợ đệm kho phụ thuộc cục bộ (`.m2/repository`). Cache Maven giúp tiết kiệm thời gian tải thư viện từ Remote Registry (rút ngắn từ 155 giây xuống còn 12 giây). Tuy nhiên, Maven không có cơ chế lưu đệm kết quả biên dịch giữa các Job rời rạc, do đó mỗi Job Maven luôn phải thực hiện biên dịch lại từ đầu.
 2. **Gradle (Tiết kiệm 2 loại - TẢI và BIÊN DỊCH):** Gradle cung cấp 2 lớp đệm đệm riêng biệt:
    - **Dependency Cache** (`caches/modules-2` và `wrapper/dists`): Tiết kiệm thời gian tải thư viện (rút ngắn 84 giây).
@@ -1701,11 +1731,25 @@ Tuy nhiên, việc bật Gradle Build Cache mua lại tốc độ bằng một l
 > **Ứng viên (Candidate):** *"Dạ có, Gradle có thể giúp Pipeline nhanh hơn đáng kể vì Gradle tiết kiệm được cả thời gian TẢI lẫn thời gian BIÊN DỊCH nhờ tính năng Build Cache (`--build-cache`), rút ngắn bước compile từ 78 giây xuống 4 giây. Trong khi Maven chỉ tiết kiệm được thời gian TẢI thư viện. Tuy nhiên, rủi ro lớn nhất của Gradle Build Cache là sự cố 'UP-TO-DATE giả' — tức mã nguồn Java đã sửa nhưng Gradle lại nạp lại tệp class cũ từ Cache do trùng khóa đệm. Vì vậy, trên các Pipeline Release Production, em luôn khuyên tắt `--build-cache` và chạy `clean assemble` để đảm bảo an toàn tuyệt đối."*
 
 ---
+</div>
+</details>
 
-### Câu 3: Làm thế nào để giải quyết rủi ro Job Maven bị hủy do nổ trần log 4 MB của GitLab Runner?
-
-**Đáp án chuẩn:**
-Mặc định khi thực thi các lệnh như `mvn clean compile` hoặc `mvn test`, Maven sẽ in liên tục các dòng tiến trình phần trăm tải từng tệp jar thư viện từ Central Repository (`Progress (1/100): 10 KB...`). Trong dự án Java enterprise với hàng trăm thư viện phụ thuộc, điều này sinh ra hàng trăm nghìn dòng log, dễ dàng làm dung lượng log của Job vượt quá trần cấu hình mặc định `output_limit: 4096` (4 MB) của Runner, khiến Job bị hệ thống tiêu hủy đột ngột (`Job's log exceeded limit of 4194304 bytes`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Làm thế nào để giải quyết rủi ro Job Maven bị hủy do nổ trần log 4 MB của GitLab Runner?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định khi thực thi các lệnh như `mvn clean compile` hoặc `mvn test`, Maven sẽ in liên tục các dòng tiến trình phần trăm tải từng tệp jar thư viện từ Central Repository (`Progress (1/100): 10 KB...`). Trong dự án Java enterprise với hàng trăm thư viện phụ thuộc, điều này sinh ra hàng trăm nghìn dòng log, dễ dàng làm dung lượng log của Job vượt quá trần cấu hình mặc định `output_limit: 4096` (4 MB) của Runner, khiến Job bị hệ thống tiêu hủy đột ngột (`Job's log exceeded limit of 4194304 bytes`).
 
 Giải pháp chuẩn kỹ thuật là bắt buộc bổ sung 2 cờ CLI vào mọi lệnh Maven trong CI:
 - `-B` (hoặc `--batch-mode`): Chạy ở chế độ không tương tác, tắt các ký tự điều khiển con trỏ terminal.
@@ -1714,11 +1758,25 @@ Giải pháp chuẩn kỹ thuật là bắt buộc bổ sung 2 cờ CLI vào m�
 Khi kết hợp bộ cờ `-B -ntp`, dung lượng trace log của Job Maven giảm từ > 4 MB xuống còn dưới 150 KB (cắt giảm hơn 97% dung lượng log thừa).
 
 ---
+</div>
+</details>
 
-### Câu 4: Sự cố đứng phiên bản dependency `SNAPSHOT` trong Maven là gì và cách xử lý trong `.gitlab-ci.yml`?
-
-**Đáp án chuẩn:**
-Trong quy trình phát triển dự án Java đa module hoặc thư viện dùng chung, các gói phụ thuộc chưa phát hành chính thức thường được đánh nhãn `SNAPSHOT` (ví dụ `core-library-1.2.0-SNAPSHOT.jar`). Khi Maven đã tải một bản `SNAPSHOT` về kho cục bộ `.m2/repository`, mặc định nó sẽ không tự động kiểm tra xem trên Nexus/Artifactory Remote Registry có bản `SNAPSHOT` mới hơn được upload hay me hay không (trừ khi đã hết khoảng thời gian `updatePolicy` cấu hình trong settings, thường là 1 ngày).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Sự cố đứng phiên bản dependency `SNAPSHOT` trong Maven là gì và cách xử lý trong `.gitlab-ci.yml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong quy trình phát triển dự án Java đa module hoặc thư viện dùng chung, các gói phụ thuộc chưa phát hành chính thức thường được đánh nhãn `SNAPSHOT` (ví dụ `core-library-1.2.0-SNAPSHOT.jar`). Khi Maven đã tải một bản `SNAPSHOT` về kho cục bộ `.m2/repository`, mặc định nó sẽ không tự động kiểm tra xem trên Nexus/Artifactory Remote Registry có bản `SNAPSHOT` mới hơn được upload hay me hay không (trừ khi đã hết khoảng thời gian `updatePolicy` cấu hình trong settings, thường là 1 ngày).
 
 Trong CI/CD, nếu Runner nạp đệm `.m2/repository` từ Cache của lượt chạy trước, Job biên dịch sẽ dùng lại đúng bản jar `SNAPSHOT` cũ đã lưu đệm đó. Hậu quả là dù nhà phát triển đã sửa lỗi và đẩy bản `SNAPSHOT` mới lên Nexus, Pipeline của ứng dụng tiêu thụ vẫn chạy trên mã cũ từ 3 ngày trước, sinh ra sự cố "Xanh mà sai" cực kỳ khó phát hiện.
 
@@ -1731,11 +1789,25 @@ Cách xử lý triệt để là bổ sung cờ `-U` (hoặc `--update-snapshots
 > **Ứng viên (Candidate):** *"Thưa anh, đây là do Maven mặc định giữ bản đệm của các tệp `SNAPSHOT` trong `.m2/repository` và không chủ động kiểm tra bản mới trên Nexus nếu chưa hết hạn `updatePolicy`. Khi Runner khôi phục `.m2` từ Cache CI, Maven thấy tệp jar đã có sẵn nên bỏ qua bước tải mới. Để giải quyết, em chỉ cần bổ sung cờ `-U` vào câu lệnh Maven trong `.gitlab-ci.yml`: `mvn -B -ntp verify -U`. Cờ `-U` ép buộc Maven phải kiểm tra timestamp trên Remote Registry và kéo bản SNAPSHOT mới nhất về kho."*
 
 ---
+</div>
+</details>
 
-### Câu 5: Tại sao việc sử dụng cờ `-source 17 -target 17` trong Maven compiler plugin vẫn gây ra lỗi `NoSuchMethodError` khi ứng dụng chạy trên JRE 17?
-
-**Đáp án chuẩn:**
-Cờ `-source 17 -target 17` chỉ có tác dụng kiểm tra ngữ pháp mã nguồn (syntax) và ghi nhãn phiên bản Bytecode target vào tệp `.class` (major version 61.0). Cờ này **KHÔNG** giới hạn chữ ký API (bootstrap classpath) mà trình biên dịch Java được phép liên kết.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao việc sử dụng cờ `-source 17 -target 17` trong Maven compiler plugin vẫn gây ra lỗi `NoSuchMethodError` khi ứng dụng chạy trên JRE 17?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `-source 17 -target 17` chỉ có tác dụng kiểm tra ngữ pháp mã nguồn (syntax) và ghi nhãn phiên bản Bytecode target vào tệp `.class` (major version 61.0). Cờ này **KHÔNG** giới hạn chữ ký API (bootstrap classpath) mà trình biên dịch Java được phép liên kết.
 
 Nếu Runner chạy trên JDK 21 để biên dịch dự án với cờ `-target 17`, trình biên dịch Java 21 vẫn cho phép mã nguồn gọi các phương thức API mới chỉ có trên JDK 21 (ví dụ `String.indexOf(String, int, int)` hoặc các API Virtual Threads). Lệnh `mvn compile` vẫn báo XANH thành công. Tuy nhiên, khi sản phẩm `.jar` này đem triển khai lên môi trường Production đang vận hành JRE 17, JVM 17 sẽ nổ lỗi `java.lang.NoSuchMethodError` ngay lập tức vì JRE 17 không hề có các phương thức API đó.
 
@@ -1748,11 +1820,25 @@ Giải pháp bắt buộc từ Java 9 trở lên là thay thế toàn bộ `-sou
 > **Ứng viên (Candidate):** *"Dạ vì cờ `-target 17` chỉ ghi nhãn phiên bản bytecode là 61.0 nhưng không chặn trình biên dịch JDK (ví dụ JDK 21 trên Runner) gọi các API mới của Java 21. Khi mã nguồn vô tình gọi một phương thức mới của Java 21, `mvn compile` vẫn XANH nhưng JRE 17 ở Production không có phương thức đó nên sập ứng dụng. Từ Java 9 trở đi, ta bắt buộc phải đổi từ `<target>17</target>` sang `<release>17</release>`. Cờ `--release 17` sẽ khoá cả Syntax, Bytecode lẫn Chữ ký API chuẩn JDK 17."*
 
 ---
+</div>
+</details>
 
-### Câu 6: Làm thế nào để phân lập đệm Cache của Gradle một cách an toàn để tránh nổ dung lượng đĩa đệm Runner?
-
-**Đáp án chuẩn:**
-Mặc định, thư mục `GRADLE_USER_HOME` (`.gradle`) chứa 3 thành phần chính:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để phân lập đệm Cache của Gradle một cách an toàn để tránh nổ dung lượng đĩa đệm Runner?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định, thư mục `GRADLE_USER_HOME` (`.gradle`) chứa 3 thành phần chính:
 1. `wrapper/dists/`: Lưu các bản phân phối Gradle zip được tải về (dung lượng ~150 MB mỗi bản).
 2. `caches/modules-2/`: Lưu đệm các tệp jar phụ thuộc tải từ Maven Central (dung lượng ~200-500 MB).
 3. `caches/build-cache/`: Lưu đệm các sản phẩm trung gian của bước biên dịch (dung lượng có thể phình to hàng GB).
@@ -1780,11 +1866,25 @@ Việc loại bỏ `caches/build-cache` khỏi `cache:paths` giúp giữ zip Cac
 > **Ứng viên (Candidate):** *"Thưa anh, nếu khai báo nguyên thư mục `.gradle/`, ta sẽ vô tình nạp đệm cả thư mục `caches/build-cache` và các tệp lock tiến trình. Thư mục `build-cache` phình to rất nhanh lên tới nhiều GB sau vài lần build, khiến thời gian Runner nén và tải zip Cache mất 45-60 giây, làm chậm Pipeline thay vì tăng tốc. Đồng thời các tệp `.lock` bị dính trong Cache có thể làm Gradle nổ lỗi 'Timeout waiting to lock journal cache'. Việc phân lập chính xác 2 thư mục `modules-2` (chứa jar phụ thuộc) và `wrapper/dists` (chứa Gradle zip) giúp tệp đệm luôn mỏng nhẹ (< 300 MB) và an toàn tuyệt đối."*
 
 ---
+</div>
+</details>
 
-### Câu 7: Vì sao cần phải bổ sung cờ `--no-daemon` khi thực thi Gradle trong GitLab CI Container?
-
-**Đáp án chuẩn:**
-Mặc định khi chạy lệnh `./gradlew`, Gradle sẽ khởi chạy một tiến trình nền duy trì trong bộ nhớ gọi là **Gradle Daemon**. Trên máy tính cá nhân của nhà phát triển (Local Dev Machine), Daemon giúp giữ lại JVM nóng để các lần build tiếp theo diễn ra tức thì.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Vì sao cần phải bổ sung cờ `--no-daemon` khi thực thi Gradle trong GitLab CI Container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định khi chạy lệnh `./gradlew`, Gradle sẽ khởi chạy một tiến trình nền duy trì trong bộ nhớ gọi là **Gradle Daemon**. Trên máy tính cá nhân của nhà phát triển (Local Dev Machine), Daemon giúp giữ lại JVM nóng để các lần build tiếp theo diễn ra tức thì.
 
 Tuy nhiên, trong môi trường GitLab CI với Docker Executor:
 1. Mỗi Job CI chạy trong một Ephemeral Docker Container riêng biệt. Khi Job kết thúc, Container bị xóa bỏ hoàn toàn. Tiến trình Daemon chạy ngầm không thể tái sử dụng cho Job sau.
@@ -1794,11 +1894,25 @@ Tuy nhiên, trong môi trường GitLab CI với Docker Executor:
 Do đó, bắt buộc phải tắt Gradle Daemon trong CI bằng cờ `./gradlew assemble --no-daemon` hoặc thiết lập biến môi trường `GRADLE_OPTS: "-Dorg.gradle.daemon=false"`.
 
 ---
+</div>
+</details>
 
-### Câu 8: Tại sao Job kiểm thử `mvn test` báo XANH trong 11 giây nhưng tab Tests trên giao diện GitLab CE lại hoàn toàn trống?
-
-**Đáp án chuẩn:**
-Hiện tượng này xảy ra do 2 nguyên nhân kỹ thuật phổ biến:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao Job kiểm thử `mvn test` báo XANH trong 11 giây nhưng tab Tests trên giao diện GitLab CE lại hoàn toàn trống?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Hiện tượng này xảy ra do 2 nguyên nhân kỹ thuật phổ biến:
 1. **Thiếu tệp XML báo cáo:** Maven Surefire Plugin bị cấu hình sai hoặc bị bỏ qua (`-DskipTests`), dẫn đến không có tệp `TEST-*.xml` nào được sinh ra trong thư mục `target/surefire-reports/`. Job báo XANH vì `mvn test` không gặp lỗi biên dịch, nhưng thực tế 0 testcase nào được chạy.
 2. **Sai đường dẫn Artifact Report:** Khai báo thuộc tính `artifacts:reports:junit` trong `.gitlab-ci.yml` bị chỉ định sai đường dẫn pattern (ví dụ khai báo `target/test-reports/*.xml` thay vì `target/surefire-reports/TEST-*.xml`).
 
@@ -1808,11 +1922,25 @@ Hiện tượng này xảy ra do 2 nguyên nhân kỹ thuật phổ biến:
 - Khai báo thuộc tính `artifacts:when: always` để đảm bảo tệp báo cáo XML luôn được nộp lên GitLab UI kể cả khi testcase bị trượt (Job ĐỎ).
 
 ---
+</div>
+</details>
 
-### Câu 9: Làm thế nào để tích hợp báo cáo độ phủ mã nguồn (Code Coverage) từ JaCoCo lên giao diện Merge Request của GitLab CE?
-
-**Đáp án chuẩn:**
-Để hiển thị độ phủ mã nguồn trực tiếp trên tab Merge Request Diff của GitLab CE, ta cần thực hiện 3 bước cấu hình:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để tích hợp báo cáo độ phủ mã nguồn (Code Coverage) từ JaCoCo lên giao diện Merge Request của GitLab CE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để hiển thị độ phủ mã nguồn trực tiếp trên tab Merge Request Diff của GitLab CE, ta cần thực hiện 3 bước cấu hình:
 1. **Xuất báo cáo dạng Cobertura XML:** Plugin JaCoCo mặc định sinh tệp `jacoco.xml`. Ta cần cấu hình JaCoCo hoặc sử dụng công cụ chuyển đổi để xuất tệp `cobertura-coverage.xml` (hoặc dạng Cobertura XML mà GitLab hỗ trợ).
 2. **Khai báo Artifact Report trong `.gitlab-ci.yml`:**
 ```yaml
@@ -1828,11 +1956,25 @@ artifacts:
 Khi đó, GitLab CE sẽ tự động tô màu xanh/đỏ trên các dòng mã nguồn mới sửa trong Merge Request để chỉ rõ dòng nào đã được test phủ qua.
 
 ---
+</div>
+</details>
 
-### Câu 10: Khi sử dụng `parallel:matrix` để kiểm thử dự án Java trên JDK 17 và JDK 21, làm sao để tránh xung đột Cache giữa 2 phiên bản JDK?
-
-**Đáp án chuẩn:**
-Khi chạy ma trận kiểm thử song song trên nhiều phiên bản JDK:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi sử dụng `parallel:matrix` để kiểm thử dự án Java trên JDK 17 và JDK 21, làm sao để tránh xung đột Cache giữa 2 phiên bản JDK?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi chạy ma trận kiểm thử song song trên nhiều phiên bản JDK:
 ```yaml
 test_matrix:
   parallel:
@@ -1855,11 +1997,25 @@ cache:
 Nhờ thuộc tính `prefix: "maven-jdk-$JDK_VERSION"`, Job JDK 17 sẽ dùng khóa `maven-jdk-17-...` và Job JDK 21 sẽ dùng khóa `maven-jdk-21-...`, đảm bảo phân lập đệm tuyệt đối an toàn.
 
 ---
+</div>
+</details>
 
-### Câu 11: Tình huống phỏng vấn — "Ứng dụng Java của công ty chạy Pipeline mất 8 phút. Bạn sẽ kiểm tra và tối ưu những gì để giảm xuống dưới 2 phút?"
-
-**Đáp án chuẩn:**
-Tôi sẽ thực hiện quy trình 4 bước chẩn đoán và tối ưu có số liệu đo đạc rõ ràng:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tình huống phỏng vấn — "Ứng dụng Java của công ty chạy Pipeline mất 8 phút. Bạn sẽ kiểm tra và tối ưu những gì để giảm xuống dưới 2 phút?"</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tôi sẽ thực hiện quy trình 4 bước chẩn đoán và tối ưu có số liệu đo đạc rõ ràng:
 
 1. **Bước 1: Chẩn đoán vị trí nghẽn (Profiling):**
    - Đọc trace log kiểm tra xem thư mục kho `.m2` hoặc `.gradle` đã được di chuyển vào `$CI_PROJECT_DIR` chưa. Nếu thấy cảnh báo `no matching files`, chứng tỏ Cache đang bị rỗng 0 bytes và Job mất 3-4 phút chỉ để tải lại phụ thuộc.
@@ -1890,11 +2046,25 @@ Kết quả: Tổng thời gian Pipeline giảm từ 8 phút xuống còn khoả
 > Sau khi có con số thực tế, em di chuyển kho Maven/Gradle vào `$CI_PROJECT_DIR`, phân lập Cache theo hash `pom.xml`, bật `-B -ntp --no-daemon` và chia ma trận test `parallel:matrix`. Em tự tin sẽ đưa Pipeline về dưới 1.5 phút."*
 
 ---
+</div>
+</details>
 
-### Câu 12: Tình huống phỏng vấn — "Làm sao phát hiện sự cố Gradle Build Cache báo `UP-TO-DATE` nhưng thực chất sản phẩm `.jar` không chứa mã mới vừa commit?"
-
-**Đáp án chuẩn:**
-Đây là sự cố "Xanh mà sai" nguy hiểm nhất của Gradle Build Cache. Để phát hiện và phòng chống, tôi triển khai cơ chế kiểm tra tính bất biến bằng mã băm SHA256 trong Pipeline:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Tình huống phỏng vấn — "Làm sao phát hiện sự cố Gradle Build Cache báo `UP-TO-DATE` nhưng thực chất sản phẩm `.jar` không chứa mã mới vừa commit?"</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là sự cố "Xanh mà sai" nguy hiểm nhất của Gradle Build Cache. Để phát hiện và phòng chống, tôi triển khai cơ chế kiểm tra tính bất biến bằng mã băm SHA256 trong Pipeline:
 
 1. **Thêm bước khẳng định băm SHA256 trước và sau khi build:**
    Trong script của Job `build_gradle`, tôi ghi lại mã băm SHA256 của tệp sản phẩm `.jar` và so sánh với commit trước đó:
@@ -1908,6 +2078,8 @@ Kết quả: Tổng thời gian Pipeline giảm từ 8 phút xuống còn khoả
    Đối với các Pipeline phát hành Production (chạy trên nhánh `main` hoặc Git Tag), tôi tuân thủ nguyên lý: **TẮT hoàn toàn `--build-cache`**. Pipeline Production bắt buộc phải biên dịch sạch từ đầu (`clean assemble`) để đảm bảo tính an toàn tuyệt đối, chỉ sử dụng Build Cache trên các nhánh tính năng (`feature/*`) để tăng tốc độ phản hồi cho nhà phát triển.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 

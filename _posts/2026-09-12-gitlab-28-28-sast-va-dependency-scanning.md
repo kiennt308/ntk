@@ -15,8 +15,12 @@ series_order: 28
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.28] Hướng dẫn chuyên sâu Bảo Mật Tĩnh SAST & Dependency Scanning: GitLab SAST, Semgrep, Trivy & Quét Lỗ Hổng Phụ Thuộc Mã Nguồn: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Bảo Mật Tĩnh SAST & Dependency Scanning: GitLab SAST, Semgrep, Trivy & Quét Lỗ Hổng Phụ Thuộc Mã Nguồn."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 28] BẢO MẬT TĨNH SAST & DEPENDENCY SCANNING: GITLAB SAST, SEMGREP, TRIVY & QUÉT LỖ HỔNG PHỤ THUỘC MÃ NGUỒN
 
@@ -1569,87 +1573,202 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Bảo mật không phải là rào chắn cuối cùng mà là phản hồi liên tục từ commit đầu tiên — shift-left để tìm lỗ hổng trong 1 phút thay vì 1 tháng"**?
-
-**Đáp án chuẩn:**
-- Vì việc đẩy các hoạt động kiểm tra an ninh về cuối chu kỳ (Pentest trước ngày phát hành) khiến việc sửa lỗi cực kỳ đắt đỏ, tốn thời gian và làm trì hoãn tiến độ phát hành của toàn bộ dự án.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Bảo mật không phải là rào chắn cuối cùng mà là phản hồi liên tục từ commit đầu tiên — shift-left để tìm lỗ hổng trong 1 phút thay vì 1 tháng"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì việc đẩy các hoạt động kiểm tra an ninh về cuối chu kỳ (Pentest trước ngày phát hành) khiến việc sửa lỗi cực kỳ đắt đỏ, tốn thời gian và làm trì hoãn tiến độ phát hành của toàn bộ dự án.
 - Tích hợp Shift-Left Security tự động hóa công cụ quét an ninh ngay tại stage test của mọi Merge Request giúp lập trình viên phát hiện và tự sửa lỗ hổng ngay trong **1 phút** khi vừa viết code xong, chi phí khắc phục giảm **90%** so với sửa ở Production.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét mã nguồn tĩnh (SAST) và Quét thư viện phụ thuộc (Dependency Scanning / SCA)?
-
-**Đáp án chuẩn:**
-- **SAST (Static Application Security Testing):** Phân tích cú pháp tĩnh (AST Parse Tree) của **MÃ NGUỒN TỰ VIẾT** (do lập trình viên trong team viết). Công cụ đại diện: `semgrep`. Phát hiện các lỗi logic lập trình như SQL Injection, XSS, Hardcoded Credentials.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét mã nguồn tĩnh (SAST) và Quét thư viện phụ thuộc (Dependency Scanning / SCA)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **SAST (Static Application Security Testing):** Phân tích cú pháp tĩnh (AST Parse Tree) của **MÃ NGUỒN TỰ VIẾT** (do lập trình viên trong team viết). Công cụ đại diện: `semgrep`. Phát hiện các lỗi logic lập trình như SQL Injection, XSS, Hardcoded Credentials.
 - **Dependency Scanning (SCA):** Trích xuất danh sách và phiên bản của **THƯ VIỆN BÊN THỨ BA** từ tệp khóa phụ thuộc (`go.sum`, `package-lock.json`), đối soát với CSDL NVD CVE quốc tế để phát hiện các lỗ hổng đã được công bố công khai. Công cụ đại diện: `trivy fs`.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý hoạt động của công cụ `semgrep` và cách thức tạo các quy tắc quét (Rules) tùy chỉnh trong doanh nghiệp?
-
-**Đáp án chuẩn:**
-- `semgrep` là động cơ quét SAST dựa trên việc khớp mẫu cú pháp (Pattern Matching) trên cây cú pháp trừu tượng (AST) của mã nguồn mà không cần biên dịch code.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `semgrep` và cách thức tạo các quy tắc quét (Rules) tùy chỉnh trong doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `semgrep` là động cơ quét SAST dựa trên việc khớp mẫu cú pháp (Pattern Matching) trên cây cú pháp trừu tượng (AST) của mã nguồn mà không cần biên dịch code.
 - Để tạo quy tắc tùy chỉnh (Custom Rule) cho doanh nghiệp, ta khai báo tệp YAML quy định mẫu `pattern:` (ví dụ `db.Exec("SELECT..." + $X)`), thông điệp cảnh báo `message:`, mã phân loại `metadata.cwe:` và mức độ nghiêm trọng `severity: ERROR`.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của `trivy fs` trong việc tra cứu cơ sở dữ liệu NVD CVE từ tệp `go.sum` hay `package-lock.json`?
-
-**Đáp án chuẩn:**
-- `trivy fs` phân tích tệp khóa phụ thuộc để trích xuất danh sách chính xác tên thư viện và con số phiên bản đang sử dụng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của `trivy fs` trong việc tra cứu cơ sở dữ liệu NVD CVE từ tệp `go.sum` hay `package-lock.json`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `trivy fs` phân tích tệp khóa phụ thuộc để trích xuất danh sách chính xác tên thư viện và con số phiên bản đang sử dụng.
 - Sau đó, Trivy đối soát thông tin này với cơ sở dữ liệu lỗ hổng quốc tế NVD (National Vulnerability Database) và VulnDB địa phương. Nếu phát hiện con số phiên bản nằm trong khoảng dính CVE (ví dụ `golang.org/x/net < v0.17.0`), Trivy sẽ xuất ra thông tin chi tiết mã CVE, CVSS Score và phiên bản đã sửa lỗi (`Fixed Version`).
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tại sao cần xuất báo cáo an ninh theo định dạng chuẩn `gl-sast-report.json` và SARIF?
-
-**Đáp án chuẩn:**
-- `gl-sast-report.json` là định dạng báo cáo an ninh chuẩn do GitLab quy định. Xuất tệp này nộp sang `artifacts:reports:sast` giúp hệ thống GitLab UI tự động đọc và hiển thị kết quả phân tích trực tiếp trên giao diện **Merge Request Security Widget** và **GitLab Security Dashboard**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tại sao cần xuất báo cáo an ninh theo định dạng chuẩn `gl-sast-report.json` và SARIF?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `gl-sast-report.json` là định dạng báo cáo an ninh chuẩn do GitLab quy định. Xuất tệp này nộp sang `artifacts:reports:sast` giúp hệ thống GitLab UI tự động đọc và hiển thị kết quả phân tích trực tiếp trên giao diện **Merge Request Security Widget** và **GitLab Security Dashboard**.
 - SARIF (Static Analysis Results Interchange Format) là chuẩn báo cáo an ninh quốc tế cho phép chia sẻ và tích hợp dữ liệu quét giữa nhiều hệ thống khác nhau (như GitHub, SonarQube, DefectDojo).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Cách thiết lập Security Quality Gate tự động dừng ngắt pipeline khi vượt quá ngưỡng lỗ hổng cho phép?
-
-**Đáp án chuẩn:**
-- Trong `.gitlab-ci.yml`, ta cấu hình câu lệnh quét của công cụ với cờ ép buộc trả về mã lỗi `exit code 1` và bộ lọc mức độ nghiêm trọng:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Cách thiết lập Security Quality Gate tự động dừng ngắt pipeline khi vượt quá ngưỡng lỗ hổng cho phép?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong `.gitlab-ci.yml`, ta cấu hình câu lệnh quét của công cụ với cờ ép buộc trả về mã lỗi `exit code 1` và bộ lọc mức độ nghiêm trọng:
   `trivy fs --scanners vuln --exit-code 1 --severity CRITICAL,HIGH .`
 - Đồng thời đặt thuộc tính `allow_failure: false`. Khi phát hiện ít nhất 1 lỗ hổng mức `CRITICAL` hoặc `HIGH`, CI Job sẽ nổ lỗi đỏ, dừng ngắt pipeline lập tức và chặn không cho phép merge code lỗi.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Sự khác biệt giữa lỗ hổng mã nguồn (Code Vulnerability) và lỗ hổng thư viện (Dependency Vulnerability) về mặt quy trình khắc phục (Remediation)?
-
-**Đáp án chuẩn:**
-- **Code Vulnerability (Lỗi SAST):** Do lập trình viên viết sai logic an toàn. Quy trình khắc phục yêu cầu **SỬA TRỰC TIẾP MÃ NGUỒN** (như chuyển từ câu SQL nối chuỗi sang dùng Parameterized Query hoặc HTML Escape).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Sự khác biệt giữa lỗ hổng mã nguồn (Code Vulnerability) và lỗ hổng thư viện (Dependency Vulnerability) về mặt quy trình khắc phục (Remediation)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Code Vulnerability (Lỗi SAST):** Do lập trình viên viết sai logic an toàn. Quy trình khắc phục yêu cầu **SỬA TRỰC TIẾP MÃ NGUỒN** (như chuyển từ câu SQL nối chuỗi sang dùng Parameterized Query hoặc HTML Escape).
 - **Dependency Vulnerability (Lỗi SCA):** Do thư viện bên thứ 3 dính CVE. Quy trình khắc phục yêu cầu **NÂNG CẤP PHIÊN BẢN THƯ VIỆN** (như chạy `go get package@vX.Y.Z` hoặc `npm update`) lên phiên bản `Fixed Version` đã được vá lỗi.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Quy trình xử lý cảnh báo giả (False Positive) an toàn bằng `.semgrepignore` và `.trivyignore` có vết audit?
-
-**Đáp án chuẩn:**
-- Không bao giờ được phép tắt quy tắc quét an ninh của toàn bộ dự án.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Quy trình xử lý cảnh báo giả (False Positive) an toàn bằng `.semgrepignore` và `.trivyignore` có vết audit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Không bao giờ được phép tắt quy tắc quét an ninh của toàn bộ dự án.
 - Khi xác định một cảnh báo là giả (do nằm trong tệp test mock hoặc đã có phương án bù đắp bảo mật WAF):
   1. Khai báo mã CVE hoặc đường dẫn tệp vào `.semgrepignore` / `.trivyignore`.
   2. Bắt buộc đính kèm comment giải trình lý do an toàn và người phê duyệt (`Security Lead - Approved by Name`).
   3. Cấu hình tệp `CODEOWNERS` yêu cầu mọi thay đổi trên ignore files phải có chữ ký duyệt của Security Team.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách hiển thị và đối soát kết quả quét an ninh trực tiếp trên GitLab Merge Request Security Widget?
-
-**Đáp án chuẩn:**
-- Trong `.gitlab-ci.yml`, khai báo thuộc tính nộp báo cáo chuẩn:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách hiển thị và đối soát kết quả quét an ninh trực tiếp trên GitLab Merge Request Security Widget?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong `.gitlab-ci.yml`, khai báo thuộc tính nộp báo cáo chuẩn:
   ```yaml
   artifacts:
     reports:
@@ -1659,37 +1778,78 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - Khi mở Merge Request, GitLab Runner sẽ tự động so sánh báo cáo an ninh của nhánh feature với nhánh target (`main`). Khối Security Widget trên MR UI sẽ hiển thị chính xác danh sách các lỗ hổng mới phát sinh của nhánh code này cho Tech Lead đối soát.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Tại sao không nên đặt cờ `allow_failure: true` cho các Security Scan Jobs trên nhánh `main`?
-
-**Đáp án chuẩn:**
-- Nếu đặt `allow_failure: true`, khi phát hiện lỗ hổng `CRITICAL`, CI Pipeline vẫn tiếp tục chạy xanh lè và cho phép deploy mã nguồn nguy hiểm lên môi trường Production.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Tại sao không nên đặt cờ `allow_failure: true` cho các Security Scan Jobs trên nhánh `main`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nếu đặt `allow_failure: true`, khi phát hiện lỗ hổng `CRITICAL`, CI Pipeline vẫn tiếp tục chạy xanh lè và cho phép deploy mã nguồn nguy hiểm lên môi trường Production.
 - Điều này biến toàn bộ công cụ quét an ninh thành một hình thức vô tác dụng. Đặt `allow_failure: false` giúp biến Security Scan Jobs thành một **Cổng chặn cứng (Hard Quality Gate)** bảo vệ tính an toàn tuyệt đối cho nhánh `main`.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi tệp cơ sở dữ liệu lỗ hổng CVE của Trivy không thể cập nhật do bị chặn Internet trên CI Runner (Môi trường Air-Gapped)?
-
-**Đáp án chuẩn:**
-- Khởi tạo một máy chủ lưu trữ đệm CSDL đệm nội bộ trong mạng LAN (Internal Mirror).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi tệp cơ sở dữ liệu lỗ hổng CVE của Trivy không thể cập nhật do bị chặn Internet trên CI Runner (Môi trường Air-Gapped)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khởi tạo một máy chủ lưu trữ đệm CSDL đệm nội bộ trong mạng LAN (Internal Mirror).
 - Định kỳ hằng ngày tải tệp `trivy-db` mới nhất về máy đệm nội bộ.
 - Trên CI Runner Air-Gapped, cấu hình câu lệnh Trivy trỏ tới CSDL nội bộ và bật cờ bỏ qua cập nhật Internet:
   `trivy fs --skip-db-update --db-repository registry.internal/trivy-db .`
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước triển khai Shift-Left Security chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Code Commit:** Lập trình viên viết mã nguồn và push commit lên nhánh feature branch.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai Shift-Left Security chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Code Commit:** Lập trình viên viết mã nguồn và push commit lên nhánh feature branch.
 2. **SAST & SCA Scan:** CI Pipeline tự động chạy `semgrep` quét code tự viết và `trivy fs` quét thư viện phụ thuộc.
 3. **Security Quality Gate:** Tự động kiểm tra ngưỡng an ninh, nổ lỗi `exit 1` ngắt pipeline nếu xuất hiện lỗi `CRITICAL` / `HIGH`.
 4. **Vulnerability Remediation:** Lập trình viên tự sửa code hoặc nâng cấp thư viện ngay tại feature branch trước khi merge code vào `main`.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

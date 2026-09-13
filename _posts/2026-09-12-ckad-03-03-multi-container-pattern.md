@@ -15,8 +15,12 @@ series_order: 3
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.03] Hướng dẫn chuyên sâu Multi-Container Design Patterns: Làm Chủ Sidecar, Adapter, Ambassador & Restartable InitContainers: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Multi-Container Design Patterns: Làm Chủ Sidecar, Adapter, Ambassador & Restartable InitContainers."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 03] MULTI-CONTAINER DESIGN PATTERNS: LÀM CHỦ SIDECAR, ADAPTER, AMBASSADOR & RESTARTABLE INITCONTAINERS
 
@@ -363,41 +367,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Ba mẫu thiết kế Pod đa container kinh điển trong chứng chỉ CKAD là gì?
-   - **Đáp án:** Sidecar Pattern, Adapter Pattern và Ambassador Pattern.
 
-2. Container Sidecar và container chính trong cùng một Pod giao tiếp mạng với nhau qua địa chỉ nào?
-   - **Đáp án:** Giao tiếp qua giao diện mạng `localhost` (Loopback Network Namespace).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ba mẫu thiết kế Pod đa container kinh điển trong chứng chỉ CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sidecar Pattern, Adapter Pattern và Ambassador Pattern.
+</div>
+</details>
 
-3. Đối tượng lưu trữ nào thường được dùng để chia sẻ file dữ liệu trực tiếp giữa 2 container trong cùng 1 Pod?
-   - **Đáp án:** Volume loại `emptyDir`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Container Sidecar và container chính trong cùng một Pod giao tiếp mạng với nhau qua địa chỉ nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giao tiếp qua giao diện mạng `localhost` (Loopback Network Namespace).
+</div>
+</details>
 
-4. Mẫu thiết kế container nào đóng vai trò chuyển đổi định dạng log/metrics dị biệt thành chuẩn chung trước khi xuất ra ngoài?
-   - **Đáp án:** Adapter Pattern (Adapter Container).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Đối tượng lưu trữ nào thường được dùng để chia sẻ file dữ liệu trực tiếp giữa 2 container trong cùng 1 Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Volume loại `emptyDir`.
+</div>
+</details>
 
-5. Mẫu thiết kế container nào đóng vai trò đại sứ proxy kết nối từ container chính tới cơ sở dữ liệu bên ngoài qua `localhost`?
-   - **Đáp án:** Ambassador Pattern (Ambassador Container).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Mẫu thiết kế container nào đóng vai trò chuyển đổi định dạng log/metrics dị biệt thành chuẩn chung trước khi xuất ra ngoài?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Adapter Pattern (Adapter Container).
+</div>
+</details>
 
-6. Tính năng Native Sidecar Container xuất hiện chính thức từ phiên bản Kubernetes nào?
-   - **Đáp án:** Từ phiên bản Kubernetes v1.28+.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Mẫu thiết kế container nào đóng vai trò đại sứ proxy kết nối từ container chính tới cơ sở dữ liệu bên ngoài qua `localhost`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ambassador Pattern (Ambassador Container).
+</div>
+</details>
 
-7. Cờ cấu hình nào trong khối `initContainers` biến một InitContainer thành Native Sidecar Container?
-   - **Đáp án:** Cờ `restartPolicy: Always`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tính năng Native Sidecar Container xuất hiện chính thức từ phiên bản Kubernetes nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Từ phiên bản Kubernetes v1.28+.
+</div>
+</details>
 
-8. Thứ tự khởi chạy giữa Native Sidecar Container và container chính diễn ra thế nào?
-   - **Đáp án:** Native Sidecar Container khởi chạy trước và đạt trạng thái `Started` rồi mới tới container chính.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Cờ cấu hình nào trong khối `initContainers` biến một InitContainer thành Native Sidecar Container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `restartPolicy: Always`.
+</div>
+</details>
 
-9. Khi tiêu diệt Pod, container nào sẽ bị Kubelet ngắt trước tiên?
-   - **Đáp án:** Container chính sẽ bị ngắt trước, sau khi dừng hẳn mới tới Native Sidecar Container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Thứ tự khởi chạy giữa Native Sidecar Container và container chính diễn ra thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Native Sidecar Container khởi chạy trước và đạt trạng thái `Started` rồi mới tới container chính.
+</div>
+</details>
 
-10. Câu lệnh CLI nào dùng để xem log của riêng container `sidecar` trong Pod `app-pod`?
-    - **Đáp án:** `kubectl logs app-pod -c sidecar`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Khi tiêu diệt Pod, container nào sẽ bị Kubelet ngắt trước tiên?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Container chính sẽ bị ngắt trước, sau khi dừng hẳn mới tới Native Sidecar Container.
+</div>
+</details>
 
-11. Chuyện gì xảy ra nếu hai container trong cùng một Pod cố gắng bind vào cùng cổng 8080 trên `localhost`?
-    - **Đáp án:** Container thứ hai sẽ bị lỗi `address already in use` và sập.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu lệnh CLI nào dùng để xem log của riêng container `sidecar` trong Pod `app-pod`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl logs app-pod -c sidecar`.
+</div>
+</details>
 
-12. Tại sao lại nên dùng Sidecar container để thu thập log thay vì sửa trực tiếp mã nguồn ứng dụng?
-    - **Đáp án:** Để tuân thủ nguyên tắc tách biệt trách nhiệm (Single Responsibility), giữ cho mã nguồn ứng dụng độc lập và dễ tái sử dụng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Chuyện gì xảy ra nếu hai container trong cùng một Pod cố gắng bind vào cùng cổng 8080 trên `localhost`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Container thứ hai sẽ bị lỗi `address already in use` và sập.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Tại sao lại nên dùng Sidecar container để thu thập log thay vì sửa trực tiếp mã nguồn ứng dụng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để tuân thủ nguyên tắc tách biệt trách nhiệm (Single Responsibility), giữ cho mã nguồn ứng dụng độc lập và dễ tái sử dụng.
+</div>
+</details>
 
 ---
 
@@ -814,10 +1011,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Ba mẫu thiết kế Pod đa container (Multi-Container Patterns) kinh điển trong chứng chỉ CKAD là gì và khác nhau ở điểm cốt lõi nào?
 
-**Đáp án chuẩn:** Ba pattern kinh điển gồm: Sidecar Pattern (mở rộng khả năng của container chính như thu thập log/reload config), Adapter Pattern (chuẩn hóa định dạng log/metrics đầu ra), và Ambassador Pattern (làm proxy đại sứ đại diện kết nối tới các dịch vụ bên ngoài qua `localhost`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ba mẫu thiết kế Pod đa container (Multi-Container Patterns) kinh điển trong chứng chỉ CKAD là gì và khác nhau ở điểm cốt lõi nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba pattern kinh điển gồm: Sidecar Pattern (mở rộng khả năng của container chính như thu thập log/reload config), Adapter Pattern (chuẩn hóa định dạng log/metrics đầu ra), và Ambassador Pattern (làm proxy đại sứ đại diện kết nối tới các dịch vụ bên ngoài qua `localhost`).
 
 **Tiêu chí chấm:**
 - 0đ: Không nêu đủ 3 pattern hoặc nhầm lẫn công dụng.
@@ -825,6 +1035,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo, chuẩn xác điểm cốt lõi và trường hợp ứng dụng thực tế của cả 3 pattern.
 
 **Câu hỏi đào sâu:** (Nếu muốn thu thập tệp log của Nginx xuất ra stdout thì dùng pattern nào? — Dùng Sidecar Pattern).
+</div>
+</details>
 
 ---
 
@@ -1062,9 +1274,22 @@ Tạo Pod Native Sidecar tên là `native-sidecar-pod` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Pod Sidecar `sidecar-pod`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Pod Sidecar `sidecar-pod</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1092,10 +1317,25 @@ spec:
           mountPath: /var/log
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo Pod Adapter `adapter-pod`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo Pod Adapter `adapter-pod</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1121,10 +1361,25 @@ spec:
           mountPath: /tmp
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo Pod Ambassador `ambassador-pod`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo Pod Ambassador `ambassador-pod</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1141,10 +1396,25 @@ spec:
       args: ["tcp-listen:8080,fork,reuseaddr", "tcp-connect:kubernetes.default.svc:443"]
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo Pod Native Sidecar `native-sidecar-pod`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo Pod Native Sidecar `native-sidecar-pod</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1165,6 +1435,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy mất điểm
 

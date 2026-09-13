@@ -15,8 +15,12 @@ series_order: 14
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.14] Hướng dẫn chuyên sâu Chiến Lược Tối Ưu Hóa Thời Gian Pipeline: Caching Đa Tầng, Layer Caching, Docker-in-Docker vs Kaniko: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Chiến Lược Tối Ưu Hóa Thời Gian Pipeline: Caching Đa Tầng, Layer Caching, Docker-in-Docker vs Kaniko."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 14] CHIẾN LƯỢC TỐI ƯU HÓA THỜI GIAN PIPELINE: CACHING ĐA TẦNG, LAYER CACHING, DOCKER-IN-DOCKER VS KANIKO
 
@@ -2082,10 +2086,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. Danh sách 12 câu hỏi chiến trường
 
-### Câu 1
-**Câu hỏi:** Tại sao lại chia thời gian Pipeline thành ba nhóm (Chờ, Chuẩn bị, Việc thật) và ba nhóm đó đo bằng những công cụ nào?
-**Đáp án chuẩn:**
-- **Chia thành ba nhóm vì:** Ba nhóm có ba nguyên nhân kỹ thuật hoàn toàn khác nhau và đòi hỏi ba phương án khắc phục hoàn toàn khác nhau. Phân tách định lượng giúp phát hiện chính xác nút cổ chai thực sự của hệ thống.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao lại chia thời gian Pipeline thành ba nhóm (Chờ, Chuẩn bị, Việc thật) và ba nhóm đó đo bằng những công cụ nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Chia thành ba nhóm vì:** Ba nhóm có ba nguyên nhân kỹ thuật hoàn toàn khác nhau và đòi hỏi ba phương án khắc phục hoàn toàn khác nhau. Phân tách định lượng giúp phát hiện chính xác nút cổ chai thực sự của hệ thống.
   - **Nhóm CHỜ (Queued duration):** Do hệ thống vượt Mức no $\rho \ge 1.0$ hoặc thiếu Slot xử lý $c$. Cách sửa: Tăng Slot $c$ hoặc dùng `interruptible: true` để giảm tải $\lambda$ (Buổi 13).
   - **Nhóm CHUẨN BỊ (Preparation phases):** Do kéo Docker Image cồng kềnh, clone Git sâu, hoặc nạp/giải nén Cache dư thừa. Cách sửa: Dùng Image mỏng, git fetch shallow, và `policy: pull` (Buổi 05).
   - **Nhóm VIỆC THẬT (Script execution):** Do câu lệnh trong `script:` thực thi tuần tự hoặc code kiểm thử cồng kềnh. Cách sửa: Chia song song `parallel: matrix` hoặc tối ưu thuật toán.
@@ -2096,11 +2112,25 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **Quy tắc kỹ thuật:** **QT 4.1**.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Rút ngắn một Job không nằm trên đường găng đem lại hiệu quả gì cho tổng thời gian Pipeline? Tại sao?
-**Đáp án chuẩn:**
-- **Hiệu quả thu được:** Tiết kiệm đúng **0 giây** tổng thời gian cán đích của Pipeline.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Rút ngắn một Job không nằm trên đường găng đem lại hiệu quả gì cho tổng thời gian Pipeline? Tại sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Hiệu quả thu được:** Tiết kiệm đúng **0 giây** tổng thời gian cán đích của Pipeline.
 - **Giải thích nguyên nhân:**
   - Thời lượng thực thi của một Pipeline có cấu trúc đồ thị DAG bằng đúng thời lượng của chuỗi Job dài nhất liên tục từ Start đến End (Đường găng).
   - Mọi Job nằm ngoài đường găng này đều sở hữu một khoảng thời gian trống (Slack time); rút ngắn một Job nằm ngoài đường găng chỉ làm tăng khoảng thời gian rỗi của nó chứ không làm thay đổi mốc thời gian hoàn thành của Job cuối cùng trên đường găng.
@@ -2108,41 +2138,97 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **Quy tắc kỹ thuật:** **QT 4.2** & **QT 4.1 Buổi 08**.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Tại sao phải áp dụng từng kỹ thuật một và đo lại, thay vì áp dụng tất cả 5 kỹ thuật cùng lúc trong một Merge Request?
-**Đáp án chuẩn:**
-- **Lý do kỹ thuật tác động tương hỗ:** Các kỹ thuật tối ưu hóa có sự tương tác qua lại lẫn nhau: `parallel` chia nhỏ công việc làm thay đổi thời gian cố định, Cache làm thay đổi pha chuẩn bị, Image mỏng làm thay đổi cả thời gian nạp đĩa và nén. Tổng hiệu quả của 5 kỹ thuật không bao giờ bằng tổng đại số của từng hiệu ứng riêng lẻ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Tại sao phải áp dụng từng kỹ thuật một và đo lại, thay vì áp dụng tất cả 5 kỹ thuật cùng lúc trong một Merge Request?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Lý do kỹ thuật tác động tương hỗ:** Các kỹ thuật tối ưu hóa có sự tương tác qua lại lẫn nhau: `parallel` chia nhỏ công việc làm thay đổi thời gian cố định, Cache làm thay đổi pha chuẩn bị, Image mỏng làm thay đổi cả thời gian nạp đĩa và nén. Tổng hiệu quả của 5 kỹ thuật không bao giờ bằng tổng đại số của từng hiệu ứng riêng lẻ.
 - **Tác hại khi gộp chung:** Nếu gộp 5 kỹ thuật vào 1 MR, kỹ sư không thể xác định kỹ thuật nào mang lại hiệu quả thực sự và kỹ thuật nào vô tình **làm Pipeline chạy chậm hơn** (ví dụ Cache sai vị trí làm tăng 15s).
 - **Quy trình chuẩn:** Tạo 5 Merge Request tuần tự, mỗi MR đính kèm bảng đo 3 lần lấy trung vị và so sánh với mã SHA256 Hash hiện vật sản phẩm.
 - **Quy tắc kỹ thuật:** **QT 4.3**.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao một lần đo đơn lẻ không có giá trị kỹ thuật và cần xác định biên độ dao động hệ thống trước khi làm?
-**Đáp án chuẩn:**
-- **Bản chất con số đo đơn lẻ:** Là một con số ngẫu nhiên do chịu ảnh hưởng bởi biến động tải rỗi CPU của máy chủ Runner, trạng thái I/O đĩa đệm, và độ trễ mạng HTTP giữa các lần thực thi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao một lần đo đơn lẻ không có giá trị kỹ thuật và cần xác định biên độ dao động hệ thống trước khi làm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Bản chất con số đo đơn lẻ:** Là một con số ngẫu nhiên do chịu ảnh hưởng bởi biến động tải rỗi CPU của máy chủ Runner, trạng thái I/O đĩa đệm, và độ trễ mạng HTTP giữa các lần thực thi.
 - **Phương pháp chuẩn:** Phải thực thi tối thiểu **3 lần** (hoặc 5 lần) và lấy **giá trị trung vị (Median)**.
 - **Biên độ dao động ($\pm 8\%$):** Nếu biên độ dao động của hệ thống là $\pm 8\%$ (ví dụ $1200\text{s} \pm 96\text{s}$), mọi kết quả cải thiện nhỏ hơn 96 giây đều bị coi là nhiễu hệ thống và chưa có kết luận kỹ thuật.
 - **Quy tắc kỹ thuật:** **QT 4.4**.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Trình tự bắt buộc của 5 kỹ thuật tối ưu là gì và tại sao hai kỹ thuật đầu tiên lại được xếp trước?
-**Đáp án chuẩn:**
-- **Thứ tự 5 kỹ thuật tuân thủ:** (1) Bỏ hàng rào stage ($\to$ `needs`); (2) Song song hóa ($\to$ `parallel`); (3) Cache đúng chỗ ($\to$ `policy: pull`); (4) Docker Image mỏng; (5) Bỏ việc không cần thiết.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Trình tự bắt buộc của 5 kỹ thuật tối ưu là gì và tại sao hai kỹ thuật đầu tiên lại được xếp trước?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Thứ tự 5 kỹ thuật tuân thủ:** (1) Bỏ hàng rào stage ($\to$ `needs`); (2) Song song hóa ($\to$ `parallel`); (3) Cache đúng chỗ ($\to$ `policy: pull`); (4) Docker Image mỏng; (5) Bỏ việc không cần thiết.
 - **Tại sao Kỹ thuật 1 & 2 xếp trước:** Vì `needs:` và `parallel:` làm **thay đổi cấu trúc luồng thực thi** của Pipeline. Nếu thực hiện Cache hoặc Image mỏng trước, các số đo thời gian của chúng sẽ bị thay đổi hoàn toàn sau khi tái cấu trúc Pipeline ở bước 1 và 2.
 - **Tác hại làm sai thứ tự:** Tối ưu Docker Image mỏng ở bước 1 rồi mới thêm `needs:` ở bước 2 làm con số tiết kiệm đo lại bị lệch 40% so với báo cáo ban đầu.
 - **Quy tắc kỹ thuật:** **QT 5.1**.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Trần lý thuyết là gì và công thức tính trần lý thuyết của 4 kỹ thuật đầu tiên được xác định như thế nào trước khi gõ code?
-**Đáp án chuẩn:**
-- **Trần lý thuyết:** Con số thời gian tiết kiệm tối đa có thể đạt được của một kỹ thuật, tính toán được từ số liệu đo thô trước khi can thiệp mã nguồn YAML.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Trần lý thuyết là gì và công thức tính trần lý thuyết của 4 kỹ thuật đầu tiên được xác định như thế nào trước khi gõ code?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Trần lý thuyết:** Con số thời gian tiết kiệm tối đa có thể đạt được của một kỹ thuật, tính toán được từ số liệu đo thô trước khi can thiệp mã nguồn YAML.
 - **Công thức tính 4 trần:**
   1. **Trần Needs:** Bằng tổng thời gian lãng phí ở các hàng rào stage chờ đợi.
   2. **Trần Parallel:** Bằng $T_{\text{tuần tự}} - (T / K + \text{phần cố định})$ theo định luật Amdahl.
@@ -2152,67 +2238,153 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **Quy tắc kỹ thuật:** **QT 5.2**.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Trình bày 3 trường hợp điển hình khiến việc bật Cache làm Pipeline chạy chậm hơn?
-**Đáp án chuẩn:**
-- **3 ca Cache làm chậm hơn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Trình bày 3 trường hợp điển hình khiến việc bật Cache làm Pipeline chạy chậm hơn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **3 ca Cache làm chậm hơn:**
   1. **Ca 1:** Thư mục nhỏ có thời gian tái tạo nhanh hơn thời gian nén và giải nén Zip (ví dụ build 3s nhưng unzip mất 8s).
   2. **Ca 2:** Để cờ `policy: pull-push` mặc định ở Job chỉ tiêu thụ Cache, bắt Job phải mất thêm thời gian nén và đẩy lại tệp Zip dư thừa lên S3 server (tiết kiệm 20–40s khi chuyển sang `policy: pull`).
   3. **Ca 3:** Kích hoạt Distributed Cache S3 qua mạng MinIO khi hệ thống chỉ có **đúng 1 Runner**, làm phát sinh độ trễ HTTP không cần thiết so với đĩa local.
 - **Quy tắc kỹ thuật:** **QT 6.1** & **QT 6.2 Buổi 05**.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Tại sao dùng Docker Image quá mỏng lại có nguy cơ làm chậm Pipeline thay vì làm nhanh hơn?
-**Đáp án chuẩn:**
-- **Hiện tượng dịch chuyển chi phí:** Docker Image quá mỏng (như Alpine nguyên bản) không có sẵn các công cụ như `git`, `curl`, `python3`. Khi Job chạy, câu lệnh `script:` phải thực thi `apk add --no-cache git curl` để cài bổ sung.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Tại sao dùng Docker Image quá mỏng lại có nguy cơ làm chậm Pipeline thay vì làm nhanh hơn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Hiện tượng dịch chuyển chi phí:** Docker Image quá mỏng (như Alpine nguyên bản) không có sẵn các công cụ như `git`, `curl`, `python3`. Khi Job chạy, câu lệnh `script:` phải thực thi `apk add --no-cache git curl` để cài bổ sung.
 - **Hậu quả:** Thời gian kéo Image ở pha chuẩn bị giảm 35 giây, nhưng thời gian chạy script tăng thêm 45 giây $\to$ Tổng thời lượng Job tăng thêm 10 giây và không tận dụng được Layer Cache của Runner.
 - **Giải pháp chuẩn:** Tự đóng gói Docker Image tùy chỉnh đã chứa sẵn đầy đủ công cụ cần thiết nhưng loại bỏ các tài nguyên thừa.
 - **Quy tắc kỹ thuật:** **QT 6.2**.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Điều gì đảm bảo một Pipeline chạy nhanh hơn 40% thực sự là tối ưu hóa thành công chứ không phải do bỏ sót công việc?
-**Đáp án chuẩn:**
-- **Tiêu chuẩn cưỡng chế SHA256 Hash:** Mã SHA256 Hash của mọi hiện vật sản phẩm đầu ra (`dist/app.tar.gz` hoặc file binary) sau tối ưu phải **giống hệt 100%** so với phiên bản gốc trước khi tối ưu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Điều gì đảm bảo một Pipeline chạy nhanh hơn 40% thực sự là tối ưu hóa thành công chứ không phải do bỏ sót công việc?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Tiêu chuẩn cưỡng chế SHA256 Hash:** Mã SHA256 Hash của mọi hiện vật sản phẩm đầu ra (`dist/app.tar.gz` hoặc file binary) sau tối ưu phải **giống hệt 100%** so với phiên bản gốc trước khi tối ưu.
 - **Ý nghĩa:** Nếu mã Hash thay đổi hoặc tệp nén bị giảm dung lượng, điều đó chứng minh kỹ sư đã loại bỏ nhầm các tệp tài nguyên hoặc bỏ sót bước kiểm thử, không phải là tối ưu hóa kỹ thuật.
 - **Dấu hiệu làm sai:** Pipeline nhanh hơn 40% sau khi thêm `dependencies: []` nhưng bản build phát hành lên Production bị thiếu tài nguyên tĩnh gây sập hỏng ứng dụng.
 - **Quy tắc kỹ thuật:** **QT 6.3** & **QT 7.2 Buổi 01**.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Kỹ thuật 5 (Bỏ việc không cần thiết) khác gì so với 4 kỹ thuật đầu tiên và ví dụ thực tế là gì?
-**Đáp án chuẩn:**
-- **Điểm khác biệt cốt lõi:** 4 kỹ thuật đầu tiên tối ưu **cách máy tính thực hiện công việc**. Kỹ thuật 5 hỏi trực tiếp **bản chất công việc có thực sự cần thiết hay không** — đây là kỹ thuật duy nhất đòi hỏi **quyết định chuyên môn của con người**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Kỹ thuật 5 (Bỏ việc không cần thiết) khác gì so với 4 kỹ thuật đầu tiên và ví dụ thực tế là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Điểm khác biệt cốt lõi:** 4 kỹ thuật đầu tiên tối ưu **cách máy tính thực hiện công việc**. Kỹ thuật 5 hỏi trực tiếp **bản chất công việc có thực sự cần thiết hay không** — đây là kỹ thuật duy nhất đòi hỏi **quyết định chuyên môn của con người**.
 - **Ví dụ thực tế:**
   1. Hủy bỏ Job `generate-pdf-docs` ngốn 90s mà 6 tháng qua không ai đọc artifact.
   2. Thu hẹp `rules:` của Job `heavy-security-scan` chỉ chạy trên Merge Request thay vì mọi Commit nhánh phụ.
 - **Quy tắc kỹ thuật:** **QT 5.3**.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Ngân sách thời gian (Time Budget) chuẩn cho Merge Request Pipeline và Main Branch Pipeline là bao nhiêu?
-**Đáp án chuẩn:**
-- **Merge Request Pipeline:** Ngân sách tối đa **$\le 10$ phút** (Buổi 12 QT 7.1) để đảm bảo lập trình viên nhận được phản hồi nhanh và không làm nghẽn Merge Train.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Ngân sách thời gian (Time Budget) chuẩn cho Merge Request Pipeline và Main Branch Pipeline là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Merge Request Pipeline:** Ngân sách tối đa **$\le 10$ phút** (Buổi 12 QT 7.1) để đảm bảo lập trình viên nhận được phản hồi nhanh và không làm nghẽn Merge Train.
 - **Main Branch Pipeline:** Ngân sách tối đa **$\le 20$ phút** cho các bước đóng gói và phát hành chính thức.
 - **Cơ chế giám sát:** Khai báo Job giám sát ngân sách thời gian tự động ở stage `.post` để bắn cảnh báo khi thời gian vượt ngưỡng quy định.
 - **Quy tắc kỹ thuật:** **QT 7.1**.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Điểm dừng kỹ thuật trong tối ưu hóa Pipeline được xác định dựa trên nguyên lý nào?
-**Đáp án chuẩn:**
-- **Nguyên lý hiệu quả giảm dần (Diminishing Returns):** Càng tiến gần tới trần lý thuyết, chi phí công sức bỏ ra càng lớn nhưng lợi ích thu về càng nhỏ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Điểm dừng kỹ thuật trong tối ưu hóa Pipeline được xác định dựa trên nguyên lý nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Nguyên lý hiệu quả giảm dần (Diminishing Returns):** Càng tiến gần tới trần lý thuyết, chi phí công sức bỏ ra càng lớn nhưng lợi ích thu về càng nhỏ.
 - **Tiêu chuẩn dừng:** Khi việc rút ngắn thêm 30 giây yêu cầu hơn 2 ngày công đầu tư và làm tăng độ phức tạp bảo trì của file YAML (file dài rườm rà), kỹ sư phải dừng lại và ghi nhận lý do dừng vào tệp `bao-cao-toi-uu.tsv`.
 - **Quy tắc kỹ thuật:** **QT 6.4**.
 
 ---
+</div>
+</details>
 
 ## §V2. Cấu trúc bài thi Vấn đáp Giữa kỳ 1 (20 phút)
 

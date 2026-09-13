@@ -14,8 +14,12 @@ series_order: 29
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=80"
 summary: "Cẩm nang toàn diện chinh phục chứng chỉ quốc tế HashiCorp Certified: Terraform"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tổng Ôn và Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Tổng Ôn và Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)
 
@@ -105,9 +109,9 @@ flowchart TD
     P4 --> P5
     P5 --> P6
 
-    style P1 fill:#d4edda,stroke:#28a745,stroke-width:2px
-    style P5 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style P6 fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style P1 fill:none,stroke:#28a745,stroke-width:2px
+    style P5 fill:none,stroke:#f57c00,stroke-width:2px
+    style P6 fill:none,stroke:#c62828,stroke-width:2px
 
 
 ```
@@ -148,20 +152,37 @@ flowchart TD
 
 ## 5. Bộ Đề Thi Thử Nghiệm 25 Câu Sát Đề Thi Thật (kèm Lời Giải Chi Tiết)
 
-### Câu 1 (Single Choice - Workflows)
-**Câu hỏi**: Bạn vừa sửa đổi mã nguồn Terraform để thêm một biến số mới và muốn kiểm tra nhanh xem cú pháp có hợp lệ hay không mà không cần kết nối tới Cloud Provider API. Bạn nên chạy lệnh nào?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>**: Bạn vừa sửa đổi mã nguồn Terraform để thêm một biến số mới và muốn kiểm tra nhanh xem cú pháp có hợp lệ hay không mà không cần kết nối tới Cloud Provider API. Bạn nên chạy lệnh nào?
 - A. `terraform plan -refresh=false`
 - B. `terraform validate`
 - C. `terraform fmt`
-- D. `terraform show`
-
-> **Đáp án đúng: B**
-> **Giải thích**: `terraform validate` kiểm tra cú pháp HCL và tính hợp lệ của các thuộc tính schema cục bộ dựa trên các plugin provider đã tải về trong thư mục `.terraform/`, không cần gửi yêu cầu mạng đến Cloud API.
+- D. `terraform show</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: `terraform validate` kiểm tra cú pháp HCL và tính hợp lệ của các thuộc tính schema cục bộ dựa trên các plugin provider đã tải về trong thư mục `.terraform/`, không cần gửi yêu cầu mạng đến Cloud API.
 
 ---
+</div>
+</details>
 
-### Câu 2 (Multiple Choice - Variable Precedence)
-**Câu hỏi**: Cho các cấu hình sau cho biến `instance_count`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>**: Cho các cấu hình sau cho biến `instance_count`:
 1. `default = 2` trong `variables.tf`
 2. `instance_count = 4` trong `terraform.tfvars`
 3. `instance_count = 6` trong `prod.auto.tfvars`
@@ -172,280 +193,613 @@ Giá trị nào sẽ được Terraform áp dụng khi chạy lệnh trên?
 - A. 2
 - B. 4
 - C. 6
-- D. 10
-
-> **Đáp án đúng: D**
-> **Giải thích**: Cờ dòng lệnh `-var` có mức độ ưu tiên cao nhất trong toàn bộ hệ thống phân cấp biến số của Terraform.
+- D. 10</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: D**
+**Giải thích**: Cờ dòng lệnh `-var` có mức độ ưu tiên cao nhất trong toàn bộ hệ thống phân cấp biến số của Terraform.
 
 ---
+</div>
+</details>
 
-### Câu 3 (Single Choice - State Management)
-**Câu hỏi**: Đội ngũ của bạn đang cấu hình S3 Backend cho Terraform State. Dịch vụ AWS nào bắt buộc phải được kết hợp để cung cấp tính năng State Locking (Khóa trạng thái chống xung đột)?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>**: Đội ngũ của bạn đang cấu hình S3 Backend cho Terraform State. Dịch vụ AWS nào bắt buộc phải được kết hợp để cung cấp tính năng State Locking (Khóa trạng thái chống xung đột)?
 - A. AWS Secrets Manager
 - B. AWS DynamoDB
 - C. AWS KMS
-- D. AWS CloudWatch
-
-> **Đáp án đúng: B**
-> **Giải thích**: S3 Remote Backend sử dụng bảng DynamoDB (với Partition Key là `LockID`) để thực hiện cơ chế Distributed State Locking.
+- D. AWS CloudWatch</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: S3 Remote Backend sử dụng bảng DynamoDB (với Partition Key là `LockID`) để thực hiện cơ chế Distributed State Locking.
 
 ---
+</div>
+</details>
 
-### Câu 4 (Fill in the blank - Environment Variables)
-**Câu hỏi**: Điền vào chỗ trống: Để chỉ định mức độ ghi log chi tiết nhất phục vụ việc điều tra lỗi sâu của Terraform Core và Provider, bạn cần thiết lập biến môi trường `TF_LOG` có giá trị là `_______`.
-
-> **Đáp án đúng: TRACE** (hoặc `trace`)
-> **Giải thích**: `TRACE` là mức độ log chi tiết nhất của Terraform, ghi nhận toàn bộ payload HTTP request/response và các bước phân tích đồ thị DAG.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>**: Điền vào chỗ trống: Để chỉ định mức độ ghi log chi tiết nhất phục vụ việc điều tra lỗi sâu của Terraform Core và Provider, bạn cần thiết lập biến môi trường `TF_LOG` có giá trị là `_______`.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: TRACE** (hoặc `trace`)
+**Giải thích**: `TRACE` là mức độ log chi tiết nhất của Terraform, ghi nhận toàn bộ payload HTTP request/response và các bước phân tích đồ thị DAG.
 
 ---
+</div>
+</details>
 
-### Câu 5 (Single Choice - State Commands)
-**Câu hỏi**: Bạn muốn đổi tên một tài nguyên trong State từ `aws_instance.web` thành `aws_instance.app_server` mà **không làm phá hủy và tạo lại** máy chủ EC2 thực tế trên AWS. Bạn có thể sử dụng giải pháp nào? (Chọn 2 đáp án)
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>**: Bạn muốn đổi tên một tài nguyên trong State từ `aws_instance.web` thành `aws_instance.app_server` mà **không làm phá hủy và tạo lại** máy chủ EC2 thực tế trên AWS. Bạn có thể sử dụng giải pháp nào? (Chọn 2 đáp án)
 - A. Sửa tên trong code và chạy `terraform apply -replace=aws_instance.web`
 - B. Thêm khối `moved { from = aws_instance.web to = aws_instance.app_server }` vào code
 - C. Chạy lệnh CLI: `terraform state mv aws_instance.web aws_instance.app_server`
-- D. Chạy lệnh CLI: `terraform refresh -target=aws_instance.web`
-
-> **Đáp án đúng: B và C**
-> **Giải thích**: Cả khối khai báo `moved` (Terraform 1.1+) và lệnh CLI `terraform state mv` đều thực hiện việc cập nhật lại địa chỉ định danh của tài nguyên trong State file mà không gửi lệnh hủy tài nguyên lên Cloud.
+- D. Chạy lệnh CLI: `terraform refresh -target=aws_instance.web</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B và C**
+**Giải thích**: Cả khối khai báo `moved` (Terraform 1.1+) và lệnh CLI `terraform state mv` đều thực hiện việc cập nhật lại địa chỉ định danh của tài nguyên trong State file mà không gửi lệnh hủy tài nguyên lên Cloud.
 
 ---
+</div>
+</details>
 
-### Câu 6 (Single Choice - Core Concepts)
-**Câu hỏi**: Tính chất nào sau đây của Infrastructure as Code đảm bảo rằng khi bạn áp dụng cùng một cấu hình Terraform nhiều lần liên tiếp, kết quả trạng thái hạ tầng trên Cloud luôn không đổi?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>**: Tính chất nào sau đây của Infrastructure as Code đảm bảo rằng khi bạn áp dụng cùng một cấu hình Terraform nhiều lần liên tiếp, kết quả trạng thái hạ tầng trên Cloud luôn không đổi?
 - A. Immutability
 - B. Idempotency (Tính bất biến)
 - C. Declarative
-- D. Scalability
-
-> **Đáp án đúng: B**
-> **Giải thích**: `Idempotency` (Tính bất biến / Tính lũy đẳng) là nguyên lý cốt lõi: Áp dụng một cấu hình N lần sẽ tạo ra kết quả giống hệt như áp dụng 1 lần duy nhất nếu không có sự thay đổi trong code.
+- D. Scalability</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: `Idempotency` (Tính bất biến / Tính lũy đẳng) là nguyên lý cốt lõi: Áp dụng một cấu hình N lần sẽ tạo ra kết quả giống hệt như áp dụng 1 lần duy nhất nếu không có sự thay đổi trong code.
 
 ---
+</div>
+</details>
 
-### Câu 7 (Single Choice - Provisioners)
-**Câu hỏi**: Tại sao HashiCorp khuyến cáo coi Provisioners (`local-exec`, `remote-exec`) là giải pháp cuối cùng (Last Resort)?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>**: Tại sao HashiCorp khuyến cáo coi Provisioners (`local-exec`, `remote-exec`) là giải pháp cuối cùng (Last Resort)?
 - A. Vì Provisioners làm chậm quá trình biên dịch HCL
 - B. Vì Provisioners phá vỡ tính Declarative, không thể phát hiện Drift và dễ khiến tài nguyên bị đánh dấu Tainted khi gặp lỗi mạng
 - C. Vì Provisioners không hỗ trợ hệ điều hành Linux
-- D. Vì Provisioners yêu cầu bản quyền HCP Terraform Enterprise
-
-> **Đáp án đúng: B**
-> **Giải thích**: Provisioners chạy shell script mệnh lệnh (Imperative), Terraform không thể theo dõi trạng thái thay đổi bên trong máy chủ, và nếu script lỗi thì máy chủ bị taint, buộc phải tạo lại ở lần apply sau.
+- D. Vì Provisioners yêu cầu bản quyền HCP Terraform Enterprise</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: Provisioners chạy shell script mệnh lệnh (Imperative), Terraform không thể theo dõi trạng thái thay đổi bên trong máy chủ, và nếu script lỗi thì máy chủ bị taint, buộc phải tạo lại ở lần apply sau.
 
 ---
+</div>
+</details>
 
-### Câu 8 (Single Choice - HCP Terraform)
-**Câu hỏi**: Trong HCP Terraform (Terraform Cloud), tính năng nào cho phép bạn định nghĩa một tập hợp các biến số (Variables) hoặc Secrets dùng chung và tự động gán cho hàng chục Workspaces khác nhau?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>**: Trong HCP Terraform (Terraform Cloud), tính năng nào cho phép bạn định nghĩa một tập hợp các biến số (Variables) hoặc Secrets dùng chung và tự động gán cho hàng chục Workspaces khác nhau?
 - A. Run Triggers
 - B. Variable Sets
 - C. Private Registry
-- D. Agent Pools
-
-> **Đáp án đúng: B**
-> **Giải thích**: Variable Sets cho phép quản lý tập trung các biến số môi trường và bí mật, sau đó áp dụng cho toàn bộ Organization hoặc các Workspaces được chỉ định.
+- D. Agent Pools</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: Variable Sets cho phép quản lý tập trung các biến số môi trường và bí mật, sau đó áp dụng cho toàn bộ Organization hoặc các Workspaces được chỉ định.
 
 ---
+</div>
+</details>
 
-### Câu 9 (Single Choice - Module Sources)
-**Câu hỏi**: Chuỗi Module Source nào sau đây thể hiện việc tải một Child Module từ Terraform Public Registry chính thức?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>**: Chuỗi Module Source nào sau đây thể hiện việc tải một Child Module từ Terraform Public Registry chính thức?
 - A. `source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc.git"`
 - B. `source = "terraform-aws-modules/vpc/aws"`
 - C. `source = "./modules/vpc"`
-- D. `source = "s3::https://s3.amazonaws.com/my-bucket/vpc.zip"`
-
-> **Đáp án đúng: B**
-> **Giải thích**: Cấu trúc `<NAMESPACE>/<NAME>/<PROVIDER>` là định dạng chuẩn để kéo module trực tiếp từ Terraform Public Registry.
+- D. `source = "s3::https://s3.amazonaws.com/my-bucket/vpc.zip"</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: Cấu trúc `<NAMESPACE>/<NAME>/<PROVIDER>` là định dạng chuẩn để kéo module trực tiếp từ Terraform Public Registry.
 
 ---
+</div>
+</details>
 
-### Câu 10 (Single Choice - Dependency Graph)
-**Câu hỏi**: Khi nào bạn **bắt buộc** phải sử dụng meta-argument `depends_on` trong một resource?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>**: Khi nào bạn **bắt buộc** phải sử dụng meta-argument `depends_on` trong một resource?
 - A. Khi một resource sử dụng thuộc tính ID của resource khác (ví dụ: `vpc_id = aws_vpc.main.id`)
 - B. Khi tồn tại một sự phụ thuộc ngầm định (Hidden/Implicit dependency) giữa hai tài nguyên mà Terraform không thể tự phát hiện thông qua tham chiếu thuộc tính HCL (ví dụ: EC2 cần IAM Role Policy gắn xong trước)
 - C. Luôn luôn bắt buộc cho mọi resource để tăng tốc độ apply
-- D. Khi muốn kích hoạt tính năng Zero-Downtime
-
-> **Đáp án đúng: B**
-> **Giải thích**: Với các phụ thuộc tường minh qua biến (`aws_vpc.main.id`), Terraform tự động dựng DAG. `depends_on` chỉ được dùng cho các phụ thuộc ẩn (Implicit/Hidden dependencies) mà HCL không thể tự suy diễn.
+- D. Khi muốn kích hoạt tính năng Zero-Downtime</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: Với các phụ thuộc tường minh qua biến (`aws_vpc.main.id`), Terraform tự động dựng DAG. `depends_on` chỉ được dùng cho các phụ thuộc ẩn (Implicit/Hidden dependencies) mà HCL không thể tự suy diễn.
 
 ---
+</div>
+</details>
 
-### Câu 11 (Single Choice - Lifecycle)
-**Câu hỏi**: Bạn muốn ngăn chặn việc một kỹ sư vô tình xóa nhầm Production Database khi chạy `terraform destroy`. Meta-argument nào trong khối `lifecycle` phải được cấu hình?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>**: Bạn muốn ngăn chặn việc một kỹ sư vô tình xóa nhầm Production Database khi chạy `terraform destroy`. Meta-argument nào trong khối `lifecycle` phải được cấu hình?
 - A. `create_before_destroy = true`
 - B. `ignore_changes = all`
 - C. `prevent_destroy = true`
-- D. `replace_triggered_by = []`
-
-> **Đáp án đúng: C**
-> **Giải thích**: `prevent_destroy = true` sẽ từ chối bất kỳ kế hoạch nào có chứa hành động hủy tài nguyên.
+- D. `replace_triggered_by = []</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: C**
+**Giải thích**: `prevent_destroy = true` sẽ từ chối bất kỳ kế hoạch nào có chứa hành động hủy tài nguyên.
 
 ---
+</div>
+</details>
 
-### Câu 12 (Single Choice - State Commands)
-**Câu hỏi**: Lệnh nào sau đây dùng để xem toàn bộ danh sách các tài nguyên đang được theo dõi bên trong tệp State hiện tại?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>**: Lệnh nào sau đây dùng để xem toàn bộ danh sách các tài nguyên đang được theo dõi bên trong tệp State hiện tại?
 - A. `terraform state show`
 - B. `terraform state list`
 - C. `terraform state pull`
-- D. `terraform state inspect`
-
-> **Đáp án đúng: B**
-> **Giải thích**: `terraform state list` in ra danh sách đầy đủ địa chỉ của tất cả các resources và data sources trong State.
+- D. `terraform state inspect</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: `terraform state list` in ra danh sách đầy đủ địa chỉ của tất cả các resources và data sources trong State.
 
 ---
+</div>
+</details>
 
-### Câu 13 (Single Choice - Provider Configuration)
-**Câu hỏi**: Để tạo tài nguyên trên 2 AWS Region khác nhau trong cùng một tệp cấu hình, bạn cần sử dụng thuộc tính nào trong khối `provider`?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q13</span>
+    <span>**: Để tạo tài nguyên trên 2 AWS Region khác nhau trong cùng một tệp cấu hình, bạn cần sử dụng thuộc tính nào trong khối `provider`?
 - A. `alias`
 - B. `label`
 - C. `name`
-- D. `region_id`
-
-> **Đáp án đúng: A**
-> **Giải thích**: `alias` cho phép khởi tạo nhiều thực thể Provider khác nhau của cùng một Cloud Provider.
+- D. `region_id</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: A**
+**Giải thích**: `alias` cho phép khởi tạo nhiều thực thể Provider khác nhau của cùng một Cloud Provider.
 
 ---
+</div>
+</details>
 
-### Câu 14 (Single Choice - Data Sources)
-**Câu hỏi**: Điểm khác biệt mấu chốt giữa `resource` và `data` source trong Terraform là gì?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q14</span>
+    <span>**: Điểm khác biệt mấu chốt giữa `resource` và `data` source trong Terraform là gì?
 - A. `resource` chỉ dùng để đọc thông tin, `data` dùng để tạo tài nguyên
 - B. `resource` quản lý vòng đời tạo/sửa/xóa tài nguyên, `data` chỉ thực hiện thao tác Đọc (Read-only) dữ liệu đã tồn tại sẵn ngoài Cloud
 - C. `data` source không lưu thông tin vào State file
-- D. `resource` chỉ hỗ trợ Cloud AWS
-
-> **Đáp án đúng: B**
-> **Giải thích**: Data sources là các khối truy vấn dữ liệu chỉ đọc (Read-only), không tạo ra hay quản lý vòng đời tài nguyên.
+- D. `resource` chỉ hỗ trợ Cloud AWS</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: Data sources là các khối truy vấn dữ liệu chỉ đọc (Read-only), không tạo ra hay quản lý vòng đời tài nguyên.
 
 ---
+</div>
+</details>
 
-### Câu 15 (Single Choice - Expressions)
-**Câu hỏi**: Biểu thức điều kiện (Ternary operator) nào sau đây có cú pháp HCL hợp lệ?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q15</span>
+    <span>**: Biểu thức điều kiện (Ternary operator) nào sau đây có cú pháp HCL hợp lệ?
 - A. `instance_type = var.env == "prod" ? "t3.large" : "t3.micro"`
 - B. `instance_type = if var.env == "prod" then "t3.large" else "t3.micro"`
 - C. `instance_type = var.env == "prod" -> "t3.large" | "t3.micro"`
-- D. `instance_type = switch(var.env) { "prod": "t3.large", default: "t3.micro" }`
-
-> **Đáp án đúng: A**
-> **Giải thích**: HCL sử dụng cú pháp toán tử 3 ngôi chuẩn: `condition ? true_val : false_val`.
+- D. `instance_type = switch(var.env) { "prod": "t3.large", default: "t3.micro" }</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: A**
+**Giải thích**: HCL sử dụng cú pháp toán tử 3 ngôi chuẩn: `condition ? true_val : false_val`.
 
 ---
+</div>
+</details>
 
-### Câu 16 (Fill in the blank - Backend Config)
-**Câu hỏi**: Điền vào chỗ trống: Khi cấu hình Remote Backend trên AWS S3, tên tệp lưu trữ trạng thái bên trong bucket được chỉ định thông qua tham số `_______`.
-
-> **Đáp án đúng: key**
-> **Giải thích**: Tham số `key` trong khối cấu hình `backend "s3"` định nghĩa đường dẫn S3 Object Key (ví dụ: `key = "prod/network/terraform.tfstate"`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q16</span>
+    <span>**: Điền vào chỗ trống: Khi cấu hình Remote Backend trên AWS S3, tên tệp lưu trữ trạng thái bên trong bucket được chỉ định thông qua tham số `_______`.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: key**
+**Giải thích**: Tham số `key` trong khối cấu hình `backend "s3"` định nghĩa đường dẫn S3 Object Key (ví dụ: `key = "prod/network/terraform.tfstate"`).
 
 ---
+</div>
+</details>
 
-### Câu 17 (Single Choice - Structural Types)
-**Câu hỏi**: Kể từ Terraform 1.3+, hàm meta-type nào cho phép bạn định nghĩa một thuộc tính tùy chọn kèm giá trị mặc định bên trong một `object` type constraint?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q17</span>
+    <span>**: Kể từ Terraform 1.3+, hàm meta-type nào cho phép bạn định nghĩa một thuộc tính tùy chọn kèm giá trị mặc định bên trong một `object` type constraint?
 - A. `default()`
 - B. `optional()`
 - C. `nullable()`
-- D. `coalesce()`
-
-> **Đáp án đúng: B**
-> **Giải thích**: Cú pháp `optional(type, default_value)` cho phép tạo thuộc tính tùy chọn với giá trị mặc định bên trong structural object types.
+- D. `coalesce()</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: Cú pháp `optional(type, default_value)` cho phép tạo thuộc tính tùy chọn với giá trị mặc định bên trong structural object types.
 
 ---
+</div>
+</details>
 
-### Câu 18 (Single Choice - Testing Framework)
-**Câu hỏi**: Framework kiểm thử bản địa `terraform test` (kể từ Terraform 1.6+) lưu trữ các kịch bản kiểm thử trong các tệp có phần mở rộng là gì?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q18</span>
+    <span>**: Framework kiểm thử bản địa `terraform test` (kể từ Terraform 1.6+) lưu trữ các kịch bản kiểm thử trong các tệp có phần mở rộng là gì?
 - A. `.tfspec`
 - B. `.tftest.hcl` (hoặc `.tftest.json`)
 - C. `.test.tf`
-- D. `.spec.hcl`
-
-> **Đáp án đúng: B**
-> **Giải thích**: Terraform test engine tự động tìm kiếm các tệp có đuôi `.tftest.hcl` hoặc `.tftest.json` trong thư mục `tests/`.
+- D. `.spec.hcl</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: Terraform test engine tự động tìm kiếm các tệp có đuôi `.tftest.hcl` hoặc `.tftest.json` trong thư mục `tests/`.
 
 ---
+</div>
+</details>
 
-### Câu 19 (Single Choice - HCP Workspaces)
-**Câu hỏi**: Trong HCP Terraform, loại Workspace nào sẽ tự động kích hoạt một lượt chạy Plan mỗi khi có Pull Request được tạo trên GitHub?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q19</span>
+    <span>**: Trong HCP Terraform, loại Workspace nào sẽ tự động kích hoạt một lượt chạy Plan mỗi khi có Pull Request được tạo trên GitHub?
 - A. CLI-driven Workspace
 - B. VCS-driven Workspace
 - C. API-driven Workspace
-- D. Manual Workspace
-
-> **Đáp án đúng: B**
-> **Giải thích**: VCS-driven Workspace tích hợp trực tiếp qua Webhooks với các hệ thống Git (GitHub, GitLab) để tự động hóa kiểm tra PR.
+- D. Manual Workspace</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: VCS-driven Workspace tích hợp trực tiếp qua Webhooks với các hệ thống Git (GitHub, GitLab) để tự động hóa kiểm tra PR.
 
 ---
+</div>
+</details>
 
-### Câu 20 (Single Choice - State Lock)
-**Câu hỏi**: Lệnh nào sau đây được sử dụng để giải phóng một khóa trạng thái bị kẹt khi tiến trình trước đó đã bị crash đột ngột?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q20</span>
+    <span>**: Lệnh nào sau đây được sử dụng để giải phóng một khóa trạng thái bị kẹt khi tiến trình trước đó đã bị crash đột ngột?
 - A. `terraform unlock`
 - B. `terraform force-unlock <LOCK_ID>`
 - C. `terraform state unlock`
-- D. `terraform reset-lock`
-
-> **Đáp án đúng: B**
-> **Giải thích**: `terraform force-unlock <LOCK_ID>` là lệnh chuẩn để gỡ bỏ Distributed State Lock bị kẹt.
+- D. `terraform reset-lock</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: `terraform force-unlock <LOCK_ID>` là lệnh chuẩn để gỡ bỏ Distributed State Lock bị kẹt.
 
 ---
+</div>
+</details>
 
-### Câu 21 (Single Choice - Sentinel Policies)
-**Câu hỏi**: Trong HCP Terraform, mức độ thực thi chính sách Sentinel nào cho phép người có thẩm quyền bấm nút Override bỏ qua cảnh báo để tiếp tục apply?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q21</span>
+    <span>**: Trong HCP Terraform, mức độ thực thi chính sách Sentinel nào cho phép người có thẩm quyền bấm nút Override bỏ qua cảnh báo để tiếp tục apply?
 - A. `advisory`
 - B. `soft-mandatory`
 - C. `hard-mandatory`
-- D. `optional`
-
-> **Đáp án đúng: B**
-> **Giải thích**: `soft-mandatory` sẽ chặn pipeline nhưng cho phép người có quyền quản trị (Admin/Lead) thực hiện hành động Override để tiếp tục apply.
+- D. `optional</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: `soft-mandatory` sẽ chặn pipeline nhưng cho phép người có quyền quản trị (Admin/Lead) thực hiện hành động Override để tiếp tục apply.
 
 ---
+</div>
+</details>
 
-### Câu 22 (Single Choice - Version Constraints)
-**Câu hỏi**: Ràng buộc phiên bản `version = "~> 2.1.0"` trong khối `required_providers` sẽ chấp nhận phiên bản nào sau đây?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q22</span>
+    <span>**: Ràng buộc phiên bản `version = "~> 2.1.0"` trong khối `required_providers` sẽ chấp nhận phiên bản nào sau đây?
 - A. `2.2.0`
 - B. `2.1.4`
 - C. `3.0.0`
-- D. `2.0.9`
-
-> **Đáp án đúng: B**
-> **Giải thích**: Toán tử Pessimistic constraint `~> 2.1.0` chỉ cho phép cập nhật chữ số cuối cùng bên phải (Patch version: `>= 2.1.0` và `< 2.2.0`).
+- D. `2.0.9</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: Toán tử Pessimistic constraint `~> 2.1.0` chỉ cho phép cập nhật chữ số cuối cùng bên phải (Patch version: `>= 2.1.0` và `< 2.2.0`).
 
 ---
+</div>
+</details>
 
-### Câu 23 (Single Choice - Sensitive Data)
-**Câu hỏi**: Khai báo `sensitive = true` trên một output có tác dụng gì?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q23</span>
+    <span>**: Khai báo `sensitive = true` trên một output có tác dụng gì?
 - A. Tự động mã hóa giá trị đó trong file `terraform.tfstate`
 - B. Ẩn giá trị đó khi hiển thị trên màn hình CLI console hoặc logs CI/CD
 - C. Xóa giá trị đó khỏi bộ nhớ RAM
-- D. Yêu cầu nhập mật khẩu mỗi khi chạy apply
-
-> **Đáp án đúng: B**
-> **Giải thích**: `sensitive = true` chỉ có tác dụng ở tầng giao diện hiển thị CLI/Logs, dữ liệu vẫn được lưu trữ nguyên vẹn dưới dạng plaintext trong State file.
+- D. Yêu cầu nhập mật khẩu mỗi khi chạy apply</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: B**
+**Giải thích**: `sensitive = true` chỉ có tác dụng ở tầng giao diện hiển thị CLI/Logs, dữ liệu vẫn được lưu trữ nguyên vẹn dưới dạng plaintext trong State file.
 
 ---
+</div>
+</details>
 
-### Câu 24 (Single Choice - Moved Blocks)
-**Câu hỏi**: Khối `moved` được HashiCorp giới thiệu chính thức từ phiên bản Terraform nào?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q24</span>
+    <span>**: Khối `moved` được HashiCorp giới thiệu chính thức từ phiên bản Terraform nào?
 - A. Terraform 0.12
 - B. Terraform 0.14
 - C. Terraform 1.1
-- D. Terraform 1.5
-
-> **Đáp án đúng: C**
-> **Giải thích**: Khối `moved` chính thức ra mắt từ phiên bản **Terraform 1.1+**.
+- D. Terraform 1.5</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: C**
+**Giải thích**: Khối `moved` chính thức ra mắt từ phiên bản **Terraform 1.1+**.
 
 ---
+</div>
+</details>
 
-### Câu 25 (Single Choice - Cloud Backend)
-**Câu hỏi**: Khối cấu hình nào sau đây được khuyến nghị sử dụng kể từ Terraform 1.1+ để kết nối trực tiếp với HCP Terraform thay thế cho `backend "remote"`?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q25</span>
+    <span>**: Khối cấu hình nào sau đây được khuyến nghị sử dụng kể từ Terraform 1.1+ để kết nối trực tiếp với HCP Terraform thay thế cho `backend "remote"`?
 - A. `cloud` block
 - B. `hcp` block
 - C. `enterprise` block
-- D. `remote_state` block
-
-> **Đáp án đúng: A**
-> **Giải thích**: Khối `cloud { organization = ... workspaces { ... } }` là tiêu chuẩn hiện đại để tích hợp với HCP Terraform.
+- D. `remote_state` block</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đáp án đúng: A**
+**Giải thích**: Khối `cloud { organization = ... workspaces { ... } }` là tiêu chuẩn hiện đại để tích hợp với HCP Terraform.
 
 ---
+</div>
+</details>
 
 ## 6. Chiến Lược Làm Bài Thi Trực Tuyến Đạt Điểm Cao
 
@@ -455,10 +809,10 @@ graph TD
     S2 --> S3["Vòng 3: Rà Soát Toàn Bộ & Kiểm Tra Điền Từ \n 15 phút cuối cùng"]
     S3 --> SUBMIT["Bấm Nộp Bài: PASS VỚI ĐIỂM SỐ 90%+"]
 
-    style S1 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    style S2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style S3 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style SUBMIT fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style S1 fill:none,stroke:#2e7d32,stroke-width:2px
+    style S2 fill:none,stroke:#f57c00,stroke-width:2px
+    style S3 fill:none,stroke:#0288d1,stroke-width:2px
+    style SUBMIT fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```

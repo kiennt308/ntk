@@ -15,8 +15,12 @@ series_order: 9
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.09] Hướng dẫn chuyên sâu Điều Khiển Luồng Với Conditionals (when): Phép So Sánh Logic, Kiểm Tra Trạng Thái Biến & Kỹ Thuật Bỏ Qua Task: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Điều Khiển Luồng Với Conditionals (when): Phép So Sánh Logic, Kiểm Tra Trạng Thái Biến & Kỹ Thuật Bỏ Qua Task."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 09] ĐIỀU KHIỂN LUỒNG VỚI CONDITIONALS (WHEN): PHÉP SO SÁNH LOGIC, KIỂM TRA TRẠNG THÁI BIẾN & KỸ THUẬT BỎ QUA TASK
 
@@ -876,8 +880,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Vai trò và Cơ chế Mệnh đề `when` 🔥
-**Hỏi:** Mệnh đề `when` trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Vai trò và Cơ chế Mệnh đề `when` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Mệnh đề `when` trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Mệnh đề `when` cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau `when:` đánh giá kết quả là `TRUE`. Mệnh đề `when` được Ansible Engine đánh giá ngay tại thời điểm runtime TRƯỚC KHU TASK ĐƯỢC GỬI THI HÀNH trên máy đích. Nếu điều kiện đánh giá `FALSE`, Task lập tức bị bỏ qua với trạng thái `skipped`.
 **Tiêu chí chấm:**
 - 0: Không biết tác dụng của `when`.
@@ -885,6 +903,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.
 - 3: Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo `ansible_facts.os_family`.
 **Câu hỏi đào sâu:** Mệnh đề `when` được đánh giá trên Control Node hay trên Managed Node? *(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)*
+</div>
+</details>
 
 ---
 

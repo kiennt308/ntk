@@ -15,8 +15,12 @@ series_order: 6
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.06] Hướng dẫn chuyên sâu Đóng Gói Ứng Dụng Với Helm: Helm Charts, Templates, Values Overrides, Release Management & Cạm Bẫy: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Đóng Gói Ứng Dụng Với Helm: Helm Charts, Templates, Values Overrides, Release Management & Cạm Bẫy."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 06] ĐÓNG GÓI ỨNG DỤNG VỚI HELM: HELM CHARTS, TEMPLATES, VALUES OVERRIDES, RELEASE MANAGEMENT & CẠM BẪY
 
@@ -321,41 +325,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Ba khái niệm cốt lõi của Helm Package Manager là gì?
-   - **Đáp án:** Helm Chart, Values (`values.yaml`), và Helm Release.
 
-2. Thư mục bắt buộc nào trong Helm Chart chứa tất cả các tệp bản kê khai Kubernetes YAML mẫu?
-   - **Đáp án:** Thư mục `templates/`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ba khái niệm cốt lõi của Helm Package Manager là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Helm Chart, Values (`values.yaml`), và Helm Release.
+</div>
+</details>
 
-3. Cú pháp Go Template chuẩn để lấy giá trị của biến `replicaCount` từ `values.yaml` là gì?
-   - **Đáp án:** Cú pháp `{{ .Values.replicaCount }}`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Thư mục bắt buộc nào trong Helm Chart chứa tất cả các tệp bản kê khai Kubernetes YAML mẫu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thư mục `templates/`.
+</div>
+</details>
 
-4. Sự khác biệt giữa hai cờ `-f` và `--set` khi chạy lệnh `helm install` hoặc `helm upgrade` là gì?
-   - **Đáp án:** Cờ `-f` truyền một tệp giá trị tùy chỉnh, cờ `--set` ghi đè trực tiếp từng biến từ terminal CLI.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cú pháp Go Template chuẩn để lấy giá trị của biến `replicaCount` từ `values.yaml` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cú pháp `{{ .Values.replicaCount }}`.
+</div>
+</details>
 
-5. Câu lệnh CLI nào dùng để khởi tạo nhanh cấu trúc một thư mục Helm Chart mẫu chuẩn?
-   - **Đáp án:** Lệnh `helm create <chart-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Sự khác biệt giữa hai cờ `-f` và `--set` khi chạy lệnh `helm install` hoặc `helm upgrade` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `-f` truyền một tệp giá trị tùy chỉnh, cờ `--set` ghi đè trực tiếp từng biến từ terminal CLI.
+</div>
+</details>
 
-6. Câu lệnh CLI nào dùng để xem trước các tệp YAML sau khi đã render biến mà không apply lên cụm?
-   - **Đáp án:** Lệnh `helm template <release-name> <chart-path>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu lệnh CLI nào dùng để khởi tạo nhanh cấu trúc một thư mục Helm Chart mẫu chuẩn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `helm create <chart-name>`.
+</div>
+</details>
 
-7. Câu lệnh CLI nào dùng để kiểm tra lịch sử các bản nâng cấp Revision của một Helm Release?
-   - **Đáp án:** Lệnh `helm history <release-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu lệnh CLI nào dùng để xem trước các tệp YAML sau khi đã render biến mà không apply lên cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `helm template <release-name> <chart-path>`.
+</div>
+</details>
 
-8. Câu lệnh CLI nào dùng để quay lui một Helm Release quay về phiên bản Revision 1?
-   - **Đáp án:** Lệnh `helm rollback <release-name> 1`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu lệnh CLI nào dùng để kiểm tra lịch sử các bản nâng cấp Revision của một Helm Release?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `helm history <release-name>`.
+</div>
+</details>
 
-9. Câu lệnh CLI nào dùng để liệt kê tất cả các Helm Release đang chạy trên toàn bộ các Namespace của cụm?
-   - **Đáp án:** Lệnh `helm list -A`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu lệnh CLI nào dùng để quay lui một Helm Release quay về phiên bản Revision 1?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `helm rollback <release-name> 1`.
+</div>
+</details>
 
-10. Câu lệnh CLI nào dùng để gỡ bỏ hoàn toàn một Helm Release và xóa toàn bộ tài nguyên tương ứng?
-    - **Đáp án:** Lệnh `helm uninstall <release-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu lệnh CLI nào dùng để liệt kê tất cả các Helm Release đang chạy trên toàn bộ các Namespace của cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `helm list -A`.
+</div>
+</details>
 
-11. Khi nào KHÔNG nên sử dụng Helm để đóng gói ứng dụng?
-    - **Đáp án:** Khi bản kê khai Kubernetes là tĩnh, siêu đơn giản không cần tùy biến biến, hoặc khi hệ thống đã chuẩn hóa bằng Kustomize thuần.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu lệnh CLI nào dùng để gỡ bỏ hoàn toàn một Helm Release và xóa toàn bộ tài nguyên tương ứng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `helm uninstall <release-name>`.
+</div>
+</details>
 
-12. Tệp nào trong thư mục Helm Chart chứa thông tin định danh metadata của Chart (như name, version, appVersion)?
-    - **Đáp án:** Tệp `Chart.yaml`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Khi nào KHÔNG nên sử dụng Helm để đóng gói ứng dụng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi bản kê khai Kubernetes là tĩnh, siêu đơn giản không cần tùy biến biến, hoặc khi hệ thống đã chuẩn hóa bằng Kustomize thuần.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Tệp nào trong thư mục Helm Chart chứa thông tin định danh metadata của Chart (như name, version, appVersion)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tệp `Chart.yaml`.
+</div>
+</details>
 
 ---
 
@@ -681,10 +878,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Ba khái niệm cốt lõi của Helm Package Manager (Helm Chart, Values, Helm Release) tương ứng với những đối tượng nào trong thực tế?
 
-**Đáp án chuẩn:** Helm Chart tương ứng với tệp đóng gói nén gói phần mềm (như `.deb` hay `package.json`). Values (`values.yaml`) tương ứng với tệp chứa biến cấu hình tùy chỉnh cho từng môi trường. Helm Release tương ứng với một bản cài đặt phần mềm cụ thể đang chạy trên một Kubernetes Namespace.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ba khái niệm cốt lõi của Helm Package Manager (Helm Chart, Values, Helm Release) tương ứng với những đối tượng nào trong thực tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Helm Chart tương ứng với tệp đóng gói nén gói phần mềm (như `.deb` hay `package.json`). Values (`values.yaml`) tương ứng với tệp chứa biến cấu hình tùy chỉnh cho từng môi trường. Helm Release tương ứng với một bản cài đặt phần mềm cụ thể đang chạy trên một Kubernetes Namespace.
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được 3 khái niệm.
@@ -692,6 +902,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo cả 3 khái niệm theo mô hình tương đương trình quản lý gói phần mềm.
 
 **Câu hỏi đào sâu:** (Một Helm Chart có thể cài đặt tạo ra nhiều Helm Release trên cùng một cụm được không? — Được, bằng cách đặt tên Release khác nhau hoặc cài vào các Namespace khác nhau).
+</div>
+</details>
 
 ---
 
@@ -930,9 +1142,22 @@ Render tệp bản kê khai Helm Chart cục bộ sang tệp YAML thuần:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Cài đặt Helm Release `my-nginx` với `--set replicaCount=3`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cài đặt Helm Release `my-nginx` với `--set replicaCount=3</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 helm repo add bitnami https://charts.bitnami.com/bitnami 2>/dev/null || true
@@ -940,23 +1165,68 @@ helm repo update bitnami 2>/dev/null || true
 
 helm install my-nginx bitnami/nginx -n prod --set replicaCount=3
 ```
+</div>
+</details>
 
-### Câu 2 — Nâng cấp Helm Release `my-nginx` với `--set replicaCount=4`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Nâng cấp Helm Release `my-nginx` với `--set replicaCount=4</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 helm upgrade my-nginx bitnami/nginx -n prod --set replicaCount=4
 ```
+</div>
+</details>
 
-### Câu 3 — Rollback Helm Release `my-nginx` về Revision 1
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Rollback Helm Release `my-nginx` về Revision 1</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 helm history my-nginx -n prod
 helm rollback my-nginx 1 -n prod
 ```
+</div>
+</details>
 
-### Câu 4 — Render Helm Template cục bộ ra tệp `/tmp/rendered.yaml`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Render Helm Template cục bộ ra tệp `/tmp/rendered.yaml</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cd /tmp
 rm -rf my-chart
 helm create my-chart
@@ -964,6 +1234,8 @@ helm template test-rel ./my-chart --set replicaCount=2 > /tmp/rendered.yaml
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

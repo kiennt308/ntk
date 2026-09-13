@@ -20,7 +20,6 @@ tldr:
   - "Bộ tứ công cụ: Terraform (hạ tầng nền móng đa đám mây) + Ansible (cấu hình OS/phần mềm) + Pulumi (hạ tầng bằng code lập trình đa năng) + CloudFormation (AWS Native)."
   - "Triển khai Production an toàn bắt buộc có: State Locking (DynamoDB), Server-Side Encryption (KMS CMK), prevent_destroy và cấm cờ -auto-approve."
 ---
-
 {% raw %}
 # Tư Duy Declarative IaC & So Sánh Thực Chiến: Terraform vs Ansible vs Pulumi vs CloudFormation
 

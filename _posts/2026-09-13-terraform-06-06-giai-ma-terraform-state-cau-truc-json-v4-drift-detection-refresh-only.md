@@ -14,8 +14,12 @@ series_order: 6
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "Phân tích cấu trúc nội tại JSON Schema v4 của terraform.tfstate, giải mã"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Giải Mã Terraform State: Cấu Trúc JSON Schema v4, Cơ Chế Drift Detection."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Giải Mã Terraform State: Cấu Trúc JSON Schema v4, Cơ Chế Drift Detection & Kỹ Thuật Refresh-Only
 
@@ -341,70 +345,201 @@ cd .. && rm -rf /tmp/terraform-state-lab
 
 ## 9. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Số `serial` trong tệp `terraform.tfstate` có ý nghĩa gì trong vận hành?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<code>serial</code> là một số nguyên tăng dần đơn điệu (+1) sau mỗi lần cập nhật State thành công. Nó đóng vai trò là cơ chế kiểm soát phiên bản tương tranh (Optimistic Concurrency Control), giúp Backend phát hiện và ngăn chặn tình trạng ghi đè state cũ hơn khi có nhiều tiến trình chạy song song.
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Số `serial` trong tệp `terraform.tfstate` có ý nghĩa gì trong vận hành?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <code>serial</code> là một số nguyên tăng dần đơn điệu (+1) sau mỗi lần cập nhật State thành công. Nó đóng vai trò là cơ chế kiểm soát phiên bản tương tranh (Optimistic Concurrency Control), giúp Backend phát hiện và ngăn chặn tình trạng ghi đè state cũ hơn khi có nhiều tiến trình chạy song song.
+</div>
 </details>
 
-### Câu 2: Trường `lineage` trong State Schema v4 đóng vai trò gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<code>lineage</code> là một chuỗi UUID v4 được sinh ngẫu nhiên khi khởi tạo State lần đầu. Nó định danh "dòng họ" của State file để đảm bảo bạn không vô tình ghi đè State của môi trường này (ví dụ Staging) lên môi trường khác (Production).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Trường `lineage` trong State Schema v4 đóng vai trò gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <code>lineage</code> là một chuỗi UUID v4 được sinh ngẫu nhiên khi khởi tạo State lần đầu. Nó định danh "dòng họ" của State file để đảm bảo bạn không vô tình ghi đè State của môi trường này (ví dụ Staging) lên môi trường khác (Production).
+</div>
 </details>
 
-### Câu 3: Vì sao dữ liệu nhạy cảm (`sensitive = true`) vẫn lưu dưới dạng Plain Text trong State?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Vì Terraform Core cần giá trị thực tế của mật khẩu/key để có thể gửi API so sánh Diff với Cloud Provider trong chu trình điều hòa Reconcile Loop. Cờ <code>sensitive = true</code> chỉ có nhiệm vụ che giấu giá trị khi hiển thị trên màn hình CLI và log CI/CD.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Vì sao dữ liệu nhạy cảm (`sensitive = true`) vẫn lưu dưới dạng Plain Text trong State?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Terraform Core cần giá trị thực tế của mật khẩu/key để có thể gửi API so sánh Diff với Cloud Provider trong chu trình điều hòa Reconcile Loop. Cờ <code>sensitive = true</code> chỉ có nhiệm vụ che giấu giá trị khi hiển thị trên màn hình CLI và log CI/CD.
+</div>
 </details>
 
-### Câu 4: Sự khác biệt lớn nhất giữa `terraform refresh` (cũ) và `terraform plan -refresh-only` (mới) là gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-- Lệnh cũ <code>terraform refresh</code> tự động cập nhật State ngay lập tức mà <b>không cho phép người dùng xem trước kế hoạch</b>, có thể làm mất tài nguyên trong State nếu Cloud API bị lỗi mạng tạm thời.<br/>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Sự khác biệt lớn nhất giữa `terraform refresh` (cũ) và `terraform plan -refresh-only` (mới) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Lệnh cũ <code>terraform refresh</code> tự động cập nhật State ngay lập tức mà <b style="color: var(--accent-primary);">không cho phép người dùng xem trước kế hoạch</b>, có thể làm mất tài nguyên trong State nếu Cloud API bị lỗi mạng tạm thời.<br/>
 - Lệnh mới <code>terraform plan -refresh-only</code> hiển thị chi tiết mọi thay đổi Drift cho kỹ sư kiểm duyệt trước khi quyết định Apply.
+</div>
 </details>
 
-### Câu 5: Điều gì xảy ra nếu bạn xóa mất tệp `terraform.tfstate` của một hệ thống đang chạy trên AWS?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Các tài nguyên vật lý trên AWS vẫn tiếp tục hoạt động bình thường. Tuy nhiên, Terraform sẽ hoàn toàn mất dấu quyền quản lý. Khi bạn chạy lại <code>terraform apply</code>, nó sẽ cố gắng tạo mới lại từ đầu và báo lỗi xung đột <code>ResourceAlreadyExists</code>. Bạn sẽ phải thực hiện quy trình Import lại từng tài nguyên.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Điều gì xảy ra nếu bạn xóa mất tệp `terraform.tfstate` của một hệ thống đang chạy trên AWS?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Các tài nguyên vật lý trên AWS vẫn tiếp tục hoạt động bình thường. Tuy nhiên, Terraform sẽ hoàn toàn mất dấu quyền quản lý. Khi bạn chạy lại <code>terraform apply</code>, nó sẽ cố gắng tạo mới lại từ đầu và báo lỗi xung đột <code>ResourceAlreadyExists</code>. Bạn sẽ phải thực hiện quy trình Import lại từng tài nguyên.
+</div>
 </details>
 
-### Câu 6: Làm thế nào để bảo vệ an toàn cho State File khi lưu trữ trên Remote Backend S3?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-1. Bật tính năng mã hóa tại chỗ bằng AWS KMS Customer Managed Key (SSE-KMS).<br/>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để bảo vệ an toàn cho State File khi lưu trữ trên Remote Backend S3?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. Bật tính năng mã hóa tại chỗ bằng AWS KMS Customer Managed Key (SSE-KMS).<br/>
 2. Bật S3 Versioning để lưu trữ lịch sử và khôi phục khi bị corrupt.<br/>
 3. Cấu hình S3 Bucket Policy và IAM Least-Privilege (chỉ cho phép CI/CD runner truy cập).<br/>
 4. Bật DynamoDB State Locking để chống ghi đè đồng thời.
+</div>
 </details>
 
-### Câu 7: Trường `private` dạng Base64 bên trong từng resource instance chứa những gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Chứa dữ liệu nội bộ riêng của Provider Plugin (như context timeouts, schema version metadata nội bộ). Kỹ sư <b>tuyệt đối không được chỉnh sửa thủ công</b> trường này để tránh làm hỏng giao tiếp gRPC với Provider.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Trường `private` dạng Base64 bên trong từng resource instance chứa những gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chứa dữ liệu nội bộ riêng của Provider Plugin (như context timeouts, schema version metadata nội bộ). Kỹ sư <b style="color: var(--accent-primary);">tuyệt đối không được chỉnh sửa thủ công</b> trường này để tránh làm hỏng giao tiếp gRPC với Provider.
+</div>
 </details>
 
-### Câu 8: Khi nào một tài nguyên được đánh dấu `mode: "data"` thay vì `mode: "managed"`?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-- <code>mode: "managed"</code>: Dành cho các tài nguyên khai báo bằng từ khóa <code>resource</code> (Terraform quản lý toàn bộ vòng đời tạo, sửa, xóa).<br/>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Khi nào một tài nguyên được đánh dấu `mode: "data"` thay vì `mode: "managed"`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - <code>mode: "managed"</code>: Dành cho các tài nguyên khai báo bằng từ khóa <code>resource</code> (Terraform quản lý toàn bộ vòng đời tạo, sửa, xóa).<br/>
 - <code>mode: "data"</code>: Dành cho các khối <code>data source</code> (Terraform chỉ đọc thông tin, không sở hữu và không bao giờ xóa tài nguyên đó).
+</div>
 </details>
 
-### Câu 9: Lệnh `terraform state list` và `terraform state show <address>` dùng để làm gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-- <code>terraform state list</code>: Liệt kê danh sách địa chỉ của toàn bộ tài nguyên hiện có trong State.<br/>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh `terraform state list` và `terraform state show <address>` dùng để làm gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - <code>terraform state list</code>: Liệt kê danh sách địa chỉ của toàn bộ tài nguyên hiện có trong State.<br/>
 - <code>terraform state show <address></code>: Xem chi tiết toàn bộ các thuộc tính (Attributes) của một tài nguyên cụ thể đang được lưu trong State.
+</div>
 </details>
 
-### Câu 10: Tại sao không bao giờ được commit tệp `terraform.tfstate` lên Git Repository công khai?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Vì State File chứa toàn bộ thông tin nhạy cảm của hạ tầng ở dạng Plain Text (Database Passwords, TLS Private Keys, IAM Credentials, Internal IPs), đồng thời dễ dẫn tới xung đột merge conflict khi nhiều kỹ sư cùng làm việc. Luôn phải sử dụng Remote State Backend.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao không bao giờ được commit tệp `terraform.tfstate` lên Git Repository công khai?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì State File chứa toàn bộ thông tin nhạy cảm của hạ tầng ở dạng Plain Text (Database Passwords, TLS Private Keys, IAM Credentials, Internal IPs), đồng thời dễ dẫn tới xung đột merge conflict khi nhiều kỹ sư cùng làm việc. Luôn phải sử dụng Remote State Backend.
+</div>
 </details>
 
 ---

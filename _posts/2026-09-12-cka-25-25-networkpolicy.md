@@ -15,8 +15,12 @@ series_order: 25
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.25] Hướng dẫn chuyên sâu Kiểm Soát Lưu Lượng Mạng Bằng NetworkPolicy: Mặc Định Mở, Thiết Lập Default-Deny & Xác Minh Quy Tắc: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiểm Soát Lưu Lượng Mạng Bằng NetworkPolicy: Mặc Định Mở, Thiết Lập Default-Deny & Xác Minh Quy Tắc."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 25] KIỂM SOÁT LƯU LƯỢNG MẠNG BẰNG NETWORKPOLICY: MẶC ĐỊNH MỞ, THIẾT LẬP DEFAULT-DENY & XÁC MINH QUY TẮC
 
@@ -166,9 +170,9 @@ graph TD
         CLIENT_GOOD["Pod frontend (app: web)"] -->|ALLOWED Port 5432| ALLOW_IN
     end
 
-    style DENY fill:#ffcdd2,stroke:#e53935,stroke-width:2px
-    style ALLOW_IN fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
-    style CLIENT_BAD fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style DENY fill:none,stroke:#e53935,stroke-width:2px
+    style ALLOW_IN fill:none,stroke:#388e3c,stroke-width:2px
+    style CLIENT_BAD fill:none,stroke:#f57c00,stroke-width:2px
 ```
 
 ---
@@ -395,10 +399,10 @@ graph TD
 
     C --> H["Chứng minh KHOÁ: nc -zv -w 2 / curl --connect-timeout 2 (Timeout OK)"]
 
-    style A fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style C fill:#ffcdd2,stroke:#e53935,stroke-width:2px
-    style D fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
-    style H fill:#bbf,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#f57c00,stroke-width:2px
+    style C fill:none,stroke:#e53935,stroke-width:2px
+    style D fill:none,stroke:#388e3c,stroke-width:2px
+    style H fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -527,9 +531,9 @@ graph TD
     POD_UNTRUST -.->|2. BLOCKED Timeout| POD_DB
     POD_FRONT -->|3. ALLOWED Egress Port 53| COREDNS["CoreDNS (10.96.0.10)"]
 
-    style DEFAULT_DENY fill:#ffcdd2,stroke:#e53935,stroke-width:2px
-    style ALLOW_DB fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
-    style POD_UNTRUST fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style DEFAULT_DENY fill:none,stroke:#e53935,stroke-width:2px
+    style ALLOW_DB fill:none,stroke:#388e3c,stroke-width:2px
+    style POD_UNTRUST fill:none,stroke:#f57c00,stroke-width:2px
 ```
 
 ---
@@ -947,12 +951,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Trình bày mô hình mạng mặc định của Kubernetes và điều kiện bắt buộc về CNI plugin để NetworkPolicy có hiệu lực thực thi.
-
-**Đáp án chuẩn:**
-- **1. Mô hình mạng mặc định (Default Allow-All):**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày mô hình mạng mặc định của Kubernetes và điều kiện bắt buộc về CNI plugin để NetworkPolicy có hiệu lực thực thi.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **1. Mô hình mạng mặc định (Default Allow-All):**
   - Mạng Kubernetes mặc định là **Mặc định mở 100% (Default Allow-All)**. Bất kỳ Pod nào ở bất kỳ Namespace nào cũng có thể gửi và nhận gói tin mạng tự do tới mọi Pods khác trên toàn cụm.
 - **2. Điều kiện bắt buộc về CNI Plugin:**
   - Cụm bắt buộc phải sử dụng một CNI plugin có tính năng **Policy Enforcement** (như Calico, Cilium, Weave Net).
@@ -965,6 +980,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, chỉ ra cơ chế iptables/eBPF của CNI.
 
 **Câu hỏi đào sâu:** Nếu áp NetworkPolicy khóa mạng trong cụm chạy CNI Flannel thuần túy thì lệnh `kubectl apply` có báo lỗi không? *(Đáp án: Không báo lỗi, API Server lưu tệp bình thường nhưng Kubelet và CNI bỏ qua không thực thi).*
+</div>
+</details>
 
 ---
 

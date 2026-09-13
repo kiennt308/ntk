@@ -15,8 +15,12 @@ series_order: 20
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.20] Hướng dẫn chuyên sâu Bảo Mật Dữ Liệu Nhạy Cảm Với Ansible Vault: Mã Hóa File/String, Vault Password Client, Multi-Vault IDs & CI/CD Vault: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Bảo Mật Dữ Liệu Nhạy Cảm Với Ansible Vault: Mã Hóa File/String, Vault Password Client, Multi-Vault IDs & CI/CD Vault."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 20] BẢO MẬT DỮ LIỆU NHẠY CẢM VỚI ANSIBLE VAULT: MÃ HÓA FILE/STRING, VAULT PASSWORD CLIENT, MULTI-VAULT IDS & CI/CD VAULT
 
@@ -788,8 +792,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Khái niệm và Vai trò của Ansible Vault 🔥
-**Hỏi:** Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Khái niệm và Vai trò của Ansible Vault 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Ansible Vault là tính năng bảo mật tích hợp sẵn trong Ansible Core, sử dụng thuật toán mã hóa đối xứng AES-256 để bảo vệ thông tin nhạy cảm.
 - Yêu cầu sinh tử: Trong dự án IaC, Playbook chứa rất nhiều thông tin bí mật (mật khẩu DB, SSH keys, API tokens). Nếu không dùng Vault mã hóa, lưu plaintext rồi push lên Git public sẽ dẫn tới nguy cơ lộ bí mật Doanh nghiệp, bị tin tặc tấn công chiếm đoạt hệ thống.
@@ -799,6 +817,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Phân tích chính xác cơ chế mã hóa AES-256 tích hợp giúp bảo vệ thông tin nhạy cảm trên Git repository.
 - 3: Nêu đúng + minh họa đoạn header mã hóa `$ANSIBLE_VAULT;1.1;AES256` trên terminal.
 **Câu hỏi đào sâu:** Thuật toán mã hóa đối xứng AES-256 sử dụng mấy khóa để mã hóa và giải mã? *(Sử dụng đúng 1 khóa bí mật chung - Secret Key / Passphrase.)*
+</div>
+</details>
 
 ---
 

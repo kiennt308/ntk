@@ -15,8 +15,12 @@ series_order: 15
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKS P.15] Hướng dẫn chuyên sâu Registry Tin Cậy & Phân Tích Tĩnh Workload: Image Digest Pinning (SHA256) & ImagePolicyWebhook: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Registry Tin Cậy & Phân Tích Tĩnh Workload: Image Digest Pinning (SHA256) & ImagePolicyWebhook."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 15] REGISTRY TIN CẬY & PHÂN TÍCH TĨNH WORKLOAD: IMAGE DIGEST PINNING (SHA256) & IMAGEPOLICYWEBHOOK
 
@@ -344,42 +348,232 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Rủi ro an ninh lớn nhất của việc sử dụng cờ Image Tag thay đổi được (mutable tag như `:latest`) trong Pod spec là gì?
-   - **Đáp án:** Nội dung image có thể bị ai đó **push đè mã độc** trên Container Registry làm Pod kéo về chạy phải mã độc.
 
-2. Cú pháp ghim cờ mã băm bất biến Image Digest chuẩn trong Pod manifest là gì?
-   - **Đáp án:** Cú pháp `image: <registry>/<repository>@sha256:<64-character-hash>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Rủi ro an ninh lớn nhất của việc sử dụng cờ Image Tag thay đổi được (mutable tag như `:latest`) trong Pod spec là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nội dung image có thể bị ai đó **push đè mã độc** trên Container Registry làm Pod kéo về chạy phải mã độc.
+</div>
+</details>
 
-3. Tên plugin Admission Controller mặc định của Kubernetes được dùng để kiểm định tính tin cậy của Container Image trước khi tạo Pod là gì?
-   - **Đáp án:** Plugin **`ImagePolicyWebhook`**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cú pháp ghim cờ mã băm bất biến Image Digest chuẩn trong Pod manifest là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cú pháp `image: <registry>/<repository>@sha256:<64-character-hash>`.
+</div>
+</details>
 
-4. Hai cờ câu lệnh bắt buộc phải thêm vào Static Pod `kube-apiserver` để kích hoạt `ImagePolicyWebhook` là gì?
-   - **Đáp án:** Cờ `--enable-admission-plugins=...,ImagePolicyWebhook` và `--admission-control-config-file=/etc/kubernetes/admission/admission-config.yaml`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tên plugin Admission Controller mặc định của Kubernetes được dùng để kiểm định tính tin cậy của Container Image trước khi tạo Pod là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Plugin **`ImagePolicyWebhook`**.
+</div>
+</details>
 
-5. Ý nghĩa của thuộc tính `defaultAllow: false` trong tệp cấu hình `admission-config.yaml` là gì?
-   - **Đáp án:** Thực thi nguyên tắc **Fail-Closed Security**: từ chối tất cả các request tạo Pod nếu dịch vụ Webhook Server gặp sự cố.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Hai cờ câu lệnh bắt buộc phải thêm vào Static Pod `kube-apiserver` để kích hoạt `ImagePolicyWebhook` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--enable-admission-plugins=...,ImagePolicyWebhook` và `--admission-control-config-file=/etc/kubernetes/admission/admission-config.yaml`.
+</div>
+</details>
 
-6. Cú pháp `apiVersion` chuẩn của tệp cấu hình `admission-config.yaml` là gì?
-   - **Đáp án:** `apiVersion: apiserver.config.k8s.io/v1` (với `kind: AdmissionConfiguration`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Ý nghĩa của thuộc tính `defaultAllow: false` trong tệp cấu hình `admission-config.yaml` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thực thi nguyên tắc **Fail-Closed Security**: từ chối tất cả các request tạo Pod nếu dịch vụ Webhook Server gặp sự cố.
+</div>
+</details>
 
-7. Tại sao phải mount thư mục `/etc/kubernetes/admission/` vào `volumeMounts` của tệp Static Pod `kube-apiserver.yaml`?
-   - **Đáp án:** Vì container `kube-apiserver` chạy dưới dạng Sandbox cách ly, không tự đọc được các tệp ngoài Host Node nếu không được mount.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cú pháp `apiVersion` chuẩn của tệp cấu hình `admission-config.yaml` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `apiVersion: apiserver.config.k8s.io/v1` (với `kind: AdmissionConfiguration`).
+</div>
+</details>
 
-8. Hai công cụ mã nguồn mở phổ biến được dùng để thực hiện phân tích tĩnh bản kê khai (Static Manifest Analysis) tệp YAML là gì?
-   - **Đáp án:** Công cụ **`kube-linter`** và **`trivy config`** (hoặc Datree).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tại sao phải mount thư mục `/etc/kubernetes/admission/` vào `volumeMounts` của tệp Static Pod `kube-apiserver.yaml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì container `kube-apiserver` chạy dưới dạng Sandbox cách ly, không tự đọc được các tệp ngoài Host Node nếu không được mount.
+</div>
+</details>
 
-9. Sự khác biệt cơ bản giữa `ImagePolicyWebhook` và `ValidatingWebhookConfiguration` là gì?
-   - **Đáp án:** `ImagePolicyWebhook` là **plugin tĩnh được cấu hình trực tiếp trên kube-apiserver**, còn `ValidatingWebhookConfiguration` là **đối tượng CRD được đăng ký động trong cụm**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Hai công cụ mã nguồn mở phổ biến được dùng để thực hiện phân tích tĩnh bản kê khai (Static Manifest Analysis) tệp YAML là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Công cụ **`kube-linter`** và **`trivy config`** (hoặc Datree).
+</div>
+</details>
 
-10. Mã lỗi HTTP phản hồi từ API Server khi một Pod bị từ chối do vi phạm chính sách `ImagePolicyWebhook` là gì?
-    - **Đáp án:** Mã lỗi **`403 Forbidden`** (pods "app" is forbidden: image rejected by ImagePolicyWebhook).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác biệt cơ bản giữa `ImagePolicyWebhook` và `ValidatingWebhookConfiguration` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `ImagePolicyWebhook` là **plugin tĩnh được cấu hình trực tiếp trên kube-apiserver**, còn `ValidatingWebhookConfiguration` là **đối tượng CRD được đăng ký động trong cụm**.
+</div>
+</details>
 
-11. Làm thế nào để khôi phục nhanh nhất khi `kube-apiserver` bị crashloop do gõ sai cú pháp tệp `admission-config.yaml`?
-    - **Đáp án:** Khôi phục lại tệp sao lưu `kube-apiserver.yaml.bak` hoặc xóa cờ `--admission-control-config-file` trong `/etc/kubernetes/manifests/kube-apiserver.yaml`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Mã lỗi HTTP phản hồi từ API Server khi một Pod bị từ chối do vi phạm chính sách `ImagePolicyWebhook` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mã lỗi **`403 Forbidden`** (pods "app" is forbidden: image rejected by ImagePolicyWebhook).
+</div>
+</details>
 
-12. Cú pháp YAML chuẩn của tệp `admission-config.yaml` cấu hình `ImagePolicyWebhook` CKS là gì?
-    - **Đáp án:**
-      ```yaml
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Làm thế nào để khôi phục nhanh nhất khi `kube-apiserver` bị crashloop do gõ sai cú pháp tệp `admission-config.yaml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khôi phục lại tệp sao lưu `kube-apiserver.yaml.bak` hoặc xóa cờ `--admission-control-config-file` trong `/etc/kubernetes/manifests/kube-apiserver.yaml`.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp YAML chuẩn của tệp `admission-config.yaml` cấu hình `ImagePolicyWebhook` CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```yaml
       apiVersion: apiserver.config.k8s.io/v1
       kind: AdmissionConfiguration
       plugins:
@@ -392,6 +586,8 @@ graph TD
               retryBackoff: 500
               defaultAllow: false
       ```
+</div>
+</details>
 
 ---
 
@@ -735,10 +931,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Rủi ro an ninh lớn nhất của việc cho phép kéo Container Images từ Public Registries trôi nổi hoặc sử dụng tag mutable (như `:latest`) là gì?
 
-**Đáp án chuẩn:** Public Registries trôi nổi có thể chứa hình ảnh không được kiểm duyệt, dính lỗ hổng CVEs hoặc bị chèn backdoor mã độc. Sử dụng tag `:latest` có rủi ro bị kẻ tấn công push đè nội dung mới chứa mã độc trên Registry mà người dùng không hề hay biết (**Image Swapping Attack**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Rủi ro an ninh lớn nhất của việc cho phép kéo Container Images từ Public Registries trôi nổi hoặc sử dụng tag mutable (như `:latest`) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Public Registries trôi nổi có thể chứa hình ảnh không được kiểm duyệt, dính lỗ hổng CVEs hoặc bị chèn backdoor mã độc. Sử dụng tag `:latest` có rủi ro bị kẻ tấn công push đè nội dung mới chứa mã độc trên Registry mà người dùng không hề hay biết (**Image Swapping Attack**).
 
 **Tiêu chí chấm:**
 - 0đ: Không biết rủi ro của public registries và latest tag.
@@ -746,6 +955,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo rủi ro an ninh và lý do cần ghim Image Digest bất biến.
 
 **Câu hỏi đào sâu:** (Giải pháp để triệt tiêu nguy cơ Image Swapping Attack là gì? — Bắt buộc ghim cờ mã băm bất biến Image Digest `@sha256:...` trong Pod spec).
+</div>
+</details>
 
 ---
 
@@ -1014,9 +1225,22 @@ Thực hiện phân tích tĩnh tệp `/tmp/pinned-pod.yaml`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Biên soạn tệp `admission-config.yaml`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Biên soạn tệp `admission-config.yaml</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 mkdir -p /tmp/admission
 
 cat <<EOF > /tmp/admission/admission-config.yaml
@@ -1033,10 +1257,25 @@ plugins:
         defaultAllow: false
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Biên soạn tệp `image-policy-kubeconfig.yaml`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Biên soạn tệp `image-policy-kubeconfig.yaml</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/admission/image-policy-kubeconfig.yaml
 apiVersion: v1
 kind: Config
@@ -1055,10 +1294,25 @@ contexts:
 current-context: default
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Ghim Image Digest bất biến trong Pod spec
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Ghim Image Digest bất biến trong Pod spec</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/pinned-pod.yaml
 apiVersion: v1
 kind: Pod
@@ -1071,10 +1325,25 @@ spec:
       image: nginx@sha256:a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Phân tích tĩnh tệp YAML bằng linters
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Phân tích tĩnh tệp YAML bằng linters</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/static-scan.json
 {
   "Target": "/tmp/pinned-pod.yaml",
@@ -1085,6 +1354,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

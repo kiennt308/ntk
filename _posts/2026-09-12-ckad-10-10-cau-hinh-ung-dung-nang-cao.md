@@ -15,8 +15,12 @@ series_order: 10
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.10] Hướng dẫn chuyên sâu Quản Lý Cấu Hình Ứng Dụng Nâng Cao: Immutable ConfigMap/Secret, Downward API & Projected Volumes: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Lý Cấu Hình Ứng Dụng Nâng Cao: Immutable ConfigMap/Secret, Downward API & Projected Volumes."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 10] QUẢN LÝ CẤU HÌNH ỨNG DỤNG NÂNG CAO: IMMUTABLE CONFIGMAP/SECRET, DOWNWARD API & PROJECTED VOLUMES
 
@@ -347,41 +351,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Cờ thuộc tính nào được sử dụng để khóa một ConfigMap hoặc Secret không cho phép thay đổi dữ liệu?
-   - **Đáp án:** Thuộc tính `immutable: true`.
 
-2. Lợi ích lớn nhất của việc thiết lập `immutable: true` đối với hiệu năng cụm Kubernetes là gì?
-   - **Đáp án:** Loại bỏ hoàn toàn các vòng lặp watch theo dõi thay đổi của Kubelet, giúp giảm tải đáng kể cho API Server và Node CPU.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cờ thuộc tính nào được sử dụng để khóa một ConfigMap hoặc Secret không cho phép thay đổi dữ liệu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thuộc tính `immutable: true`.
+</div>
+</details>
 
-3. Loại Secret nào trong Kubernetes được dùng để lưu trữ thông tin xác thực kéo ảnh từ Private Docker Registry?
-   - **Đáp án:** Secret kiểu `kubernetes.io/dockerconfigjson`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Lợi ích lớn nhất của việc thiết lập `immutable: true` đối với hiệu năng cụm Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Loại bỏ hoàn toàn các vòng lặp watch theo dõi thay đổi của Kubelet, giúp giảm tải đáng kể cho API Server và Node CPU.
+</div>
+</details>
 
-4. Cấu hình Pod spec ở đâu để chỉ định Secret đăng ký kéo ảnh riêng tư?
-   - **Đáp án:** Khai báo dưới trường `imagePullSecrets` trong spec của Pod.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Loại Secret nào trong Kubernetes được dùng để lưu trữ thông tin xác thực kéo ảnh từ Private Docker Registry?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Secret kiểu `kubernetes.io/dockerconfigjson`.
+</div>
+</details>
 
-5. Secret kiểu `kubernetes.io/tls` bắt buộc phải chứa đúng 2 khóa nào dạng PEM?
-   - **Đáp án:** Khóa `tls.crt` (chứng chỉ public) và `tls.key` (khóa private).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cấu hình Pod spec ở đâu để chỉ định Secret đăng ký kéo ảnh riêng tư?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khai báo dưới trường `imagePullSecrets` trong spec của Pod.
+</div>
+</details>
 
-6. Kỹ thuật Downward API trong Kubernetes cho phép ứng dụng làm gì?
-   - **Đáp án:** Cho phép ứng dụng truy nhập thông tin metadata của chính Pod (như Pod Name, IP, Namespace) mà không cần hardcode.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Secret kiểu `kubernetes.io/tls` bắt buộc phải chứa đúng 2 khóa nào dạng PEM?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khóa `tls.crt` (chứng chỉ public) và `tls.key` (khóa private).
+</div>
+</details>
 
-7. Khối `fieldRef` trong Downward API được dùng để trích xuất loại thông tin nào của Pod?
-   - **Đáp án:** Trích xuất các thông tin metadata (như `metadata.name`, `status.podIP`, `spec.nodeName`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Kỹ thuật Downward API trong Kubernetes cho phép ứng dụng làm gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cho phép ứng dụng truy nhập thông tin metadata của chính Pod (như Pod Name, IP, Namespace) mà không cần hardcode.
+</div>
+</details>
 
-8. Khối `resourceFieldRef` trong Downward API được dùng để trích xuất loại thông tin nào của Pod?
-   - **Đáp án:** Trích xuất thông số tài nguyên CPU/RAM limit hoặc request của container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Khối `fieldRef` trong Downward API được dùng để trích xuất loại thông tin nào của Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trích xuất các thông tin metadata (như `metadata.name`, `status.podIP`, `spec.nodeName`).
+</div>
+</details>
 
-9. Projected Volume trong Kubernetes giải quyết bài toán gì?
-   - **Đáp án:** Cho phép gộp nhiều nguồn tài nguyên (ConfigMap, Secret, DownwardAPI, ServiceAccountToken) vào chung một thư mục mount duy nhất.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Khối `resourceFieldRef` trong Downward API được dùng để trích xuất loại thông tin nào của Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trích xuất thông số tài nguyên CPU/RAM limit hoặc request của container.
+</div>
+</details>
 
-10. Câu lệnh CLI nào dùng để tạo nhanh một Secret kiểu `docker-registry` từ terminal?
-    - **Đáp án:** `kubectl create secret docker-registry <secret-name> --docker-server=... --docker-username=... --docker-password=...`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Projected Volume trong Kubernetes giải quyết bài toán gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cho phép gộp nhiều nguồn tài nguyên (ConfigMap, Secret, DownwardAPI, ServiceAccountToken) vào chung một thư mục mount duy nhất.
+</div>
+</details>
 
-11. Điều gì xảy ra khi bạn cố gắng sửa đổi dữ liệu của một ConfigMap đã được đánh dấu `immutable: true`?
-    - **Đáp án:** Kubernetes API Server sẽ từ chối lệnh sửa đổi và trả về lỗi `Forbidden: field is immutable`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu lệnh CLI nào dùng để tạo nhanh một Secret kiểu `docker-registry` từ terminal?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl create secret docker-registry <secret-name> --docker-server=... --docker-username=... --docker-password=...`.
+</div>
+</details>
 
-12. Cú pháp `fieldPath` chuẩn để lấy địa chỉ IP của Pod trong Downward API là gì?
-    - **Đáp án:** Cú pháp `fieldPath: status.podIP`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Điều gì xảy ra khi bạn cố gắng sửa đổi dữ liệu của một ConfigMap đã được đánh dấu `immutable: true`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubernetes API Server sẽ từ chối lệnh sửa đổi và trả về lỗi `Forbidden: field is immutable`.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp `fieldPath` chuẩn để lấy địa chỉ IP của Pod trong Downward API là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cú pháp `fieldPath: status.podIP`.
+</div>
+</details>
 
 ---
 
@@ -777,10 +974,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Thuộc tính `immutable: true` trong ConfigMap/Secret mang lại lợi ích gì cho hiệu năng của cụm Kubernetes?
 
-**Đáp án chuẩn:** Giúp loại bỏ hoàn toàn các vòng lặp watch theo dõi sự thay đổi của Kubelet đối với ConfigMap/Secret đó. Điều này giảm tải đáng kể băng thông mạng và CPU cho cả API Server và Kubelet trên các cụm Kubernetes quy mô lớn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thuộc tính `immutable: true` trong ConfigMap/Secret mang lại lợi ích gì cho hiệu năng của cụm Kubernetes?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giúp loại bỏ hoàn toàn các vòng lặp watch theo dõi sự thay đổi của Kubelet đối với ConfigMap/Secret đó. Điều này giảm tải đáng kể băng thông mạng và CPU cho cả API Server và Kubelet trên các cụm Kubernetes quy mô lớn.
 
 **Tiêu chí chấm:**
 - 0đ: Không nêu được lợi ích giảm tải watch Kubelet.
@@ -788,6 +998,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo lợi ích giảm tải watch loop cho Kubelet và API Server.
 
 **Câu hỏi đào sâu:** (Điều gì xảy ra nếu cố sửa một ConfigMap có cờ `immutable: true`? — API Server từ chối và trả về lỗi `Forbidden: field is immutable`).
+</div>
+</details>
 
 ---
 
@@ -1035,9 +1247,22 @@ Cấu hình Pod `projected-pod` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo ConfigMap bất biến `app-config`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo ConfigMap bất biến `app-config</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1052,20 +1277,50 @@ data:
   DB_PORT: "5432"
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo Secret `private-reg-secret` kiểu `docker-registry`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo Secret `private-reg-secret` kiểu `docker-registry</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create secret docker-registry private-reg-secret \
   --docker-server=https://index.docker.io/v1/ \
   --docker-username=admin \
   --docker-password=secretpass \
   --docker-email=admin@example.com -n prod
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo Pod `downward-pod` sử dụng Downward API
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo Pod `downward-pod` sử dụng Downward API</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1085,10 +1340,25 @@ spec:
               fieldPath: status.podIP
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo Pod `projected-pod` sử dụng Projected Volume
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo Pod `projected-pod` sử dụng Projected Volume</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Giả lập Secret tls-secret nếu chưa có:
 kubectl create secret generic tls-secret --from-literal=key=val -n prod 2>/dev/null || true
 
@@ -1117,6 +1387,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

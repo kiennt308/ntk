@@ -15,8 +15,12 @@ series_order: 34
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.34] Hướng dẫn chuyên sâu Thiết Kế Quality Gates & Security Policy: Chặn Merge Tự Động Khi Phát Hiện Lỗ Hổng Nghiêm Trọng (Critical CVEs): Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Thiết Kế Quality Gates & Security Policy: Chặn Merge Tự Động Khi Phát Hiện Lỗ Hổng Nghiêm Trọng (Critical CVEs)."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 34] THIẾT KẾ QUALITY GATES & SECURITY POLICY: CHẶN MERGE TỰ ĐỘNG KHI PHÁT HIỆN LỖ HỔNG NGHIÊM TRỌNG (CRITICAL CVES)
 
@@ -1511,10 +1515,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Quality Gate trong CI/CD pipeline là gì? Khác biệt cốt lõi giữa Quality Gate an ninh và Functional Gate thông thường là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Quality Gate trong CI/CD pipeline là gì? Khác biệt cốt lõi giữa Quality Gate an ninh và Functional Gate thông thường là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Quality Gate là điểm kiểm soát tự động ngắt pipeline khi không đạt tiêu chí chất lượng hoặc an ninh. Gate an ninh tập trung vào mức độ rủi ro (Severity thresholds) và tính tuân thủ pháp lý/chính sách chứ không chỉ là đỗ/trượt các test case chức năng.
 
 **Đáp án chuẩn:**
@@ -1525,6 +1541,8 @@ Quality Gate là điểm kiểm soát tự động ngắt pipeline khi không đ
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Ứng viên hay trả lời chung chung "Quality Gate là chạy test thấy pass thì cho deploy". Nhà tuyển dụng sẽ xoáy vào việc: "Nếu test pass 100% nhưng Trivy tìm thấy 1 CVE Critical RCE trong base image thì Gate xử lý thế nào?". Cần nhấn mạnh tính chất ưu tiên tuyệt đối của Security Quality Gate (ngắt pipeline ngay lập tức bất chấp UnitTest green).
+</div>
+</details>
 
 ---
 

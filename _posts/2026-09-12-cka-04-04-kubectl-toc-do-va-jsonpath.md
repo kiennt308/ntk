@@ -15,8 +15,12 @@ series_order: 4
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.04] Hướng dẫn chuyên sâu Kỹ Thuật Kubectl Tốc Độ: Imperative Commands, Dry-Run, JSONPath Filtering & Tối Ưu Vim Khắc Nghiệt: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kỹ Thuật Kubectl Tốc Độ: Imperative Commands, Dry-Run, JSONPath Filtering & Tối Ưu Vim Khắc Nghiệt."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 04] KỸ THUẬT KUBECTL TỐC ĐỘ: IMPERATIVE COMMANDS, DRY-RUN, JSONPATH FILTERING & TỐI ƯU VIM KHẮC NGHIỆT
 
@@ -383,9 +387,9 @@ graph TD
     C --> D["Trích xuất báo cáo không jq (-o jsonpath & custom-columns)"]
     D --> E["Kiểm tra cú pháp & Apply an toàn (3-way merge)"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style D fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style D fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -527,9 +531,9 @@ graph TD
     VIMRC --> CLI_Imperative
     CLI_Imperative --> Data_Extraction
 
-    style Terminal_Environment fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style CLI_Imperative fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
-    style Data_Extraction fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style Terminal_Environment fill:none,stroke:#0288d1,stroke-width:2px
+    style CLI_Imperative fill:none,stroke:#fbc02d,stroke-width:2px
+    style Data_Extraction fill:none,stroke:#f57c00,stroke-width:2px
 ```
 
 ### Bốn quyết định thiết kế bài lab
@@ -931,12 +935,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Tại sao trong các kỳ thi CKA/CKAD, kỹ năng gõ imperative với biến môi trường `$do` lại quan trọng hơn việc tự viết tay tệp YAML từ đầu?
-
-**Đáp án chuẩn:**
-- Áp lực thời gian trong phòng thi CKA/CKAD rất lớn (120 phút cho 15–20 câu hỏi, trung bình 6–8 phút/câu).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao trong các kỳ thi CKA/CKAD, kỹ năng gõ imperative với biến môi trường `$do` lại quan trọng hơn việc tự viết tay tệp YAML từ đầu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Áp lực thời gian trong phòng thi CKA/CKAD rất lớn (120 phút cho 15–20 câu hỏi, trung bình 6–8 phút/câu).
 - Gõ tay file YAML từ đầu tốn từ 2–4 phút và rất dễ dính lỗi chính tả/lệch lề (indentation).
 - Dùng `export do='--dry-run=client -o yaml'` kết hợp `kubectl run/create` sinh ra khung YAML chuẩn 100% cú pháp chỉ trong **< 3 giây**, giúp thí sinh dành 95% thời gian tập trung vào logic bài toán.
 
@@ -947,6 +962,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, minh hoạ cú pháp `k run web --image=nginx $do > pod.yaml` và con số tiết kiệm 80% phím gõ.
 
 **Câu hỏi đào sâu:** Nếu lệnh create không có cờ cho một trường đặc thù (ví dụ `securityContext`), ta làm thế nào? *(Đáp án: Sinh khung YAML bằng `$do` rồi mở `vim` bổ sung trường đó vào).*
+</div>
+</details>
 
 ---
 

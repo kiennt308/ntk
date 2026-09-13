@@ -15,8 +15,12 @@ series_order: 48
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.48] Hướng dẫn chuyên sâu Đồ Án Capstone: Xây Dựng Hệ Thống CI/CD & DevSecOps Doanh Nghiệp Đa Môi Trường Chuẩn Enterprise End-to-End: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Đồ Án Capstone: Xây Dựng Hệ Thống CI/CD & DevSecOps Doanh Nghiệp Đa Môi Trường Chuẩn Enterprise End-to-End."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 48] ĐỒ ÁN CAPSTONE: XÂY DỰNG HỆ THỐNG CI/CD & DEVSECOPS DOANH NGHIỆP ĐA MÔI TRƯỜNG CHUẨN ENTERPRISE END-TO-END
 
@@ -1815,11 +1819,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi (12 câu phỏng vấn nâng cao)
 
-### Câu 1 — 🔥
-**Hỏi:** Anh/chị thiết kế kiến trúc CI/CD như thế nào cho một tập đoàn sở hữu hơn 100 microservices độc lập nhưng phải tuân thủ nghiêm ngặt chuẩn an ninh ISO27001 và SOC2?
 
-**Đáp án chuẩn:**
-Tôi thiết kế kiến trúc theo 5 tầng phân tách minh bạch:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Anh/chị thiết kế kiến trúc CI/CD như thế nào cho một tập đoàn sở hữu hơn 100 microservices độc lập nhưng phải tuân thủ nghiêm ngặt chuẩn an ninh ISO27001 và SOC2?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tôi thiết kế kiến trúc theo 5 tầng phân tách minh bạch:
 1. **Tầng Governance:** Cưỡng chế Group Compliance Pipeline Framework ở cấp Group cao nhất. Mọi repository con tự động nhận các Security Gates bắt buộc mà không thể xóa hay bypass (`QT 48.1`).
 2. **Tầng Security Shift-Left:** Chạy song song SAST (Semgrep), Secret Detection (Gitleaks), SCA (Grype) và Container Scan (Trivy) trực tiếp trên Merge Request (`QT 48.6`).
 3. **Tầng Infrastructure & OIDC:** Xác thực secretless qua OIDC JWT Token với Cloud AWS/GCP/Azure, tách biệt `terraform plan` trên MR và `terraform apply` manual trên nhánh chính (`QT 48.2`, `QT 48.4`).
@@ -1833,6 +1849,8 @@ Tôi thiết kế kiến trúc theo 5 tầng phân tách minh bạch:
 - **3đ:** Trình bày hoàn hảo kiến trúc 5 tầng, nêu rõ cơ chế cưỡng chế Compliance Pipeline ở cấp Group, OIDC Secretless Auth, Cosign Signing, Canary Auto-Rollback và DORA Observability.
 
 **Câu hỏi đào sâu:** (Nếu dự án con cố tình gỡ bỏ file `.gitlab-ci.yml` thì Group Compliance Pipeline xử lý ra sao? *Đáp án: GitLab Compliance Framework tự động inject file cấu hình cha vào trước khi job chạy, khiến pipeline vẫn thực thi đầy đủ các bước security bất chấp nội dung file repo con.*)
+</div>
+</details>
 
 ---
 

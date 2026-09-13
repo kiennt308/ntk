@@ -15,8 +15,12 @@ series_order: 6
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80"
 summary: "Làm chủ nghệ thuật điều phối triển khai ứng dụng đa tầng trong Argo CD: Phân tích cơ chế Wave Barrier của Sync Waves, vòng đời 5 giai đoạn Resource Hooks, thiết kế kịch bản Database Migration an toàn với Hook Deletion Policies và cách xử lý bẫy treo Sync do Hook thất bại."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Điều Phối Triển Khai Phức Tạp: Sync Waves, Resource Hooks & Quản Trị Vòng Đời."
+  - "Ứng dụng triết lý GitOps với Git làm nguồn chân lý duy nhất (Single Source of Truth), đồng bộ tự động 24/7."
+  - "Kiểm soát chặt chẽ quy trình triển khai đa cụm Kubernetes, phát hiện và triệt tiêu Configuration Drift."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Điều Phối Triển Khai Phức Tạp: Sync Waves, Resource Hooks & Quản Trị Vòng Đời
 
@@ -373,35 +377,196 @@ argocd app terminate-op ecommerce-platform
 
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Sync Waves và Resource Hooks khác nhau ở điểm cốt lõi nào?
-- **Đáp án:** Sync Waves là cơ chế sắp xếp thứ tự đồng bộ giữa các **tài nguyên Kubernetes dài hạn** (Persistent Resources như Namespace, Secret, Deployment) dựa trên rào chắn trạng thái `Healthy`. Resource Hooks là các **tác vụ ngắn hạn** (thường là Job chạy một lần) được chèn vào các thời điểm cụ thể (`PreSync`, `PostSync`, `SyncFail`) để thực thi logic nghiệp vụ.
 
-### Câu 2: Điều gì xảy ra với các tài nguyên ở Wave 2 nếu một tài nguyên ở Wave 1 rơi vào trạng thái `Degraded`?
-- **Đáp án:** Quá trình đồng bộ sẽ bị **dừng lại ngay lập tức tại rào chắn Wave 1**. Toàn bộ tài nguyên ở Wave 2 sẽ không bao giờ được apply xuống cụm, giúp ngăn chặn lỗi lan rộng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sync Waves và Resource Hooks khác nhau ở điểm cốt lõi nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sync Waves là cơ chế sắp xếp thứ tự đồng bộ giữa các **tài nguyên Kubernetes dài hạn** (Persistent Resources như Namespace, Secret, Deployment) dựa trên rào chắn trạng thái `Healthy`. Resource Hooks là các **tác vụ ngắn hạn** (thường là Job chạy một lần) được chèn vào các thời điểm cụ thể (`PreSync`, `PostSync`, `SyncFail`) để thực thi logic nghiệp vụ.
+</div>
+</details>
 
-### Câu 3: Làm thế nào để tự động gửi thông báo đến kênh Telegram/Slack khi một đợt deploy bị thất bại bằng Resource Hook?
-- **Đáp án:** Tạo một Kubernetes Job với annotation `argocd.argoproj.io/hook: SyncFail`. Job này chứa đoạn script curl gửi payload cảnh báo đến Webhook của Telegram/Slack kèm theo thông tin lỗi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Điều gì xảy ra với các tài nguyên ở Wave 2 nếu một tài nguyên ở Wave 1 rơi vào trạng thái `Degraded`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Quá trình đồng bộ sẽ bị **dừng lại ngay lập tức tại rào chắn Wave 1**. Toàn bộ tài nguyên ở Wave 2 sẽ không bao giờ được apply xuống cụm, giúp ngăn chặn lỗi lan rộng.
+</div>
+</details>
 
-### Câu 4: Tùy chọn `BeforeHookCreation` trong `hook-delete-policy` giải quyết vấn đề gì?
-- **Đáp án:** Kubernetes mặc định không cho phép tạo một Job mới nếu đã có một Job trùng tên đang tồn tại trong namespace. `BeforeHookCreation` chỉ thị Argo CD tự động xóa bản ghi Job của lần deploy trước TRƯỚC KHI tạo Job mới, tránh lỗi `Job already exists`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Làm thế nào để tự động gửi thông báo đến kênh Telegram/Slack khi một đợt deploy bị thất bại bằng Resource Hook?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tạo một Kubernetes Job với annotation `argocd.argoproj.io/hook: SyncFail`. Job này chứa đoạn script curl gửi payload cảnh báo đến Webhook của Telegram/Slack kèm theo thông tin lỗi.
+</div>
+</details>
 
-### Câu 5: Có thể gán Sync Wave số âm (ví dụ: `-1`, `-5`) không? Ý nghĩa là gì?
-- **Đáp án:** **Hoàn toàn được!** Sync Wave nhận mọi giá trị số nguyên. Các wave số âm (nhỏ hơn 0) được sử dụng cho các tài nguyên hạ tầng nền móng (Namespace, CRD, Secret) cần phải sẵn sàng trước các tài nguyên mặc định (Wave 0).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tùy chọn `BeforeHookCreation` trong `hook-delete-policy` giải quyết vấn đề gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubernetes mặc định không cho phép tạo một Job mới nếu đã có một Job trùng tên đang tồn tại trong namespace. `BeforeHookCreation` chỉ thị Argo CD tự động xóa bản ghi Job của lần deploy trước TRƯỚC KHI tạo Job mới, tránh lỗi `Job already exists`.
+</div>
+</details>
 
-### Câu 6: Có thể kết hợp gán Sync Wave cho chính các Resource Hooks không?
-- **Đáp án:** **Hoàn toàn được!** Nếu bạn có 3 PreSync Hooks cần chạy theo thứ tự nghiêm ngặt (ví dụ: Hook 1 Backup DB $\rightarrow$ Hook 2 Schema Migration $\rightarrow$ Hook 3 Seed Data), bạn có thể gán `sync-wave: "1"`, `sync-wave: "2"`, `sync-wave: "3"` cho từng PreSync Job đó.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Có thể gán Sync Wave số âm (ví dụ: `-1`, `-5`) không? Ý nghĩa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hoàn toàn được!** Sync Wave nhận mọi giá trị số nguyên. Các wave số âm (nhỏ hơn 0) được sử dụng cho các tài nguyên hạ tầng nền móng (Namespace, CRD, Secret) cần phải sẵn sàng trước các tài nguyên mặc định (Wave 0).
+</div>
+</details>
 
-### Câu 7: Chiến lược thiết kế Schema Database nào (Database Migration Strategy) là chuẩn mực khi chạy GitOps?
-- **Đáp án:** Mẫu thiết kế **Expand and Contract Pattern (Non-breaking Database Changes)**. Luôn đảm bảo code phiên bản cũ và code phiên bản mới đều có thể chạy song song với cấu trúc Database mới trong quá trình RollingUpdate. Không bao giờ xóa hoặc đổi tên cột đang dùng ngay trong một bước migration.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Có thể kết hợp gán Sync Wave cho chính các Resource Hooks không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hoàn toàn được!** Nếu bạn có 3 PreSync Hooks cần chạy theo thứ tự nghiêm ngặt (ví dụ: Hook 1 Backup DB $\rightarrow$ Hook 2 Schema Migration $\rightarrow$ Hook 3 Seed Data), bạn có thể gán `sync-wave: "1"`, `sync-wave: "2"`, `sync-wave: "3"` cho từng PreSync Job đó.
+</div>
+</details>
 
-### Câu 8: Tại sao việc sử dụng `activeDeadlineSeconds` trên Hook Job lại là quy tắc bắt buộc của SRE?
-- **Đáp án:** Vì nếu không có timeout, một Hook Job bị treo (do deadlock database, kẹt I/O hoặc lỗi network) sẽ khiến tiến trình Sync của Argo CD bị khóa vô thời hạn, không thể tiếp tục deploy và cũng không kích hoạt `SyncFail` Hook.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Chiến lược thiết kế Schema Database nào (Database Migration Strategy) là chuẩn mực khi chạy GitOps?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mẫu thiết kế **Expand and Contract Pattern (Non-breaking Database Changes)**. Luôn đảm bảo code phiên bản cũ và code phiên bản mới đều có thể chạy song song với cấu trúc Database mới trong quá trình RollingUpdate. Không bao giờ xóa hoặc đổi tên cột đang dùng ngay trong một bước migration.
+</div>
+</details>
 
-### Câu 9: Sự khác biệt giữa `argocd app terminate-op` và việc xóa Pod Job bằng tay là gì?
-- **Đáp án:** Xóa Pod Job bằng tay chỉ khiến Kubernetes tạo Pod mới nếu Job chưa hết `backoffLimit`. Lệnh `argocd app terminate-op` phát tín hiệu hủy bỏ trực tiếp vào tầng điều phối của Argo CD Controller, lập tức kết thúc đợt Sync đang chạy và đưa trạng thái về `Failed`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao việc sử dụng `activeDeadlineSeconds` trên Hook Job lại là quy tắc bắt buộc của SRE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì nếu không có timeout, một Hook Job bị treo (do deadlock database, kẹt I/O hoặc lỗi network) sẽ khiến tiến trình Sync của Argo CD bị khóa vô thời hạn, không thể tiếp tục deploy và cũng không kích hoạt `SyncFail` Hook.
+</div>
+</details>
 
-### Câu 10: Hook loại `Skip` trong Argo CD có công dụng gì trong thực tế?
-- **Đáp án:** Được dùng để tạm thời bỏ qua một tài nguyên cụ thể trong thư mục Git mà không cần phải xóa file hoặc tạo commit mới trên Git, rất hữu ích khi gỡ lỗi hoặc khi một tài nguyên đang được bảo trì riêng biệt.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Sự khác biệt giữa `argocd app terminate-op` và việc xóa Pod Job bằng tay là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Xóa Pod Job bằng tay chỉ khiến Kubernetes tạo Pod mới nếu Job chưa hết `backoffLimit`. Lệnh `argocd app terminate-op` phát tín hiệu hủy bỏ trực tiếp vào tầng điều phối của Argo CD Controller, lập tức kết thúc đợt Sync đang chạy và đưa trạng thái về `Failed`.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Hook loại `Skip` trong Argo CD có công dụng gì trong thực tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Được dùng để tạm thời bỏ qua một tài nguyên cụ thể trong thư mục Git mà không cần phải xóa file hoặc tạo commit mới trên Git, rất hữu ích khi gỡ lỗi hoặc khi một tài nguyên đang được bảo trì riêng biệt.
+</div>
+</details>
 
 ---
 

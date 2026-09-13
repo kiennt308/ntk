@@ -15,8 +15,12 @@ series_order: 31
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.31] Hướng dẫn chuyên sâu Bảo Mật Container & Quét Lỗ Hổng IaC: Trivy Container Scanning, Checkov, KICS & TFSec IaC Validation: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Bảo Mật Container & Quét Lỗ Hổng IaC: Trivy Container Scanning, Checkov, KICS & TFSec IaC Validation."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 31] BẢO MẬT CONTAINER & QUÉT LỖ HỔNG IAC: TRIVY CONTAINER SCANNING, CHECKOV, KICS & TFSEC IAC VALIDATION
 
@@ -1578,74 +1582,176 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quét image sau khi build là quá muộn ở một ca cụ thể; quét IaC bắt được lỗi cấu hình sai từ commit code tĩnh trước khi bất kỳ container nào được build"**?
-
-**Đáp án chuẩn:**
-- Vì việc chờ build xong Container Image (tốn 10–15 phút) rồi mới quét sẽ cực kỳ lãng phí tài nguyên CPU/RAM nếu Dockerfile chứa lỗi cấu hình nghiêm trọng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quét image sau khi build là quá muộn ở một ca cụ thể; quét IaC bắt được lỗi cấu hình sai từ commit code tĩnh trước khi bất kỳ container nào được build"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì việc chờ build xong Container Image (tốn 10–15 phút) rồi mới quét sẽ cực kỳ lãng phí tài nguyên CPU/RAM nếu Dockerfile chứa lỗi cấu hình nghiêm trọng.
 - Quét hạ tầng IaC (`Checkov`) ở Stage test phân tích mã nguồn tĩnh trong **2 giây**, phát hiện và chặn đứng ngay các lỗi thiết kế hạ tầng sai (chạy Root, cờ Privileged, thiếu Resource Limits) trước khi bất kỳ câu lệnh `docker build` nào được thực thi.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét an ninh cấu hình IaC (Checkov) và Quét lỗ hổng Container Image (Trivy Image)?
-
-**Đáp án chuẩn:**
-- **IaC Scanning (Checkov):** Phân tích mã nguồn tĩnh của tệp `Dockerfile`, `deployment.yaml`, `main.tf` trước khi build. Phát hiện các lỗi vi phạm thiết kế hạ tầng (chạy Root, mở port SSH 22, thiếu Resource Limits).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét an ninh cấu hình IaC (Checkov) và Quét lỗ hổng Container Image (Trivy Image)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **IaC Scanning (Checkov):** Phân tích mã nguồn tĩnh của tệp `Dockerfile`, `deployment.yaml`, `main.tf` trước khi build. Phát hiện các lỗi vi phạm thiết kế hạ tầng (chạy Root, mở port SSH 22, thiếu Resource Limits).
 - **Container Scanning (Trivy Image):** Giải nén các lớp Image Layers nhị phân sau khi build. Phát hiện các mã lỗ hổng CVEs công bố quốc tế của các gói hệ điều hành Linux Base OS (Debian/Alpine APK/APT packages) và thư viện cài thêm.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Rủi ro bảo mật nghiêm trọng khi chạy Container dưới quyền Root (`USER root` hoặc thiếu câu lệnh `USER`) trong Dockerfile?
-
-**Đáp án chuẩn:**
-- Mặc định Container khởi chạy với quyền Root (UID 0). Nếu ứng dụng bị lây nhiễm lỗ hổng Remote Code Execution (RCE), kẻ tấn công sẽ sở hữu quyền Root bên trong Container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Rủi ro bảo mật nghiêm trọng khi chạy Container dưới quyền Root (`USER root` hoặc thiếu câu lệnh `USER`) trong Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định Container khởi chạy với quyền Root (UID 0). Nếu ứng dụng bị lây nhiễm lỗ hổng Remote Code Execution (RCE), kẻ tấn công sẽ sở hữu quyền Root bên trong Container.
 - Kết hợp với các lỗ hổng kernel (Container Escape), kẻ tấn công có thể phá vỡ ranh giới cách ly container và chiếm quyền quản trị tối cao (Host Node Root) của máy chủ vật lý.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của công cụ Checkov trong việc phân tích tệp Dockerfile, Terraform, và Kubernetes Manifests?
-
-**Đáp án chuẩn:**
-- Checkov biên dịch các tệp IaC thành cây cú pháp trừu tượng AST và dựng Đồ thị liên kết tài nguyên (Resource Connection Graph).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ Checkov trong việc phân tích tệp Dockerfile, Terraform, và Kubernetes Manifests?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Checkov biên dịch các tệp IaC thành cây cú pháp trừu tượng AST và dựng Đồ thị liên kết tài nguyên (Resource Connection Graph).
 - Sau đó Checkov đối soát các trường thuộc tính hạ tầng với bộ hơn 1,000 quy tắc kiểm thử an ninh chuẩn CIS Benchmark và NSA Framework, phát hiện các lỗi vi phạm kèm vị trí dòng code chính xác.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Nguyên lý hoạt động của `trivy image` trong việc trích xuất danh sách OS Packages (Debian/Alpine) và đối soát CSDL Vulnerability DB?
-
-**Đáp án chuẩn:**
-- `trivy image` giải nén các lớp file system layers của Container Image, truy cập các tệp cơ sở dữ liệu quản lý gói hệ điều hành (`dpkg/status`, `apk/db`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của `trivy image` trong việc trích xuất danh sách OS Packages (Debian/Alpine) và đối soát CSDL Vulnerability DB?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `trivy image` giải nén các lớp file system layers của Container Image, truy cập các tệp cơ sở dữ liệu quản lý gói hệ điều hành (`dpkg/status`, `apk/db`).
 - Trivy trích xuất tên gói và con số phiên bản chính xác, đối soát trực tiếp với CSDL NVD CVE đệm địa phương để xuất thông tin chi tiết mã CVE, điểm CVSS Score và phiên bản đã sửa lỗi (`Fixed Version`).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Tại sao việc sử dụng thẻ Docker Image `latest` làm tăng nguy cơ rò rỉ lỗ hổng bảo mật và mất tính tái lập (Reproducibility)?
-
-**Đáp án chuẩn:**
-- Thẻ `latest` là một con trỏ động thay đổi liên tục. Hai bản build chạy ở 2 ngày khác nhau sử dụng `FROM ubuntu:latest` sẽ nạp 2 bản Base Image khác nhau.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Tại sao việc sử dụng thẻ Docker Image `latest` làm tăng nguy cơ rò rỉ lỗ hổng bảo mật và mất tính tái lập (Reproducibility)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Thẻ `latest` là một con trỏ động thay đổi liên tục. Hai bản build chạy ở 2 ngày khác nhau sử dụng `FROM ubuntu:latest` sẽ nạp 2 bản Base Image khác nhau.
 - Điều này khiến bản build tuần sau có thể đột ngột dính các lỗ hổng CVE mới do nhà phát hành cập nhật, đồng thời làm mất hoàn toàn tính tái lập của CI Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Khái niệm Minimal Distroless Image và lợi ích của việc sử dụng Distroless Image đối với kết quả quét Container Scan?
-
-**Đáp án chuẩn:**
-- Distroless Image (như Google Distroless) là Base Image tối giản chỉ chứa duy nhất tệp ứng dụng biên dịch và thư viện Runtime tối thiểu, loại bỏ 100% shell bash, package manager và tiện ích Linux thừa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Khái niệm Minimal Distroless Image và lợi ích của việc sử dụng Distroless Image đối với kết quả quét Container Scan?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Distroless Image (như Google Distroless) là Base Image tối giản chỉ chứa duy nhất tệp ứng dụng biên dịch và thư viện Runtime tối thiểu, loại bỏ 100% shell bash, package manager và tiện ích Linux thừa.
 - Sử dụng Distroless Image giúp giảm **95%** dung lượng Container Image và triệt tiêu gần **100%** các lỗ hổng CVEs hệ điều hành.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Cách xuất và nạp báo cáo Container Scanning theo định dạng chuẩn `gl-container-scanning-report.json` lên GitLab UI?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh Trivy, ta truyền cờ `--format template --template "@contrib/gitlab.tpl" -o gl-container-scanning-report.json`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Cách xuất và nạp báo cáo Container Scanning theo định dạng chuẩn `gl-container-scanning-report.json` lên GitLab UI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh Trivy, ta truyền cờ `--format template --template "@contrib/gitlab.tpl" -o gl-container-scanning-report.json`.
 - Trong `.gitlab-ci.yml`, ta nộp tệp báo cáo sang GitLab CI bằng thuộc tính:
   ```yaml
   artifacts:
@@ -1655,48 +1761,102 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - GitLab UI sẽ tự động đọc và hiển thị kết quả lên giao diện Security Dashboard và Merge Request Widget.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách thiết lập Security Quality Gate tự động ngắt pipeline khi phát hiện lỗ hổng Container mức `CRITICAL` / `HIGH`?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh `trivy image`, ta truyền cờ `--severity CRITICAL,HIGH --exit-code 1`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách thiết lập Security Quality Gate tự động ngắt pipeline khi phát hiện lỗ hổng Container mức `CRITICAL` / `HIGH`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh `trivy image`, ta truyền cờ `--severity CRITICAL,HIGH --exit-code 1`.
 - Đồng thời đặt cờ `allow_failure: false` trong CI Job. Khi phát hiện ít nhất 1 lỗ hổng mức `CRITICAL` hoặc `HIGH`, Trivy sẽ trả về `exit code 1` ngắt pipeline lập tức, ngăn không cho push Image lên Registry.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp quản lý cảnh báo giả trong Checkov bằng tệp `.checkov.yaml` hoặc comment inline `#checkov:skip=` có vết audit?
-
-**Đáp án chuẩn:**
-- Khi xác định một cảnh báo của Checkov là giả (như cờ HEALTHCHECK đã được quản lý ở Kubernetes Liveness Probe):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp quản lý cảnh báo giả trong Checkov bằng tệp `.checkov.yaml` hoặc comment inline `#checkov:skip=` có vết audit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi xác định một cảnh báo của Checkov là giả (như cờ HEALTHCHECK đã được quản lý ở Kubernetes Liveness Probe):
   1. Thêm comment `#checkov:skip=CKV_DOCKER_2: "Lý do an toàn"` trực tiếp ở dòng code Dockerfile, hoặc khai báo mã check trong tệp `.checkov.yaml`.
   2. Bắt buộc đính kèm dòng giải trình an toàn và người phê duyệt.
   3. Cấu hình tệp `CODEOWNERS` chỉ định nhóm Security quản lý tệp `.checkov.yaml`.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử sự khi Base Image chính thức của nhà cung cấp (như `python:3.10-slim`) chứa lỗ hổng CVE `CRITICAL` chưa có bản vá?
-
-**Đáp án chuẩn:**
-- Nếu CVE chưa có bản vá (`Fixed Version: N/A`) và nằm trong thành phần không được sử dụng ở Runtime:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử sự khi Base Image chính thức của nhà cung cấp (như `python:3.10-slim`) chứa lỗ hổng CVE `CRITICAL` chưa có bản vá?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nếu CVE chưa có bản vá (`Fixed Version: N/A`) và nằm trong thành phần không được sử dụng ở Runtime:
   1. Khai báo cờ `trivy image --ignore-unfixed` để bỏ qua các CVEs chưa có bản vá chính thức.
   2. Hoặc chuyển đổi sang Base Image của nhà cung cấp khác (như Chainguard Zero-CVE Images hoặc Distroless).
   3. Nếu bắt buộc phải dùng, tạo Issue theo dõi và thêm vết audit miễn trừ tạm thời có thời hạn 30 ngày.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước triển khai Container & IaC Scan chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **IaC Scan (Stage test):** Chạy Checkov quét mã nguồn tĩnh Dockerfile, Terraform, K8s trước khi build image.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai Container & IaC Scan chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **IaC Scan (Stage test):** Chạy Checkov quét mã nguồn tĩnh Dockerfile, Terraform, K8s trước khi build image.
 2. **Image Build (Stage build):** Thực thi `docker build` tạo Container Image với Non-root USER.
 3. **Container Scan (Stage build):** Chạy `trivy image` quét lỗ hổng OS Packages và trích xuất SBOM `sbom.json`.
 4. **Quality Gate Check:** Tự động ngắt pipeline (`exit 1`) nếu có lỗi IaC `HIGH` hoặc lỗi Container `CRITICAL`.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

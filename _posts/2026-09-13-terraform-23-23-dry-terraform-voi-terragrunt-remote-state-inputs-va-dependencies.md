@@ -14,8 +14,12 @@ series_order: 23
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
 summary: "Làm chủ Terragrunt - Công cụ mỏng bọc ngoài (Thin Wrapper) tối thượng giúp"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về DRY Terraform Với Terragrunt: Remote State, Inputs và Dependencies."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # DRY Terraform Với Terragrunt: Remote State, Inputs và Dependencies
 
@@ -61,9 +65,9 @@ flowchart TD
     INJECT --> DAG_SORT
     DAG_SORT --> EXEC
 
-    style User_Workspace fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    style Terragrunt_Engine fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Terraform_Execution fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style User_Workspace fill:none,stroke:#2e7d32,stroke-width:2px
+    style Terragrunt_Engine fill:none,stroke:#0288d1,stroke-width:2px
+    style Terraform_Execution fill:none,stroke:#f57c00,stroke-width:2px
 
 
 ```
@@ -165,10 +169,10 @@ graph TD
     APP -->|dependency: Đọc vpc_id, private_subnets| VPC
     APP -->|dependency: Đọc db_endpoint| RDS
 
-    style ROOT fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style VPC fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style RDS fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style APP fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style ROOT fill:none,stroke:#333,stroke-width:2px
+    style VPC fill:none,stroke:#0288d1,stroke-width:2px
+    style RDS fill:none,stroke:#f57c00,stroke-width:2px
+    style APP fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -408,37 +412,197 @@ rm -rf terraform-lab23-terragrunt
 
 ## 7. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-### Q1: Terragrunt hoạt động như thế nào khi bạn chạy lệnh `terragrunt apply`?
-- **Trả lời**: Terragrunt đọc tệp `terragrunt.hcl`, tìm kiếm file root thông qua `find_in_parent_folders()`, nạp các giá trị biến `inputs`, giải quyết các `dependency`, tải module nguồn (source) vào thư mục tạm `.terragrunt-cache/`, tự động sinh các file `.tf` đã được chỉ định trong khối `generate`, rồi chuyển tiếp lệnh sang binary `terraform` nguyên bản.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Terragrunt hoạt động như thế nào khi bạn chạy lệnh `terragrunt apply`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Terragrunt đọc tệp `terragrunt.hcl`, tìm kiếm file root thông qua `find_in_parent_folders()`, nạp các giá trị biến `inputs`, giải quyết các `dependency`, tải module nguồn (source) vào thư mục tạm `.terragrunt-cache/`, tự động sinh các file `.tf` đã được chỉ định trong khối `generate`, rồi chuyển tiếp lệnh sang binary `terraform` nguyên bản.
+</div>
+</details>
 
-### Q2: Tại sao việc sử dụng khối `dependency` trong Terragrunt lại an toàn và tối ưu hơn việc dùng Data Source `terraform_remote_state` trong HCL?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao việc sử dụng khối `dependency` trong Terragrunt lại an toàn và tối ưu hơn việc dùng Data Source `terraform_remote_state` trong HCL?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - `terraform_remote_state` đòi hỏi module con phải có quyền đọc toàn bộ State file của module cha (nguy cơ lộ secrets lưu trong State cha).
   - Khối `dependency` của Terragrunt chỉ trích xuất đúng các giá trị nằm trong khối `output` của module cha, hỗ trợ `mock_outputs` khi chạy plan, và tự động xây dựng đồ thị DAG để chạy lệnh `run-all` đúng thứ tự.
+</div>
+</details>
 
-### Q3: Khối `mock_outputs` trong `dependency` có vai trò quan trọng gì trong quy trình CI/CD?
-- **Trả lời**: Khi bạn khởi tạo một môi trường mới toanh (Greenfield Deployment) hoặc chạy Pull Request Plan, module cha (VPC) chưa từng được apply và chưa có State file. Không có `mock_outputs`, lệnh `plan` ở module con (EKS/RDS) sẽ bị lỗi sập vì không tìm thấy outputs. `mock_outputs` cung cấp các giá trị giả lập tạm thời để lệnh `terragrunt plan` có thể vượt qua bước kiểm tra schema thành công.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khối `mock_outputs` trong `dependency` có vai trò quan trọng gì trong quy trình CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Khi bạn khởi tạo một môi trường mới toanh (Greenfield Deployment) hoặc chạy Pull Request Plan, module cha (VPC) chưa từng được apply và chưa có State file. Không có `mock_outputs`, lệnh `plan` ở module con (EKS/RDS) sẽ bị lỗi sập vì không tìm thấy outputs. `mock_outputs` cung cấp các giá trị giả lập tạm thời để lệnh `terragrunt plan` có thể vượt qua bước kiểm tra schema thành công.
+</div>
+</details>
 
-### Q4: Lệnh `terragrunt run-all apply` khác gì so với việc viết một vòng lặp Bash Script chạy `terraform apply`?
-- **Trả lời**: Vòng lặp Bash chạy tuần tự theo thứ tự thư mục tĩnh và không hiểu được mối quan hệ logic giữa các tầng. `terragrunt run-all` phân tích tất cả các khối `dependency` để dựng nên một cây đồ thị phụ thuộc (DAG), tự động chạy **song song (concurrency)** các module độc lập để tiết kiệm thời gian, và dừng lại ngay lập tức nếu một module cha gặp sự cố.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Lệnh `terragrunt run-all apply` khác gì so với việc viết một vòng lặp Bash Script chạy `terraform apply`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Vòng lặp Bash chạy tuần tự theo thứ tự thư mục tĩnh và không hiểu được mối quan hệ logic giữa các tầng. `terragrunt run-all` phân tích tất cả các khối `dependency` để dựng nên một cây đồ thị phụ thuộc (DAG), tự động chạy **song song (concurrency)** các module độc lập để tiết kiệm thời gian, và dừng lại ngay lập tức nếu một module cha gặp sự cố.
+</div>
+</details>
 
-### Q5: Khối `generate` trong Terragrunt có tác dụng gì?
-- **Trả lời**: Cho phép Terragrunt tự động tạo ra các file `.tf` tùy biến (như `provider.tf`, `backend.tf`, `versions.tf`) ngay trước khi Terraform chạy, giúp bạn định nghĩa cấu hình Provider hoặc Version Constraints một lần duy nhất ở file root và tái sử dụng cho hàng trăm thư mục con.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Khối `generate` trong Terragrunt có tác dụng gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Cho phép Terragrunt tự động tạo ra các file `.tf` tùy biến (như `provider.tf`, `backend.tf`, `versions.tf`) ngay trước khi Terraform chạy, giúp bạn định nghĩa cấu hình Provider hoặc Version Constraints một lần duy nhất ở file root và tái sử dụng cho hàng trăm thư mục con.
+</div>
+</details>
 
-### Q6: Làm thế nào để truyền một biến môi trường bí mật (Secrets) vào Terragrunt mà không hardcode vào `terragrunt.hcl`?
-- **Trả lời**: Sử dụng hàm `get_env("ENV_VAR_NAME", "default_val")` hoặc đọc trực tiếp từ AWS SSM / Vault thông qua các hàm helper tích hợp của HCL.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để truyền một biến môi trường bí mật (Secrets) vào Terragrunt mà không hardcode vào `terragrunt.hcl`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Sử dụng hàm `get_env("ENV_VAR_NAME", "default_val")` hoặc đọc trực tiếp từ AWS SSM / Vault thông qua các hàm helper tích hợp của HCL.
+</div>
+</details>
 
-### Q7: Thư mục `.terragrunt-cache/` chứa những gì và có nên commit vào Git không?
-- **Trả lời**: Chứa bản sao mã nguồn của Terraform Module được tải về từ Git/Local, các plugin Provider đã tải, và các file `.tf` tạm thời được sinh bởi Terragrunt. Thư mục này **BẮT BUỘC PHẢI THÊM VÀO `.gitignore`** và tuyệt đối không commit vào Git.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Thư mục `.terragrunt-cache/` chứa những gì và có nên commit vào Git không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Chứa bản sao mã nguồn của Terraform Module được tải về từ Git/Local, các plugin Provider đã tải, và các file `.tf` tạm thời được sinh bởi Terragrunt. Thư mục này **BẮT BUỘC PHẢI THÊM VÀO `.gitignore`** và tuyệt đối không commit vào Git.
+</div>
+</details>
 
-### Q8: Cờ `--terragrunt-parallelism` trong lệnh `run-all` có ý nghĩa gì?
-- **Trả lời**: Giới hạn số lượng module được Terragrunt thực thi song song cùng một lúc (mặc định là không giới hạn hoặc dựa trên CPU). Việc giới hạn (ví dụ: `--terragrunt-parallelism 4`) giúp tránh tình trạng gửi quá nhiều request cùng lúc làm chạm ngưỡng Cloud API Rate Limit (Throttling).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cờ `--terragrunt-parallelism` trong lệnh `run-all` có ý nghĩa gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Giới hạn số lượng module được Terragrunt thực thi song song cùng một lúc (mặc định là không giới hạn hoặc dựa trên CPU). Việc giới hạn (ví dụ: `--terragrunt-parallelism 4`) giúp tránh tình trạng gửi quá nhiều request cùng lúc làm chạm ngưỡng Cloud API Rate Limit (Throttling).
+</div>
+</details>
 
-### Q9: Hàm `find_in_parent_folders()` trong Terragrunt hoạt động ra sao?
-- **Trả lời**: Hàm này bắt đầu tìm kiếm từ thư mục hiện tại ngược lên các thư mục cha cho đến khi tìm thấy tệp tin có tên chỉ định (mặc định là `terragrunt.hcl`). Nếu tìm thấy, nó trả về đường dẫn tuyệt đối đến tệp đó, giúp module con dễ dàng kế thừa cấu hình từ Root.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Hàm `find_in_parent_folders()` trong Terragrunt hoạt động ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Hàm này bắt đầu tìm kiếm từ thư mục hiện tại ngược lên các thư mục cha cho đến khi tìm thấy tệp tin có tên chỉ định (mặc định là `terragrunt.hcl`). Nếu tìm thấy, nó trả về đường dẫn tuyệt đối đến tệp đó, giúp module con dễ dàng kế thừa cấu hình từ Root.
+</div>
+</details>
 
-### Q10: Khi nào KHÔNG NÊN sử dụng Terragrunt?
-- **Trả lời**: Khi dự án có quy mô rất nhỏ (chỉ có 1-2 môi trường đơn giản, dưới 20 tài nguyên), đội ngũ kỹ sư chưa quen với kiến trúc phân tầng, hoặc khi tổ chức đã đầu tư toàn diện vào giải pháp **Terraform Cloud / HCP Terraform Workspaces** (vốn đã có sẵn giao diện quản trị biến số và state phân tầng).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi nào KHÔNG NÊN sử dụng Terragrunt?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Khi dự án có quy mô rất nhỏ (chỉ có 1-2 môi trường đơn giản, dưới 20 tài nguyên), đội ngũ kỹ sư chưa quen với kiến trúc phân tầng, hoặc khi tổ chức đã đầu tư toàn diện vào giải pháp **Terraform Cloud / HCP Terraform Workspaces** (vốn đã có sẵn giao diện quản trị biến số và state phân tầng).
+</div>
+</details>
 
 ---
 

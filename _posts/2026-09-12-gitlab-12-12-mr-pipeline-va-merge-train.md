@@ -15,8 +15,12 @@ series_order: 12
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.12] Hướng dẫn chuyên sâu Kiểm Soát Nhánh & Hợp Nhất Mã Nguồn: Merge Request Pipelines, Merged Results & Merge Trains Zero-Broken: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiểm Soát Nhánh & Hợp Nhất Mã Nguồn: Merge Request Pipelines, Merged Results & Merge Trains Zero-Broken."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 12] KIỂM SOÁT NHÁNH & HỢP NHẤT MÃ NGUỒN: MERGE REQUEST PIPELINES, MERGED RESULTS & MERGE TRAINS ZERO-BROKEN
 
@@ -1927,11 +1931,22 @@ Nội dung phần này tổng hợp 12 câu hỏi phỏng vấn sát thực tế
 
 ## §V2. Danh sách 12 Câu hỏi Vấn đáp Thực chiến
 
-### Câu 1
-**Hỏi:** Sự khác biệt cốt lõi giữa Branch Pipeline và Merge Request Pipeline về mặt cây mã nguồn Git (Git Tree) được kiểm thử là gì?
-
-**Đáp án chuẩn:**
-Branch Pipeline và Merge Request Pipeline chạy trên **cùng 1 cây mã nguồn Git duy nhất**, đó là commit `HEAD` của nhánh nguồn. Sự khác biệt duy nhất không nằm ở nội dung mã nguồn được kiểm thử, mà nằm ở **ngữ cảnh và tập biến môi trường hệ thống** được nạp (như `$CI_PIPELINE_SOURCE` đổi từ `"push"` sang `"merge_request_event"` và xuất hiện thêm các biến `$CI_MERGE_REQUEST_*`). Do đó, chỉ chuyển đổi sang MR Pipeline không tự động làm tăng mức độ an toàn cho nhánh đích.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt cốt lõi giữa Branch Pipeline và Merge Request Pipeline về mặt cây mã nguồn Git (Git Tree) được kiểm thử là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Branch Pipeline và Merge Request Pipeline chạy trên **cùng 1 cây mã nguồn Git duy nhất**, đó là commit `HEAD` của nhánh nguồn. Sự khác biệt duy nhất không nằm ở nội dung mã nguồn được kiểm thử, mà nằm ở **ngữ cảnh và tập biến môi trường hệ thống** được nạp (như `$CI_PIPELINE_SOURCE` đổi từ `"push"` sang `"merge_request_event"` và xuất hiện thêm các biến `$CI_MERGE_REQUEST_*`). Do đó, chỉ chuyển đổi sang MR Pipeline không tự động làm tăng mức độ an toàn cho nhánh đích.
 
 #### Phân tích chuyên sâu từ góc độ Kỹ sư CI/CD:
 Nhiều lập trình viên lầm tưởng rằng khi tạo Merge Request, GitLab sẽ tự động gộp code của họ vào nhánh `main` trước khi chạy test. Đây là một lầm tưởng nguy hiểm. Hãy trích xuất chữ ký hash commit trong cả hai loại Pipeline để chứng minh:
@@ -1949,12 +1964,25 @@ a1b2c3d4e5f67890123456789abcdef012345678
 Kết quả SHA hoàn toàn trùng khớp 100%. Điều này khẳng định không có bất kỳ byte mã nguồn nào trên nhánh `main` được đưa vào kiểm thử trong MR Pipeline tiêu chuẩn.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Hỏi:** Nguyên nhân gốc rễ của hiện tượng "Hai Merge Request đều chạy Pipeline báo Xanh 100% nhưng nhánh `main` bị ngắt đỏ rực ngay sau khi gộp cả hai" là gì?
-
-**Đáp án chuẩn:**
-Đây là ca sự cố **Xung đột Ngữ nghĩa (Semantic Conflict)**. Git là hệ thống quản lý phiên bản theo dòng văn bản, nên nếu hai MR sửa các vị trí/tệp khác nhau, Git xác nhận xung đột văn bản bằng `0` và cho phép gộp. Tuy nhiên, thay đổi của MR A (ví dụ: đổi tên hàm hoặc thay đổi tham số) làm vô hiệu hóa logic trong mã nguồn mới mà MR B vừa thêm vào. Mỗi MR được test trên cây mã nguồn riêng chưa bao gồm mã của MR kia, dẫn tới việc bộ test chạy đúng trên cây cũ nhưng ngắt đỏ rực trên cây gộp mới.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>** Nguyên nhân gốc rễ của hiện tượng "Hai Merge Request đều chạy Pipeline báo Xanh 100% nhưng nhánh `main` bị ngắt đỏ rực ngay sau khi gộp cả hai" là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là ca sự cố **Xung đột Ngữ nghĩa (Semantic Conflict)**. Git là hệ thống quản lý phiên bản theo dòng văn bản, nên nếu hai MR sửa các vị trí/tệp khác nhau, Git xác nhận xung đột văn bản bằng `0` và cho phép gộp. Tuy nhiên, thay đổi của MR A (ví dụ: đổi tên hàm hoặc thay đổi tham số) làm vô hiệu hóa logic trong mã nguồn mới mà MR B vừa thêm vào. Mỗi MR được test trên cây mã nguồn riêng chưa bao gồm mã của MR kia, dẫn tới việc bộ test chạy đúng trên cây cũ nhưng ngắt đỏ rực trên cây gộp mới.
 
 #### Minh họa kịch bản thực tế trong dự án doanh nghiệp:
 - **Trạng thái ban đầu trên nhánh main:** Tệp `src/tax.py` chứa hàm `calculate_tax(amount)`.
@@ -1964,12 +1992,25 @@ Kết quả SHA hoàn toàn trùng khớp 100%. Điều này khẳng định kh�
 - **Thảm họa:** Ngay sau khi MR B gộp xong, Pipeline trên `main` chạy `pytest`. Tệp `src/salary.py` gọi `calculate_tax()` nhưng hàm này đã bị MR A đổi tên! Nhánh `main` sập lập tức với lỗi `NameError: name 'calculate_tax' is not defined`.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Hỏi:** Tại sao không nên sử dụng biến `$CI_COMMIT_SHA` để gán Tag cho Docker Image hay hiện vật phát hành trong Merged Results Pipeline?
-
-**Đáp án chuẩn:**
-Trong Merged Results Pipeline, biến `$CI_COMMIT_SHA` trỏ tới **commit gộp tạm thời (Temporary Merge Commit)** do GitLab Server tự động sinh ra trong ref `refs/merge-requests/X/merge`. Commit này không thuộc bất kỳ nhánh chính thức nào và sẽ bị bộ dọn rác (Garbage Collector) của Git xóa bỏ sau khi MR đóng. Nếu gán Tag Image theo SHA này, Image đó sẽ không thể truy nguyên (untraceable) nguồn gốc trong Git history. Quy tắc là chỉ dùng `$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA` hoặc chỉ sinh hiện vật phát hành trên nhánh mặc định/Tag.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>** Tại sao không nên sử dụng biến `$CI_COMMIT_SHA` để gán Tag cho Docker Image hay hiện vật phát hành trong Merged Results Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong Merged Results Pipeline, biến `$CI_COMMIT_SHA` trỏ tới **commit gộp tạm thời (Temporary Merge Commit)** do GitLab Server tự động sinh ra trong ref `refs/merge-requests/X/merge`. Commit này không thuộc bất kỳ nhánh chính thức nào và sẽ bị bộ dọn rác (Garbage Collector) của Git xóa bỏ sau khi MR đóng. Nếu gán Tag Image theo SHA này, Image đó sẽ không thể truy nguyên (untraceable) nguồn gốc trong Git history. Quy tắc là chỉ dùng `$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA` hoặc chỉ sinh hiện vật phát hành trên nhánh mặc định/Tag.
 
 #### Nhật ký truy vết sự cố trên Container Registry:
 ```bash
@@ -1987,12 +2028,25 @@ fatal: bad object 9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c
 Lỗi `fatal: bad object` xuất hiện vì commit `9f8e7d6c` chỉ là một ref tạm thời đã bị Server xóa sạch sau khi gộp MR.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Hỏi:** Cấu hình khối `workflow:rules` chuẩn trong tệp `.gitlab-ci.yml` triệt tiêu hiện tượng sinh 2 Pipeline trùng lặp cho cùng 1 commit như thế nào?
-
-**Đáp án chuẩn:**
-Sử dụng quy tắc `when: never` đối với sự kiện push trên branch đang mở MR:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>** Cấu hình khối `workflow:rules` chuẩn trong tệp `.gitlab-ci.yml` triệt tiêu hiện tượng sinh 2 Pipeline trùng lặp cho cùng 1 commit như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng quy tắc `when: never` đối với sự kiện push trên branch đang mở MR:
 ```yaml
 workflow:
   rules:
@@ -2009,12 +2063,25 @@ Quy tắc đầu tiên loại bỏ sự kiện `push` dư thừa khi branch đã
 3. `- if: '$CI_COMMIT_BRANCH || $CI_COMMIT_TAG'`: Chấp nhận sinh Pipeline cho các sự kiện push trực tiếp trên nhánh `main` hoặc khi đẩy Git Tag.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Hỏi:** Làm thế nào để triển khai Mức bảo vệ thứ 2 (Kiểm thử trên cây đã gộp) trên phiên bản GitLab Community Edition (CE) mà không cần mua License Premium?
-
-**Đáp án chuẩn:**
-Trên bản GitLab CE, chúng ta viết một Job tự gộp tên là `auto-merge-test` thực thi kịch bản Bash `tu-gop.sh`. Kịch bản này checkout nhánh nguồn, fetch nhánh đích, và chạy câu lệnh `git merge --no-commit --no-ff origin/main`. Nếu câu lệnh gộp thành công, Job tiếp tục chạy bộ kiểm thử `pytest/go test` trên cây mã nguồn gộp tạm thời này; nếu xảy ra xung đột, kịch bản thực thi `git merge --abort` và ngắt đỏ cứng Pipeline với mã lỗi `exit 1`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>** Làm thế nào để triển khai Mức bảo vệ thứ 2 (Kiểm thử trên cây đã gộp) trên phiên bản GitLab Community Edition (CE) mà không cần mua License Premium?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trên bản GitLab CE, chúng ta viết một Job tự gộp tên là `auto-merge-test` thực thi kịch bản Bash `tu-gop.sh`. Kịch bản này checkout nhánh nguồn, fetch nhánh đích, và chạy câu lệnh `git merge --no-commit --no-ff origin/main`. Nếu câu lệnh gộp thành công, Job tiếp tục chạy bộ kiểm thử `pytest/go test` trên cây mã nguồn gộp tạm thời này; nếu xảy ra xung đột, kịch bản thực thi `git merge --abort` và ngắt đỏ cứng Pipeline với mã lỗi `exit 1`.
 
 #### Toàn văn kịch bản Bash `tu-gop.sh` chuẩn thực chiến:
 ```bash
@@ -2042,12 +2109,25 @@ fi
 ```
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Hỏi:** Nguy cơ rò rỉ cửa ngõ bảo mật (Security Gate) khi chuyển đổi hệ thống CI/CD từ Branch Pipeline sang MR Pipeline là gì và cách phòng tránh?
-
-**Đáp án chuẩn:**
-Khi chuyển sang MR Pipeline, biến `$CI_COMMIT_BRANCH` trở nên rỗng. Nếu các Job kiểm tra bảo mật (như SAST, SonarQube, Dependency Scan) vẫn giữ nguyên điều kiện cũ dạng `if: '$CI_COMMIT_BRANCH == "main"'`, GitLab Engine sẽ âm thầm loại bỏ các Job đó khỏi MR Pipeline. Cách phòng tránh là thực thi script `so-job.sh` kiểm tra tập hiệu danh sách Job giữa 2 loại Pipeline, đảm bảo tập hiệu bằng rỗng (`0`) và bổ sung điều kiện `merge_request_event` vào tất cả các Job bảo mật.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>** Nguy cơ rò rỉ cửa ngõ bảo mật (Security Gate) khi chuyển đổi hệ thống CI/CD từ Branch Pipeline sang MR Pipeline là gì và cách phòng tránh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi chuyển sang MR Pipeline, biến `$CI_COMMIT_BRANCH` trở nên rỗng. Nếu các Job kiểm tra bảo mật (như SAST, SonarQube, Dependency Scan) vẫn giữ nguyên điều kiện cũ dạng `if: '$CI_COMMIT_BRANCH == "main"'`, GitLab Engine sẽ âm thầm loại bỏ các Job đó khỏi MR Pipeline. Cách phòng tránh là thực thi script `so-job.sh` kiểm tra tập hiệu danh sách Job giữa 2 loại Pipeline, đảm bảo tập hiệu bằng rỗng (`0`) và bổ sung điều kiện `merge_request_event` vào tất cả các Job bảo mật.
 
 #### Mã nguồn kịch bản đối soát `so-job.sh`:
 ```bash
@@ -2069,12 +2149,25 @@ fi
 ```
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Hỏi:** Sự khác biệt về mặt bản chất cây mã nguồn giữa Mức bảo vệ 2 (Merged Results) và Mức bảo vệ 3 (Merge Train) là gì?
-
-**Đáp án chuẩn:**
-- **Mức bảo vệ 2 (Merged Results):** Kiểm thử trên cây mã nguồn `main` ⊕ `HEAD nhánh nguồn`. Nó chỉ bảo vệ khỏi xung đột với trạng thái hiện tại của nhánh đích.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>** Sự khác biệt về mặt bản chất cây mã nguồn giữa Mức bảo vệ 2 (Merged Results) và Mức bảo vệ 3 (Merge Train) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Mức bảo vệ 2 (Merged Results):** Kiểm thử trên cây mã nguồn `main` ⊕ `HEAD nhánh nguồn`. Nó chỉ bảo vệ khỏi xung đột với trạng thái hiện tại của nhánh đích.
 - **Mức bảo vệ 3 (Merge Train):** Kiểm thử trên cây mã nguồn `main` ⊕ `Xe_trước_1` ⊕ `Xe_trước_2` ⊕ `HEAD nhánh nguồn`. Nó bảo vệ khỏi xung đột giữa các Merge Request đang cùng xếp hàng chờ gộp đồng thời vào nhánh đích.
 
 #### Mô hình so sánh 3 cây Git Tree:
@@ -2085,12 +2178,25 @@ fi
 ```
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Hỏi:** Tại sao Mức bảo vệ 2 (Job tự gộp trên CE) vẫn có thể thất bại trong việc bảo vệ nhánh `main` nếu không bật cấu hình bảo vệ kép phía GitLab Settings?
-
-**Đáp án chuẩn:**
-Vì `rules` và cây mã nguồn được chốt ở mốc `t0` khi kích hoạt Pipeline. Nếu một MR được gộp vào `main` làm nhánh `main` thay đổi **sau** khi Pipeline của MR thứ hai đã chạy xong, kết quả kiểm thử của MR thứ hai bị lỗi thời. Nếu không bật thuộc tính *Pipelines must succeed* cộng với yêu cầu *Require status checks/rebase*, lập trình viên vẫn có thể bấm gộp mã nguồn cũ vào `main`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>** Tại sao Mức bảo vệ 2 (Job tự gộp trên CE) vẫn có thể thất bại trong việc bảo vệ nhánh `main` nếu không bật cấu hình bảo vệ kép phía GitLab Settings?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì `rules` và cây mã nguồn được chốt ở mốc `t0` khi kích hoạt Pipeline. Nếu một MR được gộp vào `main` làm nhánh `main` thay đổi **sau** khi Pipeline của MR thứ hai đã chạy xong, kết quả kiểm thử của MR thứ hai bị lỗi thời. Nếu không bật thuộc tính *Pipelines must succeed* cộng với yêu cầu *Require status checks/rebase*, lập trình viên vẫn có thể bấm gộp mã nguồn cũ vào `main`.
 
 #### Thao tác kích hoạt cấu hình bảo vệ kép via REST API:
 ```bash
@@ -2101,12 +2207,25 @@ curl --request PUT --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
 ```
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Hỏi:** Hai con số chỉ số kỹ thuật quyết định một dự án có đủ điều kiện để bật tính năng Merge Train hay không là gì?
-
-**Đáp án chuẩn:**
-Hai con số quyết định là:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>** Hai con số chỉ số kỹ thuật quyết định một dự án có đủ điều kiện để bật tính năng Merge Train hay không là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Hai con số quyết định là:
 1. **Thời gian chạy Pipeline:** Bắt buộc **≤ 10 phút**.
 2. **Tỉ lệ Pipeline bị hỏng (Failure Rate):** Bắt buộc **≤ 5%**.
 Vì Merge Train vận hành theo cơ chế nối đuôi, một xe ở đầu đoàn bị hỏng sẽ bắt buộc tất cả các xe phía sau phải ngắt ngang và chạy lại toàn bộ Pipeline từ đầu, gây lãng phí hàng trăm phút Runner nếu Pipeline quá dài hoặc tỉ lệ hỏng cao.
@@ -2119,20 +2238,46 @@ Nếu Xe thứ 2 bị ngắt đỏ ở phút thứ 24:
 - Tổng số phút Runner bị lãng phí: `4 xe × 25 phút = 100 phút Runner`!
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Hỏi:** Tại sao bản GitLab CE lại không thể thay thế tính năng Merge Train (Mức bảo vệ 3) bằng kịch bản Bash?
-
-**Đáp án chuẩn:**
-Vì Merge Train không đơn thuần là một câu lệnh Git, mà là một **hàng đợi phân tán (Distributed State Queue)** kết hợp chặt chẽ với hệ thống quản lý sự kiện và khoá tài nguyên ngầm của GitLab Server. Kịch bản Bash chạy trong một Job độc lập trên Runner không thể biết được trạng thái xếp hàng hay can thiệp vào tiến trình của các MR khác đang mở trong cùng một dự án.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>** Tại sao bản GitLab CE lại không thể thay thế tính năng Merge Train (Mức bảo vệ 3) bằng kịch bản Bash?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Merge Train không đơn thuần là một câu lệnh Git, mà là một **hàng đợi phân tán (Distributed State Queue)** kết hợp chặt chẽ với hệ thống quản lý sự kiện và khoá tài nguyên ngầm của GitLab Server. Kịch bản Bash chạy trong một Job độc lập trên Runner không thể biết được trạng thái xếp hàng hay can thiệp vào tiến trình của các MR khác đang mở trong cùng một dự án.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Hỏi:** Bảng chân trị mở rộng từ Buổi 04 cần bổ sung thêm trường dữ liệu nào để xác định chính xác cây mã nguồn mà Job đang đứng trên đó?
-
-**Đáp án chuẩn:**
-Cần bổ sung thêm trường biến hệ thống thứ hai là `CI_MERGE_REQUEST_EVENT_TYPE`. Trường thứ nhất (`CI_PIPELINE_SOURCE == "merge_request_event"`) chỉ cho biết sự kiện kích hoạt Pipeline, còn trường thứ hai cho biết cây Git cụ thể: `detached` (HEAD nhánh nguồn), `merged_result` (commit gộp tạm phía Server), hay `merge_train` (cây gộp dồn của toàn bộ đội xe trong hàng đợi).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>** Bảng chân trị mở rộng từ Buổi 04 cần bổ sung thêm trường dữ liệu nào để xác định chính xác cây mã nguồn mà Job đang đứng trên đó?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cần bổ sung thêm trường biến hệ thống thứ hai là `CI_MERGE_REQUEST_EVENT_TYPE`. Trường thứ nhất (`CI_PIPELINE_SOURCE == "merge_request_event"`) chỉ cho biết sự kiện kích hoạt Pipeline, còn trường thứ hai cho biết cây Git cụ thể: `detached` (HEAD nhánh nguồn), `merged_result` (commit gộp tạm phía Server), hay `merge_train` (cây gộp dồn của toàn bộ đội xe trong hàng đợi).
 
 #### Bảng đối chiếu chi tiết 3 trạng thái Event Type:
 | `CI_MERGE_REQUEST_EVENT_TYPE` | Cây mã nguồn checkout được | Loại License yêu cầu |
@@ -2142,14 +2287,29 @@ Cần bổ sung thêm trường biến hệ thống thứ hai là `CI_MERGE_REQU
 | `merge_train` | Git ref gộp dồn của hàng đợi | Premium / Ultimate |
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Hỏi:** Kỹ sư DevOps nên xử lý như thế nào khi ban quản lý yêu cầu bật tính năng Fast-forward Merge bắt buộc Rebase trên toàn bộ 100 repository trong tập đoàn?
-
-**Đáp án chuẩn:**
-Kỹ sư cần cảnh báo nguy cơ bùng nổ tài nguyên Runner. Khi bật thuộc tính này, nếu một MR hotfix được gộp vào `main`, 99 MR còn lại lập tức bị đánh dấu "Out of date" và kích hoạt Rebase/run pipeline tự động đồng thời. Kế hoạch triển khai chuẩn là: Thông báo trước cho đội ngũ phát triển, triển khai theo từng dự án ngoài giờ cao điểm, và nâng cấp dung lượng `concurrent` của Runner pool trước khi bật cấu hình.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>** Kỹ sư DevOps nên xử lý như thế nào khi ban quản lý yêu cầu bật tính năng Fast-forward Merge bắt buộc Rebase trên toàn bộ 100 repository trong tập đoàn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kỹ sư cần cảnh báo nguy cơ bùng nổ tài nguyên Runner. Khi bật thuộc tính này, nếu một MR hotfix được gộp vào `main`, 99 MR còn lại lập tức bị đánh dấu "Out of date" và kích hoạt Rebase/run pipeline tự động đồng thời. Kế hoạch triển khai chuẩn là: Thông báo trước cho đội ngũ phát triển, triển khai theo từng dự án ngoài giờ cao điểm, và nâng cấp dung lượng `concurrent` của Runner pool trước khi bật cấu hình.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 

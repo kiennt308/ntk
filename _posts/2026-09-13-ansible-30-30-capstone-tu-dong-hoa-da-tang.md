@@ -15,8 +15,12 @@ series_order: 30
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.30] Hướng dẫn chuyên sâu Đồ Án Capstone: Xây Dựng Hệ Thống Tự Động Hóa Hạ Tầng Doanh Nghiệp Đa Tầng (Load Balancer, Web, DB, Security) End-to-End: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Đồ Án Capstone: Xây Dựng Hệ Thống Tự Động Hóa Hạ Tầng Doanh Nghiệp Đa Tầng (Load Balancer, Web, DB, Security) End-to-End."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 30] ĐỒ ÁN CAPSTONE: XÂY DỰNG HỆ THỐNG TỰ ĐỘNG HÓA HẠ TẦNG DOANH NGHIỆP ĐA TẦNG (LOAD BALANCER, WEB, DB, SECURITY) END-TO-END
 
@@ -1029,10 +1033,23 @@ Các câu hỏi gắn nhãn 🔥 là **câu hỏi tủ tốt nghiệp bắt bu�
 
 ## V2. Bộ câu hỏi — ĐÚNG 12 câu
 
-### Câu 1 — Kiến trúc Hạ tầng Enterprise 3 Tầng trong Capstone 🔥
-**Hỏi:** Trình bày mô hình kiến trúc Enterprise 3 tầng (Nginx LB -> Web Cluster -> PostgreSQL DB) trong Dự án Capstone. Tại sao việc chia 3 tầng độc lập lại vượt trội hơn cài gộp vào 1 server? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Mô hình 3 tầng:
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày mô hình kiến trúc Enterprise 3 tầng (Nginx LB -> Web Cluster -> PostgreSQL DB) trong Dự án Capstone. Tại sao việc chia 3 tầng độc lập lại vượt trội hơn cài gộp vào 1 server? *(Liên quan QT 4.1)</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mô hình 3 tầng:
   1. **Tầng 1 (Load Balancer Nginx):** Tiếp nhận lưu lượng HTTP/HTTPS cổng 80/443 từ công chúng và điều hướng round-robin tới cụm Web Nodes.
   2. **Tầng 2 (Web Cluster Systemd Service):** Xử lý logic ứng dụng, chạy hạ đặc quyền under user `sysops` với `Restart=always`.
   3. **Tầng 3 (Database Cluster PostgreSQL):** Lưu trữ dữ liệu hệ thống, bảo vệ tuyệt đối bằng Firewalld Rich Rules chỉ cho phép IP Web Nodes truy cập cổng 5432.
@@ -1043,6 +1060,8 @@ Các câu hỏi gắn nhãn 🔥 là **câu hỏi tủ tốt nghiệp bắt bu�
 - 2: Phân tích chính xác vai trò của 3 tầng Nginx LB, Systemd Web App và PostgreSQL DB.
 - 3: Nêu đúng + vẽ sơ đồ luồng dữ liệu 3 tầng xuất sắc.
 **Câu hỏi đào sâu:** Làm thế nào để thêm máy chủ Web Node thứ 3 vào cụm Web Cluster mà không phải sửa file Playbook? *(Chỉ cần khai báo thêm host `web3` vào nhóm `[web]` trong `inventory/capstone-hosts.ini`, Nginx Upstream Jinja2 Template sẽ tự động phát hiện và sinh cấu hình mới.)*
+</div>
+</details>
 
 ---
 

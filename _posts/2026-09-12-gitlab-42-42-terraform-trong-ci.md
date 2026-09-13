@@ -15,8 +15,12 @@ series_order: 42
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.42] Hướng dẫn chuyên sâu Tự Động Hóa Hạ Tầng Với Terraform Trong CI: Terraform Plan / Apply Pipeline, State Locking & Infracost Estimate: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tự Động Hóa Hạ Tầng Với Terraform Trong CI: Terraform Plan / Apply Pipeline, State Locking & Infracost Estimate."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 42] TỰ ĐỘNG HÓA HẠ TẦNG VỚI TERRAFORM TRONG CI: TERRAFORM PLAN / APPLY PIPELINE, STATE LOCKING & INFRACOST ESTIMATE
 
@@ -1800,10 +1804,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Sự khác biệt nguy hiểm nhất giữa việc chạy câu lệnh `terraform apply tfplan` (dùng tệp artifact plan binary) và chạy `terraform apply -auto-approve` (không dùng tệp artifact plan) trong CI Pipeline là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt nguy hiểm nhất giữa việc chạy câu lệnh `terraform apply tfplan` (dùng tệp artifact plan binary) và chạy `terraform apply -auto-approve` (không dùng tệp artifact plan) trong CI Pipeline là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Chạy không dùng artifact sẽ tự tính toán lại plan mới tại thời điểm apply, có thể xóa nhầm tài nguyên Production do sai lệch state; dùng `tfplan` artifact đảm bảo thực thi ĐÚNG các hành động đã được review trên MR.
 
 **Đáp án chuẩn:**
@@ -1813,6 +1829,8 @@ Chạy không dùng artifact sẽ tự tính toán lại plan mới tại thời
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "chạy `terraform apply -auto-approve` ở stage apply giúp tiết kiệm thời gian CI mà không có rủi ro nào".
+</div>
+</details>
 
 ---
 

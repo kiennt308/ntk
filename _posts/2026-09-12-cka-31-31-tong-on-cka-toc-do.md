@@ -15,8 +15,12 @@ series_order: 31
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.31] Hướng dẫn chuyên sâu Tổng Ôn Tốc Độ CKA: Chinh Phục 20 Kịch Bản Thực Hành Quản Trị Cụm Trong 90 Phút: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tổng Ôn Tốc Độ CKA: Chinh Phục 20 Kịch Bản Thực Hành Quản Trị Cụm Trong 90 Phút."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 31] TỔNG ÔN TỐC ĐỘ CKA: CHINH PHỤC 20 KỊCH BẢN THỰC HÀNH QUẢN TRỊ CỤM TRONG 90 PHÚT
 
@@ -311,48 +315,240 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Tốc độ làm bài trung bình tính theo phút cho mỗi câu hỏi trong bài thi CKA tốc độ 20 câu 90 phút là bao nhiêu?
-   - **Đáp án:** Tốc độ trung bình **`4,5 phút`** mỗi câu.
 
-2. Cú pháp `jsonpath` chuẩn để trích xuất địa chỉ IP của Pod có tên `web-pod` là gì?
-   - **Đáp án:** Lệnh `kubectl get pod web-pod -o jsonpath='{.status.podIP}'`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tốc độ làm bài trung bình tính theo phút cho mỗi câu hỏi trong bài thi CKA tốc độ 20 câu 90 phút là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tốc độ trung bình **`4,5 phút`** mỗi câu.
+</div>
+</details>
 
-3. Biến môi trường bắt buộc phải khai báo trước khi gọi lệnh `etcdctl` để làm việc với API etcd v3 là gì?
-   - **Đáp án:** Biến môi trường **`ETCDCTL_API=3`**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cú pháp `jsonpath` chuẩn để trích xuất địa chỉ IP của Pod có tên `web-pod` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl get pod web-pod -o jsonpath='{.status.podIP}'`.
+</div>
+</details>
 
-4. Ba cờ chứng thực TLS bắt buộc phải truyền khi chạy lệnh `etcdctl snapshot save` là gì?
-   - **Đáp án:** Cờ **`--cacert`**, **`--cert`**, và **`--key`**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Biến môi trường bắt buộc phải khai báo trước khi gọi lệnh `etcdctl` để làm việc với API etcd v3 là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Biến môi trường **`ETCDCTL_API=3`**.
+</div>
+</details>
 
-5. Đường dẫn thư mục mặc định chứa các tệp chứng chỉ TLS của etcd trên cụm kubeadm là gì?
-   - **Đáp án:** Đường dẫn **/etc/kubernetes/pki/etcd/**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Ba cờ chứng thực TLS bắt buộc phải truyền khi chạy lệnh `etcdctl snapshot save` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ **`--cacert`**, **`--cert`**, và **`--key`**.
+</div>
+</details>
 
-6. Ba bước tiêu chuẩn để chẩn đoán nguyên nhân gây lỗi Node ở trạng thái `NotReady` là gì?
-   - **Đáp án:** 1) `kubectl describe node`, 2) `systemctl status kubelet`, 3) `journalctl -u kubelet -n 50`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Đường dẫn thư mục mặc định chứa các tệp chứng chỉ TLS của etcd trên cụm kubeadm là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đường dẫn **/etc/kubernetes/pki/etcd/**.
+</div>
+</details>
 
-7. Câu lệnh `kubectl` dùng để hoàn tác một Deployment về phiên bản ổn định trước đó là gì?
-   - **Đáp án:** Lệnh **`kubectl rollout undo deployment/<deployment-name>`**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Ba bước tiêu chuẩn để chẩn đoán nguyên nhân gây lỗi Node ở trạng thái `NotReady` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1) `kubectl describe node`, 2) `systemctl status kubelet`, 3) `journalctl -u kubelet -n 50`.
+</div>
+</details>
 
-8. Cú pháp câu lệnh `kubectl create` để sinh nhanh tệp Ingress YAML cho host `app.test.com` trỏ về `web-svc:80` là gì?
-   - **Đáp án:** Lệnh `kubectl create ingress web-ing --rule="app.test.com/=web-svc:80" --dry-run=client -o yaml`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu lệnh `kubectl` dùng để hoàn tác một Deployment về phiên bản ổn định trước đó là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh **`kubectl rollout undo deployment/<deployment-name>`**.
+</div>
+</details>
 
-9. Miền kiến thức nào chiếm trọng số điểm lớn nhất (30%) trong kỳ thi CKA?
-   - **Đáp án:** Miền **Troubleshooting (30 %)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cú pháp câu lệnh `kubectl create` để sinh nhanh tệp Ingress YAML cho host `app.test.com` trỏ về `web-svc:80` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl create ingress web-ing --rule="app.test.com/=web-svc:80" --dry-run=client -o yaml`.
+</div>
+</details>
 
-10. Cờ câu lệnh `journalctl` nào được dùng để in trực tiếp 50 dòng log cuối cùng của Kubelet mà không bị nghẽn màn hình?
-    - **Đáp án:** Lệnh `journalctl -u kubelet -n 50 --no-pager`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Miền kiến thức nào chiếm trọng số điểm lớn nhất (30%) trong kỳ thi CKA?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Miền **Troubleshooting (30 %)**.
+</div>
+</details>
 
-11. Tại sao lệnh `kubectl get pods -o custom-columns=...` lại được ưa chuộng hơn `grep` trong thi CKA?
-    - **Đáp án:** Vì giúp **in ra bảng dữ liệu chuẩn gồm cả tiêu đề cột** theo đúng yêu cầu trích xuất của đề thi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cờ câu lệnh `journalctl` nào được dùng để in trực tiếp 50 dòng log cuối cùng của Kubelet mà không bị nghẽn màn hình?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `journalctl -u kubelet -n 50 --no-pager`.
+</div>
+</details>
 
-12. Cú pháp CLI chuẩn thực hiện sao lưu etcd snapshot CKA là gì?
-    - **Đáp án:**
-      ```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao lệnh `kubectl get pods -o custom-columns=...` lại được ưa chuộng hơn `grep` trong thi CKA?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì giúp **in ra bảng dữ liệu chuẩn gồm cả tiêu đề cột** theo đúng yêu cầu trích xuất của đề thi.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp CLI chuẩn thực hiện sao lưu etcd snapshot CKA là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
       ETCDCTL_API=3 etcdctl snapshot save /tmp/etcd-backup.db \
         --endpoints=https://127.0.0.1:2379 \
         --cacert=/etc/kubernetes/pki/etcd/ca.crt \
         --cert=/etc/kubernetes/pki/etcd/server.crt \
         --key=/etc/kubernetes/pki/etcd/server.key
       ```
+</div>
+</details>
 
 ---
 
@@ -738,11 +934,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Tỉ lệ trọng số điểm số của 5 miền kiến thức trong kỳ thi CKA do CNCF quy định được phân bổ như thế nào?
 
-**Đáp án chuẩn:**
-1. Troubleshooting: **30%**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tỉ lệ trọng số điểm số của 5 miền kiến thức trong kỳ thi CKA do CNCF quy định được phân bổ như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. Troubleshooting: **30%**
 2. Cluster Architecture, Installation & Configuration: **25%**
 3. Services & Networking: **20%**
 4. Workloads & Services: **15%**
@@ -754,6 +962,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Kể tên chuẩn xác 100% trọng số của cả 5 miền kiến thức CKA.
 
 **Câu hỏi đào sâu:** (Ngưỡng điểm tối thiểu để đỗ chứng chỉ CKA là bao nhiêu? — Ngưỡng điểm đỗ CKA là **`66 %`** (66/100 điểm)).
+</div>
+</details>
 
 ---
 
@@ -1014,25 +1224,68 @@ Biên soạn PV và PVC tại `/tmp/pv-pvc.yaml`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Trích xuất Pods bằng `jsonpath`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Trích xuất Pods bằng `jsonpath</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl get pods -n kube-system -o jsonpath='{.items[*].metadata.name}' > /tmp/failed-pods.txt 2>/dev/null || {
   echo "coredns-123 kube-proxy-456" > /tmp/failed-pods.txt
 }
 ```
+</div>
+</details>
 
-### Câu 2 — Sao lưu etcd snapshot
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Sao lưu etcd snapshot</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/etcd-snap.db
 ETCD_SNAPSHOT_BACKUP_BINARY_DATA_OK
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Sinh Ingress manifest imperatively
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Sinh Ingress manifest imperatively</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/ing.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -1053,10 +1306,25 @@ spec:
                   number: 80
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Biên soạn PV và PVC
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Biên soạn PV và PVC</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/pv-pvc.yaml
 apiVersion: v1
 kind: PersistentVolume
@@ -1085,6 +1353,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

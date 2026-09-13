@@ -15,8 +15,12 @@ series_order: 49
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.49] Đại cẩm nang tổng hợp hơn 500 câu hỏi phỏng vấn GitLab CI/CD và DevSecOps chuyên sâu từ 48 chuyên đề: kiến trúc Runner, DAG needs, child-parent pipeline, monorepo, OIDC federation, SAST/DAST, SLSA SBOM và DORA metrics."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tuyển Tập 100+ Câu Hỏi Phỏng Vấn GitLab CI/CD & DevSecOps Chuyên Sâu (48 Buổi)."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 49] TUYỂN TẬP 100+ CÂU HỎI PHỎNG VẤN GITLAB CI/CD & DEVSECOPS CHUYÊN SÂU (48 BUỔI)
 
@@ -64,11 +68,23 @@ Bộ tài liệu đúc kết toàn bộ câu hỏi phỏng vấn thực chiến,
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Một job trong GitLab CI lấy dữ liệu vào từ đâu, và đưa dữ liệu ra bằng cách nào?
-
-**Đáp án chuẩn:** Bốn đường vào và hai đường ra. Vào: (1) mã nguồn từ git ở pha `get_sources`; (2) `cache` ở pha `restore_cache`; (3) `artifacts` của job trước ở pha `download_artifacts`; (4) biến môi trường, nạp ở pha `prepare_script` tức trước cả ba đường kia. Ra: `artifacts` và **mã thoát**. Log **không phải** đường ra — không job nào đọc được log của job khác một cách có cấu trúc; ngoại lệ duy nhất được thiết kế riêng là `artifacts:reports:dotenv`, và nó là một dạng artifact chứ không phải log.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Một job trong GitLab CI lấy dữ liệu vào từ đâu, và đưa dữ liệu ra bằng cách nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Bốn đường vào và hai đường ra. Vào: (1) mã nguồn từ git ở pha `get_sources`; (2) `cache` ở pha `restore_cache`; (3) `artifacts` của job trước ở pha `download_artifacts`; (4) biến môi trường, nạp ở pha `prepare_script` tức trước cả ba đường kia. Ra: `artifacts` và **mã thoát**. Log **không phải** đường ra — không job nào đọc được log của job khác một cách có cấu trúc; ngoại lệ duy nhất được thiết kế riêng là `artifacts:reports:dotenv`, và nó là một dạng artifact chứ không phải log.
 
 Điểm cần nói thêm để đạt 3 điểm: **không có đường thứ năm**. Mọi thứ khác mà job cần thì `script` phải tự đi lấy, và khi ấy nó là việc của người viết pipeline chứ không phải của runner.
 
@@ -79,6 +95,8 @@ Bộ tài liệu đúc kết toàn bộ câu hỏi phỏng vấn thực chiến,
 - 3đ: Đủ bốn vào hai ra, **và** nói rõ log không phải đường ra, **và** nêu `dotenv` là ngoại lệ duy nhất.
 
 **Câu hỏi đào sâu:** Nếu job cần một tệp nằm trên một server nội bộ, nó vào bằng đường nào? *(Không đường nào cả — `script` phải tự tải về, và khi đó phải xử lý xác thực và đường ra internet của runner. Đó là chủ đề buổi 47 khi runner bị chặn egress.)*
+</div>
+</details>
 
 ---
 
@@ -478,9 +496,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-
-**Hỏi:** Một job GitLab CI được cấu hình bởi những tệp nào? Mỗi tệp quyết định điều gì?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Một job GitLab CI được cấu hình bởi những tệp nào? Mỗi tệp quyết định điều gì?
 
 **Đáp án chuẩn:** **Hai** tệp, do **hai** người thường thuộc hai đội khác nhau viết.
 
@@ -497,6 +528,8 @@ Ranh giới ấy chính là ranh giới giữa "lỗi của tôi" và "lỗi c�
 - 3đ: Như trên, **và** nêu con số 3/8 pha, **và** nêu được khác biệt về **phạm vi ảnh hưởng** khi sửa hai tệp.
 
 **Câu hỏi đào sâu:** Có thứ nào cả hai tệp cùng nói tới không? *(Có — `image`. `config.toml` cho mặc định, `image:` trong job ghi đè. Đây cũng là câu BTVN 4 chuẩn bị cho buổi 03 về thứ tự ưu tiên.)*
+</div>
+</details>
 
 ---
 
@@ -923,9 +956,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-
-**Hỏi:** `stage` trong GitLab CI cho ta cái gì?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** `stage` trong GitLab CI cho ta cái gì?
 
 **Đáp án chuẩn:** Cho **một ràng buộc thứ tự**, và **chỉ có thế**. `stage` nói "mọi job của stage này chạy sau khi mọi job của stage trước kết thúc". Nó là một **hàng rào thời gian**.
 
@@ -942,6 +988,8 @@ Hai thứ nó **không** cho:
 - 3đ: Như trên, **và** nêu con số 0 byte, **và** giải thích được vì sao mặc định tải artifact stage trước gây hiểu nhầm.
 
 **Câu hỏi đào sâu:** Vậy cái gì bỏ được hàng rào? *(`needs` — buổi 08. Nó biến pipeline từ chuỗi stage thành một đồ thị phụ thuộc, và thời gian pipeline chuyển từ "tổng các stage" sang "đường găng dài nhất".)*
+</div>
+</details>
 
 ---
 
@@ -1398,9 +1446,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-
-**Hỏi:** `rules` được đánh giá lúc nào?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** `rules` được đánh giá lúc nào?
 
 **Đáp án chuẩn:** **Đúng một lần, lúc pipeline được tạo** — gọi thời điểm ấy là `t0`. Danh sách job của pipeline chốt tại đó và **không gì đổi được nó sau đó**.
 
@@ -1421,6 +1482,8 @@ Ba hệ quả kiểm chứng được:
 - 3đ: Như trên, **và** nêu được phép đo ba giá trị (trước / sau retry / pipeline mới).
 
 **Câu hỏi đào sâu:** Vậy muốn đổi danh sách job thì làm gì? *(Tạo pipeline mới — push commit mới, hoặc gọi API `POST /projects/:id/pipeline`. Retry không đủ.)*
+</div>
+</details>
 
 ---
 
@@ -1911,9 +1974,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-
-**Hỏi:** `artifacts` và `cache` khác nhau ở đâu? Trả lời bằng **cơ chế**, đừng trả lời bằng định nghĩa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** `artifacts` và `cache` khác nhau ở đâu? Trả lời bằng **cơ chế**, đừng trả lời bằng định nghĩa.
 
 **Đáp án chuẩn:** Khác ở **ai giữ**; mọi khác biệt còn lại là hệ quả. Có **2** kho, chỉ **1** trong 2 có API đọc.
 
@@ -1930,6 +2006,8 @@ Nói gọn để đạt 3 điểm: **`artifacts` là hợp đồng, `cache` là 
 - 3đ: Như trên, **và** nêu chỉ artifact có API đọc nên chỉ nó kiểm chứng được từ ngoài, **và** đưa được câu hỏi chọn "sai hay chỉ chậm".
 
 **Câu hỏi đào sâu:** Bật distributed cache thì cache có thành hợp đồng chưa? *(Chưa. Nó chỉ chuyển cache từ đĩa một runner sang kho dùng chung, tức tăng tỉ lệ trúng. Vẫn không có bản ghi trong cơ sở dữ liệu GitLab, không có API đọc, runner vẫn không báo lỗi khi thiếu. Đổi tỉ lệ trúng không đổi loại đảm bảo.)*
+</div>
+</details>
 
 ---
 
@@ -2362,9 +2440,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-
-**Hỏi:** Biến trong GitLab CI đến từ bao nhiêu nguồn? Kể theo thứ tự ưu tiên, cao trước.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Biến trong GitLab CI đến từ bao nhiêu nguồn? Kể theo thứ tự ưu tiên, cao trước.
 
 **Đáp án chuẩn:** **9** nguồn, thứ tự do **nền tảng** quyết định, không do tệp YAML.
 
@@ -2389,6 +2480,8 @@ Con số phải nói ra: **4** nấc cao nhất nằm **ngoài** repo. Nghĩa l�
 - 3đ: Như trên, **và** nói rõ **4** nấc cao nhất ngoài repo nên không đọc được bằng YAML, **và** nêu bảng phải đo lại theo phiên bản.
 
 **Câu hỏi đào sâu:** Vì sao nền tảng xếp cấu hình ngoài repo **trên** cấu hình trong repo? *(Cố ý: để đội vận hành đổi giá trị mà không cần merge request.)*
+</div>
+</details>
 
 ---
 
@@ -2800,9 +2893,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-
-**Hỏi:** Một pipeline hỏng, không ai biết vì sao. **Bốn lệnh đầu tiên** của bạn là gì, và mỗi lệnh loại bỏ được bao nhiêu giả thuyết?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Một pipeline hỏng, không ai biết vì sao. **Bốn lệnh đầu tiên** của bạn là gì, và mỗi lệnh loại bỏ được bao nhiêu giả thuyết?
 
 **Đáp án chuẩn:** Gỡ rối là **thu hẹp**, không phải thử lại. Không gian nghi ngờ có kích thước biết trước: **4** đường dữ liệu vào job (git · `cache` · `artifacts` · biến — buổi 01 QT 5.1) nhân **8** pha (buổi 01 QT 4.2) = **32** ô. Mỗi lệnh phải xoá một **hàng** hoặc một **cột**, không xoá từng ô.
 
@@ -2822,6 +2928,8 @@ Bốn lệnh tốn khoảng **2 giây** một lượt gọi API, thay cho 10–2
 - 3đ: Đủ bốn lệnh, **và** nói ra **4 × 8 = 32** ô cùng con số loại bỏ **7/8**, **và** nêu ca `pending` không có `trace`.
 
 **Câu hỏi đào sâu:** Bảng 32 ô **không** giải được lớp sự cố nào? *(Lớp ngoài phạm vi một job: hạ tầng GitLab, quota, hàng đợi runner ở quy mô. Đây là khung thu hẹp, không phải danh sách đầy đủ — buổi 13 và 47.)*
+</div>
+</details>
 
 ---
 
@@ -3219,9 +3327,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-
-**Hỏi:** Thời gian chạy của một pipeline được tính thế nào? Có mấy công thức, và hiệu của chúng gọi là gì?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Thời gian chạy của một pipeline được tính thế nào? Có mấy công thức, và hiệu của chúng gọi là gì?
 
 **Đáp án chuẩn:** **Hai** công thức, cho hai con số khác nhau trên **cùng** một tập job (QT 4.1). Tuần tự: `T = Σ max(job trong stage)` — **tổng của các max**. DAG: `T = max Σ(job trên một đường)` — **max của các tổng**. Hiệu gọi là **lãng phí hàng rào**: hàng rào `stage` buộc mọi job chờ job chậm nhất **cùng stage**, kể cả job không có quan hệ dữ liệu nào với nó (buổi 03 QT 5.3 — lần thứ **2**, lần này là lần **sửa**).
 
@@ -3234,6 +3355,8 @@ Ví dụ chuẩn **7 job**: tổng theo stage **325 s**, đường găng **235 s
 - 3đ: Như trên, **và** đưa **325 · 235 · 90 s = 28%**, **và** chốt **540 s** không đổi, **và** nêu vùng con số 28% không đúng.
 
 **Câu hỏi đào sâu:** Bỏ hẳn `scan` khỏi pipeline thì hai con số thành mấy? *(**265 s** và **235 s**, lãng phí còn **30 s = 11%**, phút runner giảm **150 s** — nhưng khoản đó do **bỏ job**, không do DAG.)*
+</div>
+</details>
 
 ---
 
@@ -3601,9 +3724,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-
-**Hỏi:** Pipeline con có `t0` **riêng**. Điều đó cho bạn làm được **một** việc mà YAML tĩnh không làm được — việc đó là gì, và bạn trả giá bằng cái gì?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Pipeline con có `t0` **riêng**. Điều đó cho bạn làm được **một** việc mà YAML tĩnh không làm được — việc đó là gì, và bạn trả giá bằng cái gì?
 
 **Đáp án chuẩn:** Việc đó là **quyết định muộn hơn**. YAML tĩnh được đọc ở `t0`, trước khi bất kỳ tiến trình nào của ta chạy, nên nó không thể chứa **kết quả của một phép tính về repo** (QT 4.1). Pipeline con là lần tạo pipeline **thứ hai**, xảy ra lúc job `trigger` chạy — sau khi job cha đã chạy — nên nó thấy được kết quả của chúng (QT 4.2). Có **2** thời điểm `t0` trong một lần push; khoảng cách giữa chúng bằng thời lượng các job cha chạy trước `trigger`. Con số của ví dụ chuẩn: **12** module × **3** job cho **36** khối, ~**540** dòng ở YAML tĩnh, so với **1** khối `trigger` + **1** script ~**40** dòng.
 
@@ -3616,6 +3752,8 @@ Ba khoản phải trả: **8–15** giây job `sinh-cau-hinh` **mỗi** pipeline
 - 3đ: Như trên, **và** phép tính **12 × 3 = 36** khối so với **1** khối + **40** dòng, **và** ≥ hai trong ba khoản phải trả, có con số **8–15** giây.
 
 **Câu hỏi đào sâu:** Repo của bạn có **3** module. Có nên dùng pipeline động? *(Không — 9 khối thì YAML tĩnh **đơn giản hơn**. Ngưỡng: dưới **10** khối chép lại thì đừng dùng, vì 8–15 giây phải trả mọi lần chạy còn lợi ích chỉ tới khi phép nhân đủ lớn.)*
+</div>
+</details>
 
 ---
 
@@ -3966,12 +4104,22 @@ Trả lời ba câu sau bằng viết, mỗi câu 3–5 dòng. Mang theo vào bu
 
 ## §V1. Danh mục 12 câu hỏi Vấn đáp Kỹ thuật
 
----
-
-### Câu 1 (🔥 Câu tủ): Hãy trình bày bốn cơ chế tái sử dụng cấu hình và ba thời điểm hợp nhất trong GitLab CI/CD.
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Trong GitLab CI/CD có 4 cơ chế tái sử dụng cấu hình (`include`, `extends`, YAML Anchor `&`/`*`, `!reference`) và chúng trải qua 3 thời điểm hợp nhất cố định theo thứ tự:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>(🔥 Câu tủ): Hãy trình bày bốn cơ chế tái sử dụng cấu hình và ba thời điểm hợp nhất trong GitLab CI/CD.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Trong GitLab CI/CD có 4 cơ chế tái sử dụng cấu hình (`include`, `extends`, YAML Anchor `&`/`*`, `!reference`) và chúng trải qua 3 thời điểm hợp nhất cố định theo thứ tự:
   1. **Thời điểm 1 (t0 - YAML Parser Phase):** YAML Parser phân giải cú pháp cơ bản nội trong tệp đơn độc. YAML Anchor `&` và Alias `*` được hợp nhất ở thời điểm này.
   2. **Thời điểm 2 (t1 - GitLab Includer Phase):** GitLab nạp toàn bộ các tệp từ danh sách `include` (`local`, `project`, `remote`, `template`) để tạo thành một tệp YAML phân giải phẳng duy nhất (`merged_yaml`).
   3. **Thời điểm 3 (t2 - GitLab Resolver Phase):** Engine xử lý các từ khoá nâng cao của GitLab như `extends` và thẻ custom `!reference` trên cây YAML đã phẳng.
@@ -3997,11 +4145,25 @@ my-job:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 2 (🔥 Câu tủ): Khi một Job dùng `extends` kế thừa từ một Job ẩn và khai báo lại khoá `script`, điều gì sẽ xảy ra với mảng `script` của Job ẩn? Vì sao?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Mảng `script` của Job ẩn (Job cha) sẽ bị **XOÁ SẠCH VÀ THAY THẾ HOÀN TOÀN** bởi mảng `script` mới khai báo ở Job con, chứ **KHÔNG PHẢI ĐƯỢC NỐI (APPEND)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>(🔥 Câu tủ): Khi một Job dùng `extends` kế thừa từ một Job ẩn và khai báo lại khoá `script`, điều gì sẽ xảy ra với mảng `script` của Job ẩn? Vì sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Mảng `script` của Job ẩn (Job cha) sẽ bị **XOÁ SẠCH VÀ THAY THẾ HOÀN TOÀN** bởi mảng `script` mới khai báo ở Job con, chứ **KHÔNG PHẢI ĐƯỢC NỐI (APPEND)**.
 - **Giải thích kỹ thuật:** Quy tắc hợp nhất thuộc tính của `extends` quy định:
   - Tất cả các thuộc tính dạng **từ điển (Dictionary/Hash)** như `variables`, `services`, `cache` sẽ được thực hiện **Trộn sâu (Deep Merge)**.
   - Tất cả các thuộc tính dạng **mảng (Array/Sequence)** như `script`, `before_script`, `after_script`, `tags`, `image` (nếu là list) sẽ bị **Thay thế toàn bộ (Array Replacement)** bởi đối tượng kế thừa.
@@ -4024,11 +4186,25 @@ app-build:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 3 (★★★): YAML Anchor (`&anchor` và `*alias`) có sử dụng được xuyên qua biên giới tệp `include` không? Vì sao?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** **KHÔNG THỂ**. YAML Anchor chỉ có phạm vi hoạt động trong **duy nhất 1 tệp văn bản YAML đơn độc** và hoàn toàn bất lực khi gọi xuyên tệp `include`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>(★★★): YAML Anchor (`&anchor` và `*alias`) có sử dụng được xuyên qua biên giới tệp `include` không? Vì sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** **KHÔNG THỂ**. YAML Anchor chỉ có phạm vi hoạt động trong **duy nhất 1 tệp văn bản YAML đơn độc** và hoàn toàn bất lực khi gọi xuyên tệp `include`.
 - **Giải thích kỹ thuật:** Cú pháp Anchor `&` và Alias `*` là tiêu chuẩn của trình biên dịch YAML gốc (YAML Spec Level), được xử lý tại **Thời điểm 1 (t0 - YAML Parser Phase)**. Lúc này, GitLab Engine chưa hề kích hoạt module `include` (chạy ở t1). Do đó khi Parser đọc tới Alias `*anchor` ở tệp chính, nó không thể tìm thấy định nghĩa `&anchor` nằm ở tệp phụ và sẽ ném lỗi Parser Error: `Unknown alias`.
 - **Thực tế DevOps:** Để tái sử dụng các đoạn mã `script` hoặc cấu hình xuyên tệp `include`, giải pháp thay thế chuẩn xác 100% là chuyển sang dùng thẻ `!reference [.job_an, script]`.
 - **Tham chiếu quy tắc:** Đối chiếu **QT 4.2**.
@@ -4050,11 +4226,25 @@ my-job:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 4 (★★★): Một kỹ sư trong team phàn nàn: "Tôi đã khai báo ghi đè biến ở job con nhưng pipeline chạy vẫn dùng giá trị cũ, ghi đè không ăn". Lệnh terminal đầu tiên bạn chạy để chẩn đoán là gì?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Lệnh terminal đầu tiên cần chạy là trích xuất tệp sau phân giải `merged_yaml` qua API REST `/ci/lint` bằng cờ `include_merged_yaml: true`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>(★★★): Một kỹ sư trong team phàn nàn: "Tôi đã khai báo ghi đè biến ở job con nhưng pipeline chạy vẫn dùng giá trị cũ, ghi đè không ăn". Lệnh terminal đầu tiên bạn chạy để chẩn đoán là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Lệnh terminal đầu tiên cần chạy là trích xuất tệp sau phân giải `merged_yaml` qua API REST `/ci/lint` bằng cờ `include_merged_yaml: true`.
 - **Giải thích kỹ thuật:**
   ```bash
   curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
@@ -4067,11 +4257,25 @@ my-job:
 - **Tham chiếu quy tắc:** Đối chiếu **QT 4.3**.
 
 ---
+</div>
+</details>
 
-### Câu 5 (★★★): Giả sử tệp `.gitlab-ci.yml` gốc và một tệp được `include` cùng khai báo một Job có trùng tên `app-build`. GitLab sẽ trộn hai Job này theo cơ chế nào và tệp nào thắng?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Trộn ở **mức khoá (Key-level merge)** và **tệp gốc (tệp chứa câu lệnh include) BẮT BUỘC THẮNG** ở tất cả các khoá trùng lặp.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>(★★★): Giả sử tệp `.gitlab-ci.yml` gốc và một tệp được `include` cùng khai báo một Job có trùng tên `app-build`. GitLab sẽ trộn hai Job này theo cơ chế nào và tệp nào thắng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Trộn ở **mức khoá (Key-level merge)** và **tệp gốc (tệp chứa câu lệnh include) BẮT BUỘC THẮNG** ở tất cả các khoá trùng lặp.
 - **Giải thích kỹ thuật:**
   - Nếu tệp `include` khai báo `app-build` có: `image: node:16`, `tags: [runner-1]`, `script: [build.sh]`.
   - Tệp gốc khai báo `app-build` có: `image: node:18`, `script: [new_build.sh]`.
@@ -4080,11 +4284,25 @@ my-job:
 - **Tham chiếu quy tắc:** Đối chiếu **QT 5.2**.
 
 ---
+</div>
+</details>
 
-### Câu 6 (★★★): Kịch bản yêu cầu nối 3 khối lệnh `script` từ 3 tệp mẫu khác nhau vào làm 1 `script` duy nhất cho Job chính. Bạn sẽ chọn cơ chế nào? Viết minh hoạ cú pháp.
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Bắt buộc sử dụng thẻ **`!reference`**. Cả `extends` và YAML Anchor đều không thể nối ghép các phần tử mảng từ 3 nguồn khác nhau vào 1 mảng duy nhất.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>(★★★): Kịch bản yêu cầu nối 3 khối lệnh `script` từ 3 tệp mẫu khác nhau vào làm 1 `script` duy nhất cho Job chính. Bạn sẽ chọn cơ chế nào? Viết minh hoạ cú pháp.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Bắt buộc sử dụng thẻ **`!reference`**. Cả `extends` và YAML Anchor đều không thể nối ghép các phần tử mảng từ 3 nguồn khác nhau vào 1 mảng duy nhất.
 - **Giải thích kỹ thuật:** Cú pháp khai báo:
   ```yaml
   include:
@@ -4102,11 +4320,25 @@ my-job:
 - **Tham chiếu quy tắc:** Đối chiếu **QT 6.2** và **QT 7.1**.
 
 ---
+</div>
+</details>
 
-### Câu 7 (★★★): Hai lần chạy pipeline cho cùng một Git Commit SHA chính xác nhưng lại ra hai kết quả thực thi hoàn toàn khác nhau. Nguyên nhân từ đâu?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Do tệp cấu hình có sử dụng đường dẫn `include:project` hoặc `include:remote` mà **KHÔNG GHIM PHIÊN BẢN (Unpinned Reference)**, ví dụ trỏ vào branch `ref: main` hoặc `ref: HEAD`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>(★★★): Hai lần chạy pipeline cho cùng một Git Commit SHA chính xác nhưng lại ra hai kết quả thực thi hoàn toàn khác nhau. Nguyên nhân từ đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Do tệp cấu hình có sử dụng đường dẫn `include:project` hoặc `include:remote` mà **KHÔNG GHIM PHIÊN BẢN (Unpinned Reference)**, ví dụ trỏ vào branch `ref: main` hoặc `ref: HEAD`.
 - **Giải thích kỹ thuật:** Khi `ref` trỏ vào `main`, nội dung tệp ở repo nguồn có thể bị chỉnh sửa bởi team khác bất kỳ lúc nào. Khi Pipeline ở repo chính kích hoạt, GitLab sẽ tải phiên bản mới nhất ở thời điểm `t1`. Do đó, mặc dù Commit SHA ở repo chính không hề thay đổi, nội dung cấu hình bị `include` đã bị biến đổi hoàn toàn.
 - **Thực tế DevOps:** Đây là vi phạm nghiêm trọng tính tái lập (Reproducibility) trong CI/CD. Quy định bắt buộc: Mọi câu lệnh `include:project` hoặc `remote` phải ghim `ref` bằng **Git Tag (ví dụ `ref: 'v1.2.0'`)** hoặc **Commit SHA ngắn**.
 - **Tham chiếu quy tắc:** Đối chiếu **QT 7.2** và **QT 5.1**.
@@ -4126,11 +4358,25 @@ include:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 8 (★★): Hãy phân biệt 4 loại `include` (`local`, `project`, `remote`, `template`) dựa trên góc độ QUYỀN SỞ HỮU và TÍNH BẢO MẬT.
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>(★★): Hãy phân biệt 4 loại `include` (`local`, `project`, `remote`, `template`) dựa trên góc độ QUYỀN SỞ HỮU và TÍNH BẢO MẬT.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:**
   1. `include: local`: Quyền sở hữu 100% nội bộ repo. An toàn tuyệt đối, có đầy đủ vết Git log.
   2. `include: project`: Quyền sở hữu thuộc về team khác trong cùng GitLab Instance. An toàn cao, kiểm soát được qua phân quyền dự án.
   3. `include: template`: Quyền sở hữu thuộc về nhà phát triển GitLab CE/EE. An toàn, tuân theo phiên bản nâng cấp của hệ thống GitLab.
@@ -4151,11 +4397,25 @@ include:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 9 (★★★): Tất cả các Job thuộc một tệp `include: local` bất ngờ biến mất khỏi Pipeline mà không hề có bất kỳ câu lệnh `rules` nào ở cấp độ Job khai báo ngắt. Hãy chẩn đoán nguyên nhân.
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Do thuộc tính **`include:rules`** được khai báo tại đường dẫn `include` tệp đó ở tệp chính bị đánh giá kết quả là `false`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>(★★★): Tất cả các Job thuộc một tệp `include: local` bất ngờ biến mất khỏi Pipeline mà không hề có bất kỳ câu lệnh `rules` nào ở cấp độ Job khai báo ngắt. Hãy chẩn đoán nguyên nhân.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Do thuộc tính **`include:rules`** được khai báo tại đường dẫn `include` tệp đó ở tệp chính bị đánh giá kết quả là `false`.
 - **Giải thích kỹ thuật:** `include:rules` đóng vai trò là **tầng lọc thứ 3** trong hệ thống GitLab CI. Thứ tự lọc 3 tầng như sau:
   1. Tầng 1: `include:rules` (nếu trả về `false`, tệp YAML đó bị bỏ qua hoàn toàn ở thời điểm t1, tất cả job trong tệp bị xoá sạch).
   2. Tầng 2: `workflow:rules` (lọc cấp độ Pipeline ở thời điểm t2).
@@ -4172,11 +4432,25 @@ include:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 10 (★★): Những loại biến môi trường nào ĐƯỢC PHÉP và KHÔNG ĐƯỢC PHÉP sử dụng trong đường dẫn `include`? Vì sao có sự hạn chế này?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>(★★): Những loại biến môi trường nào ĐƯỢC PHÉP và KHÔNG ĐƯỢC PHÉP sử dụng trong đường dẫn `include`? Vì sao có sự hạn chế này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:**
   - **ĐƯỢC PHÉP:** Chỉ có các biến hệ thống định trước của GitLab (như `$CI_COMMIT_REF_NAME`, `$CI_PROJECT_PATH`, `$CI_COMMIT_SHA`) và các biến khai báo ở cấp độ Instance/Group/Project CI/CD Variables.
   - **KHÔNG ĐƯỢC PHÉP:** Tất cả các biến môi trường được khai báo trong khối `variables:` của tệp `.gitlab-ci.yml` hoặc các biến sinh ra từ job runtime.
 - **Giải thích kỹ thuật:** Do `include` được phân giải tại **Thời điểm 2 (t1 - GitLab Includer Phase)**. Lúc này GitLab Engine chưa hề nạp hay phân giải khối `variables:` của tệp `.gitlab-ci.yml` (vốn được xử lý ở t2).
@@ -4193,11 +4467,25 @@ include:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 11 (★★★): Khi review một repository, bạn phát hiện một chuỗi `extends` lồng nhau tới 4 tầng (`job-d` extends `job-c`, `job-c` extends `job-b`, `job-b` extends `job-a`). Bạn sẽ đánh giá và xử lý thế nào?
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Đánh giá đây là **MÃ NGUỒN XẤU (Code Smell)** cần phải refactor rút gọn về **tối đa 2 tầng**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>(★★★): Khi review một repository, bạn phát hiện một chuỗi `extends` lồng nhau tới 4 tầng (`job-d` extends `job-c`, `job-c` extends `job-b`, `job-b` extends `job-a`). Bạn sẽ đánh giá và xử lý thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Đánh giá đây là **MÃ NGUỒN XẤU (Code Smell)** cần phải refactor rút gọn về **tối đa 2 tầng**.
 - **Giải thích kỹ thuật:** Mặc dù trần kỹ thuật của GitLab cho phép `extends` lồng nhau tới 11 tầng, nhưng trần nhận thức của con người bị quá tải sau 2 tầng. Với chuỗi 4 tầng, việc theo dõi thuộc tính nào bị ghi đè hay biến nào bị thay thế là cực kỳ phức tạp và dễ gây ra sai sót im lặng.
 - **Quy trình xử lý:**
   1. Trích xuất `merged_yaml` hiện tại để làm mốc đối chứng chuẩn.
@@ -4227,11 +4515,25 @@ my-job:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 12 (🔥 Câu tủ - Tổng hợp): Bạn được giao tiếp quản một Repository microservice với hàng chục tệp `include` phức tạp. Hãy dựng Quy trình 4 bước tiêu chuẩn để trả lời chính xác câu hỏi: "Job này thật sự chạy những câu lệnh gì khi kích hoạt Pipeline?"
-
-**Đáp án chuẩn:**
-- **Ý cốt lõi:** Quy trình 4 bước chuyên nghiệp gồm: Trích xuất `merged_yaml` -> Quét ghim phiên bản -> Kiểm tra mảng bị thay thế -> Xác minh biến môi trường hợp nhất.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>(🔥 Câu tủ - Tổng hợp): Bạn được giao tiếp quản một Repository microservice với hàng chục tệp `include` phức tạp. Hãy dựng Quy trình 4 bước tiêu chuẩn để trả lời chính xác câu hỏi: "Job này thật sự chạy những câu lệnh gì khi kích hoạt Pipeline?"</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ý cốt lõi:** Quy trình 4 bước chuyên nghiệp gồm: Trích xuất `merged_yaml` -> Quét ghim phiên bản -> Kiểm tra mảng bị thay thế -> Xác minh biến môi trường hợp nhất.
 - **Quy trình 4 bước chi tiết:**
   1. **Bước 1 (Trích xuất Bức tranh Sự thật):** Chạy `xem-phan-giai.sh --job <tên_job>` gọi API `POST /ci/lint` với param `include_merged_yaml: true`. Đọc trực tiếp cấu hình Job từ tệp `/tmp/current_merged.yml` thu được.
   2. **Bước 2 (Audit Ghim phiên bản):** Chạy lệnh quét `dem-include.sh` hoặc `grep -nE 'ref: *(main|master|HEAD)' .gitlab-ci.yml` để phát hiện các tệp `include` chưa ghim tag, đảm bảo cấu hình không bị biến đổi ngầm ngoài ý muốn.
@@ -4240,6 +4542,8 @@ my-job:
 - **Tham chiếu quy tắc:** Đối chiếu **QT 4.3**, **QT 4.1**, **QT 5.2**, **QT 6.1**.
 
 ---
+</div>
+</details>
 
 ## §V2. Bảng tổng hợp đối chiếu mã quy tắc với 12 câu vấn đáp
 
@@ -4273,8 +4577,22 @@ my-job:
 
 ## §V4. BTVN 4 — Ba câu hỏi chuẩn bị cho Buổi 11
 
-### Bài 1 (Dựa trên QT 5.1):
-`include` hiện tại **không** hỗ trợ truyền tham số trực tiếp, mọi giá trị tuỳ biến đều phải đi qua biến môi trường. Hãy phân tích **ba** điểm yếu lớn nhất của việc dùng biến môi trường làm giao diện truyền dữ liệu (ví dụ: gõ sai tên biến, thiếu giá trị mặc định, không kiểm tra được kiểu dữ liệu). Từ đó dự đoán cơ chế nào ở Buổi 11 sẽ giải quyết triệt để vấn đề này.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>(Dựa trên QT 5.1):</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `include` hiện tại **không** hỗ trợ truyền tham số trực tiếp, mọi giá trị tuỳ biến đều phải đi qua biến môi trường. Hãy phân tích **ba** điểm yếu lớn nhất của việc dùng biến môi trường làm giao diện truyền dữ liệu (ví dụ: gõ sai tên biến, thiếu giá trị mặc định, không kiểm tra được kiểu dữ liệu). Từ đó dự đoán cơ chế nào ở Buổi 11 sẽ giải quyết triệt để vấn đề này.
 
 **Gợi ý phân tích chi tiết:**
 1. **Gõ sai tên biến (Typo risk):** Không có linter nào cảnh báo nếu người dùng truyền `VAR_DEPLOY_ENV` thay vì `DEPLOY_ENV`.
@@ -4283,9 +4601,25 @@ my-job:
 4. **Cơ chế Buổi 11:** Khái niệm **`spec:inputs`** trong **CI/CD Components** sẽ giải quyết triệt để cả 3 điểm yếu này nhờ giao diện tham số khai báo kiểu cứng.
 
 ---
+</div>
+</details>
 
-### Bài 2 (Dựa trên QT 7.2):
-Việc ghim `ref` bằng Git Tag đòi hỏi phải có quy trình phát hành và nâng cấp phiên bản rõ ràng. Hãy xây dựng một quy tắc đánh số phiên bản Semantic Versioning (`vX.Y.Z`) áp dụng cho tệp cấu hình CI/CD dùng chung, và định nghĩa rõ ràng thế nào là một **Thay thế phá vỡ (Breaking Change)** đối với tệp cấu hình CI/CD.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>(Dựa trên QT 7.2):</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Việc ghim `ref` bằng Git Tag đòi hỏi phải có quy trình phát hành và nâng cấp phiên bản rõ ràng. Hãy xây dựng một quy tắc đánh số phiên bản Semantic Versioning (`vX.Y.Z`) áp dụng cho tệp cấu hình CI/CD dùng chung, và định nghĩa rõ ràng thế nào là một **Thay thế phá vỡ (Breaking Change)** đối với tệp cấu hình CI/CD.
 
 **Gợi ý phân tích chi tiết:**
 1. **MAJOR (X):** Khi có Breaking Change — xoá tên job, đổi tên biến bắt buộc, thay đổi hành vi mặc định của pipeline khiến các repo đằng sau bị ngắt ngầm.
@@ -4293,9 +4627,25 @@ Việc ghim `ref` bằng Git Tag đòi hỏi phải có quy trình phát hành v
 3. **PATCH (Z):** Khi sửa lỗi nhỏ (bug fixes) — tối ưu câu lệnh bash, sửa hình ảnh docker image tag nhỏ không ảnh hưởng cú pháp.
 
 ---
+</div>
+</details>
 
-### Bài 3 (Dựa trên QT 6.1):
-Nếu bạn cung cấp cho các team phát triển một Job mẫu qua `extends`, họ chỉ cần khai báo lại thuộc tính `script` là toàn bộ các bước kiểm tra bảo mật ở Job cha bị xoá sạch. Làm thế nào để thiết kế một cấu hình CI/CD dùng chung mà người dùng **KHÔNG THỂ XOÁ HOẶC PHÁ BỎ** các bước kiểm tra lõi của bạn? Hãy ghi lại dự đoán của bạn trước khi bước vào Buổi 11.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>(Dựa trên QT 6.1):</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nếu bạn cung cấp cho các team phát triển một Job mẫu qua `extends`, họ chỉ cần khai báo lại thuộc tính `script` là toàn bộ các bước kiểm tra bảo mật ở Job cha bị xoá sạch. Làm thế nào để thiết kế một cấu hình CI/CD dùng chung mà người dùng **KHÔNG THỂ XOÁ HOẶC PHÁ BỎ** các bước kiểm tra lõi của bạn? Hãy ghi lại dự đoán của bạn trước khi bước vào Buổi 11.
 
 **Gợi ý phân tích chi tiết:**
 1. Không cho phép kế thừa tự do bằng `extends` đối với các job bảo mật.
@@ -4306,6 +4656,8 @@ Nếu bạn cung cấp cho các team phát triển một Job mẫu qua `extends`
 
 
 ### [Chuyên Đề 11] Xây Dựng CI/CD Catalog & CI/CD Components: Đóng Gói Module, Semantic Versioning & Enterprise Component Hub
+</div>
+</details>
 
 ## Khối Vấn đáp & Phỏng vấn Kỹ thuật — 20 phút
 
@@ -4336,10 +4688,22 @@ Nếu bạn cung cấp cho các team phát triển một Job mẫu qua `extends`
 
 ## §V2. Chi tiết 12 Câu hỏi Vấn đáp Kỹ thuật
 
-### Câu 1: Sự khác biệt cốt lõi giữa GitLab CI/CD Component và tệp YAML include truyền thống là gì?
-
-**Đáp án chuẩn:**
-CI/CD Component là bước tiến hóa kiến trúc vượt trội so với các tệp YAML include truyền thống (vốn chỉ là hành vi chèn văn bản thô). Sự khác biệt thể hiện qua 3 khía cạnh nền tảng:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt cốt lõi giữa GitLab CI/CD Component và tệp YAML include truyền thống là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  CI/CD Component là bước tiến hóa kiến trúc vượt trội so với các tệp YAML include truyền thống (vốn chỉ là hành vi chèn văn bản thô). Sự khác biệt thể hiện qua 3 khía cạnh nền tảng:
 
 1. **Giao diện tham số hóa tường minh (`spec:inputs`):** Tệp YAML include truyền thống phụ thuộc hoàn toàn vào các biến môi trường toàn cục (Environment Variables). Nếu người dùng quên khai báo biến, job sẽ im lặng chạy sai hoặc nhận giá trị rỗng. Trong khi đó, Component bắt buộc khai báo khối `spec:inputs` ở đầu tệp, định nghĩa rõ tên tham số, giá trị mặc định (`default`), mô tả (`description`), và kiểu dữ liệu/danh sách chấp nhận (`options`).
 2. **Khả năng đăng ký và hiển thị trên CI/CD Catalog UI:** Các tệp YAML include nằm rải rác trong các repository phụ thuộc, không thể tìm kiếm tập trung. Component được đăng ký thành Catalog Resource, cho phép toàn bộ kỹ sư trong tập đoàn tìm kiếm, xem tài liệu, giao diện inputs và ví dụ sử dụng trực quan trên giao diện Web của GitLab.
@@ -4351,11 +4715,25 @@ CI/CD Component:       [User .gitlab-ci.yml] ---> (Truyền inputs t1)     ---> 
 ```
 
 ---
+</div>
+</details>
 
-### Câu 2: Tại sao biểu thức $[[ inputs.x ]] lại được phân giải ở thời điểm t1 (Server merge) trong khi biến $MY_VAR chỉ được phân giải ở thời điểm runtime (Runner)?
-
-**Đáp án chuẩn:**
-Sự khác biệt này xuất phát từ kiến trúc hai giai đoạn của GitLab CI Engine:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao biểu thức $[[ inputs.x ]] lại được phân giải ở thời điểm t1 (Server merge) trong khi biến $MY_VAR chỉ được phân giải ở thời điểm runtime (Runner)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sự khác biệt này xuất phát từ kiến trúc hai giai đoạn của GitLab CI Engine:
 
 - **Giai đoạn t1 (Server-side Merging & Interpolation):** Khi lập trình viên push code hoặc kích hoạt Pipeline, GitLab Server nạp tất cả các tệp include/component, đọc khối `spec:inputs`, và thực hiện **thay thế chuỗi trực tiếp** (String Interpolation) cho mọi biểu thức dạng `$[[ inputs.x ]]`. Việc này diễn ra trên GitLab Server **trước khi** tệp YAML hợp nhất (`merged_yaml`) được lưu vào Cơ sở dữ liệu và chuyển thành danh sách Job. Do đó, `$[[ inputs.x ]]` có thể được dùng ở mọi vị trí cấu hình YAML, bao gồm cả tên Job, tên Stage, thuộc tính `image:`, `services:`, hay điều kiện `rules:`.
 - **Giai đoạn runtime / t3 (Runner Execution):** Biến môi trường dạng `$MY_VAR` hoặc `$CI_COMMIT_SHA` được giữ nguyên dưới dạng chuỗi thô trong suốt quá trình GitLab Server xử lý YAML. Chỉ khi Job được giao cho GitLab Runner thực thi trên máy ảo/container, Runner mới nạp bảng biến (từ CI/CD Variables, Masked Variables, Group Variables) và phân giải giá trị `$MY_VAR` trong môi trường Shell của Container.
@@ -4363,11 +4741,25 @@ Sự khác biệt này xuất phát từ kiến trúc hai giai đoạn của Git
 **Dấu hiệu nhận biết rủi ro:** Cố gắng truyền một biến môi trường runtime (như `$CI_COMMIT_REF_NAME`) vào một input của Component dạng `$[[ inputs.my_ref ]]` sẽ khiến GitLab Server coi đó là một chuỗi văn bản thô `"$CI_COMMIT_REF_NAME"`, không thể phân giải động ở t1!
 
 ---
+</div>
+</details>
 
-### Câu 3: Khối spec:inputs mang lại lợi ích gì cho việc kiểm soát lỗi (Fail-fast validation) so with việc dùng biến môi trường?
-
-**Đáp án chuẩn:**
-Khối `spec:inputs` mang lại cơ chế **Fail-fast Validation (Phát hiện lỗi sớm và ngắt lạch cạch ngay lập tức)** tại thời điểm t1 phía Server, giải quyết triệt me nhược điểm "Chết im lặng" của biến môi trường:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khối spec:inputs mang lại lợi ích gì cho việc kiểm soát lỗi (Fail-fast validation) so with việc dùng biến môi trường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khối `spec:inputs` mang lại cơ chế **Fail-fast Validation (Phát hiện lỗi sớm và ngắt lạch cạch ngay lập tức)** tại thời điểm t1 phía Server, giải quyết triệt me nhược điểm "Chết im lặng" của biến môi trường:
 
 1. **Kiểm tra sự tồn tại của Input:** Nếu tệp `.gitlab-ci.yml` truyền một input không được khai báo trong `spec:inputs` (ví dụ gõ sai tên `environmentt` thay vì `environment`), GitLab Engine sẽ từ chối tạo Pipeline ngay lập tức, trả về lỗi `valid: false` kèm thông báo chi tiết: `unknown input 'environmentt'`.
 2. **Giới hạn phạm vi giá trị hợp lệ (`options`):** Khai báo `options: [dev, staging, production]` đảm bảo nếu người dùng truyền `environment: "staging_test"`, hệ thống sẽ chặn đứng ngay tại thời điểm push code.
@@ -4376,33 +4768,75 @@ Khối `spec:inputs` mang lại cơ chế **Fail-fast Validation (Phát hiện l
 Trong khi đó, nếu dùng biến môi trường `$ENV`, nếu người dùng quên truyền biến, script trong Runner vẫn chạy nhưng biến nhận giá trị rỗng `""`, dẫn tới các câu lệnh nguy hiểm như `rm -rf /app/$ENV/*` biến thành `rm -rf /app//*` gây sập hệ thống sản xuất!
 
 ---
+</div>
+</details>
 
-### Câu 4: Liệt kê 3 điều kiện bắt buộc để một Repository Component hiển thị trên giao diện CI/CD Catalog UI của GitLab?
-
-**Đáp án chuẩn:**
-Để một dự án Component xuất hiện chính thức trên giao diện CI/CD Catalog của tập đoàn, phải đáp ứng đủ 3 điều kiện bắt buộc sau (Áp dụng Quy tắc **QT 5.1**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Liệt kê 3 điều kiện bắt buộc để một Repository Component hiển thị trên giao diện CI/CD Catalog UI của GitLab?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để một dự án Component xuất hiện chính thức trên giao diện CI/CD Catalog của tập đoàn, phải đáp ứng đủ 3 điều kiện bắt buộc sau (Áp dụng Quy tắc **QT 5.1**):
 
 1. **Thuộc tính Project Catalog được bật (`is_catalog_resource`):** Trong giao diện Settings -> General -> Visibility, project features, phải bật cờ **CI/CD Catalog Resource** (hoặc gọi REST API `PUT /projects/:id` với tham số `is_catalog_resource=true`).
 2. **Có tệp tài liệu README.md ở thư mục gốc:** GitLab Catalog Engine sử dụng tệp `README.md` để tự động trích xuất nội dung hiển thị trang tổng quan, hướng dẫn sử dụng và bảng tra cứu `spec:inputs` cho người dùng. Thư mục `templates/` phải chứa ít nhất 1 tệp `.yml` (ví dụ `templates/build.yml`).
 3. **Đã phát hành ít nhất một Release Tag (Phát hành chính thức):** Lập trình viên phải đẩy một Git Tag (ví dụ `1.0.0`) và tạo một đối tượng **Release** tương ứng gắn liền với Tag đó trên GitLab. Nhánh `main` chưa có Release Tag sẽ không hiển thị trên Catalog UI để tránh người dùng dùng nhầm mã nguồn chưa kiểm thử.
 
 ---
+</div>
+</details>
 
-### Câu 5: Tại sao trong môi trường doanh nghiệp, quy tắc bất biến bắt buộc lập trình viên phải ghim cố định phiên bản Component (@1.0.0) thay vì trỏ bản mới nhất (@~latest)?
-
-**Đáp án chuẩn:**
-Việc trỏ Component bằng cú pháp `@~latest` hoặc trỏ vào branch `@main` vi phạm nghiêm trọng **Nguyên tắc Bất biến của Hạ tầng CI/CD (Infrastructure Invariance Principle)** vì 3 lý do chiến lược:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao trong môi trường doanh nghiệp, quy tắc bất biến bắt buộc lập trình viên phải ghim cố định phiên bản Component (@1.0.0) thay vì trỏ bản mới nhất (@~latest)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Việc trỏ Component bằng cú pháp `@~latest` hoặc trỏ vào branch `@main` vi phạm nghiêm trọng **Nguyên tắc Bất biến của Hạ tầng CI/CD (Infrastructure Invariance Principle)** vì 3 lý do chiến lược:
 
 1. **Rủi ro đứt gãy tự động (Unpredictable Pipeline Breakage):** Khi đội ngũ quản trị Component phát hành một bản cập nhật mới (dù là Minor hay Major), tất cả 500 repository trong tập đoàn đang dùng `@~latest` sẽ tự động nạp mã nguồn mới ở lần push tiếp theo. Nếu bản mới chứa lỗi hoặc thay đổi hành vi, toàn bộ 500 pipeline sẽ đồng loạt chuyển sang màu đỏ, làm tê liệt hoạt động phát triển của toàn tập đoàn.
 2. **Mất khả năng tái hiện lỗi (Non-reproducible Builds):** Một commit được build thành công tuần trước với `@~latest` có thể thất bại hoàn toàn vào tuần này khi chạy lại (Retry) chỉ vì Component nguồn bên dưới đã bị chỉnh sửa. Kỹ sư không thể điều tra nguyên nhân vì mã nguồn ứng dụng không hề thay đổi.
 3. **Tuân thủ chuẩn mực Semantic Versioning (@1.0.0):** Ghim phiên bản cố định `@1.0.0` đảm bảo pipeline của dự án người dùng hoạt động hoàn toàn độc lập, ổn định 100%. Việc nâng cấp phiên bản Component phải là một quyết định chủ động thông qua việc tạo Merge Request kiểm thử, không phải hành vi nạp tự động rủi ro.
 
 ---
+</div>
+</details>
 
-### Câu 6: Nêu 4 dạng phá vỡ hợp đồng (Breaking Changes) thường gặp khi vận hành CI/CD Component?
-
-**Đáp án chuẩn:**
-Khi phát triển và bảo trì Component, kỹ sư DevOps phải ghi nhớ 4 dạng thay đổi làm đứt gãy hợp đồng (Breaking Changes) quy định tại **QT 5.3**:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Nêu 4 dạng phá vỡ hợp đồng (Breaking Changes) thường gặp khi vận hành CI/CD Component?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi phát triển và bảo trì Component, kỹ sư DevOps phải ghi nhớ 4 dạng thay đổi làm đứt gãy hợp đồng (Breaking Changes) quy định tại **QT 5.3**:
 
 1. **Xoá bỏ một Input hiện có hoặc Xoá bỏ giá trị mặc định (`default`):** Nếu một input đang có `default: "dev"` bị xoá bỏ thuộc tính `default`, tất cả các dự án người dùng trước đó không truyền input này sẽ bị sập ngay lập tức ở t1 do thiếu tham số bắt buộc.
 2. **Thay đổi tên Job nội bộ của Component (Job Name Change):** Nếu Component đổi tên job từ `docker-build:` thành `container-build:`, các dự án người dùng đang sử dụng từ khoá `extends:` hoặc ghi đè thuộc tính của `docker-build:` sẽ bị sập do không tìm thấy Job gốc.
@@ -4410,11 +4844,25 @@ Khi phát triển và bảo trì Component, kỹ sư DevOps phải ghi nhớ 4 d
 4. **Thay đổi danh sách giá trị hợp lệ (`options`):** Loại bỏ một giá trị khỏi mảng `options` (ví dụ xoá `dev` chỉ giữ `[staging, production]`) khiến tất cả dự án đang truyền `environment: "dev"` bị chặn đứng ở t1.
 
 ---
+</div>
+</details>
 
-### Câu 7: Một Component có thể ngăn chặn triệt để việc người dùng xoá đè mảng script nội bộ bằng extends không? Nếu không, làm sao để bảo vệ lõi logic?
-
-**Đáp án chuẩn:**
-**KHÔNG THỂ.** Theo cơ chế hợp nhất tệp YAML của GitLab CI (xảy ra ở mốc t2), không gian tên Job trong Pipeline là một phẳng (Flat Namespace). Nếu người dùng trong tệp `.gitlab-ci.yml` khai báo một Job có tên trùng khớp với tên Job do Component sinh ra và định nghĩa mảng `script:`, mảng `script:` của người dùng sẽ **xoá đè hoàn toàn** mảng `script:` nội bộ của Component (Áp dụng **QT 6.1**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Một Component có thể ngăn chặn triệt để việc người dùng xoá đè mảng script nội bộ bằng extends không? Nếu không, làm sao để bảo vệ lõi logic?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **KHÔNG THỂ.** Theo cơ chế hợp nhất tệp YAML của GitLab CI (xảy ra ở mốc t2), không gian tên Job trong Pipeline là một phẳng (Flat Namespace). Nếu người dùng trong tệp `.gitlab-ci.yml` khai báo một Job có tên trùng khớp với tên Job do Component sinh ra và định nghĩa mảng `script:`, mảng `script:` của người dùng sẽ **xoá đè hoàn toàn** mảng `script:` nội bộ của Component (Áp dụng **QT 6.1**).
 
 **Giải pháp bảo vệ lõi logic (Assertion Job Pattern):**
 Vì không thể ngăn người dùng xoá đè về mặt cú pháp YAML, đội ngũ thiết kế Component áp dụng kỹ thuật **Khẳng định Hiện vật (Artifact Contract Assertion)**:
@@ -4430,11 +4878,25 @@ Vì không thể ngăn người dùng xoá đè về mặt cú pháp YAML, độ
 Nếu người dùng cố tình xoá đè `script:`, tệp hiện vật `output/build.env` không được tạo ra, Job khẳng định sẽ ngắt đỏ toàn bộ Pipeline!
 
 ---
+</div>
+</details>
 
-### Câu 8: Tại sao mọi Job trong tệp cấu hình Component bắt buộc phải sử dụng tham số tiền tố job_prefix?
-
-**Đáp án chuẩn:**
-Mọi Job trong Component bắt buộc phải dùng tiền tố động `$[[ inputs.job_prefix ]]` (Áp dụng **QT 6.2**) để giải quyết bài toán **Xung đột tên Job (Job Name Collision)** trong không gian tên phẳng của Pipeline:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao mọi Job trong tệp cấu hình Component bắt buộc phải sử dụng tham số tiền tố job_prefix?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mọi Job trong Component bắt buộc phải dùng tiền tố động `$[[ inputs.job_prefix ]]` (Áp dụng **QT 6.2**) để giải quyết bài toán **Xung đột tên Job (Job Name Collision)** trong không gian tên phẳng của Pipeline:
 
 1. **Kịch bản Nạp nhiều Component trong cùng Pipeline:** Giả sử một dự án người dùng nạp 2 Component: Component `build-docker` và Component `build-helm`. Nếu cả 2 Component đều gõ cứng tên Job là `build-job:`, khi GitLab Resolver hợp nhất YAML ở t2, Job của Component nạp sau sẽ ghi đè âm thầm Job của Component nạp trước, khiến 1 bước build bị biến mất không vết tích!
 2. **Giải pháp tiền tố hoá động:** Bằng cách khai báo tên Job dạng:
@@ -4445,22 +4907,50 @@ Mọi Job trong Component bắt buộc phải dùng tiền tố động `$[[ inp
    Người dùng có thể truyền `job_prefix: "auth-service"` cho Component 1 và `job_prefix: "payment-service"` cho Component 2. Kết quả hợp nhất t2 sẽ tạo ra 2 Job riêng biệt: `auth-service-docker-build` và `payment-service-docker-build`, loại bỏ hoàn toàn xung đột tên.
 
 ---
+</div>
+</details>
 
-### Câu 9: Hợp đồng Hiện vật (Artifact Contract) đóng vai trò gì trong việc chuẩn hoá giao tiếp giữa Component và Pipeline người dùng?
-
-**Đáp án chuẩn:**
-Hợp đồng Hiện vật (Artifact Contract) là **giao diện đầu ra chính thức** của Component, đóng vai trò cầu nối dữ liệu giữa mã nguồn đóng gói của Component và các bước xử lý tiếp theo của người dùng (Áp dụng **QT 6.3**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Hợp đồng Hiện vật (Artifact Contract) đóng vai trò gì trong việc chuẩn hoá giao tiếp giữa Component và Pipeline người dùng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Hợp đồng Hiện vật (Artifact Contract) là **giao diện đầu ra chính thức** của Component, đóng vai trò cầu nối dữ liệu giữa mã nguồn đóng gói của Component và các bước xử lý tiếp theo của người dùng (Áp dụng **QT 6.3**):
 
 1. **Chuẩn hoá biến môi trường truyền ngang (`artifacts:reports:dotenv`):** Component sinh ra tệp cấu hình chứa các biến kết quả (như `IMAGE_TAG=sha-12345`, `BUILD_TIMESTAMP=2026-08-21`). GitLab Runner tự động nạp tệp dotenv này và truyền các biến vào môi trường thực thi của tất cả các Job ở các stage phía sau (`test`, `deploy`).
 2. **Độc lập hoá công nghệ đóng gói:** Dự án người dùng ở stage `deploy` không cần quan tâm Component build bằng Docker, Podman hay Kaniko. Dự án chỉ cần đọc biến `$IMAGE_TAG` từ hợp đồng dotenv được cấp.
 3. **Phân tách trách nhiệm (Separation of Concerns):** Component chịu trách nhiệm build và phát hành hiện vật; Pipeline người dùng chịu trách nhiệm kiểm thử và triển khai dựa trên hiện vật đó.
 
 ---
+</div>
+</details>
 
-### Câu 10: Làm thế nào để thiết lập một Pipeline tự kiểm tra chính nó (Self-testing Pipeline) ngay trong Repository phát triển Component?
-
-**Đáp án chuẩn:**
-Để đảm bảo mã nguồn Component không bị lỗi cú pháp hoặc hỏng logic trước khi tạo Release Tag xuất bản lên Catalog, repository Component phải thiết lập Pipeline tự kiểm tra chính nó (Self-testing Pipeline) theo chuẩn **QT 7.1**:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để thiết lập một Pipeline tự kiểm tra chính nó (Self-testing Pipeline) ngay trong Repository phát triển Component?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để đảm bảo mã nguồn Component không bị lỗi cú pháp hoặc hỏng logic trước khi tạo Release Tag xuất bản lên Catalog, repository Component phải thiết lập Pipeline tự kiểm tra chính nó (Self-testing Pipeline) theo chuẩn **QT 7.1**:
 
 Trong tệp `.gitlab-ci.yml` của chính dự án Component, sử dụng biến hệ thống `$CI_PROJECT_PATH` và `$CI_COMMIT_SHA` để tự include chính tệp template đang được chỉnh sửa:
 
@@ -4489,11 +4979,25 @@ verify-self-test-output:
 Cấu hình này đảm bảo mỗi Merge Request thay đổi mã nguồn Component sẽ chạy tự kiểm tra thực tế trước khi Merge vào nhánh `main`.
 
 ---
+</div>
+</details>
 
-### Câu 11: Làm sao để kiểm tra chính xác số lượng và danh sách các Repository đang tiêu thụ từng phiên bản Component qua REST API?
-
-**Đáp án chuẩn:**
-Để thực hiện Audit danh sách dự án phụ thuộc (Áp dụng **QT 7.2**), kỹ sư DevOps khai thác REST API Search của GitLab để tìm kiếm xâu định danh Component kèm phiên bản trong mã nguồn `.gitlab-ci.yml`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Làm sao để kiểm tra chính xác số lượng và danh sách các Repository đang tiêu thụ từng phiên bản Component qua REST API?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để thực hiện Audit danh sách dự án phụ thuộc (Áp dụng **QT 7.2**), kỹ sư DevOps khai thác REST API Search của GitLab để tìm kiếm xâu định danh Component kèm phiên bản trong mã nguồn `.gitlab-ci.yml`:
 
 Exec script Bash `dem-nguoi-dung.sh`:
 ```bash
@@ -4517,11 +5021,25 @@ echo "$RES" | jq -r '.[] | "Project ID: \(.id) | Name: \(.name) | URL: \(.web_ur
 Kịch bản này giúp đội ngũ hạ tầng đo đạc tỉ lệ phủ (adoption rate) và xác định chính xác các dự án chưa chịu nâng cấp khi phát hành phiên bản mới.
 
 ---
+</div>
+</details>
 
-### Câu 12: Trình bày quy trình 3 bước chuẩn mực khi phát hành một phiên bản Component mới chứa Breaking Change?
-
-**Đáp án chuẩn:**
-Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp đồng (Breaking Change), đội ngũ quản trị bắt buộc tuân thủ quy trình 3 bước chuẩn mực (Áp dụng **QT 5.3** & **QT 7.2**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Trình bày quy trình 3 bước chuẩn mực khi phát hành một phiên bản Component mới chứa Breaking Change?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp đồng (Breaking Change), đội ngũ quản trị bắt buộc tuân thủ quy trình 3 bước chuẩn mực (Áp dụng **QT 5.3** & **QT 7.2**):
 
 1. **Bước 1 — Phát hành Phiên bản Major mới, KHÔNG BAO GIỜ di chuyển hoặc xoá Tag cũ:**
    Tạo Git Tag mới tuân thủ Semantic Versioning (ví dụ bump từ `1.2.0` lên `2.0.0`) và xuất bản Release Tag `2.0.0` lên Catalog. Tuyệt đối giữ nguyên Tag `1.0.0` và `1.2.0` trên Git để không làm sập các pipeline cũ đang chạy.
@@ -4531,6 +5049,8 @@ Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp
    Thực thi script audit trích xuất danh sách 100 dự án đang dùng `v1.x`, sử dụng kịch bản tự động hoá để gửi Merge Request đề xuất nâng cấp đường dẫn include lên `@2.0.0` cho từng nhóm dự án, cho phép các đội ứng dụng chủ động test và merge.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 
@@ -4614,11 +5134,22 @@ Nội dung phần này tổng hợp 12 câu hỏi phỏng vấn sát thực tế
 
 ## §V2. Danh sách 12 Câu hỏi Vấn đáp Thực chiến
 
-### Câu 1
-**Hỏi:** Sự khác biệt cốt lõi giữa Branch Pipeline và Merge Request Pipeline về mặt cây mã nguồn Git (Git Tree) được kiểm thử là gì?
-
-**Đáp án chuẩn:**
-Branch Pipeline và Merge Request Pipeline chạy trên **cùng 1 cây mã nguồn Git duy nhất**, đó là commit `HEAD` của nhánh nguồn. Sự khác biệt duy nhất không nằm ở nội dung mã nguồn được kiểm thử, mà nằm ở **ngữ cảnh và tập biến môi trường hệ thống** được nạp (như `$CI_PIPELINE_SOURCE` đổi từ `"push"` sang `"merge_request_event"` và xuất hiện thêm các biến `$CI_MERGE_REQUEST_*`). Do đó, chỉ chuyển đổi sang MR Pipeline không tự động làm tăng mức độ an toàn cho nhánh đích.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt cốt lõi giữa Branch Pipeline và Merge Request Pipeline về mặt cây mã nguồn Git (Git Tree) được kiểm thử là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Branch Pipeline và Merge Request Pipeline chạy trên **cùng 1 cây mã nguồn Git duy nhất**, đó là commit `HEAD` của nhánh nguồn. Sự khác biệt duy nhất không nằm ở nội dung mã nguồn được kiểm thử, mà nằm ở **ngữ cảnh và tập biến môi trường hệ thống** được nạp (như `$CI_PIPELINE_SOURCE` đổi từ `"push"` sang `"merge_request_event"` và xuất hiện thêm các biến `$CI_MERGE_REQUEST_*`). Do đó, chỉ chuyển đổi sang MR Pipeline không tự động làm tăng mức độ an toàn cho nhánh đích.
 
 #### Phân tích chuyên sâu từ góc độ Kỹ sư CI/CD:
 Nhiều lập trình viên lầm tưởng rằng khi tạo Merge Request, GitLab sẽ tự động gộp code của họ vào nhánh `main` trước khi chạy test. Đây là một lầm tưởng nguy hiểm. Hãy trích xuất chữ ký hash commit trong cả hai loại Pipeline để chứng minh:
@@ -4636,12 +5167,25 @@ a1b2c3d4e5f67890123456789abcdef012345678
 Kết quả SHA hoàn toàn trùng khớp 100%. Điều này khẳng định không có bất kỳ byte mã nguồn nào trên nhánh `main` được đưa vào kiểm thử trong MR Pipeline tiêu chuẩn.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Hỏi:** Nguyên nhân gốc rễ của hiện tượng "Hai Merge Request đều chạy Pipeline báo Xanh 100% nhưng nhánh `main` bị ngắt đỏ rực ngay sau khi gộp cả hai" là gì?
-
-**Đáp án chuẩn:**
-Đây là ca sự cố **Xung đột Ngữ nghĩa (Semantic Conflict)**. Git là hệ thống quản lý phiên bản theo dòng văn bản, nên nếu hai MR sửa các vị trí/tệp khác nhau, Git xác nhận xung đột văn bản bằng `0` và cho phép gộp. Tuy nhiên, thay đổi của MR A (ví dụ: đổi tên hàm hoặc thay đổi tham số) làm vô hiệu hóa logic trong mã nguồn mới mà MR B vừa thêm vào. Mỗi MR được test trên cây mã nguồn riêng chưa bao gồm mã của MR kia, dẫn tới việc bộ test chạy đúng trên cây cũ nhưng ngắt đỏ rực trên cây gộp mới.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>** Nguyên nhân gốc rễ của hiện tượng "Hai Merge Request đều chạy Pipeline báo Xanh 100% nhưng nhánh `main` bị ngắt đỏ rực ngay sau khi gộp cả hai" là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là ca sự cố **Xung đột Ngữ nghĩa (Semantic Conflict)**. Git là hệ thống quản lý phiên bản theo dòng văn bản, nên nếu hai MR sửa các vị trí/tệp khác nhau, Git xác nhận xung đột văn bản bằng `0` và cho phép gộp. Tuy nhiên, thay đổi của MR A (ví dụ: đổi tên hàm hoặc thay đổi tham số) làm vô hiệu hóa logic trong mã nguồn mới mà MR B vừa thêm vào. Mỗi MR được test trên cây mã nguồn riêng chưa bao gồm mã của MR kia, dẫn tới việc bộ test chạy đúng trên cây cũ nhưng ngắt đỏ rực trên cây gộp mới.
 
 #### Minh họa kịch bản thực tế trong dự án doanh nghiệp:
 - **Trạng thái ban đầu trên nhánh main:** Tệp `src/tax.py` chứa hàm `calculate_tax(amount)`.
@@ -4651,12 +5195,25 @@ Kết quả SHA hoàn toàn trùng khớp 100%. Điều này khẳng định kh�
 - **Thảm họa:** Ngay sau khi MR B gộp xong, Pipeline trên `main` chạy `pytest`. Tệp `src/salary.py` gọi `calculate_tax()` nhưng hàm này đã bị MR A đổi tên! Nhánh `main` sập lập tức với lỗi `NameError: name 'calculate_tax' is not defined`.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Hỏi:** Tại sao không nên sử dụng biến `$CI_COMMIT_SHA` để gán Tag cho Docker Image hay hiện vật phát hành trong Merged Results Pipeline?
-
-**Đáp án chuẩn:**
-Trong Merged Results Pipeline, biến `$CI_COMMIT_SHA` trỏ tới **commit gộp tạm thời (Temporary Merge Commit)** do GitLab Server tự động sinh ra trong ref `refs/merge-requests/X/merge`. Commit này không thuộc bất kỳ nhánh chính thức nào và sẽ bị bộ dọn rác (Garbage Collector) của Git xóa bỏ sau khi MR đóng. Nếu gán Tag Image theo SHA này, Image đó sẽ không thể truy nguyên (untraceable) nguồn gốc trong Git history. Quy tắc là chỉ dùng `$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA` hoặc chỉ sinh hiện vật phát hành trên nhánh mặc định/Tag.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>** Tại sao không nên sử dụng biến `$CI_COMMIT_SHA` để gán Tag cho Docker Image hay hiện vật phát hành trong Merged Results Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong Merged Results Pipeline, biến `$CI_COMMIT_SHA` trỏ tới **commit gộp tạm thời (Temporary Merge Commit)** do GitLab Server tự động sinh ra trong ref `refs/merge-requests/X/merge`. Commit này không thuộc bất kỳ nhánh chính thức nào và sẽ bị bộ dọn rác (Garbage Collector) của Git xóa bỏ sau khi MR đóng. Nếu gán Tag Image theo SHA này, Image đó sẽ không thể truy nguyên (untraceable) nguồn gốc trong Git history. Quy tắc là chỉ dùng `$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA` hoặc chỉ sinh hiện vật phát hành trên nhánh mặc định/Tag.
 
 #### Nhật ký truy vết sự cố trên Container Registry:
 ```bash
@@ -4674,12 +5231,25 @@ fatal: bad object 9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c
 Lỗi `fatal: bad object` xuất hiện vì commit `9f8e7d6c` chỉ là một ref tạm thời đã bị Server xóa sạch sau khi gộp MR.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Hỏi:** Cấu hình khối `workflow:rules` chuẩn trong tệp `.gitlab-ci.yml` triệt tiêu hiện tượng sinh 2 Pipeline trùng lặp cho cùng 1 commit như thế nào?
-
-**Đáp án chuẩn:**
-Sử dụng quy tắc `when: never` đối với sự kiện push trên branch đang mở MR:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>** Cấu hình khối `workflow:rules` chuẩn trong tệp `.gitlab-ci.yml` triệt tiêu hiện tượng sinh 2 Pipeline trùng lặp cho cùng 1 commit như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng quy tắc `when: never` đối với sự kiện push trên branch đang mở MR:
 ```yaml
 workflow:
   rules:
@@ -4696,12 +5266,25 @@ Quy tắc đầu tiên loại bỏ sự kiện `push` dư thừa khi branch đã
 3. `- if: '$CI_COMMIT_BRANCH || $CI_COMMIT_TAG'`: Chấp nhận sinh Pipeline cho các sự kiện push trực tiếp trên nhánh `main` hoặc khi đẩy Git Tag.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Hỏi:** Làm thế nào để triển khai Mức bảo vệ thứ 2 (Kiểm thử trên cây đã gộp) trên phiên bản GitLab Community Edition (CE) mà không cần mua License Premium?
-
-**Đáp án chuẩn:**
-Trên bản GitLab CE, chúng ta viết một Job tự gộp tên là `auto-merge-test` thực thi kịch bản Bash `tu-gop.sh`. Kịch bản này checkout nhánh nguồn, fetch nhánh đích, và chạy câu lệnh `git merge --no-commit --no-ff origin/main`. Nếu câu lệnh gộp thành công, Job tiếp tục chạy bộ kiểm thử `pytest/go test` trên cây mã nguồn gộp tạm thời này; nếu xảy ra xung đột, kịch bản thực thi `git merge --abort` và ngắt đỏ cứng Pipeline với mã lỗi `exit 1`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>** Làm thế nào để triển khai Mức bảo vệ thứ 2 (Kiểm thử trên cây đã gộp) trên phiên bản GitLab Community Edition (CE) mà không cần mua License Premium?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trên bản GitLab CE, chúng ta viết một Job tự gộp tên là `auto-merge-test` thực thi kịch bản Bash `tu-gop.sh`. Kịch bản này checkout nhánh nguồn, fetch nhánh đích, và chạy câu lệnh `git merge --no-commit --no-ff origin/main`. Nếu câu lệnh gộp thành công, Job tiếp tục chạy bộ kiểm thử `pytest/go test` trên cây mã nguồn gộp tạm thời này; nếu xảy ra xung đột, kịch bản thực thi `git merge --abort` và ngắt đỏ cứng Pipeline với mã lỗi `exit 1`.
 
 #### Toàn văn kịch bản Bash `tu-gop.sh` chuẩn thực chiến:
 ```bash
@@ -4729,12 +5312,25 @@ fi
 ```
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Hỏi:** Nguy cơ rò rỉ cửa ngõ bảo mật (Security Gate) khi chuyển đổi hệ thống CI/CD từ Branch Pipeline sang MR Pipeline là gì và cách phòng tránh?
-
-**Đáp án chuẩn:**
-Khi chuyển sang MR Pipeline, biến `$CI_COMMIT_BRANCH` trở nên rỗng. Nếu các Job kiểm tra bảo mật (như SAST, SonarQube, Dependency Scan) vẫn giữ nguyên điều kiện cũ dạng `if: '$CI_COMMIT_BRANCH == "main"'`, GitLab Engine sẽ âm thầm loại bỏ các Job đó khỏi MR Pipeline. Cách phòng tránh là thực thi script `so-job.sh` kiểm tra tập hiệu danh sách Job giữa 2 loại Pipeline, đảm bảo tập hiệu bằng rỗng (`0`) và bổ sung điều kiện `merge_request_event` vào tất cả các Job bảo mật.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>** Nguy cơ rò rỉ cửa ngõ bảo mật (Security Gate) khi chuyển đổi hệ thống CI/CD từ Branch Pipeline sang MR Pipeline là gì và cách phòng tránh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi chuyển sang MR Pipeline, biến `$CI_COMMIT_BRANCH` trở nên rỗng. Nếu các Job kiểm tra bảo mật (như SAST, SonarQube, Dependency Scan) vẫn giữ nguyên điều kiện cũ dạng `if: '$CI_COMMIT_BRANCH == "main"'`, GitLab Engine sẽ âm thầm loại bỏ các Job đó khỏi MR Pipeline. Cách phòng tránh là thực thi script `so-job.sh` kiểm tra tập hiệu danh sách Job giữa 2 loại Pipeline, đảm bảo tập hiệu bằng rỗng (`0`) và bổ sung điều kiện `merge_request_event` vào tất cả các Job bảo mật.
 
 #### Mã nguồn kịch bản đối soát `so-job.sh`:
 ```bash
@@ -4756,12 +5352,25 @@ fi
 ```
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Hỏi:** Sự khác biệt về mặt bản chất cây mã nguồn giữa Mức bảo vệ 2 (Merged Results) và Mức bảo vệ 3 (Merge Train) là gì?
-
-**Đáp án chuẩn:**
-- **Mức bảo vệ 2 (Merged Results):** Kiểm thử trên cây mã nguồn `main` ⊕ `HEAD nhánh nguồn`. Nó chỉ bảo vệ khỏi xung đột với trạng thái hiện tại của nhánh đích.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>** Sự khác biệt về mặt bản chất cây mã nguồn giữa Mức bảo vệ 2 (Merged Results) và Mức bảo vệ 3 (Merge Train) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Mức bảo vệ 2 (Merged Results):** Kiểm thử trên cây mã nguồn `main` ⊕ `HEAD nhánh nguồn`. Nó chỉ bảo vệ khỏi xung đột với trạng thái hiện tại của nhánh đích.
 - **Mức bảo vệ 3 (Merge Train):** Kiểm thử trên cây mã nguồn `main` ⊕ `Xe_trước_1` ⊕ `Xe_trước_2` ⊕ `HEAD nhánh nguồn`. Nó bảo vệ khỏi xung đột giữa các Merge Request đang cùng xếp hàng chờ gộp đồng thời vào nhánh đích.
 
 #### Mô hình so sánh 3 cây Git Tree:
@@ -4772,12 +5381,25 @@ fi
 ```
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Hỏi:** Tại sao Mức bảo vệ 2 (Job tự gộp trên CE) vẫn có thể thất bại trong việc bảo vệ nhánh `main` nếu không bật cấu hình bảo vệ kép phía GitLab Settings?
-
-**Đáp án chuẩn:**
-Vì `rules` và cây mã nguồn được chốt ở mốc `t0` khi kích hoạt Pipeline. Nếu một MR được gộp vào `main` làm nhánh `main` thay đổi **sau** khi Pipeline của MR thứ hai đã chạy xong, kết quả kiểm thử của MR thứ hai bị lỗi thời. Nếu không bật thuộc tính *Pipelines must succeed* cộng với yêu cầu *Require status checks/rebase*, lập trình viên vẫn có thể bấm gộp mã nguồn cũ vào `main`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>** Tại sao Mức bảo vệ 2 (Job tự gộp trên CE) vẫn có thể thất bại trong việc bảo vệ nhánh `main` nếu không bật cấu hình bảo vệ kép phía GitLab Settings?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì `rules` và cây mã nguồn được chốt ở mốc `t0` khi kích hoạt Pipeline. Nếu một MR được gộp vào `main` làm nhánh `main` thay đổi **sau** khi Pipeline của MR thứ hai đã chạy xong, kết quả kiểm thử của MR thứ hai bị lỗi thời. Nếu không bật thuộc tính *Pipelines must succeed* cộng với yêu cầu *Require status checks/rebase*, lập trình viên vẫn có thể bấm gộp mã nguồn cũ vào `main`.
 
 #### Thao tác kích hoạt cấu hình bảo vệ kép via REST API:
 ```bash
@@ -4788,12 +5410,25 @@ curl --request PUT --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
 ```
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Hỏi:** Hai con số chỉ số kỹ thuật quyết định một dự án có đủ điều kiện để bật tính năng Merge Train hay không là gì?
-
-**Đáp án chuẩn:**
-Hai con số quyết định là:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>** Hai con số chỉ số kỹ thuật quyết định một dự án có đủ điều kiện để bật tính năng Merge Train hay không là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Hai con số quyết định là:
 1. **Thời gian chạy Pipeline:** Bắt buộc **≤ 10 phút**.
 2. **Tỉ lệ Pipeline bị hỏng (Failure Rate):** Bắt buộc **≤ 5%**.
 Vì Merge Train vận hành theo cơ chế nối đuôi, một xe ở đầu đoàn bị hỏng sẽ bắt buộc tất cả các xe phía sau phải ngắt ngang và chạy lại toàn bộ Pipeline từ đầu, gây lãng phí hàng trăm phút Runner nếu Pipeline quá dài hoặc tỉ lệ hỏng cao.
@@ -4806,20 +5441,46 @@ Nếu Xe thứ 2 bị ngắt đỏ ở phút thứ 24:
 - Tổng số phút Runner bị lãng phí: `4 xe × 25 phút = 100 phút Runner`!
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Hỏi:** Tại sao bản GitLab CE lại không thể thay thế tính năng Merge Train (Mức bảo vệ 3) bằng kịch bản Bash?
-
-**Đáp án chuẩn:**
-Vì Merge Train không đơn thuần là một câu lệnh Git, mà là một **hàng đợi phân tán (Distributed State Queue)** kết hợp chặt chẽ với hệ thống quản lý sự kiện và khoá tài nguyên ngầm của GitLab Server. Kịch bản Bash chạy trong một Job độc lập trên Runner không thể biết được trạng thái xếp hàng hay can thiệp vào tiến trình của các MR khác đang mở trong cùng một dự án.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>** Tại sao bản GitLab CE lại không thể thay thế tính năng Merge Train (Mức bảo vệ 3) bằng kịch bản Bash?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Merge Train không đơn thuần là một câu lệnh Git, mà là một **hàng đợi phân tán (Distributed State Queue)** kết hợp chặt chẽ với hệ thống quản lý sự kiện và khoá tài nguyên ngầm của GitLab Server. Kịch bản Bash chạy trong một Job độc lập trên Runner không thể biết được trạng thái xếp hàng hay can thiệp vào tiến trình của các MR khác đang mở trong cùng một dự án.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Hỏi:** Bảng chân trị mở rộng từ Buổi 04 cần bổ sung thêm trường dữ liệu nào để xác định chính xác cây mã nguồn mà Job đang đứng trên đó?
-
-**Đáp án chuẩn:**
-Cần bổ sung thêm trường biến hệ thống thứ hai là `CI_MERGE_REQUEST_EVENT_TYPE`. Trường thứ nhất (`CI_PIPELINE_SOURCE == "merge_request_event"`) chỉ cho biết sự kiện kích hoạt Pipeline, còn trường thứ hai cho biết cây Git cụ thể: `detached` (HEAD nhánh nguồn), `merged_result` (commit gộp tạm phía Server), hay `merge_train` (cây gộp dồn của toàn bộ đội xe trong hàng đợi).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>** Bảng chân trị mở rộng từ Buổi 04 cần bổ sung thêm trường dữ liệu nào để xác định chính xác cây mã nguồn mà Job đang đứng trên đó?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cần bổ sung thêm trường biến hệ thống thứ hai là `CI_MERGE_REQUEST_EVENT_TYPE`. Trường thứ nhất (`CI_PIPELINE_SOURCE == "merge_request_event"`) chỉ cho biết sự kiện kích hoạt Pipeline, còn trường thứ hai cho biết cây Git cụ thể: `detached` (HEAD nhánh nguồn), `merged_result` (commit gộp tạm phía Server), hay `merge_train` (cây gộp dồn của toàn bộ đội xe trong hàng đợi).
 
 #### Bảng đối chiếu chi tiết 3 trạng thái Event Type:
 | `CI_MERGE_REQUEST_EVENT_TYPE` | Cây mã nguồn checkout được | Loại License yêu cầu |
@@ -4829,14 +5490,29 @@ Cần bổ sung thêm trường biến hệ thống thứ hai là `CI_MERGE_REQU
 | `merge_train` | Git ref gộp dồn của hàng đợi | Premium / Ultimate |
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Hỏi:** Kỹ sư DevOps nên xử lý như thế nào khi ban quản lý yêu cầu bật tính năng Fast-forward Merge bắt buộc Rebase trên toàn bộ 100 repository trong tập đoàn?
-
-**Đáp án chuẩn:**
-Kỹ sư cần cảnh báo nguy cơ bùng nổ tài nguyên Runner. Khi bật thuộc tính này, nếu một MR hotfix được gộp vào `main`, 99 MR còn lại lập tức bị đánh dấu "Out of date" và kích hoạt Rebase/run pipeline tự động đồng thời. Kế hoạch triển khai chuẩn là: Thông báo trước cho đội ngũ phát triển, triển khai theo từng dự án ngoài giờ cao điểm, và nâng cấp dung lượng `concurrent` của Runner pool trước khi bật cấu hình.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>** Kỹ sư DevOps nên xử lý như thế nào khi ban quản lý yêu cầu bật tính năng Fast-forward Merge bắt buộc Rebase trên toàn bộ 100 repository trong tập đoàn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kỹ sư cần cảnh báo nguy cơ bùng nổ tài nguyên Runner. Khi bật thuộc tính này, nếu một MR hotfix được gộp vào `main`, 99 MR còn lại lập tức bị đánh dấu "Out of date" và kích hoạt Rebase/run pipeline tự động đồng thời. Kế hoạch triển khai chuẩn là: Thông báo trước cho đội ngũ phát triển, triển khai theo từng dự án ngoài giờ cao điểm, và nâng cấp dung lượng `concurrent` của Runner pool trước khi bật cấu hình.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 
@@ -5034,11 +5710,22 @@ Nội dung phần này tổng hợp 12 câu hỏi phỏng vấn sát thực tế
 
 ## §V2. Danh sách 12 Câu hỏi Vấn đáp Thực chiến
 
-### Câu 1
-**Hỏi:** Ba đại lượng cốt lõi và tỉ số duy nhất điều khiển thời gian chờ của Job trong hệ thống Runner là gì?
-
-**Đáp án chuẩn:**
-Ba đại lượng cốt lõi gồm:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Ba đại lượng cốt lõi và tỉ số duy nhất điều khiển thời gian chờ của Job trong hệ thống Runner là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba đại lượng cốt lõi gồm:
 1. **$\lambda$ (Lambda):** Tốc độ Job đến hệ thống (Job/giờ).
 2. **$S$ (Service Time):** Thời lượng trung vị của một Job (tính bằng giờ hoặc giây).
 3. **$c$ (Concurrency):** Số Slot thực thi song song thực tế khả dụng.
@@ -5060,23 +5747,49 @@ Lý thuyết xếp hàng (M/M/c Queueing Model) khẳng định rằng đồ th�
 ```
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Hỏi:** Cho $\lambda = 60$ job/giờ, thời lượng Job $S = 3$ phút ($0.05$ giờ), và số Slot $c = 4$. Hãy tính chỉ số mức no $\rho$ và đưa ra nhận xét?
-
-**Đáp án chuẩn:**
-Áp dụng công thức tính Mức no $\rho$:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>** Cho $\lambda = 60$ job/giờ, thời lượng Job $S = 3$ phút ($0.05$ giờ), và số Slot $c = 4$. Hãy tính chỉ số mức no $\rho$ và đưa ra nhận xét?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Áp dụng công thức tính Mức no $\rho$:
 $$\rho = \frac{\lambda \cdot S}{c} = \frac{60 \times 0.05}{4} = \frac{3}{4} = \mathbf{0.75}$$
 
 **Nhận xét kỹ thuật:** Với $\rho = 0.75$, hệ thống nằm trong vùng vận hành tối ưu (gần mốc 0.80). Thời gian chờ trung bình rơi vào khoảng $0.8 \cdot S$ (tương đương 2.4 phút). Hệ thống vận hành ổn định, không cần thiết phải mua thêm máy chủ Runner.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Hỏi:** Khi doanh nghiệp thêm 50% số lượng máy chủ Runner nhưng thời gian chờ của lập trình viên không giảm, nguyên nhân gốc rễ có thể nằm ở đâu?
-
-**Đáp án chuẩn:**
-Nguyên nhân gốc rễ có thể thuộc 1 trong 2 trường hợp:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>** Khi doanh nghiệp thêm 50% số lượng máy chủ Runner nhưng thời gian chờ của lập trình viên không giảm, nguyên nhân gốc rễ có thể nằm ở đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nguyên nhân gốc rễ có thể thuộc 1 trong 2 trường hợp:
 1. **Hệ thống đang ở mức no thấp ($\rho \le 0.5$):** Thời gian chờ `queued_duration` vốn đã gần bằng 0. Việc tăng thêm số Slot $c$ không làm giảm thời gian chờ vì nút cổ chai không nằm ở số Slot.
 2. **Nút cổ chai nằm ở phần cứng máy chủ Runner (CPU / Disk I/O / Network):** Việc tăng số Job chạy song song khiến máy chủ bị quá tải I/O đĩa hoặc CPU, làm thời lượng chạy $S$ của từng Job tăng vọt lên, bù trừ hoàn toàn lợi ích của việc tăng số Slot $c$.
 
@@ -5086,12 +5799,25 @@ Kỹ sư cần đo đạc thời lượng $S$ ở 2 mức `concurrent`:
 - Đo $S$ tại `concurrent = 12`: Nếu $S$ tăng vọt lên $95\text{s}$, chứng tỏ máy chủ bị chạm trần CPU/Disk I/O. Biện pháp đúng là nâng cấp SSD NVMe hoặc tách máy chủ, không phải tăng `concurrent`.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Hỏi:** Số Slot thực tế $c$ được tính toán như thế nào từ tệp `/etc/gitlab-runner/config.toml`? Nếu cấu hình 6 Runner, mỗi Runner có `limit = 4`, và biến `concurrent = 4` thì $c$ bằng bao nhiêu?
-
-**Đáp án chuẩn:**
-Số Slot thực tế $c$ được tính theo công thức:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>** Số Slot thực tế $c$ được tính toán như thế nào từ tệp `/etc/gitlab-runner/config.toml`? Nếu cấu hình 6 Runner, mỗi Runner có `limit = 4`, và biến `concurrent = 4` thì $c$ bằng bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Số Slot thực tế $c$ được tính theo công thức:
 $$c = \min\left(\text{concurrent}, \sum \text{limit}\right)$$
 
 Trường hợp trên: Tổng các `limit` là $6 \times 4 = 24$. Tuy nhiên, biến trần toàn cục `concurrent = 4`. Do đó:
@@ -5112,12 +5838,25 @@ concurrent = 4 # <--- TRẦN TOÀN CỤC CHẶN TẤT CẢ RUNNER BÊN DƯỚI!
 ```
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Hỏi:** Trình bày 3 ca làm Job bị mắc kẹt ở trạng thái `pending` và câu lệnh chẩn đoán bắt buộc cho từng ca?
-
-**Đáp án chuẩn:**
-Ba ca Job `pending` gồm:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>** Trình bày 3 ca làm Job bị mắc kẹt ở trạng thái `pending` và câu lệnh chẩn đoán bắt buộc cho từng ca?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba ca Job `pending` gồm:
 1. **Ca 1 (Thiếu Runner khớp Tag):** Không có Runner nào online khớp với thuộc tính `tags:` trong Job.
    - *Lệnh chẩn đoán:* `GET /api/v4/projects/:id/jobs` (Kiểm tra trường `runner` bị null).
 2. **Ca 2 (Hết Slot xử lý):** Các Runner đều bận và $c$ chạm trần.
@@ -5126,43 +5865,95 @@ Ba ca Job `pending` gồm:
    - *Lệnh chẩn đoán:* **`kubectl get events --sort-by=.lastTimestamp`** trên cụm Kubernetes (API của GitLab không hiển thị nguyên nhân này).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Hỏi:** Tại sao tính năng Autoscaling Runner lại cải thiện giá trị trung vị của thời gian chờ nhưng **không** làm giảm phân vị P95 của `queued_duration`?
-
-**Đáp án chuẩn:**
-Vì Autoscaling mang theo một **hằng số khởi tạo hạ tầng (Time-to-provision)**:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>** Tại sao tính năng Autoscaling Runner lại cải thiện giá trị trung vị của thời gian chờ nhưng **không** làm giảm phân vị P95 của `queued_duration`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Autoscaling mang theo một **hằng số khởi tạo hạ tầng (Time-to-provision)**:
 - Khởi tạo máy ảo mới (EC2/GCE): Tốn **30 đến 90 giây**.
 - Khởi tạo Pod K8s mới: Tốn **2 đến 10 giây**.
 
 Hằng số khởi tạo này được cộng thẳng vào `queued_duration` của Job đầu tiên trên máy mới. Phân vị P95 phản ánh 5% các Job chịu thời gian chờ tệ nhất, rơi đúng vào những Job chịu hằng số khởi tạo này. Do đó, P95 không giảm nếu không duy trì môi trường rỗi (`IdleCount`).
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Hỏi:** Tham số `IdleCount = 2` tốn bao nhiêu chi phí USD mỗi tháng nếu giá thuê máy ảo là $0.10$ USD/giờ, và lợi ích kỹ thuật mang lại là gì?
-
-**Đáp án chuẩn:**
-Chi phí duy trì 2 máy ảo rỗi 24/7:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>** Tham số `IdleCount = 2` tốn bao nhiêu chi phí USD mỗi tháng nếu giá thuê máy ảo là $0.10$ USD/giờ, và lợi ích kỹ thuật mang lại là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chi phí duy trì 2 máy ảo rỗi 24/7:
 $$\text{Chi phí} = 2 \text{ máy} \times 24 \text{ giờ} \times 30 \text{ ngày} \times 0.10 \text{ USD} = \mathbf{144 \text{ USD/tháng}}$$
 
 **Lợi ích kỹ thuật:** Giữ sẵn 2 máy rỗi giúp xóa bỏ hoàn toàn hằng số khởi tạo **30 đến 90 giây** cho Job đầu tiên sau một giai đoạn rỗi.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Hỏi:** Tại sao việc kích hoạt Distributed Cache (MinIO S3) trên hệ thống chỉ có 1 Runner duy nhất lại làm thời gian chạy Job bị **chậm hơn**?
-
-**Đáp án chuẩn:**
-Cache Cục bộ (Local Cache) đọc/ghi trực tiếp từ ổ SSD local nên tốc độ đạt hàng trăm MB/s. Khi chỉ có **1 Runner**, tỉ lệ trúng Cache cục bộ đã là $100\%$. Nếu bật S3 Cache qua MinIO, tỉ lệ trúng không tăng thêm nhưng mỗi Job bị cộng thêm **3 đến 6 giây** truyền nạp dữ liệu qua mạng HTTP (`Restoring cache` và `Creating cache`). Distributed Cache chỉ có lợi khi hệ thống có từ **2 Runner trở lên** ($N \ge 2$).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>** Tại sao việc kích hoạt Distributed Cache (MinIO S3) trên hệ thống chỉ có 1 Runner duy nhất lại làm thời gian chạy Job bị **chậm hơn**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cache Cục bộ (Local Cache) đọc/ghi trực tiếp từ ổ SSD local nên tốc độ đạt hàng trăm MB/s. Khi chỉ có **1 Runner**, tỉ lệ trúng Cache cục bộ đã là $100\%$. Nếu bật S3 Cache qua MinIO, tỉ lệ trúng không tăng thêm nhưng mỗi Job bị cộng thêm **3 đến 6 giây** truyền nạp dữ liệu qua mạng HTTP (`Restoring cache` và `Creating cache`). Distributed Cache chỉ có lợi khi hệ thống có từ **2 Runner trở lên** ($N \ge 2$).
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Hỏi:** Ba cách giảm Mức no $\rho$ theo thứ tự giá tiền tăng dần là gì, và tại sao hầu hết các đội ngũ DevOps lại làm ngược thứ tự này?
-
-**Đáp án chuẩn:**
-Ba cách giảm $\rho = \lambda \cdot S / c$ theo thứ tự chi phí:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>** Ba cách giảm Mức no $\rho$ theo thứ tự giá tiền tăng dần là gì, và tại sao hầu hết các đội ngũ DevOps lại làm ngược thứ tự này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba cách giảm $\rho = \lambda \cdot S / c$ theo thứ tự chi phí:
 1. **Giảm $\lambda$ (Rẻ nhất - 0 USD):** Bật `interruptible: true` và `workflow:rules` chuẩn để hủy các Pipeline dư thừa (Cắt 20–40% $\lambda$).
 2. **Giảm $S$ (Chi phí vừa phải):** Dùng Image mỏng, tối ưu Cache, loại bỏ các bước dư thừa (Buổi 14).
 3. **Tăng $c$ (Đắt nhất):** Mua thêm máy chủ Runner, bật Autoscaling.
@@ -5170,23 +5961,49 @@ Ba cách giảm $\rho = \lambda \cdot S / c$ theo thứ tự chi phí:
 Các đội làm ngược thứ tự vì việc bấm mua thêm máy (Tăng $c$) là giải pháp dễ thao tác nhất về mặt quản trị, không đòi hỏi phải đọc log hay tối ưu mã nguồn YAML.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Hỏi:** Nguyên nhân khiến một Job 90 giây mà pha `Preparing environment` ngốn mất 45 giây là gì và cách khắc phục?
-
-**Đáp án chuẩn:**
-- **Nguyên nhân:** Do Docker Image sử dụng có dung lượng quá cồng kềnh (ví dụ `python:3.11-full` dung lượng 1.2 GB), khiến Runner mất 45 giây để kéo các Layer từ Registry về môi trường mới.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>** Nguyên nhân khiến một Job 90 giây mà pha `Preparing environment` ngốn mất 45 giây là gì và cách khắc phục?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Nguyên nhân:** Do Docker Image sử dụng có dung lượng quá cồng kềnh (ví dụ `python:3.11-full` dung lượng 1.2 GB), khiến Runner mất 45 giây để kéo các Layer từ Registry về môi trường mới.
 - **Cách khắc phục:**
   1. Chuyển sang sử dụng Image mỏng (Alpine hoặc Slim, ví dụ `python:3.11-slim` dung lượng 180 MB), giúp rút ngắn thời gian kéo xuống còn **8 giây** (Tiết kiệm 37 giây/job).
   2. Triển khai **Pull-Through Cache Registry** nằm trong mạng LAN của Runner pool.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Hỏi:** Tại sao không nên dùng 1 hồ Runner duy nhất cho tất cả các loại Job trong tập đoàn? Hãy đưa ra 2 trục phân tách hồ Runner chuẩn?
-
-**Đáp án chuẩn:**
-Không dùng 1 hồ Runner chung vì:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>** Tại sao không nên dùng 1 hồ Runner duy nhất cho tất cả các loại Job trong tập đoàn? Hãy đưa ra 2 trục phân tách hồ Runner chuẩn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Không dùng 1 hồ Runner chung vì:
 - Job 20 giây bị nghẽn sau Job 30 phút.
 - Mọi Job đều truy cập Docker Socket, gây rủi ro an ninh mạng.
 
@@ -5195,17 +6012,32 @@ Hai trục phân tách chuẩn:
 2. **Theo đặc quyền:** Hồ Unprivileged (No Docker socket) vs Hồ Privileged (Có Docker socket/Deploy key).
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Hỏi:** Khi đội ngũ kỹ sư đề xuất mua thêm 4 máy chủ Runner, bạn sẽ hỏi 3 con số nào trước khi phê duyệt ngân sách?
-
-**Đáp án chuẩn:**
-Ba con số bắt buộc yêu cầu cung cấp:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>** Khi đội ngũ kỹ sư đề xuất mua thêm 4 máy chủ Runner, bạn sẽ hỏi 3 con số nào trước khi phê duyệt ngân sách?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba con số bắt buộc yêu cầu cung cấp:
 1. **Chỉ số Mức no $\rho$ hiện tại:** Tính từ 3 đại lượng $\lambda, S, c$. Nếu $\rho < 0.6$, từ chối mua thêm.
 2. **Phân vị P95 của `queued_duration`:** Để đối soát thời gian chờ thực tế của người dùng.
 3. **Phần trăm $\lambda$ cắt giảm được nếu bật `interruptible: true`:** Kiểm tra xem đã tối ưu 0 USD trước khi xin tiền hay chưa.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 
@@ -5499,10 +6331,22 @@ Triển khai đăng ký hàng chục máy chủ Runner tự động:
 
 ## §V1. Danh sách 12 câu hỏi chiến trường
 
-### Câu 1
-**Câu hỏi:** Tại sao lại chia thời gian Pipeline thành ba nhóm (Chờ, Chuẩn bị, Việc thật) và ba nhóm đó đo bằng những công cụ nào?
-**Đáp án chuẩn:**
-- **Chia thành ba nhóm vì:** Ba nhóm có ba nguyên nhân kỹ thuật hoàn toàn khác nhau và đòi hỏi ba phương án khắc phục hoàn toàn khác nhau. Phân tách định lượng giúp phát hiện chính xác nút cổ chai thực sự của hệ thống.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao lại chia thời gian Pipeline thành ba nhóm (Chờ, Chuẩn bị, Việc thật) và ba nhóm đó đo bằng những công cụ nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Chia thành ba nhóm vì:** Ba nhóm có ba nguyên nhân kỹ thuật hoàn toàn khác nhau và đòi hỏi ba phương án khắc phục hoàn toàn khác nhau. Phân tách định lượng giúp phát hiện chính xác nút cổ chai thực sự của hệ thống.
   - **Nhóm CHỜ (Queued duration):** Do hệ thống vượt Mức no $\rho \ge 1.0$ hoặc thiếu Slot xử lý $c$. Cách sửa: Tăng Slot $c$ hoặc dùng `interruptible: true` để giảm tải $\lambda$ (Buổi 13).
   - **Nhóm CHUẨN BỊ (Preparation phases):** Do kéo Docker Image cồng kềnh, clone Git sâu, hoặc nạp/giải nén Cache dư thừa. Cách sửa: Dùng Image mỏng, git fetch shallow, và `policy: pull` (Buổi 05).
   - **Nhóm VIỆC THẬT (Script execution):** Do câu lệnh trong `script:` thực thi tuần tự hoặc code kiểm thử cồng kềnh. Cách sửa: Chia song song `parallel: matrix` hoặc tối ưu thuật toán.
@@ -5513,11 +6357,25 @@ Triển khai đăng ký hàng chục máy chủ Runner tự động:
 - **Quy tắc kỹ thuật:** **QT 4.1**.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Rút ngắn một Job không nằm trên đường găng đem lại hiệu quả gì cho tổng thời gian Pipeline? Tại sao?
-**Đáp án chuẩn:**
-- **Hiệu quả thu được:** Tiết kiệm đúng **0 giây** tổng thời gian cán đích của Pipeline.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Rút ngắn một Job không nằm trên đường găng đem lại hiệu quả gì cho tổng thời gian Pipeline? Tại sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Hiệu quả thu được:** Tiết kiệm đúng **0 giây** tổng thời gian cán đích của Pipeline.
 - **Giải thích nguyên nhân:**
   - Thời lượng thực thi của một Pipeline có cấu trúc đồ thị DAG bằng đúng thời lượng của chuỗi Job dài nhất liên tục từ Start đến End (Đường găng).
   - Mọi Job nằm ngoài đường găng này đều sở hữu một khoảng thời gian trống (Slack time); rút ngắn một Job nằm ngoài đường găng chỉ làm tăng khoảng thời gian rỗi của nó chứ không làm thay đổi mốc thời gian hoàn thành của Job cuối cùng trên đường găng.
@@ -5525,41 +6383,97 @@ Triển khai đăng ký hàng chục máy chủ Runner tự động:
 - **Quy tắc kỹ thuật:** **QT 4.2** & **QT 4.1 Buổi 08**.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Tại sao phải áp dụng từng kỹ thuật một và đo lại, thay vì áp dụng tất cả 5 kỹ thuật cùng lúc trong một Merge Request?
-**Đáp án chuẩn:**
-- **Lý do kỹ thuật tác động tương hỗ:** Các kỹ thuật tối ưu hóa có sự tương tác qua lại lẫn nhau: `parallel` chia nhỏ công việc làm thay đổi thời gian cố định, Cache làm thay đổi pha chuẩn bị, Image mỏng làm thay đổi cả thời gian nạp đĩa và nén. Tổng hiệu quả của 5 kỹ thuật không bao giờ bằng tổng đại số của từng hiệu ứng riêng lẻ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Tại sao phải áp dụng từng kỹ thuật một và đo lại, thay vì áp dụng tất cả 5 kỹ thuật cùng lúc trong một Merge Request?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Lý do kỹ thuật tác động tương hỗ:** Các kỹ thuật tối ưu hóa có sự tương tác qua lại lẫn nhau: `parallel` chia nhỏ công việc làm thay đổi thời gian cố định, Cache làm thay đổi pha chuẩn bị, Image mỏng làm thay đổi cả thời gian nạp đĩa và nén. Tổng hiệu quả của 5 kỹ thuật không bao giờ bằng tổng đại số của từng hiệu ứng riêng lẻ.
 - **Tác hại khi gộp chung:** Nếu gộp 5 kỹ thuật vào 1 MR, kỹ sư không thể xác định kỹ thuật nào mang lại hiệu quả thực sự và kỹ thuật nào vô tình **làm Pipeline chạy chậm hơn** (ví dụ Cache sai vị trí làm tăng 15s).
 - **Quy trình chuẩn:** Tạo 5 Merge Request tuần tự, mỗi MR đính kèm bảng đo 3 lần lấy trung vị và so sánh với mã SHA256 Hash hiện vật sản phẩm.
 - **Quy tắc kỹ thuật:** **QT 4.3**.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao một lần đo đơn lẻ không có giá trị kỹ thuật và cần xác định biên độ dao động hệ thống trước khi làm?
-**Đáp án chuẩn:**
-- **Bản chất con số đo đơn lẻ:** Là một con số ngẫu nhiên do chịu ảnh hưởng bởi biến động tải rỗi CPU của máy chủ Runner, trạng thái I/O đĩa đệm, và độ trễ mạng HTTP giữa các lần thực thi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao một lần đo đơn lẻ không có giá trị kỹ thuật và cần xác định biên độ dao động hệ thống trước khi làm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Bản chất con số đo đơn lẻ:** Là một con số ngẫu nhiên do chịu ảnh hưởng bởi biến động tải rỗi CPU của máy chủ Runner, trạng thái I/O đĩa đệm, và độ trễ mạng HTTP giữa các lần thực thi.
 - **Phương pháp chuẩn:** Phải thực thi tối thiểu **3 lần** (hoặc 5 lần) và lấy **giá trị trung vị (Median)**.
 - **Biên độ dao động ($\pm 8\%$):** Nếu biên độ dao động của hệ thống là $\pm 8\%$ (ví dụ $1200\text{s} \pm 96\text{s}$), mọi kết quả cải thiện nhỏ hơn 96 giây đều bị coi là nhiễu hệ thống và chưa có kết luận kỹ thuật.
 - **Quy tắc kỹ thuật:** **QT 4.4**.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Trình tự bắt buộc của 5 kỹ thuật tối ưu là gì và tại sao hai kỹ thuật đầu tiên lại được xếp trước?
-**Đáp án chuẩn:**
-- **Thứ tự 5 kỹ thuật tuân thủ:** (1) Bỏ hàng rào stage ($\to$ `needs`); (2) Song song hóa ($\to$ `parallel`); (3) Cache đúng chỗ ($\to$ `policy: pull`); (4) Docker Image mỏng; (5) Bỏ việc không cần thiết.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Trình tự bắt buộc của 5 kỹ thuật tối ưu là gì và tại sao hai kỹ thuật đầu tiên lại được xếp trước?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Thứ tự 5 kỹ thuật tuân thủ:** (1) Bỏ hàng rào stage ($\to$ `needs`); (2) Song song hóa ($\to$ `parallel`); (3) Cache đúng chỗ ($\to$ `policy: pull`); (4) Docker Image mỏng; (5) Bỏ việc không cần thiết.
 - **Tại sao Kỹ thuật 1 & 2 xếp trước:** Vì `needs:` và `parallel:` làm **thay đổi cấu trúc luồng thực thi** của Pipeline. Nếu thực hiện Cache hoặc Image mỏng trước, các số đo thời gian của chúng sẽ bị thay đổi hoàn toàn sau khi tái cấu trúc Pipeline ở bước 1 và 2.
 - **Tác hại làm sai thứ tự:** Tối ưu Docker Image mỏng ở bước 1 rồi mới thêm `needs:` ở bước 2 làm con số tiết kiệm đo lại bị lệch 40% so với báo cáo ban đầu.
 - **Quy tắc kỹ thuật:** **QT 5.1**.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Trần lý thuyết là gì và công thức tính trần lý thuyết của 4 kỹ thuật đầu tiên được xác định như thế nào trước khi gõ code?
-**Đáp án chuẩn:**
-- **Trần lý thuyết:** Con số thời gian tiết kiệm tối đa có thể đạt được của một kỹ thuật, tính toán được từ số liệu đo thô trước khi can thiệp mã nguồn YAML.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Trần lý thuyết là gì và công thức tính trần lý thuyết của 4 kỹ thuật đầu tiên được xác định như thế nào trước khi gõ code?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Trần lý thuyết:** Con số thời gian tiết kiệm tối đa có thể đạt được của một kỹ thuật, tính toán được từ số liệu đo thô trước khi can thiệp mã nguồn YAML.
 - **Công thức tính 4 trần:**
   1. **Trần Needs:** Bằng tổng thời gian lãng phí ở các hàng rào stage chờ đợi.
   2. **Trần Parallel:** Bằng $T_{\text{tuần tự}} - (T / K + \text{phần cố định})$ theo định luật Amdahl.
@@ -5569,67 +6483,153 @@ Triển khai đăng ký hàng chục máy chủ Runner tự động:
 - **Quy tắc kỹ thuật:** **QT 5.2**.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Trình bày 3 trường hợp điển hình khiến việc bật Cache làm Pipeline chạy chậm hơn?
-**Đáp án chuẩn:**
-- **3 ca Cache làm chậm hơn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Trình bày 3 trường hợp điển hình khiến việc bật Cache làm Pipeline chạy chậm hơn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **3 ca Cache làm chậm hơn:**
   1. **Ca 1:** Thư mục nhỏ có thời gian tái tạo nhanh hơn thời gian nén và giải nén Zip (ví dụ build 3s nhưng unzip mất 8s).
   2. **Ca 2:** Để cờ `policy: pull-push` mặc định ở Job chỉ tiêu thụ Cache, bắt Job phải mất thêm thời gian nén và đẩy lại tệp Zip dư thừa lên S3 server (tiết kiệm 20–40s khi chuyển sang `policy: pull`).
   3. **Ca 3:** Kích hoạt Distributed Cache S3 qua mạng MinIO khi hệ thống chỉ có **đúng 1 Runner**, làm phát sinh độ trễ HTTP không cần thiết so với đĩa local.
 - **Quy tắc kỹ thuật:** **QT 6.1** & **QT 6.2 Buổi 05**.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Tại sao dùng Docker Image quá mỏng lại có nguy cơ làm chậm Pipeline thay vì làm nhanh hơn?
-**Đáp án chuẩn:**
-- **Hiện tượng dịch chuyển chi phí:** Docker Image quá mỏng (như Alpine nguyên bản) không có sẵn các công cụ như `git`, `curl`, `python3`. Khi Job chạy, câu lệnh `script:` phải thực thi `apk add --no-cache git curl` để cài bổ sung.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Tại sao dùng Docker Image quá mỏng lại có nguy cơ làm chậm Pipeline thay vì làm nhanh hơn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Hiện tượng dịch chuyển chi phí:** Docker Image quá mỏng (như Alpine nguyên bản) không có sẵn các công cụ như `git`, `curl`, `python3`. Khi Job chạy, câu lệnh `script:` phải thực thi `apk add --no-cache git curl` để cài bổ sung.
 - **Hậu quả:** Thời gian kéo Image ở pha chuẩn bị giảm 35 giây, nhưng thời gian chạy script tăng thêm 45 giây $\to$ Tổng thời lượng Job tăng thêm 10 giây và không tận dụng được Layer Cache của Runner.
 - **Giải pháp chuẩn:** Tự đóng gói Docker Image tùy chỉnh đã chứa sẵn đầy đủ công cụ cần thiết nhưng loại bỏ các tài nguyên thừa.
 - **Quy tắc kỹ thuật:** **QT 6.2**.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Điều gì đảm bảo một Pipeline chạy nhanh hơn 40% thực sự là tối ưu hóa thành công chứ không phải do bỏ sót công việc?
-**Đáp án chuẩn:**
-- **Tiêu chuẩn cưỡng chế SHA256 Hash:** Mã SHA256 Hash của mọi hiện vật sản phẩm đầu ra (`dist/app.tar.gz` hoặc file binary) sau tối ưu phải **giống hệt 100%** so với phiên bản gốc trước khi tối ưu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Điều gì đảm bảo một Pipeline chạy nhanh hơn 40% thực sự là tối ưu hóa thành công chứ không phải do bỏ sót công việc?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Tiêu chuẩn cưỡng chế SHA256 Hash:** Mã SHA256 Hash của mọi hiện vật sản phẩm đầu ra (`dist/app.tar.gz` hoặc file binary) sau tối ưu phải **giống hệt 100%** so với phiên bản gốc trước khi tối ưu.
 - **Ý nghĩa:** Nếu mã Hash thay đổi hoặc tệp nén bị giảm dung lượng, điều đó chứng minh kỹ sư đã loại bỏ nhầm các tệp tài nguyên hoặc bỏ sót bước kiểm thử, không phải là tối ưu hóa kỹ thuật.
 - **Dấu hiệu làm sai:** Pipeline nhanh hơn 40% sau khi thêm `dependencies: []` nhưng bản build phát hành lên Production bị thiếu tài nguyên tĩnh gây sập hỏng ứng dụng.
 - **Quy tắc kỹ thuật:** **QT 6.3** & **QT 7.2 Buổi 01**.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Kỹ thuật 5 (Bỏ việc không cần thiết) khác gì so với 4 kỹ thuật đầu tiên và ví dụ thực tế là gì?
-**Đáp án chuẩn:**
-- **Điểm khác biệt cốt lõi:** 4 kỹ thuật đầu tiên tối ưu **cách máy tính thực hiện công việc**. Kỹ thuật 5 hỏi trực tiếp **bản chất công việc có thực sự cần thiết hay không** — đây là kỹ thuật duy nhất đòi hỏi **quyết định chuyên môn của con người**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Kỹ thuật 5 (Bỏ việc không cần thiết) khác gì so với 4 kỹ thuật đầu tiên và ví dụ thực tế là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Điểm khác biệt cốt lõi:** 4 kỹ thuật đầu tiên tối ưu **cách máy tính thực hiện công việc**. Kỹ thuật 5 hỏi trực tiếp **bản chất công việc có thực sự cần thiết hay không** — đây là kỹ thuật duy nhất đòi hỏi **quyết định chuyên môn của con người**.
 - **Ví dụ thực tế:**
   1. Hủy bỏ Job `generate-pdf-docs` ngốn 90s mà 6 tháng qua không ai đọc artifact.
   2. Thu hẹp `rules:` của Job `heavy-security-scan` chỉ chạy trên Merge Request thay vì mọi Commit nhánh phụ.
 - **Quy tắc kỹ thuật:** **QT 5.3**.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Ngân sách thời gian (Time Budget) chuẩn cho Merge Request Pipeline và Main Branch Pipeline là bao nhiêu?
-**Đáp án chuẩn:**
-- **Merge Request Pipeline:** Ngân sách tối đa **$\le 10$ phút** (Buổi 12 QT 7.1) để đảm bảo lập trình viên nhận được phản hồi nhanh và không làm nghẽn Merge Train.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Ngân sách thời gian (Time Budget) chuẩn cho Merge Request Pipeline và Main Branch Pipeline là bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Merge Request Pipeline:** Ngân sách tối đa **$\le 10$ phút** (Buổi 12 QT 7.1) để đảm bảo lập trình viên nhận được phản hồi nhanh và không làm nghẽn Merge Train.
 - **Main Branch Pipeline:** Ngân sách tối đa **$\le 20$ phút** cho các bước đóng gói và phát hành chính thức.
 - **Cơ chế giám sát:** Khai báo Job giám sát ngân sách thời gian tự động ở stage `.post` để bắn cảnh báo khi thời gian vượt ngưỡng quy định.
 - **Quy tắc kỹ thuật:** **QT 7.1**.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Điểm dừng kỹ thuật trong tối ưu hóa Pipeline được xác định dựa trên nguyên lý nào?
-**Đáp án chuẩn:**
-- **Nguyên lý hiệu quả giảm dần (Diminishing Returns):** Càng tiến gần tới trần lý thuyết, chi phí công sức bỏ ra càng lớn nhưng lợi ích thu về càng nhỏ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Điểm dừng kỹ thuật trong tối ưu hóa Pipeline được xác định dựa trên nguyên lý nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Nguyên lý hiệu quả giảm dần (Diminishing Returns):** Càng tiến gần tới trần lý thuyết, chi phí công sức bỏ ra càng lớn nhưng lợi ích thu về càng nhỏ.
 - **Tiêu chuẩn dừng:** Khi việc rút ngắn thêm 30 giây yêu cầu hơn 2 ngày công đầu tư và làm tăng độ phức tạp bảo trì của file YAML (file dài rườm rà), kỹ sư phải dừng lại và ghi nhận lý do dừng vào tệp `bao-cao-toi-uu.tsv`.
 - **Quy tắc kỹ thuật:** **QT 6.4**.
 
 ---
+</div>
+</details>
 
 ## §V2. Cấu trúc bài thi Vấn đáp Giữa kỳ 1 (20 phút)
 
@@ -5820,11 +6820,22 @@ Hoàn thành Buổi 14 cùng bài Kiểm tra Giữa kỳ 1 đánh dấu việc h
 
 ## §V2. Chi tiết 12 câu hỏi vấn đáp & Đáp án chuẩn phỏng vấn
 
-### Câu 1
-**Câu hỏi:** Tại sao trong kiến trúc CI/CD nâng cao, ta có thể khẳng định 6 ngôn ngữ lập trình phổ biến (Node.js, Java, Python, Go, .NET, PHP) chỉ khác nhau ở đúng 3 trục thuộc tính trong tệp cấu hình GitLab CI?
-
-**Đáp án chuẩn:**
-Qua thực nghiệm phân giải và đo đạc thực tế 570 dòng YAML của 6 repository mẫu qua API `POST /ci/lint` (**QT 4.3**), ta nhận thấy tất cả các tệp CI/CD thuộc mọi ngôn ngữ đều chia sẻ chung 9 thuộc tính nền tảng: `stages`, `default:interruptible`, `default:retry`, `default:timeout`, `rules`, `artifacts:paths`, `artifacts:reports:junit`, `artifacts:expire_in`, và `cache:policy`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao trong kiến trúc CI/CD nâng cao, ta có thể khẳng định 6 ngôn ngữ lập trình phổ biến (Node.js, Java, Python, Go, .NET, PHP) chỉ khác nhau ở đúng 3 trục thuộc tính trong tệp cấu hình GitLab CI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Qua thực nghiệm phân giải và đo đạc thực tế 570 dòng YAML của 6 repository mẫu qua API `POST /ci/lint` (**QT 4.3**), ta nhận thấy tất cả các tệp CI/CD thuộc mọi ngôn ngữ đều chia sẻ chung 9 thuộc tính nền tảng: `stages`, `default:interruptible`, `default:retry`, `default:timeout`, `rules`, `artifacts:paths`, `artifacts:reports:junit`, `artifacts:expire_in`, và `cache:policy`.
 
 Sự khác biệt duy nhất giữa 6 ngôn ngữ nằm ở đúng **3 trục biến thiên** (**QT 4.1**):
 1. **Trục 1: Docker Image chứa công cụ dịch/biên dịch (`image:`):** Môi trường thực thi lệnh (Ví dụ: `node:20-alpine`, `maven:3.9-temurin-21`, `python:3.12-slim`, `golang:1.23-alpine`, `mcr.microsoft.com/dotnet/sdk:8.0`, `php:8.3-cli`).
@@ -5837,12 +6848,25 @@ Bằng việc phân lập 3 trục này thành các biến môi trường (`vari
 Việc đưa 3 trục biến thiên này vào tệp `khung.yml` giúp kỹ sư DevOps quản lý chính xác từng phiên bản runtime mà không làm ảnh hưởng đến luồng điều khiển chung của Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Kỹ thuật "Lockfile Hashing" trong thuộc tính `cache:key` giúp giải quyết bài toán gì và được cài đặt như thế nào để tối ưu tốc độ nạp Cache giữa các lần Commit?
-
-**Đáp án chuẩn:**
-Kỹ thuật Lockfile Hashing giải quyết bài toán **Cache Invalidation (Vô hiệu hóa đệm rác)** và **Cache Hit Rate (Tỷ lệ trúng đệm)** (**QT 6.1**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Kỹ thuật "Lockfile Hashing" trong thuộc tính `cache:key` giúp giải quyết bài toán gì và được cài đặt như thế nào để tối ưu tốc độ nạp Cache giữa các lần Commit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kỹ thuật Lockfile Hashing giải quyết bài toán **Cache Invalidation (Vô hiệu hóa đệm rác)** và **Cache Hit Rate (Tỷ lệ trúng đệm)** (**QT 6.1**).
 
 Nếu dùng `cache:key` cố định theo nhánh (ví dụ: `key: "$CI_COMMIT_REF_SLUG"`), khi lập trình viên thêm hoặc xóa một thư viện trong tệp khóa phiên bản (`package-lock.json`, `pom.xml`, `requirements.txt`, `go.sum`, `packages.lock.json`, `composer.lock`), Runner vẫn nạp lại đệm zip cũ chứa các thư viện đã bị xoá. Điều này làm lãng phí dung lượng đĩa đệm và dễ gây xung đột phiên bản giữa các dependency.
 
@@ -5863,12 +6887,25 @@ cache:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Tại sao việc khai báo đường dẫn `cache:paths:` trỏ ra ngoài workspace làm việc của dự án (ví dụ: `cache:paths: [/root/.m2/repository]`) lại khiến tỉ lệ hit Cache bằng 0% mặc dù Job vẫn báo XANH 100%?
-
-**Đáp án chuẩn:**
-Đây là **Chế độ hỏng im lặng Ca B (Silent Failure Mode B)** trong GitLab CI/CD (**QT 6.2**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Tại sao việc khai báo đường dẫn `cache:paths:` trỏ ra ngoài workspace làm việc của dự án (ví dụ: `cache:paths: [/root/.m2/repository]`) lại khiến tỉ lệ hit Cache bằng 0% mặc dù Job vẫn báo XANH 100%?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là **Chế độ hỏng im lặng Ca B (Silent Failure Mode B)** trong GitLab CI/CD (**QT 6.2**).
 
 Bản chất kỹ thuật của GitLab Runner (đặc biệt là Docker Executor):
 - Trình nén đệm `gitlab-runner-helper` chạy dưới dạng container độc lập hoặc process bên ngoài chỉ cho phép nén zip các tệp nằm **bên trong** thư mục làm việc của dự án (`$CI_PROJECT_DIR`).
@@ -5879,12 +6916,25 @@ Bản chất kỹ thuật của GitLab Runner (đặc biệt là Docker Executor
 **Cách khắc phục:** Cưỡng chế sử dụng 6 biến môi trường đổi hướng Cache ép toàn bộ thư mục đệm về nằm bên trong thư mục `$CI_PROJECT_DIR` (**QT 4.4**).
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Khi sử dụng từ khóa `extends:` để kế thừa từ tệp khung `khung.yml`, làm thế nào để ngăn chặn việc Job thành viên cố tình ghi đè mảng `script:` làm mất đi các câu lệnh khẳng định cưỡng chế tự động?
-
-**Đáp án chuẩn:**
-Trong cú pháp YAML của GitLab CI, khi một Job con dùng `extends: .build_template` và tự khai báo khối `script:`, mảng `script` ở Job con sẽ **ghi đè hoàn toàn (Overwritten)** mảng `script` của Job cha thay vì hợp nhất (Merged) (**QT 5.2**). Điều này làm mất toàn bộ bộ 2 khẳng định cưỡng chế tự động (`.khung_assertions`), dẫn đến nguy cơ hiện vật rỗng 0 byte hoặc 0 testcase nhưng Job vẫn báo XANH.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Khi sử dụng từ khóa `extends:` để kế thừa từ tệp khung `khung.yml`, làm thế nào để ngăn chặn việc Job thành viên cố tình ghi đè mảng `script:` làm mất đi các câu lệnh khẳng định cưỡng chế tự động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong cú pháp YAML của GitLab CI, khi một Job con dùng `extends: .build_template` và tự khai báo khối `script:`, mảng `script` ở Job con sẽ **ghi đè hoàn toàn (Overwritten)** mảng `script` của Job cha thay vì hợp nhất (Merged) (**QT 5.2**). Điều này làm mất toàn bộ bộ 2 khẳng định cưỡng chế tự động (`.khung_assertions`), dẫn đến nguy cơ hiện vật rỗng 0 byte hoặc 0 testcase nhưng Job vẫn báo XANH.
 
 **Phương án khắc phục chuẩn 2 lớp:**
 1. **Lớp 1 (Chỉ dùng biến làm tham số):** Tuyệt đối không khai báo mảng `script:` ở Job con. Tất cả lệnh đóng gói và kiểm thử được đẩy vào 3 biến môi trường string (`CMD_INSTALL`, `CMD_BUILD`, `CMD_TEST`).
@@ -5898,12 +6948,25 @@ Trong cú pháp YAML của GitLab CI, khi một Job con dùng `extends: .build_t
    ```
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tại sao Golang là ngôn ngữ duy nhất trong 6 ngôn ngữ bắt buộc phải khai báo tới 2 đường dẫn Cache (`GOMODCACHE` và `GOCACHE`) trong tệp cấu hình CI/CD?
-
-**Đáp án chuẩn:**
-Khác với các ngôn ngữ như Node.js (chỉ nạp vào `.npm`), Java (chỉ nạp vào `.m2`), hay Python (chỉ nạp vào `.cache/pip`), cơ chế trình biên dịch của Golang (từ Go 1.11+) chia bộ đệm thành 2 vùng độc lập có bản chất kỹ thuật hoàn toàn khác nhau (**QT 4.4**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tại sao Golang là ngôn ngữ duy nhất trong 6 ngôn ngữ bắt buộc phải khai báo tới 2 đường dẫn Cache (`GOMODCACHE` và `GOCACHE`) trong tệp cấu hình CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khác với các ngôn ngữ như Node.js (chỉ nạp vào `.npm`), Java (chỉ nạp vào `.m2`), hay Python (chỉ nạp vào `.cache/pip`), cơ chế trình biên dịch của Golang (từ Go 1.11+) chia bộ đệm thành 2 vùng độc lập có bản chất kỹ thuật hoàn toàn khác nhau (**QT 4.4**):
 
 1. **Vùng 1 (`GOMODCACHE` - Module Download Cache):**
    - Vị trí mặc định: `$GOPATH/pkg/mod`.
@@ -5930,12 +6993,25 @@ go:build:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Tại sao Quy tắc **QT 4.2** bắt buộc phải ghim Docker Image bằng SHA256 Digest thay vì ghim bằng Tag phiên bản (ví dụ: `image: node:20.18.0-alpine3.20@sha256:...`)?
-
-**Đáp án chuẩn:**
-Ghim Docker Image bằng Tag phiên bản (kể cả tag cụ thể như `node:20.18.0-alpine3.20`) vẫn tiềm ẩn nguy cơ **Non-deterministic Builds (Build không bất biến)** vì 3 lý do kỹ thuật:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Tại sao Quy tắc **QT 4.2** bắt buộc phải ghim Docker Image bằng SHA256 Digest thay vì ghim bằng Tag phiên bản (ví dụ: `image: node:20.18.0-alpine3.20@sha256:...`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ghim Docker Image bằng Tag phiên bản (kể cả tag cụ thể như `node:20.18.0-alpine3.20`) vẫn tiềm ẩn nguy cơ **Non-deterministic Builds (Build không bất biến)** vì 3 lý do kỹ thuật:
 
 1. **Tag có thể bị ghi đè (Mutable Tags):** Nhà phát hành Docker Image có thể build lại và push đè một Image mới lên cùng tag `20.18.0-alpine3.20` để vá lỗi bảo mật OS. Các Runner ở các mốc thời gian khác nhau sẽ kéo 2 Image khác nhau dù dùng chung tag.
 2. **Nguy cơ tấn công Chuỗi cung ứng (Supply Chain Attack):** Nếu tài khoản Docker Hub của nhà phát hành bị chiếm đoạt, kẻ tấn công có thể push mã độc đè lên tag phiên bản cũ.
@@ -5944,12 +7020,25 @@ Ghim Docker Image bằng Tag phiên bản (kể cả tag cụ thể như `node:2
 **SHA256 Digest là mã băm mã hóa duy nhất của nội dung Image.** Khi ghim `image: name@sha256:<hash>`, bất kỳ sự thay đổi dù nhỏ nhất trong Image cũng làm thay đổi SHA256, đảm bảo $100\%$ tính bất biến và an toàn cho Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Cơ chế "Self-testing Pipeline (Pipeline tự kiểm tra)" trong tệp `khung.yml` hoạt động như thế nào và nó bảo vệ hệ thống CI/CD dùng chung khỏi rủi ro gì?
-
-**Đáp án chuẩn:**
-Cơ chế "Self-testing Pipeline" (**QT 7.2**) hoạt động theo mô hình Parent-Child Pipeline tự kích hoạt:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Cơ chế "Self-testing Pipeline (Pipeline tự kiểm tra)" trong tệp `khung.yml` hoạt động như thế nào và nó bảo vệ hệ thống CI/CD dùng chung khỏi rủi ro gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cơ chế "Self-testing Pipeline" (**QT 7.2**) hoạt động theo mô hình Parent-Child Pipeline tự kích hoạt:
 
 1. **Cách cài đặt:**
    Trong tệp `khung.yml` thuộc repository khung `devops/lab15-khung`, ở stage cuối cùng (`bao-cao`), ta khai báo 6 Job trigger chạy song song hướng về 6 repository mẫu:
@@ -5964,12 +7053,25 @@ Cơ chế "Self-testing Pipeline" (**QT 7.2**) hoạt động theo mô hình Par
 3. **Rủi ro ngăn chặn:** Bảo vệ hệ thống khỏi rủi ro **Breaking Changes ở Khung dùng chung**. Khi kỹ sư DevOps sửa một câu lệnh trong `khung.yml` (ví dụ: sửa script khẳng định), thay vì commit trực tiếp làm vỡ hàng trăm dự án trong tập đoàn, Pipeline tự kiểm tra sẽ chạy thử thay đổi đó trên cả 6 ngôn ngữ mẫu ở môi trường thử nghiệm trước khi merge tệp khung.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Tại sao ta phải cài đặt bộ 2 khẳng định cưỡng chế tự động (`.khung_assertions`) trực tiếp bên trong tệp khung thay vì tin tưởng vào exit code của câu lệnh build?
-
-**Đáp án chuẩn:**
-Trong thực tế triển khai CI/CD, có rất nhiều công cụ biên dịch hoặc công cụ chạy test bị lỗi nhưng vẫn trả về **Exit Code 0** (Job vẫn báo XANH 100%) (**QT 6.3**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Tại sao ta phải cài đặt bộ 2 khẳng định cưỡng chế tự động (`.khung_assertions`) trực tiếp bên trong tệp khung thay vì tin tưởng vào exit code của câu lệnh build?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong thực tế triển khai CI/CD, có rất nhiều công cụ biên dịch hoặc công cụ chạy test bị lỗi nhưng vẫn trả về **Exit Code 0** (Job vẫn báo XANH 100%) (**QT 6.3**):
 
 - **Trường hợp 1 (Build sinh file rỗng 0 byte):** Do hết đĩa đệm, thiếu biến môi trường hoặc script shell bị dính lỗi `set +e`, lệnh build kết thúc êm đẹp nhưng tệp sản phẩm (`dist/app.tar.gz`, `target/app.jar`) bị rỗng 0 byte.
 - **Trường hợp 2 (Báo cáo JUnit 0 testcase):** Lập trình viên trỏ sai đường dẫn file test, trình test không tìm thấy file nào nên in `0 tests executed` và trả về exit code 0.
@@ -5988,12 +7090,25 @@ fi
 ```
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Trình bày chi tiết cơ chế hoạt động của 6 biến môi trường đổi hướng Cache đối với Docker Executor trên GitLab Runner?
-
-**Đáp án chuẩn:**
-Mặc định, các trình quản lý gói của 6 ngôn ngữ sẽ lưu phụ thuộc vào thư mục Home (`~`) của User bên trong Docker Container (**QT 4.4**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Trình bày chi tiết cơ chế hoạt động của 6 biến môi trường đổi hướng Cache đối với Docker Executor trên GitLab Runner?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định, các trình quản lý gói của 6 ngôn ngữ sẽ lưu phụ thuộc vào thư mục Home (`~`) của User bên trong Docker Container (**QT 4.4**):
 - Node.js: `~/.npm`
 - Java Maven: `~/.m2/repository`
 - Python pip: `~/.cache/pip`
@@ -6015,12 +7130,25 @@ Ta dùng thuộc tính `variables:` khai báo các biến môi trường chuẩn
 Khi đó, thuộc tính `cache:paths:` chỉ cần trỏ vào các thư mục tương đối này (ví dụ: `- .npm/`), Runner sẽ nén và khôi phục Cache thành công $100\%$.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Giả sử một hệ thống CI/CD dùng chung `cache:key: "$CI_COMMIT_REF_SLUG"` cho cả dự án Node.js và dự án Java trên cùng một Runner. Điều gì sẽ xảy ra và cách xử lý triệt để?
-
-**Đáp án chuẩn:**
-Đây là **Chế độ hỏng im lặng Ca A (Trúng Cache ngôn ngữ khác - Cache Collision)** (**QT 6.1**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Giả sử một hệ thống CI/CD dùng chung `cache:key: "$CI_COMMIT_REF_SLUG"` cho cả dự án Node.js và dự án Java trên cùng một Runner. Điều gì sẽ xảy ra và cách xử lý triệt để?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là **Chế độ hỏng im lặng Ca A (Trúng Cache ngôn ngữ khác - Cache Collision)** (**QT 6.1**).
 
 **Diễn biến sự cố:**
 1. Job Node.js chạy trên nhánh `main`, tải 210 MB thư viện `.npm/` và nén lên đĩa đệm S3/MinIO với khóa `main.zip`.
@@ -6033,12 +7161,25 @@ Khi đó, thuộc tính `cache:paths:` chỉ cần trỏ vào các thư mục t�
 **Cách xử lý triệt để:** Bắt buộc thêm tiền tố tên ngôn ngữ vào khóa Cache: `key: "<ngôn-ngữ>-$CI_COMMIT_REF_SLUG-${CI_HASH_LOCKFILE}"`.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Trong quy trình chạy "Self-testing Pipeline", nếu có 6 repository mẫu cùng kích hoạt 6 Pipeline con đồng thời làm nghẽn hàng đợi (Pending) do hết cờ `concurrent` của Runner, bạn sẽ xử lý thế nào?
-
-**Đáp án chuẩn:**
-Nguyên nhân kỹ thuật: Tệp `config.toml` của GitLab Runner khai báo cờ `concurrent` (số lượng Job tối đa Runner được phép chạy song song tại một thời điểm) nhỏ hơn tổng số Job phát sinh từ Pipeline cha và 6 Pipeline con (**QT 7.2**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Trong quy trình chạy "Self-testing Pipeline", nếu có 6 repository mẫu cùng kích hoạt 6 Pipeline con đồng thời làm nghẽn hàng đợi (Pending) do hết cờ `concurrent` của Runner, bạn sẽ xử lý thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nguyên nhân kỹ thuật: Tệp `config.toml` của GitLab Runner khai báo cờ `concurrent` (số lượng Job tối đa Runner được phép chạy song song tại một thời điểm) nhỏ hơn tổng số Job phát sinh từ Pipeline cha và 6 Pipeline con (**QT 7.2**).
 
 **Phương án xử lý 3 bước:**
 1. **Tăng tham số `concurrent` trong `config.toml`:**
@@ -6050,12 +7191,25 @@ Nguyên nhân kỹ thuật: Tệp `config.toml` của GitLab Runner khai báo c�
 3. **Áp dụng cờ `stage` phân tầng:** Nếu tài nguyên phần cứng Runner có hạn (RAM/CPU thấp), thay vì cho 6 Job trigger chạy song song ở stage `bao-cao`, chia 6 Job con thành 2 stage nối tiếp (stage `test_group_1` chạy Node/Java/Python và stage `test_group_2` chạy Go/.NET/PHP).
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tại sao việc gửi 6 tệp cấu hình `.gitlab-ci.yml` qua API `POST /ci/lint` là bước bắt buộc trước khi tiến hành phân tích điểm khác biệt `diff` để xây dựng tệp khung dùng chung?
-
-**Đáp án chuẩn:**
-Trước khi hợp nhất mã nguồn CI/CD, ta không thể so sánh `diff` trực tiếp các tệp `.gitlab-ci.yml` thô (Raw YAML) vì **Nhiêu Cú Pháp (Syntax Noise)** (**QT 4.3**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tại sao việc gửi 6 tệp cấu hình `.gitlab-ci.yml` qua API `POST /ci/lint` là bước bắt buộc trước khi tiến hành phân tích điểm khác biệt `diff` để xây dựng tệp khung dùng chung?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trước khi hợp nhất mã nguồn CI/CD, ta không thể so sánh `diff` trực tiếp các tệp `.gitlab-ci.yml` thô (Raw YAML) vì **Nhiêu Cú Pháp (Syntax Noise)** (**QT 4.3**):
 - Mỗi lập trình viên có phong cách viết YAML khác nhau (thụt lề 2 space vs 4 space, thứ tự các thuộc tính `stage`, `image`, `script` bị đảo lộn, sử dụng dấu ngoặc đơn/ngoặc kép khác nhau).
 - Việc `diff` trực tiếp file thô sẽ tạo ra hàng trăm dòng khác biệt giả tạo (False Positives), che khuất các thuộc tính bản chất.
 
@@ -6065,6 +7219,8 @@ Trước khi hợp nhất mã nguồn CI/CD, ta không thể so sánh `diff` tr�
 3. Sau khi đi qua `/ci/lint`, 6 tệp YAML trở nên hoàn toàn đồng dạng về mặt cấu trúc. Lúc này, chạy lệnh `diff` sẽ trích xuất được chính xác $100\%$ danh sách 9 thuộc tính dùng chung và 3 trục biến thiên mà không bị nhiễu bởi định dạng văn bản.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 
@@ -6108,17 +7264,30 @@ Học viên nghiên cứu trước 3 câu hỏi sau để chuẩn bị cho **Bu�
 
 ## §V1. Bộ 12 Câu hỏi Vấn đáp Kỹ thuật
 
-### Câu 1
-**Câu hỏi:** `npm ci` khác `npm install` ở **ba** điểm cốt lõi nào, và vì sao trong môi trường CI/CD Pipeline chỉ có `npm ci` là câu lệnh cài đặt phụ thuộc hợp lệ duy nhất?
-
-**Đáp án chuẩn:**
-- **Ba điểm khác biệt cốt lõi:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** `npm ci` khác `npm install` ở **ba** điểm cốt lõi nào, và vì sao trong môi trường CI/CD Pipeline chỉ có `npm ci` là câu lệnh cài đặt phụ thuộc hợp lệ duy nhất?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ba điểm khác biệt cốt lõi:**
   1. **Tương tác Lockfile:** `npm ci` **đòi hỏi** tệp `package-lock.json` phải tồn tại và khớp tuyệt đối với `package.json`. Nếu hai tệp này bị lệch dù chỉ một gói, `npm ci` sẽ báo lỗi ngay lập tức. Trong khi đó, `npm install` sẽ tự động giải khoảng phiên bản (ví dụ: `^1.2.0` hoặc `~2.4.0`) và **ghi lại** tệp `package-lock.json` nếu phát hiện có phiên bản mới hơn trên Registry.
   2. **Trạng thái `node_modules`:** `npm ci` tự động **xoá sạch** thư mục `node_modules` hiện tại trước khi tiến hành giải nén các gói phụ thuộc để đảm bảo môi trường hoàn toàn tinh khiết. `npm install` cố gắng giữ lại và ghi đè trực tiếp lên thư mục `node_modules` có sẵn.
   3. **Tính bất biến (Immutability):** `npm ci` **không bao giờ** sửa đổi `package-lock.json` hoặc `package.json`. `npm install` có thể tự ý sửa đổi cây phụ thuộc ngầm bên trong Container Runner.
 - **Vì sao chỉ `npm ci` hợp lệ trong CI:**
   - Mục tiêu số một của CI/CD là **Build Tái Lập Được (Reproducible Build)**: Hai lần chạy Pipeline trên cùng một Git commit (dù cách nhau 6 tháng) phải sinh ra cùng một cây phụ thuộc $100\%$.
   - `npm install` biến Pipeline thành *"Hôm nay may mắn"*: Nếu Registry phát hành bản vá mới, hai Runner chạy cùng commit tại hai thời điểm khác nhau sẽ nạp hai phiên bản phụ thuộc khác nhau, làm phát sinh các lỗi trượt phiên bản (dependency drift) cực kỳ khó phát hiện.
+</div>
+</details>
 
 ---
 
@@ -6421,10 +7590,22 @@ build_package:
 
 ## Danh sách 12 câu hỏi phỏng vấn thực chiến
 
-### Câu 1: Tại sao khai báo `cache:paths: - ~/.m2/repository` trong `.gitlab-ci.yml` vẫn sinh ra tệp zip Cache có dung lượng 0 bytes mà Job vẫn báo XANH?
-
-**Đáp án chuẩn:**
-Nguyên nhân gốc rễ là do cơ chế an toàn của GitLab Runner. Động cơ Runner thực thi trong Docker Executor được thiết kế chỉ đóng gói Cache từ các thư mục con nằm trong không gian làm việc dự án (`$CI_PROJECT_DIR`). Thư mục `~/.m2/repository` mặc định nằm ở thư mục nhà của người dùng root/maven trong container (`/root/.m2/repository`), hoàn toàn nằm ngoài không gian làm việc này. 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao khai báo `cache:paths: - ~/.m2/repository` trong `.gitlab-ci.yml` vẫn sinh ra tệp zip Cache có dung lượng 0 bytes mà Job vẫn báo XANH?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nguyên nhân gốc rễ là do cơ chế an toàn của GitLab Runner. Động cơ Runner thực thi trong Docker Executor được thiết kế chỉ đóng gói Cache từ các thư mục con nằm trong không gian làm việc dự án (`$CI_PROJECT_DIR`). Thư mục `~/.m2/repository` mặc định nằm ở thư mục nhà của người dùng root/maven trong container (`/root/.m2/repository`), hoàn toàn nằm ngoài không gian làm việc này. 
 
 Khi Runner quét thư mục `~/.m2/repository`, nó phát hiện đường dẫn nằm ngoài `$CI_PROJECT_DIR` nên bỏ qua, phát cảnh báo `WARNING: ~/.m2/repository: no matching files` và nén một zip đệm rỗng (dung lượng 0-42 bytes). Theo nguyên lý của GitLab CI, thiếu Cache hoặc nén Cache rỗng **không được xem là lỗi chết** nên Job vẫn tiếp tục thực thi và báo XANH. Hậu quả là mọi Job tiếp theo đều phải tải lại toàn bộ thư mục phụ thuộc từ Remote Registry, tiêu tốn 155 giây mỗi lượt chạy mà không ai phát hiện nếu không soi trace log.
 
@@ -6437,11 +7618,25 @@ Khi Runner quét thư mục `~/.m2/repository`, nó phát hiện đường dẫn
 > **Ứng viên (Candidate):** *"Thưa anh, đây chính là sự cố 'Hỏng im lặng' kinh điển của GitLab Runner khi làm việc với Java. Động cơ GitLab Runner chỉ cho phép nén đệm các đường dẫn con thuộc không gian làm việc `$CI_PROJECT_DIR`. Thư mục `~/.m2/repository` nằm ở `/root/.m2`, tức nằm ngoài hàng rào này. Do đó, Runner sẽ in dòng cảnh báo `WARNING: ~/.m2/repository: no matching files` và đẩy một tệp zip đệm rỗng 42 bytes lên MinIO S3 Server. Vì thiếu Cache không làm sập Job, nên Job vẫn XANH nhưng Maven buộc phải nạp lại 250 MB thư viện từ Internet ở mọi lượt chạy, ngốn đúng 155 giây. Cách sửa duy nhất là truyền biến `MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"` để di chuyển kho vào dự án trước khi khai báo Cache."*
 
 ---
+</div>
+</details>
 
-### Câu 2: Sự khác biệt giữa Maven và Gradle về khả năng tiết kiệm thời gian thực thi Pipeline trong GitLab CI là gì?
-
-**Đáp án chuẩn:**
-Maven và Gradle có bản chất tối ưu hoàn toàn khác nhau trong môi trường CI:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt giữa Maven và Gradle về khả năng tiết kiệm thời gian thực thi Pipeline trong GitLab CI là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Maven và Gradle có bản chất tối ưu hoàn toàn khác nhau trong môi trường CI:
 1. **Maven (Chỉ tiết kiệm 1 loại - TẢI):** Maven chỉ hỗ trợ đệm kho phụ thuộc cục bộ (`.m2/repository`). Cache Maven giúp tiết kiệm thời gian tải thư viện từ Remote Registry (rút ngắn từ 155 giây xuống còn 12 giây). Tuy nhiên, Maven không có cơ chế lưu đệm kết quả biên dịch giữa các Job rời rạc, do đó mỗi Job Maven luôn phải thực hiện biên dịch lại từ đầu.
 2. **Gradle (Tiết kiệm 2 loại - TẢI và BIÊN DỊCH):** Gradle cung cấp 2 lớp đệm đệm riêng biệt:
    - **Dependency Cache** (`caches/modules-2` và `wrapper/dists`): Tiết kiệm thời gian tải thư viện (rút ngắn 84 giây).
@@ -6456,11 +7651,25 @@ Tuy nhiên, việc bật Gradle Build Cache mua lại tốc độ bằng một l
 > **Ứng viên (Candidate):** *"Dạ có, Gradle có thể giúp Pipeline nhanh hơn đáng kể vì Gradle tiết kiệm được cả thời gian TẢI lẫn thời gian BIÊN DỊCH nhờ tính năng Build Cache (`--build-cache`), rút ngắn bước compile từ 78 giây xuống 4 giây. Trong khi Maven chỉ tiết kiệm được thời gian TẢI thư viện. Tuy nhiên, rủi ro lớn nhất của Gradle Build Cache là sự cố 'UP-TO-DATE giả' — tức mã nguồn Java đã sửa nhưng Gradle lại nạp lại tệp class cũ từ Cache do trùng khóa đệm. Vì vậy, trên các Pipeline Release Production, em luôn khuyên tắt `--build-cache` và chạy `clean assemble` để đảm bảo an toàn tuyệt đối."*
 
 ---
+</div>
+</details>
 
-### Câu 3: Làm thế nào để giải quyết rủi ro Job Maven bị hủy do nổ trần log 4 MB của GitLab Runner?
-
-**Đáp án chuẩn:**
-Mặc định khi thực thi các lệnh như `mvn clean compile` hoặc `mvn test`, Maven sẽ in liên tục các dòng tiến trình phần trăm tải từng tệp jar thư viện từ Central Repository (`Progress (1/100): 10 KB...`). Trong dự án Java enterprise với hàng trăm thư viện phụ thuộc, điều này sinh ra hàng trăm nghìn dòng log, dễ dàng làm dung lượng log của Job vượt quá trần cấu hình mặc định `output_limit: 4096` (4 MB) của Runner, khiến Job bị hệ thống tiêu hủy đột ngột (`Job's log exceeded limit of 4194304 bytes`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Làm thế nào để giải quyết rủi ro Job Maven bị hủy do nổ trần log 4 MB của GitLab Runner?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định khi thực thi các lệnh như `mvn clean compile` hoặc `mvn test`, Maven sẽ in liên tục các dòng tiến trình phần trăm tải từng tệp jar thư viện từ Central Repository (`Progress (1/100): 10 KB...`). Trong dự án Java enterprise với hàng trăm thư viện phụ thuộc, điều này sinh ra hàng trăm nghìn dòng log, dễ dàng làm dung lượng log của Job vượt quá trần cấu hình mặc định `output_limit: 4096` (4 MB) của Runner, khiến Job bị hệ thống tiêu hủy đột ngột (`Job's log exceeded limit of 4194304 bytes`).
 
 Giải pháp chuẩn kỹ thuật là bắt buộc bổ sung 2 cờ CLI vào mọi lệnh Maven trong CI:
 - `-B` (hoặc `--batch-mode`): Chạy ở chế độ không tương tác, tắt các ký tự điều khiển con trỏ terminal.
@@ -6469,11 +7678,25 @@ Giải pháp chuẩn kỹ thuật là bắt buộc bổ sung 2 cờ CLI vào m�
 Khi kết hợp bộ cờ `-B -ntp`, dung lượng trace log của Job Maven giảm từ > 4 MB xuống còn dưới 150 KB (cắt giảm hơn 97% dung lượng log thừa).
 
 ---
+</div>
+</details>
 
-### Câu 4: Sự cố đứng phiên bản dependency `SNAPSHOT` trong Maven là gì và cách xử lý trong `.gitlab-ci.yml`?
-
-**Đáp án chuẩn:**
-Trong quy trình phát triển dự án Java đa module hoặc thư viện dùng chung, các gói phụ thuộc chưa phát hành chính thức thường được đánh nhãn `SNAPSHOT` (ví dụ `core-library-1.2.0-SNAPSHOT.jar`). Khi Maven đã tải một bản `SNAPSHOT` về kho cục bộ `.m2/repository`, mặc định nó sẽ không tự động kiểm tra xem trên Nexus/Artifactory Remote Registry có bản `SNAPSHOT` mới hơn được upload hay me hay không (trừ khi đã hết khoảng thời gian `updatePolicy` cấu hình trong settings, thường là 1 ngày).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Sự cố đứng phiên bản dependency `SNAPSHOT` trong Maven là gì và cách xử lý trong `.gitlab-ci.yml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong quy trình phát triển dự án Java đa module hoặc thư viện dùng chung, các gói phụ thuộc chưa phát hành chính thức thường được đánh nhãn `SNAPSHOT` (ví dụ `core-library-1.2.0-SNAPSHOT.jar`). Khi Maven đã tải một bản `SNAPSHOT` về kho cục bộ `.m2/repository`, mặc định nó sẽ không tự động kiểm tra xem trên Nexus/Artifactory Remote Registry có bản `SNAPSHOT` mới hơn được upload hay me hay không (trừ khi đã hết khoảng thời gian `updatePolicy` cấu hình trong settings, thường là 1 ngày).
 
 Trong CI/CD, nếu Runner nạp đệm `.m2/repository` từ Cache của lượt chạy trước, Job biên dịch sẽ dùng lại đúng bản jar `SNAPSHOT` cũ đã lưu đệm đó. Hậu quả là dù nhà phát triển đã sửa lỗi và đẩy bản `SNAPSHOT` mới lên Nexus, Pipeline của ứng dụng tiêu thụ vẫn chạy trên mã cũ từ 3 ngày trước, sinh ra sự cố "Xanh mà sai" cực kỳ khó phát hiện.
 
@@ -6486,11 +7709,25 @@ Cách xử lý triệt để là bổ sung cờ `-U` (hoặc `--update-snapshots
 > **Ứng viên (Candidate):** *"Thưa anh, đây là do Maven mặc định giữ bản đệm của các tệp `SNAPSHOT` trong `.m2/repository` và không chủ động kiểm tra bản mới trên Nexus nếu chưa hết hạn `updatePolicy`. Khi Runner khôi phục `.m2` từ Cache CI, Maven thấy tệp jar đã có sẵn nên bỏ qua bước tải mới. Để giải quyết, em chỉ cần bổ sung cờ `-U` vào câu lệnh Maven trong `.gitlab-ci.yml`: `mvn -B -ntp verify -U`. Cờ `-U` ép buộc Maven phải kiểm tra timestamp trên Remote Registry và kéo bản SNAPSHOT mới nhất về kho."*
 
 ---
+</div>
+</details>
 
-### Câu 5: Tại sao việc sử dụng cờ `-source 17 -target 17` trong Maven compiler plugin vẫn gây ra lỗi `NoSuchMethodError` khi ứng dụng chạy trên JRE 17?
-
-**Đáp án chuẩn:**
-Cờ `-source 17 -target 17` chỉ có tác dụng kiểm tra ngữ pháp mã nguồn (syntax) và ghi nhãn phiên bản Bytecode target vào tệp `.class` (major version 61.0). Cờ này **KHÔNG** giới hạn chữ ký API (bootstrap classpath) mà trình biên dịch Java được phép liên kết.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao việc sử dụng cờ `-source 17 -target 17` trong Maven compiler plugin vẫn gây ra lỗi `NoSuchMethodError` khi ứng dụng chạy trên JRE 17?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `-source 17 -target 17` chỉ có tác dụng kiểm tra ngữ pháp mã nguồn (syntax) và ghi nhãn phiên bản Bytecode target vào tệp `.class` (major version 61.0). Cờ này **KHÔNG** giới hạn chữ ký API (bootstrap classpath) mà trình biên dịch Java được phép liên kết.
 
 Nếu Runner chạy trên JDK 21 để biên dịch dự án với cờ `-target 17`, trình biên dịch Java 21 vẫn cho phép mã nguồn gọi các phương thức API mới chỉ có trên JDK 21 (ví dụ `String.indexOf(String, int, int)` hoặc các API Virtual Threads). Lệnh `mvn compile` vẫn báo XANH thành công. Tuy nhiên, khi sản phẩm `.jar` này đem triển khai lên môi trường Production đang vận hành JRE 17, JVM 17 sẽ nổ lỗi `java.lang.NoSuchMethodError` ngay lập tức vì JRE 17 không hề có các phương thức API đó.
 
@@ -6503,11 +7740,25 @@ Giải pháp bắt buộc từ Java 9 trở lên là thay thế toàn bộ `-sou
 > **Ứng viên (Candidate):** *"Dạ vì cờ `-target 17` chỉ ghi nhãn phiên bản bytecode là 61.0 nhưng không chặn trình biên dịch JDK (ví dụ JDK 21 trên Runner) gọi các API mới của Java 21. Khi mã nguồn vô tình gọi một phương thức mới của Java 21, `mvn compile` vẫn XANH nhưng JRE 17 ở Production không có phương thức đó nên sập ứng dụng. Từ Java 9 trở đi, ta bắt buộc phải đổi từ `<target>17</target>` sang `<release>17</release>`. Cờ `--release 17` sẽ khoá cả Syntax, Bytecode lẫn Chữ ký API chuẩn JDK 17."*
 
 ---
+</div>
+</details>
 
-### Câu 6: Làm thế nào để phân lập đệm Cache của Gradle một cách an toàn để tránh nổ dung lượng đĩa đệm Runner?
-
-**Đáp án chuẩn:**
-Mặc định, thư mục `GRADLE_USER_HOME` (`.gradle`) chứa 3 thành phần chính:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để phân lập đệm Cache của Gradle một cách an toàn để tránh nổ dung lượng đĩa đệm Runner?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định, thư mục `GRADLE_USER_HOME` (`.gradle`) chứa 3 thành phần chính:
 1. `wrapper/dists/`: Lưu các bản phân phối Gradle zip được tải về (dung lượng ~150 MB mỗi bản).
 2. `caches/modules-2/`: Lưu đệm các tệp jar phụ thuộc tải từ Maven Central (dung lượng ~200-500 MB).
 3. `caches/build-cache/`: Lưu đệm các sản phẩm trung gian của bước biên dịch (dung lượng có thể phình to hàng GB).
@@ -6535,11 +7786,25 @@ Việc loại bỏ `caches/build-cache` khỏi `cache:paths` giúp giữ zip Cac
 > **Ứng viên (Candidate):** *"Thưa anh, nếu khai báo nguyên thư mục `.gradle/`, ta sẽ vô tình nạp đệm cả thư mục `caches/build-cache` và các tệp lock tiến trình. Thư mục `build-cache` phình to rất nhanh lên tới nhiều GB sau vài lần build, khiến thời gian Runner nén và tải zip Cache mất 45-60 giây, làm chậm Pipeline thay vì tăng tốc. Đồng thời các tệp `.lock` bị dính trong Cache có thể làm Gradle nổ lỗi 'Timeout waiting to lock journal cache'. Việc phân lập chính xác 2 thư mục `modules-2` (chứa jar phụ thuộc) và `wrapper/dists` (chứa Gradle zip) giúp tệp đệm luôn mỏng nhẹ (< 300 MB) và an toàn tuyệt đối."*
 
 ---
+</div>
+</details>
 
-### Câu 7: Vì sao cần phải bổ sung cờ `--no-daemon` khi thực thi Gradle trong GitLab CI Container?
-
-**Đáp án chuẩn:**
-Mặc định khi chạy lệnh `./gradlew`, Gradle sẽ khởi chạy một tiến trình nền duy trì trong bộ nhớ gọi là **Gradle Daemon**. Trên máy tính cá nhân của nhà phát triển (Local Dev Machine), Daemon giúp giữ lại JVM nóng để các lần build tiếp theo diễn ra tức thì.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Vì sao cần phải bổ sung cờ `--no-daemon` khi thực thi Gradle trong GitLab CI Container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định khi chạy lệnh `./gradlew`, Gradle sẽ khởi chạy một tiến trình nền duy trì trong bộ nhớ gọi là **Gradle Daemon**. Trên máy tính cá nhân của nhà phát triển (Local Dev Machine), Daemon giúp giữ lại JVM nóng để các lần build tiếp theo diễn ra tức thì.
 
 Tuy nhiên, trong môi trường GitLab CI với Docker Executor:
 1. Mỗi Job CI chạy trong một Ephemeral Docker Container riêng biệt. Khi Job kết thúc, Container bị xóa bỏ hoàn toàn. Tiến trình Daemon chạy ngầm không thể tái sử dụng cho Job sau.
@@ -6549,11 +7814,25 @@ Tuy nhiên, trong môi trường GitLab CI với Docker Executor:
 Do đó, bắt buộc phải tắt Gradle Daemon trong CI bằng cờ `./gradlew assemble --no-daemon` hoặc thiết lập biến môi trường `GRADLE_OPTS: "-Dorg.gradle.daemon=false"`.
 
 ---
+</div>
+</details>
 
-### Câu 8: Tại sao Job kiểm thử `mvn test` báo XANH trong 11 giây nhưng tab Tests trên giao diện GitLab CE lại hoàn toàn trống?
-
-**Đáp án chuẩn:**
-Hiện tượng này xảy ra do 2 nguyên nhân kỹ thuật phổ biến:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao Job kiểm thử `mvn test` báo XANH trong 11 giây nhưng tab Tests trên giao diện GitLab CE lại hoàn toàn trống?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Hiện tượng này xảy ra do 2 nguyên nhân kỹ thuật phổ biến:
 1. **Thiếu tệp XML báo cáo:** Maven Surefire Plugin bị cấu hình sai hoặc bị bỏ qua (`-DskipTests`), dẫn đến không có tệp `TEST-*.xml` nào được sinh ra trong thư mục `target/surefire-reports/`. Job báo XANH vì `mvn test` không gặp lỗi biên dịch, nhưng thực tế 0 testcase nào được chạy.
 2. **Sai đường dẫn Artifact Report:** Khai báo thuộc tính `artifacts:reports:junit` trong `.gitlab-ci.yml` bị chỉ định sai đường dẫn pattern (ví dụ khai báo `target/test-reports/*.xml` thay vì `target/surefire-reports/TEST-*.xml`).
 
@@ -6563,11 +7842,25 @@ Hiện tượng này xảy ra do 2 nguyên nhân kỹ thuật phổ biến:
 - Khai báo thuộc tính `artifacts:when: always` để đảm bảo tệp báo cáo XML luôn được nộp lên GitLab UI kể cả khi testcase bị trượt (Job ĐỎ).
 
 ---
+</div>
+</details>
 
-### Câu 9: Làm thế nào để tích hợp báo cáo độ phủ mã nguồn (Code Coverage) từ JaCoCo lên giao diện Merge Request của GitLab CE?
-
-**Đáp án chuẩn:**
-Để hiển thị độ phủ mã nguồn trực tiếp trên tab Merge Request Diff của GitLab CE, ta cần thực hiện 3 bước cấu hình:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để tích hợp báo cáo độ phủ mã nguồn (Code Coverage) từ JaCoCo lên giao diện Merge Request của GitLab CE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để hiển thị độ phủ mã nguồn trực tiếp trên tab Merge Request Diff của GitLab CE, ta cần thực hiện 3 bước cấu hình:
 1. **Xuất báo cáo dạng Cobertura XML:** Plugin JaCoCo mặc định sinh tệp `jacoco.xml`. Ta cần cấu hình JaCoCo hoặc sử dụng công cụ chuyển đổi để xuất tệp `cobertura-coverage.xml` (hoặc dạng Cobertura XML mà GitLab hỗ trợ).
 2. **Khai báo Artifact Report trong `.gitlab-ci.yml`:**
 ```yaml
@@ -6583,11 +7876,25 @@ artifacts:
 Khi đó, GitLab CE sẽ tự động tô màu xanh/đỏ trên các dòng mã nguồn mới sửa trong Merge Request để chỉ rõ dòng nào đã được test phủ qua.
 
 ---
+</div>
+</details>
 
-### Câu 10: Khi sử dụng `parallel:matrix` để kiểm thử dự án Java trên JDK 17 và JDK 21, làm sao để tránh xung đột Cache giữa 2 phiên bản JDK?
-
-**Đáp án chuẩn:**
-Khi chạy ma trận kiểm thử song song trên nhiều phiên bản JDK:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi sử dụng `parallel:matrix` để kiểm thử dự án Java trên JDK 17 và JDK 21, làm sao để tránh xung đột Cache giữa 2 phiên bản JDK?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi chạy ma trận kiểm thử song song trên nhiều phiên bản JDK:
 ```yaml
 test_matrix:
   parallel:
@@ -6610,11 +7917,25 @@ cache:
 Nhờ thuộc tính `prefix: "maven-jdk-$JDK_VERSION"`, Job JDK 17 sẽ dùng khóa `maven-jdk-17-...` và Job JDK 21 sẽ dùng khóa `maven-jdk-21-...`, đảm bảo phân lập đệm tuyệt đối an toàn.
 
 ---
+</div>
+</details>
 
-### Câu 11: Tình huống phỏng vấn — "Ứng dụng Java của công ty chạy Pipeline mất 8 phút. Bạn sẽ kiểm tra và tối ưu những gì để giảm xuống dưới 2 phút?"
-
-**Đáp án chuẩn:**
-Tôi sẽ thực hiện quy trình 4 bước chẩn đoán và tối ưu có số liệu đo đạc rõ ràng:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tình huống phỏng vấn — "Ứng dụng Java của công ty chạy Pipeline mất 8 phút. Bạn sẽ kiểm tra và tối ưu những gì để giảm xuống dưới 2 phút?"</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tôi sẽ thực hiện quy trình 4 bước chẩn đoán và tối ưu có số liệu đo đạc rõ ràng:
 
 1. **Bước 1: Chẩn đoán vị trí nghẽn (Profiling):**
    - Đọc trace log kiểm tra xem thư mục kho `.m2` hoặc `.gradle` đã được di chuyển vào `$CI_PROJECT_DIR` chưa. Nếu thấy cảnh báo `no matching files`, chứng tỏ Cache đang bị rỗng 0 bytes và Job mất 3-4 phút chỉ để tải lại phụ thuộc.
@@ -6645,11 +7966,25 @@ Kết quả: Tổng thời gian Pipeline giảm từ 8 phút xuống còn khoả
 > Sau khi có con số thực tế, em di chuyển kho Maven/Gradle vào `$CI_PROJECT_DIR`, phân lập Cache theo hash `pom.xml`, bật `-B -ntp --no-daemon` và chia ma trận test `parallel:matrix`. Em tự tin sẽ đưa Pipeline về dưới 1.5 phút."*
 
 ---
+</div>
+</details>
 
-### Câu 12: Tình huống phỏng vấn — "Làm sao phát hiện sự cố Gradle Build Cache báo `UP-TO-DATE` nhưng thực chất sản phẩm `.jar` không chứa mã mới vừa commit?"
-
-**Đáp án chuẩn:**
-Đây là sự cố "Xanh mà sai" nguy hiểm nhất của Gradle Build Cache. Để phát hiện và phòng chống, tôi triển khai cơ chế kiểm tra tính bất biến bằng mã băm SHA256 trong Pipeline:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Tình huống phỏng vấn — "Làm sao phát hiện sự cố Gradle Build Cache báo `UP-TO-DATE` nhưng thực chất sản phẩm `.jar` không chứa mã mới vừa commit?"</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là sự cố "Xanh mà sai" nguy hiểm nhất của Gradle Build Cache. Để phát hiện và phòng chống, tôi triển khai cơ chế kiểm tra tính bất biến bằng mã băm SHA256 trong Pipeline:
 
 1. **Thêm bước khẳng định băm SHA256 trước và sau khi build:**
    Trong script của Job `build_gradle`, tôi ghi lại mã băm SHA256 của tệp sản phẩm `.jar` và so sánh với commit trước đó:
@@ -6663,6 +7998,8 @@ Kết quả: Tổng thời gian Pipeline giảm từ 8 phút xuống còn khoả
    Đối với các Pipeline phát hành Production (chạy trên nhánh `main` hoặc Git Tag), tôi tuân thủ nguyên lý: **TẮT hoàn toàn `--build-cache`**. Pipeline Production bắt buộc phải biên dịch sạch từ đầu (`clean assemble`) để đảm bảo tính an toàn tuyệt đối, chỉ sử dụng Build Cache trên các nhánh tính năng (`feature/*`) để tăng tốc độ phản hồi cho nhà phát triển.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 
@@ -6711,8 +8048,22 @@ Kết quả: Tổng thời gian Pipeline giảm từ 8 phút xuống còn khoả
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Môi trường ảo (`venv`) trong một Docker Container Job dùng một lần là THỪA hay BẮT BUỘC? Bạn trả lời bằng một yếu tố quyết định nào và 3 ngoại lệ thực tế nào?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Môi trường ảo (`venv`) trong một Docker Container Job dùng một lần là THỪA hay BẮT BUỘC? Bạn trả lời bằng một yếu tố quyết định nào và 3 ngoại lệ thực tế nào?
 
 **Đáp án chuẩn:**
 Yếu tố duy nhất quyết định venv là thừa hay bắt buộc trong một Job dùng một lần là **số môi trường Python phải cùng tồn tại trong Job đó**. 
@@ -6730,6 +8081,8 @@ Yếu tố duy nhất quyết định venv là thừa hay bắt buộc trong m�
 
 **Câu hỏi đào sâu:** *(Nếu học viên khai báo `VIRTUAL_ENV` trong script, làm sao để `after_script` tự nhận mà không cần gọi `source activate`?)*
 *(Đáp án: Khai báo `VIRTUAL_ENV: $CI_PROJECT_DIR/.venv` và `PATH: "$CI_PROJECT_DIR/.venv/bin:$PATH"` ở khối `variables:` toàn cục để tự động áp dụng cho cả 3 khối script).*
+</div>
+</details>
 
 ---
 
@@ -7051,101 +8404,229 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Hãy phân tích sự khác biệt về mặt bản chất kỹ thuật giữa `GOMODCACHE` và `GOCACHE` trong Go Compiler, và tại sao việc dùng chung 1 khóa `cache:key` cho cả hai thư mục này trong GitLab CI là một sai lầm kiến trúc nghiêm trọng?
-
-**Đáp án chuẩn:**
-- `GOMODCACHE` (mặc định tại `$GOPATH/pkg/mod`) chứa mã nguồn thô của các Go Module phụ thuộc đã tải từ internet. Nó mang tính bất biến (immutable), di động (portable) giữa các hệ điều hành/kiến trúc CPU, và chỉ thay đổi khi tệp `go.sum` thay đổi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Hãy phân tích sự khác biệt về mặt bản chất kỹ thuật giữa `GOMODCACHE` và `GOCACHE` trong Go Compiler, và tại sao việc dùng chung 1 khóa `cache:key` cho cả hai thư mục này trong GitLab CI là một sai lầm kiến trúc nghiêm trọng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `GOMODCACHE` (mặc định tại `$GOPATH/pkg/mod`) chứa mã nguồn thô của các Go Module phụ thuộc đã tải từ internet. Nó mang tính bất biến (immutable), di động (portable) giữa các hệ điều hành/kiến trúc CPU, và chỉ thay đổi khi tệp `go.sum` thay đổi.
 - `GOCACHE` (mặc định tại `~/.cache/go-build`) chứa các tệp đối tượng nhị phân trung gian (`.a`), kết quả phân tích cú pháp AST và đệm kết quả thi hành unit test (`testcache`). Nó biến động liên tục sau mỗi commit và gắn chặt 100% với OS, CPU Architecture và phiên bản Go compiler.
 - Việc dùng chung 1 khóa `cache:key` (ví dụ theo hash của `go.sum`) làm cho `GOCACHE` bị xóa sạch và phải biên dịch lại từ đầu ở mỗi commit mới dù mã nguồn module không đổi, làm phình to tệp zip đệm đệm > 1.2 GB và lãng phí từ 30s đến 60s thời gian I/O nén/tải S3 ở mỗi Job build.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Tại sao GitLab Runner lại phát ra dòng cảnh báo im lặng `WARNING: .go/pkg/mod: no matching files` và tạo tệp zip 0 bytes khi người dùng cấu hình `cache:paths: [.go/pkg/mod]` mà quên khai báo 4 biến môi trường đệm đệm Go?
-
-**Đáp án chuẩn:**
-- Mặc định, Go Toolchain tự động lưu trữ đệm đệm tại thư mục cá nhân người dùng `$HOME/go/pkg/mod` (trong Container Docker là `/root/go/pkg/mod`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Tại sao GitLab Runner lại phát ra dòng cảnh báo im lặng `WARNING: .go/pkg/mod: no matching files` và tạo tệp zip 0 bytes khi người dùng cấu hình `cache:paths: [.go/pkg/mod]` mà quên khai báo 4 biến môi trường đệm đệm Go?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định, Go Toolchain tự động lưu trữ đệm đệm tại thư mục cá nhân người dùng `$HOME/go/pkg/mod` (trong Container Docker là `/root/go/pkg/mod`).
 - GitLab Runner áp dụng ràng buộc an ninh nghiêm ngặt: chỉ thu nén các tệp và thư mục nằm dưới không gian làm việc của dự án (`$CI_PROJECT_DIR`).
 - Khi người dùng khai báo `cache:paths: [.go/pkg/mod]` nhưng không ghi đè biến `GOMODCACHE`, Go compiler vẫn ghi đệm đệm vào `/root/go/pkg/mod`. Tiến trình trợ giúp Runner quét thư mục `.go/pkg/mod` trong project dir, phát hiện thư mục không tồn tại và in cảnh báo im lặng, khiến đệm đệm bị trượt 100% (Cache Miss).
 - Giải pháp là khai báo 4 biến môi trường toàn cục: `GOPATH: "$CI_PROJECT_DIR/.go"`, `GOMODCACHE: "$CI_PROJECT_DIR/.go/pkg/mod"`, `GOCACHE: "$CI_PROJECT_DIR/.cache/go-build"`, `GOENV: "$CI_PROJECT_DIR/.goenv"`.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Lệnh `go mod verify` thực hiện cơ chế xác thực nào ở cấp độ cryptographic hash, và tại sao bắt buộc phải đưa Job này vào Stage `.pre` trong Pipeline Go CI/CD?
-
-**Đáp án chuẩn:**
-- Lệnh `go mod verify` truy xuất tất cả mã nguồn module đã tải nằm trong `GOMODCACHE` và tính toán lại mã băm SHA-256 (h1: hash) của từng module, sau đó đối chiếu với bản ghi trong tệp khóa `go.sum`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Lệnh `go mod verify` thực hiện cơ chế xác thực nào ở cấp độ cryptographic hash, và tại sao bắt buộc phải đưa Job này vào Stage `.pre` trong Pipeline Go CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Lệnh `go mod verify` truy xuất tất cả mã nguồn module đã tải nằm trong `GOMODCACHE` và tính toán lại mã băm SHA-256 (h1: hash) của từng module, sau đó đối chiếu với bản ghi trong tệp khóa `go.sum`.
 - Cơ chế này đảm bảo mã nguồn phụ thuộc tải từ remote Go Module Proxy không bị sửa đổi ngầm, không bị nhiễm mã độc, và không bị hỏng dữ liệu trong quá trình truyền tải qua mạng.
 - Đưa Job `go mod verify` vào Stage `.pre` giúp phát hiện ngay lập tức các sai lệch về mặt bảo mật trước khi bất kỳ Job biên dịch hay kiểm thử nào được thi hành, ngăn chặn nguy cơ tấn công chuỗi cung ứng (Supply Chain Attack).
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Giải thích hiện tượng Container crash với thông báo lỗi `/bin/sh: ./app: not found` khi chạy tệp nhị phân Go trên Docker Image `scratch` hoặc `alpine`, và trình bày giải pháp khắc phục bằng cờ `CGO_ENABLED=0`?
-
-**Đáp án chuẩn:**
-- Mặc định khi biên dịch trên Linux, trình biên dịch Go bật `CGO_ENABLED=1` nếu phát hiện C compiler. Tệp nhị phân tạo ra sẽ chứa các liên kết động (dynamic linking) tới thư viện C tiêu chuẩn (`glibc`, cụ thể là `/lib64/ld-linux-x86-64.so.2`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Giải thích hiện tượng Container crash với thông báo lỗi `/bin/sh: ./app: not found` khi chạy tệp nhị phân Go trên Docker Image `scratch` hoặc `alpine`, và trình bày giải pháp khắc phục bằng cờ `CGO_ENABLED=0`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định khi biên dịch trên Linux, trình biên dịch Go bật `CGO_ENABLED=1` nếu phát hiện C compiler. Tệp nhị phân tạo ra sẽ chứa các liên kết động (dynamic linking) tới thư viện C tiêu chuẩn (`glibc`, cụ thể là `/lib64/ld-linux-x86-64.so.2`).
 - Khi đưa tệp nhị phân này vào Docker Image `scratch` (hoàn toàn trống rỗng không có OS) hoặc `alpine` (sử dụng `musl libc` thay vì `glibc`), Kernel Linux không thể tìm thấy trình nạp liên kết động `/lib64/ld-linux-x86-64.so.2` và phát ra thông báo lỗi gây hiểu nhầm `/bin/sh: ./app: not found`.
 - Giải pháp: Khai báo biến `CGO_ENABLED=0` khi biên dịch (`CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-s -w" -o bin/app .`). Điều này bắt buộc Go compiler tạo ra một Static Binary thuần túy, đóng gói 100% mã máy vào tệp nhị phân và chạy hoàn hảo trên Image `scratch` chỉ rộng 12 MB.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tại sao không bao giờ được lưu trữ các tệp nhị phân phát hành (như `bin/app`) vào thuộc tính `cache:paths`, và sự khác biệt về mặt hợp đồng giữa `cache` và `artifacts` trong GitLab CI là gì?
-
-**Đáp án chuẩn:**
-- `cache` mang bản chất là Tối ưu hiệu năng (Performance Optimization). Nó không đảm bảo tính nhất quán tuyệt đối giữa các Stage, có thể bị xóa hoặc trượt Cache bất kỳ lúc nào mà không làm sập Pipeline.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tại sao không bao giờ được lưu trữ các tệp nhị phân phát hành (như `bin/app`) vào thuộc tính `cache:paths`, và sự khác biệt về mặt hợp đồng giữa `cache` và `artifacts` trong GitLab CI là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `cache` mang bản chất là Tối ưu hiệu năng (Performance Optimization). Nó không đảm bảo tính nhất quán tuyệt đối giữa các Stage, có thể bị xóa hoặc trượt Cache bất kỳ lúc nào mà không làm sập Pipeline.
 - `artifacts` mang bản chất là Hợp đồng kết quả (Deliverable Contract). Nó đảm bảo truyền chính xác 100% tệp đầu ra từ Job trước sang Job sau trong cùng Pipeline.
 - Nếu lưu file nhị phân `bin/app` vào `cache:paths`, ở lượt chạy tiếp theo nếu lệnh build bị thất bại hoặc bị bỏ qua, Job `deploy` có thể nạp nhầm tệp nhị phân cũ từ commit trước nằm trong Cache, dẫn đến việc triển khai sai phiên bản ứng dụng lên Production.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Trình bày cơ chế Biên dịch chéo Native (Native Cross-compilation) của Go thông qua 2 biến `GOOS` và `GOARCH`, và so sánh ưu thế của nó với C/C++ hay Rust trong CI/CD?
-
-**Đáp án chuẩn:**
-- Go compiler được thiết kế tích hợp sẵn bộ phát sinh mã máy cho nhiều hệ điều hành và kiến trúc phần cứng. Người dùng chỉ cần truyền 2 biến môi trường `GOOS` (ví dụ `linux`, `darwin`, `windows`) và `GOARCH` (ví dụ `amd64`, `arm64`), Go compiler có thể sinh ra file nhị phân tương ứng trực tiếp từ Host x86_64 mà không cần cài đặt thêm cross-compiler.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Trình bày cơ chế Biên dịch chéo Native (Native Cross-compilation) của Go thông qua 2 biến `GOOS` và `GOARCH`, và so sánh ưu thế của nó với C/C++ hay Rust trong CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Go compiler được thiết kế tích hợp sẵn bộ phát sinh mã máy cho nhiều hệ điều hành và kiến trúc phần cứng. Người dùng chỉ cần truyền 2 biến môi trường `GOOS` (ví dụ `linux`, `darwin`, `windows`) và `GOARCH` (ví dụ `amd64`, `arm64`), Go compiler có thể sinh ra file nhị phân tương ứng trực tiếp từ Host x86_64 mà không cần cài đặt thêm cross-compiler.
 - So với C/C++ (yêu cầu cài đặt bộ toolchain phức tạp như `gcc-aarch64-linux-gnu` và sysroot) hoặc Rust (yêu cầu `rustup target add` và C cross-linker), Go cross-compile native tốn 0 giây chuẩn bị môi trường, giúp giản đồ Pipeline CI/CD cực kỳ đơn giản và linh hoạt.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Tại sao cờ `-mod=readonly` là bắt buộc trong các lệnh `go build` và `go test` trên môi trường CI/CD?
-
-**Đáp án chuẩn:**
-- Mặc định ở một số phiên bản Go cũ, khi phát hiện tệp `go.mod` hoặc `go.sum` bị thiếu một số khai báo phụ thuộc bắc cầu, các lệnh `go build` hoặc `go test` sẽ tự động truy vấn Proxy, tải thư viện và tự ý sửa đổi ngầm tệp `go.mod` trong Container CI.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Tại sao cờ `-mod=readonly` là bắt buộc trong các lệnh `go build` và `go test` trên môi trường CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định ở một số phiên bản Go cũ, khi phát hiện tệp `go.mod` hoặc `go.sum` bị thiếu một số khai báo phụ thuộc bắc cầu, các lệnh `go build` hoặc `go test` sẽ tự động truy vấn Proxy, tải thư viện và tự ý sửa đổi ngầm tệp `go.mod` trong Container CI.
 - Điều này vi phạm nguyên tắc Bất biến (Immutability) của CI/CD: mã nguồn được biên dịch trong CI không còn đúng với những gì lập trình viên đã commit và review trên Merge Request.
 - Cờ `-mod=readonly` bắt buộc Go compiler hoạt động ở chế độ chỉ đọc. Nếu phát hiện `go.mod` bị thiếu hoặc cần sửa đổi, lệnh build sẽ lập tức dừng và báo lỗi đỏ, buộc lập trình viên phải sửa và commit đúng ở máy local.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Khi dự án Go bật tính năng Vendoring (chứa thư mục `vendor/`), chiến lược đệm đệm `cache:` và cờ biên dịch nào cần được áp dụng?
-
-**Đáp án chuẩn:**
-- Khi dự án sử dụng Vendoring (`go mod vendor`), toàn bộ mã nguồn của các thư viện phụ thuộc đã được đóng gói trực tiếp vào thư mục `vendor/` và commit lên Git repository.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Khi dự án Go bật tính năng Vendoring (chứa thư mục `vendor/`), chiến lược đệm đệm `cache:` và cờ biên dịch nào cần được áp dụng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi dự án sử dụng Vendoring (`go mod vendor`), toàn bộ mã nguồn của các thư viện phụ thuộc đã được đóng gói trực tiếp vào thư mục `vendor/` và commit lên Git repository.
 - Do đó, **không cần bật đệm đệm `GOMODCACHE`** trong `.gitlab-ci.yml` vì mã nguồn module đã có sẵn trên ổ đĩa local.
 - Lệnh biên dịch bắt buộc phải chèn cờ `-mod=vendor` (`go build -mod=vendor ./...`). Cờ này chỉ định Go compiler lấy mã nguồn từ thư mục `vendor/` mà không thực hiện bất kỳ truy vấn mạng nào ra bên ngoài, đạt tốc độ nạp phụ thuộc bằng 0 giây.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Công cụ `gotestsum` giải quyết hạn chế gì của câu lệnh `go test` mặc định khi hiển thị kết quả kiểm thử trên giao diện GitLab CE?
-
-**Đáp án chuẩn:**
-- Câu lệnh `go test ./...` mặc định xuất đầu ra dạng plain-text chuẩn của Go, không tương thích với định dạng báo cáo kiểm thử JUnit XML mà tab Tests của GitLab CI yêu cầu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Công cụ `gotestsum` giải quyết hạn chế gì của câu lệnh `go test` mặc định khi hiển thị kết quả kiểm thử trên giao diện GitLab CE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Câu lệnh `go test ./...` mặc định xuất đầu ra dạng plain-text chuẩn của Go, không tương thích với định dạng báo cáo kiểm thử JUnit XML mà tab Tests của GitLab CI yêu cầu.
 - `gotestsum` là một công cụ wrapper chạy `go test` ngầm định, tự động thu thập kết quả và xuất ra tệp `report.xml` chuẩn định dạng JUnit XML thông qua tham số `--junitfile report.xml`.
 - Nhờ tệp `report.xml` này kết hợp với khai báo `reports:junit: report.xml` trong `.gitlab-ci.yml`, GitLab CE có thể hiển thị danh sách chi tiết từng testcase pass/fail, thời gian thực thi và thống kê tổng số testcase ngay trên tab Tests của Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Làm thế nào để hiển thị vạch màu xanh/đỏ chỉ thị độ phủ mã nguồn (Code Coverage) trực tiếp trên giao diện Merge Request Diff của GitLab CE cho dự án Go?
-
-**Đáp án chuẩn:**
-- Lệnh `go test -coverprofile=coverage.out ./...` sinh ra tệp độ phủ chuẩn của Go nhưng ở dạng text không tương thích với GitLab.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Làm thế nào để hiển thị vạch màu xanh/đỏ chỉ thị độ phủ mã nguồn (Code Coverage) trực tiếp trên giao diện Merge Request Diff của GitLab CE cho dự án Go?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Lệnh `go test -coverprofile=coverage.out ./...` sinh ra tệp độ phủ chuẩn của Go nhưng ở dạng text không tương thích với GitLab.
 - Bắt buộc sử dụng công cụ `gocover-cobertura` để chuyển đổi tệp `coverage.out` sang định dạng Cobertura XML: `gocover-cobertura < coverage.out > coverage.xml`.
 - Khai báo thuộc tính báo cáo trong `.gitlab-ci.yml`:
   ```yaml
@@ -7158,12 +8639,25 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Kết quả: GitLab CE đọc tệp `coverage.xml` và tự động tô màu vạch xanh (đã test) và vạch đỏ (chưa test) ngay trên các dòng code thay đổi trong tab Merge Request Diff.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Trình bày thuật toán dọn dẹp đệm đệm `GOCACHE` khi dung lượng thư mục này phình to quá ngưỡng tối ưu (ví dụ > 500 MB) trong môi trường CI/CD?
-
-**Đáp án chuẩn:**
-- qua thời gian, `GOCACHE` tích lũy tệp nhị phân `.a` của nhiều commit cũ. Nếu không dọn dẹp, dung lượng Cache phình to lên 2 GB – 3 GB, làm thời gian nén nạp zip S3 chậm hơn thời gian biên dịch lại từ đầu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Trình bày thuật toán dọn dẹp đệm đệm `GOCACHE` khi dung lượng thư mục này phình to quá ngưỡng tối ưu (ví dụ > 500 MB) trong môi trường CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - qua thời gian, `GOCACHE` tích lũy tệp nhị phân `.a` của nhiều commit cũ. Nếu không dọn dẹp, dung lượng Cache phình to lên 2 GB – 3 GB, làm thời gian nén nạp zip S3 chậm hơn thời gian biên dịch lại từ đầu.
 - Giải pháp: Chèn script dọn dẹp kiểm tra dung lượng trước khi lưu Cache:
   ```bash
   SIZE=$(du -sm $GOCACHE 2>/dev/null | awk '{print $1}' || echo "0")
@@ -7175,12 +8669,25 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Lệnh `go clean -cache` dọn dẹp toàn bộ kết quả biên dịch rác nhưng vẫn giữ lại `GOMODCACHE`, đảm bảo đệm đệm luôn duy trì dung lượng tối ưu dưới 500 MB.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Kế thừa đệm đệm `GOCACHE` từ nhánh `main` sang nhánh tính năng (`feature/*`) được cấu hình như thế nào trong thuộc tính `cache:` của GitLab CI?
-
-**Đáp án chuẩn:**
-- Khi phát triển trên nhánh `feature/login`, chưa có `GOCACHE` riêng cho nhánh này. Nếu không có cơ chế thừa hưởng, nhánh `feature` sẽ phải build lại từ 0% đệm đệm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Kế thừa đệm đệm `GOCACHE` từ nhánh `main` sang nhánh tính năng (`feature/*`) được cấu hình như thế nào trong thuộc tính `cache:` của GitLab CI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi phát triển trên nhánh `feature/login`, chưa có `GOCACHE` riêng cho nhánh này. Nếu không có cơ chế thừa hưởng, nhánh `feature` sẽ phải build lại từ 0% đệm đệm.
 - Giải pháp: Cấu hình thuộc tính `fallback_keys` trong khối `cache:` của `GOCACHE`:
   ```yaml
   cache:
@@ -7194,6 +8701,8 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Cơ chế: Runner tìm kiếm đệm đệm `gocache-feature-login` trước. Nếu không thấy (Cache Miss), Runner tự động tải đệm đệm `gocache-main` của nhánh `main` về làm nền tảng, giúp thời gian biên dịch trên nhánh `feature` giảm từ 45s xuống còn 6s ngay ở lượt chạy đầu tiên.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -7302,103 +8811,231 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Bản chất kỹ thuật của biến môi trường `NUGET_PACKAGES` trong .NET CLI là gì, và tại sao việc không đặt biến này lại dẫn tới việc Runner bị trượt Cache 100% (Cache Miss im lặng)?
-
-**Đáp án chuẩn:**
-- Mặc định, công cụ `.NET CLI` lưu trữ toàn bộ các gói NuGet khôi phục từ remote Registry tại thư mục cá nhân người dùng `~/.nuget/packages` (trên Linux Container là `/root/.nuget/packages`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Bản chất kỹ thuật của biến môi trường `NUGET_PACKAGES` trong .NET CLI là gì, và tại sao việc không đặt biến này lại dẫn tới việc Runner bị trượt Cache 100% (Cache Miss im lặng)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định, công cụ `.NET CLI` lưu trữ toàn bộ các gói NuGet khôi phục từ remote Registry tại thư mục cá nhân người dùng `~/.nuget/packages` (trên Linux Container là `/root/.nuget/packages`).
 - GitLab Runner áp dụng cơ chế quản lý an ninh nghiêm ngặt: chỉ cho phép thu nén nạp các thư mục nằm dưới không gian làm việc của dự án (`$CI_PROJECT_DIR`).
 - Nếu người dùng khai báo `cache:paths: [.nuget/packages]` nhưng quên không đặt biến `NUGET_PACKAGES`, .NET CLI vẫn tiếp tục ghi đệm đệm vào `/root/.nuget/packages`. Tiến trình trợ giúp Runner quét thư mục `.nuget/packages` dưới project dir, phát hiện thư mục không tồn tại và phát ra dòng cảnh báo im lặng `WARNING: .nuget/packages: no matching files`, khiến file zip tải lên S3 có dung lượng 0 byte (trượt Cache 100%).
 - Giải pháp: Bắt buộc khai báo biến môi trường toàn cục `NUGET_PACKAGES: "$CI_PROJECT_DIR/.nuget/packages"`.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Sự khác biệt về mặt bản chất giữa câu lệnh `dotnet restore` mặc định và `dotnet restore --locked-mode` với tệp `packages.lock.json` là gì?
-
-**Đáp án chuẩn:**
-- `dotnet restore` mặc định sẽ phân tích tệp `.csproj` và giải quyết các gói phụ thuộc. Nếu tệp dự án chứa các ký tự đại diện (wildcard) hoặc định nghĩa khoảng phiên bản, NuGet có thể tự động tải các bản vá lỗ hổng (patch version) mới hơn phát hành trên NuGet.org.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Sự khác biệt về mặt bản chất giữa câu lệnh `dotnet restore` mặc định và `dotnet restore --locked-mode` với tệp `packages.lock.json` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `dotnet restore` mặc định sẽ phân tích tệp `.csproj` và giải quyết các gói phụ thuộc. Nếu tệp dự án chứa các ký tự đại diện (wildcard) hoặc định nghĩa khoảng phiên bản, NuGet có thể tự động tải các bản vá lỗ hổng (patch version) mới hơn phát hành trên NuGet.org.
 - `dotnet restore --locked-mode` ép buộc MSBuild hoạt động ở chế độ khóa nghiêm ngặt. Lệnh restore sẽ đọc tệp `packages.lock.json` và đối chiếu chính xác 100% mã băm cryptographic hash SHA-512 của từng gói trực tiếp và bắc cầu.
 - Nếu phát hiện tệp `.csproj` đã bị chỉnh sửa thêm/bớt package mà tệp `packages.lock.json` chưa được cập nhật tương ứng, `--locked-mode` sẽ dừng Pipeline ngay lập tức và báo lỗi đỏ, chặn đứng nguy cơ trôi phiên bản phụ thuộc.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Tại sao tuyệt đối KHÔNG được đưa thư mục đối tượng trung gian `obj/` vào thuộc tính `cache:paths` hoặc `artifacts:paths` trong các dự án .NET?
-
-**Đáp án chuẩn:**
-- Thư mục `obj/` (Intermediate Output Directory) chứa các tệp MSBuild tự sinh trong quá trình biên dịch, bao gồm `project.assets.json`, `*.nuget.g.props`, `*.nuget.g.targets`, và tệp nguồn `*.AssemblyInfo.cs`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối KHÔNG được đưa thư mục đối tượng trung gian `obj/` vào thuộc tính `cache:paths` hoặc `artifacts:paths` trong các dự án .NET?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Thư mục `obj/` (Intermediate Output Directory) chứa các tệp MSBuild tự sinh trong quá trình biên dịch, bao gồm `project.assets.json`, `*.nuget.g.props`, `*.nuget.g.targets`, và tệp nguồn `*.AssemblyInfo.cs`.
 - Tất cả các tệp này chứa các đường dẫn tuyệt đối (Absolute Paths) gắn chặt với cấu hình hệ thống máy Host, ID của Runner, và vị trí thư mục làm việc hiện tại.
 - Nếu đưa `obj/` vào Cache, khi Job chạy trên một Runner khác có cấu hình hoặc đường dẫn khác, MSBuild sẽ nạp lại các tệp chỉ mục cũ, dẫn đến xung đột thuộc tính `The item ... already exists` hoặc nổ lỗi biên dịch đỏ toàn bộ Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Phân tích lợi ích về mặt thời gian thực thi I/O khi sử dụng cờ `--no-restore` trong các câu lệnh `dotnet build` và `dotnet test`?
-
-**Đáp án chuẩn:**
-- Mặc định, mỗi khi thực thi `dotnet build` hoặc `dotnet test`, .NET CLI sẽ tự động kích hoạt một tiến trình `dotnet restore` ngầm định ở đằng trước để kiểm tra lại cây phụ thuộc.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Phân tích lợi ích về mặt thời gian thực thi I/O khi sử dụng cờ `--no-restore` trong các câu lệnh `dotnet build` và `dotnet test`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định, mỗi khi thực thi `dotnet build` hoặc `dotnet test`, .NET CLI sẽ tự động kích hoạt một tiến trình `dotnet restore` ngầm định ở đằng trước để kiểm tra lại cây phụ thuộc.
 - Trong một Pipeline CI/CD được thiết kế chuẩn, bước khôi phục gói `dotnet restore --locked-mode` đã được thực thi ở một Stage riêng biệt (hoặc bước đầu tiên) với Cache nạp đầy đủ.
 - Việc chèn cờ `--no-restore` chỉ định MSBuild bỏ qua hoàn toàn bước quét mạng và kiểm tra package ngầm, giúp rút ngắn thời gian thi hành của câu lệnh `dotnet build` và `dotnet test` từ 15–20 giây xuống còn 3–4 giây.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Trình bày kỹ thuật Docker Multi-stage Build cho ứng dụng .NET 8, và so sánh sự khác biệt giữa Image SDK Base và Image Runtime Alpine/Chiseled?
-
-**Đáp án chuẩn:**
-- **Stage 1 (Build Stage):** Sử dụng Image Base `mcr.microsoft.com/dotnet/sdk:8.0` chứa đầy đủ bộ biên dịch C#, MSBuild, NuGet CLI. Tiến hành restore, build và publish ứng dụng ra thư mục `/app/publish`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Trình bày kỹ thuật Docker Multi-stage Build cho ứng dụng .NET 8, và so sánh sự khác biệt giữa Image SDK Base và Image Runtime Alpine/Chiseled?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Stage 1 (Build Stage):** Sử dụng Image Base `mcr.microsoft.com/dotnet/sdk:8.0` chứa đầy đủ bộ biên dịch C#, MSBuild, NuGet CLI. Tiến hành restore, build và publish ứng dụng ra thư mục `/app/publish`.
 - **Stage 2 (Runtime Stage):** Khởi tạo từ Image Base mỏng `mcr.microsoft.com/dotnet/aspnet:8.0-alpine` (dung lượng ~110 MB) hoặc `aspnet:8.0-chiseled` (dung lượng ~105 MB, không có shell, chạy user non-root). Chỉ sao chép duy nhất sản phẩm nhị phân từ Stage 1 sang (`COPY --from=build /app/publish .`).
 - **So sánh:** Image SDK Base nặng ~850 MB và chứa nhiều công cụ dư thừa. Image Runtime Alpine/Chiseled mỏng hơn 8 lần, giảm 87% dung lượng nạp qua mạng trên Kubernetes và loại bỏ hoàn toàn các nguy cơ tấn công qua shell.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Biến môi trường `DOTNET_CLI_TELEMETRY_OPTOUT` và `DOTNET_SKIP_FIRST_TIME_EXPERIENCE` giải quyết vấn đề gì trong môi trường Container CI dùng một lần?
-
-**Đáp án chuẩn:**
-- Mặc định khi một Container mới khởi chạy lệnh `dotnet` lần đầu tiên, .NET CLI sẽ tự động thực hiện hai hành vi: 1) Thu thập dữ liệu sử dụng và gửi telemetry về Microsoft; 2) Giải nén tệp đệm chào mừng (First-time experience caching).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Biến môi trường `DOTNET_CLI_TELEMETRY_OPTOUT` và `DOTNET_SKIP_FIRST_TIME_EXPERIENCE` giải quyết vấn đề gì trong môi trường Container CI dùng một lần?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định khi một Container mới khởi chạy lệnh `dotnet` lần đầu tiên, .NET CLI sẽ tự động thực hiện hai hành vi: 1) Thu thập dữ liệu sử dụng và gửi telemetry về Microsoft; 2) Giải nén tệp đệm chào mừng (First-time experience caching).
 - Hai hành vi này hoàn toàn vô ích trong Container CI dùng một lần, gây lãng phí từ 3 đến 5 giây CPU/I/O và tạo ra các kết nối mạng không cần thiết.
 - Khai báo `DOTNET_CLI_TELEMETRY_OPTOUT: "1"` và `DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"` giúp tắt 100% các hành vi trên, làm cho câu lệnh CLI thi hành tức thì ngay lượt chạy đầu tiên.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Trình bày cách trích xuất báo cáo kết quả kiểm thử chuẩn JUnit XML trực tiếp từ câu lệnh `dotnet test` mà không cần cài đặt thêm công cụ bên ngoài?
-
-**Đáp án chuẩn:**
-- Từ .NET Core 3.0 trở đi, .NET SDK đã tích hợp sẵn logger JUnit XML chính thức.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Trình bày cách trích xuất báo cáo kết quả kiểm thử chuẩn JUnit XML trực tiếp từ câu lệnh `dotnet test` mà không cần cài đặt thêm công cụ bên ngoài?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Từ .NET Core 3.0 trở đi, .NET SDK đã tích hợp sẵn logger JUnit XML chính thức.
 - Trong `.gitlab-ci.yml`, chỉ cần thực thi câu lệnh:
   `dotnet test --no-build -c Release --logger "junit;LogFilePath=report.xml"`
 - Thuộc tính `--logger "junit;LogFilePath=report.xml"` chỉ định runner của `dotnet test` ghi lại kết quả từng testcase vào tệp XML chuẩn.
 - Kết hợp với khai báo `reports:junit: **/report.xml` trong thuộc tính `artifacts:`, GitLab CE sẽ tự động đọc tệp này và hiển thị chi tiết số testcase pass/fail trên tab Tests của Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Công cụ `ReportGenerator` đóng vai trò gì trong việc hiển thị vạch màu chỉ thị độ phủ mã nguồn (Code Coverage) trên Merge Request Diff của GitLab CE?
-
-**Đáp án chuẩn:**
-- Lệnh `dotnet test --collect:"XPlat Code Coverage"` sử dụng `coverlet` để sinh ra các tệp độ phủ `coverage.cobertura.xml` nằm rải rác trong các thư mục con GUID ngẫu nhiên.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Công cụ `ReportGenerator` đóng vai trò gì trong việc hiển thị vạch màu chỉ thị độ phủ mã nguồn (Code Coverage) trên Merge Request Diff của GitLab CE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Lệnh `dotnet test --collect:"XPlat Code Coverage"` sử dụng `coverlet` để sinh ra các tệp độ phủ `coverage.cobertura.xml` nằm rải rác trong các thư mục con GUID ngẫu nhiên.
 - GitLab CE yêu cầu một tệp báo cáo chuẩn Cobertura XML duy nhất nằm ở đường dẫn cố định để tô màu vạch xanh/đỏ trên diff.
 - Công cụ `ReportGenerator` (`dotnet-reportgenerator-globaltool`) quét tất cả các tệp đệm độ phủ rải rác (`-reports:"**/coverage.cobertura.xml"`), hợp nhất dữ liệu và chuyển đổi thành tệp `Cobertura.xml` chuẩn duy nhất, nộp vào `reports:coverage_report:coverage_format: cobertura`.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Phân biệt ý nghĩa và tác động hiệu năng của hai cờ biên dịch `PublishReadyToRun=true` và `PublishSingleFile=true` khi phát hành ứng dụng .NET?
-
-**Đáp án chuẩn:**
-- `PublishReadyToRun=true` (R2R): Thực hiện AOT biên dịch trước mã IL (.NET Intermediate Language) sang mã máy native cho các thư viện cốt lõi. Giúp giảm thời gian khởi động Cold Start của ứng dụng .NET trên Kubernetes từ 8 giây xuống 0,8 giây mà không ảnh hưởng tới tính di động.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Phân biệt ý nghĩa và tác động hiệu năng của hai cờ biên dịch `PublishReadyToRun=true` và `PublishSingleFile=true` khi phát hành ứng dụng .NET?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `PublishReadyToRun=true` (R2R): Thực hiện AOT biên dịch trước mã IL (.NET Intermediate Language) sang mã máy native cho các thư viện cốt lõi. Giúp giảm thời gian khởi động Cold Start của ứng dụng .NET trên Kubernetes từ 8 giây xuống 0,8 giây mà không ảnh hưởng tới tính di động.
 - `PublishSingleFile=true`: Nén toàn bộ tệp nhị phân DLL, cấu hình và runtime .NET thành một tệp nhị phân duy nhất. Giúp đơn giản hóa việc phân phối ứng dụng CLI hoặc Microservice, giảm kích thước tổng thể sản phẩm phát hành.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp cấu hình xác thực Private NuGet Feed (như Artifactory hoặc GitLab Package Registry) an toàn trong `.gitlab-ci.yml` là gì?
-
-**Đáp án chuẩn:**
-- Tuyệt đối không hardcode Username/Password trong tệp `NuGet.Config` đã commit lên Git.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp cấu hình xác thực Private NuGet Feed (như Artifactory hoặc GitLab Package Registry) an toàn trong `.gitlab-ci.yml` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tuyệt đối không hardcode Username/Password trong tệp `NuGet.Config` đã commit lên Git.
 - Sử dụng tệp `NuGet.Config` với biến môi trường động:
   ```xml
   <configuration>
@@ -7416,12 +9053,25 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Khi chạy trong CI, .NET CLI tự động đọc biến `$CI_JOB_TOKEN` để xác thực an toàn với Private Feed.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Nêu giải pháp dọn dẹp đệm đệm `NUGET_PACKAGES` tự động khi dung lượng thư mục này vượt quá 1 GB trong môi trường CI/CD?
-
-**Đáp án chuẩn:**
-- Thư mục `.nuget/packages` tích lũy phiên bản của hàng trăm package qua thời gian. Nếu không dọn dẹp, đệm đệm phình to lên 2–3 GB, làm thời gian nén/tải S3 kéo dài quá lâu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Nêu giải pháp dọn dẹp đệm đệm `NUGET_PACKAGES` tự động khi dung lượng thư mục này vượt quá 1 GB trong môi trường CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Thư mục `.nuget/packages` tích lũy phiên bản của hàng trăm package qua thời gian. Nếu không dọn dẹp, đệm đệm phình to lên 2–3 GB, làm thời gian nén/tải S3 kéo dài quá lâu.
 - Giải pháp: Chèn script dọn dẹp kiểm tra dung lượng trước bước lưu Cache:
   ```bash
   SIZE=$(du -sm $NUGET_PACKAGES 2>/dev/null | awk '{print $1}' || echo "0")
@@ -7433,12 +9083,25 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Lệnh `dotnet nuget locals all --clear` dọn dẹp sạch đệm đệm rác nhưng giữ đệm luôn ở mức tối ưu.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Làm thế nào để các nhánh tính năng (`feature/*`) thừa hưởng Cache NuGet từ nhánh `main` mà không phải tải lại toàn bộ package từ đầu?
-
-**Đáp án chuẩn:**
-- Sử dụng thuộc tính `fallback_keys` trong khối `cache:` của `NUGET_PACKAGES`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Làm thế nào để các nhánh tính năng (`feature/*`) thừa hưởng Cache NuGet từ nhánh `main` mà không phải tải lại toàn bộ package từ đầu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Sử dụng thuộc tính `fallback_keys` trong khối `cache:` của `NUGET_PACKAGES`:
   ```yaml
   cache:
     key:
@@ -7454,6 +9117,8 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Cơ chế: Trên nhánh `feature`, nếu chưa có đệm đệm `nuget-feature-xyz` (Cache Miss), Runner sẽ tự động tải đệm đệm `nuget-main` của nhánh `main` về làm đệm ban đầu, giúp rút ngắn thời gian `dotnet restore` từ 35s xuống 3s ngay ở commit đầu tiên.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -7564,82 +9229,184 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Bản chất kỹ thuật của biến môi trường `COMPOSER_CACHE_DIR` trong Composer CLI là gì, và tại sao việc không đặt biến này lại dẫn tới việc Runner bị trượt Cache 100% (Cache Miss im lặng)?
-
-**Đáp án chuẩn:**
-- Mặc định, công cụ `Composer CLI` lưu trữ toàn bộ các tệp nén zip khôi phục từ remote Packagist Registry tại thư mục cá nhân người dùng `~/.composer/cache` (trên Linux Container là `/root/.composer/cache`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Bản chất kỹ thuật của biến môi trường `COMPOSER_CACHE_DIR` trong Composer CLI là gì, và tại sao việc không đặt biến này lại dẫn tới việc Runner bị trượt Cache 100% (Cache Miss im lặng)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định, công cụ `Composer CLI` lưu trữ toàn bộ các tệp nén zip khôi phục từ remote Packagist Registry tại thư mục cá nhân người dùng `~/.composer/cache` (trên Linux Container là `/root/.composer/cache`).
 - GitLab Runner áp dụng cơ chế quản lý an ninh nghiêm ngặt: chỉ cho phép thu nén nạp các thư mục nằm dưới không gian làm việc của dự án (`$CI_PROJECT_DIR`).
 - Nếu người dùng khai báo `cache:paths: [.composer/cache]` nhưng quên không đặt biến `COMPOSER_CACHE_DIR`, Composer vẫn tiếp tục ghi đệm đệm vào `/root/.composer/cache`. Tiến trình trợ giúp Runner quét thư mục `.composer/cache` dưới project dir, phát hiện thư mục không tồn tại và phát ra dòng cảnh báo im lặng `WARNING: .composer/cache: no matching files`, khiến file zip tải lên S3 có dung lượng 0 byte (trượt Cache 100%).
 - Giải pháp: Bắt buộc khai báo biến môi trường toàn cục `COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.composer/cache"`.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Sự khác biệt về mặt bản chất giữa câu lệnh `composer update` và `composer install` trong môi trường CI/CD là gì?
-
-**Đáp án chuẩn:**
-- `composer update`: Đọc tệp `composer.json`, kích hoạt SAT Solver để tính toán lại toàn bộ cây phụ thuộc, nâng cấp các gói lên phiên bản mới nhất thỏa mãn định nghĩa, và ghi đè tệp `composer.lock`. Hành vi này **không bất biến**, nguy hiểm và **tuyệt đối không dùng trong CI/CD**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Sự khác biệt về mặt bản chất giữa câu lệnh `composer update` và `composer install` trong môi trường CI/CD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `composer update`: Đọc tệp `composer.json`, kích hoạt SAT Solver để tính toán lại toàn bộ cây phụ thuộc, nâng cấp các gói lên phiên bản mới nhất thỏa mãn định nghĩa, và ghi đè tệp `composer.lock`. Hành vi này **không bất biến**, nguy hiểm và **tuyệt đối không dùng trong CI/CD**.
 - `composer install`: Bỏ qua hoàn toàn SAT Solver, đọc trực tiếp tệp `composer.lock` và cài đặt chính xác 100% mã băm SHA của các gói phụ thuộc đã ghim sẵn. Hành vi này **bất biến 100%**, tái lập chính xác môi trường phát triển local lên CI.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Tại sao tuyệt đối KHÔNG được đưa thư mục phụ thuộc giải nén `vendor/` vào thuộc tính `cache:paths` trong các dự án PHP?
-
-**Đáp án chuẩn:**
-- Thư mục `vendor/` chứa mã nguồn thô của các thư viện đã giải nén và tệp bản đồ autoloader `autoload.php`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối KHÔNG được đưa thư mục phụ thuộc giải nén `vendor/` vào thuộc tính `cache:paths` trong các dự án PHP?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Thư mục `vendor/` chứa mã nguồn thô của các thư viện đã giải nén và tệp bản đồ autoloader `autoload.php`.
 - Nếu đưa `vendor/` vào Cache, khi lập trình viên xóa một thư viện khỏi `composer.json` và commit lên Git, Runner sẽ nạp lại thư mục `vendor/` cũ từ Cache. Thư viện đã bị xóa vẫn xuất hiện trong `vendor/`, khiến ứng dụng chạy thành công trong CI nhưng nổ lỗi đỏ khi triển khai lên Production (lỗi Ghost Dependencies).
 - Giải pháp: Tuyệt đối không cache `vendor/`. Chỉ cache thư mục tệp nén zip `COMPOSER_CACHE_DIR`.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Ý nghĩa kỹ thuật và tác động hiệu năng của cờ `--optimize-autoloader` trong câu lệnh `composer install` đối với ứng dụng PHP ở Runtime?
-
-**Đáp án chuẩn:**
-- Mặc định, PSR-4 autoloader của Composer phải truy vấn hệ thống tệp `stat()` trên đĩa cứng để kiểm tra sự tồn tại của từng file `.php` mỗi khi 1 class được nạp vào bộ nhớ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Ý nghĩa kỹ thuật và tác động hiệu năng của cờ `--optimize-autoloader` trong câu lệnh `composer install` đối với ứng dụng PHP ở Runtime?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định, PSR-4 autoloader của Composer phải truy vấn hệ thống tệp `stat()` trên đĩa cứng để kiểm tra sự tồn tại của từng file `.php` mỗi khi 1 class được nạp vào bộ nhớ.
 - Cờ `--optimize-autoloader` quét toàn bộ các class và sinh ra mảng băm PHP tĩnh `vendor/composer/autoload_classmap.php`. Đổ trực tiếp tên class sang đường dẫn tệp tuyệt đối.
 - Tác động: Rút ngắn thời gian truy tìm class từ $O(N)$ system call xuống $O(1)$ mảng băm tĩnh, giúp ứng dụng PHP ở runtime chạy nhanh hơn 20%–30%.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Phân tích nguyên lý hoạt động của Extension `PCOV` và giải thích tại sao `PCOV` lại nhanh gấp 10 lần `Xdebug` khi thu thập Code Coverage trong PHPUnit?
-
-**Đáp án chuẩn:**
-- `Xdebug` được thiết kế làm trình gỡ lỗi đa năng (Step Debugger). Khi bật coverage, Xdebug phải can thiệp sâu vào bộ nhớ, tạo frame theo dõi cho từng biến cục bộ, stack trace và call graph, khiến PHPUnit bị chậm đi từ 5 đến 10 lần.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Phân tích nguyên lý hoạt động của Extension `PCOV` và giải thích tại sao `PCOV` lại nhanh gấp 10 lần `Xdebug` khi thu thập Code Coverage trong PHPUnit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Xdebug` được thiết kế làm trình gỡ lỗi đa năng (Step Debugger). Khi bật coverage, Xdebug phải can thiệp sâu vào bộ nhớ, tạo frame theo dõi cho từng biến cục bộ, stack trace và call graph, khiến PHPUnit bị chậm đi từ 5 đến 10 lần.
 - `PCOV` do Joe Watkins phát triển là C-Extension chuyên biệt dành riêng cho Code Coverage. PCOV chèn 1 cờ đánh dấu đơn giản vào bảng opcode `zend_op_array` của Zend Engine mà không can thiệp vào stack trace hay theo dõi biến.
 - Tác động: PCOV giảm thiểu tối đa overhead CPU/RAM, đưa thời gian chạy PHPUnit đo độ phủ từ 45 giây xuống còn 4,5 giây (tăng tốc gấp 10 lần).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Biến môi trường `COMPOSER_ALLOW_SUPERUSER` và `COMPOSER_NO_INTERACTION` giải quyết vấn đề gì trong môi trường Container Docker dùng một lần?
-
-**Đáp án chuẩn:**
-- Mặc định khi thực thi dưới user `root` trong Docker Container, Composer CLI sẽ in dòng cảnh báo an toàn `Do not run Composer as root...` và dừng chờ 3 giây. Biến `COMPOSER_ALLOW_SUPERUSER: "1"` tắt bỏ hoàn toàn cảnh báo này, tiết kiệm 3 giây.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Biến môi trường `COMPOSER_ALLOW_SUPERUSER` và `COMPOSER_NO_INTERACTION` giải quyết vấn đề gì trong môi trường Container Docker dùng một lần?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định khi thực thi dưới user `root` trong Docker Container, Composer CLI sẽ in dòng cảnh báo an toàn `Do not run Composer as root...` và dừng chờ 3 giây. Biến `COMPOSER_ALLOW_SUPERUSER: "1"` tắt bỏ hoàn toàn cảnh báo này, tiết kiệm 3 giây.
 - Biến `COMPOSER_NO_INTERACTION: "1"` chỉ định Composer tự động chọn đáp án mặc định cho mọi câu hỏi tương tác CLI, ngăn ngừa tình trạng Job CI bị treo vô hạn do chờ phím bấm của người dùng.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Trình bày cách trích xuất báo cáo kết quả kiểm thử chuẩn JUnit XML trực tiếp từ PHPUnit cho tab Tests của GitLab CE?
-
-**Đáp án chuẩn:**
-- Framework PHPUnit đã tích hợp sẵn logger JUnit XML chính thức.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Trình bày cách trích xuất báo cáo kết quả kiểm thử chuẩn JUnit XML trực tiếp từ PHPUnit cho tab Tests của GitLab CE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Framework PHPUnit đã tích hợp sẵn logger JUnit XML chính thức.
 - Trong `.gitlab-ci.yml`, thực thi câu lệnh:
   `vendor/bin/phpunit --log-junit report.xml`
 - Thuộc tính `--log-junit report.xml` chỉ định PHPUnit ghi lại kết quả từng testcase vào tệp XML chuẩn.
 - Kết hợp với khai báo `reports:junit: report.xml` trong thuộc tính `artifacts:`, GitLab CE tự động hiển thị chi tiết số testcase pass/fail trên tab Tests.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Cách trích xuất báo cáo Cobertura XML trực tiếp từ PHPUnit cho Merge Request Diff của GitLab CE mà không cần dùng công cụ chuyển đổi bên ngoài?
-
-**Đáp án chuẩn:**
-- Từ PHPUnit 9.3 trở đi, PHPUnit hỗ trợ xuất chuẩn Cobertura XML native.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Cách trích xuất báo cáo Cobertura XML trực tiếp từ PHPUnit cho Merge Request Diff của GitLab CE mà không cần dùng công cụ chuyển đổi bên ngoài?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Từ PHPUnit 9.3 trở đi, PHPUnit hỗ trợ xuất chuẩn Cobertura XML native.
 - Trong `.gitlab-ci.yml`, thực thi câu lệnh:
   `vendor/bin/phpunit --coverage-cobertura coverage.xml`
 - Kết hợp khai báo nộp tệp báo cáo trong `artifacts:`:
@@ -7652,32 +9419,71 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - GitLab CE tự động đọc tệp `coverage.xml` và tô màu vạch xanh/đỏ chỉ thị độ phủ dòng lệnh trực quan trên Merge Request Diff.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Trình bày kỹ thuật Docker Multi-stage Build cho ứng dụng PHP (Laravel / Symfony) và lợi ích của Image Base `php:8.3-fpm-alpine`?
-
-**Đáp án chuẩn:**
-- **Stage 1 (Builder):** Dùng Image `composer:2.7` để nạp các phụ thuộc Production: `composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Trình bày kỹ thuật Docker Multi-stage Build cho ứng dụng PHP (Laravel / Symfony) và lợi ích của Image Base `php:8.3-fpm-alpine`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Stage 1 (Builder):** Dùng Image `composer:2.7` để nạp các phụ thuộc Production: `composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader`.
 - **Stage 2 (Final Runtime):** Khởi tạo từ Image Base mỏng `php:8.3-fpm-alpine` (~88 MB). Chỉ sao chép duy nhất thư mục `vendor/` và mã nguồn PHP từ Stage 1 sang (`COPY --from=builder /app/vendor ./vendor`).
 - **Lợi ích:** Cắt giảm dung lượng Image Production từ 600 MB (Debian Base) xuống 88 MB (nhỏ hơn 7 lần), loại bỏ hoàn toàn bộ tool Composer và thư viện dev khỏi Image Production.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Cờ `--no-dev` trong câu lệnh `composer install` đóng vai trò gì khi đóng gói ứng dụng cho môi trường Production?
-
-**Đáp án chuẩn:**
-- Các thư viện dành riêng cho phát triển và kiểm thử (như `phpunit/phpunit`, `phpstan/phpstan`, `mockery/mockery`) chiếm tới 60%–70% dung lượng thư mục `vendor/`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Cờ `--no-dev` trong câu lệnh `composer install` đóng vai trò gì khi đóng gói ứng dụng cho môi trường Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Các thư viện dành riêng cho phát triển và kiểm thử (như `phpunit/phpunit`, `phpstan/phpstan`, `mockery/mockery`) chiếm tới 60%–70% dung lượng thư mục `vendor/`.
 - Cờ `--no-dev` chỉ thị Composer bỏ qua khối `require-dev` trong `composer.json`, chỉ tải các thư viện cần thiết cho môi trường vận hành thực tế.
 - Tác động: Rút gọn dung lượng thư mục `vendor/` từ 85 MB xuống 22 MB, tăng cường bảo mật bằng cách loại bỏ các công cụ gỡ lỗi khỏi Production Server.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Nêu thuật toán dọn dẹp Composer Cache tự động khi dung lượng thư mục `COMPOSER_CACHE_DIR` phình to quá 500 MB trong môi trường CI/CD?
-
-**Đáp án chuẩn:**
-- Thư mục `.composer/cache` tích lũy các tệp nén zip của hàng chục phiên bản package qua thời gian. Nếu không dọn dẹp, đệm đệm phình to làm thời gian nén/tải S3 kéo dài.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Nêu thuật toán dọn dẹp Composer Cache tự động khi dung lượng thư mục `COMPOSER_CACHE_DIR` phình to quá 500 MB trong môi trường CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Thư mục `.composer/cache` tích lũy các tệp nén zip của hàng chục phiên bản package qua thời gian. Nếu không dọn dẹp, đệm đệm phình to làm thời gian nén/tải S3 kéo dài.
 - Giải pháp: Chèn script kiểm tra dung lượng trước bước lưu Cache:
   ```bash
   SIZE=$(du -sm $COMPOSER_CACHE_DIR 2>/dev/null | awk '{print $1}' || echo "0")
@@ -7689,12 +9495,25 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Lệnh `composer clear-cache` dọn sạch đệm đệm zip rác nhưng giữ Cache luôn ở mức tối ưu.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Làm thế nào để các nhánh tính năng (`feature/*`) thừa hưởng Cache Composer từ nhánh `main` mà không phải tải lại toàn bộ package từ đầu?
-
-**Đáp án chuẩn:**
-- Sử dụng thuộc tính `fallback_keys` trong khối `cache:` của Composer:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Làm thế nào để các nhánh tính năng (`feature/*`) thừa hưởng Cache Composer từ nhánh `main` mà không phải tải lại toàn bộ package từ đầu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Sử dụng thuộc tính `fallback_keys` trong khối `cache:` của Composer:
   ```yaml
   cache:
     key:
@@ -7710,6 +9529,8 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Cơ chế: Trên nhánh `feature`, nếu chưa có đệm đệm `composer-feature-xyz` (Cache Miss), Runner sẽ tự động tải đệm đệm `composer-main` của nhánh `main` về làm đệm ban đầu, giúp rút ngắn thời gian `composer install` từ 28s xuống 1.8s ngay ở commit đầu tiên.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -7832,83 +9653,185 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Phân tích 3 trường hợp khiến câu lệnh `rules:changes` bị đánh giá sai im lặng trong các dự án Monorepo trên GitLab CI?
-
-**Đáp án chuẩn:**
-- **Trường hợp 1 (Thiếu compare_to):** Mặc định `rules:changes` so sánh commit hiện tại với commit `HEAD~1`. Khi developer push commit thứ 2 trên MR (chỉ sửa tệp documentation), rule trả về `false` và bỏ qua Job test, làm lọt bug của commit 1.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Phân tích 3 trường hợp khiến câu lệnh `rules:changes` bị đánh giá sai im lặng trong các dự án Monorepo trên GitLab CI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Trường hợp 1 (Thiếu compare_to):** Mặc định `rules:changes` so sánh commit hiện tại với commit `HEAD~1`. Khi developer push commit thứ 2 trên MR (chỉ sửa tệp documentation), rule trả về `false` và bỏ qua Job test, làm lọt bug của commit 1.
 - **Trường hợp 2 (Fallback Default Branch):** Ở commit đầu tiên khởi tạo nhánh hoặc sau cờ force push, GitLab CI không tìm thấy commit chung (Merge Base), tự động fallback đánh giá `rules:changes` thành `always` (chạy 100% các Job).
 - **Trường hợp 3 (Bỏ sót Shared Dependencies):** Khi sửa đổi tệp trong `shared/`, rule tĩnh khai báo theo `services/service-a/**/*` trả về `false`, không trigger build `service-a` mặc dù mã phụ thuộc đã thay đổi.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Bản chất kỹ thuật và cách thức hoạt động của thuộc tính `rules:changes:compare_to` trong GitLab CI?
-
-**Đáp án chuẩn:**
-- Thuộc tính `compare_to: $CI_DEFAULT_BRANCH` (hoặc `refs/heads/main`) chỉ định GitLab CI thực thi câu lệnh Git diff tương đương:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Bản chất kỹ thuật và cách thức hoạt động của thuộc tính `rules:changes:compare_to` trong GitLab CI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Thuộc tính `compare_to: $CI_DEFAULT_BRANCH` (hoặc `refs/heads/main`) chỉ định GitLab CI thực thi câu lệnh Git diff tương đương:
   `git diff --name-only $(git merge-base HEAD origin/main) HEAD`
 - Cơ chế: GitLab tìm commit tổ tiên chung gần nhất (Merge Base) giữa nhánh làm việc hiện tại và nhánh mặc định `main`. Sau đó tính toán toàn bộ danh sách các tệp đã thay đổi trong cả nhánh, đảm bảo dù push bao nhiêu commit thì kết quả đánh giá vẫn chính xác 100%.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Mô hình Child/Parent Pipeline (Pipeline Cha/Con) giải quyết bài toán phình to cấu hình trong Monorepo như thế nào?
-
-**Đáp án chuẩn:**
-- Trong Monorepo chứa hàng chục microservice, tệp `.gitlab-ci.yml` dạng tĩnh sẽ phình to lên hàng ngàn dòng code rối rắm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Mô hình Child/Parent Pipeline (Pipeline Cha/Con) giải quyết bài toán phình to cấu hình trong Monorepo như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong Monorepo chứa hàng chục microservice, tệp `.gitlab-ci.yml` dạng tĩnh sẽ phình to lên hàng ngàn dòng code rối rắm.
 - Mô hình Child/Parent Pipeline tách biệt trách nhiệm: Pipeline Cha giữ vai trò điều phối siêu nhẹ (< 50 lines), thi hành script sinh tệp cấu hình YAML rút gọn `dynamic-pipeline.yml` cho đúng các dịch vụ bị sửa đổi.
 - Sau đó Job trigger nạp `dynamic-pipeline.yml` để khởi chạy Pipeline Con độc lập. Giúp cấu hình cực kỳ gọn gàng, cách ly hoàn toàn lỗi giữa các microservice.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao nên sử dụng Script (Python/Bash) sinh Pipeline động ở Stage `.pre` thay vì cố gắng viết hàng trăm quy tắc `rules:changes` tĩnh trong `.gitlab-ci.yml`?
-
-**Đáp án chuẩn:**
-- **Tính linh hoạt:** Script cho phép lập trình các logic phức tạp như tra cứu đồ thị phụ thuộc bắc cầu (nếu sửa `shared/A` thì build `ServiceB`, `ServiceC`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao nên sử dụng Script (Python/Bash) sinh Pipeline động ở Stage `.pre` thay vì cố gắng viết hàng trăm quy tắc `rules:changes` tĩnh trong `.gitlab-ci.yml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Tính linh hoạt:** Script cho phép lập trình các logic phức tạp như tra cứu đồ thị phụ thuộc bắc cầu (nếu sửa `shared/A` thì build `ServiceB`, `ServiceC`).
 - **Tránh giới hạn kích thước:** GitLab CI giới hạn dung lượng tệp YAML tĩnh. Script sinh YAML động chỉ tạo ra các Job thực sự cần thiết, làm tệp YAML sinh ra rất nhỏ.
 - **Tránh bẫy hỏng im lặng:** Script đọc trực tiếp `git diff` thực tế từ hệ thống tệp Git, loại bỏ 100% các ca đánh giá sai của engine rule tĩnh.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tác dụng kỹ thuật của thuộc tính `strategy: depend` trong Job trigger cha khi kích hoạt Child Pipeline là gì?
-
-**Đáp án chuẩn:**
-- Mặc định không có `strategy: depend`, Job trigger cha sẽ lập tức hoàn thành với trạng thái xanh ngay sau khi gửi lệnh kích hoạt Pipeline con.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tác dụng kỹ thuật của thuộc tính `strategy: depend` trong Job trigger cha khi kích hoạt Child Pipeline là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định không có `strategy: depend`, Job trigger cha sẽ lập tức hoàn thành với trạng thái xanh ngay sau khi gửi lệnh kích hoạt Pipeline con.
 - Thuộc tính `strategy: depend` ép Job trigger cha phải chuyển sang trạng thái chờ và liên tục theo dõi tiến trình của Child Pipeline.
 - Khi Child Pipeline hoàn thành thành công, Job trigger cha mới báo xanh. Nếu Child Pipeline bị sập đỏ, Job trigger cha lập tức nổ lỗi đỏ, đảm bảo tính trung thực 100% của trạng thái Merge Request.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Tại sao phải phân tách thuộc tính `cache:key` theo từng microservice trong Monorepo và cách thực hiện chuẩn xác?
-
-**Đáp án chuẩn:**
-- Trong Monorepo đa ngôn ngữ, nếu dùng chung 1 Cache key (`$CI_COMMIT_REF_SLUG`), Runner sẽ lưu đệm đệm của dịch vụ này ghi đè lên đệm đệm của dịch vụ khác (ví dụ: `node_modules` đè lên `GOMODCACHE`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Tại sao phải phân tách thuộc tính `cache:key` theo từng microservice trong Monorepo và cách thực hiện chuẩn xác?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong Monorepo đa ngôn ngữ, nếu dùng chung 1 Cache key (`$CI_COMMIT_REF_SLUG`), Runner sẽ lưu đệm đệm của dịch vụ này ghi đè lên đệm đệm của dịch vụ khác (ví dụ: `node_modules` đè lên `GOMODCACHE`).
 - Hậu quả: Tỷ lệ trúng Cache về 0%, Runner phải nén nạp lại hàng trăm MB đệm rác dư thừa.
 - Cách thực hiện: Khai báo thuộc tính `prefix:` riêng biệt cho từng dịch vụ:
   - Node.js: `key: { files: [package-lock.json], prefix: "node-api" }`
   - Go: `key: { files: [go.sum], prefix: "go-worker" }`
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Trình bày nguyên lý hoạt động của sơ đồ DAG (Directed Acyclic Graph) với từ khóa `needs:` trong Pipeline Monorepo đa ngôn ngữ?
-
-**Đáp án chuẩn:**
-- Trong Pipeline truyền thống, các Job ở Stage $N+1$ phải đứng chờ **TẤT CẢ** các Job ở Stage $N$ hoàn thành mới được chạy.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Trình bày nguyên lý hoạt động của sơ đồ DAG (Directed Acyclic Graph) với từ khóa `needs:` trong Pipeline Monorepo đa ngôn ngữ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong Pipeline truyền thống, các Job ở Stage $N+1$ phải đứng chờ **TẤT CẢ** các Job ở Stage $N$ hoàn thành mới được chạy.
 - Với từ khóa `needs:`, ta định nghĩa sơ đồ đồ thị thi hành phụ thuộc trực tiếp. Ví dụ: `go-worker-test` khai báo `needs: [go-worker-build]`.
 - Tác động: Ngay khi `go-worker-build` xong, `go-worker-test` sẽ thi hành ngay lập tức mà không phải đứng chờ `node-api-build` hay `java-core-build` đang chạy ở Stage trước. Rút ngắn thời gian Pipeline xuống mức đường găng tối thiểu.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Phương pháp xử lý sự cố khi thay đổi tệp trong thư mục thư viện dùng chung `shared/` làm sao để đảm bảo tất cả các microservice phụ thuộc đều được trigger build?
-
-**Đáp án chuẩn:**
-- Trong script sinh Pipeline động `generate-pipeline.py`, khai báo logic kiểm tra danh sách tệp bị thay đổi:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Phương pháp xử lý sự cố khi thay đổi tệp trong thư mục thư viện dùng chung `shared/` làm sao để đảm bảo tất cả các microservice phụ thuộc đều được trigger build?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong script sinh Pipeline động `generate-pipeline.py`, khai báo logic kiểm tra danh sách tệp bị thay đổi:
   ```python
   has_shared_change = any(f.startswith("shared/") for f in changed_files)
   if has_shared_change:
@@ -7917,40 +9840,92 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Khi phát hiện bất kỳ thay đổi nào trong `shared/`, script tự động chèn 100% các Job của toàn bộ microservice vào tệp `dynamic-pipeline.yml`, đảm bảo kiểm thử toàn diện 100%.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Thuộc tính `interruptible: true` giúp tiết kiệm tài nguyên hệ thống Runner trong các dự án Monorepo như thế nào?
-
-**Đáp án chuẩn:**
-- Khi lập trình viên liên tục push nhiều commit nối tiếp nhau trên cùng 1 Merge Request, các Pipeline của commit cũ trở nên vô nghĩa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Thuộc tính `interruptible: true` giúp tiết kiệm tài nguyên hệ thống Runner trong các dự án Monorepo như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi lập trình viên liên tục push nhiều commit nối tiếp nhau trên cùng 1 Merge Request, các Pipeline của commit cũ trở nên vô nghĩa.
 - Thuộc tính `interruptible: true` cho phép GitLab CI tự động ngắt (cancel) tất cả các Pipeline cũ đang chạy dở của MR đó ngay khi phát hiện Pipeline mới được kích hoạt.
 - Tác động: Tiết kiệm tới 70% tài nguyên CPU/RAM/Network của hệ thống Runner, giải phóng hàng chờ cho các developer khác.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp phân tách và hợp nhất báo cáo kết quả kiểm thử JUnit XML và độ phủ Cobertura XML từ 6 ngôn ngữ lập trình về giao diện GitLab CE?
-
-**Đáp án chuẩn:**
-- **JUnit XML (Tab Tests):** Phân tách đường dẫn tệp báo cáo theo cấu hình từng dịch vụ (`services/node-api/report.xml`, `services/go-worker/report.xml`). Khai báo mảng danh sách tệp trong `reports:junit: [...]`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp phân tách và hợp nhất báo cáo kết quả kiểm thử JUnit XML và độ phủ Cobertura XML từ 6 ngôn ngữ lập trình về giao diện GitLab CE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **JUnit XML (Tab Tests):** Phân tách đường dẫn tệp báo cáo theo cấu hình từng dịch vụ (`services/node-api/report.xml`, `services/go-worker/report.xml`). Khai báo mảng danh sách tệp trong `reports:junit: [...]`.
 - **Cobertura XML (MR Diff):** Khai báo mảng danh sách tệp Cobertura XML trong thuộc tính `reports:coverage_report:coverage_format: cobertura: path: [...]`. GitLab CE tự động đọc mảng tệp này và tô màu vạch xanh/đỏ chỉ thị độ phủ dòng lệnh tương ứng trên từng thư mục của MR Diff.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** So sánh sự đánh đổi giữa kiến trúc Monorepo và Multirepo từ góc nhìn thiết kế quy trình CI/CD?
-
-**Đáp án chuẩn:**
-- **Multirepo:** Pipeline cực kỳ đơn giản, cách ly 100%, nhưng rất khó quản lý các thay đổi liên microservice (phải tạo nhiều MR trên nhiều repo), nguy cơ trôi phiên bản thư viện dùng chung rất cao.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** So sánh sự đánh đổi giữa kiến trúc Monorepo và Multirepo từ góc nhìn thiết kế quy trình CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Multirepo:** Pipeline cực kỳ đơn giản, cách ly 100%, nhưng rất khó quản lý các thay đổi liên microservice (phải tạo nhiều MR trên nhiều repo), nguy cơ trôi phiên bản thư viện dùng chung rất cao.
 - **Monorepo:** Quản lý thay đổi tập trung trên 1 MR duy nhất, atomic commit toàn hệ thống. Tuy nhiên Pipeline CI/CD phức tạp hơn (cần Pipeline Động, phân tách Cache, DAG) để tránh phình to thời gian thực thi.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết 6 bài học lớn về đệm đệm và biên dịch bất biến từ Giai đoạn 3 (Buổi 15–22) cho 6 ngôn ngữ lập trình?
-
-**Đáp án chuẩn:**
-1. **Node.js:** Cache `~/.npm`, dùng `npm ci` bất biến với `package-lock.json`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết 6 bài học lớn về đệm đệm và biên dịch bất biến từ Giai đoạn 3 (Buổi 15–22) cho 6 ngôn ngữ lập trình?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Node.js:** Cache `~/.npm`, dùng `npm ci` bất biến với `package-lock.json`.
 2. **Java:** Cache `.m2/repository` & `.gradle/caches`, dùng Maven/Gradle wrapper.
 3. **Python:** Cache `.pip-cache`, dùng `pip install --cache-dir` với `requirements.txt`.
 4. **Go:** Phân tách `GOMODCACHE` và `GOCACHE`, dùng `CGO_ENABLED=0` cho static binary.
@@ -7958,6 +9933,8 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 6. **PHP:** Cache `COMPOSER_CACHE_DIR`, dùng `composer install --optimize-autoloader`, dùng Extension `PCOV` đo coverage.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -8084,40 +10061,90 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tiêu chí hàng đầu để chọn lựa giữa `dind`, `Kaniko`, `Buildah`, và `BuildKit` trong CI/CD là gì và tại sao không nên chọn dựa trên tốc độ?
-
-**Đáp án chuẩn:**
-- Tiêu chí hàng đầu duy nhất để chọn công cụ build Image chính là **Mức độ Đặc quyền An ninh (Security Privilege Level)** mà hạ tầng Runner cho phép, không phải tốc độ build.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tiêu chí hàng đầu để chọn lựa giữa `dind`, `Kaniko`, `Buildah`, và `BuildKit` trong CI/CD là gì và tại sao không nên chọn dựa trên tốc độ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tiêu chí hàng đầu duy nhất để chọn công cụ build Image chính là **Mức độ Đặc quyền An ninh (Security Privilege Level)** mà hạ tầng Runner cho phép, không phải tốc độ build.
 - Vì sự khác biệt tốc độ giữa các công cụ hiện nay chỉ chênh lệch vài giây nhờ Layer Caching. Tuy nhiên, nếu chọn `dind` hoặc mount Docker Socket trên Kubernetes Cluster, bạn đã mở rộng lỗ hổng an ninh nghiêm trọng (Container Escape) cho phép kẻ tấn công chiếm quyền `root` toàn bộ cụm máy chủ.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân tích chi tiết rủi ro an ninh của việc mount Docker Socket (`/var/run/docker.sock`) vào Runner chung của công ty?
-
-**Đáp án chuẩn:**
-- Khi mount `/var/run/docker.sock` vào trong Container Runner, Job CI được cấp quyền giao tiếp trực tiếp với Docker Daemon cấp hệ thống của máy Host.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân tích chi tiết rủi ro an ninh của việc mount Docker Socket (`/var/run/docker.sock`) vào Runner chung của công ty?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi mount `/var/run/docker.sock` vào trong Container Runner, Job CI được cấp quyền giao tiếp trực tiếp với Docker Daemon cấp hệ thống của máy Host.
 - Một script độc hại trong CI có thể thực thi lệnh:
   `docker run -v /:/host_root alpine rm -rf /host_root`
 - Tiến trình này sẽ mount toàn bộ hệ thống tệp gốc của máy Host vào container ảo và xóa sạch dữ liệu, hoặc cài mã độc chiếm quyền kiểm soát máy chủ vật lý.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý hoạt động ở chế độ Rootless (User space) của `Kaniko` trên Kubernetes Cluster diễn ra như thế nào?
-
-**Đáp án chuẩn:**
-- Kaniko hoạt động hoàn toàn bên trong 1 Container không cần đặc quyền `root` hay Docker Daemon.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động ở chế độ Rootless (User space) của `Kaniko` trên Kubernetes Cluster diễn ra như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Kaniko hoạt động hoàn toàn bên trong 1 Container không cần đặc quyền `root` hay Docker Daemon.
 - Quy trình 4 bước: 1) Đọc tệp `Dockerfile`; 2) Trích xuất Base Image và giải nén vào hệ thống tệp riêng của container; 3) Thực thi các câu lệnh `RUN` hoàn toàn trong User Space; 4) Chụp snapshot sự thay đổi tệp, đóng gói thành các layer `.tar.gz` và đẩy trực tiếp lên Container Registry qua HTTPS API.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Phương pháp cấu hình tệp `auth.json` cho Kaniko tự động xác thực với GitLab Container Registry mà không dùng mật khẩu thô?
-
-**Đáp án chuẩn:**
-- Trong `before_script`, sử dụng biến môi trường tự động `$CI_JOB_TOKEN` (mã hóa Base64 kết hợp với `$CI_REGISTRY_USER`) để tạo tệp `/kaniko/.docker/config.json`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Phương pháp cấu hình tệp `auth.json` cho Kaniko tự động xác thực với GitLab Container Registry mà không dùng mật khẩu thô?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong `before_script`, sử dụng biến môi trường tự động `$CI_JOB_TOKEN` (mã hóa Base64 kết hợp với `$CI_REGISTRY_USER`) để tạo tệp `/kaniko/.docker/config.json`:
   ```bash
   mkdir -p /kaniko/.docker
   echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_JOB_TOKEN} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
@@ -8125,79 +10152,185 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - `$CI_JOB_TOKEN` tự động hết hạn sau khi Job kết thúc, đảm bảo an toàn tuyệt đối 100%.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Cơ chế Remote Layer Caching của Kaniko (`--cache=true` và `--cache-repo`) hoạt động như thế nào để giảm thời gian build từ 45s xuống 5s?
-
-**Đáp án chuẩn:**
-- Khi bật `--cache=true` và chỉ định `--cache-repo=$CI_REGISTRY_IMAGE/cache`, Kaniko tính toán mã băm SHA-256 của từng câu lệnh `RUN` trong Dockerfile.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Cơ chế Remote Layer Caching của Kaniko (`--cache=true` và `--cache-repo`) hoạt động như thế nào để giảm thời gian build từ 45s xuống 5s?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi bật `--cache=true` và chỉ định `--cache-repo=$CI_REGISTRY_IMAGE/cache`, Kaniko tính toán mã băm SHA-256 của từng câu lệnh `RUN` trong Dockerfile.
 - Trước khi thực thi lệnh, Kaniko gửi yêu cầu tới Registry kiểm tra xem layer cache tương ứng đã tồn tại hay chưa. Nếu đã có, Kaniko bỏ qua việc biên dịch và tải trực tiếp tệp layer nén từ Registry về, giúp giảm thời gian build lượt 2 từ 45s xuống còn 5 giây.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Sự khác biệt giữa `Buildah` và `Docker CLI` trong việc tạo Container Image không cần Docker Daemon?
-
-**Đáp án chuẩn:**
-- `Docker CLI` là một client phụ thuộc hoàn toàn vào Docker Daemon (dockerd) để đóng gói Image.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Sự khác biệt giữa `Buildah` và `Docker CLI` trong việc tạo Container Image không cần Docker Daemon?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Docker CLI` là một client phụ thuộc hoàn toàn vào Docker Daemon (dockerd) để đóng gói Image.
 - `Buildah` là công cụ chuẩn OCI của RedHat, thi hành đóng gói dạng **Daemonless** (không cần bất kỳ daemon nào chạy ngầm). Buildah hỗ trợ tạo image từ Dockerfile (`buildah bud`) hoặc xây dựng image trực tiếp bằng các câu lệnh CLI trong bash script mà không cần tệp Dockerfile.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Ưu điểm vượt trội của `Docker BuildKit` về khả năng build song song (Parallel Build Graph) và Remote Cache Backend?
-
-**Đáp án chuẩn:**
-- **Parallel Build Graph:** BuildKit tự động phân tích cây phụ thuộc của Dockerfile và thi hành song song các stage độc lập (ví dụ: build frontend và backend song song).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Ưu điểm vượt trội của `Docker BuildKit` về khả năng build song song (Parallel Build Graph) và Remote Cache Backend?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Parallel Build Graph:** BuildKit tự động phân tích cây phụ thuộc của Dockerfile và thi hành song song các stage độc lập (ví dụ: build frontend và backend song song).
 - **Remote Cache Backend:** BuildKit cho phép đẩy toàn bộ đồ thị đệm đệm (`--cache-to type=registry,ref=...,mode=max`) lên Registry, giúp tất cả các Runner song song trong công ty có thể tái sử dụng bộ đệm đệm của nhau.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Tại sao bắt buộc phải thực thi quy trình Đánh Tag Phiên Bản Kép (Dual Tagging Strategy) cho Container Image?
-
-**Đáp án chuẩn:**
-- **Tag Cố định (`$CI_COMMIT_SHORT_SHA`):** Bất biến (Immutable), không bao giờ bị ghi đè. Giúp truy vết 100% dòng code chính xác đã build ra Image và cho phép Rollback tức thì trên Production.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Tại sao bắt buộc phải thực thi quy trình Đánh Tag Phiên Bản Kép (Dual Tagging Strategy) cho Container Image?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Tag Cố định (`$CI_COMMIT_SHORT_SHA`):** Bất biến (Immutable), không bao giờ bị ghi đè. Giúp truy vết 100% dòng code chính xác đã build ra Image và cho phép Rollback tức thì trên Production.
 - **Tag Động (`$CI_COMMIT_REF_SLUG` hoặc `latest`):** Cập nhật (Mutable), giúp các môi trường Staging/Dev tự động nạp bản build mới nhất mà không cần sửa tệp cấu hình Deployment.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Tác dụng của cờ `--compressed-caching=false` trong Kaniko trên hạ tầng Runner có băng thông mạng tốc độ cao?
-
-**Đáp án chuẩn:**
-- Mặc định Kaniko nén tất cả các layer cache trước khi đẩy lên Registry, gây tiêu tốn nhiều tài nguyên CPU của Runner.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Tác dụng của cờ `--compressed-caching=false` trong Kaniko trên hạ tầng Runner có băng thông mạng tốc độ cao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định Kaniko nén tất cả các layer cache trước khi đẩy lên Registry, gây tiêu tốn nhiều tài nguyên CPU của Runner.
 - Trên các cụm Runner nội bộ có băng thông mạng tốc độ cao (10 Gbps), việc nén layer là lãng phí CPU không cần thiết. Cờ `--compressed-caching=false` tắt tác vụ nén, giúp giảm 40% tải CPU cho Runner và tăng tốc độ đẩy đệm layer.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Tại sao mã băm bất biến **Image Digest SHA-256** lại có giá trị an ninh cao hơn hẳn so với Image Tag?
-
-**Đáp án chuẩn:**
-- **Tag có thể bị ghi đè (Mutable):** Kẻ tấn công hoặc dev có thể đẩy 1 Image chứa mã độc đè lên tag `v1.0.0` hoặc `latest`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Tại sao mã băm bất biến **Image Digest SHA-256** lại có giá trị an ninh cao hơn hẳn so với Image Tag?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Tag có thể bị ghi đè (Mutable):** Kẻ tấn công hoặc dev có thể đẩy 1 Image chứa mã độc đè lên tag `v1.0.0` hoặc `latest`.
 - **Digest SHA-256 là bất biến tuyệt đối (Immutable):** Mã Digest tính toán trực tiếp từ nội dung byte thực tế của Image. Nếu 1 byte bị sửa đổi, mã Digest sẽ thay đổi. Kubernetes Deployment dùng Digest (`image@sha256:...`) đảm bảo K8s Node kéo đúng 100% Image đã kiểm định.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** So sánh về tốc độ thi hành và mức độ tiêu tốn bộ nhớ RAM giữa `dind` và `Kaniko` trong môi trường CI?
-
-**Đáp án chuẩn:**
-- **`dind`:** Tốn nhiều RAM và đĩa cứng do phải khởi chạy 1 Docker Daemon phụ (`dockerd`) bên trong container. Tốc độ build lượt đầu nhanh nếu có local cache, nhưng trượt cache hoàn toàn nếu Runner bị reset.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** So sánh về tốc độ thi hành và mức độ tiêu tốn bộ nhớ RAM giữa `dind` và `Kaniko` trong môi trường CI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **`dind`:** Tốn nhiều RAM và đĩa cứng do phải khởi chạy 1 Docker Daemon phụ (`dockerd`) bên trong container. Tốc độ build lượt đầu nhanh nếu có local cache, nhưng trượt cache hoàn toàn nếu Runner bị reset.
 - **`Kaniko`:** Bộ nhớ RAM nhẹ hơn do chạy trực tiếp trong User Space. Nhờ tính năng Remote Registry Cache (`--cache=true`), Kaniko đạt tốc độ build lượt 2 siêu nhanh ($\le 5$s) trên mọi Pod Runner mới khởi tạo.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy tắc chọn lựa công cụ build Image chuẩn doanh nghiệp dựa trên hạ tầng Runner hiện có?
-
-**Đáp án chuẩn:**
-1. **Kubernetes Cluster Runner (Shared Runner):** Bắt buộc chọn **Kaniko** (Rootless 100%, an toàn tuyệt đối).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy tắc chọn lựa công cụ build Image chuẩn doanh nghiệp dựa trên hạ tầng Runner hiện có?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Kubernetes Cluster Runner (Shared Runner):** Bắt buộc chọn **Kaniko** (Rootless 100%, an toàn tuyệt đối).
 2. **RedHat Enterprise Linux / OpenShift:** Bắt buộc chọn **Buildah** (Daemonless OCI chuẩn).
 3. **Docker Engine Dedicated Runner (Máy vật lý cách ly):** Chọn **Docker BuildKit** (buildx with registry cache) hoặc **dind**.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -8340,120 +10473,276 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao nói Enterprise Artifact Registry (như JFrog Artifactory) mới là **Biên giới tin cậy (Trust Boundary)** chính thức của Pipeline CI/CD chứ không phải GitLab Repo?
-
-**Đáp án chuẩn:**
-- GitLab Repo chỉ là nơi chứa mã nguồn chưa biên dịch (Untrusted Source Code). Bất kỳ ai có quyền committer đều có thể push code lên Repo.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao nói Enterprise Artifact Registry (như JFrog Artifactory) mới là **Biên giới tin cậy (Trust Boundary)** chính thức của Pipeline CI/CD chứ không phải GitLab Repo?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - GitLab Repo chỉ là nơi chứa mã nguồn chưa biên dịch (Untrusted Source Code). Bất kỳ ai có quyền committer đều có thể push code lên Repo.
 - Enterprise Artifact Registry là ranh giới kiểm soát an ninh tối cao. Tại đây, mọi dependency từ bên ngoài đi vào phải qua Remote Proxy Repository để loại bỏ lỗ hổng và lỗi Rate Limit; mọi tệp nhị phân sản phẩm muốn đi ra Production đều phải qua kho Promoted Release và có chứng nhận quét an ninh Xray (`PASS`).
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân tích bản chất và sự khác biệt về mặt kiến trúc giữa 3 loại Repository trên Artifactory: Local, Remote, và Virtual Repository?
-
-**Đáp án chuẩn:**
-- **Local Repository:** Kho chứa vật lý nội bộ trên storage của Artifactory, dùng để lưu trữ các tệp nhị phân/Image do chính doanh nghiệp đóng gói (phân tách kho `dev-local` và `prod-local`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân tích bản chất và sự khác biệt về mặt kiến trúc giữa 3 loại Repository trên Artifactory: Local, Remote, và Virtual Repository?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Local Repository:** Kho chứa vật lý nội bộ trên storage của Artifactory, dùng để lưu trữ các tệp nhị phân/Image do chính doanh nghiệp đóng gói (phân tách kho `dev-local` và `prod-local`).
 - **Remote Repository:** Kho đóng vai trò Proxy Cache trung gian kết nối ra các Registry công cộng (Docker Hub, Maven, NPM). Nó tự động tải và lưu đệm đệm các dependency trên đĩa cứng local.
 - **Virtual Repository:** Kho ảo hợp nhất kết hợp cả Local và Remote Repositories dưới 1 URL duy nhất. Runner chỉ cần cấu hình 1 URL duy nhất để vừa nạp dependency vừa đẩy sản phẩm.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Cách JFrog Artifactory Remote Proxy Repository giải quyết triệt để sự cố Docker Hub Rate Limit (`429 Too Many Requests`) trong CI/CD Doanh nghiệp?
-
-**Đáp án chuẩn:**
-- Sự cố `429 Too Many Requests` xảy ra khi quá nhiều Job CI cùng pull image từ Docker Hub.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Cách JFrog Artifactory Remote Proxy Repository giải quyết triệt để sự cố Docker Hub Rate Limit (`429 Too Many Requests`) trong CI/CD Doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Sự cố `429 Too Many Requests` xảy ra khi quá nhiều Job CI cùng pull image từ Docker Hub.
 - Khi trỏ lệnh pull qua Artifactory Remote Proxy (`docker-remote`), ở lượt pull đầu tiên, Artifactory đứng ra tải layer từ Docker Hub về và lưu đệm đệm vĩnh viễn trên ổ đĩa nội bộ.
 - Tất cả các lượt pull tiếp theo của hàng trăm Runner trong công ty đều được phục vụ trực tiếp từ ổ đĩa local của Artifactory với tốc độ 10 Gbps và 0% kết nối ra Docker Hub, triệt tiêu 100% rủi ro Rate Limit.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao các chuyên gia DevOps luôn khuyến cáo nên sử dụng JFrog CLI (`jf`) thay vì câu lệnh `docker push` hay `curl` thông thường trong CI Job?
-
-**Đáp án chuẩn:**
-- Câu lệnh `docker push` hay `curl` chỉ đơn thuần upload tệp dữ liệu thô mà không ghi nhận ngữ cảnh biên dịch.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao các chuyên gia DevOps luôn khuyến cáo nên sử dụng JFrog CLI (`jf`) thay vì câu lệnh `docker push` hay `curl` thông thường trong CI Job?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Câu lệnh `docker push` hay `curl` chỉ đơn thuần upload tệp dữ liệu thô mà không ghi nhận ngữ cảnh biên dịch.
 - JFrog CLI (`jf`) tự động thu thập và sinh tệp **Build Info Metadata** (`build-publish`) chứa đầy đủ Tên/Số build, Runner Info, mảng Dependencies Graph, Git Commit SHA và mã băm Checksum của các tệp nhị phân. Dữ liệu này được đẩy tự động lên Artifactory UI phục vụ công tác kiểm toán an ninh.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tệp Build Info Metadata (`build-info.json`) chứa những thông tin quan trọng nào phục vụ công tác kiểm toán tính toàn vẹn (Compliance Audit)?
-
-**Đáp án chuẩn:**
-- **Header Info:** Tên dự án, số hiệu Pipeline ID, thời điểm bắt đầu biên dịch ISO-8601.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tệp Build Info Metadata (`build-info.json`) chứa những thông tin quan trọng nào phục vụ công tác kiểm toán tính toàn vẹn (Compliance Audit)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Header Info:** Tên dự án, số hiệu Pipeline ID, thời điểm bắt đầu biên dịch ISO-8601.
 - **Environment Info:** Tên Runner Host, phiên bản OS, thông tin tài khoản trigger (`GITLAB_USER_LOGIN`).
 - **VCS Info:** Nhánh Git (`$CI_COMMIT_REF_NAME`), mã băm Git Commit SHA 40 ký tự bất biến (`$CI_COMMIT_SHA`).
 - **Dependencies & Artifacts:** Mảng tất cả các gói thư viện phụ thuộc đã nạp và mảng sản phẩm sinh ra kèm mã băm Checksum SHA-1/SHA-256.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Nguyên lý hoạt động của cơ chế Thăng cấp Hiện vật (Artifact Promotion - `build-promote`) khi chuyển giao ứng dụng từ Dev sang Prod?
-
-**Đáp án chuẩn:**
-- Tuyệt đối không bao giờ build lại code lần 2 để deploy lên Production (vi phạm nguyên tắc Biên dịch Bất biến).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của cơ chế Thăng cấp Hiện vật (Artifact Promotion - `build-promote`) khi chuyển giao ứng dụng từ Dev sang Prod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tuyệt đối không bao giờ build lại code lần 2 để deploy lên Production (vi phạm nguyên tắc Biên dịch Bất biến).
 - Cơ chế `jf rt build-promote` thực thi thăng cấp bằng cách dịch chuyển nguyên vẹn pointer của Artifact từ `docker-dev-local` sang `docker-prod-local` trên cơ sở dữ liệu metadata của Artifactory. Quá trình này diễn ra tức thì trong 1 giây mà không cần copy lại tệp vật lý hay biên dịch lại 1 byte code nào.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Sự khác biệt về mặt an ninh giữa việc xác thực bằng Scoped Access Token và Mật khẩu tài khoản cá nhân trên Artifactory?
-
-**Đáp án chuẩn:**
-- **Mật khẩu cá nhân / Admin Password:** Cấp toàn quyền thao tác trên toàn bộ hệ thống. Nếu bị rò rỉ trên CI log, kẻ tấn công có thể xóa hoặc sửa toàn bộ các kho chứa của công ty.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Sự khác biệt về mặt an ninh giữa việc xác thực bằng Scoped Access Token và Mật khẩu tài khoản cá nhân trên Artifactory?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Mật khẩu cá nhân / Admin Password:** Cấp toàn quyền thao tác trên toàn bộ hệ thống. Nếu bị rò rỉ trên CI log, kẻ tấn công có thể xóa hoặc sửa toàn bộ các kho chứa của công ty.
 - **Scoped Access Token:** Chỉ được cấp đúng quyền thao tác trên 1 kho chứa nhất định (`docker-dev-local`) và tự động bị vô hiệu hóa sau 1 giờ (`expires-in=3600`), giới hạn rủi ro an ninh xuống mức 0.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Công cụ JFrog Xray thực hiện quét bảo mật (Security Scan) và tuân thủ giấy phép (License Compliance) dựa trên cơ chế nào?
-
-**Đáp án chuẩn:**
-- JFrog Xray không chỉ quét tệp nhị phân bề nổi mà thực hiện phân tích sâu cấu trúc bên trong của Artifact dựa trên tệp **Build Info Metadata**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Công cụ JFrog Xray thực hiện quét bảo mật (Security Scan) và tuân thủ giấy phép (License Compliance) dựa trên cơ chế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - JFrog Xray không chỉ quét tệp nhị phân bề nổi mà thực hiện phân tích sâu cấu trúc bên trong của Artifact dựa trên tệp **Build Info Metadata**.
 - Xray bóc tách từng layer container và từng thư viện phụ thuộc (Dependencies Graph), so sánh mã checksum với cơ sở dữ liệu lỗ hổng CVE toàn cầu và bảng chính sách cấp phép (License Policy) của doanh nghiệp để đưa ra kết luận Gatekeeper.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Tại sao tuyệt đối không được phép cho phép Job CI ở nhánh tính năng (Feature Branch) push trực tiếp sản phẩm vào kho `docker-prod-local`?
-
-**Đáp án chuẩn:**
-- Vì các bản build từ nhánh tính năng là các mã nguồn thử nghiệm chưa qua kiểm thử tích hợp toàn diện và chưa qua bài quét bảo mật Xray.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối không được phép cho phép Job CI ở nhánh tính năng (Feature Branch) push trực tiếp sản phẩm vào kho `docker-prod-local`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì các bản build từ nhánh tính năng là các mã nguồn thử nghiệm chưa qua kiểm thử tích hợp toàn diện và chưa qua bài quét bảo mật Xray.
 - Nếu cho phép push trực tiếp vào `docker-prod-local`, hệ thống CD tự động hoặc kỹ sư Ops có thể kéo nhầm bản build thử nghiệm này deploy lên Production, gây sập hệ thống dịch vụ của công ty.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Cách cấu hình cờ `--fail=true` trong câu lệnh `jf build-scan` để biến bước quét bảo mật Artifactory thành Gatekeeper tự động?
-
-**Đáp án chuẩn:**
-- Trong Job test của CI Pipeline, thực thi câu lệnh:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Cách cấu hình cờ `--fail=true` trong câu lệnh `jf build-scan` để biến bước quét bảo mật Artifactory thành Gatekeeper tự động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong Job test của CI Pipeline, thực thi câu lệnh:
   `jf build-scan $CI_PROJECT_NAME $CI_PIPELINE_ID --fail=true --vuln=true`
 - Khi cờ `--fail=true` được bật, nếu Xray phát hiện bất kỳ lỗ hổng CVE nào chạm ngưỡng `CRITICAL` hoặc vi phạm chính sách cấp phép, lệnh CLI sẽ trả về mã thoát exit code khác 0, tự động làm nổ lỗi đỏ Job CI và chặn đứng toàn bộ tiến trình deployment đằng sau.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Nguyên lý hoạt động của cờ Checksum Validation khi upload tệp nhị phân dung lượng lớn lên Artifactory?
-
-**Đáp án chuẩn:**
-- Khi upload tệp nhị phân lớn qua mạng Internet, đứt gãy đệm mạng có thể làm tệp bị mất byte hoặc hỏng cấu trúc.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của cờ Checksum Validation khi upload tệp nhị phân dung lượng lớn lên Artifactory?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi upload tệp nhị phân lớn qua mạng Internet, đứt gãy đệm mạng có thể làm tệp bị mất byte hoặc hỏng cấu trúc.
 - Trước khi upload, JFrog CLI tính toán mã băm SHA-256 của tệp local và gửi mã băm này trong HTTP Header sang Artifactory. Sau khi nạp tệp xong, Artifactory tự tính toán lại mã SHA-256 trên storage. Nếu 2 mã băm trùng khớp 100%, tệp mới được ghi nhận thành công; nếu lệch mã băm, Artifactory lập tức hủy tệp và yêu cầu client upload lại.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết kiến trúc quản lý Artifacts chuẩn doanh nghiệp dựa trên JFrog Artifactory cho 6 ngôn ngữ lập trình?
-
-**Đáp án chuẩn:**
-1. **Một Virtual Repository duy nhất:** Cung cấp Single Point URL cho 6 ngôn ngữ (Node.js, Java, Python, Go, .NET, PHP).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết kiến trúc quản lý Artifacts chuẩn doanh nghiệp dựa trên JFrog Artifactory cho 6 ngôn ngữ lập trình?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Một Virtual Repository duy nhất:** Cung cấp Single Point URL cho 6 ngôn ngữ (Node.js, Java, Python, Go, .NET, PHP).
 2. **Proxy Cache toàn bộ Registry ngoài:** Cache Docker Hub, Maven Central, PyPI, NPM Registry để chống Rate Limit `429`.
 3. **Build Info Metadata 100%:** Nộp tệp `build-info.json` cho mọi lượt biên dịch để kiểm toán.
 4. **Xray Gatekeeper & Promote:** Quét bảo mật Xray `--fail=true` trước khi thăng cấp `build-promote` sang kho Production Release.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -8583,121 +10872,277 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định kích thước Container Image chính là **"Chi phí băng thông nhân với số lần kéo"** trong môi trường Cloud Native Auto-scaling?
-
-**Đáp án chuẩn:**
-- Trong cụm Kubernetes, khi xảy ra sự kiện Auto-scaling (scale từ 10 Pods lên 100 Pods), các Worker Nodes phải đồng loạt tải Image qua đường truyền mạng nội bộ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định kích thước Container Image chính là **"Chi phí băng thông nhân với số lần kéo"** trong môi trường Cloud Native Auto-scaling?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong cụm Kubernetes, khi xảy ra sự kiện Auto-scaling (scale từ 10 Pods lên 100 Pods), các Worker Nodes phải đồng loạt tải Image qua đường truyền mạng nội bộ.
 - Nếu Image dung lượng 1 GB, hệ thống phải truyền tải **100 GB** dữ liệu, khiến thời gian khởi tạo Pod kéo dài 3–5 phút. Khi tối ưu Image xuống < 20 MB bằng Base Image `Distroless`, tổng dung lượng truyền tải giảm xuống chỉ còn 2 GB, giúp Pod chuyển sang trạng thái `Running` chỉ trong **3 giây**, đồng thời tiết kiệm 95% chi phí băng thông egress.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân tích sự khác biệt về mặt kiến trúc an ninh và dung lượng giữa 3 loại Base Image: `Ubuntu/Debian`, `Alpine Linux`, và `Google Distroless`?
-
-**Đáp án chuẩn:**
-- **Ubuntu/Debian:** Dung lượng 80–600 MB, chứa đầy đủ các công cụ hệ điều hành, shell CLI (`bash`/`sh`), package manager (`apt`). Độ an toàn thấp do chứa hàng trăm lỗ hổng CVEs rác.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân tích sự khác biệt về mặt kiến trúc an ninh và dung lượng giữa 3 loại Base Image: `Ubuntu/Debian`, `Alpine Linux`, và `Google Distroless`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ubuntu/Debian:** Dung lượng 80–600 MB, chứa đầy đủ các công cụ hệ điều hành, shell CLI (`bash`/`sh`), package manager (`apt`). Độ an toàn thấp do chứa hàng trăm lỗ hổng CVEs rác.
 - **Alpine Linux:** Dung lượng ~7 MB (dùng musl libc), có shell (`sh`) và `apk`. Độ an toàn trung bình, đôi khi gặp lỗi tương thích thư viện C với các ứng dụng biên dịch trên `glibc`.
 - **Google Distroless:** Dung lượng 2–15 MB, chỉ chứa duy nhất runtime và thư viện C cần thiết (`glibc`), **loại bỏ 100% Shell CLI và Package Manager**. Độ an toàn cao nhất, triệt tiêu 90% bề mặt tấn công.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý của kỹ thuật Thu hẹp bề mặt tấn công (Attack Surface Reduction) khi loại bỏ Shell CLI (`sh`/`bash`) khỏi Container Image Production?
-
-**Đáp án chuẩn:**
-- Hầu hết các cuộc tấn công khai thác lỗ hổng Remote Code Execution (RCE) đều cố gắng thực thi các câu lệnh shell (như `sh -c` hoặc `/bin/bash`) để tạo đường truyền Reverse Shell về máy chủ hacker.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý của kỹ thuật Thu hẹp bề mặt tấn công (Attack Surface Reduction) khi loại bỏ Shell CLI (`sh`/`bash`) khỏi Container Image Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Hầu hết các cuộc tấn công khai thác lỗ hổng Remote Code Execution (RCE) đều cố gắng thực thi các câu lệnh shell (như `sh -c` hoặc `/bin/bash`) để tạo đường truyền Reverse Shell về máy chủ hacker.
 - Khi ứng dụng chạy trên Base Image `Distroless` (0 Shell CLI), dù hacker có phát hiện ra lỗ hổng RCE trên code ứng dụng, lệnh gọi shell của hacker cũng lập tức bị Linux Kernel từ chối với lỗi `exec failed: executable file not found in $PATH`, chặn đứng 100% nguy cơ chiếm Interactive Shell.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của cơ chế Multi-Arch Build (biên dịch đa kiến trúc CPU) và vai trò của OCI Manifest Index?
-
-**Đáp án chuẩn:**
-- Multi-Arch Build biên dịch ứng dụng thành các tệp nhị phân riêng biệt cho từng kiến trúc CPU target (`linux/amd64` và `linux/arm64`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của cơ chế Multi-Arch Build (biên dịch đa kiến trúc CPU) và vai trò của OCI Manifest Index?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Multi-Arch Build biên dịch ứng dụng thành các tệp nhị phân riêng biệt cho từng kiến trúc CPU target (`linux/amd64` và `linux/arm64`).
 - **OCI Manifest Index** đóng vai trò là tệp chỉ mục hợp nhất. Nó liệt kê danh sách các Manifest vật lý kèm theo nhãn architecture. Khi Docker Engine hoặc K8s Node pull Image `my-app:v1.0.0`, nó sẽ đọc OCI Manifest Index và tự chọn kéo đúng layer dành cho kiến trúc CPU của máy chủ đó mà không cần sửa Tag Image.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tại sao các doanh nghiệp dịch chuyển hạ tầng lên AWS Graviton (ARM64) bắt buộc phải áp dụng Multi-Arch Build trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-- AWS Graviton sử dụng kiến trúc CPU ARM64 mang lại hiệu năng/chi phí tốt hơn 20–40% so với x86_64.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tại sao các doanh nghiệp dịch chuyển hạ tầng lên AWS Graviton (ARM64) bắt buộc phải áp dụng Multi-Arch Build trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - AWS Graviton sử dụng kiến trúc CPU ARM64 mang lại hiệu năng/chi phí tốt hơn 20–40% so với x86_64.
 - Nếu không đóng gói Multi-Arch Build, Image chỉ chứa mã lệnh x86_64 khi deploy lên K8s Node ARM64 sẽ nổ lỗi rực đỏ `exec format error`. Việc tạo OCI Manifest Index đa kiến trúc cho phép 1 Pipeline duy nhất phục vụ mượt mà cho cả cụm Node x86 cũ và cụm Node ARM64 mới.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Khái niệm SBOM (Software Bill of Materials) là gì và tại sao nó trở thành điều kiện cần (Prerequisite) của mọi quy trình Security trong CI/CD?
-
-**Đáp án chuẩn:**
-- SBOM là bản khai sinh danh mục kê khai 100% tất cả các thư viện, gói mã nguồn mở, phiên bản và mã băm SHA-256 có mặt trong sản phẩm phần mềm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Khái niệm SBOM (Software Bill of Materials) là gì và tại sao nó trở thành điều kiện cần (Prerequisite) của mọi quy trình Security trong CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - SBOM là bản khai sinh danh mục kê khai 100% tất cả các thư viện, gói mã nguồn mở, phiên bản và mã băm SHA-256 có mặt trong sản phẩm phần mềm.
 - SBOM là điều kiện cần vì nếu không có danh mục kê khai minh bạch, các công cụ quét an ninh (Scanner) không thể đối soát và phát hiện các lỗ hổng CVE mới công bố trong chuỗi cung ứng phần mềm (Supply Chain Attacks).
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** So sánh 2 chuẩn SBOM quốc tế phổ biến nhất hiện nay: OWASP `CycloneDX` và Linux Foundation `SPDX`?
-
-**Đáp án chuẩn:**
-- **OWASP CycloneDX:** Được thiết kế tối ưu cho lĩnh vực An toàn thông tin (Cybersecurity), phân tích lỗ hổng bảo mật và bảo vệ chuỗi cung ứng phần mềm. Định dạng JSON/XML nhỏ mỏng, dễ tích hợp với K8s Security Gates.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** So sánh 2 chuẩn SBOM quốc tế phổ biến nhất hiện nay: OWASP `CycloneDX` và Linux Foundation `SPDX`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **OWASP CycloneDX:** Được thiết kế tối ưu cho lĩnh vực An toàn thông tin (Cybersecurity), phân tích lỗ hổng bảo mật và bảo vệ chuỗi cung ứng phần mềm. Định dạng JSON/XML nhỏ mỏng, dễ tích hợp với K8s Security Gates.
 - **Linux Foundation SPDX:** Được thiết kế tối ưu cho kiểm toán tính tuân thủ bản quyền giấy phép (License Compliance) và pháp lý phần mềm. Phù hợp cho các tập đoàn lớn kiểm tra vi phạm bản quyền mở.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Công cụ Anchore `Syft` thực hiện phân tích và trích xuất tệp SBOM dựa trên những cơ chế nào?
-
-**Đáp án chuẩn:**
-- `Syft` bóc tách từng lớp layer container và tự động kích hoạt các trình phân tích (Catalogers):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Công cụ Anchore `Syft` thực hiện phân tích và trích xuất tệp SBOM dựa trên những cơ chế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Syft` bóc tách từng lớp layer container và tự động kích hoạt các trình phân tích (Catalogers):
   1. Quét các tệp quản lý phụ thuộc (Lockfiles) như `go.sum`, `package-lock.json`, `pom.xml`, `requirements.txt`.
   2. Phân tích cơ sở dữ liệu package manager của hệ điều hành (`dpkg`, `apk`, `rpm`).
   3. Tính toán mã băm SHA-256 bất biến cho từng gói và tổng hợp thành tệp SBOM định dạng CycloneDX hoặc SPDX JSON trong vài giây.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Tác dụng của cờ `-ldflags="-w -s"` khi biên dịch ứng dụng Go/Rust và trường hợp nào KHÔNG nên sử dụng cờ này?
-
-**Đáp án chuẩn:**
-- **Tác dụng:** Cờ `-w` loại bỏ thông tin DWARF debug table; cờ `-s` loại bỏ symbol table. Kết hợp lại giúp cắt giảm tới **40% dung lượng tệp nhị phân**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Tác dụng của cờ `-ldflags="-w -s"` khi biên dịch ứng dụng Go/Rust và trường hợp nào KHÔNG nên sử dụng cờ này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Tác dụng:** Cờ `-w` loại bỏ thông tin DWARF debug table; cờ `-s` loại bỏ symbol table. Kết hợp lại giúp cắt giảm tới **40% dung lượng tệp nhị phân**.
 - **Khi KHÔNG nên dùng:** Khi ứng dụng chạy ở môi trường Dev/Staging cần trích xuất chi tiết Stack Trace dòng code bị sập (Panic Line Number) hoặc khi cần dùng công cụ Profiling (`pprof`/`gdb`) để debug sâu.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Cách thiết lập cờ Gatekeeper kiểm tra giới hạn dung lượng Image (Size Budget) tự động trong CI Job?
-
-**Đáp án chuẩn:**
-- Viết 1 script Bash trong CI Stage test:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Cách thiết lập cờ Gatekeeper kiểm tra giới hạn dung lượng Image (Size Budget) tự động trong CI Job?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Viết 1 script Bash trong CI Stage test:
   1. Sử dụng `docker image inspect` hoặc API Registry lấy dung lượng Image theo Byte.
   2. Quyết đổi sang MB và so sánh với ngưỡng `MAX_SIZE_MB=50`.
   3. Nếu dung lượng lớn hơn 50 MB, script in ra thông báo lỗi đỏ và gọi `exit 1` để dừng ngắt toàn bộ Pipeline, ngăn không cho Image phình to lọt ra Prod.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Phương pháp đính kèm SBOM Attestation trực tiếp vào Container Registry qua công cụ `Cosign`?
-
-**Đáp án chuẩn:**
-- Sau khi sinh tệp `sbom.cyclonedx.json`, thực thi câu lệnh:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Phương pháp đính kèm SBOM Attestation trực tiếp vào Container Registry qua công cụ `Cosign`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Sau khi sinh tệp `sbom.cyclonedx.json`, thực thi câu lệnh:
   `cosign attest --type cyclonedx --predicate sbom.cyclonedx.json $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA`
 - `Cosign` sẽ biến tệp SBOM thành 1 OCI Attestation Blob và đẩy trực tiếp lên Registry gắn liền bất biến với Tag Image. Các Policy Engine trên Kubernetes (như Kyverno) có thể kiểm tra Attestation này trước khi cho phép Pod chạy.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước đóng gói Container Image chuẩn Enterprise?
-
-**Đáp án chuẩn:**
-1. **Multi-stage Build:** Tách riêng biệt Stage 1 build SDK và Stage 2 Runtime mỏng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước đóng gói Container Image chuẩn Enterprise?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Multi-stage Build:** Tách riêng biệt Stage 1 build SDK và Stage 2 Runtime mỏng.
 2. **Minimal Base Image:** Sử dụng `Google Distroless` hoặc `Scratch` loại bỏ 100% Shell CLI và Package Manager.
 3. **Multi-Arch Build:** Đóng gói cho `linux/amd64` và `linux/arm64` hợp nhất dưới 1 OCI Manifest Index.
 4. **Automated SBOM & Size Gatekeeper:** Trích xuất `sbom.cyclonedx.json` bằng `Syft` và kiểm tra Size Budget < 50 MB trước khi deploy.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -8827,121 +11272,277 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Chart là hiện vật có phiên bản như image — chart không có phiên bản thì deploy không rollback được"**?
-
-**Đáp án chuẩn:**
-- Vì tệp Helm Chart là bản khai báo thiết kế hạ tầng (Infrastructure Blueprint). Nếu không đánh số phiên bản bất biến (`version: x.y.z`) cho mỗi lần release, Kubernetes sẽ coi hạ tầng là một bản tĩnh trôi nổi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Chart là hiện vật có phiên bản như image — chart không có phiên bản thì deploy không rollback được"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì tệp Helm Chart là bản khai báo thiết kế hạ tầng (Infrastructure Blueprint). Nếu không đánh số phiên bản bất biến (`version: x.y.z`) cho mỗi lần release, Kubernetes sẽ coi hạ tầng là một bản tĩnh trôi nổi.
 - Khi sự cố xảy ra, nếu Chart không có phiên bản, Helm không thể biết được trạng thái cấu hình cũ (như Port, ConfigMap, CPU limits) của phiên bản hoạt động ổn định trước đó để khôi phục, khiến tính năng `helm rollback` hoàn toàn vô tác dụng.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa 2 trường `version` (Chart Version) và `appVersion` (Application Version) trong tệp `Chart.yaml`?
-
-**Đáp án chuẩn:**
-- **`version` (Chart Version):** Đánh số phiên bản ngữ nghĩa (SemVer 2.0) cho chính tệp mẫu Helm Chart. Trường này tăng lên mỗi khi có sự thay đổi về cấu hình hạ tầng (như thay đổi file template YAML, thêm biến trong `values.yaml`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa 2 trường `version` (Chart Version) và `appVersion` (Application Version) trong tệp `Chart.yaml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **`version` (Chart Version):** Đánh số phiên bản ngữ nghĩa (SemVer 2.0) cho chính tệp mẫu Helm Chart. Trường này tăng lên mỗi khi có sự thay đổi về cấu hình hạ tầng (như thay đổi file template YAML, thêm biến trong `values.yaml`).
 - **`appVersion` (Application Version):** Đánh số phiên bản của mã nguồn ứng dụng đang chạy bên trong Container. Trường này khớp 1-1 với **Container Image Tag** trên Registry (ví dụ `appVersion: "a7b8c9d"`).
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Ưu điểm vượt trội của phương pháp quản lý Helm Chart dưới dạng OCI Artifacts (`oci://...`) so với Helm Repository truyền thống dựa trên tệp `index.yaml`?
-
-**Đáp án chuẩn:**
-1. **Hợp nhất Hạ tầng Storage:** Không cần phải duy trì web server tĩnh để lưu tệp `index.yaml`. Helm Chart `.tgz` được đẩy trực tiếp lên Container Registry có sẵn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Ưu điểm vượt trội của phương pháp quản lý Helm Chart dưới dạng OCI Artifacts (`oci://...`) so với Helm Repository truyền thống dựa trên tệp `index.yaml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Hợp nhất Hạ tầng Storage:** Không cần phải duy trì web server tĩnh để lưu tệp `index.yaml`. Helm Chart `.tgz` được đẩy trực tiếp lên Container Registry có sẵn.
 2. **Đồng bộ Phân quyền RBAC:** Sử dụng chung một cơ chế xác thực Access Token và phân quyền RBAC cho cả Container Image và Helm Chart.
 3. **Hiệu năng Cao:** Loại bỏ hoàn toàn sự cố đứt gãy đệm đệm tệp `index.yaml` khi số lượng Chart phình to lên hàng ngàn phiên bản.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của công cụ `helm lint` và các loại lỗi cấu hình phổ biến mà `helm lint` có thể ngăn chặn trong CI Pipeline?
-
-**Đáp án chuẩn:**
-- `helm lint` thực hiện phân tích tĩnh (Static Analysis) cấu trúc thư mục Chart và cú pháp tệp YAML:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `helm lint` và các loại lỗi cấu hình phổ biến mà `helm lint` có thể ngăn chặn trong CI Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `helm lint` thực hiện phân tích tĩnh (Static Analysis) cấu trúc thư mục Chart và cú pháp tệp YAML:
   1. Kiểm tra sự tồn tại và định dạng của tệp `Chart.yaml`.
   2. Kiểm tra lỗi thụt lề khoảng trắng (Space Indentation Errors) trong các tệp mẫu `templates/`.
   3. Kiểm tra tính hợp lệ của cú pháp Go Template engine.
 - Khi bật cờ `--strict`, `helm lint` sẽ biến mọi cảnh báo (Warning) thành lỗi (Error), tự động dừng ngắt CI Pipeline trước khi deploy code lỗi lên K8s Cluster.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Cách thức câu lệnh `helm template` giúp kỹ sư CI/CD thực thi kiểm tra dry-run các file Manifests rendered trước khi tiến hành deploy thực tế?
-
-**Đáp án chuẩn:**
-- Lệnh `helm template <release-name> <chart-dir> -f <values-file>` thực hiện biên dịch Go Template Engine cục bộ trên Runner mà không cần kết nối tới cụm Kubernetes Cluster.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Cách thức câu lệnh `helm template` giúp kỹ sư CI/CD thực thi kiểm tra dry-run các file Manifests rendered trước khi tiến hành deploy thực tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Lệnh `helm template <release-name> <chart-dir> -f <values-file>` thực hiện biên dịch Go Template Engine cục bộ trên Runner mà không cần kết nối tới cụm Kubernetes Cluster.
 - Đầu ra của lệnh là toàn bộ nội dung các file Kubernetes Manifests thô (Deployment, Service, Ingress). Kỹ sư CI/CD có thể ghi log nội dung này vào tệp `rendered-manifests.yaml` để kiểm tra đối soát xem các tham số `{{ .Values }}` có được nạp chính xác hay bị bỏ trống.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Tại sao tuyệt đối không được phép chỉnh sửa trực tiếp các tệp YAML bên trong gói nén `.tgz` sau khi đã thực thi `helm package`?
-
-**Đáp án chuẩn:**
-- Tệp nén `.tgz` sinh ra từ `helm package` đại diện cho một **Hiện vật Bất biến (Immutable Artifact)** có mã băm Checksum SHA-256 xác thực.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối không được phép chỉnh sửa trực tiếp các tệp YAML bên trong gói nén `.tgz` sau khi đã thực thi `helm package`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tệp nén `.tgz` sinh ra từ `helm package` đại diện cho một **Hiện vật Bất biến (Immutable Artifact)** có mã băm Checksum SHA-256 xác thực.
 - Nếu chỉnh sửa trực tiếp các tệp YAML bên trong gói nén, mã băm Checksum của tệp `.tgz` sẽ bị lệch so với Metadata khai báo trên OCI Registry. Khi đó, câu lệnh `helm install` hoặc `helm pull` sẽ báo lỗi `digest mismatch` và từ chối nạp gói Chart bị can thiệp.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Nguyên lý hoạt động của cơ chế Atomic Upgrade (`--atomic`) và Rollback trong Helm khi triển khai ứng dụng tự động?
-
-**Đáp án chuẩn:**
-- Khi truyền cờ `--atomic` và `--timeout 5m` vào lệnh `helm upgrade`, Helm sẽ theo dõi trạng thái khởi chạy của các Pods mới trên K8s Cluster.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của cơ chế Atomic Upgrade (`--atomic`) và Rollback trong Helm khi triển khai ứng dụng tự động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi truyền cờ `--atomic` và `--timeout 5m` vào lệnh `helm upgrade`, Helm sẽ theo dõi trạng thái khởi chạy của các Pods mới trên K8s Cluster.
 - Nếu trong vòng 5 phút, các Pods mới bị sập (lỗi `CrashLoopBackOff` hoặc `ImagePullBackOff`) và không thể chuyển sang trạng thái `1/1 Ready`, Helm sẽ tự động ngắt tiến trình nâng cấp và thực thi câu lệnh **`helm rollback` quay về Revision cũ ngay lập tức**, đưa hệ thống trở lại trạng thái hoạt động an toàn mà không cần can thiệp thủ công.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Helm lưu trữ lịch sử các phiên bản Release Revision trong cụm Kubernetes Cluster dưới dạng nào?
-
-**Đáp án chuẩn:**
-- Helm không lưu lịch sử release trên máy local mà lưu trực tiếp trong cùng Namespace Kubernetes của ứng dụng dưới dạng các **Kubernetes Secrets**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Helm lưu trữ lịch sử các phiên bản Release Revision trong cụm Kubernetes Cluster dưới dạng nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Helm không lưu lịch sử release trên máy local mà lưu trực tiếp trong cùng Namespace Kubernetes của ứng dụng dưới dạng các **Kubernetes Secrets**.
 - Tên các Secret được quy ước chuẩn: `sh.helm.release.v1.<release-name>.v<revision>`.
 - Mỗi tệp Secret chứa toàn bộ dữ liệu mã hóa Base64 của tệp `Chart.yaml`, `values.yaml` và các file Manifests rendered của revision đó, cho phép Helm thực thi rollback tức thì trong 2 giây.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Tại sao các doanh nghiệp lại phân tách kho Helm Chart OCI thành 2 kho riêng biệt: `helm-dev-local` và `helm-prod-local`?
-
-**Đáp án chuẩn:**
-- Nhằm áp dụng quy trình kiểm soát an ninh **Thăng cấp Hiện vật (Artifact Promotion)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Tại sao các doanh nghiệp lại phân tách kho Helm Chart OCI thành 2 kho riêng biệt: `helm-dev-local` và `helm-prod-local`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nhằm áp dụng quy trình kiểm soát an ninh **Thăng cấp Hiện vật (Artifact Promotion)**.
 - CI Job ở các nhánh tính năng (Feature Branches) chỉ có quyền push Chart thử nghiệm vào kho `helm-dev-local`. Chỉ sau khi Chart vượt qua bài kiểm thử tích hợp (Integration Test) và bài quét bảo mật, Job trên nhánh `main` mới dùng token có quyền thăng cấp Chart sang kho `helm-prod-local` phục vụ cho Production Release.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Ý nghĩa của tệp `.helmignore` tại gốc thư mục Helm Chart và cách cấu hình chuẩn?
-
-**Đáp án chuẩn:**
-- Tệp `.helmignore` hoạt động tương tự như `.gitignore` hoặc `.dockerignore`. Nó khai báo danh sách các tệp và thư mục bị loại bỏ khi chạy câu lệnh `helm package`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Ý nghĩa của tệp `.helmignore` tại gốc thư mục Helm Chart và cách cấu hình chuẩn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tệp `.helmignore` hoạt động tương tự như `.gitignore` hoặc `.dockerignore`. Nó khai báo danh sách các tệp và thư mục bị loại bỏ khi chạy câu lệnh `helm package`.
 - **Cấu hình chuẩn:** Loại bỏ thư mục `.git`, `.gitignore`, `.tmp`, `charts/` (nếu không dùng subcharts), và các tệp nén `.tgz` tạm thời để giữ cho gói Chart mỏng nhẹ và sạch sẽ.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách quản lý biến môi trường bí mật (Secrets/Passwords) an toàn trong tệp `values.yaml` của Helm Chart?
-
-**Đáp án chuẩn:**
-- Tuyệt đối không hardcode mật khẩu thô trong tệp `values.yaml` đưa lên Git.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách quản lý biến môi trường bí mật (Secrets/Passwords) an toàn trong tệp `values.yaml` của Helm Chart?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tuyệt đối không hardcode mật khẩu thô trong tệp `values.yaml` đưa lên Git.
 - **Giải pháp chuẩn Enterprise:** Sử dụng plugin **Helm Secrets** kết hợp với công cụ **Mozilla SOPS** hoặc **HashiCorp Vault**. Tệp `values-prod.secrets.yaml` được mã hóa bằng khóa KMS (AWS KMS/GCP KMS) trước khi commit vào Git repo, và chỉ được giải mã tự động ở Runtime khi CI Runner thực thi deploy.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 5 bước quản lý Helm Chart chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Linting:** Chạy `helm lint --strict` kiểm tra cú pháp tệp mẫu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 5 bước quản lý Helm Chart chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Linting:** Chạy `helm lint --strict` kiểm tra cú pháp tệp mẫu.
 2. **Template Dry-run:** Chạy `helm template` render Manifests khô đối soát đầu ra.
 3. **Packaging:** Chạy `helm package --version x.y.z` tạo tệp `.tgz` bất biến.
 4. **Push OCI Registry:** Chạy `helm push` đẩy tệp `.tgz` lên OCI Registry (`oci://...`).
 5. **Atomic Deploy & Rollback:** Chạy `helm upgrade --install --atomic` tự động rollback 100% khi sập Pod.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -9083,119 +11684,275 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Một hiện vật một phiên bản một lần build — vi phạm điều này là gốc của prod chạy cái gì không ai biết"**?
-
-**Đáp án chuẩn:**
-- Vì việc biên dịch lại mã nguồn ở môi trường Production (thay vì dùng lại đúng Container Image / tệp nhị phân đã build ở môi trường Staging) có thể nạp các thư viện phụ thuộc mới hơn do tệp lockfile bị trôi hoặc môi trường Runner khác nhau.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Một hiện vật một phiên bản một lần build — vi phạm điều này là gốc của prod chạy cái gì không ai biết"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì việc biên dịch lại mã nguồn ở môi trường Production (thay vì dùng lại đúng Container Image / tệp nhị phân đã build ở môi trường Staging) có thể nạp các thư viện phụ thuộc mới hơn do tệp lockfile bị trôi hoặc môi trường Runner khác nhau.
 - Điều này khiến bản build Prod trở thành một tệp nhị phân hoàn toàn khác với bản đã Test, triệt tiêu tính bất biến (Artifact Immutability) và chính là gốc rễ của sự cố "Prod chạy cái gì không ai biết".
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân tích quy chuẩn Git Commit Message dạng `Conventional Commits` (`feat`, `fix`, `chore`, `BREAKING CHANGE`) và vai trò của nó trong CI Pipeline?
-
-**Đáp án chuẩn:**
-- `Conventional Commits` định nghĩa cú pháp chuẩn: `<type>(<scope>): <description>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân tích quy chuẩn Git Commit Message dạng `Conventional Commits` (`feat`, `fix`, `chore`, `BREAKING CHANGE`) và vai trò của nó trong CI Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Conventional Commits` định nghĩa cú pháp chuẩn: `<type>(<scope>): <description>`.
   - **`fix:`** Thể hiện việc sửa lỗi (tương ứng với tăng con số **`PATCH`** trong SemVer).
   - **`feat:`** Thể hiện việc thêm tính năng mới (tương ứng với tăng con số **`MINOR`**).
   - **`BREAKING CHANGE:`** Thể hiện thay đổi phá vỡ tính tương thích ngược (tương ứng với tăng con số **`MAJOR`**).
 - Vai trò: Biến Git commit log từ chuỗi văn bản thuần túy cho con người đọc thành **dữ liệu cấu hình đầu vào** cho CI Pipeline tự động tính toán con số phiên bản mà không cần con người can thiệp thủ công.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Cách thức công cụ `semantic-release` tự động phân tích Git commit log để quyết định tăng `MAJOR`, `MINOR`, hay `PATCH`?
-
-**Đáp án chuẩn:**
-- `semantic-release` sử dụng plugin `@semantic-release/commit-analyzer` để quét toàn bộ các commit log từ Git Tag release gần nhất đến commit mới nhất trên nhánh `main`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Cách thức công cụ `semantic-release` tự động phân tích Git commit log để quyết định tăng `MAJOR`, `MINOR`, hay `PATCH`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `semantic-release` sử dụng plugin `@semantic-release/commit-analyzer` để quét toàn bộ các commit log từ Git Tag release gần nhất đến commit mới nhất trên nhánh `main`.
 - Nếu phát hiện bất kỳ commit nào chứa `BREAKING CHANGE:`, nó chọn tăng **MAJOR**. Nếu không có MAJOR nhưng có commit `feat:`, nó chọn tăng **MINOR**. Nếu không có MINOR nhưng có commit `fix:`, nó chọn tăng **PATCH**. Nếu chỉ có `chore:` hoặc `docs:`, nó bỏ qua không phát hành phiên bản mới.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao tuyệt đối không được phép xóa hoặc push đè một Git Tag đã được phát hành Release trên Production?
-
-**Đáp án chuẩn:**
-- Git Tag trên Production đại diện cho nhãn định danh bất biến (Immutable Version Identifier) của một hiện vật hạ tầng và mã nguồn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối không được phép xóa hoặc push đè một Git Tag đã được phát hành Release trên Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Git Tag trên Production đại diện cho nhãn định danh bất biến (Immutable Version Identifier) của một hiện vật hạ tầng và mã nguồn.
 - Nếu xóa hoặc push đè Git Tag `v1.0.0`, toàn bộ lịch sử vết audit, khả năng `helm rollback` và tính toàn vẹn của tệp nhị phân đính kèm sẽ bị phá hỏng hoàn toàn, khiến hệ thống quản trị hạ tầng rơi vào trạng thái bất ổn định nghiêm trọng.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa phiên bản Pre-release (`1.0.0-rc.1`) và phiên bản chính thức Production Release (`1.0.0`)?
-
-**Đáp án chuẩn:**
-- **Pre-release (`1.0.0-rc.1`):** Là bản phát hành thử nghiệm Release Candidate (RC) sinh ra từ các nhánh tính năng hoặc nhánh testing. Bản này dành riêng cho đội QA/QC kiểm thử trên môi trường Staging và có thể bị thay thế bởi `rc.2` nếu phát hiện lỗi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa phiên bản Pre-release (`1.0.0-rc.1`) và phiên bản chính thức Production Release (`1.0.0`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Pre-release (`1.0.0-rc.1`):** Là bản phát hành thử nghiệm Release Candidate (RC) sinh ra từ các nhánh tính năng hoặc nhánh testing. Bản này dành riêng cho đội QA/QC kiểm thử trên môi trường Staging và có thể bị thay thế bởi `rc.2` nếu phát hiện lỗi.
 - **Production Release (`1.0.0`):** Là bản phát hành chính thức đã vượt qua 100% bài kiểm thử. Bản này có tính bất biến tuyệt đối và sẵn sàng cho việc triển khai lên môi trường Production.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Nguyên lý hoạt động của công cụ `gitlab-release-cli` và cách tạo GitLab Release Event tự động trong `.gitlab-ci.yml`?
-
-**Đáp án chuẩn:**
-- `gitlab-release-cli` là công cụ chính thức do GitLab phát triển giúp gọi REST API của GitLab Server để tạo trang điểm mốc Release Event trên giao diện UI.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `gitlab-release-cli` và cách tạo GitLab Release Event tự động trong `.gitlab-ci.yml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `gitlab-release-cli` là công cụ chính thức do GitLab phát triển giúp gọi REST API của GitLab Server để tạo trang điểm mốc Release Event trên giao diện UI.
 - Trong `.gitlab-ci.yml`, ta khai báo thuộc tính `release:` với các tham số: `name`, `tag_name: "$CI_COMMIT_TAG"`, `description: "./release-notes.md"`, và `assets:links` để đính kèm các đường dẫn tải tệp nhị phân release.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Cách đồng bộ 1 con số phiên bản duy nhất giữa Git Tag, Container Image Tag, Helm Chart Version, và App Version?
-
-**Đáp án chuẩn:**
-- Khi `semantic-release` tính toán ra con số phiên bản mới (ví dụ `1.2.3`), nó xuất biến ra tệp `version.env` (`RELEASE_VERSION=1.2.3`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Cách đồng bộ 1 con số phiên bản duy nhất giữa Git Tag, Container Image Tag, Helm Chart Version, và App Version?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi `semantic-release` tính toán ra con số phiên bản mới (ví dụ `1.2.3`), nó xuất biến ra tệp `version.env` (`RELEASE_VERSION=1.2.3`).
 - Ở Stage build, ta nạp biến này để đính tag cho Container Image (`my-app:1.2.3`), cập nhật tệp `Chart.yaml` (`version: 1.2.3`, `appVersion: 1.2.3`), và gắn Git Tag `v1.2.3`. Cả 4 thành phần sử dụng chung 1 con số SemVer duy nhất.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Tại sao tệp `CHANGELOG.md` tự động sinh ra lại quan trọng đối với các kỹ sư Ops, Security và khách hàng sử dụng sản phẩm?
-
-**Đáp án chuẩn:**
-- Giúp các kỹ sư Ops nắm bắt nhanh 100% các tính năng mới và bug fix được triển khai trong bản release.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Tại sao tệp `CHANGELOG.md` tự động sinh ra lại quan trọng đối với các kỹ sư Ops, Security và khách hàng sử dụng sản phẩm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Giúp các kỹ sư Ops nắm bắt nhanh 100% các tính năng mới và bug fix được triển khai trong bản release.
 - Giúp các kỹ sư Security kiểm soát vết xem bản release này có khắc phục các lỗ hổng bảo mật đã cảnh báo hay không.
 - Giúp khách hàng và lập trình viên integration biết chính xác các API endpoints nào bị thay đổi hoặc deprecated để điều chỉnh code.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Ý nghĩa của cờ bảo mật `Protected Tags` trong GitLab CI/CD và cách ngăn chặn rủi ro rò rỉ quyền release?
-
-**Đáp án chuẩn:**
-- `Protected Tags` cho phép thiết lập quy tắc bảo vệ nhãn Git Tag (ví dụ pattern `v*.*.*`) trên GitLab Repository Settings.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Ý nghĩa của cờ bảo mật `Protected Tags` trong GitLab CI/CD và cách ngăn chặn rủi ro rò rỉ quyền release?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Protected Tags` cho phép thiết lập quy tắc bảo vệ nhãn Git Tag (ví dụ pattern `v*.*.*`) trên GitLab Repository Settings.
 - Ta phân quyền `Allowed to create: No one`, chỉ cho phép duy nhất CI/CD Pipeline Service Account (thông qua `$GITLAB_TOKEN`) được phép tạo Git Tag. Điều này triệt tiêu rủi ro lập trình viên cá nhân tự ý đẩy đè Tag thủ công từ máy local.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp đính kèm tệp nhị phân Release Assets và mã băm Checksum SHA-256 vào GitLab Release Event?
-
-**Đáp án chuẩn:**
-- Đóng gói tệp thực thi thành tệp nén (`tar -czvf my-app-v1.0.0.tar.gz bin/`) và tạo tệp băm (`sha256sum my-app-v1.0.0.tar.gz > my-app-v1.0.0.tar.gz.sha256`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp đính kèm tệp nhị phân Release Assets và mã băm Checksum SHA-256 vào GitLab Release Event?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Đóng gói tệp thực thi thành tệp nén (`tar -czvf my-app-v1.0.0.tar.gz bin/`) và tạo tệp băm (`sha256sum my-app-v1.0.0.tar.gz > my-app-v1.0.0.tar.gz.sha256`).
 - Upload các tệp này lên Package Registry, sau đó truyền thông tin URL và mã Checksum SHA-256 vào thuộc tính `assets:links` của `release-cli` để hiển thị công khai trên giao diện Release Event.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi một developer lỡ gõ sai cú pháp commit message không theo chuẩn Conventional Commits?
-
-**Đáp án chuẩn:**
-- Nếu commit chưa được merge vào `main`: Yêu cầu dev chạy lệnh `git commit --amend` hoặc `git rebase -i` sửa lại thông điệp commit trên nhánh feature branch.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi một developer lỡ gõ sai cú pháp commit message không theo chuẩn Conventional Commits?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nếu commit chưa được merge vào `main`: Yêu cầu dev chạy lệnh `git commit --amend` hoặc `git rebase -i` sửa lại thông điệp commit trên nhánh feature branch.
 - Nếu commit đã merge vào `main`: Công cụ `semantic-release` sẽ tự động bỏ qua commit sai cú pháp đó và không phát hành phiên bản mới. Dev cần tạo 1 commit mới chuẩn hóa (ví dụ `fix(core): ...`) để trigger lại tiến trình release.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước quản lý Release chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Conventional Commit:** Lập trình viên commit mã nguồn theo chuẩn `feat:`, `fix:`, `BREAKING CHANGE:`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước quản lý Release chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Conventional Commit:** Lập trình viên commit mã nguồn theo chuẩn `feat:`, `fix:`, `BREAKING CHANGE:`.
 2. **Semantic Release:** CI Pipeline tự động phân tích commit log, tính con số SemVer 2.0 mới, và sinh `CHANGELOG.md`.
 3. **Artifact Sync:** Đồng bộ 1 con số phiên bản mới sang Git Tag, Container Image Tag, và Helm Chart Version.
 4. **Release Event:** Sử dụng `release-cli` tạo Release Event trên UI đính kèm Release Assets và Checksum SHA-256.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -9341,87 +12098,202 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Bảo mật không phải là rào chắn cuối cùng mà là phản hồi liên tục từ commit đầu tiên — shift-left để tìm lỗ hổng trong 1 phút thay vì 1 tháng"**?
-
-**Đáp án chuẩn:**
-- Vì việc đẩy các hoạt động kiểm tra an ninh về cuối chu kỳ (Pentest trước ngày phát hành) khiến việc sửa lỗi cực kỳ đắt đỏ, tốn thời gian và làm trì hoãn tiến độ phát hành của toàn bộ dự án.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Bảo mật không phải là rào chắn cuối cùng mà là phản hồi liên tục từ commit đầu tiên — shift-left để tìm lỗ hổng trong 1 phút thay vì 1 tháng"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì việc đẩy các hoạt động kiểm tra an ninh về cuối chu kỳ (Pentest trước ngày phát hành) khiến việc sửa lỗi cực kỳ đắt đỏ, tốn thời gian và làm trì hoãn tiến độ phát hành của toàn bộ dự án.
 - Tích hợp Shift-Left Security tự động hóa công cụ quét an ninh ngay tại stage test của mọi Merge Request giúp lập trình viên phát hiện và tự sửa lỗ hổng ngay trong **1 phút** khi vừa viết code xong, chi phí khắc phục giảm **90%** so với sửa ở Production.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét mã nguồn tĩnh (SAST) và Quét thư viện phụ thuộc (Dependency Scanning / SCA)?
-
-**Đáp án chuẩn:**
-- **SAST (Static Application Security Testing):** Phân tích cú pháp tĩnh (AST Parse Tree) của **MÃ NGUỒN TỰ VIẾT** (do lập trình viên trong team viết). Công cụ đại diện: `semgrep`. Phát hiện các lỗi logic lập trình như SQL Injection, XSS, Hardcoded Credentials.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét mã nguồn tĩnh (SAST) và Quét thư viện phụ thuộc (Dependency Scanning / SCA)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **SAST (Static Application Security Testing):** Phân tích cú pháp tĩnh (AST Parse Tree) của **MÃ NGUỒN TỰ VIẾT** (do lập trình viên trong team viết). Công cụ đại diện: `semgrep`. Phát hiện các lỗi logic lập trình như SQL Injection, XSS, Hardcoded Credentials.
 - **Dependency Scanning (SCA):** Trích xuất danh sách và phiên bản của **THƯ VIỆN BÊN THỨ BA** từ tệp khóa phụ thuộc (`go.sum`, `package-lock.json`), đối soát với CSDL NVD CVE quốc tế để phát hiện các lỗ hổng đã được công bố công khai. Công cụ đại diện: `trivy fs`.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý hoạt động của công cụ `semgrep` và cách thức tạo các quy tắc quét (Rules) tùy chỉnh trong doanh nghiệp?
-
-**Đáp án chuẩn:**
-- `semgrep` là động cơ quét SAST dựa trên việc khớp mẫu cú pháp (Pattern Matching) trên cây cú pháp trừu tượng (AST) của mã nguồn mà không cần biên dịch code.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `semgrep` và cách thức tạo các quy tắc quét (Rules) tùy chỉnh trong doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `semgrep` là động cơ quét SAST dựa trên việc khớp mẫu cú pháp (Pattern Matching) trên cây cú pháp trừu tượng (AST) của mã nguồn mà không cần biên dịch code.
 - Để tạo quy tắc tùy chỉnh (Custom Rule) cho doanh nghiệp, ta khai báo tệp YAML quy định mẫu `pattern:` (ví dụ `db.Exec("SELECT..." + $X)`), thông điệp cảnh báo `message:`, mã phân loại `metadata.cwe:` và mức độ nghiêm trọng `severity: ERROR`.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của `trivy fs` trong việc tra cứu cơ sở dữ liệu NVD CVE từ tệp `go.sum` hay `package-lock.json`?
-
-**Đáp án chuẩn:**
-- `trivy fs` phân tích tệp khóa phụ thuộc để trích xuất danh sách chính xác tên thư viện và con số phiên bản đang sử dụng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của `trivy fs` trong việc tra cứu cơ sở dữ liệu NVD CVE từ tệp `go.sum` hay `package-lock.json`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `trivy fs` phân tích tệp khóa phụ thuộc để trích xuất danh sách chính xác tên thư viện và con số phiên bản đang sử dụng.
 - Sau đó, Trivy đối soát thông tin này với cơ sở dữ liệu lỗ hổng quốc tế NVD (National Vulnerability Database) và VulnDB địa phương. Nếu phát hiện con số phiên bản nằm trong khoảng dính CVE (ví dụ `golang.org/x/net < v0.17.0`), Trivy sẽ xuất ra thông tin chi tiết mã CVE, CVSS Score và phiên bản đã sửa lỗi (`Fixed Version`).
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tại sao cần xuất báo cáo an ninh theo định dạng chuẩn `gl-sast-report.json` và SARIF?
-
-**Đáp án chuẩn:**
-- `gl-sast-report.json` là định dạng báo cáo an ninh chuẩn do GitLab quy định. Xuất tệp này nộp sang `artifacts:reports:sast` giúp hệ thống GitLab UI tự động đọc và hiển thị kết quả phân tích trực tiếp trên giao diện **Merge Request Security Widget** và **GitLab Security Dashboard**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tại sao cần xuất báo cáo an ninh theo định dạng chuẩn `gl-sast-report.json` và SARIF?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `gl-sast-report.json` là định dạng báo cáo an ninh chuẩn do GitLab quy định. Xuất tệp này nộp sang `artifacts:reports:sast` giúp hệ thống GitLab UI tự động đọc và hiển thị kết quả phân tích trực tiếp trên giao diện **Merge Request Security Widget** và **GitLab Security Dashboard**.
 - SARIF (Static Analysis Results Interchange Format) là chuẩn báo cáo an ninh quốc tế cho phép chia sẻ và tích hợp dữ liệu quét giữa nhiều hệ thống khác nhau (như GitHub, SonarQube, DefectDojo).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Cách thiết lập Security Quality Gate tự động dừng ngắt pipeline khi vượt quá ngưỡng lỗ hổng cho phép?
-
-**Đáp án chuẩn:**
-- Trong `.gitlab-ci.yml`, ta cấu hình câu lệnh quét của công cụ với cờ ép buộc trả về mã lỗi `exit code 1` và bộ lọc mức độ nghiêm trọng:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Cách thiết lập Security Quality Gate tự động dừng ngắt pipeline khi vượt quá ngưỡng lỗ hổng cho phép?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong `.gitlab-ci.yml`, ta cấu hình câu lệnh quét của công cụ với cờ ép buộc trả về mã lỗi `exit code 1` và bộ lọc mức độ nghiêm trọng:
   `trivy fs --scanners vuln --exit-code 1 --severity CRITICAL,HIGH .`
 - Đồng thời đặt thuộc tính `allow_failure: false`. Khi phát hiện ít nhất 1 lỗ hổng mức `CRITICAL` hoặc `HIGH`, CI Job sẽ nổ lỗi đỏ, dừng ngắt pipeline lập tức và chặn không cho phép merge code lỗi.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Sự khác biệt giữa lỗ hổng mã nguồn (Code Vulnerability) và lỗ hổng thư viện (Dependency Vulnerability) về mặt quy trình khắc phục (Remediation)?
-
-**Đáp án chuẩn:**
-- **Code Vulnerability (Lỗi SAST):** Do lập trình viên viết sai logic an toàn. Quy trình khắc phục yêu cầu **SỬA TRỰC TIẾP MÃ NGUỒN** (như chuyển từ câu SQL nối chuỗi sang dùng Parameterized Query hoặc HTML Escape).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Sự khác biệt giữa lỗ hổng mã nguồn (Code Vulnerability) và lỗ hổng thư viện (Dependency Vulnerability) về mặt quy trình khắc phục (Remediation)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Code Vulnerability (Lỗi SAST):** Do lập trình viên viết sai logic an toàn. Quy trình khắc phục yêu cầu **SỬA TRỰC TIẾP MÃ NGUỒN** (như chuyển từ câu SQL nối chuỗi sang dùng Parameterized Query hoặc HTML Escape).
 - **Dependency Vulnerability (Lỗi SCA):** Do thư viện bên thứ 3 dính CVE. Quy trình khắc phục yêu cầu **NÂNG CẤP PHIÊN BẢN THƯ VIỆN** (như chạy `go get package@vX.Y.Z` hoặc `npm update`) lên phiên bản `Fixed Version` đã được vá lỗi.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Quy trình xử lý cảnh báo giả (False Positive) an toàn bằng `.semgrepignore` và `.trivyignore` có vết audit?
-
-**Đáp án chuẩn:**
-- Không bao giờ được phép tắt quy tắc quét an ninh của toàn bộ dự án.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Quy trình xử lý cảnh báo giả (False Positive) an toàn bằng `.semgrepignore` và `.trivyignore` có vết audit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Không bao giờ được phép tắt quy tắc quét an ninh của toàn bộ dự án.
 - Khi xác định một cảnh báo là giả (do nằm trong tệp test mock hoặc đã có phương án bù đắp bảo mật WAF):
   1. Khai báo mã CVE hoặc đường dẫn tệp vào `.semgrepignore` / `.trivyignore`.
   2. Bắt buộc đính kèm comment giải trình lý do an toàn và người phê duyệt (`Security Lead - Approved by Name`).
   3. Cấu hình tệp `CODEOWNERS` yêu cầu mọi thay đổi trên ignore files phải có chữ ký duyệt của Security Team.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách hiển thị và đối soát kết quả quét an ninh trực tiếp trên GitLab Merge Request Security Widget?
-
-**Đáp án chuẩn:**
-- Trong `.gitlab-ci.yml`, khai báo thuộc tính nộp báo cáo chuẩn:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách hiển thị và đối soát kết quả quét an ninh trực tiếp trên GitLab Merge Request Security Widget?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong `.gitlab-ci.yml`, khai báo thuộc tính nộp báo cáo chuẩn:
   ```yaml
   artifacts:
     reports:
@@ -9431,37 +12303,78 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Khi mở Merge Request, GitLab Runner sẽ tự động so sánh báo cáo an ninh của nhánh feature với nhánh target (`main`). Khối Security Widget trên MR UI sẽ hiển thị chính xác danh sách các lỗ hổng mới phát sinh của nhánh code này cho Tech Lead đối soát.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Tại sao không nên đặt cờ `allow_failure: true` cho các Security Scan Jobs trên nhánh `main`?
-
-**Đáp án chuẩn:**
-- Nếu đặt `allow_failure: true`, khi phát hiện lỗ hổng `CRITICAL`, CI Pipeline vẫn tiếp tục chạy xanh lè và cho phép deploy mã nguồn nguy hiểm lên môi trường Production.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Tại sao không nên đặt cờ `allow_failure: true` cho các Security Scan Jobs trên nhánh `main`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nếu đặt `allow_failure: true`, khi phát hiện lỗ hổng `CRITICAL`, CI Pipeline vẫn tiếp tục chạy xanh lè và cho phép deploy mã nguồn nguy hiểm lên môi trường Production.
 - Điều này biến toàn bộ công cụ quét an ninh thành một hình thức vô tác dụng. Đặt `allow_failure: false` giúp biến Security Scan Jobs thành một **Cổng chặn cứng (Hard Quality Gate)** bảo vệ tính an toàn tuyệt đối cho nhánh `main`.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi tệp cơ sở dữ liệu lỗ hổng CVE của Trivy không thể cập nhật do bị chặn Internet trên CI Runner (Môi trường Air-Gapped)?
-
-**Đáp án chuẩn:**
-- Khởi tạo một máy chủ lưu trữ đệm CSDL đệm nội bộ trong mạng LAN (Internal Mirror).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi tệp cơ sở dữ liệu lỗ hổng CVE của Trivy không thể cập nhật do bị chặn Internet trên CI Runner (Môi trường Air-Gapped)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khởi tạo một máy chủ lưu trữ đệm CSDL đệm nội bộ trong mạng LAN (Internal Mirror).
 - Định kỳ hằng ngày tải tệp `trivy-db` mới nhất về máy đệm nội bộ.
 - Trên CI Runner Air-Gapped, cấu hình câu lệnh Trivy trỏ tới CSDL nội bộ và bật cờ bỏ qua cập nhật Internet:
   `trivy fs --skip-db-update --db-repository registry.internal/trivy-db .`
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước triển khai Shift-Left Security chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Code Commit:** Lập trình viên viết mã nguồn và push commit lên nhánh feature branch.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai Shift-Left Security chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Code Commit:** Lập trình viên viết mã nguồn và push commit lên nhánh feature branch.
 2. **SAST & SCA Scan:** CI Pipeline tự động chạy `semgrep` quét code tự viết và `trivy fs` quét thư viện phụ thuộc.
 3. **Security Quality Gate:** Tự động kiểm tra ngưỡng an ninh, nổ lỗi `exit 1` ngắt pipeline nếu xuất hiện lỗi `CRITICAL` / `HIGH`.
 4. **Vulnerability Remediation:** Lập trình viên tự sửa code hoặc nâng cấp thư viện ngay tại feature branch trước khi merge code vào `main`.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -9608,74 +12521,176 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"SAST thấy cái bạn viết, DAST thấy cái bạn chạy — ứng dụng chỉ an toàn khi vượt qua cả kiểm thử tĩnh từ bên trong lẫn tấn công thực nghiệm từ bên ngoài"**?
-
-**Đáp án chuẩn:**
-- Vì SAST chỉ phân tích mã nguồn tĩnh từ bên trong (Inside-Out) nhưng hoàn toàn bị mù trước các lỗi cấu hình ở môi trường Runtime (như thiếu Security Response Headers, CORS misconfiguration, SSL/TLS handshake errors, Cookie flags).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"SAST thấy cái bạn viết, DAST thấy cái bạn chạy — ứng dụng chỉ an toàn khi vượt qua cả kiểm thử tĩnh từ bên trong lẫn tấn công thực nghiệm từ bên ngoài"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì SAST chỉ phân tích mã nguồn tĩnh từ bên trong (Inside-Out) nhưng hoàn toàn bị mù trước các lỗi cấu hình ở môi trường Runtime (như thiếu Security Response Headers, CORS misconfiguration, SSL/TLS handshake errors, Cookie flags).
 - DAST đóng vai một kẻ tấn công thực nghiệm từ bên ngoài (Outside-In), kiểm tra phản ứng HTTP Response của ứng dụng đang chạy ở Runtime. Sự kết hợp giữa SAST và DAST tạo nên **Chiến lược bảo mật chiều sâu (Defense in Depth)** hoàn chỉnh.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét an ninh tĩnh (SAST) và Quét an ninh động (DAST)?
-
-**Đáp án chuẩn:**
-- **SAST:** Phân tích mã nguồn thô mà không cần biên dịch hay khởi chạy ứng dụng. Phát hiện lỗi mã nguồn tự viết (SQL Injection, Hardcoded Secrets). Thực thi ở giai đoạn sớm nhất của pipeline.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét an ninh tĩnh (SAST) và Quét an ninh động (DAST)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **SAST:** Phân tích mã nguồn thô mà không cần biên dịch hay khởi chạy ứng dụng. Phát hiện lỗi mã nguồn tự viết (SQL Injection, Hardcoded Secrets). Thực thi ở giai đoạn sớm nhất của pipeline.
 - **DAST:** Đòi hỏi ứng dụng phải được biên dịch và khởi chạy lắng nghe HTTP Port ở môi trường Runtime. Phát hiện các lỗ hổng thực thi Runtime (XSS, CORS, Missing Security Headers, Broken Auth).
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Tại sao tuyệt đối không được phép chạy câu lệnh quét DAST tấn công trực tiếp lên môi trường Production?
-
-**Đáp án chuẩn:**
-- Vì câu lệnh quét DAST gửi hàng ngàn HTTP Requests chứa các payload tấn công độc hại (như SQL Injection payloads, Malformed JSONs, High-concurrency Requests).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối không được phép chạy câu lệnh quét DAST tấn công trực tiếp lên môi trường Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì câu lệnh quét DAST gửi hàng ngàn HTTP Requests chứa các payload tấn công độc hại (như SQL Injection payloads, Malformed JSONs, High-concurrency Requests).
 - Nếu chạy trực tiếp lên Production, DAST có thể làm biến đổi/xóa dữ liệu thật trong Production Database, làm tràn bộ nhớ cache và gây sập Downtime dịch vụ đang phục vụ khách hàng.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của công cụ OWASP ZAP trong việc thực hiện Baseline Scan và Full Scan trên ứng dụng Web?
-
-**Đáp án chuẩn:**
-- **Baseline Scan (`zap-baseline.py`):** Là chế độ quét nhẹ nhàng tốc độ cao (mất 1–2 phút). ZAP Spider chủ yếu dò tìm đường dẫn và gửi các HTTP Requests thông thường để kiểm tra tính an toàn của các HTTP Response Headers, Cookie Flags, và CORS policies.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ OWASP ZAP trong việc thực hiện Baseline Scan và Full Scan trên ứng dụng Web?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Baseline Scan (`zap-baseline.py`):** Là chế độ quét nhẹ nhàng tốc độ cao (mất 1–2 phút). ZAP Spider chủ yếu dò tìm đường dẫn và gửi các HTTP Requests thông thường để kiểm tra tính an toàn của các HTTP Response Headers, Cookie Flags, và CORS policies.
 - **Full Scan (`zap-full-scan.py`):** Là chế độ quét tấn công chủ động diện rộng (Active Scanning). ZAP bơm các payload tấn công (XSS, SQLi, Path Traversal) vào tất cả các tham số URL và Form inputs để thử nghiệm khả năng chịu lỗi của server.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Nguyên lý hoạt động của kiểm thử Fuzzing (Fuzz Testing) và khả năng tìm kiếm các lỗ hổng ẩn sâu mà SAST/DAST bỏ qua?
-
-**Đáp án chuẩn:**
-- Fuzzing Testing sử dụng động cơ sinh dữ liệu tự động (Fuzz Engine) tạo ra hàng triệu chuỗi dữ liệu đầu vào ngẫu nhiên dị dạng (chuỗi byte rác, số âm cực đại, ký tự Null, chuỗi vỡ đệm) nạp liên tục vào các hàm parse dữ liệu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của kiểm thử Fuzzing (Fuzz Testing) và khả năng tìm kiếm các lỗ hổng ẩn sâu mà SAST/DAST bỏ qua?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Fuzzing Testing sử dụng động cơ sinh dữ liệu tự động (Fuzz Engine) tạo ra hàng triệu chuỗi dữ liệu đầu vào ngẫu nhiên dị dạng (chuỗi byte rác, số âm cực đại, ký tự Null, chuỗi vỡ đệm) nạp liên tục vào các hàm parse dữ liệu.
 - Fuzzing phát hiện được các lỗi kiểm tra biên ẩn sâu (như slice index out of range, nil pointer dereference, memory allocation overflow) khiến ứng dụng bị **Panic / Crash** mà SAST/DAST không thể phát hiện được.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Cách tạo và quản lý môi trường thử nghiệm ứng dụng tạm thời (Ephemeral Staging Environment) cho bước DAST scan?
-
-**Đáp án chuẩn:**
-- Tại `before_script:` của CI Job, ta dùng lệnh `docker run -d --name ephemeral-app -p 8080:8080 $IMAGE` để dựng một Container ứng dụng tạm thời lắng nghe port `8080`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Cách tạo và quản lý môi trường thử nghiệm ứng dụng tạm thời (Ephemeral Staging Environment) cho bước DAST scan?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tại `before_script:` của CI Job, ta dùng lệnh `docker run -d --name ephemeral-app -p 8080:8080 $IMAGE` để dựng một Container ứng dụng tạm thời lắng nghe port `8080`.
 - Cho OWASP ZAP quét DAST trên URL `http://localhost:8080`. Sau khi quét xong, sử dụng thuộc tính `after_script:` gọi lệnh `docker rm -f ephemeral-app` để tự động tiêu hủy Container, đảm bảo cách ly 100%.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Sự khác biệt giữa lỗ hổng cấu hình Runtime (như CORS misconfiguration, missing HSTS) và lỗ hổng mã nguồn tĩnh?
-
-**Đáp án chuẩn:**
-- **Lỗ hổng mã nguồn tĩnh:** Nằm ở câu lệnh code thô do lập trình viên viết (ví dụ `fmt.Sprintf("SELECT...")`). Khắc phục bằng cách sửa trực tiếp logic code Go/Python.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Sự khác biệt giữa lỗ hổng cấu hình Runtime (như CORS misconfiguration, missing HSTS) và lỗ hổng mã nguồn tĩnh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Lỗ hổng mã nguồn tĩnh:** Nằm ở câu lệnh code thô do lập trình viên viết (ví dụ `fmt.Sprintf("SELECT...")`). Khắc phục bằng cách sửa trực tiếp logic code Go/Python.
 - **Lỗ hổng cấu hình Runtime:** Nằm ở phản hồi HTTP Response Headers do web server (Nginx/Envoy) hoặc Middleware thiết lập. Khắc phục bằng cách bổ sung các HTTP Response Headers (`X-Frame-Options`, `Content-Security-Policy`, `Strict-Transport-Security`).
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Cách xuất và nạp báo cáo an ninh DAST theo định dạng chuẩn `gl-dast-report.json` lên GitLab Security Dashboard?
-
-**Đáp án chuẩn:**
-- Trong lệnh ZAP, ta truyền cờ `-J gl-dast-report.json` để xuất báo cáo chuẩn JSON.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Cách xuất và nạp báo cáo an ninh DAST theo định dạng chuẩn `gl-dast-report.json` lên GitLab Security Dashboard?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong lệnh ZAP, ta truyền cờ `-J gl-dast-report.json` để xuất báo cáo chuẩn JSON.
 - Trong `.gitlab-ci.yml`, ta nộp tệp báo cáo sang GitLab CI bằng thuộc tính:
   ```yaml
   artifacts:
@@ -9685,47 +12700,101 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - GitLab UI sẽ tự động đọc và hiển thị kết quả quét DAST lên giao diện Security Dashboard và Merge Request Widget.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách thiết lập Security Quality Gate tự động ngắt pipeline khi DAST phát hiện lỗi nghiêm trọng mức `CRITICAL` / `HIGH`?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh Zaproxy runner, ta truyền cờ `-a` (fail on warning) hoặc truyền tệp `zap-rules.conf` cấu hình các mã rule nghiêm trọng thành `FAIL`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách thiết lập Security Quality Gate tự động ngắt pipeline khi DAST phát hiện lỗi nghiêm trọng mức `CRITICAL` / `HIGH`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh Zaproxy runner, ta truyền cờ `-a` (fail on warning) hoặc truyền tệp `zap-rules.conf` cấu hình các mã rule nghiêm trọng thành `FAIL`.
 - Đồng thời đặt cờ `allow_failure: false` trong CI Job. Khi ZAP phát hiện lỗ hổng mức `CRITICAL` / `HIGH`, Job sẽ trả về `exit code 1` ngắt pipeline lập tức.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp quản lý cảnh báo giả trong DAST bằng tệp cấu hình `zap-rules.conf` có vết audit?
-
-**Đáp án chuẩn:**
-- Khi xác định một cảnh báo của ZAP là giả (như cảnh báo Server Header Banner đã được che bởi Proxy):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp quản lý cảnh báo giả trong DAST bằng tệp cấu hình `zap-rules.conf` có vết audit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi xác định một cảnh báo của ZAP là giả (như cảnh báo Server Header Banner đã được che bởi Proxy):
   1. Khai báo mã rule ID của ZAP (ví dụ `10036`) vào tệp `zap-rules.conf` với từ khóa `IGNORE` (`10036\tIGNORE`).
   2. Bắt buộc đính kèm comment giải trình lý do an toàn và người phê duyệt (`Security Lead - Approved by Name`).
   3. Quản lý tệp `zap-rules.conf` qua quy tắc `CODEOWNERS` của Git repo.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi câu lệnh DAST scan làm quá tải CPU/RAM hoặc gây sập ứng dụng Staging giữa chừng?
-
-**Đáp án chuẩn:**
-- Giới hạn tốc độ quét của ZAP bằng cờ delay giữa các requests (`-z "-config scanner.threadPerHost=2"`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi câu lệnh DAST scan làm quá tải CPU/RAM hoặc gây sập ứng dụng Staging giữa chừng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Giới hạn tốc độ quét của ZAP bằng cờ delay giữa các requests (`-z "-config scanner.threadPerHost=2"`).
 - Giới hạn độ sâu Spidering bằng cờ `-d 3`.
 - Bổ sung khối `recover()` middleware trong mã nguồn ứng dụng Go để bắt các ngoại lệ Panic, ngăn ứng dụng bị crash khi nhận payload rác.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước triển khai DAST & Fuzzing chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Ephemeral App Deploy:** CI Runner khởi chạy Container ứng dụng tạm thời ở Stage test (`http://localhost:8080`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai DAST & Fuzzing chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Ephemeral App Deploy:** CI Runner khởi chạy Container ứng dụng tạm thời ở Stage test (`http://localhost:8080`).
 2. **DAST & Fuzzing Scan:** Chạy `zap-baseline.py` quét lỗ hổng Web Runtime và `go test -fuzz` kiểm tra lỗi Panic/Crash.
 3. **Quality Gate Check:** Tự động kiểm tra kết quả, ngắt pipeline (`exit 1`) nếu xuất hiện lỗ hổng `CRITICAL`/`HIGH` hoặc lỗi Crash.
 4. **Cleanup & Remediation:** Tiêu hủy Ephemeral App trong `after_script`, sửa code bổ sung Security Headers và len check.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -9883,86 +12952,201 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Secret tĩnh trong CI là nợ có lãi; đường thoát duy nhất là secret sinh lúc chạy, hết hạn ngắn và không mật khẩu qua OIDC"**?
-
-**Đáp án chuẩn:**
-- Vì chuỗi Secret tĩnh (như AWS Access Keys dùng nhiều năm) lưu trữ trên CI/CD Variables hay mã nguồn dễ bị lộ qua commit history hoặc Runner logs, tạo nên rủi ro thảm họa an ninh kéo dài.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Secret tĩnh trong CI là nợ có lãi; đường thoát duy nhất là secret sinh lúc chạy, hết hạn ngắn và không mật khẩu qua OIDC"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì chuỗi Secret tĩnh (như AWS Access Keys dùng nhiều năm) lưu trữ trên CI/CD Variables hay mã nguồn dễ bị lộ qua commit history hoặc Runner logs, tạo nên rủi ro thảm họa an ninh kéo dài.
 - Giải pháp triệt để là xóa bỏ hoàn toàn Secret tĩnh, chuyển sang cơ chế **Secret sinh lúc chạy (Dynamic Secret)** có thời hạn sống ngắn (5–15 phút) và xác thực không mật khẩu qua chuẩn **OpenID Connect (OIDC)**.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Masked Variables, Protected Variables và File Variables trong GitLab CI/CD Settings?
-
-**Đáp án chuẩn:**
-- **Masked Variables:** Tự động mã hóa ẩn danh chuỗi bí mật (thay bằng `[MASKED]`) trong console log của CI Runner.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Masked Variables, Protected Variables và File Variables trong GitLab CI/CD Settings?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Masked Variables:** Tự động mã hóa ẩn danh chuỗi bí mật (thay bằng `[MASKED]`) trong console log của CI Runner.
 - **Protected Variables:** Chỉ truyền biến môi trường này vào CI Jobs khi chạy trên các nhánh được bảo vệ (`main`, `production`).
 - **File Variables:** Lưu trữ bí mật (như SSH Private Key, Service Account JSON) dưới dạng tệp tạm thời trên đĩa của CI Runner thay vì chuỗi biến.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý hoạt động của công cụ Gitleaks Secret Scanning và khả năng tìm kiếm Secret lộ trong lịch sử Git Commit?
-
-**Đáp án chuẩn:**
-- Gitleaks truy vết cây cú pháp Git DAG, phân tích toán học toàn bộ lịch sử commit history và diff bằng bộ quy tắc Regex và thuật toán đo độ hỗn loạn Shannon Entropy.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ Gitleaks Secret Scanning và khả năng tìm kiếm Secret lộ trong lịch sử Git Commit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Gitleaks truy vết cây cú pháp Git DAG, phân tích toán học toàn bộ lịch sử commit history và diff bằng bộ quy tắc Regex và thuật toán đo độ hỗn loạn Shannon Entropy.
 - Gitleaks phát hiện được cả các chuỗi AWS Keys, JWT Tokens, SSH Keys nằm ở các commit dở dang cũ từ nhiều tháng trước ngay cả khi file hiện tại đã xóa dòng code đó.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao việc xóa chuỗi Secret rò rỉ bằng commit mới không thể sửa triệt để lỗ hổng nếu không rebase/purge Git history?
-
-**Đáp án chuẩn:**
-- Vì Git lưu trữ lịch sử commit vĩnh viễn (Git Commit History). Tạo commit mới chỉ xóa dòng code ở HEAD commit, còn chuỗi Secret vẫn nằm nguyên vẹn ở các commit cũ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao việc xóa chuỗi Secret rò rỉ bằng commit mới không thể sửa triệt để lỗ hổng nếu không rebase/purge Git history?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì Git lưu trữ lịch sử commit vĩnh viễn (Git Commit History). Tạo commit mới chỉ xóa dòng code ở HEAD commit, còn chuỗi Secret vẫn nằm nguyên vẹn ở các commit cũ.
 - Kẻ tấn công chỉ cần clone repo và checkout về commit SHA cũ là lấy được chuỗi Secret. Muốn sửa triệt để phải lập tức **Thu hồi (Revoke)** key trên Cloud và Purge lịch sử Git bằng `git-filter-repo`.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Nguyên lý hoạt động của HashiCorp Vault trong việc quản lý tập trung và cấp phát Secret động (Dynamic Secrets)?
-
-**Đáp án chuẩn:**
-- HashiCorp Vault lưu trữ toàn bộ chuỗi bí mật mã hóa trong bộ nhớ RAM và điều khiển cấp phát qua các Secrets Engines.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của HashiCorp Vault trong việc quản lý tập trung và cấp phát Secret động (Dynamic Secrets)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - HashiCorp Vault lưu trữ toàn bộ chuỗi bí mật mã hóa trong bộ nhớ RAM và điều khiển cấp phát qua các Secrets Engines.
 - Với Dynamic Secrets, Vault giao tiếp trực tiếp với Cloud Provider / Database để sinh ra Username/Password tạm thời cho mỗi CI Job và tự động gửi câu lệnh `DROP USER` thu hồi tài khoản khi hết hạn TTL (5–15 phút).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Nguyên lý hoạt động của OpenID Connect (OIDC) trong việc xác thực không mật khẩu (Passwordless) giữa GitLab CI và Cloud/Vault?
-
-**Đáp án chuẩn:**
-- Ở mỗi CI Job, GitLab Runner tự động cấp phát một JSON Web Token (`id_tokens`) chứa chữ ký số RS256 của GitLab Server.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của OpenID Connect (OIDC) trong việc xác thực không mật khẩu (Passwordless) giữa GitLab CI và Cloud/Vault?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Ở mỗi CI Job, GitLab Runner tự động cấp phát một JSON Web Token (`id_tokens`) chứa chữ ký số RS256 của GitLab Server.
 - CI Job gửi JWT Token sang Cloud Provider (AWS IAM / HashiCorp Vault). Máy chủ Cloud kiểm tra chữ ký số qua OIDC Discovery Endpoint và cấp một Access Token ngắn hạn mà không cần lưu bất kỳ mật khẩu tĩnh nào trong CI/CD Settings.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Cấu trúc và ý nghĩa của các trường claims trong JSON Web Token (JWT `id_tokens`) do GitLab Runner cấp phát?
-
-**Đáp án chuẩn:**
-- `iss` (Issuer): URL xác thực của GitLab Server (`https://gitlab.example.com`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Cấu trúc và ý nghĩa của các trường claims trong JSON Web Token (JWT `id_tokens`) do GitLab Runner cấp phát?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `iss` (Issuer): URL xác thực của GitLab Server (`https://gitlab.example.com`).
 - `sub` (Subject): Định danh chi tiết CI Job (`project_path:group/project:ref_type:branch:ref:main`).
 - `aud` (Audience): URL đối tượng nhận token (ví dụ `http://localhost:8200`), ngăn chặn token bị lạm dụng giả mạo.
 - `project_path`: Đường dẫn tên dự án dùng để ràng buộc Vault Policy / AWS IAM Role.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Cách thiết lập quyền truy cập tối thiểu (Least Privilege Scope) cho OIDC Role trên AWS IAM hoặc HashiCorp Vault Policy?
-
-**Đáp án chuẩn:**
-- Ràng buộc chính xác trường `aud` trong JWT Token khớp với duy nhất URL của máy chủ Vault/AWS.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Cách thiết lập quyền truy cập tối thiểu (Least Privilege Scope) cho OIDC Role trên AWS IAM hoặc HashiCorp Vault Policy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Ràng buộc chính xác trường `aud` trong JWT Token khớp với duy nhất URL của máy chủ Vault/AWS.
 - Trên Vault / AWS IAM Role, cấu hình điều kiện `bound_claims` chỉ cho phép JWT Token phát ra từ nhánh `main` của repo cụ thể (`project_path: devsecops/web-app`) được quyền đọc secret, từ chối tất cả các nhánh feature branch rác.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách xuất và nạp báo cáo Secret Detection theo định dạng chuẩn `gl-secret-detection-report.json` lên GitLab UI?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh Gitleaks CLI, ta truyền cờ `--report-format json --report-path gl-secret-detection-report.json`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách xuất và nạp báo cáo Secret Detection theo định dạng chuẩn `gl-secret-detection-report.json` lên GitLab UI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh Gitleaks CLI, ta truyền cờ `--report-format json --report-path gl-secret-detection-report.json`.
 - Trong `.gitlab-ci.yml`, ta nộp tệp báo cáo sang GitLab CI bằng thuộc tính:
   ```yaml
   artifacts:
@@ -9972,37 +13156,78 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - GitLab UI sẽ tự động đọc và hiển thị kết quả rò rỉ secret lên giao diện Merge Request Security Widget.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp xử lý và thu hồi khẩn cấp (Emergency Revocation) khi phát hiện AWS Access Key bị rò rỉ công khai?
-
-**Đáp án chuẩn:**
-1. **Revoke Immediately:** Đăng nhập AWS IAM Console, Disable và Delete ngay lập tức AWS Access Key rò rỉ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp xử lý và thu hồi khẩn cấp (Emergency Revocation) khi phát hiện AWS Access Key bị rò rỉ công khai?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Revoke Immediately:** Đăng nhập AWS IAM Console, Disable và Delete ngay lập tức AWS Access Key rò rỉ.
 2. **CloudTrail Audit:** Phân tích nhật ký AWS CloudTrail kiểm tra xem key rò rỉ đã bị kẻ xấu dùng tạo tài nguyên lạ chưa.
 3. **Purge Git History:** Sử dụng `git-filter-repo --invert-paths --path <file>` xóa sạch vết commit lộ key khỏi Git Tree.
 4. **Switch to OIDC:** Chuyển đổi sang xác thực không mật khẩu AWS IAM OIDC Role.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi chuỗi Secret bị in lộ ra log Runner do thiếu ký tự mã hóa Base64 hoặc định dạng đa dòng?
-
-**Đáp án chuẩn:**
-- GitLab Runner chỉ ẩn danh (`[MASKED]`) đúng chính xác chuỗi ký tự thô của biến.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi chuỗi Secret bị in lộ ra log Runner do thiếu ký tự mã hóa Base64 hoặc định dạng đa dòng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - GitLab Runner chỉ ẩn danh (`[MASKED]`) đúng chính xác chuỗi ký tự thô của biến.
 - Nếu chuỗi secret được encode Base64 hoặc chuyển dạng multiline, Runner sẽ không tự động ẩn danh được. Giải pháp là khởi tạo thêm 1 biến CI Variable lưu chuỗi đã encode Base64 và tích chọn cờ `Masked` cho cả 2 biến.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước quản lý Secret chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Secret Scanning:** Chạy Gitleaks phát hiện và chặn đứng Hardcoded Secret ở commit diff của Merge Request.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước quản lý Secret chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Secret Scanning:** Chạy Gitleaks phát hiện và chặn đứng Hardcoded Secret ở commit diff của Merge Request.
 2. **Vault Integration:** Dựng HashiCorp Vault Server quản lý bí mật tập trung trên RAM.
 3. **OIDC Authentication:** Cấp OIDC JWT `id_tokens` xác thực không mật khẩu với Vault / Cloud Provider.
 4. **Dynamic Short-lived Tokens:** Nạp Dynamic Secret có thời hạn sống 5–15 phút vào RAM CI Job, tự động thu hồi khi hết hạn.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -10160,74 +13385,176 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quét image sau khi build là quá muộn ở một ca cụ thể; quét IaC bắt được lỗi cấu hình sai từ commit code tĩnh trước khi bất kỳ container nào được build"**?
-
-**Đáp án chuẩn:**
-- Vì việc chờ build xong Container Image (tốn 10–15 phút) rồi mới quét sẽ cực kỳ lãng phí tài nguyên CPU/RAM nếu Dockerfile chứa lỗi cấu hình nghiêm trọng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quét image sau khi build là quá muộn ở một ca cụ thể; quét IaC bắt được lỗi cấu hình sai từ commit code tĩnh trước khi bất kỳ container nào được build"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì việc chờ build xong Container Image (tốn 10–15 phút) rồi mới quét sẽ cực kỳ lãng phí tài nguyên CPU/RAM nếu Dockerfile chứa lỗi cấu hình nghiêm trọng.
 - Quét hạ tầng IaC (`Checkov`) ở Stage test phân tích mã nguồn tĩnh trong **2 giây**, phát hiện và chặn đứng ngay các lỗi thiết kế hạ tầng sai (chạy Root, cờ Privileged, thiếu Resource Limits) trước khi bất kỳ câu lệnh `docker build` nào được thực thi.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét an ninh cấu hình IaC (Checkov) và Quét lỗ hổng Container Image (Trivy Image)?
-
-**Đáp án chuẩn:**
-- **IaC Scanning (Checkov):** Phân tích mã nguồn tĩnh của tệp `Dockerfile`, `deployment.yaml`, `main.tf` trước khi build. Phát hiện các lỗi vi phạm thiết kế hạ tầng (chạy Root, mở port SSH 22, thiếu Resource Limits).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét an ninh cấu hình IaC (Checkov) và Quét lỗ hổng Container Image (Trivy Image)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **IaC Scanning (Checkov):** Phân tích mã nguồn tĩnh của tệp `Dockerfile`, `deployment.yaml`, `main.tf` trước khi build. Phát hiện các lỗi vi phạm thiết kế hạ tầng (chạy Root, mở port SSH 22, thiếu Resource Limits).
 - **Container Scanning (Trivy Image):** Giải nén các lớp Image Layers nhị phân sau khi build. Phát hiện các mã lỗ hổng CVEs công bố quốc tế của các gói hệ điều hành Linux Base OS (Debian/Alpine APK/APT packages) và thư viện cài thêm.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Rủi ro bảo mật nghiêm trọng khi chạy Container dưới quyền Root (`USER root` hoặc thiếu câu lệnh `USER`) trong Dockerfile?
-
-**Đáp án chuẩn:**
-- Mặc định Container khởi chạy với quyền Root (UID 0). Nếu ứng dụng bị lây nhiễm lỗ hổng Remote Code Execution (RCE), kẻ tấn công sẽ sở hữu quyền Root bên trong Container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Rủi ro bảo mật nghiêm trọng khi chạy Container dưới quyền Root (`USER root` hoặc thiếu câu lệnh `USER`) trong Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định Container khởi chạy với quyền Root (UID 0). Nếu ứng dụng bị lây nhiễm lỗ hổng Remote Code Execution (RCE), kẻ tấn công sẽ sở hữu quyền Root bên trong Container.
 - Kết hợp với các lỗ hổng kernel (Container Escape), kẻ tấn công có thể phá vỡ ranh giới cách ly container và chiếm quyền quản trị tối cao (Host Node Root) của máy chủ vật lý.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của công cụ Checkov trong việc phân tích tệp Dockerfile, Terraform, và Kubernetes Manifests?
-
-**Đáp án chuẩn:**
-- Checkov biên dịch các tệp IaC thành cây cú pháp trừu tượng AST và dựng Đồ thị liên kết tài nguyên (Resource Connection Graph).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ Checkov trong việc phân tích tệp Dockerfile, Terraform, và Kubernetes Manifests?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Checkov biên dịch các tệp IaC thành cây cú pháp trừu tượng AST và dựng Đồ thị liên kết tài nguyên (Resource Connection Graph).
 - Sau đó Checkov đối soát các trường thuộc tính hạ tầng với bộ hơn 1,000 quy tắc kiểm thử an ninh chuẩn CIS Benchmark và NSA Framework, phát hiện các lỗi vi phạm kèm vị trí dòng code chính xác.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Nguyên lý hoạt động của `trivy image` trong việc trích xuất danh sách OS Packages (Debian/Alpine) và đối soát CSDL Vulnerability DB?
-
-**Đáp án chuẩn:**
-- `trivy image` giải nén các lớp file system layers của Container Image, truy cập các tệp cơ sở dữ liệu quản lý gói hệ điều hành (`dpkg/status`, `apk/db`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của `trivy image` trong việc trích xuất danh sách OS Packages (Debian/Alpine) và đối soát CSDL Vulnerability DB?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `trivy image` giải nén các lớp file system layers của Container Image, truy cập các tệp cơ sở dữ liệu quản lý gói hệ điều hành (`dpkg/status`, `apk/db`).
 - Trivy trích xuất tên gói và con số phiên bản chính xác, đối soát trực tiếp với CSDL NVD CVE đệm địa phương để xuất thông tin chi tiết mã CVE, điểm CVSS Score và phiên bản đã sửa lỗi (`Fixed Version`).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Tại sao việc sử dụng thẻ Docker Image `latest` làm tăng nguy cơ rò rỉ lỗ hổng bảo mật và mất tính tái lập (Reproducibility)?
-
-**Đáp án chuẩn:**
-- Thẻ `latest` là một con trỏ động thay đổi liên tục. Hai bản build chạy ở 2 ngày khác nhau sử dụng `FROM ubuntu:latest` sẽ nạp 2 bản Base Image khác nhau.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Tại sao việc sử dụng thẻ Docker Image `latest` làm tăng nguy cơ rò rỉ lỗ hổng bảo mật và mất tính tái lập (Reproducibility)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Thẻ `latest` là một con trỏ động thay đổi liên tục. Hai bản build chạy ở 2 ngày khác nhau sử dụng `FROM ubuntu:latest` sẽ nạp 2 bản Base Image khác nhau.
 - Điều này khiến bản build tuần sau có thể đột ngột dính các lỗ hổng CVE mới do nhà phát hành cập nhật, đồng thời làm mất hoàn toàn tính tái lập của CI Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Khái niệm Minimal Distroless Image và lợi ích của việc sử dụng Distroless Image đối với kết quả quét Container Scan?
-
-**Đáp án chuẩn:**
-- Distroless Image (như Google Distroless) là Base Image tối giản chỉ chứa duy nhất tệp ứng dụng biên dịch và thư viện Runtime tối thiểu, loại bỏ 100% shell bash, package manager và tiện ích Linux thừa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Khái niệm Minimal Distroless Image và lợi ích của việc sử dụng Distroless Image đối với kết quả quét Container Scan?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Distroless Image (như Google Distroless) là Base Image tối giản chỉ chứa duy nhất tệp ứng dụng biên dịch và thư viện Runtime tối thiểu, loại bỏ 100% shell bash, package manager và tiện ích Linux thừa.
 - Sử dụng Distroless Image giúp giảm **95%** dung lượng Container Image và triệt tiêu gần **100%** các lỗ hổng CVEs hệ điều hành.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Cách xuất và nạp báo cáo Container Scanning theo định dạng chuẩn `gl-container-scanning-report.json` lên GitLab UI?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh Trivy, ta truyền cờ `--format template --template "@contrib/gitlab.tpl" -o gl-container-scanning-report.json`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Cách xuất và nạp báo cáo Container Scanning theo định dạng chuẩn `gl-container-scanning-report.json` lên GitLab UI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh Trivy, ta truyền cờ `--format template --template "@contrib/gitlab.tpl" -o gl-container-scanning-report.json`.
 - Trong `.gitlab-ci.yml`, ta nộp tệp báo cáo sang GitLab CI bằng thuộc tính:
   ```yaml
   artifacts:
@@ -10237,48 +13564,102 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - GitLab UI sẽ tự động đọc và hiển thị kết quả lên giao diện Security Dashboard và Merge Request Widget.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách thiết lập Security Quality Gate tự động ngắt pipeline khi phát hiện lỗ hổng Container mức `CRITICAL` / `HIGH`?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh `trivy image`, ta truyền cờ `--severity CRITICAL,HIGH --exit-code 1`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách thiết lập Security Quality Gate tự động ngắt pipeline khi phát hiện lỗ hổng Container mức `CRITICAL` / `HIGH`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh `trivy image`, ta truyền cờ `--severity CRITICAL,HIGH --exit-code 1`.
 - Đồng thời đặt cờ `allow_failure: false` trong CI Job. Khi phát hiện ít nhất 1 lỗ hổng mức `CRITICAL` hoặc `HIGH`, Trivy sẽ trả về `exit code 1` ngắt pipeline lập tức, ngăn không cho push Image lên Registry.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp quản lý cảnh báo giả trong Checkov bằng tệp `.checkov.yaml` hoặc comment inline `#checkov:skip=` có vết audit?
-
-**Đáp án chuẩn:**
-- Khi xác định một cảnh báo của Checkov là giả (như cờ HEALTHCHECK đã được quản lý ở Kubernetes Liveness Probe):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp quản lý cảnh báo giả trong Checkov bằng tệp `.checkov.yaml` hoặc comment inline `#checkov:skip=` có vết audit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi xác định một cảnh báo của Checkov là giả (như cờ HEALTHCHECK đã được quản lý ở Kubernetes Liveness Probe):
   1. Thêm comment `#checkov:skip=CKV_DOCKER_2: "Lý do an toàn"` trực tiếp ở dòng code Dockerfile, hoặc khai báo mã check trong tệp `.checkov.yaml`.
   2. Bắt buộc đính kèm dòng giải trình an toàn và người phê duyệt.
   3. Cấu hình tệp `CODEOWNERS` chỉ định nhóm Security quản lý tệp `.checkov.yaml`.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử sự khi Base Image chính thức của nhà cung cấp (như `python:3.10-slim`) chứa lỗ hổng CVE `CRITICAL` chưa có bản vá?
-
-**Đáp án chuẩn:**
-- Nếu CVE chưa có bản vá (`Fixed Version: N/A`) và nằm trong thành phần không được sử dụng ở Runtime:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử sự khi Base Image chính thức của nhà cung cấp (như `python:3.10-slim`) chứa lỗ hổng CVE `CRITICAL` chưa có bản vá?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nếu CVE chưa có bản vá (`Fixed Version: N/A`) và nằm trong thành phần không được sử dụng ở Runtime:
   1. Khai báo cờ `trivy image --ignore-unfixed` để bỏ qua các CVEs chưa có bản vá chính thức.
   2. Hoặc chuyển đổi sang Base Image của nhà cung cấp khác (như Chainguard Zero-CVE Images hoặc Distroless).
   3. Nếu bắt buộc phải dùng, tạo Issue theo dõi và thêm vết audit miễn trừ tạm thời có thời hạn 30 ngày.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước triển khai Container & IaC Scan chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **IaC Scan (Stage test):** Chạy Checkov quét mã nguồn tĩnh Dockerfile, Terraform, K8s trước khi build image.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai Container & IaC Scan chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **IaC Scan (Stage test):** Chạy Checkov quét mã nguồn tĩnh Dockerfile, Terraform, K8s trước khi build image.
 2. **Image Build (Stage build):** Thực thi `docker build` tạo Container Image với Non-root USER.
 3. **Container Scan (Stage build):** Chạy `trivy image` quét lỗ hổng OS Packages và trích xuất SBOM `sbom.json`.
 4. **Quality Gate Check:** Tự động ngắt pipeline (`exit 1`) nếu có lỗi IaC `HIGH` hoặc lỗi Container `CRITICAL`.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -10436,124 +13817,280 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Muốn biết image có an toàn hay không, phải biết ai build, từ commit nào, bằng runner nào — provenance là chứng minh nhân dân của hiện vật và chữ ký số Cosign là niêm phong điện tử chống tráo đổi hiện vật"**?
-
-**Đáp án chuẩn:**
-- Vì một Container Image vượt qua kiểm tra SAST/Trivy vẫn có thể bị kẻ tấn công tráo đổi nhị phân (Artifact Tampering) trên Registry hoặc được build từ một máy chủ Runner giả mạo bị chiếm quyền.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Muốn biết image có an toàn hay không, phải biết ai build, từ commit nào, bằng runner nào — provenance là chứng minh nhân dân của hiện vật và chữ ký số Cosign là niêm phong điện tử chống tráo đổi hiện vật"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì một Container Image vượt qua kiểm tra SAST/Trivy vẫn có thể bị kẻ tấn công tráo đổi nhị phân (Artifact Tampering) trên Registry hoặc được build từ một máy chủ Runner giả mạo bị chiếm quyền.
 - **SLSA Provenance** đóng vai trò chứng minh nhân dân xác nhận chính xác bản build được tạo ra từ Commit SHA nào và Runner ID nào; trong khi **Chữ ký số Cosign** đóng vai trò niêm phong điện tử mã hóa, đảm bảo hiện vật không bị sửa đổi dù chỉ 1 bit nhị phân khi lưu trữ trên Registry.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa 3 khái niệm: SBOM (Bill of Materials), SLSA Provenance (Chứng nhận nguồn gốc), và Cosign Signature (Chữ ký số niêm phong)?
-
-**Đáp án chuẩn:**
-- **SBOM (Software Bill of Materials):** Kê khai *BÊN TRONG IMAGE CÓ CÁI GÌ* (Danh mục tất cả các gói phần mềm, APK/APT packages, thư viện).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa 3 khái niệm: SBOM (Bill of Materials), SLSA Provenance (Chứng nhận nguồn gốc), và Cosign Signature (Chữ ký số niêm phong)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **SBOM (Software Bill of Materials):** Kê khai *BÊN TRONG IMAGE CÓ CÁI GÌ* (Danh mục tất cả các gói phần mềm, APK/APT packages, thư viện).
 - **SLSA Provenance:** Chứng minh *AI BUILD RA IMAGE NÀY, TỪ COMMIT NÀO, BẰNG RUNNER NÀO* (Chứng nhận xuất xứ nguồn gốc bản build).
 - **Cosign Signature:** Niêm phong *HIỆN VẬT NÀY KHÔNG BỊ TRÁO ĐỔI VÀ KHỚP VỚI PUBLIC KEY CỦA CÔNG TY* (Chữ ký số Cryptographic niêm phong OCI Artifact).
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý hoạt động của công cụ Cosign (Sigstore) trong việc ký số và lưu trữ chữ ký số trực tiếp trên OCI Registry?
-
-**Đáp án chuẩn:**
-- Cosign tính toán mã Hash **Immutable Digest SHA256** của Container Image, sử dụng Private Key (ECDSA P-256 / RSA-4096) để mã hóa tạo ra chuỗi chữ ký số Cryptographic Signature.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ Cosign (Sigstore) trong việc ký số và lưu trữ chữ ký số trực tiếp trên OCI Registry?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Cosign tính toán mã Hash **Immutable Digest SHA256** của Container Image, sử dụng Private Key (ECDSA P-256 / RSA-4096) để mã hóa tạo ra chuỗi chữ ký số Cryptographic Signature.
 - Cosign đóng gói chữ ký số này thành một OCI Artifact đặc biệt và đẩy trực tiếp lên OCI Registry với tên Tag dạng `sha256-<DIGEST>.sig` nằm song song bên cạnh Container Image, giúp các công cụ ở CD Pipeline dễ dàng kéo về xác thực.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Khái niệm Keyless Signing qua OIDC Token trong Cosign (Sigstore Fulcio & Rekor) và lợi ích của việc không cần quản lý Private Key tĩnh?
-
-**Đáp án chuẩn:**
-- Keyless Signing sử dụng OIDC JWT Token của GitLab CI để xác thực với Fulcio Certificate Authority, xin một Chứng chỉ số X.509 ngắn hạn (thời hạn sống 20 phút) để ký số lên Image.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Khái niệm Keyless Signing qua OIDC Token trong Cosign (Sigstore Fulcio & Rekor) và lợi ích của việc không cần quản lý Private Key tĩnh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Keyless Signing sử dụng OIDC JWT Token của GitLab CI để xác thực với Fulcio Certificate Authority, xin một Chứng chỉ số X.509 ngắn hạn (thời hạn sống 20 phút) để ký số lên Image.
 - Chữ ký số và chứng chỉ ngắn hạn được ghi vĩnh viễn vào nhật ký công khai **Rekor Transparency Log**. Lợi ích là loại bỏ hoàn toàn rủi ro bị lộ hay phải quản lý/xoay vòng Private Key tĩnh.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Các cấp độ an ninh chuỗi cung ứng trong khung tiêu chuẩn SLSA (Supply-chain Levels for Software Artifacts) từ Level 1 đến Level 3?
-
-**Đáp án chuẩn:**
-- **SLSA Level 1:** Bản build được tự động hóa bằng CI Script và xuất tệp Provenance thô.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Các cấp độ an ninh chuỗi cung ứng trong khung tiêu chuẩn SLSA (Supply-chain Levels for Software Artifacts) từ Level 1 đến Level 3?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **SLSA Level 1:** Bản build được tự động hóa bằng CI Script và xuất tệp Provenance thô.
 - **SLSA Level 2:** Bản build chạy trên CI Runner độc lập và tệp Provenance được ký số bởi CI Server.
 - **SLSA Level 3:** Bản build thực thi trong môi trường isolated đệm vô trùng (Ephemeral Isolated Build), ngăn chặn tuyệt đối người dùng tự ý sửa bộ nhớ RAM hay can thiệp quá trình build.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Rủi ro bảo mật nghiêm trọng của tấn công tráo đổi hiện vật (Artifact Tampering / Man-in-the-Middle Attack) trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-- Kẻ tấn công có thể truy cập Docker Registry (hoặc chặn luồng mạng), thay thế Container Image gốc bằng một Image độc hại đã chèn mã độc/backdoor nhưng giữ nguyên Image Tag (`:v1.0.0`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Rủi ro bảo mật nghiêm trọng của tấn công tráo đổi hiện vật (Artifact Tampering / Man-in-the-Middle Attack) trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Kẻ tấn công có thể truy cập Docker Registry (hoặc chặn luồng mạng), thay thế Container Image gốc bằng một Image độc hại đã chèn mã độc/backdoor nhưng giữ nguyên Image Tag (`:v1.0.0`).
 - Nếu CD Pipeline chỉ kiểm tra tên Tag mà không đối soát chữ ký số `cosign verify` trên Digest SHA256, hệ thống Production sẽ kéo nhầm Image độc hại về khởi chạy, dẫn đến toàn bộ Kubernetes Cluster bị kiểm soát.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Nguyên lý xác thực chữ ký số bằng câu lệnh `cosign verify --key cosign.pub` ở môi trường Kubernetes Cluster (Kyverno / OPA Policy)?
-
-**Đáp án chuẩn:**
-- Khi K8s nhận lệnh deploy Pod, Admission Controller (Kyverno) bắt luồng webhook, trích xuất Digest SHA256 của Image và kéo OCI Signature `.sig` từ Registry về.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Nguyên lý xác thực chữ ký số bằng câu lệnh `cosign verify --key cosign.pub` ở môi trường Kubernetes Cluster (Kyverno / OPA Policy)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi K8s nhận lệnh deploy Pod, Admission Controller (Kyverno) bắt luồng webhook, trích xuất Digest SHA256 của Image và kéo OCI Signature `.sig` từ Registry về.
 - Kyverno dùng Public Key `cosign.pub` giải mã chữ ký số; nếu chữ ký hợp lệ và khớp Digest SHA256, K8s mới cho phép khởi tạo Pod; nếu không khớp, K8s trả về `ImagePolicyWebhook Rejected` chặn đứng deploy.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Cấu trúc và ý nghĩa các trường dữ liệu trong tệp SLSA Provenance Attestation (`provenance.json`)?
-
-**Đáp án chuẩn:**
-- `subject`: Định danh URL của Image và chuỗi băm `sha256` Digest.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Cấu trúc và ý nghĩa các trường dữ liệu trong tệp SLSA Provenance Attestation (`provenance.json`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `subject`: Định danh URL của Image và chuỗi băm `sha256` Digest.
 - `builder.id`: Đường dẫn định danh máy chủ CI Runner (`https://gitlab.com/runners/runner-01`).
 - `invocation.configSource`: Đường dẫn repository Git (`git+https://...`) và tệp cấu hình `.gitlab-ci.yml`.
 - `invocation.parameters`: Mã commit `CI_COMMIT_SHA` và định danh pipeline `CI_PIPELINE_ID`.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách bảo vệ an toàn cho Cosign Private Key bằng HashiCorp Vault Transit Engine hoặc AWS KMS trong CI Pipeline?
-
-**Đáp án chuẩn:**
-- Không lưu `cosign.key` thô trong CI/CD Variables.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách bảo vệ an toàn cho Cosign Private Key bằng HashiCorp Vault Transit Engine hoặc AWS KMS trong CI Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Không lưu `cosign.key` thô trong CI/CD Variables.
 - Lưu trữ cặp khóa trong **HashiCorp Vault Transit Secrets Engine** hoặc **AWS KMS**. Khi cần ký số, CI Job gửi hash SHA256 sang Vault/KMS API để thực thi ký số từ xa; Private Key không bao giờ bị xuất ra ngoài bộ nhớ RAM của KMS/Vault.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Cách xử lý sự cố khi chữ ký số Cosign bị hết hạn hoặc khóa Public Key bị thu hồi (Key Revocation)?
-
-**Đáp án chuẩn:**
-- Nếu Public Key bị thu hồi do lộ nghi ngờ:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi chữ ký số Cosign bị hết hạn hoặc khóa Public Key bị thu hồi (Key Revocation)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nếu Public Key bị thu hồi do lộ nghi ngờ:
   1. Tiến hành thu hồi (Revoke) khóa cũ trên KMS/Vault và khởi tạo cặp khóa mới.
   2. Cập nhật keyring Public Key `cosign.pub` trên Kubernetes Cluster (Kyverno Policy).
   3. Chạy lại CI Pipeline ký số lại toàn bộ các bản build Container Image chính thức bằng cặp khóa mới.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Phương pháp chống tấn công Man-in-the-Middle đối với OCI Registry bằng việc bắt buộc kiểm tra chữ ký Cosign trước khi kéo Image (`docker pull`)?
-
-**Đáp án chuẩn:**
-- Trước khi thực thi lệnh kéo Image hoặc deploy, CD Script luôn thực thi câu lệnh:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Phương pháp chống tấn công Man-in-the-Middle đối với OCI Registry bằng việc bắt buộc kiểm tra chữ ký Cosign trước khi kéo Image (`docker pull`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trước khi thực thi lệnh kéo Image hoặc deploy, CD Script luôn thực thi câu lệnh:
   ```bash
   cosign verify --key cosign.pub $REGISTRY_IMAGE@$IMAGE_DIGEST
   ```
 - Nếu lệnh verify trả về `exit code 0`, CD Script mới tiếp tục gọi `docker pull`. Nếu verify thất bại, script ngắt tức thì (`exit 1`), triệt tiêu 100% rủi ro kéo nhầm hiện vật bị tráo đổi trên đường truyền.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước xây dựng Chuỗi Cung Ứng An Toàn chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Image Build (Stage build):** Thực thi `docker build` tạo Container Image với Digest SHA256 cố định.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước xây dựng Chuỗi Cung Ứng An Toàn chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Image Build (Stage build):** Thực thi `docker build` tạo Container Image với Digest SHA256 cố định.
 2. **Generate SBOM & Provenance:** Sinh tệp `sbom.json` CycloneDX và `provenance.json` chứng nhận nguồn gốc.
 3. **Cosign Sign & Attest:** Ký số Cryptographic Signature bằng Cosign và đẩy OCI Artifacts `.sig` / `.att` lên Registry.
 4. **Verify Quality Gate (Stage deploy):** Xác thực chữ ký bằng `cosign verify` trước khi triển khai xuống Production K8s.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -10711,47 +14248,110 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quy định bảo mật viết bằng chữ là giấy lộn nếu không tự động hoá thành luật chạy trong pipeline; Conftest và ngôn ngữ Rego biến mọi chính sách tuân thủ an ninh thành mã kiểm thử tự động ngắt pipeline khi vi phạm"**?
-
-**Đáp án chuẩn:**
-- Vì các văn bản quy định bảo mật lưu trên PDF/Word thường không được lập trình viên đọc tới hoặc vô tình bị bỏ qua trong quá trình vội vã release.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quy định bảo mật viết bằng chữ là giấy lộn nếu không tự động hoá thành luật chạy trong pipeline; Conftest và ngôn ngữ Rego biến mọi chính sách tuân thủ an ninh thành mã kiểm thử tự động ngắt pipeline khi vi phạm"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì các văn bản quy định bảo mật lưu trên PDF/Word thường không được lập trình viên đọc tới hoặc vô tình bị bỏ qua trong quá trình vội vã release.
 - **Compliance as Code (Conftest + Rego)** mã hóa 100% các quy chuẩn an ninh văn bản thành mã phần mềm tự động kiểm thử ở Stage test, tự động đánh rớt pipeline (`exit 1`) khi có bất kỳ dòng cấu hình nào vi phạm mà không cần sự can thiệp thủ công của con người.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Security Quality Gate (Trivy/Gitleaks) và Compliance Enforcement (OPA/Conftest)?
-
-**Đáp án chuẩn:**
-- **Security Quality Gate (Trivy/Gitleaks):** Tìm kiếm các lỗ hổng phần mềm CVEs quốc tế hoặc rò rỉ secret key tĩnh do lỗi viết code thô.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Security Quality Gate (Trivy/Gitleaks) và Compliance Enforcement (OPA/Conftest)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Security Quality Gate (Trivy/Gitleaks):** Tìm kiếm các lỗ hổng phần mềm CVEs quốc tế hoặc rò rỉ secret key tĩnh do lỗi viết code thô.
 - **Compliance Enforcement (OPA/Conftest):** Kiểm tra xem các tệp cấu hình (`.gitlab-ci.yml`, `Dockerfile`, `deployment.yaml`) có tuân thủ đúng các quy chuẩn kiến trúc và vận hành nội bộ của công ty hay không (như bắt buộc chứa Job `secret-detection`, bắt buộc cờ `runAsNonRoot: true`, cờ `Protected Environment`).
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý hoạt động của Open Policy Agent (OPA) và ngôn ngữ khai báo chính sách `Rego`?
-
-**Đáp án chuẩn:**
-- OPA nạp dữ liệu đầu vào (tệp JSON/YAML đã parse) và thực thi truy vấn toán học tập hợp (Set Intersections) trên tập các mệnh đề trong tệp chính sách `.rego`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của Open Policy Agent (OPA) và ngôn ngữ khai báo chính sách `Rego`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - OPA nạp dữ liệu đầu vào (tệp JSON/YAML đã parse) và thực thi truy vấn toán học tập hợp (Set Intersections) trên tập các mệnh đề trong tệp chính sách `.rego`.
 - Ngôn ngữ `Rego` là ngôn ngữ khai báo (Declarative Language). Nếu tất cả các mệnh đề điều kiện trong khối `deny[msg]` đều thỏa mãn, khối `deny` sẽ trả về thông điệp lỗi `msg`, làm OPA thông báo trạng thái FAILED.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của công cụ `Conftest` trong việc kiểm thử các tệp cấu hình JSON/YAML/Dockerfile/HCL?
-
-**Đáp án chuẩn:**
-- `Conftest` đóng vai trò là một lớp vỏ Wrapper tích hợp bộ công cụ OPA vào quy trình CI/CD.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `Conftest` trong việc kiểm thử các tệp cấu hình JSON/YAML/Dockerfile/HCL?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Conftest` đóng vai trò là một lớp vỏ Wrapper tích hợp bộ công cụ OPA vào quy trình CI/CD.
 - Conftest tự động nhận diện cú pháp tệp đầu vào (`.gitlab-ci.yml`, `Dockerfile`, `deployment.yaml`, `main.tf`), chuyển đổi toàn bộ thành cấu trúc JSON Data trừu tượng AST, nạp các tệp chính sách `policy/*.rego` để OPA đánh giá và trả về kết quả lỗi kèm exit code 0 (Pass) hoặc exit code 1 (Fail).
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Cách viết luật chính sách Rego `deny[msg]` kiểm tra cấu hình bắt buộc trong tệp `.gitlab-ci.yml`?
-
-**Đáp án chuẩn:**
-- Ta viết luật Rego truy vấn các khối job trong `input`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Cách viết luật chính sách Rego `deny[msg]` kiểm tra cấu hình bắt buộc trong tệp `.gitlab-ci.yml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Ta viết luật Rego truy vấn các khối job trong `input`:
   ```rego
   package main
   deny[msg] {
@@ -10762,12 +14362,25 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
   ```
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Cách viết luật chính sách Rego kiểm tra thuộc tính Pod Security Context trong Kubernetes Manifests?
-
-**Đáp án chuẩn:**
-- Ta viết luật Rego truy vấn mảng `containers`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Cách viết luật chính sách Rego kiểm tra thuộc tính Pod Security Context trong Kubernetes Manifests?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Ta viết luật Rego truy vấn mảng `containers`:
   ```rego
   package main
   deny[msg] {
@@ -10779,20 +14392,46 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
   ```
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Cấu trúc tệp báo cáo kiểm toán tuân thủ an ninh `gl-compliance-report.json`?
-
-**Đáp án chuẩn:**
-- Tệp chứa thuộc tính `version: "1.0.0"`, `status: "FAILED"`, `summary` (tổng số luật đánh giá, số luật pass, số luật vi phạm), và mảng `violations` chi tiết mã điều khoản `policy_id`, tệp vi phạm `target_file`, mức độ `severity`, thông điệp `message` và số dòng code `line_number`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Cấu trúc tệp báo cáo kiểm toán tuân thủ an ninh `gl-compliance-report.json`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tệp chứa thuộc tính `version: "1.0.0"`, `status: "FAILED"`, `summary` (tổng số luật đánh giá, số luật pass, số luật vi phạm), và mảng `violations` chi tiết mã điều khoản `policy_id`, tệp vi phạm `target_file`, mức độ `severity`, thông điệp `message` và số dòng code `line_number`.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Phương pháp quản lý tập trung bộ quy tắc Rego Policies bằng cờ `conftest pull` từ OCI Registry?
-
-**Đáp án chuẩn:**
-- Nhóm Security quản lý một Git Repository chứa toàn bộ chính sách Rego của công ty, thực thi `conftest push` đóng gói thành OCI Policy Bundle trên Private Docker Registry.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Phương pháp quản lý tập trung bộ quy tắc Rego Policies bằng cờ `conftest pull` từ OCI Registry?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nhóm Security quản lý một Git Repository chứa toàn bộ chính sách Rego của công ty, thực thi `conftest push` đóng gói thành OCI Policy Bundle trên Private Docker Registry.
 - Trong CI Job của 100 dự án con, ta khai báo câu lệnh:
   ```bash
   conftest pull $CI_REGISTRY/security/compliance-policy:latest
@@ -10801,21 +14440,47 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 - Giúp áp dụng tức thì các chính sách an ninh mới nhất cho toàn hệ thống mà không cần chỉnh sửa code từng repo.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Cách thiết lập Compliance Quality Gate tự động ngắt pipeline (`exit 1`) khi có bất kỳ luật vi phạm nào?
-
-**Đáp án chuẩn:**
-- Trong câu lệnh `conftest test`, không truyền cờ `--warn-only`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Cách thiết lập Compliance Quality Gate tự động ngắt pipeline (`exit 1`) khi có bất kỳ luật vi phạm nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong câu lệnh `conftest test`, không truyền cờ `--warn-only`.
 - Đặt thuộc tính `allow_failure: false` trong CI Job `compliance-test-conftest`. Khi có ít nhất 1 luật `deny[msg]` bị thỏa mãn, Conftest sẽ trả về `exit code 1` đánh rớt pipeline lập tức.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp quản lý trường hợp ngoại lệ chính sách (Policy Exceptions) có vết audit giải trình an toàn trong Rego?
-
-**Đáp án chuẩn:**
-- Tạo tệp `policy/exceptions.rego` do nhóm Security quản lý qua `CODEOWNERS`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp quản lý trường hợp ngoại lệ chính sách (Policy Exceptions) có vết audit giải trình an toàn trong Rego?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tạo tệp `policy/exceptions.rego` do nhóm Security quản lý qua `CODEOWNERS`.
 - Định nghĩa luật `exception[msg]` kiểm tra tên dự án và mã Issue phê duyệt:
   ```rego
   exception[msg] {
@@ -10826,26 +14491,54 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
   ```
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi lập trình viên tìm cách bypass bước kiểm thử Compliance bằng cách xóa Job Conftest?
-
-**Đáp án chuẩn:**
-- Áp dụng cơ chế **GitLab Compliance Pipeline Parent-Child Template** ở tầng Admin / Group Level.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi lập trình viên tìm cách bypass bước kiểm thử Compliance bằng cách xóa Job Conftest?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Áp dụng cơ chế **GitLab Compliance Pipeline Parent-Child Template** ở tầng Admin / Group Level.
 - Bắt buộc mọi dự án con đều phải thực thi một Parent Pipeline chứa sẵn Job `compliance-test-conftest` do Security Team quản lý; lập trình viên ở dự án con không có quyền chỉnh sửa hay ghi đè Job này trong `.gitlab-ci.yml`.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước triển khai Compliance as Code chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Define Rego Policy:** Định nghĩa các bộ luật chính sách `policy/*.rego` kiểm tra `.gitlab-ci.yml`, Dockerfile, K8s.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai Compliance as Code chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Define Rego Policy:** Định nghĩa các bộ luật chính sách `policy/*.rego` kiểm tra `.gitlab-ci.yml`, Dockerfile, K8s.
 2. **Central Repository:** Đóng gói và lưu trữ bộ chính sách tập trung trên OCI Registry.
 3. **Conftest Test Stage:** Thực thi `conftest test` ở Stage test trước khi khởi chạy các bước build.
 4. **Quality Gate Enforcement:** Tự động ngắt pipeline (`exit 1`) nếu phát hiện vi phạm và xuất báo cáo `gl-compliance-report.json`.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 
@@ -10979,10 +14672,22 @@ Hãy chuẩn bị trước 3 câu hỏi sau đây để dẫn thẳng vào bài 
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Quality Gate trong CI/CD pipeline là gì? Khác biệt cốt lõi giữa Quality Gate an ninh và Functional Gate thông thường là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Quality Gate trong CI/CD pipeline là gì? Khác biệt cốt lõi giữa Quality Gate an ninh và Functional Gate thông thường là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Quality Gate là điểm kiểm soát tự động ngắt pipeline khi không đạt tiêu chí chất lượng hoặc an ninh. Gate an ninh tập trung vào mức độ rủi ro (Severity thresholds) và tính tuân thủ pháp lý/chính sách chứ không chỉ là đỗ/trượt các test case chức năng.
 
 **Đáp án chuẩn:**
@@ -10993,6 +14698,8 @@ Quality Gate là điểm kiểm soát tự động ngắt pipeline khi không đ
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Ứng viên hay trả lời chung chung "Quality Gate là chạy test thấy pass thì cho deploy". Nhà tuyển dụng sẽ xoáy vào việc: "Nếu test pass 100% nhưng Trivy tìm thấy 1 CVE Critical RCE trong base image thì Gate xử lý thế nào?". Cần nhấn mạnh tính chất ưu tiên tuyệt đối của Security Quality Gate (ngắt pipeline ngay lập tức bất chấp UnitTest green).
+</div>
+</details>
 
 ---
 
@@ -11375,10 +15082,22 @@ Nói dev tự chụp ảnh màn hình CI rồi lên JIRA tạo ticket thủ côn
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ giữa kỳ 2
 
-### Câu 1
-**Hỏi:** Trình bày kiến trúc phòng thủ DevSecOps 6 lớp tự động trong CI/CD. Tại sao việc thiếu 1 trong 6 lớp lại gây ra điểm mù nguy hiểm cho doanh nghiệp?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Trình bày kiến trúc phòng thủ DevSecOps 6 lớp tự động trong CI/CD. Tại sao việc thiếu 1 trong 6 lớp lại gây ra điểm mù nguy hiểm cho doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Phòng thủ 6 lớp bao gồm: Secret/Code SAST (1), IaC Security (2), Vault Authentication (3), Container Scan (4), Supply Chain SBOM/Cosign (5) và Policy Quality Gate (6). Thiếu bất kỳ lớp nào cũng tạo ra một mắt xích yếu nhất để hacker tấn công vào chuỗi cung ứng.
 
 **Đáp án chuẩn:**
@@ -11393,6 +15112,8 @@ Phòng thủ 6 lớp bao gồm: Secret/Code SAST (1), IaC Security (2), Vault Au
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Trả lời qua loa "DevSecOps là cài SonarQube với Trivy là xong". Cần phân tích sâu cả 6 lớp từ Code đến Supply Chain & Policy Enforcement.
+</div>
+</details>
 
 ---
 
@@ -11741,10 +15462,22 @@ Trả lời "Thấy build đỏ thì dev tự nhìn rồi tự lên JIRA tạo t
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Từ khóa `environment` trong GitLab CI/CD mang lại giá trị cốt lõi gì so với một CI job chạy câu lệnh deployment thông thường?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Từ khóa `environment` trong GitLab CI/CD mang lại giá trị cốt lõi gì so với một CI job chạy câu lệnh deployment thông thường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Từ khóa `environment` định danh một job CI thành một sự kiện deployment có lịch sử, lưu giữ commit SHA đang chạy trên từng server, hỗ trợ nút bấm Rollback 1-click và tích hợp hiển thị URL trên Merge Request.
 
 **Đáp án chuẩn:**
@@ -11757,6 +15490,8 @@ Từ khóa `environment` định danh một job CI thành một sự kiện depl
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Nói rằng "environment chỉ là chỗ đặt tên cho vui". Cần phân tích sâu tính chất State Management và Observability củađối tượng Environment.
+</div>
+</details>
 
 ---
 
@@ -12111,10 +15846,22 @@ Cho rằng `when: manual` đã là phương pháp bảo mật tuyệt đối r�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Nguyên lý hoạt động cốt lõi của OIDC Federation khi kết nối GitLab CI/CD với Cloud Provider (AWS/GCP/Azure) là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Nguyên lý hoạt động cốt lõi của OIDC Federation khi kết nối GitLab CI/CD với Cloud Provider (AWS/GCP/Azure) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 GitLab CI tự động phát hành một JWT Token ngắn hạn có ký số. Cloud Provider kiểm tra chữ ký token qua JWKS Endpoint của GitLab và cấp Temporary Credentials có thời hạn 15-60 phút nếu các điều kiện claim khớp.
 
 **Đáp án chuẩn:**
@@ -12126,6 +15873,8 @@ GitLab CI tự động phát hành một JWT Token ngắn hạn có ký số. Cl
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Nhầm lẫn cho rằng "OIDC tự sinh ra quyền trên Cloud". Cần phân biệt rõ OIDC chỉ làm nhiệm vụ Xác thực (AuthN), còn Cloud IAM Policy làm nhiệm vụ Cấp quyền (AuthZ).
+</div>
+</details>
 
 ---
 
@@ -12471,10 +16220,22 @@ Cho rằng OIDC chạy ẩn nên không lưu lại dấu vết gì trên Cloud.
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Giá trị chuẩn của cờ `aud` (Audience) khi sinh OIDC JWT Token dành riêng cho AWS IAM OIDC Provider là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Giá trị chuẩn của cờ `aud` (Audience) khi sinh OIDC JWT Token dành riêng cho AWS IAM OIDC Provider là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Giá trị chuẩn duy nhất bắt buộc là `https://aws.amazon.com`, trùng khớp với Client ID đã đăng ký trên AWS IAM OIDC Provider settings.
 
 **Đáp án chuẩn:**
@@ -12489,6 +16250,8 @@ Giá trị chuẩn duy nhất bắt buộc là `https://aws.amazon.com`, trùng 
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Tự điền `aud: aws` hoặc `aud: https://gitlab.com` do tưởng nhầm rằng `aud` là tên của công nghệ hoặc tên miền của nơi sinh token.
+</div>
+</details>
 
 ---
 
@@ -12873,10 +16636,22 @@ Trả lời rằng AWS không thể ghi log các cuộc gọi API từ bên ngo�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Sự khác biệt cốt lõi giữa kiến trúc OIDC Federation của GCP Workload Identity Federation (WIF) và AWS IAM OIDC Role là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt cốt lõi giữa kiến trúc OIDC Federation của GCP Workload Identity Federation (WIF) và AWS IAM OIDC Role là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 GCP WIF chia làm 2 bước (Pool Provider Exchange $\to$ Service Account Impersonation) và đặt điều kiện kiểm soát CEL Expression ngay ở cấp WIF Provider, trong khi AWS đặt điều kiện ở Trust Policy của từng Role.
 
 **Đáp án chuẩn:**
@@ -12887,6 +16662,8 @@ GCP WIF chia làm 2 bước (Pool Provider Exchange $\to$ Service Account Impers
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "GCP WIF và AWS IAM Role giống hệt nhau về cấu trúc". Cần chỉ rõ sự khác biệt giữa Provider CEL Condition và Service Account Impersonation.
+</div>
+</details>
 
 ---
 
@@ -13213,10 +16990,22 @@ Cho rằng "JSON Key vẫn an toàn nếu giấu kỹ trong CI Masked Variables"
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Sự khác biệt cốt lõi giữa cơ chế gán OIDC Subject Matching của Azure Federated Identity Credentials với AWS IAM Role Trust Policy và GCP WIF Provider là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt cốt lõi giữa cơ chế gán OIDC Subject Matching của Azure Federated Identity Credentials với AWS IAM Role Trust Policy và GCP WIF Provider là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Azure Entra ID yêu cầu tạo từng đối tượng Federated Credential riêng biệt khớp 100% từng ký tự Subject Identifier, trong khi AWS dùng `StringLike` wildcard và GCP dùng biểu thức CEL trên WIF Provider.
 
 **Đáp án chuẩn:**
@@ -13228,6 +17017,8 @@ Azure Entra ID yêu cầu tạo từng đối tượng Federated Credential riê
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "Azure cho phép dùng wildcard `*` trong Subject Identifier giống như AWS".
+</div>
+</details>
 
 ---
 
@@ -13559,10 +17350,22 @@ Cho rằng "Client Secret vẫn an toàn nếu giấu kỹ trong CI Masked Varia
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Sự khác biệt bản chất nhất giữa mô hình Push-based CD (`helm upgrade` trực tiếp) và Pull-based CD (GitOps ArgoCD) trong Kubernetes là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt bản chất nhất giữa mô hình Push-based CD (`helm upgrade` trực tiếp) và Pull-based CD (GitOps ArgoCD) trong Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Khác nhau ở vị trí lưu trữ Kubeconfig credentials và thực thể chủ động kích hoạt đồng bộ hạ tầng (CI Runner đẩy từ ngoài vào vs Controller kéo từ trong cụm).
 
 **Đáp án chuẩn:**
@@ -13573,6 +17376,8 @@ Khác nhau ở vị trí lưu trữ Kubeconfig credentials và thực thể ch�
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "GitOps chỉ là việc lưu file YAML trên Git rồi cho CI Runner chạy lệnh `kubectl apply`".
+</div>
+</details>
 
 ---
 
@@ -13891,10 +17696,22 @@ Chạy lệnh `argocd app sync` trực tiếp từ CI mà không commit thay đ�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Sự khác biệt nguy hiểm nhất giữa việc chạy câu lệnh `terraform apply tfplan` (dùng tệp artifact plan binary) và chạy `terraform apply -auto-approve` (không dùng tệp artifact plan) trong CI Pipeline là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt nguy hiểm nhất giữa việc chạy câu lệnh `terraform apply tfplan` (dùng tệp artifact plan binary) và chạy `terraform apply -auto-approve` (không dùng tệp artifact plan) trong CI Pipeline là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Chạy không dùng artifact sẽ tự tính toán lại plan mới tại thời điểm apply, có thể xóa nhầm tài nguyên Production do sai lệch state; dùng `tfplan` artifact đảm bảo thực thi ĐÚNG các hành động đã được review trên MR.
 
 **Đáp án chuẩn:**
@@ -13904,6 +17721,8 @@ Chạy không dùng artifact sẽ tự tính toán lại plan mới tại thời
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "chạy `terraform apply -auto-approve` ở stage apply giúp tiết kiệm thời gian CI mà không có rủi ro nào".
+</div>
+</details>
 
 ---
 
@@ -14222,10 +18041,22 @@ Cấp quyền `AdministratorAccess` toàn quyền trên Cloud Account cho Terraf
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Sự khác biệt cốt lõi nhất về nguyên lý hoạt động và tài nguyên hạ tầng giữa Blue-Green Deployment và Canary Deployment là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Sự khác biệt cốt lõi nhất về nguyên lý hoạt động và tài nguyên hạ tầng giữa Blue-Green Deployment và Canary Deployment là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Blue-Green tráo đổi 100% traffic giữa 2 môi trường song song (đòi hỏi 200% tài nguyên); Canary mở dần % traffic nhỏ (10% -> 50% -> 100%) nghiệm thu dần trên Production (chỉ tốn +10-20% tài nguyên).
 
 **Đáp án chuẩn:**
@@ -14235,6 +18066,8 @@ Blue-Green tráo đổi 100% traffic giữa 2 môi trường song song (đòi h�
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "Canary Deployment cũng bắt buộc phải dựng lại toàn bộ hạ tầng mới gấp 2 lần như Blue-Green".
+</div>
+</details>
 
 ---
 
@@ -14553,10 +18386,22 @@ Mỗi lần muốn bật tính năng cho 1 khách hàng VIP lại phải nhờ k
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Rủi ro an ninh nghiêm trọng nhất khi sử dụng Shell Executor cho các dự án Shared Runner dùng chung cho nhiều đội ngũ trong Enterprise là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Rủi ro an ninh nghiêm trọng nhất khi sử dụng Shell Executor cho các dự án Shared Runner dùng chung cho nhiều đội ngũ trong Enterprise là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Shell Executor chạy trực tiếp trên OS host của máy chủ Runner, không có tính cô lập nên các dự án dùng chung có thể đọc trộm mã nguồn, biến môi trường và secret keys của nhau.
 
 **Đáp án chuẩn:**
@@ -14566,6 +18411,8 @@ Shell Executor chạy trực tiếp trên OS host của máy chủ Runner, khôn
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "Shell Executor nhanh hơn nên dùng cho tất cả các dự án trong công ty để tiết kiệm thời gian".
+</div>
+</details>
 
 ---
 
@@ -14887,10 +18734,22 @@ Cho rằng "Shell Executor hoàn toàn vô dụng và bị cấm 100% trong mọ
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Rủi ro an ninh lớn nhất khi không áp dụng Protected Branch trên nhánh `main` hoặc `production` trong hệ thống Enterprise là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Rủi ro an ninh lớn nhất khi không áp dụng Protected Branch trên nhánh `main` hoặc `production` trong hệ thống Enterprise là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Lập trình viên có thể gõ lệnh `git push origin main` đẩy trực tiếp code lỗi chưa qua review/test hoặc gõ `git push --force` xóa sạch lịch sử commit của toàn bộ công ty.
 
 **Đáp án chuẩn:**
@@ -14902,6 +18761,8 @@ Lập trình viên có thể gõ lệnh `git push origin main` đẩy trực ti�
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Cho rằng "Chỉ cần dặn dò các developers trong nhóm không push trực tiếp lên main là đủ an toàn rồi".
+</div>
+</details>
 
 ---
 
@@ -15220,10 +19081,22 @@ Tắt bỏ hoàn toàn quy tắc Protected Branch và Approval Rules của dự 
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Bốn chỉ số DORA Metrics tiêu chuẩn quốc tế là gì và ý nghĩa của từng chỉ số trong đánh giá nền tảng CI/CD?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Bốn chỉ số DORA Metrics tiêu chuẩn quốc tế là gì và ý nghĩa của từng chỉ số trong đánh giá nền tảng CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Bao gồm Deployment Frequency (Tần suất deploy), Lead Time for Changes (Thời gian từ commit đến prod), Change Failure Rate (Tỉ lệ lỗi deploy), và Time to Restore Service (MTTR - Thời gian khôi phục sự cố).
 
 **Đáp án chuẩn:**
@@ -15236,6 +19109,8 @@ Bao gồm Deployment Frequency (Tần suất deploy), Lead Time for Changes (Th�
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Nhầm lẫn DORA Metrics với các chỉ số hạ tầng cơ bản như CPU Usage, RAM Usage hay số lượng dòng code (Lines of Code).
+</div>
+</details>
 
 ---
 
@@ -15548,11 +19423,22 @@ Cho rằng "Để giảm CFR thì bắt dev phải test thủ công kỹ hơn tr
 
 ## §V1. Bộ câu hỏi Vấn đáp Trực tiếp (12 Câu)
 
-### Câu 1
-**Hỏi:** Khi một job trong GitLab CI bị đỏ thất bại với thông báo chung chung `Command exited with code 1` mà log console hoàn toàn không hiển thị dòng code gây lỗi nào, bước đầu tiên bạn sẽ làm gì để truy vết sự cố?
-
-**Đáp án chuẩn:**
-Bước đầu tiên và chuẩn mực nhất là bật cờ `CI_DEBUG_TRACE: "true"` trực tiếp trong phần `variables` của job bị lỗi trong `.gitlab-ci.yml`. 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Khi một job trong GitLab CI bị đỏ thất bại với thông báo chung chung `Command exited with code 1` mà log console hoàn toàn không hiển thị dòng code gây lỗi nào, bước đầu tiên bạn sẽ làm gì để truy vết sự cố?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Bước đầu tiên và chuẩn mực nhất là bật cờ `CI_DEBUG_TRACE: "true"` trực tiếp trong phần `variables` của job bị lỗi trong `.gitlab-ci.yml`. 
 - Cờ này sẽ buộc Runner Engine bật chế độ `set -x` trên Shell Executor, in ra từng dòng lệnh được mở rộng, các phép gán biến môi trường, và các rẽ nhánh điều kiện `if/else` trước khi thực thi.
 - **Chi tiết kỹ thuật sâu:** Khi `CI_DEBUG_TRACE` hoạt động, mỗi dòng lệnh shell trước khi thực thi sẽ được prefix bởi dấu `+` kèm theo giá trị mở rộng thực sự của biến. Ví dụ: `+ curl -u admin:secret123 https://api.internal/deploy`. Nhờ đó, bạn sẽ phát hiện ra các biến bị rỗng (`""`), các lỗi cú pháp ẩn, hoặc câu lệnh bị thất bại ở rẽ nhánh nào.
 - **Quy trình xử lý sự cố:**
@@ -15562,6 +19448,8 @@ Bước đầu tiên và chuẩn mực nhất là bật cờ `CI_DEBUG_TRACE: "t
   4. Sửa lỗi logic hoặc cấu hình.
   5. Xóa bỏ cờ debug khỏi file cấu hình trước khi merge vào nhánh chính.
 - **Lưu ý bảo mật nghiêm ngặt:** Vì `CI_DEBUG_TRACE` sẽ in ra toàn bộ giá trị các biến môi trường (kể cả biến chưa được masked hoặc các secret nạp từ HashiCorp Vault), sau khi hoàn tất debug phải lập tức xóa cờ này khỏi repo, hủy kết quả pipeline trace, và xóa các phiên log nhạy cảm để tránh rò rỉ token/mật khẩu theo quy tắc buổi 47 QT 47.1.
+</div>
+</details>
 
 ---
 
@@ -15805,8 +19693,22 @@ Viết script `analyze-ci-log.py` đọc tệp log console đầu ra của GitLa
 
 ## V2. Bộ câu hỏi (12 câu phỏng vấn nâng cao)
 
-### Câu 1 — 🔥
-**Hỏi:** Anh/chị thiết kế kiến trúc CI/CD như thế nào cho một tập đoàn sở hữu hơn 100 microservices độc lập nhưng phải tuân thủ nghiêm ngặt chuẩn an ninh ISO27001 và SOC2?
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Anh/chị thiết kế kiến trúc CI/CD như thế nào cho một tập đoàn sở hữu hơn 100 microservices độc lập nhưng phải tuân thủ nghiêm ngặt chuẩn an ninh ISO27001 và SOC2?
 
 **Đáp án chuẩn:**
 Tôi thiết kế kiến trúc theo 5 tầng phân tách minh bạch:
@@ -15823,6 +19725,8 @@ Tôi thiết kế kiến trúc theo 5 tầng phân tách minh bạch:
 - **3đ:** Trình bày hoàn hảo kiến trúc 5 tầng, nêu rõ cơ chế cưỡng chế Compliance Pipeline ở cấp Group, OIDC Secretless Auth, Cosign Signing, Canary Auto-Rollback và DORA Observability.
 
 **Câu hỏi đào sâu:** (Nếu dự án con cố tình gỡ bỏ file `.gitlab-ci.yml` thì Group Compliance Pipeline xử lý ra sao? *Đáp án: GitLab Compliance Framework tự động inject file cấu hình cha vào trước khi job chạy, khiến pipeline vẫn thực thi đầy đủ các bước security bất chấp nội dung file repo con.*)
+</div>
+</details>
 
 ---
 

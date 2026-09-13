@@ -15,8 +15,12 @@ series_order: 26
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.26] Hướng dẫn chuyên sâu Đóng Gói & Xuất Bản Helm Chart: Helm Lint, Helm Package, OCI Registry Publishing & Chart Museum: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Đóng Gói & Xuất Bản Helm Chart: Helm Lint, Helm Package, OCI Registry Publishing & Chart Museum."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 26] ĐÓNG GÓI & XUẤT BẢN HELM CHART: HELM LINT, HELM PACKAGE, OCI REGISTRY PUBLISHING & CHART MUSEUM
 
@@ -1638,121 +1642,277 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Chart là hiện vật có phiên bản như image — chart không có phiên bản thì deploy không rollback được"**?
-
-**Đáp án chuẩn:**
-- Vì tệp Helm Chart là bản khai báo thiết kế hạ tầng (Infrastructure Blueprint). Nếu không đánh số phiên bản bất biến (`version: x.y.z`) cho mỗi lần release, Kubernetes sẽ coi hạ tầng là một bản tĩnh trôi nổi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Chart là hiện vật có phiên bản như image — chart không có phiên bản thì deploy không rollback được"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì tệp Helm Chart là bản khai báo thiết kế hạ tầng (Infrastructure Blueprint). Nếu không đánh số phiên bản bất biến (`version: x.y.z`) cho mỗi lần release, Kubernetes sẽ coi hạ tầng là một bản tĩnh trôi nổi.
 - Khi sự cố xảy ra, nếu Chart không có phiên bản, Helm không thể biết được trạng thái cấu hình cũ (như Port, ConfigMap, CPU limits) của phiên bản hoạt động ổn định trước đó để khôi phục, khiến tính năng `helm rollback` hoàn toàn vô tác dụng.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa 2 trường `version` (Chart Version) và `appVersion` (Application Version) trong tệp `Chart.yaml`?
-
-**Đáp án chuẩn:**
-- **`version` (Chart Version):** Đánh số phiên bản ngữ nghĩa (SemVer 2.0) cho chính tệp mẫu Helm Chart. Trường này tăng lên mỗi khi có sự thay đổi về cấu hình hạ tầng (như thay đổi file template YAML, thêm biến trong `values.yaml`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa 2 trường `version` (Chart Version) và `appVersion` (Application Version) trong tệp `Chart.yaml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **`version` (Chart Version):** Đánh số phiên bản ngữ nghĩa (SemVer 2.0) cho chính tệp mẫu Helm Chart. Trường này tăng lên mỗi khi có sự thay đổi về cấu hình hạ tầng (như thay đổi file template YAML, thêm biến trong `values.yaml`).
 - **`appVersion` (Application Version):** Đánh số phiên bản của mã nguồn ứng dụng đang chạy bên trong Container. Trường này khớp 1-1 với **Container Image Tag** trên Registry (ví dụ `appVersion: "a7b8c9d"`).
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Ưu điểm vượt trội của phương pháp quản lý Helm Chart dưới dạng OCI Artifacts (`oci://...`) so với Helm Repository truyền thống dựa trên tệp `index.yaml`?
-
-**Đáp án chuẩn:**
-1. **Hợp nhất Hạ tầng Storage:** Không cần phải duy trì web server tĩnh để lưu tệp `index.yaml`. Helm Chart `.tgz` được đẩy trực tiếp lên Container Registry có sẵn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Ưu điểm vượt trội của phương pháp quản lý Helm Chart dưới dạng OCI Artifacts (`oci://...`) so với Helm Repository truyền thống dựa trên tệp `index.yaml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Hợp nhất Hạ tầng Storage:** Không cần phải duy trì web server tĩnh để lưu tệp `index.yaml`. Helm Chart `.tgz` được đẩy trực tiếp lên Container Registry có sẵn.
 2. **Đồng bộ Phân quyền RBAC:** Sử dụng chung một cơ chế xác thực Access Token và phân quyền RBAC cho cả Container Image và Helm Chart.
 3. **Hiệu năng Cao:** Loại bỏ hoàn toàn sự cố đứt gãy đệm đệm tệp `index.yaml` khi số lượng Chart phình to lên hàng ngàn phiên bản.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của công cụ `helm lint` và các loại lỗi cấu hình phổ biến mà `helm lint` có thể ngăn chặn trong CI Pipeline?
-
-**Đáp án chuẩn:**
-- `helm lint` thực hiện phân tích tĩnh (Static Analysis) cấu trúc thư mục Chart và cú pháp tệp YAML:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `helm lint` và các loại lỗi cấu hình phổ biến mà `helm lint` có thể ngăn chặn trong CI Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `helm lint` thực hiện phân tích tĩnh (Static Analysis) cấu trúc thư mục Chart và cú pháp tệp YAML:
   1. Kiểm tra sự tồn tại và định dạng của tệp `Chart.yaml`.
   2. Kiểm tra lỗi thụt lề khoảng trắng (Space Indentation Errors) trong các tệp mẫu `templates/`.
   3. Kiểm tra tính hợp lệ của cú pháp Go Template engine.
 - Khi bật cờ `--strict`, `helm lint` sẽ biến mọi cảnh báo (Warning) thành lỗi (Error), tự động dừng ngắt CI Pipeline trước khi deploy code lỗi lên K8s Cluster.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Cách thức câu lệnh `helm template` giúp kỹ sư CI/CD thực thi kiểm tra dry-run các file Manifests rendered trước khi tiến hành deploy thực tế?
-
-**Đáp án chuẩn:**
-- Lệnh `helm template <release-name> <chart-dir> -f <values-file>` thực hiện biên dịch Go Template Engine cục bộ trên Runner mà không cần kết nối tới cụm Kubernetes Cluster.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Cách thức câu lệnh `helm template` giúp kỹ sư CI/CD thực thi kiểm tra dry-run các file Manifests rendered trước khi tiến hành deploy thực tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Lệnh `helm template <release-name> <chart-dir> -f <values-file>` thực hiện biên dịch Go Template Engine cục bộ trên Runner mà không cần kết nối tới cụm Kubernetes Cluster.
 - Đầu ra của lệnh là toàn bộ nội dung các file Kubernetes Manifests thô (Deployment, Service, Ingress). Kỹ sư CI/CD có thể ghi log nội dung này vào tệp `rendered-manifests.yaml` để kiểm tra đối soát xem các tham số `{{ .Values }}` có được nạp chính xác hay bị bỏ trống.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Tại sao tuyệt đối không được phép chỉnh sửa trực tiếp các tệp YAML bên trong gói nén `.tgz` sau khi đã thực thi `helm package`?
-
-**Đáp án chuẩn:**
-- Tệp nén `.tgz` sinh ra từ `helm package` đại diện cho một **Hiện vật Bất biến (Immutable Artifact)** có mã băm Checksum SHA-256 xác thực.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối không được phép chỉnh sửa trực tiếp các tệp YAML bên trong gói nén `.tgz` sau khi đã thực thi `helm package`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tệp nén `.tgz` sinh ra từ `helm package` đại diện cho một **Hiện vật Bất biến (Immutable Artifact)** có mã băm Checksum SHA-256 xác thực.
 - Nếu chỉnh sửa trực tiếp các tệp YAML bên trong gói nén, mã băm Checksum của tệp `.tgz` sẽ bị lệch so với Metadata khai báo trên OCI Registry. Khi đó, câu lệnh `helm install` hoặc `helm pull` sẽ báo lỗi `digest mismatch` và từ chối nạp gói Chart bị can thiệp.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Nguyên lý hoạt động của cơ chế Atomic Upgrade (`--atomic`) và Rollback trong Helm khi triển khai ứng dụng tự động?
-
-**Đáp án chuẩn:**
-- Khi truyền cờ `--atomic` và `--timeout 5m` vào lệnh `helm upgrade`, Helm sẽ theo dõi trạng thái khởi chạy của các Pods mới trên K8s Cluster.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của cơ chế Atomic Upgrade (`--atomic`) và Rollback trong Helm khi triển khai ứng dụng tự động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi truyền cờ `--atomic` và `--timeout 5m` vào lệnh `helm upgrade`, Helm sẽ theo dõi trạng thái khởi chạy của các Pods mới trên K8s Cluster.
 - Nếu trong vòng 5 phút, các Pods mới bị sập (lỗi `CrashLoopBackOff` hoặc `ImagePullBackOff`) và không thể chuyển sang trạng thái `1/1 Ready`, Helm sẽ tự động ngắt tiến trình nâng cấp và thực thi câu lệnh **`helm rollback` quay về Revision cũ ngay lập tức**, đưa hệ thống trở lại trạng thái hoạt động an toàn mà không cần can thiệp thủ công.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Helm lưu trữ lịch sử các phiên bản Release Revision trong cụm Kubernetes Cluster dưới dạng nào?
-
-**Đáp án chuẩn:**
-- Helm không lưu lịch sử release trên máy local mà lưu trực tiếp trong cùng Namespace Kubernetes của ứng dụng dưới dạng các **Kubernetes Secrets**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Helm lưu trữ lịch sử các phiên bản Release Revision trong cụm Kubernetes Cluster dưới dạng nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Helm không lưu lịch sử release trên máy local mà lưu trực tiếp trong cùng Namespace Kubernetes của ứng dụng dưới dạng các **Kubernetes Secrets**.
 - Tên các Secret được quy ước chuẩn: `sh.helm.release.v1.<release-name>.v<revision>`.
 - Mỗi tệp Secret chứa toàn bộ dữ liệu mã hóa Base64 của tệp `Chart.yaml`, `values.yaml` và các file Manifests rendered của revision đó, cho phép Helm thực thi rollback tức thì trong 2 giây.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Tại sao các doanh nghiệp lại phân tách kho Helm Chart OCI thành 2 kho riêng biệt: `helm-dev-local` và `helm-prod-local`?
-
-**Đáp án chuẩn:**
-- Nhằm áp dụng quy trình kiểm soát an ninh **Thăng cấp Hiện vật (Artifact Promotion)**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Tại sao các doanh nghiệp lại phân tách kho Helm Chart OCI thành 2 kho riêng biệt: `helm-dev-local` và `helm-prod-local`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nhằm áp dụng quy trình kiểm soát an ninh **Thăng cấp Hiện vật (Artifact Promotion)**.
 - CI Job ở các nhánh tính năng (Feature Branches) chỉ có quyền push Chart thử nghiệm vào kho `helm-dev-local`. Chỉ sau khi Chart vượt qua bài kiểm thử tích hợp (Integration Test) và bài quét bảo mật, Job trên nhánh `main` mới dùng token có quyền thăng cấp Chart sang kho `helm-prod-local` phục vụ cho Production Release.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Ý nghĩa của tệp `.helmignore` tại gốc thư mục Helm Chart và cách cấu hình chuẩn?
-
-**Đáp án chuẩn:**
-- Tệp `.helmignore` hoạt động tương tự như `.gitignore` hoặc `.dockerignore`. Nó khai báo danh sách các tệp và thư mục bị loại bỏ khi chạy câu lệnh `helm package`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Ý nghĩa của tệp `.helmignore` tại gốc thư mục Helm Chart và cách cấu hình chuẩn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tệp `.helmignore` hoạt động tương tự như `.gitignore` hoặc `.dockerignore`. Nó khai báo danh sách các tệp và thư mục bị loại bỏ khi chạy câu lệnh `helm package`.
 - **Cấu hình chuẩn:** Loại bỏ thư mục `.git`, `.gitignore`, `.tmp`, `charts/` (nếu không dùng subcharts), và các tệp nén `.tgz` tạm thời để giữ cho gói Chart mỏng nhẹ và sạch sẽ.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách quản lý biến môi trường bí mật (Secrets/Passwords) an toàn trong tệp `values.yaml` của Helm Chart?
-
-**Đáp án chuẩn:**
-- Tuyệt đối không hardcode mật khẩu thô trong tệp `values.yaml` đưa lên Git.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách quản lý biến môi trường bí mật (Secrets/Passwords) an toàn trong tệp `values.yaml` của Helm Chart?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tuyệt đối không hardcode mật khẩu thô trong tệp `values.yaml` đưa lên Git.
 - **Giải pháp chuẩn Enterprise:** Sử dụng plugin **Helm Secrets** kết hợp với công cụ **Mozilla SOPS** hoặc **HashiCorp Vault**. Tệp `values-prod.secrets.yaml` được mã hóa bằng khóa KMS (AWS KMS/GCP KMS) trước khi commit vào Git repo, và chỉ được giải mã tự động ở Runtime khi CI Runner thực thi deploy.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 5 bước quản lý Helm Chart chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Linting:** Chạy `helm lint --strict` kiểm tra cú pháp tệp mẫu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 5 bước quản lý Helm Chart chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Linting:** Chạy `helm lint --strict` kiểm tra cú pháp tệp mẫu.
 2. **Template Dry-run:** Chạy `helm template` render Manifests khô đối soát đầu ra.
 3. **Packaging:** Chạy `helm package --version x.y.z` tạo tệp `.tgz` bất biến.
 4. **Push OCI Registry:** Chạy `helm push` đẩy tệp `.tgz` lên OCI Registry (`oci://...`).
 5. **Atomic Deploy & Rollback:** Chạy `helm upgrade --install --atomic` tự động rollback 100% khi sập Pod.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

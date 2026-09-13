@@ -15,8 +15,12 @@ series_order: 1
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKS P.01] Hướng dẫn chuyên sâu Kiến Trúc An Ninh Mạng CKS: Làm Chủ NetworkPolicy Ingress/Egress & CNI Plugin Hardening: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiến Trúc An Ninh Mạng CKS: Làm Chủ NetworkPolicy Ingress/Egress & CNI Plugin Hardening."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 01] KIẾN TRÚC AN NINH MẠNG CKS: LÀM CHỦ NETWORKPOLICY INGRESS/EGRESS & CNI PLUGIN HARDENING
 
@@ -372,42 +376,232 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Nguyên tắc cốt lõi của kiến trúc bảo mật mạng Không tin cậy (Zero-Trust Network Architecture) là gì?
-   - **Đáp án:** Mặc định không tin bất kỳ kết nối mạng nào; khóa sạch 100% traffic và chỉ mở đúng cổng mạng tối cần thiết cho từng Pod.
 
-2. Cú pháp YAML chuẩn để tạo một NetworkPolicy `default-deny-all` khóa cả Ingress và Egress trong Namespace `prod` là gì?
-   - **Đáp án:** Khai báo `podSelector: {}` và `policyTypes: ["Ingress", "Egress"]` không chứa khối rules `ingress` hay `egress`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Nguyên tắc cốt lõi của kiến trúc bảo mật mạng Không tin cậy (Zero-Trust Network Architecture) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định không tin bất kỳ kết nối mạng nào; khóa sạch 100% traffic và chỉ mở đúng cổng mạng tối cần thiết cho từng Pod.
+</div>
+</details>
 
-3. Điều gì xảy ra khi bạn bật cờ `policyTypes: ["Egress"]` cho một Pod nhưng quên khai báo luật mở cổng DNS (UDP 53)?
-   - **Đáp án:** Pod bị chặn kết nối tới CoreDNS Server và gặp lỗi không thể giải mã tên miền (`Could not resolve host`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cú pháp YAML chuẩn để tạo một NetworkPolicy `default-deny-all` khóa cả Ingress và Egress trong Namespace `prod` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khai báo `podSelector: {}` và `policyTypes: ["Ingress", "Egress"]` không chứa khối rules `ingress` hay `egress`.
+</div>
+</details>
 
-4. Phân biệt sự khác nhau trong cú pháp YAML giữa phép toán AND và phép toán OR khi kết hợp `namespaceSelector` và `podSelector`?
-   - **Đáp án:** Nằm trong CÙNG MỘT phần tử mảng (cùng 1 dấu gạch ngang `-`) là phép toán AND; Nằm ở HAI phần tử mảng riêng biệt là phép toán OR.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Điều gì xảy ra khi bạn bật cờ `policyTypes: ["Egress"]` cho một Pod nhưng quên khai báo luật mở cổng DNS (UDP 53)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Pod bị chặn kết nối tới CoreDNS Server và gặp lỗi không thể giải mã tên miền (`Could not resolve host`).
+</div>
+</details>
 
-5. Cờ thuộc tính nào trong `ipBlock` được sử dụng để loại trừ các dải IP CIDR cụ thể khỏi quy tắc cho phép?
-   - **Đáp án:** Thuộc tính `except` dưới `ipBlock` (ví dụ `except: ["10.0.0.0/8"]`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Phân biệt sự khác nhau trong cú pháp YAML giữa phép toán AND và phép toán OR khi kết hợp `namespaceSelector` và `podSelector`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nằm trong CÙNG MỘT phần tử mảng (cùng 1 dấu gạch ngang `-`) là phép toán AND; Nằm ở HAI phần tử mảng riêng biệt là phép toán OR.
+</div>
+</details>
 
-6. Tại sao NetworkPolicy lại không có bất kỳ tác dụng nào trên cụm Kubernetes sử dụng CNI Plugin Flannel mặc định?
-   - **Đáp án:** Vì CNI Flannel không có trình thực thi (enforcer) nạp luật mạng vào Kernel; việc thực thi NetworkPolicy đòi hỏi CNI Plugin như Calico hay Cilium.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cờ thuộc tính nào trong `ipBlock` được sử dụng để loại trừ các dải IP CIDR cụ thể khỏi quy tắc cho phép?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thuộc tính `except` dưới `ipBlock` (ví dụ `except: ["10.0.0.0/8"]`).
+</div>
+</details>
 
-7. Nhãn mặc định nào của Kubernetes (từ bản 1.21+) cho phép dễ dàng chọn một Namespace theo tên trong `namespaceSelector`?
-   - **Đáp án:** Nhãn `kubernetes.io/metadata.name: <namespace-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao NetworkPolicy lại không có bất kỳ tác dụng nào trên cụm Kubernetes sử dụng CNI Plugin Flannel mặc định?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì CNI Flannel không có trình thực thi (enforcer) nạp luật mạng vào Kernel; việc thực thi NetworkPolicy đòi hỏi CNI Plugin như Calico hay Cilium.
+</div>
+</details>
 
-8. Câu lệnh CLI nào dùng để xem danh sách tất cả các NetworkPolicy đang hoạt động trong Namespace `prod`?
-   - **Đáp án:** Lệnh `kubectl get netpol -n prod` (hoặc `kubectl get networkpolicy -n prod`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Nhãn mặc định nào của Kubernetes (từ bản 1.21+) cho phép dễ dàng chọn một Namespace theo tên trong `namespaceSelector`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nhãn `kubernetes.io/metadata.name: <namespace-name>`.
+</div>
+</details>
 
-9. Lệnh CLI nào dùng để xem chi tiết các luật Ingress/Egress và danh sách Pods bị tác động bởi một NetworkPolicy?
-   - **Đáp án:** Lệnh `kubectl describe netpol <netpol-name> -n <namespace>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu lệnh CLI nào dùng để xem danh sách tất cả các NetworkPolicy đang hoạt động trong Namespace `prod`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl get netpol -n prod` (hoặc `kubectl get networkpolicy -n prod`).
+</div>
+</details>
 
-10. Hiện tượng gì xảy ra với các gói tin mạng (packets) khi chúng bị chặn bởi NetworkPolicy?
-    - **Đáp án:** Các gói tin sẽ bị kernel DROP âm thầm (không trả về phản hồi ICMP), khiến kết nối phía client bị kẹt ở trạng thái Timeout.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh CLI nào dùng để xem chi tiết các luật Ingress/Egress và danh sách Pods bị tác động bởi một NetworkPolicy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl describe netpol <netpol-name> -n <namespace>`.
+</div>
+</details>
 
-11. Tại sao không nên đặt chính sách `default-deny-all` cho Namespace `kube-system`?
-    - **Đáp án:** Để tránh làm gián đoạn luồng mạng giao tiếp giữa các tiến trình hạ tầng cốt lõi của Kubernetes (như CoreDNS, Metrics Server).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Hiện tượng gì xảy ra với các gói tin mạng (packets) khi chúng bị chặn bởi NetworkPolicy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Các gói tin sẽ bị kernel DROP âm thầm (không trả về phản hồi ICMP), khiến kết nối phía client bị kẹt ở trạng thái Timeout.
+</div>
+</details>
 
-12. Cú pháp YAML chuẩn để khai báo một luật Ingress chỉ nhận traffic từ các Pod có nhãn `app=frontend` trên cổng TCP 80 là gì?
-    - **Đáp án:**
-      ```yaml
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không nên đặt chính sách `default-deny-all` cho Namespace `kube-system`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để tránh làm gián đoạn luồng mạng giao tiếp giữa các tiến trình hạ tầng cốt lõi của Kubernetes (như CoreDNS, Metrics Server).
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp YAML chuẩn để khai báo một luật Ingress chỉ nhận traffic từ các Pod có nhãn `app=frontend` trên cổng TCP 80 là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```yaml
       ingress:
         - from:
             - podSelector:
@@ -417,6 +611,8 @@ graph TD
             - protocol: TCP
               port: 80
       ```
+</div>
+</details>
 
 ---
 
@@ -872,10 +1068,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Nguyên tắc Zero-Trust Network Architecture được thực thi thông qua tệp NetworkPolicy `default-deny-all` trong Kubernetes như thế nào?
 
-**Đáp án chuẩn:** Kiến trúc Zero-Trust quy định mặc định không tin bất kỳ kết nối mạng nào. Tệp NetworkPolicy `default-deny-all` sử dụng `podSelector: {}` và `policyTypes: ["Ingress", "Egress"]` (không chứa luật cho phép) để khóa sạch 100% luồng mạng đi vào và đi ra của tất cả các Pod trong Namespace.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Nguyên tắc Zero-Trust Network Architecture được thực thi thông qua tệp NetworkPolicy `default-deny-all` trong Kubernetes như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kiến trúc Zero-Trust quy định mặc định không tin bất kỳ kết nối mạng nào. Tệp NetworkPolicy `default-deny-all` sử dụng `podSelector: {}` và `policyTypes: ["Ingress", "Egress"]` (không chứa luật cho phép) để khóa sạch 100% luồng mạng đi vào và đi ra của tất cả các Pod trong Namespace.
 
 **Tiêu chí chấm:**
 - 0đ: Không hiểu nguyên tắc Zero-Trust.
@@ -883,6 +1092,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích chuẩn xác kiến trúc Zero-Trust và cú pháp khóa sạch 100% Ingress/Egress.
 
 **Câu hỏi đào sâu:** (Nếu một Namespace không có NetworkPolicy nào thì mặc định luồng mạng giữa các Pod hoạt động ra sao? — Mặc định tất cả các Pod tự do kết nối với nhau không bị rào cản).
+</div>
+</details>
 
 ---
 
@@ -1138,9 +1349,22 @@ Tạo NetworkPolicy `multi-ns-policy` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo NetworkPolicy `deny-all`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo NetworkPolicy `deny-all</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1156,10 +1380,25 @@ spec:
     - Egress
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo NetworkPolicy `db-netpol`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo NetworkPolicy `db-netpol</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -1182,10 +1421,25 @@ spec:
           port: 5432
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo NetworkPolicy `frontend-egress` (DNS & ipBlock except)
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo NetworkPolicy `frontend-egress` (DNS & ipBlock except)</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -1213,10 +1467,25 @@ spec:
               - 192.168.1.50/32
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo NetworkPolicy `multi-ns-policy` (Phép toán AND)
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo NetworkPolicy `multi-ns-policy` (Phép toán AND)</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -1244,6 +1513,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

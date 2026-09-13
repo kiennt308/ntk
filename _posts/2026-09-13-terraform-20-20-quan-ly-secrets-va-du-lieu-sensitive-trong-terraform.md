@@ -14,8 +14,12 @@ series_order: 20
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=format&fit=crop&w=1200&q=80"
 summary: "Giải quyết triệt để rủi ro rò rỉ mật khẩu và API Keys trong Terraform State."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Lý Secrets và Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Quản Lý Secrets và Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh Nghiệp
 
@@ -66,9 +70,9 @@ flowchart TD
     D --> E{Ai Có Quyền Đọc S3 State?}
     E -->|Dev / DevOps / CI Runner| F["Đọc trọn vẹn Master Password Không Bị Mã Hóa!"]
 
-    style D fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style F fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style B fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style D fill:none,stroke:#ff0000,stroke-width:2px
+    style F fill:none,stroke:#ff0000,stroke-width:2px
+    style B fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -127,10 +131,10 @@ graph TD
     L3 --> L3_1["Mozilla SOPS + AWS KMS / PGP"]
     L4 --> L4_1["HashiCorp Vault Dynamic DB Credentials"]
 
-    style L1 fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style L2 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style L3 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style L4 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style L1 fill:none,stroke:#333,stroke-width:2px
+    style L2 fill:none,stroke:#0288d1,stroke-width:2px
+    style L3 fill:none,stroke:#f57c00,stroke-width:2px
+    style L4 fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -212,8 +216,8 @@ flowchart TD
     VAULT -->|Cấp User & Pass kèm TTL = 1h| TF
     TF -->|Triển khai ứng dụng với DB Credentials| APP["Microservice Container"]
     
-    style VAULT fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style DB fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style VAULT fill:none,stroke:#0288d1,stroke-width:2px
+    style DB fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -260,8 +264,8 @@ flowchart LR
         E_TF --> E_API["Cloud Provider API: Chỉ tồn tại trong Memory"]
     end
 
-    style T_ST fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style E_ST fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style T_ST fill:none,stroke:#ff0000,stroke-width:2px
+    style E_ST fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -290,8 +294,8 @@ graph TD
     RAND["random_password resource"] -->|Sinh chuỗi ký tự ngẫu nhiên 32 ký tự| SM
     SM -->|Secret Version| APP["Mô Phỏng Cấu Hình Máy Chủ Cơ Sở Dữ Liệu"]
 
-    style KMS fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style SM fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style KMS fill:none,stroke:#0288d1,stroke-width:2px
+    style SM fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -404,43 +408,185 @@ rm -rf terraform-lab20-secrets
 
 ## 7. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-### Q1: Cờ `sensitive = true` trên biến số hoặc output có mã hóa giá trị trong file `terraform.tfstate` không?
-- **Trả lời**: **HOÀN TOÀN KHÔNG**. Cờ `sensitive = true` chỉ là một tính năng hiển thị ở tầng UI/CLI của Terraform Core, nhằm ngăn chặn việc in giá trị ra màn hình console hoặc log CI/CD. Trong file `terraform.tfstate`, dữ liệu vẫn được lưu trữ nguyên vẹn dưới dạng văn bản thuần (Plaintext JSON).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cờ `sensitive = true` trên biến số hoặc output có mã hóa giá trị trong file `terraform.tfstate` không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : **HOÀN TOÀN KHÔNG**. Cờ `sensitive = true` chỉ là một tính năng hiển thị ở tầng UI/CLI của Terraform Core, nhằm ngăn chặn việc in giá trị ra màn hình console hoặc log CI/CD. Trong file `terraform.tfstate`, dữ liệu vẫn được lưu trữ nguyên vẹn dưới dạng văn bản thuần (Plaintext JSON).
+</div>
+</details>
 
-### Q2: Những biện pháp kỹ thuật bắt buộc nào phải được áp dụng để bảo vệ Remote State Backend chứa Secrets?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Những biện pháp kỹ thuật bắt buộc nào phải được áp dụng để bảo vệ Remote State Backend chứa Secrets?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - **Mã Hóa Lưu Trữ (Encryption at Rest)**: Sử dụng AWS KMS Customer Managed Key (SSE-KMS) hoặc Azure Key Vault để mã hóa State Bucket.
   - **Mã Hóa Đường Truyền (Encryption in Transit)**: Ép buộc kết nối qua TLS 1.2/1.3 với S3 Bucket Policy (`aws:SecureTransport = true`).
   - **Kiểm Soát Quyền Truy Cập Tối Thiểu (Least Privilege)**: Chỉ cấp quyền đọc State cho CI/CD Execution Role, cấm toàn bộ Developer đọc trực tiếp S3 State của Production.
   - **Bật Versioning & Object Lock**: Ngăn chặn việc ghi đè hoặc xóa State độc hại.
+</div>
+</details>
 
-### Q3: Công cụ Mozilla SOPS hoạt động như thế nào trong quy trình GitOps với Terraform?
-- **Trả lời**: SOPS cho phép bạn viết file `.yaml` chứa secrets, sau đó dùng AWS KMS, GCP KMS, Azure Key Vault hoặc PGP Key để **chỉ mã hóa các giá trị (values)** trong khi giữ nguyên các key. File mã hóa này (`secrets.enc.yaml`) có thể commit an toàn vào Git. Khi chạy Terraform, provider `carlpett/sops` sẽ giải mã file trực tiếp trong bộ nhớ RAM lúc runtime.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Công cụ Mozilla SOPS hoạt động như thế nào trong quy trình GitOps với Terraform?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : SOPS cho phép bạn viết file `.yaml` chứa secrets, sau đó dùng AWS KMS, GCP KMS, Azure Key Vault hoặc PGP Key để **chỉ mã hóa các giá trị (values)** trong khi giữ nguyên các key. File mã hóa này (`secrets.enc.yaml`) có thể commit an toàn vào Git. Khi chạy Terraform, provider `carlpett/sops` sẽ giải mã file trực tiếp trong bộ nhớ RAM lúc runtime.
+</div>
+</details>
 
-### Q4: Điểm khác biệt giữa AWS Systems Manager Parameter Store (SSM) và AWS Secrets Manager là gì?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Điểm khác biệt giữa AWS Systems Manager Parameter Store (SSM) và AWS Secrets Manager là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - **SSM Parameter Store**: Thích hợp cho cấu hình phân cấp, chi phí rẻ (Standard parameters miễn phí), hỗ trợ mã hóa KMS (SecureString).
   - **AWS Secrets Manager**: Được thiết kế chuyên biệt cho thông tin xác thực, có chi phí cao hơn ($0.40/secret/tháng), hỗ trợ tính năng **Tự động Xoay Vòng Mật Khẩu (Automatic Secret Rotation)** tích hợp sẵn với RDS/Lambda.
+</div>
+</details>
 
-### Q5: Tại sao việc sử dụng biến môi trường `TF_VAR_xyz` lại an toàn hơn việc lưu mật khẩu trong file `terraform.tfvars`?
-- **Trả lời**: Vì file `terraform.tfvars` rất dễ bị kỹ sư vô tình commit lên Git repository. Biến môi trường `TF_VAR_xyz` được inject động trực tiếp từ bộ nhớ của CI/CD Runner và tự hủy khi Job kết thúc, không để lại dấu vết file trên đĩa cứng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao việc sử dụng biến môi trường `TF_VAR_xyz` lại an toàn hơn việc lưu mật khẩu trong file `terraform.tfvars`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Vì file `terraform.tfvars` rất dễ bị kỹ sư vô tình commit lên Git repository. Biến môi trường `TF_VAR_xyz` được inject động trực tiếp từ bộ nhớ của CI/CD Runner và tự hủy khi Job kết thúc, không để lại dấu vết file trên đĩa cứng.
+</div>
+</details>
 
-### Q6: Tính năng `ephemeral = true` trong Terraform 1.10+ giải quyết triệt để bài toán nào?
-- **Trả lời**: Nó cho phép định nghĩa các biến số, data sources và tài nguyên chỉ tồn tại tạm thời trong bộ nhớ RAM của quá trình Plan/Apply và **bị loại trừ hoàn toàn khỏi tệp `terraform.tfstate`**. Nhờ đó, State file không còn chứa bất kỳ Plaintext Secret nào.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tính năng `ephemeral = true` trong Terraform 1.10+ giải quyết triệt để bài toán nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Nó cho phép định nghĩa các biến số, data sources và tài nguyên chỉ tồn tại tạm thời trong bộ nhớ RAM của quá trình Plan/Apply và **bị loại trừ hoàn toàn khỏi tệp `terraform.tfstate`**. Nhờ đó, State file không còn chứa bất kỳ Plaintext Secret nào.
+</div>
+</details>
 
-### Q7: Nếu một mật khẩu cơ sở dữ liệu bị lộ trong State file trên S3, phương án ứng cứu sự cố chuẩn SRE là gì?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Nếu một mật khẩu cơ sở dữ liệu bị lộ trong State file trên S3, phương án ứng cứu sự cố chuẩn SRE là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   1. Coi như mật khẩu đã bị xâm phạm (Compromised).
   2. Lập tức đổi mật khẩu trực tiếp trên Database hoặc kích hoạt xoay vòng khóa trên Secrets Manager.
   3. Cập nhật mã nguồn Terraform để đọc secret mới.
   4. Chạy `terraform apply` để ghi đè State.
   5. Xóa các phiên bản State cũ (State Versions) trong S3 Versioning để loại bỏ hoàn toàn dấu vết mật khẩu cũ.
+</div>
+</details>
 
-### Q8: Tại sao không nên dùng hàm `file()` để đọc Private SSH Key trực tiếp vào resource?
-- **Trả lời**: Vì hàm `file()` sẽ nạp toàn bộ nội dung của Private Key vào bộ nhớ HCL và ghi thẳng chuỗi Private Key đó vào thuộc tính của resource trong State file. Thay vào đó, nên quản lý SSH Keys thông qua AWS EC2 Key Pair (chỉ lưu Public Key) hoặc truyền qua AWS SSM Session Manager (không cần SSH Key).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao không nên dùng hàm `file()` để đọc Private SSH Key trực tiếp vào resource?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Vì hàm `file()` sẽ nạp toàn bộ nội dung của Private Key vào bộ nhớ HCL và ghi thẳng chuỗi Private Key đó vào thuộc tính của resource trong State file. Thay vào đó, nên quản lý SSH Keys thông qua AWS EC2 Key Pair (chỉ lưu Public Key) hoặc truyền qua AWS SSM Session Manager (không cần SSH Key).
+</div>
+</details>
 
-### Q9: Làm thế nào để ngăn chặn một output vô tình làm lộ dữ liệu nhạy cảm của một resource?
-- **Trả lời**: Khai báo cờ `sensitive = true` trong khối output:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để ngăn chặn một output vô tình làm lộ dữ liệu nhạy cảm của một resource?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Khai báo cờ `sensitive = true` trong khối output:
 ```hcl
 output "db_connection_string" {
   value     = "postgresql://${aws_db_instance.core.username}:${aws_db_instance.core.password}@${aws_db_instance.core.endpoint}"
@@ -448,9 +594,27 @@ output "db_connection_string" {
 }
 ```
 Nếu output tham chiếu đến một thuộc tính đã được đánh dấu nhạy cảm mà bạn không đặt `sensitive = true`, Terraform sẽ báo lỗi ngay trong bước Plan.
+</div>
+</details>
 
-### Q10: Khi sử dụng HashiCorp Vault Provider, làm thế nào để Terraform xác thực với Vault mà không cần hardcode Vault Token?
-- **Trả lời**: Sử dụng phương thức xác thực **Vault AppRole** (truyền qua ENV `VAULT_ROLE_ID` và `VAULT_SECRET_ID`), **AWS IAM Auth** (Terraform ký request bằng AWS STS identity để Vault xác thực), hoặc **Kubernetes Service Account Token** nếu Terraform chạy trong Kubernetes Pod.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi sử dụng HashiCorp Vault Provider, làm thế nào để Terraform xác thực với Vault mà không cần hardcode Vault Token?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Sử dụng phương thức xác thực **Vault AppRole** (truyền qua ENV `VAULT_ROLE_ID` và `VAULT_SECRET_ID`), **AWS IAM Auth** (Terraform ký request bằng AWS STS identity để Vault xác thực), hoặc **Kubernetes Service Account Token** nếu Terraform chạy trong Kubernetes Pod.
+</div>
+</details>
 
 ---
 

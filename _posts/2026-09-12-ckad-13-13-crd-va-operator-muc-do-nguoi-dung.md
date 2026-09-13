@@ -15,8 +15,12 @@ series_order: 13
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.13] Hướng dẫn chuyên sâu Mở Rộng Khả Năng Nền Tảng Với Custom Resource Definitions (CRD) & Kubernetes Operator Pattern: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Mở Rộng Khả Năng Nền Tảng Với Custom Resource Definitions (CRD) & Kubernetes Operator Pattern."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 13] MỞ RỘNG KHẢ NĂNG NỀN TẢNG VỚI CUSTOM RESOURCE DEFINITIONS (CRD) & KUBERNETES OPERATOR PATTERN
 
@@ -344,41 +348,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Sự khác biệt bản chất giữa `CustomResourceDefinition` (CRD) và `Custom Resource` (CR) trong Kubernetes là gì?
-   - **Đáp án:** CRD là bản thiết kế đăng ký loại tài nguyên mới với API Server; CR là đối tượng thực thể chứa dữ liệu cụ thể được tạo ra từ CRD.
 
-2. Cú pháp `apiVersion` chuẩn của một tệp YAML khai báo `CustomResourceDefinition` là gì?
-   - **Đáp án:** Cú pháp `apiVersion: apiextensions.k8s.io/v1`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt bản chất giữa `CustomResourceDefinition` (CRD) và `Custom Resource` (CR) trong Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  CRD là bản thiết kế đăng ký loại tài nguyên mới với API Server; CR là đối tượng thực thể chứa dữ liệu cụ thể được tạo ra từ CRD.
+</div>
+</details>
 
-3. Thuộc tính `schema.openAPIV3Schema` trong CRD spec đóng vai trò gì?
-   - **Đáp án:** Đóng vai trò validation kiểm tra cú pháp và kiểu dữ liệu của Custom Resource khi người dùng `kubectl apply`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cú pháp `apiVersion` chuẩn của một tệp YAML khai báo `CustomResourceDefinition` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cú pháp `apiVersion: apiextensions.k8s.io/v1`.
+</div>
+</details>
 
-4. Mô hình `Operator Pattern` trong Kubernetes là gì?
-   - **Đáp án:** Là mẫu thiết kế kết hợp Custom Resource (CRD) với Custom Controller để tự động hóa quy trình vận hành ứng dụng phức tạp.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Thuộc tính `schema.openAPIV3Schema` trong CRD spec đóng vai trò gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đóng vai trò validation kiểm tra cú pháp và kiểu dữ liệu của Custom Resource khi người dùng `kubectl apply`.
+</div>
+</details>
 
-5. Vòng lặp hòa giải trạng thái (`Reconciliation Loop`) trong Custom Controller hoạt động như thế nào?
-   - **Đáp án:** Liên tục so sánh trạng thái mong muốn (`spec` của CR) với trạng thái thực tế (`status`) và tự động thực hiện hành động đưa thực tế về bằng mong muốn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Mô hình `Operator Pattern` trong Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Là mẫu thiết kế kết hợp Custom Resource (CRD) với Custom Controller để tự động hóa quy trình vận hành ứng dụng phức tạp.
+</div>
+</details>
 
-6. Câu lệnh CLI nào dùng để liệt kê tất cả các loại tài nguyên (bao gồm cả các CRD mới) cùng tên viết tắt shortNames trên cụm?
-   - **Đáp án:** Lệnh `kubectl api-resources`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Vòng lặp hòa giải trạng thái (`Reconciliation Loop`) trong Custom Controller hoạt động như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Liên tục so sánh trạng thái mong muốn (`spec` của CR) với trạng thái thực tế (`status`) và tự động thực hiện hành động đưa thực tế về bằng mong muốn.
+</div>
+</details>
 
-7. Câu lệnh CLI nào dùng để xem danh sách tất cả các tệp định nghĩa tài nguyên tùy biến `CustomResourceDefinition` đang có trên cụm?
-   - **Đáp án:** Lệnh `kubectl get crd`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu lệnh CLI nào dùng để liệt kê tất cả các loại tài nguyên (bao gồm cả các CRD mới) cùng tên viết tắt shortNames trên cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl api-resources`.
+</div>
+</details>
 
-8. Điều gì xảy ra đối với các Custom Resource (CR) khi bạn chạy lệnh xóa tệp CRD tương ứng (`kubectl delete crd <name>`)?
-   - **Đáp án:** Kubernetes sẽ tự động xóa sạch toàn bộ các Custom Resource (CR) thuộc CRD đó trên tất cả các Namespace.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu lệnh CLI nào dùng để xem danh sách tất cả các tệp định nghĩa tài nguyên tùy biến `CustomResourceDefinition` đang có trên cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl get crd`.
+</div>
+</details>
 
-9. Giá trị `scope` trong CRD spec có thể nhận 2 giá trị nào?
-   - **Đáp án:** Nhận giá trị `Namespaced` (tài nguyên thuộc Namespace) hoặc `Cluster` (tài nguyên phạm vi toàn cụm).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Điều gì xảy ra đối với các Custom Resource (CR) khi bạn chạy lệnh xóa tệp CRD tương ứng (`kubectl delete crd <name>`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubernetes sẽ tự động xóa sạch toàn bộ các Custom Resource (CR) thuộc CRD đó trên tất cả các Namespace.
+</div>
+</details>
 
-10. Tại sao `apiVersion` của một tệp Custom Resource (CR) lại có dạng `stable.example.com/v1`?
-    - **Đáp án:** Vì nó được kết hợp từ trường `group` (`stable.example.com`) và trường `version` (`v1`) được quy định trong tệp CRD.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Giá trị `scope` trong CRD spec có thể nhận 2 giá trị nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nhận giá trị `Namespaced` (tài nguyên thuộc Namespace) hoặc `Cluster` (tài nguyên phạm vi toàn cụm).
+</div>
+</details>
 
-11. Tại sao một lập trình viên CKAD không cần phải viết mã nguồn Golang khi làm việc với Operator?
-    - **Đáp án:** Vì lập trình viên ứng dụng chỉ cần khai báo thông số trong tệp Custom Resource YAML để Operator Controller sẵn có tự vận hành.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao `apiVersion` của một tệp Custom Resource (CR) lại có dạng `stable.example.com/v1`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì nó được kết hợp từ trường `group` (`stable.example.com`) và trường `version` (`v1`) được quy định trong tệp CRD.
+</div>
+</details>
 
-12. Quy tắc đặt tên `metadata.name` bắt buộc cho tệp CRD là gì?
-    - **Đáp án:** Quy tắc bắt buộc phải có dạng `<plural>.<group>` (ví dụ `appconfigs.stable.example.com`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao một lập trình viên CKAD không cần phải viết mã nguồn Golang khi làm việc với Operator?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì lập trình viên ứng dụng chỉ cần khai báo thông số trong tệp Custom Resource YAML để Operator Controller sẵn có tự vận hành.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Quy tắc đặt tên `metadata.name` bắt buộc cho tệp CRD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Quy tắc bắt buộc phải có dạng `<plural>.<group>` (ví dụ `appconfigs.stable.example.com`).
+</div>
+</details>
 
 ---
 
@@ -771,10 +968,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Sự khác biệt bản chất giữa `CustomResourceDefinition` (CRD) và `Custom Resource` (CR) trong Kubernetes là gì?
 
-**Đáp án chuẩn:** `CustomResourceDefinition` (CRD) là bản thiết kế mở rộng API Server nhằm đăng ký một Kind loại tài nguyên mới (ví dụ kind `AppConfig`). `Custom Resource` (CR) là một đối tượng thực thể chứa dữ liệu cấu hình cụ thể được tạo ra dựa trên bản thiết kế CRD đó.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt bản chất giữa `CustomResourceDefinition` (CRD) và `Custom Resource` (CR) trong Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `CustomResourceDefinition` (CRD) là bản thiết kế mở rộng API Server nhằm đăng ký một Kind loại tài nguyên mới (ví dụ kind `AppConfig`). `Custom Resource` (CR) là một đối tượng thực thể chứa dữ liệu cấu hình cụ thể được tạo ra dựa trên bản thiết kế CRD đó.
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được CRD và CR.
@@ -782,6 +992,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo khái niệm bản thiết kế đăng ký API Server (CRD) vs đối tượng thực thể (CR).
 
 **Câu hỏi đào sâu:** (Tương quan giữa CRD và CR giống như tương quan giữa lớp Class và đối tượng Object thế nào trong lập trình OOP? — CRD giống như Class định nghĩa kiểu dữ liệu; CR giống như Object instance cụ thể).
+</div>
+</details>
 
 ---
 
@@ -1022,17 +1234,45 @@ Trích xuất chi tiết khối `spec` của Custom Resource `web-cron`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Kiểm tra danh sách CRD và Custom Resource `AppConfig`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Kiểm tra danh sách CRD và Custom Resource `AppConfig</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 kubectl get crd
 kubectl get appconfigs -n prod
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo CRD `cronjobs.batch.tutorial.com`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo CRD `cronjobs.batch.tutorial.com</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -1062,10 +1302,25 @@ spec:
       - cjd
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Khởi tạo Custom Resource `web-cron`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Khởi tạo Custom Resource `web-cron</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: batch.tutorial.com/v1
 kind: CronJobDemo
@@ -1077,14 +1332,31 @@ spec:
   image: "busybox:1.36"
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Trích xuất khối `spec` qua shortName `cjd`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Trích xuất khối `spec` qua shortName `cjd</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl get cjd web-cron -n prod -o jsonpath='{.spec}' > /tmp/cr-spec.yaml
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

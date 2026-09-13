@@ -15,8 +15,12 @@ series_order: 4
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80"
 summary: "Phân tích toàn diện đối tượng cốt lõi Application CRD trong Argo CD: Bóc tách hợp đồng bộ ba Source-Destination-Project, giải mã chuyên sâu danh mục Sync Options (ServerSideApply, CreateNamespace, ApplyOutOfSyncOnly) và cơ chế Cascade Deletion với Finalizers."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Giải Mã Application CRD: Hợp Đồng Nguồn Đích, Sync Options & Tracking IDs."
+  - "Ứng dụng triết lý GitOps với Git làm nguồn chân lý duy nhất (Single Source of Truth), đồng bộ tự động 24/7."
+  - "Kiểm soát chặt chẽ quy trình triển khai đa cụm Kubernetes, phát hiện và triệt tiêu Configuration Drift."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Giải Mã Application CRD: Hợp Đồng Nguồn Đích, Sync Options & Tracking IDs
 
@@ -379,35 +383,196 @@ argocd app get ecommerce-payment-api -o json | jq '.status.resources[] | {kind: 
 
 ## 12. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Sự khác biệt cơ bản giữa `ServerSideApply=true` và `kubectl apply` truyền thống trong Argo CD là gì?
-- **Đáp án:** `kubectl apply` truyền thống (Client-side) tính toán patch ở phía client và ghi toàn bộ cấu hình vào annotation `kubectl.kubernetes.io/last-applied-configuration` (bị giới hạn kích thước 256KB). `ServerSideApply=true` gửi trực tiếp manifest lên Kubernetes API Server để hệ thống tự quản lý quyền sở hữu từng trường dữ liệu qua `fieldManagers`, loại bỏ giới hạn kích thước và xử lý xung đột thông minh hơn.
 
-### Câu 2: Tùy chọn `ApplyOutOfSyncOnly=true` mang lại lợi ích gì cho hệ thống quy mô lớn?
-- **Đáp án:** Giúp giảm thiểu tối đa số lượng API calls gửi tới Kubernetes API Server và etcd. Thay vì gửi lệnh apply cho 500 tài nguyên trong thư mục Git, Argo CD chỉ gửi request cập nhật cho đúng 2 tài nguyên bị thay đổi, giúp tăng tốc độ đồng bộ lên gấp 10 lần và tránh nghẽn mạng cụm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt cơ bản giữa `ServerSideApply=true` và `kubectl apply` truyền thống trong Argo CD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl apply` truyền thống (Client-side) tính toán patch ở phía client và ghi toàn bộ cấu hình vào annotation `kubectl.kubernetes.io/last-applied-configuration` (bị giới hạn kích thước 256KB). `ServerSideApply=true` gửi trực tiếp manifest lên Kubernetes API Server để hệ thống tự quản lý quyền sở hữu từng trường dữ liệu qua `fieldManagers`, loại bỏ giới hạn kích thước và xử lý xung đột thông minh hơn.
+</div>
+</details>
 
-### Câu 3: Điều gì sẽ xảy ra nếu cấu hình `spec.destination.namespace` trỏ tới một namespace chưa tồn tại và `CreateNamespace=true` bị tắt?
-- **Đáp án:** Quá trình đồng bộ sẽ thất bại ngay lập tức với lỗi `namespaces "..." not found`. Ứng dụng sẽ chuyển sang trạng thái Sync Status: `Failed` và Health Status: `Degraded`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tùy chọn `ApplyOutOfSyncOnly=true` mang lại lợi ích gì cho hệ thống quy mô lớn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giúp giảm thiểu tối đa số lượng API calls gửi tới Kubernetes API Server và etcd. Thay vì gửi lệnh apply cho 500 tài nguyên trong thư mục Git, Argo CD chỉ gửi request cập nhật cho đúng 2 tài nguyên bị thay đổi, giúp tăng tốc độ đồng bộ lên gấp 10 lần và tránh nghẽn mạng cụm.
+</div>
+</details>
 
-### Câu 4: Làm thế nào để Application tự động thử lại (Retry) khi gặp lỗi mạng tạm thời trong quá trình deploy?
-- **Đáp án:** Cấu hình khối `spec.syncPolicy.retry` với các tham số `limit` (số lần thử lại), `backoff.duration` (thời gian chờ ban đầu) và `backoff.factor` (hệ số nhân lũy tiến).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Điều gì sẽ xảy ra nếu cấu hình `spec.destination.namespace` trỏ tới một namespace chưa tồn tại và `CreateNamespace=true` bị tắt?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Quá trình đồng bộ sẽ thất bại ngay lập tức với lỗi `namespaces "..." not found`. Ứng dụng sẽ chuyển sang trạng thái Sync Status: `Failed` và Health Status: `Degraded`.
+</div>
+</details>
 
-### Câu 5: Nếu xóa một Application trên Argo CD mà không có `finalizers`, các Pods bên dưới có bị tắt không?
-- **Đáp án:** **Không!** Toàn bộ Pods, Services và tài nguyên trên cụm Kubernetes vẫn tiếp tục hoạt động bình thường ở chế độ Orphan. Chỉ có bản ghi quản trị của Application trên giao diện và database của Argo CD bị xóa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Làm thế nào để Application tự động thử lại (Retry) khi gặp lỗi mạng tạm thời trong quá trình deploy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cấu hình khối `spec.syncPolicy.retry` với các tham số `limit` (số lần thử lại), `backoff.duration` (thời gian chờ ban đầu) và `backoff.factor` (hệ số nhân lũy tiến).
+</div>
+</details>
 
-### Câu 6: Tính năng `spec.sources` (Multiple Sources) giải quyết bài toán kiến trúc nào trong doanh nghiệp?
-- **Đáp án:** Giải quyết bài toán tách biệt giữa Helm Chart của bên thứ ba (hoặc Chart dùng chung của Platform Team) và tệp cấu hình `values.yaml` nhạy cảm của từng môi trường nằm trong kho Git riêng, loại bỏ nhu cầu phải clone toàn bộ Chart vào kho nội bộ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Nếu xóa một Application trên Argo CD mà không có `finalizers`, các Pods bên dưới có bị tắt không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Không!** Toàn bộ Pods, Services và tài nguyên trên cụm Kubernetes vẫn tiếp tục hoạt động bình thường ở chế độ Orphan. Chỉ có bản ghi quản trị của Application trên giao diện và database của Argo CD bị xóa.
+</div>
+</details>
 
-### Câu 7: Tác dụng của tùy chọn `allowEmpty: false` trong `syncPolicy.automated` là gì?
-- **Đáp án:** Ngăn chặn thảm họa xóa sạch tài nguyên trên cụm. Nếu vì một sự cố nào đó (như lỗi merge Git hoặc xóa nhầm thư mục) khiến kho Git không còn chứa file manifest nào, Argo CD sẽ từ chối Prune và không xóa tài nguyên trên Kubernetes.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tính năng `spec.sources` (Multiple Sources) giải quyết bài toán kiến trúc nào trong doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giải quyết bài toán tách biệt giữa Helm Chart của bên thứ ba (hoặc Chart dùng chung của Platform Team) và tệp cấu hình `values.yaml` nhạy cảm của từng môi trường nằm trong kho Git riêng, loại bỏ nhu cầu phải clone toàn bộ Chart vào kho nội bộ.
+</div>
+</details>
 
-### Câu 8: Tại sao tùy chọn `PruneLast=true` lại quan trọng đối với việc cập nhật Zero-Downtime?
-- **Đáp án:** Mặc định khi một tài nguyên bị xóa hoặc thay thế, Argo CD có thể xóa tài nguyên cũ trước khi tài nguyên mới sẵn sàng. `PruneLast=true` đảm bảo tài nguyên cũ chỉ bị xóa sau khi toàn bộ tài nguyên mới đã được khởi tạo và vượt qua bài kiểm tra Readiness Probe.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tác dụng của tùy chọn `allowEmpty: false` trong `syncPolicy.automated` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ngăn chặn thảm họa xóa sạch tài nguyên trên cụm. Nếu vì một sự cố nào đó (như lỗi merge Git hoặc xóa nhầm thư mục) khiến kho Git không còn chứa file manifest nào, Argo CD sẽ từ chối Prune và không xóa tài nguyên trên Kubernetes.
+</div>
+</details>
 
-### Câu 9: Làm thế nào để giải cứu một Application bị treo vĩnh viễn ở trạng thái `Terminating` khi xóa?
-- **Đáp án:** Lỗi xảy ra do Finalizer đang chờ xóa tài nguyên con nhưng tài nguyên con bị kẹt (ví dụ PVC không thể unmount). Cách xử lý là chạy lệnh `kubectl patch app <app-name> -n argocd -p '{"metadata":{"finalizers":null}}' --type=merge` để xóa bỏ Finalizer và giải phóng Application.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao tùy chọn `PruneLast=true` lại quan trọng đối với việc cập nhật Zero-Downtime?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định khi một tài nguyên bị xóa hoặc thay thế, Argo CD có thể xóa tài nguyên cũ trước khi tài nguyên mới sẵn sàng. `PruneLast=true` đảm bảo tài nguyên cũ chỉ bị xóa sau khi toàn bộ tài nguyên mới đã được khởi tạo và vượt qua bài kiểm tra Readiness Probe.
+</div>
+</details>
 
-### Câu 10: Trường `spec.destination.name` có thể thay thế cho `spec.destination.server` không?
-- **Đáp án:** **Có!** Kể từ Argo CD v1.4+, thay vì gõ URL API Server dài dòng và dễ đổi (như `https://10.0.100.50:6443`), bạn có thể sử dụng tên logic của cụm đã đăng ký trong Argo CD (ví dụ `name: production-us-east-1`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để giải cứu một Application bị treo vĩnh viễn ở trạng thái `Terminating` khi xóa?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lỗi xảy ra do Finalizer đang chờ xóa tài nguyên con nhưng tài nguyên con bị kẹt (ví dụ PVC không thể unmount). Cách xử lý là chạy lệnh `kubectl patch app <app-name> -n argocd -p '{"metadata":{"finalizers":null}}' --type=merge` để xóa bỏ Finalizer và giải phóng Application.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Trường `spec.destination.name` có thể thay thế cho `spec.destination.server` không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Có!** Kể từ Argo CD v1.4+, thay vì gõ URL API Server dài dòng và dễ đổi (như `https://10.0.100.50:6443`), bạn có thể sử dụng tên logic của cụm đã đăng ký trong Argo CD (ví dụ `name: production-us-east-1`).
+</div>
+</details>
 
 ---
 

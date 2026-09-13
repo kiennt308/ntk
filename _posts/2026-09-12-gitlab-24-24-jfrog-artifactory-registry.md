@@ -15,8 +15,12 @@ series_order: 24
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.24] Hướng dẫn chuyên sâu Quản Trị Artifacts & Container Registry: GitLab Container Registry, JFrog Artifactory & Harbor Registry OCI: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Artifacts & Container Registry: GitLab Container Registry, JFrog Artifactory & Harbor Registry OCI."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 24] QUẢN TRỊ ARTIFACTS & CONTAINER REGISTRY: GITLAB CONTAINER REGISTRY, JFROG ARTIFACTORY & HARBOR REGISTRY OCI
 
@@ -1579,120 +1583,276 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao nói Enterprise Artifact Registry (như JFrog Artifactory) mới là **Biên giới tin cậy (Trust Boundary)** chính thức của Pipeline CI/CD chứ không phải GitLab Repo?
-
-**Đáp án chuẩn:**
-- GitLab Repo chỉ là nơi chứa mã nguồn chưa biên dịch (Untrusted Source Code). Bất kỳ ai có quyền committer đều có thể push code lên Repo.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao nói Enterprise Artifact Registry (như JFrog Artifactory) mới là **Biên giới tin cậy (Trust Boundary)** chính thức của Pipeline CI/CD chứ không phải GitLab Repo?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - GitLab Repo chỉ là nơi chứa mã nguồn chưa biên dịch (Untrusted Source Code). Bất kỳ ai có quyền committer đều có thể push code lên Repo.
 - Enterprise Artifact Registry là ranh giới kiểm soát an ninh tối cao. Tại đây, mọi dependency từ bên ngoài đi vào phải qua Remote Proxy Repository để loại bỏ lỗ hổng và lỗi Rate Limit; mọi tệp nhị phân sản phẩm muốn đi ra Production đều phải qua kho Promoted Release và có chứng nhận quét an ninh Xray (`PASS`).
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân tích bản chất và sự khác biệt về mặt kiến trúc giữa 3 loại Repository trên Artifactory: Local, Remote, và Virtual Repository?
-
-**Đáp án chuẩn:**
-- **Local Repository:** Kho chứa vật lý nội bộ trên storage của Artifactory, dùng để lưu trữ các tệp nhị phân/Image do chính doanh nghiệp đóng gói (phân tách kho `dev-local` và `prod-local`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân tích bản chất và sự khác biệt về mặt kiến trúc giữa 3 loại Repository trên Artifactory: Local, Remote, và Virtual Repository?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Local Repository:** Kho chứa vật lý nội bộ trên storage của Artifactory, dùng để lưu trữ các tệp nhị phân/Image do chính doanh nghiệp đóng gói (phân tách kho `dev-local` và `prod-local`).
 - **Remote Repository:** Kho đóng vai trò Proxy Cache trung gian kết nối ra các Registry công cộng (Docker Hub, Maven, NPM). Nó tự động tải và lưu đệm đệm các dependency trên đĩa cứng local.
 - **Virtual Repository:** Kho ảo hợp nhất kết hợp cả Local và Remote Repositories dưới 1 URL duy nhất. Runner chỉ cần cấu hình 1 URL duy nhất để vừa nạp dependency vừa đẩy sản phẩm.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Cách JFrog Artifactory Remote Proxy Repository giải quyết triệt để sự cố Docker Hub Rate Limit (`429 Too Many Requests`) trong CI/CD Doanh nghiệp?
-
-**Đáp án chuẩn:**
-- Sự cố `429 Too Many Requests` xảy ra khi quá nhiều Job CI cùng pull image từ Docker Hub.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Cách JFrog Artifactory Remote Proxy Repository giải quyết triệt để sự cố Docker Hub Rate Limit (`429 Too Many Requests`) trong CI/CD Doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Sự cố `429 Too Many Requests` xảy ra khi quá nhiều Job CI cùng pull image từ Docker Hub.
 - Khi trỏ lệnh pull qua Artifactory Remote Proxy (`docker-remote`), ở lượt pull đầu tiên, Artifactory đứng ra tải layer từ Docker Hub về và lưu đệm đệm vĩnh viễn trên ổ đĩa nội bộ.
 - Tất cả các lượt pull tiếp theo của hàng trăm Runner trong công ty đều được phục vụ trực tiếp từ ổ đĩa local của Artifactory với tốc độ 10 Gbps và 0% kết nối ra Docker Hub, triệt tiêu 100% rủi ro Rate Limit.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao các chuyên gia DevOps luôn khuyến cáo nên sử dụng JFrog CLI (`jf`) thay vì câu lệnh `docker push` hay `curl` thông thường trong CI Job?
-
-**Đáp án chuẩn:**
-- Câu lệnh `docker push` hay `curl` chỉ đơn thuần upload tệp dữ liệu thô mà không ghi nhận ngữ cảnh biên dịch.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao các chuyên gia DevOps luôn khuyến cáo nên sử dụng JFrog CLI (`jf`) thay vì câu lệnh `docker push` hay `curl` thông thường trong CI Job?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Câu lệnh `docker push` hay `curl` chỉ đơn thuần upload tệp dữ liệu thô mà không ghi nhận ngữ cảnh biên dịch.
 - JFrog CLI (`jf`) tự động thu thập và sinh tệp **Build Info Metadata** (`build-publish`) chứa đầy đủ Tên/Số build, Runner Info, mảng Dependencies Graph, Git Commit SHA và mã băm Checksum của các tệp nhị phân. Dữ liệu này được đẩy tự động lên Artifactory UI phục vụ công tác kiểm toán an ninh.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tệp Build Info Metadata (`build-info.json`) chứa những thông tin quan trọng nào phục vụ công tác kiểm toán tính toàn vẹn (Compliance Audit)?
-
-**Đáp án chuẩn:**
-- **Header Info:** Tên dự án, số hiệu Pipeline ID, thời điểm bắt đầu biên dịch ISO-8601.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tệp Build Info Metadata (`build-info.json`) chứa những thông tin quan trọng nào phục vụ công tác kiểm toán tính toàn vẹn (Compliance Audit)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Header Info:** Tên dự án, số hiệu Pipeline ID, thời điểm bắt đầu biên dịch ISO-8601.
 - **Environment Info:** Tên Runner Host, phiên bản OS, thông tin tài khoản trigger (`GITLAB_USER_LOGIN`).
 - **VCS Info:** Nhánh Git (`$CI_COMMIT_REF_NAME`), mã băm Git Commit SHA 40 ký tự bất biến (`$CI_COMMIT_SHA`).
 - **Dependencies & Artifacts:** Mảng tất cả các gói thư viện phụ thuộc đã nạp và mảng sản phẩm sinh ra kèm mã băm Checksum SHA-1/SHA-256.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Nguyên lý hoạt động của cơ chế Thăng cấp Hiện vật (Artifact Promotion - `build-promote`) khi chuyển giao ứng dụng từ Dev sang Prod?
-
-**Đáp án chuẩn:**
-- Tuyệt đối không bao giờ build lại code lần 2 để deploy lên Production (vi phạm nguyên tắc Biên dịch Bất biến).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của cơ chế Thăng cấp Hiện vật (Artifact Promotion - `build-promote`) khi chuyển giao ứng dụng từ Dev sang Prod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Tuyệt đối không bao giờ build lại code lần 2 để deploy lên Production (vi phạm nguyên tắc Biên dịch Bất biến).
 - Cơ chế `jf rt build-promote` thực thi thăng cấp bằng cách dịch chuyển nguyên vẹn pointer của Artifact từ `docker-dev-local` sang `docker-prod-local` trên cơ sở dữ liệu metadata của Artifactory. Quá trình này diễn ra tức thì trong 1 giây mà không cần copy lại tệp vật lý hay biên dịch lại 1 byte code nào.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Sự khác biệt về mặt an ninh giữa việc xác thực bằng Scoped Access Token và Mật khẩu tài khoản cá nhân trên Artifactory?
-
-**Đáp án chuẩn:**
-- **Mật khẩu cá nhân / Admin Password:** Cấp toàn quyền thao tác trên toàn bộ hệ thống. Nếu bị rò rỉ trên CI log, kẻ tấn công có thể xóa hoặc sửa toàn bộ các kho chứa của công ty.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Sự khác biệt về mặt an ninh giữa việc xác thực bằng Scoped Access Token và Mật khẩu tài khoản cá nhân trên Artifactory?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Mật khẩu cá nhân / Admin Password:** Cấp toàn quyền thao tác trên toàn bộ hệ thống. Nếu bị rò rỉ trên CI log, kẻ tấn công có thể xóa hoặc sửa toàn bộ các kho chứa của công ty.
 - **Scoped Access Token:** Chỉ được cấp đúng quyền thao tác trên 1 kho chứa nhất định (`docker-dev-local`) và tự động bị vô hiệu hóa sau 1 giờ (`expires-in=3600`), giới hạn rủi ro an ninh xuống mức 0.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Công cụ JFrog Xray thực hiện quét bảo mật (Security Scan) và tuân thủ giấy phép (License Compliance) dựa trên cơ chế nào?
-
-**Đáp án chuẩn:**
-- JFrog Xray không chỉ quét tệp nhị phân bề nổi mà thực hiện phân tích sâu cấu trúc bên trong của Artifact dựa trên tệp **Build Info Metadata**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Công cụ JFrog Xray thực hiện quét bảo mật (Security Scan) và tuân thủ giấy phép (License Compliance) dựa trên cơ chế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - JFrog Xray không chỉ quét tệp nhị phân bề nổi mà thực hiện phân tích sâu cấu trúc bên trong của Artifact dựa trên tệp **Build Info Metadata**.
 - Xray bóc tách từng layer container và từng thư viện phụ thuộc (Dependencies Graph), so sánh mã checksum với cơ sở dữ liệu lỗ hổng CVE toàn cầu và bảng chính sách cấp phép (License Policy) của doanh nghiệp để đưa ra kết luận Gatekeeper.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Tại sao tuyệt đối không được phép cho phép Job CI ở nhánh tính năng (Feature Branch) push trực tiếp sản phẩm vào kho `docker-prod-local`?
-
-**Đáp án chuẩn:**
-- Vì các bản build từ nhánh tính năng là các mã nguồn thử nghiệm chưa qua kiểm thử tích hợp toàn diện và chưa qua bài quét bảo mật Xray.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối không được phép cho phép Job CI ở nhánh tính năng (Feature Branch) push trực tiếp sản phẩm vào kho `docker-prod-local`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì các bản build từ nhánh tính năng là các mã nguồn thử nghiệm chưa qua kiểm thử tích hợp toàn diện và chưa qua bài quét bảo mật Xray.
 - Nếu cho phép push trực tiếp vào `docker-prod-local`, hệ thống CD tự động hoặc kỹ sư Ops có thể kéo nhầm bản build thử nghiệm này deploy lên Production, gây sập hệ thống dịch vụ của công ty.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Cách cấu hình cờ `--fail=true` trong câu lệnh `jf build-scan` để biến bước quét bảo mật Artifactory thành Gatekeeper tự động?
-
-**Đáp án chuẩn:**
-- Trong Job test của CI Pipeline, thực thi câu lệnh:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Cách cấu hình cờ `--fail=true` trong câu lệnh `jf build-scan` để biến bước quét bảo mật Artifactory thành Gatekeeper tự động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong Job test của CI Pipeline, thực thi câu lệnh:
   `jf build-scan $CI_PROJECT_NAME $CI_PIPELINE_ID --fail=true --vuln=true`
 - Khi cờ `--fail=true` được bật, nếu Xray phát hiện bất kỳ lỗ hổng CVE nào chạm ngưỡng `CRITICAL` hoặc vi phạm chính sách cấp phép, lệnh CLI sẽ trả về mã thoát exit code khác 0, tự động làm nổ lỗi đỏ Job CI và chặn đứng toàn bộ tiến trình deployment đằng sau.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Nguyên lý hoạt động của cờ Checksum Validation khi upload tệp nhị phân dung lượng lớn lên Artifactory?
-
-**Đáp án chuẩn:**
-- Khi upload tệp nhị phân lớn qua mạng Internet, đứt gãy đệm mạng có thể làm tệp bị mất byte hoặc hỏng cấu trúc.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của cờ Checksum Validation khi upload tệp nhị phân dung lượng lớn lên Artifactory?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi upload tệp nhị phân lớn qua mạng Internet, đứt gãy đệm mạng có thể làm tệp bị mất byte hoặc hỏng cấu trúc.
 - Trước khi upload, JFrog CLI tính toán mã băm SHA-256 của tệp local và gửi mã băm này trong HTTP Header sang Artifactory. Sau khi nạp tệp xong, Artifactory tự tính toán lại mã SHA-256 trên storage. Nếu 2 mã băm trùng khớp 100%, tệp mới được ghi nhận thành công; nếu lệch mã băm, Artifactory lập tức hủy tệp và yêu cầu client upload lại.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết kiến trúc quản lý Artifacts chuẩn doanh nghiệp dựa trên JFrog Artifactory cho 6 ngôn ngữ lập trình?
-
-**Đáp án chuẩn:**
-1. **Một Virtual Repository duy nhất:** Cung cấp Single Point URL cho 6 ngôn ngữ (Node.js, Java, Python, Go, .NET, PHP).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết kiến trúc quản lý Artifacts chuẩn doanh nghiệp dựa trên JFrog Artifactory cho 6 ngôn ngữ lập trình?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Một Virtual Repository duy nhất:** Cung cấp Single Point URL cho 6 ngôn ngữ (Node.js, Java, Python, Go, .NET, PHP).
 2. **Proxy Cache toàn bộ Registry ngoài:** Cache Docker Hub, Maven Central, PyPI, NPM Registry để chống Rate Limit `429`.
 3. **Build Info Metadata 100%:** Nộp tệp `build-info.json` cho mọi lượt biên dịch để kiểm toán.
 4. **Xray Gatekeeper & Promote:** Quét bảo mật Xray `--fail=true` trước khi thăng cấp `build-promote` sang kho Production Release.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

@@ -15,8 +15,12 @@ series_order: 12
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.12] Hướng dẫn chuyên sâu Quản Lý Tài Nguyên Đa Ứng Dụng: ResourceQuota, LimitRange & Khắc Phục Hiện Tượng Quota Chặn Âm Thầm: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Lý Tài Nguyên Đa Ứng Dụng: ResourceQuota, LimitRange & Khắc Phục Hiện Tượng Quota Chặn Âm Thầm."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 12] QUẢN LÝ TÀI NGUYÊN ĐA ỨNG DỤNG: RESOURCEQUOTA, LIMITRANGE & KHẮC PHỤC HIỆN TƯỢNG QUOTA CHẶN ÂM THẦM
 
@@ -332,41 +336,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Sự khác biệt chính về phạm vi quản lý giữa `ResourceQuota` và `LimitRange` trong Kubernetes là gì?
-   - **Đáp án:** `ResourceQuota` quản lý tổng trần tài nguyên ở cấp Namespace; `LimitRange` quản lý ngưỡng min/max và giá trị mặc định ở cấp Container/Pod.
 
-2. Điều gì xảy ra khi bạn triển khai một tệp YAML Pod KHÔNG khai báo khối `resources` vào một Namespace đang có `ResourceQuota`?
-   - **Đáp án:** Kubernetes API Server từ chối khởi tạo Pod và trả về lỗi `is forbidden: failed quota: ... must specify cpu for: ...`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt chính về phạm vi quản lý giữa `ResourceQuota` và `LimitRange` trong Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `ResourceQuota` quản lý tổng trần tài nguyên ở cấp Namespace; `LimitRange` quản lý ngưỡng min/max và giá trị mặc định ở cấp Container/Pod.
+</div>
+</details>
 
-3. Thuộc tính `defaultRequest` trong `LimitRange` có vai trò gì đối với Container?
-   - **Đáp án:** Tự động tiêm giá trị `requests` mặc định cho bất kỳ container nào không tự khai báo trong tệp YAML.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Điều gì xảy ra khi bạn triển khai một tệp YAML Pod KHÔNG khai báo khối `resources` vào một Namespace đang có `ResourceQuota`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubernetes API Server từ chối khởi tạo Pod và trả về lỗi `is forbidden: failed quota: ... must specify cpu for: ...`.
+</div>
+</details>
 
-4. Thuộc tính `default` trong `LimitRange` có vai trò gì đối với Container?
-   - **Đáp án:** Tự động tiêm giá trị `limits` mặc định cho bất kỳ container nào không tự khai báo trong tệp YAML.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Thuộc tính `defaultRequest` trong `LimitRange` có vai trò gì đối với Container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tự động tiêm giá trị `requests` mặc định cho bất kỳ container nào không tự khai báo trong tệp YAML.
+</div>
+</details>
 
-5. Giải pháp chuẩn nhất để khắc phục triệt để ca hỏng "Quota chặn âm thầm" cho cả đội ngũ là gì?
-   - **Đáp án:** Triển khai một `LimitRange` song song với `ResourceQuota` trong cùng Namespace để tự động tiêm thông số tài nguyên mặc định.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Thuộc tính `default` trong `LimitRange` có vai trò gì đối với Container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tự động tiêm giá trị `limits` mặc định cho bất kỳ container nào không tự khai báo trong tệp YAML.
+</div>
+</details>
 
-6. Câu lệnh CLI nào dùng để xem chi tiết bảng đối soát giữa tài nguyên đã dùng (`Used`) và hạn ngạch tối đa (`Hard`) trong Namespace?
-   - **Đáp án:** `kubectl describe quota -n <namespace>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Giải pháp chuẩn nhất để khắc phục triệt để ca hỏng "Quota chặn âm thầm" cho cả đội ngũ là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Triển khai một `LimitRange` song song với `ResourceQuota` trong cùng Namespace để tự động tiêm thông số tài nguyên mặc định.
+</div>
+</details>
 
-7. Thuộc tính `pods: "10"` trong khối `hard` của `ResourceQuota` có ý nghĩa là gì?
-   - **Đáp án:** Giới hạn tổng số lượng Pod tối đa được phép tồn tại đồng thời trong Namespace là 10 Pods.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu lệnh CLI nào dùng để xem chi tiết bảng đối soát giữa tài nguyên đã dùng (`Used`) và hạn ngạch tối đa (`Hard`) trong Namespace?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl describe quota -n <namespace>`.
+</div>
+</details>
 
-8. Tại sao một Deployment có thể bị từ chối RollingUpdate khi Namespace đang sát trần hạn ngạch số lượng `pods`?
-   - **Đáp án:** Vì chiến lược RollingUpdate mặc định tạo thêm Pod mới (`maxSurge`) làm tổng số Pod tạm thời vượt quá trần `pods` trong Quota.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Thuộc tính `pods: "10"` trong khối `hard` của `ResourceQuota` có ý nghĩa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giới hạn tổng số lượng Pod tối đa được phép tồn tại đồng thời trong Namespace là 10 Pods.
+</div>
+</details>
 
-9. Lớp dịch vụ tài nguyên QoS (Quality of Service) nào được tự động gán cho Pod khi `requests` và `limits` bằng nhau hoàn toàn?
-   - **Đáp án:** Lớp dịch vụ `Guaranteed`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao một Deployment có thể bị từ chối RollingUpdate khi Namespace đang sát trần hạn ngạch số lượng `pods`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì chiến lược RollingUpdate mặc định tạo thêm Pod mới (`maxSurge`) làm tổng số Pod tạm thời vượt quá trần `pods` trong Quota.
+</div>
+</details>
 
-10. Cấu hình `requests.storage: 50Gi` trong `ResourceQuota` khống chế loại tài nguyên nào?
-    - **Đáp án:** Khống chế tổng dung lượng đĩa của tất cả các tệp yêu cầu PVC trong Namespace tối đa là 50Gi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lớp dịch vụ tài nguyên QoS (Quality of Service) nào được tự động gán cho Pod khi `requests` và `limits` bằng nhau hoàn toàn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lớp dịch vụ `Guaranteed`.
+</div>
+</details>
 
-11. Điều gì xảy ra khi một Pod khai báo `requests.memory: 2Gi` nhưng `LimitRange` trong Namespace quy định `max.memory: 1Gi`?
-    - **Đáp án:** API Server từ chối tạo Pod và trả về lỗi `requests.memory is higher than limitrange max`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cấu hình `requests.storage: 50Gi` trong `ResourceQuota` khống chế loại tài nguyên nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khống chế tổng dung lượng đĩa của tất cả các tệp yêu cầu PVC trong Namespace tối đa là 50Gi.
+</div>
+</details>
 
-12. Tại sao không nên thiết lập `ResourceQuota` cho Namespace `kube-system`?
-    - **Đáp án:** Để tránh làm gián đoạn các tiến trình addon hạ tầng hệ thống cốt lõi của cụm Kubernetes.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Điều gì xảy ra khi một Pod khai báo `requests.memory: 2Gi` nhưng `LimitRange` trong Namespace quy định `max.memory: 1Gi`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  API Server từ chối tạo Pod và trả về lỗi `requests.memory is higher than limitrange max`.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Tại sao không nên thiết lập `ResourceQuota` cho Namespace `kube-system`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để tránh làm gián đoạn các tiến trình addon hạ tầng hệ thống cốt lõi của cụm Kubernetes.
+</div>
+</details>
 
 ---
 
@@ -767,10 +964,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Sự khác biệt bản chất về phạm vi và mục đích quản lý giữa `ResourceQuota` và `LimitRange` trong Kubernetes là gì?
 
-**Đáp án chuẩn:** `ResourceQuota` quản lý TỔNG TRẦN tài nguyên (CPU, RAM, số lượng Pods/Services) ở cấp Namespace nhằm chống việc 1 team dùng cạn cụm. `LimitRange` quản lý NGƯỠNG (min/max/default) ở cấp Container/Pod riêng lẻ nhằm chống việc 1 Pod duy nhất dùng cạn Quota của Namespace.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt bản chất về phạm vi và mục đích quản lý giữa `ResourceQuota` và `LimitRange` trong Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `ResourceQuota` quản lý TỔNG TRẦN tài nguyên (CPU, RAM, số lượng Pods/Services) ở cấp Namespace nhằm chống việc 1 team dùng cạn cụm. `LimitRange` quản lý NGƯỠNG (min/max/default) ở cấp Container/Pod riêng lẻ nhằm chống việc 1 Pod duy nhất dùng cạn Quota của Namespace.
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được 2 đối tượng.
@@ -778,6 +988,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo phạm vi quản lý tổng trần Namespace vs ngưỡng riêng lẻ Container.
 
 **Câu hỏi đào sâu:** (Nếu một Namespace không có `LimitRange` nhưng có `ResourceQuota` thì Pod mới triển khai bắt buộc phải có điều kiện gì? — Bắt buộc phải khai báo đầy đủ `requests` và `limits`).
+</div>
+</details>
 
 ---
 
@@ -1030,9 +1242,22 @@ Tạo ResourceQuota khống chế lưu trữ đĩa `storage-quota` trong Namespa
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo ResourceQuota `app-quota`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo ResourceQuota `app-quota</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1048,10 +1273,25 @@ spec:
     pods: "5"
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo LimitRange `app-limits`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo LimitRange `app-limits</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: LimitRange
@@ -1069,10 +1309,25 @@ spec:
         memory: 512Mi
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Sửa lỗi Pod `blocked-pod` bổ sung `resources`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Sửa lỗi Pod `blocked-pod` bổ sung `resources</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1090,10 +1345,25 @@ spec:
           memory: 128Mi
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo ResourceQuota `storage-quota`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo ResourceQuota `storage-quota</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ResourceQuota
@@ -1108,6 +1378,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

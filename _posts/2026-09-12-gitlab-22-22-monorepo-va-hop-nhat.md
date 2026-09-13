@@ -15,8 +15,12 @@ series_order: 22
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.22] Hướng dẫn chuyên sâu Quản Trị Monorepo CI/CD Chuyên Nghiệp: Nx / Turborepo Integration, Path Filtering & Selective Execution: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Monorepo CI/CD Chuyên Nghiệp: Nx / Turborepo Integration, Path Filtering & Selective Execution."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 22] QUẢN TRỊ MONOREPO CI/CD CHUYÊN NGHIỆP: NX / TURBOREPO INTEGRATION, PATH FILTERING & SELECTIVE EXECUTION
 
@@ -1783,83 +1787,185 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Phân tích 3 trường hợp khiến câu lệnh `rules:changes` bị đánh giá sai im lặng trong các dự án Monorepo trên GitLab CI?
-
-**Đáp án chuẩn:**
-- **Trường hợp 1 (Thiếu compare_to):** Mặc định `rules:changes` so sánh commit hiện tại với commit `HEAD~1`. Khi developer push commit thứ 2 trên MR (chỉ sửa tệp documentation), rule trả về `false` và bỏ qua Job test, làm lọt bug của commit 1.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Phân tích 3 trường hợp khiến câu lệnh `rules:changes` bị đánh giá sai im lặng trong các dự án Monorepo trên GitLab CI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Trường hợp 1 (Thiếu compare_to):** Mặc định `rules:changes` so sánh commit hiện tại với commit `HEAD~1`. Khi developer push commit thứ 2 trên MR (chỉ sửa tệp documentation), rule trả về `false` và bỏ qua Job test, làm lọt bug của commit 1.
 - **Trường hợp 2 (Fallback Default Branch):** Ở commit đầu tiên khởi tạo nhánh hoặc sau cờ force push, GitLab CI không tìm thấy commit chung (Merge Base), tự động fallback đánh giá `rules:changes` thành `always` (chạy 100% các Job).
 - **Trường hợp 3 (Bỏ sót Shared Dependencies):** Khi sửa đổi tệp trong `shared/`, rule tĩnh khai báo theo `services/service-a/**/*` trả về `false`, không trigger build `service-a` mặc dù mã phụ thuộc đã thay đổi.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Bản chất kỹ thuật và cách thức hoạt động của thuộc tính `rules:changes:compare_to` trong GitLab CI?
-
-**Đáp án chuẩn:**
-- Thuộc tính `compare_to: $CI_DEFAULT_BRANCH` (hoặc `refs/heads/main`) chỉ định GitLab CI thực thi câu lệnh Git diff tương đương:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Bản chất kỹ thuật và cách thức hoạt động của thuộc tính `rules:changes:compare_to` trong GitLab CI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Thuộc tính `compare_to: $CI_DEFAULT_BRANCH` (hoặc `refs/heads/main`) chỉ định GitLab CI thực thi câu lệnh Git diff tương đương:
   `git diff --name-only $(git merge-base HEAD origin/main) HEAD`
 - Cơ chế: GitLab tìm commit tổ tiên chung gần nhất (Merge Base) giữa nhánh làm việc hiện tại và nhánh mặc định `main`. Sau đó tính toán toàn bộ danh sách các tệp đã thay đổi trong cả nhánh, đảm bảo dù push bao nhiêu commit thì kết quả đánh giá vẫn chính xác 100%.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Mô hình Child/Parent Pipeline (Pipeline Cha/Con) giải quyết bài toán phình to cấu hình trong Monorepo như thế nào?
-
-**Đáp án chuẩn:**
-- Trong Monorepo chứa hàng chục microservice, tệp `.gitlab-ci.yml` dạng tĩnh sẽ phình to lên hàng ngàn dòng code rối rắm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Mô hình Child/Parent Pipeline (Pipeline Cha/Con) giải quyết bài toán phình to cấu hình trong Monorepo như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong Monorepo chứa hàng chục microservice, tệp `.gitlab-ci.yml` dạng tĩnh sẽ phình to lên hàng ngàn dòng code rối rắm.
 - Mô hình Child/Parent Pipeline tách biệt trách nhiệm: Pipeline Cha giữ vai trò điều phối siêu nhẹ (< 50 lines), thi hành script sinh tệp cấu hình YAML rút gọn `dynamic-pipeline.yml` cho đúng các dịch vụ bị sửa đổi.
 - Sau đó Job trigger nạp `dynamic-pipeline.yml` để khởi chạy Pipeline Con độc lập. Giúp cấu hình cực kỳ gọn gàng, cách ly hoàn toàn lỗi giữa các microservice.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao nên sử dụng Script (Python/Bash) sinh Pipeline động ở Stage `.pre` thay vì cố gắng viết hàng trăm quy tắc `rules:changes` tĩnh trong `.gitlab-ci.yml`?
-
-**Đáp án chuẩn:**
-- **Tính linh hoạt:** Script cho phép lập trình các logic phức tạp như tra cứu đồ thị phụ thuộc bắc cầu (nếu sửa `shared/A` thì build `ServiceB`, `ServiceC`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao nên sử dụng Script (Python/Bash) sinh Pipeline động ở Stage `.pre` thay vì cố gắng viết hàng trăm quy tắc `rules:changes` tĩnh trong `.gitlab-ci.yml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Tính linh hoạt:** Script cho phép lập trình các logic phức tạp như tra cứu đồ thị phụ thuộc bắc cầu (nếu sửa `shared/A` thì build `ServiceB`, `ServiceC`).
 - **Tránh giới hạn kích thước:** GitLab CI giới hạn dung lượng tệp YAML tĩnh. Script sinh YAML động chỉ tạo ra các Job thực sự cần thiết, làm tệp YAML sinh ra rất nhỏ.
 - **Tránh bẫy hỏng im lặng:** Script đọc trực tiếp `git diff` thực tế từ hệ thống tệp Git, loại bỏ 100% các ca đánh giá sai của engine rule tĩnh.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tác dụng kỹ thuật của thuộc tính `strategy: depend` trong Job trigger cha khi kích hoạt Child Pipeline là gì?
-
-**Đáp án chuẩn:**
-- Mặc định không có `strategy: depend`, Job trigger cha sẽ lập tức hoàn thành với trạng thái xanh ngay sau khi gửi lệnh kích hoạt Pipeline con.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tác dụng kỹ thuật của thuộc tính `strategy: depend` trong Job trigger cha khi kích hoạt Child Pipeline là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Mặc định không có `strategy: depend`, Job trigger cha sẽ lập tức hoàn thành với trạng thái xanh ngay sau khi gửi lệnh kích hoạt Pipeline con.
 - Thuộc tính `strategy: depend` ép Job trigger cha phải chuyển sang trạng thái chờ và liên tục theo dõi tiến trình của Child Pipeline.
 - Khi Child Pipeline hoàn thành thành công, Job trigger cha mới báo xanh. Nếu Child Pipeline bị sập đỏ, Job trigger cha lập tức nổ lỗi đỏ, đảm bảo tính trung thực 100% của trạng thái Merge Request.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Tại sao phải phân tách thuộc tính `cache:key` theo từng microservice trong Monorepo và cách thực hiện chuẩn xác?
-
-**Đáp án chuẩn:**
-- Trong Monorepo đa ngôn ngữ, nếu dùng chung 1 Cache key (`$CI_COMMIT_REF_SLUG`), Runner sẽ lưu đệm đệm của dịch vụ này ghi đè lên đệm đệm của dịch vụ khác (ví dụ: `node_modules` đè lên `GOMODCACHE`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Tại sao phải phân tách thuộc tính `cache:key` theo từng microservice trong Monorepo và cách thực hiện chuẩn xác?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong Monorepo đa ngôn ngữ, nếu dùng chung 1 Cache key (`$CI_COMMIT_REF_SLUG`), Runner sẽ lưu đệm đệm của dịch vụ này ghi đè lên đệm đệm của dịch vụ khác (ví dụ: `node_modules` đè lên `GOMODCACHE`).
 - Hậu quả: Tỷ lệ trúng Cache về 0%, Runner phải nén nạp lại hàng trăm MB đệm rác dư thừa.
 - Cách thực hiện: Khai báo thuộc tính `prefix:` riêng biệt cho từng dịch vụ:
   - Node.js: `key: { files: [package-lock.json], prefix: "node-api" }`
   - Go: `key: { files: [go.sum], prefix: "go-worker" }`
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Trình bày nguyên lý hoạt động của sơ đồ DAG (Directed Acyclic Graph) với từ khóa `needs:` trong Pipeline Monorepo đa ngôn ngữ?
-
-**Đáp án chuẩn:**
-- Trong Pipeline truyền thống, các Job ở Stage $N+1$ phải đứng chờ **TẤT CẢ** các Job ở Stage $N$ hoàn thành mới được chạy.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Trình bày nguyên lý hoạt động của sơ đồ DAG (Directed Acyclic Graph) với từ khóa `needs:` trong Pipeline Monorepo đa ngôn ngữ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong Pipeline truyền thống, các Job ở Stage $N+1$ phải đứng chờ **TẤT CẢ** các Job ở Stage $N$ hoàn thành mới được chạy.
 - Với từ khóa `needs:`, ta định nghĩa sơ đồ đồ thị thi hành phụ thuộc trực tiếp. Ví dụ: `go-worker-test` khai báo `needs: [go-worker-build]`.
 - Tác động: Ngay khi `go-worker-build` xong, `go-worker-test` sẽ thi hành ngay lập tức mà không phải đứng chờ `node-api-build` hay `java-core-build` đang chạy ở Stage trước. Rút ngắn thời gian Pipeline xuống mức đường găng tối thiểu.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Phương pháp xử lý sự cố khi thay đổi tệp trong thư mục thư viện dùng chung `shared/` làm sao để đảm bảo tất cả các microservice phụ thuộc đều được trigger build?
-
-**Đáp án chuẩn:**
-- Trong script sinh Pipeline động `generate-pipeline.py`, khai báo logic kiểm tra danh sách tệp bị thay đổi:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Phương pháp xử lý sự cố khi thay đổi tệp trong thư mục thư viện dùng chung `shared/` làm sao để đảm bảo tất cả các microservice phụ thuộc đều được trigger build?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong script sinh Pipeline động `generate-pipeline.py`, khai báo logic kiểm tra danh sách tệp bị thay đổi:
   ```python
   has_shared_change = any(f.startswith("shared/") for f in changed_files)
   if has_shared_change:
@@ -1868,40 +1974,92 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - Khi phát hiện bất kỳ thay đổi nào trong `shared/`, script tự động chèn 100% các Job của toàn bộ microservice vào tệp `dynamic-pipeline.yml`, đảm bảo kiểm thử toàn diện 100%.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Thuộc tính `interruptible: true` giúp tiết kiệm tài nguyên hệ thống Runner trong các dự án Monorepo như thế nào?
-
-**Đáp án chuẩn:**
-- Khi lập trình viên liên tục push nhiều commit nối tiếp nhau trên cùng 1 Merge Request, các Pipeline của commit cũ trở nên vô nghĩa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Thuộc tính `interruptible: true` giúp tiết kiệm tài nguyên hệ thống Runner trong các dự án Monorepo như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi lập trình viên liên tục push nhiều commit nối tiếp nhau trên cùng 1 Merge Request, các Pipeline của commit cũ trở nên vô nghĩa.
 - Thuộc tính `interruptible: true` cho phép GitLab CI tự động ngắt (cancel) tất cả các Pipeline cũ đang chạy dở của MR đó ngay khi phát hiện Pipeline mới được kích hoạt.
 - Tác động: Tiết kiệm tới 70% tài nguyên CPU/RAM/Network của hệ thống Runner, giải phóng hàng chờ cho các developer khác.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp phân tách và hợp nhất báo cáo kết quả kiểm thử JUnit XML và độ phủ Cobertura XML từ 6 ngôn ngữ lập trình về giao diện GitLab CE?
-
-**Đáp án chuẩn:**
-- **JUnit XML (Tab Tests):** Phân tách đường dẫn tệp báo cáo theo cấu hình từng dịch vụ (`services/node-api/report.xml`, `services/go-worker/report.xml`). Khai báo mảng danh sách tệp trong `reports:junit: [...]`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp phân tách và hợp nhất báo cáo kết quả kiểm thử JUnit XML và độ phủ Cobertura XML từ 6 ngôn ngữ lập trình về giao diện GitLab CE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **JUnit XML (Tab Tests):** Phân tách đường dẫn tệp báo cáo theo cấu hình từng dịch vụ (`services/node-api/report.xml`, `services/go-worker/report.xml`). Khai báo mảng danh sách tệp trong `reports:junit: [...]`.
 - **Cobertura XML (MR Diff):** Khai báo mảng danh sách tệp Cobertura XML trong thuộc tính `reports:coverage_report:coverage_format: cobertura: path: [...]`. GitLab CE tự động đọc mảng tệp này và tô màu vạch xanh/đỏ chỉ thị độ phủ dòng lệnh tương ứng trên từng thư mục của MR Diff.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** So sánh sự đánh đổi giữa kiến trúc Monorepo và Multirepo từ góc nhìn thiết kế quy trình CI/CD?
-
-**Đáp án chuẩn:**
-- **Multirepo:** Pipeline cực kỳ đơn giản, cách ly 100%, nhưng rất khó quản lý các thay đổi liên microservice (phải tạo nhiều MR trên nhiều repo), nguy cơ trôi phiên bản thư viện dùng chung rất cao.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** So sánh sự đánh đổi giữa kiến trúc Monorepo và Multirepo từ góc nhìn thiết kế quy trình CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Multirepo:** Pipeline cực kỳ đơn giản, cách ly 100%, nhưng rất khó quản lý các thay đổi liên microservice (phải tạo nhiều MR trên nhiều repo), nguy cơ trôi phiên bản thư viện dùng chung rất cao.
 - **Monorepo:** Quản lý thay đổi tập trung trên 1 MR duy nhất, atomic commit toàn hệ thống. Tuy nhiên Pipeline CI/CD phức tạp hơn (cần Pipeline Động, phân tách Cache, DAG) để tránh phình to thời gian thực thi.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết 6 bài học lớn về đệm đệm và biên dịch bất biến từ Giai đoạn 3 (Buổi 15–22) cho 6 ngôn ngữ lập trình?
-
-**Đáp án chuẩn:**
-1. **Node.js:** Cache `~/.npm`, dùng `npm ci` bất biến với `package-lock.json`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết 6 bài học lớn về đệm đệm và biên dịch bất biến từ Giai đoạn 3 (Buổi 15–22) cho 6 ngôn ngữ lập trình?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Node.js:** Cache `~/.npm`, dùng `npm ci` bất biến với `package-lock.json`.
 2. **Java:** Cache `.m2/repository` & `.gradle/caches`, dùng Maven/Gradle wrapper.
 3. **Python:** Cache `.pip-cache`, dùng `pip install --cache-dir` với `requirements.txt`.
 4. **Go:** Phân tách `GOMODCACHE` và `GOCACHE`, dùng `CGO_ENABLED=0` cho static binary.
@@ -1909,6 +2067,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 6. **PHP:** Cache `COMPOSER_CACHE_DIR`, dùng `composer install --optimize-autoloader`, dùng Extension `PCOV` đo coverage.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

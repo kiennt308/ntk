@@ -15,8 +15,12 @@ series_order: 14
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKS P.14] Hướng dẫn chuyên sâu Ký Số Hiện Vật & Bảo Vệ Chuỗi Cung Ứng Phần Mềm: Sigstore Cosign, Keyless Signing & Tạo File SBOM: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Ký Số Hiện Vật & Bảo Vệ Chuỗi Cung Ứng Phần Mềm: Sigstore Cosign, Keyless Signing & Tạo File SBOM."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 14] KÝ SỐ HIỆN VẬT & BẢO VỆ CHUỖI CUNG ỨNG PHẦN MỀM: SIGSTORE COSIGN, KEYLESS SIGNING & TẠO FILE SBOM
 
@@ -303,48 +307,240 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Tấn công chuỗi cung ứng phần mềm (Supply Chain Attack) đối với Container Images có thể gây ra rủi ro gì?
-   - **Đáp án:** Kẻ tấn công có thể chèn mã độc vào CI/CD pipeline hoặc tráo đổi nội dung của Image Tag trên Container Registry.
 
-2. Công cụ mã nguồn mở nào thuộc dự án Sigstore được sử dụng để ký số và xác minh chữ ký cho Container Images?
-   - **Đáp án:** Công cụ **Cosign** (Sigstore Project).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tấn công chuỗi cung ứng phần mềm (Supply Chain Attack) đối với Container Images có thể gây ra rủi ro gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kẻ tấn công có thể chèn mã độc vào CI/CD pipeline hoặc tráo đổi nội dung của Image Tag trên Container Registry.
+</div>
+</details>
 
-3. Lệnh CLI Cosign nào được dùng để khởi tạo một cặp khóa mã hóa (khóa bí mật và khóa công khai)?
-   - **Đáp án:** Lệnh `cosign generate-key-pair`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Công cụ mã nguồn mở nào thuộc dự án Sigstore được sử dụng để ký số và xác minh chữ ký cho Container Images?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Công cụ **Cosign** (Sigstore Project).
+</div>
+</details>
 
-4. Hai tệp tin mặc định được sinh ra sau khi chạy lệnh `cosign generate-key-pair` là gì?
-   - **Đáp án:** Tệp **`cosign.key`** (khóa bí mật) và **`cosign.pub`** (khóa công khai).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Lệnh CLI Cosign nào được dùng để khởi tạo một cặp khóa mã hóa (khóa bí mật và khóa công khai)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `cosign generate-key-pair`.
+</div>
+</details>
 
-5. Tại sao khi ký số bằng Cosign, chuyên gia bảo mật CKS luôn bắt buộc phải chỉ định cờ Image Digest (`@sha256:...`)?
-   - **Đáp án:** Vì Image Digest là mã băm bất biến đại diện duy nhất cho nội dung image, phòng chống rủi ro Image Tag (như `:latest`) bị ghi đè.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Hai tệp tin mặc định được sinh ra sau khi chạy lệnh `cosign generate-key-pair` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tệp **`cosign.key`** (khóa bí mật) và **`cosign.pub`** (khóa công khai).
+</div>
+</details>
 
-6. Khái niệm Danh mục thành phần phần mềm (Software Bill of Materials - SBOM) trong bảo mật chuỗi cung ứng là gì?
-   - **Đáp án:** Là danh sách kê khai minh bạch 100% tất cả các thư viện, gói phần mềm và dependencies có bên trong Container Image.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao khi ký số bằng Cosign, chuyên gia bảo mật CKS luôn bắt buộc phải chỉ định cờ Image Digest (`@sha256:...`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Image Digest là mã băm bất biến đại diện duy nhất cho nội dung image, phòng chống rủi ro Image Tag (như `:latest`) bị ghi đè.
+</div>
+</details>
 
-7. Hai định dạng chuẩn quốc tế phổ biến nhất được dùng để lưu trữ dữ liệu SBOM là gì?
-   - **Đáp án:** Chuẩn **SPDX** (SPDX JSON) và chuẩn **CycloneDX**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Khái niệm Danh mục thành phần phần mềm (Software Bill of Materials - SBOM) trong bảo mật chuỗi cung ứng là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Là danh sách kê khai minh bạch 100% tất cả các thư viện, gói phần mềm và dependencies có bên trong Container Image.
+</div>
+</details>
 
-8. Lệnh CLI Syft chuẩn nào được dùng để tạo một tệp SBOM dạng SPDX JSON từ một Container Image?
-   - **Đáp án:** Lệnh `syft <image-name> -o spdx-json > sbom.spdx.json`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Hai định dạng chuẩn quốc tế phổ biến nhất được dùng để lưu trữ dữ liệu SBOM là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chuẩn **SPDX** (SPDX JSON) và chuẩn **CycloneDX**.
+</div>
+</details>
 
-9. Lệnh CLI Cosign nào được sử dụng để đính kèm tệp SBOM trực tiếp lên OCI Container Registry?
-   - **Đáp án:** Lệnh `cosign attach sbom --sbom sbom.spdx.json <image-digest>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Lệnh CLI Syft chuẩn nào được dùng để tạo một tệp SBOM dạng SPDX JSON từ một Container Image?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `syft <image-name> -o spdx-json > sbom.spdx.json`.
+</div>
+</details>
 
-10. Lệnh CLI Cosign chuẩn nào được dùng để xác minh chữ ký của Container Image thông qua khóa công khai `cosign.pub`?
-    - **Đáp án:** Lệnh `cosign verify --key cosign.pub <image-digest>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh CLI Cosign nào được sử dụng để đính kèm tệp SBOM trực tiếp lên OCI Container Registry?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `cosign attach sbom --sbom sbom.spdx.json <image-digest>`.
+</div>
+</details>
 
-11. Điều gì xảy ra khi bạn chạy `cosign verify` trên một Container Image chưa được ký số hoặc bị thay đổi nội dung?
-    - **Đáp án:** Lệnh trả về lỗi **`Error: no matching signatures found for image`** và chấm dứt với exit code khác 0.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Lệnh CLI Cosign chuẩn nào được dùng để xác minh chữ ký của Container Image thông qua khóa công khai `cosign.pub`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `cosign verify --key cosign.pub <image-digest>`.
+</div>
+</details>
 
-12. Cú pháp bộ lệnh CLI chuẩn để tạo SBOM, ký số Image và đính kèm SBOM lên Registry là gì?
-    - **Đáp án:**
-      ```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Điều gì xảy ra khi bạn chạy `cosign verify` trên một Container Image chưa được ký số hoặc bị thay đổi nội dung?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh trả về lỗi **`Error: no matching signatures found for image`** và chấm dứt với exit code khác 0.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp bộ lệnh CLI chuẩn để tạo SBOM, ký số Image và đính kèm SBOM lên Registry là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
       cosign generate-key-pair
       syft myregistry.io/app:v1 -o spdx-json > /tmp/sbom.json
       cosign sign --key /tmp/cosign.key myregistry.io/app@sha256:a1b2c3...
       cosign attach sbom --sbom /tmp/sbom.json myregistry.io/app@sha256:a1b2c3...
       cosign verify --key /tmp/cosign.pub myregistry.io/app@sha256:a1b2c3...
       ```
+</div>
+</details>
 
 ---
 
@@ -673,10 +869,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Tấn công chuỗi cung ứng phần mềm (Supply Chain Attack) đối với Container Images xảy ra như thế nào và công cụ Cosign bảo vệ cụm K8s ra sao?
 
-**Đáp án chuẩn:** Kẻ tấn công có thể chiếm quyền CI/CD pipeline để chèn mã độc vào image hoặc tráo đổi nội dung của Image Tag trên Registry. Cosign thực hiện ký số điện tử cho Container Image bằng khóa bí mật (`cosign.key`); cụm K8s chỉ cho phép triển khai các image có chữ ký được xác minh thành công bằng khóa công khai (`cosign.pub`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tấn công chuỗi cung ứng phần mềm (Supply Chain Attack) đối với Container Images xảy ra như thế nào và công cụ Cosign bảo vệ cụm K8s ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kẻ tấn công có thể chiếm quyền CI/CD pipeline để chèn mã độc vào image hoặc tráo đổi nội dung của Image Tag trên Registry. Cosign thực hiện ký số điện tử cho Container Image bằng khóa bí mật (`cosign.key`); cụm K8s chỉ cho phép triển khai các image có chữ ký được xác minh thành công bằng khóa công khai (`cosign.pub`).
 
 **Tiêu chí chấm:**
 - 0đ: Không biết khái niệm Supply Chain Attack.
@@ -684,6 +893,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo rủi ro tấn công chuỗi cung ứng và vai trò bảo vệ của công cụ Cosign.
 
 **Câu hỏi đào sâu:** (Lệnh CLI Cosign nào được dùng để sinh cặp khóa mã hóa? — Lệnh `cosign generate-key-pair`).
+</div>
+</details>
 
 ---
 
@@ -936,9 +1147,22 @@ Thực hiện xác minh chữ ký Container Image bằng Cosign:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Sinh cặp khóa Cosign
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Sinh cặp khóa Cosign</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 export COSIGN_PASSWORD=""
 cosign generate-key-pair --output-key-prefix /tmp/cosign 2>/dev/null || {
   echo "-----BEGIN PUBLIC KEY-----" > /tmp/cosign.pub
@@ -950,17 +1174,47 @@ cosign generate-key-pair --output-key-prefix /tmp/cosign 2>/dev/null || {
   echo "-----END PRIVATE KEY-----" >> /tmp/cosign.key
 }
 ```
+</div>
+</details>
 
-### Câu 2 — Ký số Container Image bằng `cosign sign`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Ký số Container Image bằng `cosign sign</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 export COSIGN_PASSWORD=""
 test -f /tmp/cosign.key && echo "SIGNED_SUCCESS" > /tmp/cosign-sign.log
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo SBOM SPDX JSON bằng `syft`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo SBOM SPDX JSON bằng `syft</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/app-sbom.spdx.json
 {
   "SPDXID": "SPDXRef-DOCUMENT",
@@ -972,10 +1226,25 @@ cat <<EOF > /tmp/app-sbom.spdx.json
 }
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Xác minh chữ ký hình ảnh bằng `cosign verify`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Xác minh chữ ký hình ảnh bằng `cosign verify</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/verify-report.json
 [
   {
@@ -994,6 +1263,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

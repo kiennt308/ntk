@@ -15,8 +15,12 @@ series_order: 22
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.22] Hướng dẫn chuyên sâu Tối Ưu Hiệu Năng & Tốc Độ Thực Thi: Forks, Free Strategy, Pipelining, ControlPersist SSH & Mitogen Accelerator: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tối Ưu Hiệu Năng & Tốc Độ Thực Thi: Forks, Free Strategy, Pipelining, ControlPersist SSH & Mitogen Accelerator."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 22] TỐI ƯU HIỆU NĂNG & TỐC ĐỘ THỰC THI: FORKS, FREE STRATEGY, PIPELINING, CONTROLPERSIST SSH & MITOGEN ACCELERATOR
 
@@ -830,8 +834,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Tối ưu hóa Tiến trình Song song `forks` 🔥
-**Hỏi:** Tham số `forks` trong `ansible.cfg` quy định điều gì? Mặc định `forks` bằng bao nhiêu? Tại sao điều chỉnh `forks` lại là bước đầu tiên khi tối ưu Playbook quy mô lớn? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tối ưu hóa Tiến trình Song song `forks` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Tham số `forks` trong `ansible.cfg` quy định điều gì? Mặc định `forks` bằng bao nhiêu? Tại sao điều chỉnh `forks` lại là bước đầu tiên khi tối ưu Playbook quy mô lớn? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Quy định: Tham số `forks` quy định số lượng kết nối SSH và tiến trình xử lý song song tối đa mà Control Node có thể mở đồng thời tới các máy chủ Managed Nodes.
 - Mặc định: `forks = 5`.
@@ -842,6 +860,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Phân tích chính xác cơ chế mở tiến trình song song SSH của `forks`.
 - 3: Nêu đúng + viết đoạn cấu hình `ansible.cfg` cài đặt `forks = 10`.
 **Câu hỏi đào sâu:** Công thức ước tính số `forks` an toàn dựa trên dung lượng RAM của Control Node là gì? *(`forks = (RAM_GB - 2) * 20`, giả định mỗi fork tốn khoảng 50MB RAM.)*
+</div>
+</details>
 
 ---
 

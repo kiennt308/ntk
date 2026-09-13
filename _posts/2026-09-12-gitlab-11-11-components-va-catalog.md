@@ -15,8 +15,12 @@ series_order: 11
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.11] Hướng dẫn chuyên sâu Xây Dựng CI/CD Catalog & CI/CD Components: Đóng Gói Module, Semantic Versioning & Enterprise Component Hub: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Xây Dựng CI/CD Catalog & CI/CD Components: Đóng Gói Module, Semantic Versioning & Enterprise Component Hub."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 11] XÂY DỰNG CI/CD CATALOG & CI/CD COMPONENTS: ĐÓNG GÓI MODULE, SEMANTIC VERSIONING & ENTERPRISE COMPONENT HUB
 
@@ -2027,10 +2031,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. Chi tiết 12 Câu hỏi Vấn đáp Kỹ thuật
 
-### Câu 1: Sự khác biệt cốt lõi giữa GitLab CI/CD Component và tệp YAML include truyền thống là gì?
-
-**Đáp án chuẩn:**
-CI/CD Component là bước tiến hóa kiến trúc vượt trội so với các tệp YAML include truyền thống (vốn chỉ là hành vi chèn văn bản thô). Sự khác biệt thể hiện qua 3 khía cạnh nền tảng:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt cốt lõi giữa GitLab CI/CD Component và tệp YAML include truyền thống là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  CI/CD Component là bước tiến hóa kiến trúc vượt trội so với các tệp YAML include truyền thống (vốn chỉ là hành vi chèn văn bản thô). Sự khác biệt thể hiện qua 3 khía cạnh nền tảng:
 
 1. **Giao diện tham số hóa tường minh (`spec:inputs`):** Tệp YAML include truyền thống phụ thuộc hoàn toàn vào các biến môi trường toàn cục (Environment Variables). Nếu người dùng quên khai báo biến, job sẽ im lặng chạy sai hoặc nhận giá trị rỗng. Trong khi đó, Component bắt buộc khai báo khối `spec:inputs` ở đầu tệp, định nghĩa rõ tên tham số, giá trị mặc định (`default`), mô tả (`description`), và kiểu dữ liệu/danh sách chấp nhận (`options`).
 2. **Khả năng đăng ký và hiển thị trên CI/CD Catalog UI:** Các tệp YAML include nằm rải rác trong các repository phụ thuộc, không thể tìm kiếm tập trung. Component được đăng ký thành Catalog Resource, cho phép toàn bộ kỹ sư trong tập đoàn tìm kiếm, xem tài liệu, giao diện inputs và ví dụ sử dụng trực quan trên giao diện Web của GitLab.
@@ -2042,11 +2058,25 @@ CI/CD Component:       [User .gitlab-ci.yml] ---> (Truyền inputs t1)     ---> 
 ```
 
 ---
+</div>
+</details>
 
-### Câu 2: Tại sao biểu thức $[[ inputs.x ]] lại được phân giải ở thời điểm t1 (Server merge) trong khi biến $MY_VAR chỉ được phân giải ở thời điểm runtime (Runner)?
-
-**Đáp án chuẩn:**
-Sự khác biệt này xuất phát từ kiến trúc hai giai đoạn của GitLab CI Engine:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Tại sao biểu thức $[[ inputs.x ]] lại được phân giải ở thời điểm t1 (Server merge) trong khi biến $MY_VAR chỉ được phân giải ở thời điểm runtime (Runner)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sự khác biệt này xuất phát từ kiến trúc hai giai đoạn của GitLab CI Engine:
 
 - **Giai đoạn t1 (Server-side Merging & Interpolation):** Khi lập trình viên push code hoặc kích hoạt Pipeline, GitLab Server nạp tất cả các tệp include/component, đọc khối `spec:inputs`, và thực hiện **thay thế chuỗi trực tiếp** (String Interpolation) cho mọi biểu thức dạng `$[[ inputs.x ]]`. Việc này diễn ra trên GitLab Server **trước khi** tệp YAML hợp nhất (`merged_yaml`) được lưu vào Cơ sở dữ liệu và chuyển thành danh sách Job. Do đó, `$[[ inputs.x ]]` có thể được dùng ở mọi vị trí cấu hình YAML, bao gồm cả tên Job, tên Stage, thuộc tính `image:`, `services:`, hay điều kiện `rules:`.
 - **Giai đoạn runtime / t3 (Runner Execution):** Biến môi trường dạng `$MY_VAR` hoặc `$CI_COMMIT_SHA` được giữ nguyên dưới dạng chuỗi thô trong suốt quá trình GitLab Server xử lý YAML. Chỉ khi Job được giao cho GitLab Runner thực thi trên máy ảo/container, Runner mới nạp bảng biến (từ CI/CD Variables, Masked Variables, Group Variables) và phân giải giá trị `$MY_VAR` trong môi trường Shell của Container.
@@ -2054,11 +2084,25 @@ Sự khác biệt này xuất phát từ kiến trúc hai giai đoạn của Git
 **Dấu hiệu nhận biết rủi ro:** Cố gắng truyền một biến môi trường runtime (như `$CI_COMMIT_REF_NAME`) vào một input của Component dạng `$[[ inputs.my_ref ]]` sẽ khiến GitLab Server coi đó là một chuỗi văn bản thô `"$CI_COMMIT_REF_NAME"`, không thể phân giải động ở t1!
 
 ---
+</div>
+</details>
 
-### Câu 3: Khối spec:inputs mang lại lợi ích gì cho việc kiểm soát lỗi (Fail-fast validation) so with việc dùng biến môi trường?
-
-**Đáp án chuẩn:**
-Khối `spec:inputs` mang lại cơ chế **Fail-fast Validation (Phát hiện lỗi sớm và ngắt lạch cạch ngay lập tức)** tại thời điểm t1 phía Server, giải quyết triệt me nhược điểm "Chết im lặng" của biến môi trường:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khối spec:inputs mang lại lợi ích gì cho việc kiểm soát lỗi (Fail-fast validation) so with việc dùng biến môi trường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khối `spec:inputs` mang lại cơ chế **Fail-fast Validation (Phát hiện lỗi sớm và ngắt lạch cạch ngay lập tức)** tại thời điểm t1 phía Server, giải quyết triệt me nhược điểm "Chết im lặng" của biến môi trường:
 
 1. **Kiểm tra sự tồn tại của Input:** Nếu tệp `.gitlab-ci.yml` truyền một input không được khai báo trong `spec:inputs` (ví dụ gõ sai tên `environmentt` thay vì `environment`), GitLab Engine sẽ từ chối tạo Pipeline ngay lập tức, trả về lỗi `valid: false` kèm thông báo chi tiết: `unknown input 'environmentt'`.
 2. **Giới hạn phạm vi giá trị hợp lệ (`options`):** Khai báo `options: [dev, staging, production]` đảm bảo nếu người dùng truyền `environment: "staging_test"`, hệ thống sẽ chặn đứng ngay tại thời điểm push code.
@@ -2067,33 +2111,75 @@ Khối `spec:inputs` mang lại cơ chế **Fail-fast Validation (Phát hiện l
 Trong khi đó, nếu dùng biến môi trường `$ENV`, nếu người dùng quên truyền biến, script trong Runner vẫn chạy nhưng biến nhận giá trị rỗng `""`, dẫn tới các câu lệnh nguy hiểm như `rm -rf /app/$ENV/*` biến thành `rm -rf /app//*` gây sập hệ thống sản xuất!
 
 ---
+</div>
+</details>
 
-### Câu 4: Liệt kê 3 điều kiện bắt buộc để một Repository Component hiển thị trên giao diện CI/CD Catalog UI của GitLab?
-
-**Đáp án chuẩn:**
-Để một dự án Component xuất hiện chính thức trên giao diện CI/CD Catalog của tập đoàn, phải đáp ứng đủ 3 điều kiện bắt buộc sau (Áp dụng Quy tắc **QT 5.1**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Liệt kê 3 điều kiện bắt buộc để một Repository Component hiển thị trên giao diện CI/CD Catalog UI của GitLab?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để một dự án Component xuất hiện chính thức trên giao diện CI/CD Catalog của tập đoàn, phải đáp ứng đủ 3 điều kiện bắt buộc sau (Áp dụng Quy tắc **QT 5.1**):
 
 1. **Thuộc tính Project Catalog được bật (`is_catalog_resource`):** Trong giao diện Settings -> General -> Visibility, project features, phải bật cờ **CI/CD Catalog Resource** (hoặc gọi REST API `PUT /projects/:id` với tham số `is_catalog_resource=true`).
 2. **Có tệp tài liệu README.md ở thư mục gốc:** GitLab Catalog Engine sử dụng tệp `README.md` để tự động trích xuất nội dung hiển thị trang tổng quan, hướng dẫn sử dụng và bảng tra cứu `spec:inputs` cho người dùng. Thư mục `templates/` phải chứa ít nhất 1 tệp `.yml` (ví dụ `templates/build.yml`).
 3. **Đã phát hành ít nhất một Release Tag (Phát hành chính thức):** Lập trình viên phải đẩy một Git Tag (ví dụ `1.0.0`) và tạo một đối tượng **Release** tương ứng gắn liền với Tag đó trên GitLab. Nhánh `main` chưa có Release Tag sẽ không hiển thị trên Catalog UI để tránh người dùng dùng nhầm mã nguồn chưa kiểm thử.
 
 ---
+</div>
+</details>
 
-### Câu 5: Tại sao trong môi trường doanh nghiệp, quy tắc bất biến bắt buộc lập trình viên phải ghim cố định phiên bản Component (@1.0.0) thay vì trỏ bản mới nhất (@~latest)?
-
-**Đáp án chuẩn:**
-Việc trỏ Component bằng cú pháp `@~latest` hoặc trỏ vào branch `@main` vi phạm nghiêm trọng **Nguyên tắc Bất biến của Hạ tầng CI/CD (Infrastructure Invariance Principle)** vì 3 lý do chiến lược:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao trong môi trường doanh nghiệp, quy tắc bất biến bắt buộc lập trình viên phải ghim cố định phiên bản Component (@1.0.0) thay vì trỏ bản mới nhất (@~latest)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Việc trỏ Component bằng cú pháp `@~latest` hoặc trỏ vào branch `@main` vi phạm nghiêm trọng **Nguyên tắc Bất biến của Hạ tầng CI/CD (Infrastructure Invariance Principle)** vì 3 lý do chiến lược:
 
 1. **Rủi ro đứt gãy tự động (Unpredictable Pipeline Breakage):** Khi đội ngũ quản trị Component phát hành một bản cập nhật mới (dù là Minor hay Major), tất cả 500 repository trong tập đoàn đang dùng `@~latest` sẽ tự động nạp mã nguồn mới ở lần push tiếp theo. Nếu bản mới chứa lỗi hoặc thay đổi hành vi, toàn bộ 500 pipeline sẽ đồng loạt chuyển sang màu đỏ, làm tê liệt hoạt động phát triển của toàn tập đoàn.
 2. **Mất khả năng tái hiện lỗi (Non-reproducible Builds):** Một commit được build thành công tuần trước với `@~latest` có thể thất bại hoàn toàn vào tuần này khi chạy lại (Retry) chỉ vì Component nguồn bên dưới đã bị chỉnh sửa. Kỹ sư không thể điều tra nguyên nhân vì mã nguồn ứng dụng không hề thay đổi.
 3. **Tuân thủ chuẩn mực Semantic Versioning (@1.0.0):** Ghim phiên bản cố định `@1.0.0` đảm bảo pipeline của dự án người dùng hoạt động hoàn toàn độc lập, ổn định 100%. Việc nâng cấp phiên bản Component phải là một quyết định chủ động thông qua việc tạo Merge Request kiểm thử, không phải hành vi nạp tự động rủi ro.
 
 ---
+</div>
+</details>
 
-### Câu 6: Nêu 4 dạng phá vỡ hợp đồng (Breaking Changes) thường gặp khi vận hành CI/CD Component?
-
-**Đáp án chuẩn:**
-Khi phát triển và bảo trì Component, kỹ sư DevOps phải ghi nhớ 4 dạng thay đổi làm đứt gãy hợp đồng (Breaking Changes) quy định tại **QT 5.3**:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Nêu 4 dạng phá vỡ hợp đồng (Breaking Changes) thường gặp khi vận hành CI/CD Component?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi phát triển và bảo trì Component, kỹ sư DevOps phải ghi nhớ 4 dạng thay đổi làm đứt gãy hợp đồng (Breaking Changes) quy định tại **QT 5.3**:
 
 1. **Xoá bỏ một Input hiện có hoặc Xoá bỏ giá trị mặc định (`default`):** Nếu một input đang có `default: "dev"` bị xoá bỏ thuộc tính `default`, tất cả các dự án người dùng trước đó không truyền input này sẽ bị sập ngay lập tức ở t1 do thiếu tham số bắt buộc.
 2. **Thay đổi tên Job nội bộ của Component (Job Name Change):** Nếu Component đổi tên job từ `docker-build:` thành `container-build:`, các dự án người dùng đang sử dụng từ khoá `extends:` hoặc ghi đè thuộc tính của `docker-build:` sẽ bị sập do không tìm thấy Job gốc.
@@ -2101,11 +2187,25 @@ Khi phát triển và bảo trì Component, kỹ sư DevOps phải ghi nhớ 4 d
 4. **Thay đổi danh sách giá trị hợp lệ (`options`):** Loại bỏ một giá trị khỏi mảng `options` (ví dụ xoá `dev` chỉ giữ `[staging, production]`) khiến tất cả dự án đang truyền `environment: "dev"` bị chặn đứng ở t1.
 
 ---
+</div>
+</details>
 
-### Câu 7: Một Component có thể ngăn chặn triệt để việc người dùng xoá đè mảng script nội bộ bằng extends không? Nếu không, làm sao để bảo vệ lõi logic?
-
-**Đáp án chuẩn:**
-**KHÔNG THỂ.** Theo cơ chế hợp nhất tệp YAML của GitLab CI (xảy ra ở mốc t2), không gian tên Job trong Pipeline là một phẳng (Flat Namespace). Nếu người dùng trong tệp `.gitlab-ci.yml` khai báo một Job có tên trùng khớp với tên Job do Component sinh ra và định nghĩa mảng `script:`, mảng `script:` của người dùng sẽ **xoá đè hoàn toàn** mảng `script:` nội bộ của Component (Áp dụng **QT 6.1**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Một Component có thể ngăn chặn triệt để việc người dùng xoá đè mảng script nội bộ bằng extends không? Nếu không, làm sao để bảo vệ lõi logic?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **KHÔNG THỂ.** Theo cơ chế hợp nhất tệp YAML của GitLab CI (xảy ra ở mốc t2), không gian tên Job trong Pipeline là một phẳng (Flat Namespace). Nếu người dùng trong tệp `.gitlab-ci.yml` khai báo một Job có tên trùng khớp với tên Job do Component sinh ra và định nghĩa mảng `script:`, mảng `script:` của người dùng sẽ **xoá đè hoàn toàn** mảng `script:` nội bộ của Component (Áp dụng **QT 6.1**).
 
 **Giải pháp bảo vệ lõi logic (Assertion Job Pattern):**
 Vì không thể ngăn người dùng xoá đè về mặt cú pháp YAML, đội ngũ thiết kế Component áp dụng kỹ thuật **Khẳng định Hiện vật (Artifact Contract Assertion)**:
@@ -2121,11 +2221,25 @@ Vì không thể ngăn người dùng xoá đè về mặt cú pháp YAML, độ
 Nếu người dùng cố tình xoá đè `script:`, tệp hiện vật `output/build.env` không được tạo ra, Job khẳng định sẽ ngắt đỏ toàn bộ Pipeline!
 
 ---
+</div>
+</details>
 
-### Câu 8: Tại sao mọi Job trong tệp cấu hình Component bắt buộc phải sử dụng tham số tiền tố job_prefix?
-
-**Đáp án chuẩn:**
-Mọi Job trong Component bắt buộc phải dùng tiền tố động `$[[ inputs.job_prefix ]]` (Áp dụng **QT 6.2**) để giải quyết bài toán **Xung đột tên Job (Job Name Collision)** trong không gian tên phẳng của Pipeline:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao mọi Job trong tệp cấu hình Component bắt buộc phải sử dụng tham số tiền tố job_prefix?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mọi Job trong Component bắt buộc phải dùng tiền tố động `$[[ inputs.job_prefix ]]` (Áp dụng **QT 6.2**) để giải quyết bài toán **Xung đột tên Job (Job Name Collision)** trong không gian tên phẳng của Pipeline:
 
 1. **Kịch bản Nạp nhiều Component trong cùng Pipeline:** Giả sử một dự án người dùng nạp 2 Component: Component `build-docker` và Component `build-helm`. Nếu cả 2 Component đều gõ cứng tên Job là `build-job:`, khi GitLab Resolver hợp nhất YAML ở t2, Job của Component nạp sau sẽ ghi đè âm thầm Job của Component nạp trước, khiến 1 bước build bị biến mất không vết tích!
 2. **Giải pháp tiền tố hoá động:** Bằng cách khai báo tên Job dạng:
@@ -2136,22 +2250,50 @@ Mọi Job trong Component bắt buộc phải dùng tiền tố động `$[[ inp
    Người dùng có thể truyền `job_prefix: "auth-service"` cho Component 1 và `job_prefix: "payment-service"` cho Component 2. Kết quả hợp nhất t2 sẽ tạo ra 2 Job riêng biệt: `auth-service-docker-build` và `payment-service-docker-build`, loại bỏ hoàn toàn xung đột tên.
 
 ---
+</div>
+</details>
 
-### Câu 9: Hợp đồng Hiện vật (Artifact Contract) đóng vai trò gì trong việc chuẩn hoá giao tiếp giữa Component và Pipeline người dùng?
-
-**Đáp án chuẩn:**
-Hợp đồng Hiện vật (Artifact Contract) là **giao diện đầu ra chính thức** của Component, đóng vai trò cầu nối dữ liệu giữa mã nguồn đóng gói của Component và các bước xử lý tiếp theo của người dùng (Áp dụng **QT 6.3**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Hợp đồng Hiện vật (Artifact Contract) đóng vai trò gì trong việc chuẩn hoá giao tiếp giữa Component và Pipeline người dùng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Hợp đồng Hiện vật (Artifact Contract) là **giao diện đầu ra chính thức** của Component, đóng vai trò cầu nối dữ liệu giữa mã nguồn đóng gói của Component và các bước xử lý tiếp theo của người dùng (Áp dụng **QT 6.3**):
 
 1. **Chuẩn hoá biến môi trường truyền ngang (`artifacts:reports:dotenv`):** Component sinh ra tệp cấu hình chứa các biến kết quả (như `IMAGE_TAG=sha-12345`, `BUILD_TIMESTAMP=2026-08-21`). GitLab Runner tự động nạp tệp dotenv này và truyền các biến vào môi trường thực thi của tất cả các Job ở các stage phía sau (`test`, `deploy`).
 2. **Độc lập hoá công nghệ đóng gói:** Dự án người dùng ở stage `deploy` không cần quan tâm Component build bằng Docker, Podman hay Kaniko. Dự án chỉ cần đọc biến `$IMAGE_TAG` từ hợp đồng dotenv được cấp.
 3. **Phân tách trách nhiệm (Separation of Concerns):** Component chịu trách nhiệm build và phát hành hiện vật; Pipeline người dùng chịu trách nhiệm kiểm thử và triển khai dựa trên hiện vật đó.
 
 ---
+</div>
+</details>
 
-### Câu 10: Làm thế nào để thiết lập một Pipeline tự kiểm tra chính nó (Self-testing Pipeline) ngay trong Repository phát triển Component?
-
-**Đáp án chuẩn:**
-Để đảm bảo mã nguồn Component không bị lỗi cú pháp hoặc hỏng logic trước khi tạo Release Tag xuất bản lên Catalog, repository Component phải thiết lập Pipeline tự kiểm tra chính nó (Self-testing Pipeline) theo chuẩn **QT 7.1**:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để thiết lập một Pipeline tự kiểm tra chính nó (Self-testing Pipeline) ngay trong Repository phát triển Component?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để đảm bảo mã nguồn Component không bị lỗi cú pháp hoặc hỏng logic trước khi tạo Release Tag xuất bản lên Catalog, repository Component phải thiết lập Pipeline tự kiểm tra chính nó (Self-testing Pipeline) theo chuẩn **QT 7.1**:
 
 Trong tệp `.gitlab-ci.yml` của chính dự án Component, sử dụng biến hệ thống `$CI_PROJECT_PATH` và `$CI_COMMIT_SHA` để tự include chính tệp template đang được chỉnh sửa:
 
@@ -2180,11 +2322,25 @@ verify-self-test-output:
 Cấu hình này đảm bảo mỗi Merge Request thay đổi mã nguồn Component sẽ chạy tự kiểm tra thực tế trước khi Merge vào nhánh `main`.
 
 ---
+</div>
+</details>
 
-### Câu 11: Làm sao để kiểm tra chính xác số lượng và danh sách các Repository đang tiêu thụ từng phiên bản Component qua REST API?
-
-**Đáp án chuẩn:**
-Để thực hiện Audit danh sách dự án phụ thuộc (Áp dụng **QT 7.2**), kỹ sư DevOps khai thác REST API Search của GitLab để tìm kiếm xâu định danh Component kèm phiên bản trong mã nguồn `.gitlab-ci.yml`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Làm sao để kiểm tra chính xác số lượng và danh sách các Repository đang tiêu thụ từng phiên bản Component qua REST API?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để thực hiện Audit danh sách dự án phụ thuộc (Áp dụng **QT 7.2**), kỹ sư DevOps khai thác REST API Search của GitLab để tìm kiếm xâu định danh Component kèm phiên bản trong mã nguồn `.gitlab-ci.yml`:
 
 Exec script Bash `dem-nguoi-dung.sh`:
 ```bash
@@ -2208,11 +2364,25 @@ echo "$RES" | jq -r '.[] | "Project ID: \(.id) | Name: \(.name) | URL: \(.web_ur
 Kịch bản này giúp đội ngũ hạ tầng đo đạc tỉ lệ phủ (adoption rate) và xác định chính xác các dự án chưa chịu nâng cấp khi phát hành phiên bản mới.
 
 ---
+</div>
+</details>
 
-### Câu 12: Trình bày quy trình 3 bước chuẩn mực khi phát hành một phiên bản Component mới chứa Breaking Change?
-
-**Đáp án chuẩn:**
-Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp đồng (Breaking Change), đội ngũ quản trị bắt buộc tuân thủ quy trình 3 bước chuẩn mực (Áp dụng **QT 5.3** & **QT 7.2**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Trình bày quy trình 3 bước chuẩn mực khi phát hành một phiên bản Component mới chứa Breaking Change?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp đồng (Breaking Change), đội ngũ quản trị bắt buộc tuân thủ quy trình 3 bước chuẩn mực (Áp dụng **QT 5.3** & **QT 7.2**):
 
 1. **Bước 1 — Phát hành Phiên bản Major mới, KHÔNG BAO GIỜ di chuyển hoặc xoá Tag cũ:**
    Tạo Git Tag mới tuân thủ Semantic Versioning (ví dụ bump từ `1.2.0` lên `2.0.0`) và xuất bản Release Tag `2.0.0` lên Catalog. Tuyệt đối giữ nguyên Tag `1.0.0` và `1.2.0` trên Git để không làm sập các pipeline cũ đang chạy.
@@ -2222,6 +2392,8 @@ Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp
    Thực thi script audit trích xuất danh sách 100 dự án đang dùng `v1.x`, sử dụng kịch bản tự động hoá để gửi Merge Request đề xuất nâng cấp đường dẫn include lên `@2.0.0` cho từng nhóm dự án, cho phép các đội ứng dụng chủ động test và merge.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 

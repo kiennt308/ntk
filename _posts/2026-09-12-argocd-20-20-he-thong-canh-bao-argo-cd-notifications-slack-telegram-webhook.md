@@ -15,8 +15,12 @@ series_order: 20
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=1200&q=80"
 summary: "Hướng dẫn xây dựng hệ thống cảnh báo và truyền thông tự động với Argo CD Notifications Engine: Cấu hình tích hợp Slack, Telegram, Webhook và PagerDuty, làm chủ cú pháp Go Template, thiết lập Triggers điều kiện và kiểm soát triệt để thảm họa Notification Storm spam kênh chat."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Hệ Thống Cảnh Báo: Argo CD Notifications, Slack, Telegram & Webhook Automation."
+  - "Ứng dụng triết lý GitOps với Git làm nguồn chân lý duy nhất (Single Source of Truth), đồng bộ tự động 24/7."
+  - "Kiểm soát chặt chẽ quy trình triển khai đa cụm Kubernetes, phát hiện và triệt tiêu Configuration Drift."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Hệ Thống Cảnh Báo: Argo CD Notifications, Slack, Telegram & Webhook Automation
 
@@ -376,42 +380,201 @@ kubectl exec -n argocd deploy/argocd-notifications-controller -- \
 
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-Dưới đây là 10 câu hỏi sát hạch chuyên sâu về Argo CD Notifications:
 
-### Câu 1: Biến `{{.context.argocdUrl}}` trong template của Notifications đọc giá trị từ đâu?
-- **Đáp án:** Đọc từ trường `url:` được khai báo trong ConfigMap `argocd-cm` hoặc trường `context.argocdUrl` trong ConfigMap `argocd-notifications-cm`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Biến `{{.context.argocdUrl}}` trong template của Notifications đọc giá trị từ đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đọc từ trường `url:` được khai báo trong ConfigMap `argocd-cm` hoặc trường `context.argocdUrl` trong ConfigMap `argocd-notifications-cm`.
+</div>
+</details>
 
-### Câu 2: Thuộc tính `oncePer` trong Trigger của Argo CD Notifications giải quyết vấn đề gì?
-- **Đáp án:** Ngăn chặn hiện tượng **Notification Storm** (bão thông báo). Nó đảm bảo tin nhắn chỉ được gửi một lần duy nhất cho mỗi đối tượng định danh (như Commit Revision hoặc thời gian), tránh việc spam kênh chat khi Pod bị lỗi flapping liên tục.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Thuộc tính `oncePer` trong Trigger của Argo CD Notifications giải quyết vấn đề gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ngăn chặn hiện tượng **Notification Storm** (bão thông báo). Nó đảm bảo tin nhắn chỉ được gửi một lần duy nhất cho mỗi đối tượng định danh (như Commit Revision hoặc thời gian), tránh việc spam kênh chat khi Pod bị lỗi flapping liên tục.
+</div>
+</details>
 
-### Câu 3: Làm thế nào để đăng ký nhận thông báo cho toàn bộ các ứng dụng nằm trong một `AppProject` mà không cần cấu hình trên từng Application riêng lẻ?
-- **Đáp án:** Gắn Annotation Subscriptions trực tiếp vào đối tượng **`AppProject CRD`**. Mọi Application thuộc Project đó sẽ tự động kế thừa quy tắc thông báo.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Làm thế nào để đăng ký nhận thông báo cho toàn bộ các ứng dụng nằm trong một `AppProject` mà không cần cấu hình trên từng Application riêng lẻ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Gắn Annotation Subscriptions trực tiếp vào đối tượng **`AppProject CRD`**. Mọi Application thuộc Project đó sẽ tự động kế thừa quy tắc thông báo.
+</div>
+</details>
 
-### Câu 4: Ngôn ngữ định dạng mẫu nào được sử dụng để soạn thảo các Template trong Argo CD Notifications?
-- **Đáp án:** Sử dụng ngôn ngữ mẫu **Go Template** chuẩn của Golang, hỗ trợ đầy đủ các cấu trúc điều kiện (`if/else`), vòng lặp (`range`), và các hàm xử lý chuỗi nâng cao.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Ngôn ngữ định dạng mẫu nào được sử dụng để soạn thảo các Template trong Argo CD Notifications?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng ngôn ngữ mẫu **Go Template** chuẩn của Golang, hỗ trợ đầy đủ các cấu trúc điều kiện (`if/else`), vòng lặp (`range`), và các hàm xử lý chuỗi nâng cao.
+</div>
+</details>
 
-### Câu 5: Cần lưu ý gì về bảo mật khi lưu trữ Bot Token của Telegram hoặc Slack Webhook URL?
-- **Đáp án:** Tuyệt đối không lưu token dạng plaintext trong ConfigMap `argocd-notifications-cm`. Bắt buộc phải lưu trong Kubernetes Secret **`argocd-notifications-secret`** và tham chiếu trong ConfigMap qua cú pháp `$token-key-name`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cần lưu ý gì về bảo mật khi lưu trữ Bot Token của Telegram hoặc Slack Webhook URL?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tuyệt đối không lưu token dạng plaintext trong ConfigMap `argocd-notifications-cm`. Bắt buộc phải lưu trong Kubernetes Secret **`argocd-notifications-secret`** và tham chiếu trong ConfigMap qua cú pháp `$token-key-name`.
+</div>
+</details>
 
-### Câu 6: Làm thế nào để gửi kèm danh sách Commit Messages trong thông báo deploy thành công?
-- **Đáp án:** Trong Go Template, có thể lặp qua mảng commit metadata:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để gửi kèm danh sách Commit Messages trong thông báo deploy thành công?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong Go Template, có thể lặp qua mảng commit metadata:
   ```gotemplate
   {{range .app.status.operationState.syncResult.resources}}
   - {{.kind}}/{{.name}}: {{.status}}
   {{end}}
   ```
+</div>
+</details>
 
-### Câu 7: Có thể gửi thông báo tới nhiều kênh chat khác nhau cho cùng một sự kiện deploy không?
-- **Đáp án:** **Hoàn toàn được!** Bạn có thể gắn nhiều Annotation Subscriptions trên cùng một Application, ví dụ vừa gửi cho Slack `#dev-channel`, vừa gửi cho Microsoft Teams Webhook.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Có thể gửi thông báo tới nhiều kênh chat khác nhau cho cùng một sự kiện deploy không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hoàn toàn được!** Bạn có thể gắn nhiều Annotation Subscriptions trên cùng một Application, ví dụ vừa gửi cho Slack `#dev-channel`, vừa gửi cho Microsoft Teams Webhook.
+</div>
+</details>
 
-### Câu 8: Khi Notifications Controller bị lỗi kết nối mạng tới Slack/Telegram, cơ chế thử lại (Retry) hoạt động ra sao?
-- **Đáp án:** Controller sử dụng thuật toán **Exponential Backoff** với cơ chế thử lại nội bộ để gửi lại tin nhắn khi gặp lỗi mạng tạm thời hoặc HTTP 5xx từ phía nhà cung cấp dịch vụ chat.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Khi Notifications Controller bị lỗi kết nối mạng tới Slack/Telegram, cơ chế thử lại (Retry) hoạt động ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Controller sử dụng thuật toán **Exponential Backoff** với cơ chế thử lại nội bộ để gửi lại tin nhắn khi gặp lỗi mạng tạm thời hoặc HTTP 5xx từ phía nhà cung cấp dịch vụ chat.
+</div>
+</details>
 
-### Câu 9: Làm thế nào để định dạng tin nhắn đẹp với nút bấm trực tiếp trong Slack?
-- **Đáp án:** Sử dụng cấu hình `slack.blocks` hoặc `slack.attachments` hỗ trợ chuẩn Slack Block Kit với các thẻ `actions`, `button` và URL trực tiếp dẫn tới bảng điều khiển Argo CD.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để định dạng tin nhắn đẹp với nút bấm trực tiếp trong Slack?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng cấu hình `slack.blocks` hoặc `slack.attachments` hỗ trợ chuẩn Slack Block Kit với các thẻ `actions`, `button` và URL trực tiếp dẫn tới bảng điều khiển Argo CD.
+</div>
+</details>
 
-### Câu 10: Điểm khác biệt giữa việc kích hoạt thông báo từ CI Pipeline (GitHub Actions) và từ Argo CD Notifications là gì?
-- **Đáp án:** CI Pipeline chỉ biết khi nào code được đóng gói hoặc đẩy lên Git, trong khi **Argo CD Notifications** phản ánh chính xác 100% tình trạng triển khai thực tế trên cụm Kubernetes (Pod đã thực sự Ready và Healthy chưa).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Điểm khác biệt giữa việc kích hoạt thông báo từ CI Pipeline (GitHub Actions) và từ Argo CD Notifications là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  CI Pipeline chỉ biết khi nào code được đóng gói hoặc đẩy lên Git, trong khi **Argo CD Notifications** phản ánh chính xác 100% tình trạng triển khai thực tế trên cụm Kubernetes (Pod đã thực sự Ready và Healthy chưa).
+</div>
+</details>
 
 ---
 

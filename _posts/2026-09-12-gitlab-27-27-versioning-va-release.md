@@ -15,8 +15,12 @@ series_order: 27
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.27] Hướng dẫn chuyên sâu Tự Động Hóa Versioning & Release: Semantic Release, Conventional Commits, Git Tagging & Changelog Automation: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tự Động Hóa Versioning & Release: Semantic Release, Conventional Commits, Git Tagging & Changelog Automation."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 27] TỰ ĐỘNG HÓA VERSIONING & RELEASE: SEMANTIC RELEASE, CONVENTIONAL COMMITS, GIT TAGGING & CHANGELOG AUTOMATION
 
@@ -1564,119 +1568,275 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Một hiện vật một phiên bản một lần build — vi phạm điều này là gốc của prod chạy cái gì không ai biết"**?
-
-**Đáp án chuẩn:**
-- Vì việc biên dịch lại mã nguồn ở môi trường Production (thay vì dùng lại đúng Container Image / tệp nhị phân đã build ở môi trường Staging) có thể nạp các thư viện phụ thuộc mới hơn do tệp lockfile bị trôi hoặc môi trường Runner khác nhau.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Một hiện vật một phiên bản một lần build — vi phạm điều này là gốc của prod chạy cái gì không ai biết"**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Vì việc biên dịch lại mã nguồn ở môi trường Production (thay vì dùng lại đúng Container Image / tệp nhị phân đã build ở môi trường Staging) có thể nạp các thư viện phụ thuộc mới hơn do tệp lockfile bị trôi hoặc môi trường Runner khác nhau.
 - Điều này khiến bản build Prod trở thành một tệp nhị phân hoàn toàn khác với bản đã Test, triệt tiêu tính bất biến (Artifact Immutability) và chính là gốc rễ của sự cố "Prod chạy cái gì không ai biết".
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân tích quy chuẩn Git Commit Message dạng `Conventional Commits` (`feat`, `fix`, `chore`, `BREAKING CHANGE`) và vai trò của nó trong CI Pipeline?
-
-**Đáp án chuẩn:**
-- `Conventional Commits` định nghĩa cú pháp chuẩn: `<type>(<scope>): <description>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân tích quy chuẩn Git Commit Message dạng `Conventional Commits` (`feat`, `fix`, `chore`, `BREAKING CHANGE`) và vai trò của nó trong CI Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Conventional Commits` định nghĩa cú pháp chuẩn: `<type>(<scope>): <description>`.
   - **`fix:`** Thể hiện việc sửa lỗi (tương ứng với tăng con số **`PATCH`** trong SemVer).
   - **`feat:`** Thể hiện việc thêm tính năng mới (tương ứng với tăng con số **`MINOR`**).
   - **`BREAKING CHANGE:`** Thể hiện thay đổi phá vỡ tính tương thích ngược (tương ứng với tăng con số **`MAJOR`**).
 - Vai trò: Biến Git commit log từ chuỗi văn bản thuần túy cho con người đọc thành **dữ liệu cấu hình đầu vào** cho CI Pipeline tự động tính toán con số phiên bản mà không cần con người can thiệp thủ công.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Cách thức công cụ `semantic-release` tự động phân tích Git commit log để quyết định tăng `MAJOR`, `MINOR`, hay `PATCH`?
-
-**Đáp án chuẩn:**
-- `semantic-release` sử dụng plugin `@semantic-release/commit-analyzer` để quét toàn bộ các commit log từ Git Tag release gần nhất đến commit mới nhất trên nhánh `main`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Cách thức công cụ `semantic-release` tự động phân tích Git commit log để quyết định tăng `MAJOR`, `MINOR`, hay `PATCH`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `semantic-release` sử dụng plugin `@semantic-release/commit-analyzer` để quét toàn bộ các commit log từ Git Tag release gần nhất đến commit mới nhất trên nhánh `main`.
 - Nếu phát hiện bất kỳ commit nào chứa `BREAKING CHANGE:`, nó chọn tăng **MAJOR**. Nếu không có MAJOR nhưng có commit `feat:`, nó chọn tăng **MINOR**. Nếu không có MINOR nhưng có commit `fix:`, nó chọn tăng **PATCH**. Nếu chỉ có `chore:` hoặc `docs:`, nó bỏ qua không phát hành phiên bản mới.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Tại sao tuyệt đối không được phép xóa hoặc push đè một Git Tag đã được phát hành Release trên Production?
-
-**Đáp án chuẩn:**
-- Git Tag trên Production đại diện cho nhãn định danh bất biến (Immutable Version Identifier) của một hiện vật hạ tầng và mã nguồn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Tại sao tuyệt đối không được phép xóa hoặc push đè một Git Tag đã được phát hành Release trên Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Git Tag trên Production đại diện cho nhãn định danh bất biến (Immutable Version Identifier) của một hiện vật hạ tầng và mã nguồn.
 - Nếu xóa hoặc push đè Git Tag `v1.0.0`, toàn bộ lịch sử vết audit, khả năng `helm rollback` và tính toàn vẹn của tệp nhị phân đính kèm sẽ bị phá hỏng hoàn toàn, khiến hệ thống quản trị hạ tầng rơi vào trạng thái bất ổn định nghiêm trọng.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa phiên bản Pre-release (`1.0.0-rc.1`) và phiên bản chính thức Production Release (`1.0.0`)?
-
-**Đáp án chuẩn:**
-- **Pre-release (`1.0.0-rc.1`):** Là bản phát hành thử nghiệm Release Candidate (RC) sinh ra từ các nhánh tính năng hoặc nhánh testing. Bản này dành riêng cho đội QA/QC kiểm thử trên môi trường Staging và có thể bị thay thế bởi `rc.2` nếu phát hiện lỗi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa phiên bản Pre-release (`1.0.0-rc.1`) và phiên bản chính thức Production Release (`1.0.0`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Pre-release (`1.0.0-rc.1`):** Là bản phát hành thử nghiệm Release Candidate (RC) sinh ra từ các nhánh tính năng hoặc nhánh testing. Bản này dành riêng cho đội QA/QC kiểm thử trên môi trường Staging và có thể bị thay thế bởi `rc.2` nếu phát hiện lỗi.
 - **Production Release (`1.0.0`):** Là bản phát hành chính thức đã vượt qua 100% bài kiểm thử. Bản này có tính bất biến tuyệt đối và sẵn sàng cho việc triển khai lên môi trường Production.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Nguyên lý hoạt động của công cụ `gitlab-release-cli` và cách tạo GitLab Release Event tự động trong `.gitlab-ci.yml`?
-
-**Đáp án chuẩn:**
-- `gitlab-release-cli` là công cụ chính thức do GitLab phát triển giúp gọi REST API của GitLab Server để tạo trang điểm mốc Release Event trên giao diện UI.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `gitlab-release-cli` và cách tạo GitLab Release Event tự động trong `.gitlab-ci.yml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `gitlab-release-cli` là công cụ chính thức do GitLab phát triển giúp gọi REST API của GitLab Server để tạo trang điểm mốc Release Event trên giao diện UI.
 - Trong `.gitlab-ci.yml`, ta khai báo thuộc tính `release:` với các tham số: `name`, `tag_name: "$CI_COMMIT_TAG"`, `description: "./release-notes.md"`, và `assets:links` để đính kèm các đường dẫn tải tệp nhị phân release.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Cách đồng bộ 1 con số phiên bản duy nhất giữa Git Tag, Container Image Tag, Helm Chart Version, và App Version?
-
-**Đáp án chuẩn:**
-- Khi `semantic-release` tính toán ra con số phiên bản mới (ví dụ `1.2.3`), nó xuất biến ra tệp `version.env` (`RELEASE_VERSION=1.2.3`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Cách đồng bộ 1 con số phiên bản duy nhất giữa Git Tag, Container Image Tag, Helm Chart Version, và App Version?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Khi `semantic-release` tính toán ra con số phiên bản mới (ví dụ `1.2.3`), nó xuất biến ra tệp `version.env` (`RELEASE_VERSION=1.2.3`).
 - Ở Stage build, ta nạp biến này để đính tag cho Container Image (`my-app:1.2.3`), cập nhật tệp `Chart.yaml` (`version: 1.2.3`, `appVersion: 1.2.3`), và gắn Git Tag `v1.2.3`. Cả 4 thành phần sử dụng chung 1 con số SemVer duy nhất.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Tại sao tệp `CHANGELOG.md` tự động sinh ra lại quan trọng đối với các kỹ sư Ops, Security và khách hàng sử dụng sản phẩm?
-
-**Đáp án chuẩn:**
-- Giúp các kỹ sư Ops nắm bắt nhanh 100% các tính năng mới và bug fix được triển khai trong bản release.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Tại sao tệp `CHANGELOG.md` tự động sinh ra lại quan trọng đối với các kỹ sư Ops, Security và khách hàng sử dụng sản phẩm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Giúp các kỹ sư Ops nắm bắt nhanh 100% các tính năng mới và bug fix được triển khai trong bản release.
 - Giúp các kỹ sư Security kiểm soát vết xem bản release này có khắc phục các lỗ hổng bảo mật đã cảnh báo hay không.
 - Giúp khách hàng và lập trình viên integration biết chính xác các API endpoints nào bị thay đổi hoặc deprecated để điều chỉnh code.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Ý nghĩa của cờ bảo mật `Protected Tags` trong GitLab CI/CD và cách ngăn chặn rủi ro rò rỉ quyền release?
-
-**Đáp án chuẩn:**
-- `Protected Tags` cho phép thiết lập quy tắc bảo vệ nhãn Git Tag (ví dụ pattern `v*.*.*`) trên GitLab Repository Settings.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Ý nghĩa của cờ bảo mật `Protected Tags` trong GitLab CI/CD và cách ngăn chặn rủi ro rò rỉ quyền release?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Protected Tags` cho phép thiết lập quy tắc bảo vệ nhãn Git Tag (ví dụ pattern `v*.*.*`) trên GitLab Repository Settings.
 - Ta phân quyền `Allowed to create: No one`, chỉ cho phép duy nhất CI/CD Pipeline Service Account (thông qua `$GITLAB_TOKEN`) được phép tạo Git Tag. Điều này triệt tiêu rủi ro lập trình viên cá nhân tự ý đẩy đè Tag thủ công từ máy local.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Phương pháp đính kèm tệp nhị phân Release Assets và mã băm Checksum SHA-256 vào GitLab Release Event?
-
-**Đáp án chuẩn:**
-- Đóng gói tệp thực thi thành tệp nén (`tar -czvf my-app-v1.0.0.tar.gz bin/`) và tạo tệp băm (`sha256sum my-app-v1.0.0.tar.gz > my-app-v1.0.0.tar.gz.sha256`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Phương pháp đính kèm tệp nhị phân Release Assets và mã băm Checksum SHA-256 vào GitLab Release Event?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Đóng gói tệp thực thi thành tệp nén (`tar -czvf my-app-v1.0.0.tar.gz bin/`) và tạo tệp băm (`sha256sum my-app-v1.0.0.tar.gz > my-app-v1.0.0.tar.gz.sha256`).
 - Upload các tệp này lên Package Registry, sau đó truyền thông tin URL và mã Checksum SHA-256 vào thuộc tính `assets:links` của `release-cli` để hiển thị công khai trên giao diện Release Event.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Cách xử lý sự cố khi một developer lỡ gõ sai cú pháp commit message không theo chuẩn Conventional Commits?
-
-**Đáp án chuẩn:**
-- Nếu commit chưa được merge vào `main`: Yêu cầu dev chạy lệnh `git commit --amend` hoặc `git rebase -i` sửa lại thông điệp commit trên nhánh feature branch.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Cách xử lý sự cố khi một developer lỡ gõ sai cú pháp commit message không theo chuẩn Conventional Commits?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Nếu commit chưa được merge vào `main`: Yêu cầu dev chạy lệnh `git commit --amend` hoặc `git rebase -i` sửa lại thông điệp commit trên nhánh feature branch.
 - Nếu commit đã merge vào `main`: Công cụ `semantic-release` sẽ tự động bỏ qua commit sai cú pháp đó và không phát hành phiên bản mới. Dev cần tạo 1 commit mới chuẩn hóa (ví dụ `fix(core): ...`) để trigger lại tiến trình release.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước quản lý Release chuẩn Enterprise trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-1. **Conventional Commit:** Lập trình viên commit mã nguồn theo chuẩn `feat:`, `fix:`, `BREAKING CHANGE:`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước quản lý Release chuẩn Enterprise trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Conventional Commit:** Lập trình viên commit mã nguồn theo chuẩn `feat:`, `fix:`, `BREAKING CHANGE:`.
 2. **Semantic Release:** CI Pipeline tự động phân tích commit log, tính con số SemVer 2.0 mới, và sinh `CHANGELOG.md`.
 3. **Artifact Sync:** Đồng bộ 1 con số phiên bản mới sang Git Tag, Container Image Tag, và Helm Chart Version.
 4. **Release Event:** Sử dụng `release-cli` tạo Release Event trên UI đính kèm Release Assets và Checksum SHA-256.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

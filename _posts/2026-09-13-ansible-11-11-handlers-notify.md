@@ -15,8 +15,12 @@ series_order: 11
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.11] Hướng dẫn chuyên sâu Điều Phối Handlers & Notify: Cơ Chế Flush Handlers, Listen Topic & Xử Lý Khởi Động Lại Dịch Vụ Thông Minh: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Điều Phối Handlers & Notify: Cơ Chế Flush Handlers, Listen Topic & Xử Lý Khởi Động Lại Dịch Vụ Thông Minh."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 11] ĐIỀU PHỐI HANDLERS & NOTIFY: CƠ CHẾ FLUSH HANDLERS, LISTEN TOPIC & XỬ LÝ KHỞI ĐỘNG LẠI DỊCH VỤ THÔNG MINH
 
@@ -921,8 +925,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Vai trò của `handlers` và `notify` 🔥
-**Hỏi:** Cơ chế `handlers` và từ khóa `notify:` trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới `tasks:`? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Vai trò của `handlers` và `notify` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Cơ chế `handlers` và từ khóa `notify:` trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới `tasks:`? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Khối `handlers:` chứa các Task đặc biệt chỉ được kích hoạt thi hành khi nhận được thông báo từ thuộc tính `notify:` của các Task chính. Không nên restart dịch vụ trực tiếp dưới `tasks:` vì nó sẽ khiến dịch vụ bị restart vô điều kiện ở mọi lượt chạy kịch bản ngay cả khi tệp cấu hình KHÔNG đổi, gây gián đoạn dịch vụ lãng phí. Dùng `notify/handlers` đảm bảo dịch vụ CHỈ RESTART khi file cấu hình thực sự có sự thay đổi (`changed: true`).
 **Tiêu chí chấm:**
 - 0: Không biết vai trò của `handlers` và `notify`.
@@ -930,6 +948,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Phân tích chính xác vai trò phản ứng sự kiện và điều kiện kích hoạt `changed: true`.
 - 3: Nêu đúng + minh họa ví dụ chép file cấu hình Nginx phát `notify: Restart Nginx`.
 **Câu hỏi đào sâu:** Khối `handlers:` nằm cùng cấp thụt lề với từ khóa nào trong file Playbook? *(Nằm ở cấp độ Play, cùng cấp thụt lề với từ khóa `tasks:`.)*
+</div>
+</details>
 
 ---
 

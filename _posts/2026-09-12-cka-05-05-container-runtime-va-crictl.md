@@ -15,8 +15,12 @@ series_order: 5
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.05] Hướng dẫn chuyên sâu Container Runtime Interface (CRI): Làm Chủ crictl, containerd Architecture & Bản Chất Kubelet: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Container Runtime Interface (CRI): Làm Chủ crictl, containerd Architecture & Bản Chất Kubelet."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 05] CONTAINER RUNTIME INTERFACE (CRI): LÀM CHỦ CRICTL, CONTAINERD ARCHITECTURE & BẢN CHẤT KUBELET
 
@@ -120,10 +124,10 @@ graph TD
     D -->|Tạo Kernel Namespaces & Cgroups| E["Linux Kernel (Container Process)"]
     D -->|Thoát ngay sau khi đúc xong| C
 
-    style A fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style B fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
-    style C fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style E fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style A fill:none,stroke:#0288d1,stroke-width:2px
+    style B fill:none,stroke:#fbc02d,stroke-width:2px
+    style C fill:none,stroke:#f57c00,stroke-width:2px
+    style E fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -369,9 +373,9 @@ graph TD
     C -->|Gọi runc| D["Pause Container (Pod Sandbox IP)"]
     C -->|Gọi runc| E["App Container (Share NetNS)"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style D fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style D fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -511,8 +515,8 @@ graph TD
     SHIM --> PAUSE
     SHIM --> APP
 
-    style Control_Plane fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Worker_Node fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Control_Plane fill:none,stroke:#f57c00,stroke-width:2px
+    style Worker_Node fill:none,stroke:#0288d1,stroke-width:2px
 ```
 
 ### Bốn quyết định thiết kế bài lab
@@ -890,12 +894,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Kubelet có trực tiếp chạy hay quản lý container không? Kubelet giao tiếp với Container Runtime (containerd) qua giao thức và tệp socket nào?
-
-**Đáp án chuẩn:**
-- Kubelet **KHÔNG trực tiếp tạo hay chạy container**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Kubelet có trực tiếp chạy hay quản lý container không? Kubelet giao tiếp với Container Runtime (containerd) qua giao thức và tệp socket nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Kubelet **KHÔNG trực tiếp tạo hay chạy container**.
 - Kubelet đóng vai trò là tác nhân điều phối, gửi các câu lệnh yêu cầu tới Container Runtime (containerd) thông qua chuẩn giao diện **CRI (Container Runtime Interface)**.
 - Giao thức giao tiếp là **gRPC Protocol** thông qua tệp socket Unix domain: `/run/containerd/containerd.sock`.
 
@@ -906,6 +921,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, giải thích kiến trúc pluggable của CRI cho phép thay thế containerd bằng CRI-O hoặc gVisor.
 
 **Câu hỏi đào sâu:** Nếu tệp socket `/run/containerd/containerd.sock` bị xoá hoặc mất quyền truy cập thì Kubelet báo lỗi gì? *(Đáp án: Kubelet không thể kết nối tới CRI runtime và Node sẽ chuyển sang trạng thái NotReady).*
+</div>
+</details>
 
 ---
 

@@ -14,8 +14,12 @@ series_order: 14
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "Hướng dẫn làm chủ tư duy lập trình meta trong HCL: giải mã cơ chế sinh lặp"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Lập Trình HCL Nâng Cao: Làm Chủ Dynamic Blocks, Biểu Thức For (For."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Lập Trình HCL Nâng Cao: Làm Chủ Dynamic Blocks, Biểu Thức For (For Expressions) & Toán Tử Ellipsis
 
@@ -373,65 +377,196 @@ cd .. && rm -rf /tmp/meta-programming-lab
 
 ## 8. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Sự khác nhau cơ bản giữa `for_each` ở cấp resource và `dynamic` block là gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-- <code>for_each</code> ở cấp resource dùng để sinh ra <b>nhiều tài nguyên độc lập</b> (mỗi tài nguyên có State Address riêng).<br/>
-- <code>dynamic</code> block dùng để sinh lặp <b>nhiều khối cấu hình con lồng nhau (Nested Blocks)</b> bên trong duy nhất một tài nguyên.
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác nhau cơ bản giữa `for_each` ở cấp resource và `dynamic` block là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - <code>for_each</code> ở cấp resource dùng để sinh ra <b style="color: var(--accent-primary);">nhiều tài nguyên độc lập</b> (mỗi tài nguyên có State Address riêng).<br/>
+- <code>dynamic</code> block dùng để sinh lặp <b style="color: var(--accent-primary);">nhiều khối cấu hình con lồng nhau (Nested Blocks)</b> bên trong duy nhất một tài nguyên.
+</div>
 </details>
 
-### Câu 2: Thuộc tính `iterator` trong `dynamic` block có bắt buộc không và có tác dụng gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Không bắt buộc. Nếu không khai báo, biến con trỏ sẽ mặc định lấy theo tên của khối dynamic (ví dụ <code>ingress.value</code>). Tuy nhiên, khai báo rõ ràng <code>iterator = rule</code> giúp mã nguồn trong sáng, dễ đọc và tránh xung đột khi có nhiều khối dynamic lồng nhau.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Thuộc tính `iterator` trong `dynamic` block có bắt buộc không và có tác dụng gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Không bắt buộc. Nếu không khai báo, biến con trỏ sẽ mặc định lấy theo tên của khối dynamic (ví dụ <code>ingress.value</code>). Tuy nhiên, khai báo rõ ràng <code>iterator = rule</code> giúp mã nguồn trong sáng, dễ đọc và tránh xung đột khi có nhiều khối dynamic lồng nhau.
+</div>
 </details>
 
-### Câu 3: Làm thế nào để tạo một `dynamic` block có điều kiện (Bật/Tắt dựa trên biến Boolean)?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Sử dụng biểu thức toán tử tam nguyên: <code>for_each = var.enable_feature ? [1] : []</code>. Nếu <code>true</code>, mảng có 1 phần tử giúp sinh ra khối; nếu <code>false</code>, mảng rỗng và khối sẽ bị bỏ qua.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Làm thế nào để tạo một `dynamic` block có điều kiện (Bật/Tắt dựa trên biến Boolean)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng biểu thức toán tử tam nguyên: <code>for_each = var.enable_feature ? [1] : []</code>. Nếu <code>true</code>, mảng có 1 phần tử giúp sinh ra khối; nếu <code>false</code>, mảng rỗng và khối sẽ bị bỏ qua.
+</div>
 </details>
 
-### Câu 4: Toán tử Ellipsis (`...`) trong For Expressions giải quyết bài toán gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Dùng để gom nhóm (Group By) nhiều phần tử có cùng một Key vào một danh sách (List of Values). Nếu không có <code>...</code>, khi gặp các phần tử trùng Key, Terraform sẽ báo lỗi <code>Duplicate key in map</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Toán tử Ellipsis (`...`) trong For Expressions giải quyết bài toán gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Dùng để gom nhóm (Group By) nhiều phần tử có cùng một Key vào một danh sách (List of Values). Nếu không có <code>...</code>, khi gặp các phần tử trùng Key, Terraform sẽ báo lỗi <code>Duplicate key in map</code>.
+</div>
 </details>
 
-### Câu 5: Hàm `flatten()` thường được dùng trong trường hợp nào khi viết HCL?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Dùng để làm phẳng mảng đa cấp (List of Lists) sinh ra từ các biểu thức For lồng nhau thành một danh sách 1 chiều duy nhất để có thể truyền vào <code>for_each</code> của tài nguyên.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Hàm `flatten()` thường được dùng trong trường hợp nào khi viết HCL?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Dùng để làm phẳng mảng đa cấp (List of Lists) sinh ra từ các biểu thức For lồng nhau thành một danh sách 1 chiều duy nhất để có thể truyền vào <code>for_each</code> của tài nguyên.
+</div>
 </details>
 
-### Câu 6: Khi nào KHÔNG NÊN sử dụng `dynamic` block cho Security Groups?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Khi số lượng rules lớn (> 15 rules) hoặc khi các rules có quan hệ phụ thuộc chéo giữa các tầng. Trong trường hợp đó, nên tách rời thành các tài nguyên độc lập <code>aws_security_group_rule</code> để dễ bảo trì, dễ review Git diff và tránh lỗi Cyclic Dependency.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Khi nào KHÔNG NÊN sử dụng `dynamic` block cho Security Groups?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi số lượng rules lớn (> 15 rules) hoặc khi các rules có quan hệ phụ thuộc chéo giữa các tầng. Trong trường hợp đó, nên tách rời thành các tài nguyên độc lập <code>aws_security_group_rule</code> để dễ bảo trì, dễ review Git diff và tránh lỗi Cyclic Dependency.
+</div>
 </details>
 
-### Câu 7: Thuộc tính `each.value` trong `dynamic` block chứa kiểu dữ liệu gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Chứa giá trị của phần tử hiện tại đang được duyệt trong vòng lặp (có thể là String, Number, Map, hoặc Object tùy thuộc vào cấu trúc dữ liệu truyền vào <code>for_each</code>).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Thuộc tính `each.value` trong `dynamic` block chứa kiểu dữ liệu gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chứa giá trị của phần tử hiện tại đang được duyệt trong vòng lặp (có thể là String, Number, Map, hoặc Object tùy thuộc vào cấu trúc dữ liệu truyền vào <code>for_each</code>).
+</div>
 </details>
 
-### Câu 8: Có thể lồng một khối `dynamic` bên trong một khối `dynamic` khác không (Nested Dynamic Blocks)?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<b>CÓ THỂ</b>. HCL hỗ trợ lồng nhiều tầng dynamic block (ví dụ khối <code>rule</code> lồng khối <code>action</code> trong AWS WAF hoặc S3 Lifecycle). Bắt buộc phải đặt tên <code>iterator</code> khác nhau ở từng tầng để tránh xung đột biến con trỏ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Có thể lồng một khối `dynamic` bên trong một khối `dynamic` khác không (Nested Dynamic Blocks)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <b style="color: var(--accent-primary);">CÓ THỂ</b>. HCL hỗ trợ lồng nhiều tầng dynamic block (ví dụ khối <code>rule</code> lồng khối <code>action</code> trong AWS WAF hoặc S3 Lifecycle). Bắt buộc phải đặt tên <code>iterator</code> khác nhau ở từng tầng để tránh xung đột biến con trỏ.
+</div>
 </details>
 
-### Câu 9: Biểu thức `[for k, v in var.my_map : v if v.active]` trả về kiểu dữ liệu gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Trả về một danh sách (<b>List</b>) chứa các giá trị <code>v</code> thỏa mãn điều kiện <code>v.active == true</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Biểu thức `[for k, v in var.my_map : v if v.active]` trả về kiểu dữ liệu gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trả về một danh sách (<b style="color: var(--accent-primary);">List</b>) chứa các giá trị <code>v</code> thỏa mãn điều kiện <code>v.active == true</code>.
+</div>
 </details>
 
-### Câu 10: Biểu thức `{for s in var.server_list : s.id => s...}` trả về kiểu dữ liệu gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Trả về một <b>Map</b> trong đó mỗi Key là <code>s.id</code> và Value tương ứng là một <b>List các object</b> có cùng ID đó (nhờ toán tử Ellipsis).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Biểu thức `{for s in var.server_list : s.id => s...}` trả về kiểu dữ liệu gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trả về một <b style="color: var(--accent-primary);">Map</b> trong đó mỗi Key là <code>s.id</code> và Value tương ứng là một <b style="color: var(--accent-primary);">List các object</b> có cùng ID đó (nhờ toán tử Ellipsis).
+</div>
 </details>
 
 ---

@@ -14,8 +14,12 @@ series_order: 5
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
 summary: "Quy chuẩn thiết kế Input Variables có Custom Validation Rules bằng Regex,"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation,."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation, Precedence & Sensitive Masking
 
@@ -369,65 +373,196 @@ cd .. && rm -rf /tmp/terraform-vars-lab
 
 ## 9. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Thứ tự ưu tiên nạp biến trong Terraform được sắp xếp như thế nào từ thấp đến cao?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Thứ tự ưu tiên từ thấp đến cao: (1) Giá trị <code>default</code> trong <code>variables.tf</code> $\rightarrow$ (2) Biến môi trường <code>TF_VAR_name</code> $\rightarrow$ (3) Tệp <code>terraform.tfvars</code> $\rightarrow$ (4) Tệp <code>*.auto.tfvars</code> $\rightarrow$ (5) Tham số CLI <code>-var</code> hoặc <code>-var-file</code>.
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thứ tự ưu tiên nạp biến trong Terraform được sắp xếp như thế nào từ thấp đến cao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thứ tự ưu tiên từ thấp đến cao: (1) Giá trị <code>default</code> trong <code>variables.tf</code> $\rightarrow$ (2) Biến môi trường <code>TF_VAR_name</code> $\rightarrow$ (3) Tệp <code>terraform.tfvars</code> $\rightarrow$ (4) Tệp <code>*.auto.tfvars</code> $\rightarrow$ (5) Tham số CLI <code>-var</code> hoặc <code>-var-file</code>.
+</div>
 </details>
 
-### Câu 2: Khối `validation` trong Input Variable được kích hoạt tại thời điểm nào?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Được kích hoạt ngay trong <b>Pha Plan (hoặc khi chạy `terraform validate`)</b> trước khi Terraform gửi bất kỳ API request nào lên Cloud Provider, giúp tiết kiệm thời gian và ngăn chặn lỗi cấu hình sai từ sớm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Khối `validation` trong Input Variable được kích hoạt tại thời điểm nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Được kích hoạt ngay trong <b style="color: var(--accent-primary);">Pha Plan (hoặc khi chạy `terraform validate`)</b> trước khi Terraform gửi bất kỳ API request nào lên Cloud Provider, giúp tiết kiệm thời gian và ngăn chặn lỗi cấu hình sai từ sớm.
+</div>
 </details>
 
-### Câu 3: Thuộc tính `nullable = false` trong khai báo `variable` có tác dụng gì từ Terraform 1.1+?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Mặc định trong Terraform, nếu một biến có giá trị default nhưng người dùng cố tình truyền <code>null</code>, biến đó sẽ nhận giá trị <code>null</code>. Thiết lập <code>nullable = false</code> buộc Terraform phải từ chối giá trị null và tự động fallback về giá trị <code>default</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Thuộc tính `nullable = false` trong khai báo `variable` có tác dụng gì từ Terraform 1.1+?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định trong Terraform, nếu một biến có giá trị default nhưng người dùng cố tình truyền <code>null</code>, biến đó sẽ nhận giá trị <code>null</code>. Thiết lập <code>nullable = false</code> buộc Terraform phải từ chối giá trị null và tự động fallback về giá trị <code>default</code>.
+</div>
 </details>
 
-### Câu 4: Sự khác nhau cơ bản giữa `variable` và `locals` là gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-- <code>variable</code> đóng vai trò là tham số đầu vào (Input Parameter) mà người gọi module có thể truyền vào và ghi đè.<br/>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Sự khác nhau cơ bản giữa `variable` và `locals` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - <code>variable</code> đóng vai trò là tham số đầu vào (Input Parameter) mà người gọi module có thể truyền vào và ghi đè.<br/>
 - <code>locals</code> là biến nội bộ bất biến (Internal Constants), chỉ có thể được đọc và tính toán bên trong module đó, không thể bị ghi đè từ bên ngoài.
+</div>
 </details>
 
-### Câu 5: Cờ `sensitive = true` trên Output có thực sự mã hóa dữ liệu trong State file không?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<b>KHÔNG</b>. Cờ <code>sensitive = true</code> chỉ có tác dụng <b>che giấu giá trị hiển thị trên màn hình CLI, console và bản ghi log CI/CD</b> (hiển thị thành <code>(sensitive value)</code>). Dữ liệu này vẫn được lưu trữ dưới dạng văn bản thô (Plain Text) bên trong tệp <code>terraform.tfstate</code>. Do đó, State Backend bắt buộc phải được mã hóa tại chỗ (SSE-KMS/AES-256).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cờ `sensitive = true` trên Output có thực sự mã hóa dữ liệu trong State file không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <b style="color: var(--accent-primary);">KHÔNG</b>. Cờ <code>sensitive = true</code> chỉ có tác dụng <b style="color: var(--accent-primary);">che giấu giá trị hiển thị trên màn hình CLI, console và bản ghi log CI/CD</b> (hiển thị thành <code>(sensitive value)</code>). Dữ liệu này vẫn được lưu trữ dưới dạng văn bản thô (Plain Text) bên trong tệp <code>terraform.tfstate</code>. Do đó, State Backend bắt buộc phải được mã hóa tại chỗ (SSE-KMS/AES-256).
+</div>
 </details>
 
-### Câu 6: Làm thế nào để lấy giá trị thực của một Sensitive Output trong Bash script tự động?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Sử dụng cờ <code>-raw</code> trong lệnh output: <code>terraform output -raw <output_name></code> hoặc xuất định dạng JSON: <code>terraform output -json <output_name> | jq -r .</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để lấy giá trị thực của một Sensitive Output trong Bash script tự động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng cờ <code>-raw</code> trong lệnh output: <code>terraform output -raw <output_name></code> hoặc xuất định dạng JSON: <code>terraform output -json <output_name> | jq -r .</code>.
+</div>
 </details>
 
-### Câu 7: Hàm `can(expression)` thường được dùng kết hợp với hàm nào trong khối validation?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Thường được dùng kết hợp với các hàm phân tích chuỗi như <code>regex()</code>, <code>cidrnetmask()</code>, hoặc <code>tonumber()</code>. Nếu biểu thức bên trong gặp lỗi cú pháp (ví dụ regex không khớp), hàm <code>can()</code> sẽ bắt lỗi an toàn và trả về <code>false</code> thay vì làm sập toàn bộ tiến trình Terraform.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Hàm `can(expression)` thường được dùng kết hợp với hàm nào trong khối validation?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thường được dùng kết hợp với các hàm phân tích chuỗi như <code>regex()</code>, <code>cidrnetmask()</code>, hoặc <code>tonumber()</code>. Nếu biểu thức bên trong gặp lỗi cú pháp (ví dụ regex không khớp), hàm <code>can()</code> sẽ bắt lỗi an toàn và trả về <code>false</code> thay vì làm sập toàn bộ tiến trình Terraform.
+</div>
 </details>
 
-### Câu 8: Tại sao việc sử dụng `locals` để chuẩn hóa Resource Naming lại quan trọng trong doanh nghiệp?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Giúp đảm bảo 100% tài nguyên hạ tầng tuân thủ đúng quy chuẩn đặt tên thống nhất (ví dụ <code>company-project-env-resource</code>). Khi cần thay đổi quy tắc đặt tên, kỹ sư chỉ cần chỉnh sửa tại 1 dòng duy nhất trong khối <code>locals</code> thay vì phải sửa hàng trăm tài nguyên phân tán.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao việc sử dụng `locals` để chuẩn hóa Resource Naming lại quan trọng trong doanh nghiệp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giúp đảm bảo 100% tài nguyên hạ tầng tuân thủ đúng quy chuẩn đặt tên thống nhất (ví dụ <code>company-project-env-resource</code>). Khi cần thay đổi quy tắc đặt tên, kỹ sư chỉ cần chỉnh sửa tại 1 dòng duy nhất trong khối <code>locals</code> thay vì phải sửa hàng trăm tài nguyên phân tán.
+</div>
 </details>
 
-### Câu 9: Điều gì xảy ra nếu bạn truyền một biến có cờ `sensitive = true` vào một resource tag?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Toàn bộ resource tag và bất kỳ resource nào tham chiếu tới tag đó sẽ tự động bị Terraform đánh dấu là <b>Sensitive</b>, khiến các output liên quan cũng bị ẩn đi để tránh rò rỉ bắc cầu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Điều gì xảy ra nếu bạn truyền một biến có cờ `sensitive = true` vào một resource tag?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Toàn bộ resource tag và bất kỳ resource nào tham chiếu tới tag đó sẽ tự động bị Terraform đánh dấu là <b style="color: var(--accent-primary);">Sensitive</b>, khiến các output liên quan cũng bị ẩn đi để tránh rò rỉ bắc cầu.
+</div>
 </details>
 
-### Câu 10: Tệp `*.auto.tfvars.json` có ưu điểm gì so với tệp `*.auto.tfvars` thông thường?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Định dạng JSON cho phép các công cụ tự động hóa hoặc script lập trình bên ngoài (Python, Go, Node.js) dễ dàng sinh ra (generate) các tệp biến cấu hình một cách có cấu trúc mà không cần phải viết parser định dạng HCL riêng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tệp `*.auto.tfvars.json` có ưu điểm gì so với tệp `*.auto.tfvars` thông thường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Định dạng JSON cho phép các công cụ tự động hóa hoặc script lập trình bên ngoài (Python, Go, Node.js) dễ dàng sinh ra (generate) các tệp biến cấu hình một cách có cấu trúc mà không cần phải viết parser định dạng HCL riêng.
+</div>
 </details>
 
 ---

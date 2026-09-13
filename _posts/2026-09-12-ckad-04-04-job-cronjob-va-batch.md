@@ -15,8 +15,12 @@ series_order: 4
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.04] Hướng dẫn chuyên sâu Workloads Xử Lý Hàng Loạt (Batch): Job, CronJob, Completions, Parallelism & ConcurrencyPolicy: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Workloads Xử Lý Hàng Loạt (Batch): Job, CronJob, Completions, Parallelism & ConcurrencyPolicy."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 04] WORKLOADS XỬ LÝ HÀNG LOẠT (BATCH): JOB, CRONJOB, COMPLETIONS, PARALLELISM & CONCURRENCYPOLICY
 
@@ -336,41 +340,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Trường `restartPolicy` trong bản kê khai Kubernetes Job chấp nhận hai giá trị nào?
-   - **Đáp án:** Giá trị `Never` hoặc `OnFailure`.
 
-2. Sự khác biệt chính giữa `restartPolicy: Never` và `restartPolicy: OnFailure` khi Job bị lỗi là gì?
-   - **Đáp án:** `Never` sinh ra Pod mới hoàn toàn để thử lại, `OnFailure` khởi động lại container ngay trong Pod cũ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trường `restartPolicy` trong bản kê khai Kubernetes Job chấp nhận hai giá trị nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giá trị `Never` hoặc `OnFailure`.
+</div>
+</details>
 
-3. Ý nghĩa của hai trường `completions` và `parallelism` trong Kubernetes Job là gì?
-   - **Đáp án:** `completions` là tổng số Pod phải hoàn thành (exit 0), `parallelism` là số Pod tối đa chạy đồng thời.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt chính giữa `restartPolicy: Never` và `restartPolicy: OnFailure` khi Job bị lỗi là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `Never` sinh ra Pod mới hoàn toàn để thử lại, `OnFailure` khởi động lại container ngay trong Pod cũ.
+</div>
+</details>
 
-4. Trường `backoffLimit` có giá trị mặc định là bao nhiêu nếu không được khai báo?
-   - **Đáp án:** Giá trị mặc định bằng 6.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Ý nghĩa của hai trường `completions` và `parallelism` trong Kubernetes Job là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `completions` là tổng số Pod phải hoàn thành (exit 0), `parallelism` là số Pod tối đa chạy đồng thời.
+</div>
+</details>
 
-5. Điều gì xảy ra khi một Job vượt quá thời gian khai báo trong `activeDeadlineSeconds`?
-   - **Đáp án:** Kubernetes sẽ chủ động tiêu diệt toàn bộ các Pod thuộc Job và chuyển Job sang trạng thái thất bại.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Trường `backoffLimit` có giá trị mặc định là bao nhiêu nếu không được khai báo?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giá trị mặc định bằng 6.
+</div>
+</details>
 
-6. Cú pháp biểu thức Cron 5 sao theo thứ tự gồm những trường mốc thời gian nào?
-   - **Đáp án:** Phút, Giờ, Ngày trong tháng, Tháng, Ngày trong tuần.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Điều gì xảy ra khi một Job vượt quá thời gian khai báo trong `activeDeadlineSeconds`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubernetes sẽ chủ động tiêu diệt toàn bộ các Pod thuộc Job và chuyển Job sang trạng thái thất bại.
+</div>
+</details>
 
-7. Ba giá trị hợp lệ của trường `concurrencyPolicy` trong CronJob là gì?
-   - **Đáp án:** `Allow`, `Forbid`, và `Replace`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cú pháp biểu thức Cron 5 sao theo thứ tự gồm những trường mốc thời gian nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Phút, Giờ, Ngày trong tháng, Tháng, Ngày trong tuần.
+</div>
+</details>
 
-8. Chính sách `concurrencyPolicy: Forbid` có tác dụng gì khi tác vụ định kỳ mới tới lịch chạy mà tác vụ cũ chưa xong?
-   - **Đáp án:** Bỏ qua lần kích hoạt mới và tiếp tục để tác vụ cũ chạy cho xong.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Ba giá trị hợp lệ của trường `concurrencyPolicy` trong CronJob là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `Allow`, `Forbid`, và `Replace`.
+</div>
+</details>
 
-9. Chính sách `concurrencyPolicy: Replace` có tác dụng gì khi tác vụ định kỳ mới tới lịch chạy?
-   - **Đáp án:** Tiêu diệt tác vụ cũ đang chạy dở và bật ngay tác vụ mới vừa tới lịch.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Chính sách `concurrencyPolicy: Forbid` có tác dụng gì khi tác vụ định kỳ mới tới lịch chạy mà tác vụ cũ chưa xong?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Bỏ qua lần kích hoạt mới và tiếp tục để tác vụ cũ chạy cho xong.
+</div>
+</details>
 
-10. Cờ cấu hình nào giúp giới hạn số lượng Pod Job đã hoàn thành thành công được giữ lại trong lịch sử?
-    - **Đáp án:** Cờ `successfulJobsHistoryLimit`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Chính sách `concurrencyPolicy: Replace` có tác dụng gì khi tác vụ định kỳ mới tới lịch chạy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tiêu diệt tác vụ cũ đang chạy dở và bật ngay tác vụ mới vừa tới lịch.
+</div>
+</details>
 
-11. Cú pháp CLI gõ nhanh để tạo một Job từ terminal là gì?
-    - **Đáp án:** `kubectl create job <job-name> --image=<image-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cờ cấu hình nào giúp giới hạn số lượng Pod Job đã hoàn thành thành công được giữ lại trong lịch sử?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `successfulJobsHistoryLimit`.
+</div>
+</details>
 
-12. Cú pháp CLI gõ nhanh để tạo một CronJob chạy mỗi 5 phút từ terminal là gì?
-    - **Đáp án:** `kubectl create cronjob <name> --image=<image> --schedule="*/5 * * * *" -- <command>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Cú pháp CLI gõ nhanh để tạo một Job từ terminal là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl create job <job-name> --image=<image-name>`.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp CLI gõ nhanh để tạo một CronJob chạy mỗi 5 phút từ terminal là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl create cronjob <name> --image=<image> --schedule="*/5 * * * *" -- <command>`.
+</div>
+</details>
 
 ---
 
@@ -760,10 +957,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Sự khác biệt bản chất về mục đích vận hành giữa Kubernetes Job/CronJob và Deployment là gì?
 
-**Đáp án chuẩn:** Deployment được thiết kế cho các ứng dụng chạy liên tục vĩnh viễn (Long-running Services như Web Server, API), nếu Pod dừng sẽ tự bật lại. Job và CronJob được thiết kế cho các tác vụ xử lý theo lô (Batch Workloads) có điểm dừng; khi tiến trình chạy xong và thoát với exit code 0 (`Completed`), Pod sẽ dừng lại và không bị Kubelet bật lại vĩnh viễn nữa.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt bản chất về mục đích vận hành giữa Kubernetes Job/CronJob và Deployment là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Deployment được thiết kế cho các ứng dụng chạy liên tục vĩnh viễn (Long-running Services như Web Server, API), nếu Pod dừng sẽ tự bật lại. Job và CronJob được thiết kế cho các tác vụ xử lý theo lô (Batch Workloads) có điểm dừng; khi tiến trình chạy xong và thoát với exit code 0 (`Completed`), Pod sẽ dừng lại và không bị Kubelet bật lại vĩnh viễn nữa.
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được 2 nhóm Workload.
@@ -771,6 +981,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo sự khác biệt giữa Long-running Workloads (Deployment) và Batch Workloads (Job/CronJob).
 
 **Câu hỏi đào sâu:** (Nếu một container trong Job bị thoát với exit code 1 thì Kubelet sẽ làm gì? — Kubelet sẽ thử lại tùy theo `restartPolicy` và giới hạn `backoffLimit`).
+</div>
+</details>
 
 ---
 
@@ -1013,9 +1225,22 @@ Tạo CronJob tên là `clean-cron` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Job `calc-job`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Job `calc-job</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1036,10 +1261,25 @@ spec:
           command: ["sh", "-c", "echo CALCULATED && sleep 2"]
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo Job `fail-job` có `backoffLimit`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo Job `fail-job` có `backoffLimit</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: batch/v1
 kind: Job
@@ -1057,16 +1297,46 @@ spec:
           command: ["sh", "-c", "exit 1"]
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo CronJob `backup-cron` có `concurrencyPolicy: Forbid`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo CronJob `backup-cron` có `concurrencyPolicy: Forbid</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create cronjob backup-cron --image=busybox:1.36 --schedule="*/5 * * * *" -n prod --dry-run=client -o yaml -- date | sed 's/concurrencyPolicy: .*/concurrencyPolicy: Forbid/' | kubectl apply -f -
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo CronJob `clean-cron` có lịch sử và deadline
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo CronJob `clean-cron` có lịch sử và deadline</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: batch/v1
 kind: CronJob
@@ -1092,6 +1362,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy mất điểm
 

@@ -14,8 +14,12 @@ series_order: 19
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1200&q=80"
 summary: "Xây dựng Pipeline CI/CD tự động hóa toàn diện cho Terraform với GitHub Actions"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Terraform trong CI/CD: GitLab CI, GitHub Actions và OIDC Authentication."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Terraform trong CI/CD: GitLab CI, GitHub Actions và OIDC Authentication
 
@@ -74,9 +78,9 @@ graph TD
     TP -->|Khớp Repo & Branch| ALLOW["Cho phép AssumeRole -&gt; Cấp quyền Administrator/IaC"]
     TP -->|Không khớp: Hacker Fork Repo| DENY["Từ chối Truy Cập: Access Denied"]
 
-    style GH fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style ALLOW fill:#d4edda,stroke:#28a745,stroke-width:2px
-    style DENY fill:#ffcccc,stroke:#ff0000,stroke-width:2px
+    style GH fill:none,stroke:#0288d1,stroke-width:2px
+    style ALLOW fill:none,stroke:#28a745,stroke-width:2px
+    style DENY fill:none,stroke:#ff0000,stroke-width:2px
 
 
 ```
@@ -160,8 +164,8 @@ flowchart TD
 
     REVIEW --> MERGE
 
-    style Phase1 fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style Phase2 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Phase1 fill:none,stroke:#333,stroke-width:2px
+    style Phase2 fill:none,stroke:#2e7d32,stroke-width:2px
 
 
 ```
@@ -382,9 +386,9 @@ graph LR
     B --> D["AWS IAM Role: GitHubActions-Terraform-ExecutionRole"]
     D --> E["Kiểm tra Trust Policy với aws iam get-role"]
 
-    style A fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style C fill:#d4edda,stroke:#28a745,stroke-width:2px
-    style D fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style A fill:none,stroke:#0288d1,stroke-width:2px
+    style C fill:none,stroke:#28a745,stroke-width:2px
+    style D fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -498,43 +502,203 @@ rm -rf terraform-lab19-oidc
 
 ## 7. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-### Q1: Tại sao việc chạy `terraform apply` trực tiếp trên máy cục bộ của kỹ sư (Laptop Ops) bị cấm trong các môi trường tài chính, ngân hàng?
-- **Trả lời**: Vì Laptop Ops tiềm ẩn nhiều rủi ro:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao việc chạy `terraform apply` trực tiếp trên máy cục bộ của kỹ sư (Laptop Ops) bị cấm trong các môi trường tài chính, ngân hàng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Vì Laptop Ops tiềm ẩn nhiều rủi ro:
   - Thiếu tính minh bạch và audit log (không biết chính xác ai đã deploy phiên bản commit nào).
   - Nguy cơ lộ Access Key lưu trên máy cá nhân khi bị dính malware.
   - Sự khác biệt về phiên bản CLI, biến môi trường và mạng nội bộ giữa các máy trạm dẫn đến trạng thái State không nhất quán.
   - Không thể thực thi quy trình thẩm định 4 mắt (Peer Review / 4-Eyes Principle).
+</div>
+</details>
 
-### Q2: Cơ chế xác thực OIDC giữa GitHub Actions và AWS STS hoạt động dựa trên tiêu chuẩn mã hóa nào?
-- **Trả lời**: Hoạt động dựa trên chuẩn mã hóa **OpenID Connect (OIDC)** xây dựng trên nền tảng **OAuth 2.0** và **JSON Web Tokens (JWT)**. GitHub Actions ký số JWT token bằng Private Key của mình, và AWS STS xác thực chữ ký này thông qua bộ khóa công khai (Public Keys) được công bố tại endpoint `.well-known/openid-configuration` của GitHub.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cơ chế xác thực OIDC giữa GitHub Actions và AWS STS hoạt động dựa trên tiêu chuẩn mã hóa nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Hoạt động dựa trên chuẩn mã hóa **OpenID Connect (OIDC)** xây dựng trên nền tảng **OAuth 2.0** và **JSON Web Tokens (JWT)**. GitHub Actions ký số JWT token bằng Private Key của mình, và AWS STS xác thực chữ ký này thông qua bộ khóa công khai (Public Keys) được công bố tại endpoint `.well-known/openid-configuration` của GitHub.
+</div>
+</details>
 
-### Q3: Trong Trust Policy của AWS IAM Role dành cho GitHub OIDC, trường `token.actions.githubusercontent.com:sub` đại diện cho thông tin gì?
-- **Trả lời**: Trường `sub` (Subject Claim) chứa định danh ngữ cảnh thực thi của GitHub Actions, theo cấu trúc: `repo:<org>/<repo>:ref:<branch_or_tag>` hoặc `repo:<org>/<repo>:pull_request`. Đây là chốt chặn quan trọng nhất để ngăn chặn các GitHub repositories khác mạo danh và assume role của bạn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Trong Trust Policy của AWS IAM Role dành cho GitHub OIDC, trường `token.actions.githubusercontent.com:sub` đại diện cho thông tin gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Trường `sub` (Subject Claim) chứa định danh ngữ cảnh thực thi của GitHub Actions, theo cấu trúc: `repo:<org>/<repo>:ref:<branch_or_tag>` hoặc `repo:<org>/<repo>:pull_request`. Đây là chốt chặn quan trọng nhất để ngăn chặn các GitHub repositories khác mạo danh và assume role của bạn.
+</div>
+</details>
 
-### Q4: Tại sao trong file workflow GitHub Actions, bước `terraform plan` phải lưu file output nhị phân `terraform plan -out=tfplan.binary`?
-- **Trả lời**: Để đảm bảo **tính tất định (Determinism)**. File `tfplan.binary` là một snapshot chứa chính xác danh sách các thay đổi đã được review và approve trong Pull Request. Khi chạy `terraform apply tfplan.binary`, Terraform chỉ thực thi đúng những gì đã được ghi nhận trong file đó, tránh trường hợp hạ tầng bị ai đó thay đổi ngầm giữa thời điểm Plan và Apply.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tại sao trong file workflow GitHub Actions, bước `terraform plan` phải lưu file output nhị phân `terraform plan -out=tfplan.binary`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Để đảm bảo **tính tất định (Determinism)**. File `tfplan.binary` là một snapshot chứa chính xác danh sách các thay đổi đã được review và approve trong Pull Request. Khi chạy `terraform apply tfplan.binary`, Terraform chỉ thực thi đúng những gì đã được ghi nhận trong file đó, tránh trường hợp hạ tầng bị ai đó thay đổi ngầm giữa thời điểm Plan và Apply.
+</div>
+</details>
 
-### Q5: Điều gì xảy ra nếu hai Developer cùng mở 2 Pull Request sửa đổi cùng một module Terraform và CI/CD kích hoạt song song?
-- **Trả lời**: Khi cả hai job cùng chạy `terraform init` và `terraform plan`, cơ chế **State Locking** (thông qua DynamoDB hoặc S3 Native Locking) sẽ khóa state. Job chạy sau sẽ phải chờ job chạy trước nhả lock hoặc báo lỗi `State Lock Error`, ngăn chặn tình trạng race condition và xung đột dữ liệu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Điều gì xảy ra nếu hai Developer cùng mở 2 Pull Request sửa đổi cùng một module Terraform và CI/CD kích hoạt song song?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Khi cả hai job cùng chạy `terraform init` và `terraform plan`, cơ chế **State Locking** (thông qua DynamoDB hoặc S3 Native Locking) sẽ khóa state. Job chạy sau sẽ phải chờ job chạy trước nhả lock hoặc báo lỗi `State Lock Error`, ngăn chặn tình trạng race condition và xung đột dữ liệu.
+</div>
+</details>
 
-### Q6: Làm thế nào để ngăn chặn một Pull Request độc hại từ bên ngoài (Forked Repository) tự động lấy OIDC credentials để truy cập hạ tầng AWS?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để ngăn chặn một Pull Request độc hại từ bên ngoài (Forked Repository) tự động lấy OIDC credentials để truy cập hạ tầng AWS?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - Đặt điều kiện `sub` trong IAM Trust Policy chỉ chấp nhận chính xác repo nội bộ (`repo:my-org/my-repo:*`).
   - Trong cài đặt GitHub Repository Settings, tắt tùy chọn *"Send write tokens to workflows from fork pull requests"*.
+</div>
+</details>
 
-### Q7: Công cụ Atlantis (Open-source GitOps for Terraform) khác gì so với GitHub Actions thông thường?
-- **Trả lời**: Atlantis là một server chuyên dụng lắng nghe Webhooks từ GitHub/GitLab. Developer tương tác với Terraform bằng cách gõ comment trực tiếp trong PR (ví dụ: `atlantis plan`, `atlantis apply`). Atlantis tự động quản lý State Lock ở tầng PR level, khóa nhánh cho đến khi apply xong, rất tiện lợi nhưng đòi hỏi phải tự vận hành một máy chủ hoặc cluster để chạy Atlantis Server.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Công cụ Atlantis (Open-source GitOps for Terraform) khác gì so với GitHub Actions thông thường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Atlantis là một server chuyên dụng lắng nghe Webhooks từ GitHub/GitLab. Developer tương tác với Terraform bằng cách gõ comment trực tiếp trong PR (ví dụ: `atlantis plan`, `atlantis apply`). Atlantis tự động quản lý State Lock ở tầng PR level, khóa nhánh cho đến khi apply xong, rất tiện lợi nhưng đòi hỏi phải tự vận hành một máy chủ hoặc cluster để chạy Atlantis Server.
+</div>
+</details>
 
-### Q8: Tại sao permission `id-token: write` là bắt buộc trong GitHub Actions Workflow khi dùng OIDC?
-- **Trả lời**: Mặc định, GitHub Actions cấp quyền `read` cho GITHUB_TOKEN để đảm bảo an toàn. Quyền `id-token: write` là yêu cầu bắt buộc để cho phép GitHub Runner gửi yêu cầu ký và nhận OIDC JSON Web Token (JWT) từ máy chủ OpenID Connect của GitHub.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tại sao permission `id-token: write` là bắt buộc trong GitHub Actions Workflow khi dùng OIDC?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Mặc định, GitHub Actions cấp quyền `read` cho GITHUB_TOKEN để đảm bảo an toàn. Quyền `id-token: write` là yêu cầu bắt buộc để cho phép GitHub Runner gửi yêu cầu ký và nhận OIDC JSON Web Token (JWT) từ máy chủ OpenID Connect của GitHub.
+</div>
+</details>
 
-### Q9: Làm thế nào để thiết lập quy trình kiểm tra mã nguồn tĩnh (Static Security Scanning) trước khi `terraform plan` chạy trong CI/CD?
-- **Trả lời**: Tích hợp các công cụ chuyên dụng vào các step trước `terraform plan`:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để thiết lập quy trình kiểm tra mã nguồn tĩnh (Static Security Scanning) trước khi `terraform plan` chạy trong CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Tích hợp các công cụ chuyên dụng vào các step trước `terraform plan`:
   - `tflint`: Kiểm tra cú pháp, lỗi logic và chuẩn best practice.
   - `trivy` hoặc `checkov`: Quét lỗ hổng bảo mật, phát hiện Security Group mở port nguy hiểm, S3 thiếu mã hóa, hoặc IAM quyền quá rộng.
+</div>
+</details>
 
-### Q10: Khi sử dụng `terraform apply tfplan.binary`, có cần truyền lại biến `-var` hoặc `-var-file` không?
-- **Trả lời**: **KHÔNG CẦN**. Mọi giá trị biến số, cấu hình providers và kế hoạch thay đổi đã được đóng gói toàn vẹn bên trong file nhị phân `tfplan.binary`. Terraform sẽ từ chối nếu bạn cố tình truyền thêm cờ `-var` vào lệnh apply file plan.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Khi sử dụng `terraform apply tfplan.binary`, có cần truyền lại biến `-var` hoặc `-var-file` không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : **KHÔNG CẦN**. Mọi giá trị biến số, cấu hình providers và kế hoạch thay đổi đã được đóng gói toàn vẹn bên trong file nhị phân `tfplan.binary`. Terraform sẽ từ chối nếu bạn cố tình truyền thêm cờ `-var` vào lệnh apply file plan.
+</div>
+</details>
 
 ---
 

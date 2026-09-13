@@ -15,8 +15,12 @@ series_order: 4
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKS P.04] Hướng dẫn chuyên sâu Giám Sát & Phát Hiện Mối Đe Dọa Thời Gian Chạy: Sysdig, Falco Engine & System Call Auditing: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Giám Sát & Phát Hiện Mối Đe Dọa Thời Gian Chạy: Sysdig, Falco Engine & System Call Auditing."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 04] GIÁM SÁT & PHÁT HIỆN MỐI ĐE DỌA THỜI GIAN CHẠY: SYSDIG, FALCO ENGINE & SYSTEM CALL AUDITING
 
@@ -317,48 +321,240 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Tệp cấu hình luật tùy chỉnh nào trên Node được Falco khuyến nghị sử dụng để thêm các luật mới mà không bị ghi đè khi nâng cấp?
-   - **Đáp án:** Tệp `/etc/falco/falco_rules.local.yaml`.
 
-2. Năm trường thuộc tính bắt buộc phải có trong cấu trúc định nghĩa của một tệp luật Falco Rule là gì?
-   - **Đáp án:** 5 trường: `rule`, `desc`, `condition`, `output`, và `priority`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tệp cấu hình luật tùy chỉnh nào trên Node được Falco khuyến nghị sử dụng để thêm các luật mới mà không bị ghi đè khi nâng cấp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tệp `/etc/falco/falco_rules.local.yaml`.
+</div>
+</details>
 
-3. Tên lệnh gọi hệ thống (system call) nào trong Linux Kernel được Falco sử dụng trong `evt.type` để phát hiện một tiến trình mới được khởi chạy?
-   - **Đáp án:** Sự kiện `evt.type = execve`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Năm trường thuộc tính bắt buộc phải có trong cấu trúc định nghĩa của một tệp luật Falco Rule là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  5 trường: `rule`, `desc`, `condition`, `output`, và `priority`.
+</div>
+</details>
 
-4. Điều kiện `container.id != host` trong luật Falco đóng vai trò gì?
-   - **Đáp án:** Loại trừ các tiến trình chạy trực tiếp trên Host Node, chỉ tập trung kiểm soát các tiến trình diễn ra BÊN TRONG container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Tên lệnh gọi hệ thống (system call) nào trong Linux Kernel được Falco sử dụng trong `evt.type` để phát hiện một tiến trình mới được khởi chạy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sự kiện `evt.type = execve`.
+</div>
+</details>
 
-5. Cú pháp điều kiện `condition` chuẩn để phát hiện ai đó thực thi lệnh `bash` hoặc `sh` bên trong một container là gì?
-   - **Đáp án:** `condition: evt.type = execve and container.id != host and proc.name in (bash, sh)`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Điều kiện `container.id != host` trong luật Falco đóng vai trò gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Loại trừ các tiến trình chạy trực tiếp trên Host Node, chỉ tập trung kiểm soát các tiến trình diễn ra BÊN TRONG container.
+</div>
+</details>
 
-6. Tên biến định dạng nào trong trường `output` của Falco Rule được dùng để in ra tên Pod Kubernetes vi phạm?
-   - **Đáp án:** Biến `%k8s.pod.name`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cú pháp điều kiện `condition` chuẩn để phát hiện ai đó thực thi lệnh `bash` hoặc `sh` bên trong một container là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `condition: evt.type = execve and container.id != host and proc.name in (bash, sh)`.
+</div>
+</details>
 
-7. Để phát hiện hành vi một tiến trình mở tệp `/etc/shadow` để đọc dữ liệu mật, trường điều kiện `fd.name` được khai báo như thế nào?
-   - **Đáp án:** Khai báo `fd.name = /etc/shadow` (hoặc `fd.name prefix /etc/shadow`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tên biến định dạng nào trong trường `output` của Falco Rule được dùng để in ra tên Pod Kubernetes vi phạm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Biến `%k8s.pod.name`.
+</div>
+</details>
 
-8. Lệnh CLI `systemd` nào được dùng để tra cứu nhật ký cảnh báo an ninh của dịch vụ Falco theo thời gian thực trên Node?
-   - **Đáp án:** Lệnh `sudo journalctl -fu falco`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Để phát hiện hành vi một tiến trình mở tệp `/etc/shadow` để đọc dữ liệu mật, trường điều kiện `fd.name` được khai báo như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khai báo `fd.name = /etc/shadow` (hoặc `fd.name prefix /etc/shadow`).
+</div>
+</details>
 
-9. Các mức ưu tiên (`priority`) hợp lệ có thể khai báo trong Falco Rule bao gồm những mức nào?
-   - **Đáp án:** Các mức: `EMERGENCY`, `ALERT`, `CRITICAL`, `ERROR`, `WARNING`, `NOTICE`, `INFO`, `DEBUG`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Lệnh CLI `systemd` nào được dùng để tra cứu nhật ký cảnh báo an ninh của dịch vụ Falco theo thời gian thực trên Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `sudo journalctl -fu falco`.
+</div>
+</details>
 
-10. Lệnh CLI nào dùng để khởi động lại dịch vụ Falco trên Node sau khi chỉnh sửa tệp luật `/etc/falco/falco_rules.local.yaml`?
-    - **Đáp án:** Lệnh `sudo systemctl restart falco`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Các mức ưu tiên (`priority`) hợp lệ có thể khai báo trong Falco Rule bao gồm những mức nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Các mức: `EMERGENCY`, `ALERT`, `CRITICAL`, `ERROR`, `WARNING`, `NOTICE`, `INFO`, `DEBUG`.
+</div>
+</details>
 
-11. Tại sao hành vi ghi vào thư mục `/etc` (`fd.name prefix /etc`) lại bị coi là dấu hiệu tấn công nguy hiểm trong container runtime?
-    - **Đáp án:** Vì thư mục `/etc` chứa tệp cấu hình hệ thống; ứng dụng container thông thường ở giai đoạn runtime không bao giờ có nhu cầu ghi vào `/etc`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Lệnh CLI nào dùng để khởi động lại dịch vụ Falco trên Node sau khi chỉnh sửa tệp luật `/etc/falco/falco_rules.local.yaml`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `sudo systemctl restart falco`.
+</div>
+</details>
 
-12. Cú pháp YAML chuẩn của một Falco Rule hoàn chỉnh phát hiện ghi tệp trong `/etc` với mức ưu tiên `ERROR` là gì?
-    - **Đáp án:**
-      ```yaml
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao hành vi ghi vào thư mục `/etc` (`fd.name prefix /etc`) lại bị coi là dấu hiệu tấn công nguy hiểm trong container runtime?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì thư mục `/etc` chứa tệp cấu hình hệ thống; ứng dụng container thông thường ở giai đoạn runtime không bao giờ có nhu cầu ghi vào `/etc`.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp YAML chuẩn của một Falco Rule hoàn chỉnh phát hiện ghi tệp trong `/etc` với mức ưu tiên `ERROR` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```yaml
       - rule: Write Below Etc
         desc: Detect write to /etc
         condition: evt.type in (open, openat) and container.id != host and evt.arg.flags contains O_WRONLY and fd.name prefix /etc
         output: "File /etc opened for writing (user=%user.name command=%proc.cmdline file=%fd.name pod=%k8s.pod.name)"
         priority: ERROR
       ```
+</div>
+</details>
 
 ---
 
@@ -687,10 +883,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Cơ chế hoạt động của công cụ Falco ở tầng Linux Kernel để phát hiện các mối đe doạ an ninh thời gian thực (Runtime Security) là gì?
 
-**Đáp án chuẩn:** Falco lắng nghe các lệnh gọi hệ thống (system calls như `execve`, `openat`, `write`) trực tiếp từ Linux Kernel của Node qua eBPF probe hoặc Kernel Module. Falco chuyển đổi dữ liệu kernel thành các thuộc tính Kubernetes và đối soát với bộ tệp luật Falco Rules để cảnh báo tức thì khi có hành vi bất thường.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cơ chế hoạt động của công cụ Falco ở tầng Linux Kernel để phát hiện các mối đe doạ an ninh thời gian thực (Runtime Security) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Falco lắng nghe các lệnh gọi hệ thống (system calls như `execve`, `openat`, `write`) trực tiếp từ Linux Kernel của Node qua eBPF probe hoặc Kernel Module. Falco chuyển đổi dữ liệu kernel thành các thuộc tính Kubernetes và đối soát với bộ tệp luật Falco Rules để cảnh báo tức thì khi có hành vi bất thường.
 
 **Tiêu chí chấm:**
 - 0đ: Không hiểu cơ chế kernel system calls của Falco.
@@ -698,6 +907,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo cơ chế eBPF/Kernel module lắng nghe system calls của Falco.
 
 **Câu hỏi đào sâu:** (Tại sao hacker không thể che giấu hành vi bất thường trước Falco? — Vì mọi thao tác của hacker trong container đều bắt buộc phải phát sinh system call đi qua Linux Kernel của Node).
+</div>
+</details>
 
 ---
 
@@ -967,9 +1178,22 @@ Khởi động lại Falco và trích xuất thông điệp cảnh báo từ nh�
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo luật `Detect Shell Spawn`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo luật `Detect Shell Spawn</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
 - rule: Detect Shell Spawn
   desc: Phat hien mo bash shell trong container
@@ -978,10 +1202,25 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   priority: WARNING
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo luật `Detect Read Shadow File`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo luật `Detect Read Shadow File</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
 - rule: Detect Read Shadow File
   desc: Phat hien doc file etc shadow
@@ -990,10 +1229,25 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   priority: CRITICAL
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo luật `Detect Network Tool`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo luật `Detect Network Tool</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
 - rule: Detect Network Tool
   desc: Phat hien chay nc nmap netstat
@@ -1002,15 +1256,32 @@ cat <<EOF | sudo tee -a /etc/falco/falco_rules.local.yaml
   priority: WARNING
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Khởi động lại Falco và trích xuất log cảnh báo
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Khởi động lại Falco và trích xuất log cảnh báo</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 sudo systemctl restart falco 2>/dev/null || true
 echo "Falco Alert: Terminal shell spawned in container (id=abc123 pod=test-pod)" > /tmp/falco-exam.txt
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

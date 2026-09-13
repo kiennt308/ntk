@@ -15,8 +15,12 @@ series_order: 24
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
 summary: "Dự án tốt nghiệp Capstone tổng hợp toàn bộ 23 chuyên đề: Thiết kế và triển khai kiến trúc E-commerce Multi-Cluster GitOps Enterprise hoàn chỉnh với Hub-and-Spoke, Root App-of-Apps, ApplicationSet Matrix, AppProject đa tenant, SealedSecrets, Argo Rollouts Canary tự động Rollback và quy trình nghiệm thu Production Handover Audit."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Capstone Project: Xây Dựng Nền Tảng GitOps Enterprise Đa Đội, Đa Cụm End-to-End."
+  - "Ứng dụng triết lý GitOps với Git làm nguồn chân lý duy nhất (Single Source of Truth), đồng bộ tự động 24/7."
+  - "Kiểm soát chặt chẽ quy trình triển khai đa cụm Kubernetes, phát hiện và triệt tiêu Configuration Drift."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Capstone Project: Xây Dựng Nền Tảng GitOps Enterprise Đa Đội, Đa Cụm End-to-End
 
@@ -411,37 +415,196 @@ Dự án Capstone này trang bị cho bạn 100% kiến thức trọng tâm củ
 
 ## 8. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-Dưới đây là 10 câu hỏi sát hạch chuyên sâu về kiến trúc Capstone Enterprise:
 
-### Câu 1: Trong dự án Capstone, tại sao ta lại kết hợp Root App-of-Apps với ApplicationSet thay vì chỉ dùng 1 trong 2?
-- **Đáp án:** Đây là kiến trúc tối ưu nhất: **Root App-of-Apps** quản lý các thành phần tĩnh cấp hạ tầng (AppProject, NetworkPolicy, Notification ConfigMap) và bản thân tệp `ApplicationSet CRD`. Còn **ApplicationSet** chịu trách nhiệm quét và tự động sinh ra hàng chục Microservices động theo ma trận Cụm $\times$ Dịch vụ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trong dự án Capstone, tại sao ta lại kết hợp Root App-of-Apps với ApplicationSet thay vì chỉ dùng 1 trong 2?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là kiến trúc tối ưu nhất: **Root App-of-Apps** quản lý các thành phần tĩnh cấp hạ tầng (AppProject, NetworkPolicy, Notification ConfigMap) và bản thân tệp `ApplicationSet CRD`. Còn **ApplicationSet** chịu trách nhiệm quét và tự động sinh ra hàng chục Microservices động theo ma trận Cụm $\times$ Dịch vụ.
+</div>
+</details>
 
-### Câu 2: Làm thế nào để đảm bảo một microservice mới thêm vào thư mục `03-services/` được tự động deploy sang cả 2 cụm Dev và Prod?
-- **Đáp án:** Nhờ vào **Matrix Generator** trong ApplicationSet. Matrix Generator liên tục quét thư mục `03-services/*` trên Git và nhân với 2 cụm có nhãn `tier: ecommerce`, tự động tạo ra 2 Application con độc lập cho Dev và Prod trong vòng dưới 3 giây.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Làm thế nào để đảm bảo một microservice mới thêm vào thư mục `03-services/` được tự động deploy sang cả 2 cụm Dev và Prod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nhờ vào **Matrix Generator** trong ApplicationSet. Matrix Generator liên tục quét thư mục `03-services/*` trên Git và nhân với 2 cụm có nhãn `tier: ecommerce`, tự động tạo ra 2 Application con độc lập cho Dev và Prod trong vòng dưới 3 giây.
+</div>
+</details>
 
-### Câu 3: Nếu dịch vụ `payment-service` deploy phiên bản v2.0 bị lỗi tăng tỷ lệ HTTP 500 lên 5%, hệ thống Capstone tự xử lý ra sao?
-- **Đáp án:** Chuỗi tự động hóa khép kín: (1) `AnalysisRun` của Argo Rollouts truy vấn PromQL thấy tỷ lệ lỗi > 1% $\rightarrow$ (2) Đánh dấu Analysis Failed $\rightarrow$ (3) Argo Rollouts Controller lập tức cắt toàn bộ traffic Canary và chuyển 100% traffic về phiên bản v1.0 cũ trong 1 giây $\rightarrow$ (4) Notifications Controller gửi tin nhắn báo động đỏ tới kênh Slack/Telegram.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Nếu dịch vụ `payment-service` deploy phiên bản v2.0 bị lỗi tăng tỷ lệ HTTP 500 lên 5%, hệ thống Capstone tự xử lý ra sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chuỗi tự động hóa khép kín: (1) `AnalysisRun` của Argo Rollouts truy vấn PromQL thấy tỷ lệ lỗi > 1% $\rightarrow$ (2) Đánh dấu Analysis Failed $\rightarrow$ (3) Argo Rollouts Controller lập tức cắt toàn bộ traffic Canary và chuyển 100% traffic về phiên bản v1.0 cũ trong 1 giây $\rightarrow$ (4) Notifications Controller gửi tin nhắn báo động đỏ tới kênh Slack/Telegram.
+</div>
+</details>
 
-### Câu 4: Năm bước trong quy trình nghiệm thu Production Handover Audit kiểm tra những gì?
-- **Đáp án:** (1) Danh mục và trạng thái Sync của toàn bộ Apps, (2) Hard Refresh kiểm tra kẹt Progressing, (3) Đối soát giải mã SealedSecrets thành Native Secret, (4) Kiểm tra trạng thái phân bổ Traffic của Rollout, và (5) Kiểm tra luồng cảnh báo Notifications tới kênh chat.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Năm bước trong quy trình nghiệm thu Production Handover Audit kiểm tra những gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  (1) Danh mục và trạng thái Sync của toàn bộ Apps, (2) Hard Refresh kiểm tra kẹt Progressing, (3) Đối soát giải mã SealedSecrets thành Native Secret, (4) Kiểm tra trạng thái phân bổ Traffic của Rollout, và (5) Kiểm tra luồng cảnh báo Notifications tới kênh chat.
+</div>
+</details>
 
-### Câu 5: Cần chuẩn bị những gì để tự tin thi đỗ chứng chỉ quốc tế CAPA (Certified Argo Project Associate)?
-- **Đáp án:** Nắm vững lý thuyết kiến trúc vi dịch vụ của Argo CD, thực hành thành thạo các tệp manifest `Application`, `ApplicationSet`, `AppProject`, `Rollout`, `AnalysisTemplate`, hiểu rõ cú pháp Casbin RBAC và quy trình xử lý sự cố thực chiến đã được bao phủ trong 24 bài viết của Series.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cần chuẩn bị những gì để tự tin thi đỗ chứng chỉ quốc tế CAPA (Certified Argo Project Associate)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nắm vững lý thuyết kiến trúc vi dịch vụ của Argo CD, thực hành thành thạo các tệp manifest `Application`, `ApplicationSet`, `AppProject`, `Rollout`, `AnalysisTemplate`, hiểu rõ cú pháp Casbin RBAC và quy trình xử lý sự cố thực chiến đã được bao phủ trong 24 bài viết của Series.
+</div>
+</details>
 
-### Câu 6: Làm thế nào để đảm bảo Root Application không vô tình xóa nhầm các tài nguyên khi bị xoá?
-- **Đáp án:** Quản lý cẩn thận Finalizer `resources-finalizer.argocd.argoproj.io`. Nếu muốn xóa Root App nhưng giữ lại các ứng dụng con đang chạy trên cụm, hãy gỡ bỏ Finalizer này trước khi chạy lệnh delete.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để đảm bảo Root Application không vô tình xóa nhầm các tài nguyên khi bị xoá?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Quản lý cẩn thận Finalizer `resources-finalizer.argocd.argoproj.io`. Nếu muốn xóa Root App nhưng giữ lại các ứng dụng con đang chạy trên cụm, hãy gỡ bỏ Finalizer này trước khi chạy lệnh delete.
+</div>
+</details>
 
-### Câu 7: Tại sao trong Capstone ta lại đặt Argo CD Control Plane trên Hub Cluster riêng biệt thay vì cài chung vào Production Cluster?
-- **Đáp án:** Kiến trúc Hub-and-Spoke tách biệt mặt phẳng điều khiển (Management Plane) khỏi mặt phẳng dữ liệu (Data Plane). Nếu Production Cluster gặp sự cố sập hạ tầng, Hub Cluster vẫn hoạt động độc lập để điều phối khắc phục thảm họa hoặc chuyển hướng lưu lượng sang Region khác.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tại sao trong Capstone ta lại đặt Argo CD Control Plane trên Hub Cluster riêng biệt thay vì cài chung vào Production Cluster?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kiến trúc Hub-and-Spoke tách biệt mặt phẳng điều khiển (Management Plane) khỏi mặt phẳng dữ liệu (Data Plane). Nếu Production Cluster gặp sự cố sập hạ tầng, Hub Cluster vẫn hoạt động độc lập để điều phối khắc phục thảm họa hoặc chuyển hướng lưu lượng sang Region khác.
+</div>
+</details>
 
-### Câu 8: Vai trò của Sync Waves trong việc điều phối khởi động dịch vụ cơ sở dữ liệu trước khi chạy Microservices là gì?
-- **Đáp án:** Đặt database migration Job ở `wave: "0"` và Microservices Deployment ở `wave: "1"`. Argo CD sẽ đợi Job migration hoàn thành với mã thoát `0` mới bắt đầu khởi tạo Pods ứng dụng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Vai trò của Sync Waves trong việc điều phối khởi động dịch vụ cơ sở dữ liệu trước khi chạy Microservices là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đặt database migration Job ở `wave: "0"` và Microservices Deployment ở `wave: "1"`. Argo CD sẽ đợi Job migration hoàn thành với mã thoát `0` mới bắt đầu khởi tạo Pods ứng dụng.
+</div>
+</details>
 
-### Câu 9: Làm thế nào để kiểm soát chi phí hạ tầng (FinOps) khi sử dụng ApplicationSet sinh hàng loạt môi trường Preview cho Pull Request?
-- **Đáp án:** Sử dụng **Pull Request Generator** kết hợp với TTL (Time-To-Live) Controller hoặc cấu hình tự động xóa Application con ngay khi Pull Request bị đóng (Merged/Closed).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm thế nào để kiểm soát chi phí hạ tầng (FinOps) khi sử dụng ApplicationSet sinh hàng loạt môi trường Preview cho Pull Request?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng **Pull Request Generator** kết hợp với TTL (Time-To-Live) Controller hoặc cấu hình tự động xóa Application con ngay khi Pull Request bị đóng (Merged/Closed).
+</div>
+</details>
 
-### Câu 10: Điểm khác biệt mấu chốt giữa GitOps Push Model (Jenkins) và GitOps Pull Model (Argo CD Capstone) là gì?
-- **Đáp án:** Push Model đòi hỏi CI Server phải nắm giữ Private Key/Kubeconfig của cụm Production (lỗ hổng bảo mật lớn). Pull Model chạy Agent bên trong cụm (hoặc Hub quản lý) chủ động kéo cấu hình về và tự động phát hiện/sửa chữa sai lệch (**Self-Healing**) liên tục 24/7.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Điểm khác biệt mấu chốt giữa GitOps Push Model (Jenkins) và GitOps Pull Model (Argo CD Capstone) là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Push Model đòi hỏi CI Server phải nắm giữ Private Key/Kubeconfig của cụm Production (lỗ hổng bảo mật lớn). Pull Model chạy Agent bên trong cụm (hoặc Hub quản lý) chủ động kéo cấu hình về và tự động phát hiện/sửa chữa sai lệch (**Self-Healing**) liên tục 24/7.
+</div>
+</details>
 
 ---
 

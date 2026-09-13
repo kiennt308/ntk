@@ -14,8 +14,12 @@ series_order: 4
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
 summary: "Phân tích sâu cơ chế tự động xây dựng đồ thị phụ thuộc (DAG), phân biệt Implicit"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Làm Chủ Dependency Graph (DAG): Quản Lý Phụ Thuộc Tường Minh vs Ngầm."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Làm Chủ Dependency Graph (DAG): Quản Lý Phụ Thuộc Tường Minh vs Ngầm Định & Data Sources
 
@@ -415,64 +419,195 @@ cd .. && rm -rf /tmp/terraform-dag-lab
 
 ## 7. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Tại sao phụ thuộc ngầm định (Implicit Dependency) luôn được ưu tiên hơn phụ thuộc tường minh (`depends_on`)?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Vì phụ thuộc ngầm định cho phép Terraform biết chính xác <b>thuộc tính nào</b> đang được truyền đi giữa 2 Node trên DAG, giúp đồ thị tối ưu hóa tối đa các nhánh thực thi song song. Trong khi <code>depends_on</code> khóa toàn bộ Node cha, ép buộc tất cả tài nguyên con phải chờ đợi tuần tự dù không cần thiết.
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao phụ thuộc ngầm định (Implicit Dependency) luôn được ưu tiên hơn phụ thuộc tường minh (`depends_on`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì phụ thuộc ngầm định cho phép Terraform biết chính xác <b style="color: var(--accent-primary);">thuộc tính nào</b> đang được truyền đi giữa 2 Node trên DAG, giúp đồ thị tối ưu hóa tối đa các nhánh thực thi song song. Trong khi <code>depends_on</code> khóa toàn bộ Node cha, ép buộc tất cả tài nguyên con phải chờ đợi tuần tự dù không cần thiết.
+</div>
 </details>
 
-### Câu 2: Lỗi "Cyclic Dependency" (Vòng lặp phụ thuộc) xảy ra khi nào trong Terraform?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Xảy ra khi đồ thị tồn tại một chu trình khép kín: Node A phụ thuộc Node B, và Node B (trực tiếp hoặc gián tiếp) lại phụ thuộc ngược lại Node A. Thuật toán sắp xếp Topo không thể tìm thấy đỉnh bắt đầu hợp lệ và dừng lại báo lỗi.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Lỗi "Cyclic Dependency" (Vòng lặp phụ thuộc) xảy ra khi nào trong Terraform?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Xảy ra khi đồ thị tồn tại một chu trình khép kín: Node A phụ thuộc Node B, và Node B (trực tiếp hoặc gián tiếp) lại phụ thuộc ngược lại Node A. Thuật toán sắp xếp Topo không thể tìm thấy đỉnh bắt đầu hợp lệ và dừng lại báo lỗi.
+</div>
 </details>
 
-### Câu 3: Làm thế nào để giải quyết triệt để lỗi Cyclic Dependency giữa 2 Security Groups trên AWS?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Không khai báo khối <code>ingress</code> hoặc <code>egress</code> lồng bên trong tài nguyên <code>aws_security_group</code>. Thay vào đó, hãy khởi tạo 2 Security Group rỗng, sau đó sử dụng các tài nguyên độc lập <code>aws_security_group_rule</code> để gắn quan hệ sau.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Làm thế nào để giải quyết triệt để lỗi Cyclic Dependency giữa 2 Security Groups trên AWS?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Không khai báo khối <code>ingress</code> hoặc <code>egress</code> lồng bên trong tài nguyên <code>aws_security_group</code>. Thay vào đó, hãy khởi tạo 2 Security Group rỗng, sau đó sử dụng các tài nguyên độc lập <code>aws_security_group_rule</code> để gắn quan hệ sau.
+</div>
 </details>
 
-### Câu 4: Data Sources trong Terraform được thực thi ở giai đoạn nào (Plan hay Apply)?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Phần lớn Data Sources được thực thi ngay trong <b>pha Plan</b> để nạp dữ liệu và kiểm tra kiểu. Tuy nhiên, nếu một tham số của Data Source phụ thuộc vào giá trị của một tài nguyên chỉ được xác định sau pha Apply (<code>known after apply</code>), việc đọc Data Source sẽ bị hoãn (Deferred) sang pha Apply.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Data Sources trong Terraform được thực thi ở giai đoạn nào (Plan hay Apply)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Phần lớn Data Sources được thực thi ngay trong <b style="color: var(--accent-primary);">pha Plan</b> để nạp dữ liệu và kiểm tra kiểu. Tuy nhiên, nếu một tham số của Data Source phụ thuộc vào giá trị của một tài nguyên chỉ được xác định sau pha Apply (<code>known after apply</code>), việc đọc Data Source sẽ bị hoãn (Deferred) sang pha Apply.
+</div>
 </details>
 
-### Câu 5: Khi nào bắt buộc phải dùng từ khóa `depends_on`? Cho ví dụ thực tế?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Khi có mối quan hệ phụ thuộc ngầm về mặt logic hoặc quyền hạn nhưng <b>không có tham chiếu dữ liệu trực tiếp trong code</b>. Ví dụ: EKS Node Group cần IAM Policy đã gắn xong vào Role trước khi khởi tạo, hoặc EC2 instance cần S3 Bucket Policy cấu hình xong mới được gọi API đọc dữ liệu.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Khi nào bắt buộc phải dùng từ khóa `depends_on`? Cho ví dụ thực tế?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi có mối quan hệ phụ thuộc ngầm về mặt logic hoặc quyền hạn nhưng <b style="color: var(--accent-primary);">không có tham chiếu dữ liệu trực tiếp trong code</b>. Ví dụ: EKS Node Group cần IAM Policy đã gắn xong vào Role trước khi khởi tạo, hoặc EC2 instance cần S3 Bucket Policy cấu hình xong mới được gọi API đọc dữ liệu.
+</div>
 </details>
 
-### Câu 6: Điều gì xảy ra khi bạn đặt `depends_on` ở cấp độ Module (`module "vpc"`)?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Toàn bộ mọi tài nguyên bên trong module con đó sẽ bị hoãn thực thi cho đến khi mọi tài nguyên trong danh sách <code>depends_on</code> hoàn tất 100%. Điều này làm tê liệt hoàn toàn tính năng chạy song song giữa các module.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Điều gì xảy ra khi bạn đặt `depends_on` ở cấp độ Module (`module "vpc"`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Toàn bộ mọi tài nguyên bên trong module con đó sẽ bị hoãn thực thi cho đến khi mọi tài nguyên trong danh sách <code>depends_on</code> hoàn tất 100%. Điều này làm tê liệt hoàn toàn tính năng chạy song song giữa các module.
+</div>
 </details>
 
-### Câu 7: Tại sao không nên dùng Data Source để truy vấn lại tài nguyên vừa được tạo trong cùng một State?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Vì trong lần chạy đầu tiên (khi tài nguyên chưa được tạo), Data Source sẽ gửi query lên Cloud và báo lỗi <code>ResourceNotFound</code> ở pha Plan, khiến toàn bộ tiến trình Apply bị sập. Hãy luôn tham chiếu trực tiếp qua thuộc tính của Resource.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tại sao không nên dùng Data Source để truy vấn lại tài nguyên vừa được tạo trong cùng một State?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì trong lần chạy đầu tiên (khi tài nguyên chưa được tạo), Data Source sẽ gửi query lên Cloud và báo lỗi <code>ResourceNotFound</code> ở pha Plan, khiến toàn bộ tiến trình Apply bị sập. Hãy luôn tham chiếu trực tiếp qua thuộc tính của Resource.
+</div>
 </details>
 
-### Câu 8: Thuật toán sắp xếp Topo (Topological Sort) duyệt qua đồ thị DAG theo thứ tự nào khi hủy tài nguyên (`terraform destroy`)?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Terraform tự động đảo ngược hướng của toàn bộ các cạnh trên đồ thị DAG, thực hiện hủy các Node lá (Leaf Nodes) trước, sau đó mới đi ngược về Node gốc (Root Nodes) theo nguyên lý <b>LIFO (Last In, First Out)</b>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Thuật toán sắp xếp Topo (Topological Sort) duyệt qua đồ thị DAG theo thứ tự nào khi hủy tài nguyên (`terraform destroy`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Terraform tự động đảo ngược hướng của toàn bộ các cạnh trên đồ thị DAG, thực hiện hủy các Node lá (Leaf Nodes) trước, sau đó mới đi ngược về Node gốc (Root Nodes) theo nguyên lý <b style="color: var(--accent-primary);">LIFO (Last In, First Out)</b>.
+</div>
 </details>
 
-### Câu 9: Data Source `aws_ami` với tham số `most_recent = true` có rủi ro tiềm ẩn nào khi vận hành?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Mỗi khi nhà cung cấp (Canonical/AWS) phát hành một bản vá AMI mới, lệnh <code>terraform plan</code> tiếp theo sẽ phát hiện ID của AMI đã thay đổi và đề xuất <b>hủy và tạo lại (Destroy and Recreate)</b> toàn bộ các EC2 Instances đang chạy, có thể gây gián đoạn dịch vụ ngoài ý muốn nếu không dùng Launch Template / ASG.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Data Source `aws_ami` với tham số `most_recent = true` có rủi ro tiềm ẩn nào khi vận hành?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mỗi khi nhà cung cấp (Canonical/AWS) phát hành một bản vá AMI mới, lệnh <code>terraform plan</code> tiếp theo sẽ phát hiện ID của AMI đã thay đổi và đề xuất <b style="color: var(--accent-primary);">hủy và tạo lại (Destroy and Recreate)</b> toàn bộ các EC2 Instances đang chạy, có thể gây gián đoạn dịch vụ ngoài ý muốn nếu không dùng Launch Template / ASG.
+</div>
 </details>
 
-### Câu 10: Làm thế nào để trực quan hóa đồ thị DAG của một dự án lớn một cách nhanh nhất?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Sử dụng lệnh <code>terraform graph | dot -Tsvg -o graph.svg</code> kết hợp với trình duyệt Web hoặc công cụ trực quan hóa trực tuyến Graphviz để xem cấu trúc phân nhánh và mối quan hệ phụ thuộc.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để trực quan hóa đồ thị DAG của một dự án lớn một cách nhanh nhất?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng lệnh <code>terraform graph | dot -Tsvg -o graph.svg</code> kết hợp với trình duyệt Web hoặc công cụ trực quan hóa trực tuyến Graphviz để xem cấu trúc phân nhánh và mối quan hệ phụ thuộc.
+</div>
 </details>
 
 ---

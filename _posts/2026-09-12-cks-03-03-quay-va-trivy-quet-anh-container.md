@@ -15,8 +15,12 @@ series_order: 3
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKS P.03] Hướng dẫn chuyên sâu Quét Lỗ Hổng & Làm Cứng Container: Tích Hợp Trivy Scanner, Quay Registry & Dockerfile Hardening: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quét Lỗ Hổng & Làm Cứng Container: Tích Hợp Trivy Scanner, Quay Registry & Dockerfile Hardening."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 03] QUÉT LỖ HỔNG & LÀM CỨNG CONTAINER: TÍCH HỢP TRIVY SCANNER, QUAY REGISTRY & DOCKERFILE HARDENING
 
@@ -322,41 +326,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Công cụ quét lỗ hổng ảnh container mã nguồn mở chính thức được sử dụng trong bài thi CKS là gì?
-   - **Đáp án:** Công cụ **Trivy** (của Aqua Security).
 
-2. Lệnh CLI Trivy nào được dùng để quét ảnh `nginx:alpine` và chỉ hiển thị các lỗ hổng ở mức độ nghiêm trọng `CRITICAL`?
-   - **Đáp án:** Lệnh `trivy image --severity CRITICAL nginx:alpine`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Công cụ quét lỗ hổng ảnh container mã nguồn mở chính thức được sử dụng trong bài thi CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Công cụ **Trivy** (của Aqua Security).
+</div>
+</details>
 
-3. Cờ thuộc tính nào trong lệnh Trivy được dùng để loại bỏ các lỗ hổng CVEs chưa được nhà sản xuất phát hành bản vá?
-   - **Đáp án:** Cờ `--ignore-unfixed`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Lệnh CLI Trivy nào được dùng để quét ảnh `nginx:alpine` và chỉ hiển thị các lỗ hổng ở mức độ nghiêm trọng `CRITICAL`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `trivy image --severity CRITICAL nginx:alpine`.
+</div>
+</details>
 
-4. Cờ thuộc tính nào trong lệnh Trivy giúp tự động trả về lỗi (exit code 1) để đánh sập CI/CD pipeline khi phát hiện lỗ hổng?
-   - **Đáp án:** Cờ `--exit-code 1`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cờ thuộc tính nào trong lệnh Trivy được dùng để loại bỏ các lỗ hổng CVEs chưa được nhà sản xuất phát hành bản vá?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--ignore-unfixed`.
+</div>
+</details>
 
-5. Kỹ thuật biên soạn Dockerfile nào giúp tách biệt giai đoạn build ứng dụng và giai đoạn runtime để thu nhỏ dung lượng ảnh?
-   - **Đáp án:** Kỹ thuật **Multi-stage Build** (Biên dịch nhiều giai đoạn).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cờ thuộc tính nào trong lệnh Trivy giúp tự động trả về lỗi (exit code 1) để đánh sập CI/CD pipeline khi phát hiện lỗ hổng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `--exit-code 1`.
+</div>
+</details>
 
-6. Tại sao ảnh cơ sở Distroless (`gcr.io/distroless/*`) lại an toàn hơn rất nhiều so với ảnh cơ sở Ubuntu hay Debian thông thường?
-   - **Đáp án:** Vì Distroless chỉ chứa ứng dụng và thư viện phụ thuộc tối thiểu, loại bỏ hoàn toàn hệ điều hành shell (`/bin/sh`), trình quản lý gói và công cụ mạng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Kỹ thuật biên soạn Dockerfile nào giúp tách biệt giai đoạn build ứng dụng và giai đoạn runtime để thu nhỏ dung lượng ảnh?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kỹ thuật **Multi-stage Build** (Biên dịch nhiều giai đoạn).
+</div>
+</details>
 
-7. Chỉ thị Dockerfile nào bắt buộc phải có ở giai đoạn runtime để đảm bảo container không chạy dưới quyền `root`?
-   - **Đáp án:** Chỉ thị `USER 10001` (hoặc UID của một user phi root).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao ảnh cơ sở Distroless (`gcr.io/distroless/*`) lại an toàn hơn rất nhiều so với ảnh cơ sở Ubuntu hay Debian thông thường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Distroless chỉ chứa ứng dụng và thư viện phụ thuộc tối thiểu, loại bỏ hoàn toàn hệ điều hành shell (`/bin/sh`), trình quản lý gói và công cụ mạng.
+</div>
+</details>
 
-8. Cột thông tin nào trong kết quả quét của Trivy cho biết phiên bản gói thư viện đã được sửa lỗi lỗ hổng CVE?
-   - **Đáp án:** Cột `FIXED VERSION`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Chỉ thị Dockerfile nào bắt buộc phải có ở giai đoạn runtime để đảm bảo container không chạy dưới quyền `root`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chỉ thị `USER 10001` (hoặc UID của một user phi root).
+</div>
+</details>
 
-9. Tại sao không nên để lại các công cụ biên dịch như `gcc` hay `make` trong ảnh container ở môi trường Production?
-   - **Đáp án:** Để tránh việc hacker lợi dụng các công cụ này để tải xuống và biên dịch mã độc hại (malware) trực tiếp trong container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cột thông tin nào trong kết quả quét của Trivy cho biết phiên bản gói thư viện đã được sửa lỗi lỗ hổng CVE?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cột `FIXED VERSION`.
+</div>
+</details>
 
-10. Hiện tượng gì xảy ra khi bạn chạy một container sử dụng Distroless base image với lệnh `docker exec -it <container> sh`?
-    - **Đáp án:** Lệnh thất bại với lỗi `OCI runtime exec failed: exec: "sh": executable file not found in $PATH` (vì Distroless không có shell).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao không nên để lại các công cụ biên dịch như `gcc` hay `make` trong ảnh container ở môi trường Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để tránh việc hacker lợi dụng các công cụ này để tải xuống và biên dịch mã độc hại (malware) trực tiếp trong container.
+</div>
+</details>
 
-11. Tại sao chỉ thị `WORKDIR` nên được khai báo TRƯỚC chỉ thị `USER 10001` trong Dockerfile?
-    - **Đáp án:** Để đảm bảo Docker daemon khởi tạo thư mục làm việc với quyền root trước, tránh lỗi `Permission Denied` khi user thường không có quyền tạo thư mục.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Hiện tượng gì xảy ra khi bạn chạy một container sử dụng Distroless base image với lệnh `docker exec -it <container> sh`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh thất bại với lỗi `OCI runtime exec failed: exec: "sh": executable file not found in $PATH` (vì Distroless không có shell).
+</div>
+</details>
 
-12. Cú pháp Dockerfile chuẩn để sao chép thư mục từ stage `builder` sang stage `runtime` và gán quyền sở hữu cho user `10001` là gì?
-    - **Đáp án:** Cú pháp `COPY --chown=10001:10001 --from=builder /app /app`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao chỉ thị `WORKDIR` nên được khai báo TRƯỚC chỉ thị `USER 10001` trong Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để đảm bảo Docker daemon khởi tạo thư mục làm việc với quyền root trước, tránh lỗi `Permission Denied` khi user thường không có quyền tạo thư mục.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp Dockerfile chuẩn để sao chép thư mục từ stage `builder` sang stage `runtime` và gán quyền sở hữu cho user `10001` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cú pháp `COPY --chown=10001:10001 --from=builder /app /app`.
+</div>
+</details>
 
 ---
 
@@ -709,10 +906,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Kỹ thuật quét lỗ hổng ảnh container (Container Image Scanning) đóng vai trò gì trong kiến trúc bảo mật chuỗi cung ứng (Supply Chain Security) CKS?
 
-**Đáp án chuẩn:** Quét lỗ hổng ảnh container thực thi nguyên tắc Shift-Left Security, tự động soi chiếu các lớp layer của ảnh container với cơ sở dữ liệu lỗ hổng quốc tế (CVEs) để phát hiện và ngăn chặn các mã độc hại trước khi ảnh được đẩy lên kho chứa hoặc triển khai vào cụm Production.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Kỹ thuật quét lỗ hổng ảnh container (Container Image Scanning) đóng vai trò gì trong kiến trúc bảo mật chuỗi cung ứng (Supply Chain Security) CKS?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Quét lỗ hổng ảnh container thực thi nguyên tắc Shift-Left Security, tự động soi chiếu các lớp layer của ảnh container với cơ sở dữ liệu lỗ hổng quốc tế (CVEs) để phát hiện và ngăn chặn các mã độc hại trước khi ảnh được đẩy lên kho chứa hoặc triển khai vào cụm Production.
 
 **Tiêu chí chấm:**
 - 0đ: Không hiểu vai trò của quét ảnh container.
@@ -720,6 +930,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo vai trò của quét ảnh container trong chuỗi cung ứng phần mềm CKS.
 
 **Câu hỏi đào sâu:** (Công cụ quét lỗ hổng ảnh container mã nguồn mở chính thức được dùng trong bài thi CKS là gì? — Công cụ Trivy của Aqua Security).
+</div>
+</details>
 
 ---
 
@@ -977,15 +1189,43 @@ Sửa tệp `/tmp/Dockerfile.buggy` bị dính lỗi bảo mật:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Quét ảnh `nginx:1.18` bằng Trivy CLI
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Quét ảnh `nginx:1.18` bằng Trivy CLI</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 trivy image --severity CRITICAL --ignore-unfixed nginx:1.18 > /tmp/nginx-cve.txt
 ```
+</div>
+</details>
 
-### Câu 2 — Biên soạn `Dockerfile.hardened` chuẩn CKS
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Biên soạn `Dockerfile.hardened` chuẩn CKS</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/Dockerfile.hardened
 FROM golang:1.21-alpine AS builder
 WORKDIR /app
@@ -999,10 +1239,25 @@ USER 10001
 CMD ["./myapp"]
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo script Trivy CI/CD integration
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo script Trivy CI/CD integration</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/trivy-cicd.sh
 #!/bin/bash
 trivy image --exit-code 1 --severity CRITICAL --ignore-unfixed app:v1
@@ -1010,10 +1265,25 @@ EOF
 
 chmod +x /tmp/trivy-cicd.sh
 ```
+</div>
+</details>
 
-### Câu 4 — Sửa tệp Dockerfile sang Alpine Non-Root
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Sửa tệp Dockerfile sang Alpine Non-Root</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/Dockerfile.fixed
 FROM alpine:3.18
 RUN apk add --no-cache python3 && rm -rf /var/cache/apk/*
@@ -1025,6 +1295,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

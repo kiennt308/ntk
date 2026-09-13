@@ -15,8 +15,12 @@ series_order: 7
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.07] Hướng dẫn chuyên sâu Kỹ Thuật Gỡ Rối & Chẩn Đoán Pipeline: CI_DEBUG_TRACE, Log Analysis, Runner Interactive Debug & SSH Debug: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kỹ Thuật Gỡ Rối & Chẩn Đoán Pipeline: CI_DEBUG_TRACE, Log Analysis, Runner Interactive Debug & SSH Debug."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 07] KỸ THUẬT GỠ RỐI & CHẨN ĐOÁN PIPELINE: CI_DEBUG_TRACE, LOG ANALYSIS, RUNNER INTERACTIVE DEBUG & SSH DEBUG
 
@@ -2611,11 +2615,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Một pipeline hỏng, không ai biết vì sao. **Bốn lệnh đầu tiên** của bạn là gì, và mỗi lệnh loại bỏ được bao nhiêu giả thuyết?
-
-**Đáp án chuẩn:** Gỡ rối là **thu hẹp**, không phải thử lại. Không gian nghi ngờ có kích thước biết trước: **4** đường dữ liệu vào job (git · `cache` · `artifacts` · biến — buổi 01 QT 5.1) nhân **8** pha (buổi 01 QT 4.2) = **32** ô. Mỗi lệnh phải xoá một **hàng** hoặc một **cột**, không xoá từng ô.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Một pipeline hỏng, không ai biết vì sao. **Bốn lệnh đầu tiên** của bạn là gì, và mỗi lệnh loại bỏ được bao nhiêu giả thuyết?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Gỡ rối là **thu hẹp**, không phải thử lại. Không gian nghi ngờ có kích thước biết trước: **4** đường dữ liệu vào job (git · `cache` · `artifacts` · biến — buổi 01 QT 5.1) nhân **8** pha (buổi 01 QT 4.2) = **32** ô. Mỗi lệnh phải xoá một **hàng** hoặc một **cột**, không xoá từng ô.
 
 | # | Lệnh | Xoá được gì |
 |---|---|---|
@@ -2633,6 +2649,8 @@ Bốn lệnh tốn khoảng **2 giây** một lượt gọi API, thay cho 10–2
 - 3đ: Đủ bốn lệnh, **và** nói ra **4 × 8 = 32** ô cùng con số loại bỏ **7/8**, **và** nêu ca `pending` không có `trace`.
 
 **Câu hỏi đào sâu:** Bảng 32 ô **không** giải được lớp sự cố nào? *(Lớp ngoài phạm vi một job: hạ tầng GitLab, quota, hàng đợi runner ở quy mô. Đây là khung thu hẹp, không phải danh sách đầy đủ — buổi 13 và 47.)*
+</div>
+</details>
 
 ---
 

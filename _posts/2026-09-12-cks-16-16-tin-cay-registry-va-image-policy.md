@@ -15,8 +15,12 @@ series_order: 16
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKS P.16] Hướng dẫn chuyên sâu Kiểm Soát Tải Hình Ảnh Bằng ImagePolicyWebhook: Cấu Hình Admission Controller & Allowed Registries: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiểm Soát Tải Hình Ảnh Bằng ImagePolicyWebhook: Cấu Hình Admission Controller & Allowed Registries."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 16] KIỂM SOÁT TẢI HÌNH ẢNH BẰNG IMAGEPOLICYWEBHOOK: CẤU HÌNH ADMISSION CONTROLLER & ALLOWED REGISTRIES
 
@@ -351,48 +355,237 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Rủi ro an ninh lớn nhất của việc cho phép Pods kéo hình ảnh tự do từ Public Registries trôi nổi là gì?
-   - **Đáp án:** Public Registries chứa rủi ro cao về mã độc (Trojans, CryptoMiners) hoặc lỗ hổng CVEs chưa được vá.
 
-2. Cú pháp ghim cờ mã băm bất biến Image Digest chuẩn CKS là gì?
-   - **Đáp án:** Cú pháp `image: harbor.internal/apps/nginx@sha256:<64-character-hash>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Rủi ro an ninh lớn nhất của việc cho phép Pods kéo hình ảnh tự do từ Public Registries trôi nổi là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Public Registries chứa rủi ro cao về mã độc (Trojans, CryptoMiners) hoặc lỗ hổng CVEs chưa được vá.
+</div>
+</details>
 
-3. Đối tượng Custom Resource Definition (CRD) chuẩn của Kyverno dùng để định nghĩa quy tắc kiểm soát kho ảnh toàn cụm là gì?
-   - **Đáp án:** Đối tượng **`ClusterPolicy`** (`kyverno.io/v1`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Cú pháp ghim cờ mã băm bất biến Image Digest chuẩn CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cú pháp `image: harbor.internal/apps/nginx@sha256:<64-character-hash>`.
+</div>
+</details>
 
-4. Sự khác biệt về mặt hành động giữa 2 cờ `validationFailureAction: Audit` và `validationFailureAction: Enforce` trong Kyverno là gì?
-   - **Đáp án:** `Audit` **chỉ ghi log cảnh báo** mà vẫn cho phép tạo Pod, còn `Enforce` **chặn ngắt kết nối trực tiếp** lệnh tạo Pod vi phạm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Đối tượng Custom Resource Definition (CRD) chuẩn của Kyverno dùng để định nghĩa quy tắc kiểm soát kho ảnh toàn cụm là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đối tượng **`ClusterPolicy`** (`kyverno.io/v1`).
+</div>
+</details>
 
-5. Tại sao khi tạo chính sách Allowed Registries toàn cụm, chuyên gia bảo mật BẮT BUỘC phải khai báo ngoại lệ cho Namespace `kube-system`?
-   - **Đáp án:** Vì các Pods hệ thống (CoreDNS/Kube-proxy) trong `kube-system` kéo ảnh từ `registry.k8s.io`, nếu không loại trừ sẽ làm sập Pods hệ thống.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Sự khác biệt về mặt hành động giữa 2 cờ `validationFailureAction: Audit` và `validationFailureAction: Enforce` trong Kyverno là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `Audit` **chỉ ghi log cảnh báo** mà vẫn cho phép tạo Pod, còn `Enforce` **chặn ngắt kết nối trực tiếp** lệnh tạo Pod vi phạm.
+</div>
+</details>
 
-6. Cú pháp YAML `pattern` chuẩn trong Kyverno để chỉ cho phép ảnh bắt nguồn từ domain `harbor.internal/` là gì?
-   - **Đáp án:**
-     ```yaml
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Tại sao khi tạo chính sách Allowed Registries toàn cụm, chuyên gia bảo mật BẮT BUỘC phải khai báo ngoại lệ cho Namespace `kube-system`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì các Pods hệ thống (CoreDNS/Kube-proxy) trong `kube-system` kéo ảnh từ `registry.k8s.io`, nếu không loại trừ sẽ làm sập Pods hệ thống.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cú pháp YAML `pattern` chuẩn trong Kyverno để chỉ cho phép ảnh bắt nguồn từ domain `harbor.internal/` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```yaml
      pattern:
        spec:
          containers:
            - image: "harbor.internal/*"
      ```
+</div>
+</details>
 
-7. Tính năng kiểm định tích hợp sẵn của Kubernetes v1.30+ cho phép viết chính sách bằng biểu thức CEL mà không cần cài thêm controller bên thứ ba là gì?
-   - **Đáp án:** Đối tượng **`ValidatingAdmissionPolicy`** (`admissionregistration.k8s.io/v1`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tính năng kiểm định tích hợp sẵn của Kubernetes v1.30+ cho phép viết chính sách bằng biểu thức CEL mà không cần cài thêm controller bên thứ ba là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đối tượng **`ValidatingAdmissionPolicy`** (`admissionregistration.k8s.io/v1`).
+</div>
+</details>
 
-8. Mã lỗi HTTP phản hồi từ API Server khi một Pod bị từ chối do kéo ảnh ngoài danh sách Allowed Registries là gì?
-   - **Đáp án:** Mã lỗi **`403 Forbidden`** (admission webhook denied the request).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Mã lỗi HTTP phản hồi từ API Server khi một Pod bị từ chối do kéo ảnh ngoài danh sách Allowed Registries là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mã lỗi **`403 Forbidden`** (admission webhook denied the request).
+</div>
+</details>
 
-9. Lệnh CLI nào được dùng để tra cứu danh sách các báo cáo vi phạm chính sách Kyverno trên toàn cụm?
-   - **Đáp án:** Lệnh **`kubectl get policyreports -A`** (hoặc `kubectl get clusterpolicyreports`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh CLI nào được dùng để tra cứu danh sách các báo cáo vi phạm chính sách Kyverno trên toàn cụm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh **`kubectl get policyreports -A`** (hoặc `kubectl get clusterpolicyreports`).
+</div>
+</details>
 
-10. Tại sao cờ tag `:latest` lại bị cấm sử dụng trên môi trường Production?
-    - **Đáp án:** Vì cờ tag `:latest` là mutable tag, có thể bị kẻ tấn công push đè nội dung mới chứa mã độc (**Image Swapping Attack**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao cờ tag `:latest` lại bị cấm sử dụng trên môi trường Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì cờ tag `:latest` là mutable tag, có thể bị kẻ tấn công push đè nội dung mới chứa mã độc (**Image Swapping Attack**).
+</div>
+</details>
 
-11. Làm thế nào để kiểm tra xem một Pod spec có ghim cờ Image Digest hay chưa qua quy tắc Kyverno?
-    - **Đáp án:** Sử dụng mẫu pattern `image: "*@sha256:*"` trong tệp `ClusterPolicy`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Làm thế nào để kiểm tra xem một Pod spec có ghim cờ Image Digest hay chưa qua quy tắc Kyverno?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng mẫu pattern `image: "*@sha256:*"` trong tệp `ClusterPolicy`.
+</div>
+</details>
 
-12. Cú pháp YAML chuẩn của tệp `ClusterPolicy` Kyverno cấm tag `:latest` và ghim Image Digest CKS là gì?
-    - **Đáp án:**
-      ```yaml
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp YAML chuẩn của tệp `ClusterPolicy` Kyverno cấm tag `:latest` và ghim Image Digest CKS là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```yaml
       apiVersion: kyverno.io/v1
       kind: ClusterPolicy
       metadata:
@@ -412,6 +605,8 @@ graph TD
                   containers:
                     - image: "*@sha256:*"
       ```
+</div>
+</details>
 
 ---
 
@@ -772,10 +967,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Rủi ro an ninh lớn nhất của việc cho phép kéo Container Images tự do từ Public Registries trôi nổi là gì?
 
-**Đáp án chuẩn:** Public Registries công khai chứa rủi ro cao về mã độc (Trojans, CryptoMiners) hoặc lỗ hổng CVEs chưa được vá. Kẻ tấn công có thể chèn các hình ảnh độc hại lừa đảo người dùng tải về chạy trên cụm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Rủi ro an ninh lớn nhất của việc cho phép kéo Container Images tự do từ Public Registries trôi nổi là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Public Registries công khai chứa rủi ro cao về mã độc (Trojans, CryptoMiners) hoặc lỗ hổng CVEs chưa được vá. Kẻ tấn công có thể chèn các hình ảnh độc hại lừa đảo người dùng tải về chạy trên cụm.
 
 **Tiêu chí chấm:**
 - 0đ: Không biết rủi ro của Public Registries.
@@ -783,6 +991,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo rủi ro của Public Registries và lý do cần áp đặt chính sách Allowed Registries.
 
 **Câu hỏi đào sâu:** (Giải pháp để triệt tiêu rủi ro Public Registries là gì? — Áp dụng chính sách Allowed Registries chỉ cho phép kéo ảnh từ Private Trusted Registries được cấp phép).
+</div>
+</details>
 
 ---
 
@@ -1073,9 +1283,22 @@ Biên soạn `ValidatingAdmissionPolicy` CEL tại `/tmp/vap-registry.yaml`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo `ClusterPolicy` Kyverno Allowed Registries
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo `ClusterPolicy` Kyverno Allowed Registries</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/cp-allowed.yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -1103,10 +1326,25 @@ EOF
 
 kubectl apply -f /tmp/cp-allowed.yaml 2>/dev/null || true
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo `ClusterPolicy` Kyverno cấm tag `:latest`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo `ClusterPolicy` Kyverno cấm tag `:latest</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/cp-no-latest.yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -1134,10 +1372,25 @@ EOF
 
 kubectl apply -f /tmp/cp-no-latest.yaml 2>/dev/null || true
 ```
+</div>
+</details>
 
-### Câu 3 — Sửa tệp Pod `/tmp/broken-image-pod.yaml`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Sửa tệp Pod `/tmp/broken-image-pod.yaml</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF > /tmp/broken-image-pod.yaml
@@ -1154,10 +1407,25 @@ EOF
 
 kubectl apply -f /tmp/broken-image-pod.yaml 2>/dev/null || true
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo `ValidatingAdmissionPolicy` CEL
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo `ValidatingAdmissionPolicy` CEL</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF > /tmp/vap-registry.yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
@@ -1174,6 +1442,8 @@ kubectl apply -f /tmp/vap-registry.yaml 2>/dev/null || true
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

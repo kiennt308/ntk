@@ -15,8 +15,12 @@ series_order: 2
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "Mổ xẻ toàn diện kiến trúc nội tại của Argo CD: Phân tích 4 thành phần cốt lõi API Server, Repository Server, Application Controller và Redis Cache. Đi sâu vào thuật toán Reconciliation Loop chu kỳ 180s, Three-way Diff Engine và cơ chế Resource Tracking ID độc quyền."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiến Trúc Argo CD & Cơ Chế Vòng Lặp Điều Hòa Reconciliation Loop Chuyên Sâu."
+  - "Ứng dụng triết lý GitOps với Git làm nguồn chân lý duy nhất (Single Source of Truth), đồng bộ tự động 24/7."
+  - "Kiểm soát chặt chẽ quy trình triển khai đa cụm Kubernetes, phát hiện và triệt tiêu Configuration Drift."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Kiến Trúc Argo CD & Cơ Chế Vòng Lặp Điều Hòa Reconciliation Loop Chuyên Sâu
 
@@ -415,37 +419,197 @@ kubectl exec -n argocd deploy/argocd-application-controller -- nc -zv argocd-rep
 
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Tại sao `argocd-repo-server` được thiết kế không có quyền kết nối tới Kubernetes API Server?
-- **Đáp án:** Đây là nguyên lý **Least Privilege** trong kiến trúc an ninh. `repo-server` là nơi thực thi các công cụ render manifest bên ngoài (Helm, Kustomize, Plugins) có nguy cơ chứa mã độc hoặc lỗ hổng thực thi lệnh tùy ý (RCE). Việc cô lập hoàn toàn `repo-server` khỏi Kubernetes API ngăn chặn kẻ tấn công lợi dụng lỗ hổng render để chiếm quyền điều khiển cụm.
 
-### Câu 2: Sự khác nhau giữa lệnh `argocd app get --refresh` và `--hard-refresh` là gì?
-- **Đáp án:** 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao `argocd-repo-server` được thiết kế không có quyền kết nối tới Kubernetes API Server?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là nguyên lý **Least Privilege** trong kiến trúc an ninh. `repo-server` là nơi thực thi các công cụ render manifest bên ngoài (Helm, Kustomize, Plugins) có nguy cơ chứa mã độc hoặc lỗ hổng thực thi lệnh tùy ý (RCE). Việc cô lập hoàn toàn `repo-server` khỏi Kubernetes API ngăn chặn kẻ tấn công lợi dụng lỗ hổng render để chiếm quyền điều khiển cụm.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác nhau giữa lệnh `argocd app get --refresh` và `--hard-refresh` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
   - `--refresh` (Soft Refresh): Controller kiểm tra lại Git Revision trên remote server, nhưng vẫn có thể tái sử dụng manifest đã render trong Redis cache nếu Commit SHA không đổi.
   - `--hard-refresh`: Xóa bỏ hoàn toàn bộ nhớ đệm manifest trong Redis, ép buộc `repo-server` phải clone lại Git repo và render lại toàn bộ manifest từ đầu.
+</div>
+</details>
 
-### Câu 3: Làm thế nào để giảm thời gian phát hiện thay đổi trên Git từ 180s xuống 1s mà không làm tăng tải CPU của Controller?
-- **Đáp án:** Cấu hình **Git Webhook** trên GitHub/GitLab trỏ về `/api/webhook` của Argo CD Server. Webhook hoạt động theo cơ chế Push-Notification Event, chỉ kích hoạt reconcile đúng ứng dụng có commit mới mà không cần hạ thấp tham số polling `timeout.reconciliation`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Làm thế nào để giảm thời gian phát hiện thay đổi trên Git từ 180s xuống 1s mà không làm tăng tải CPU của Controller?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cấu hình **Git Webhook** trên GitHub/GitLab trỏ về `/api/webhook` của Argo CD Server. Webhook hoạt động theo cơ chế Push-Notification Event, chỉ kích hoạt reconcile đúng ứng dụng có commit mới mà không cần hạ thấp tham số polling `timeout.reconciliation`.
+</div>
+</details>
 
-### Câu 4: Khi nào nên đổi cơ chế Resource Tracking từ `label` sang `annotation`?
-- **Đáp án:** Bắt buộc phải đổi sang `annotation` trong các môi trường doanh nghiệp có nhiều Application quản lý các tài nguyên trùng tên ở nhiều namespace khác nhau, hoặc khi tên Application dài vượt quá 63 ký tự (giới hạn của Kubernetes Label).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Khi nào nên đổi cơ chế Resource Tracking từ `label` sang `annotation`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Bắt buộc phải đổi sang `annotation` trong các môi trường doanh nghiệp có nhiều Application quản lý các tài nguyên trùng tên ở nhiều namespace khác nhau, hoặc khi tên Application dài vượt quá 63 ký tự (giới hạn của Kubernetes Label).
+</div>
+</details>
 
-### Câu 5: Thành phần nào chịu trách nhiệm lưu trữ phiên đăng nhập Web và trạng thái phân quyền RBAC?
-- **Đáp án:** Phiên làm việc (Session Tokens) được lưu trong `argocd-redis`, còn quy tắc phân quyền RBAC được `argocd-server` đọc trực tiếp từ ConfigMap `argocd-rbac-cm` và nạp vào bộ nhớ qua thư viện Casbin.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Thành phần nào chịu trách nhiệm lưu trữ phiên đăng nhập Web và trạng thái phân quyền RBAC?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Phiên làm việc (Session Tokens) được lưu trong `argocd-redis`, còn quy tắc phân quyền RBAC được `argocd-server` đọc trực tiếp từ ConfigMap `argocd-rbac-cm` và nạp vào bộ nhớ qua thư viện Casbin.
+</div>
+</details>
 
-### Câu 6: Thuật toán Three-Way Diff của Argo CD có ưu điểm gì vượt trội so với Two-Way Diff thông thường?
-- **Đáp án:** Two-Way Diff chỉ so sánh trực tiếp Git Desired State và Live State, dễ dẫn đến xung đột khi Kubernetes API Server hoặc Admission Webhooks tự động bổ sung các trường mặc định (như `status`, `metadata.creationTimestamp`, `spec.template.spec.serviceAccount`). Three-Way Diff đối chiếu thêm `last-applied-configuration` để xác định chính xác trường nào do người dùng thực sự thay đổi trên Git.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Thuật toán Three-Way Diff của Argo CD có ưu điểm gì vượt trội so với Two-Way Diff thông thường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Two-Way Diff chỉ so sánh trực tiếp Git Desired State và Live State, dễ dẫn đến xung đột khi Kubernetes API Server hoặc Admission Webhooks tự động bổ sung các trường mặc định (như `status`, `metadata.creationTimestamp`, `spec.template.spec.serviceAccount`). Three-Way Diff đối chiếu thêm `last-applied-configuration` để xác định chính xác trường nào do người dùng thực sự thay đổi trên Git.
+</div>
+</details>
 
-### Câu 7: Khi mở rộng quy mô lên hàng nghìn cụm Kubernetes, tại sao cần triển khai Controller Sharding?
-- **Đáp án:** Một Pod Controller duy nhất phải mở kết nối Informer Watcher tới từng cụm K8s. Khi số lượng cụm quá lớn, giới hạn I/O mạng, CPU và bộ nhớ của một Node sẽ bị quá tải. Sharding cho phép chia cụm Kubernetes mục tiêu cho nhiều Pod Controller phân tán xử lý song song.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Khi mở rộng quy mô lên hàng nghìn cụm Kubernetes, tại sao cần triển khai Controller Sharding?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Một Pod Controller duy nhất phải mở kết nối Informer Watcher tới từng cụm K8s. Khi số lượng cụm quá lớn, giới hạn I/O mạng, CPU và bộ nhớ của một Node sẽ bị quá tải. Sharding cho phép chia cụm Kubernetes mục tiêu cho nhiều Pod Controller phân tán xử lý song song.
+</div>
+</details>
 
-### Câu 8: Vai trò của `argocd-cmd-params-cm` khác biệt như thế nào so với `argocd-cm`?
-- **Đáp án:** `argocd-cm` quản lý các cấu hình nghiệp vụ cấp ứng dụng (như SSO, Resource Exclusion, URL, Theme, Tracking Method). Trong khi đó, `argocd-cmd-params-cm` dùng để truyền các tham số dòng lệnh khởi động tiến trình (Command-Line Flags) cho các container như số worker thread, timeout, insecure mode.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Vai trò của `argocd-cmd-params-cm` khác biệt như thế nào so với `argocd-cm`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `argocd-cm` quản lý các cấu hình nghiệp vụ cấp ứng dụng (như SSO, Resource Exclusion, URL, Theme, Tracking Method). Trong khi đó, `argocd-cmd-params-cm` dùng để truyền các tham số dòng lệnh khởi động tiến trình (Command-Line Flags) cho các container như số worker thread, timeout, insecure mode.
+</div>
+</details>
 
-### Câu 9: Điều gì xảy ra nếu Redis bị sập đột ngột trong khi cụm đang chạy?
-- **Đáp án:** Khi Redis sập, người dùng sẽ bị đăng xuất khỏi Web UI và thời gian render manifest sẽ chậm lại do bị Cache Miss toàn bộ. Tuy nhiên, các ứng dụng đang chạy trên Kubernetes vẫn hoạt động bình thường và Controller sẽ tự phục hồi kết nối ngay khi Redis Pod được khởi động lại.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Điều gì xảy ra nếu Redis bị sập đột ngột trong khi cụm đang chạy?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khi Redis sập, người dùng sẽ bị đăng xuất khỏi Web UI và thời gian render manifest sẽ chậm lại do bị Cache Miss toàn bộ. Tuy nhiên, các ứng dụng đang chạy trên Kubernetes vẫn hoạt động bình thường và Controller sẽ tự phục hồi kết nối ngay khi Redis Pod được khởi động lại.
+</div>
+</details>
 
-### Câu 10: Làm thế nào để loại trừ các tài nguyên tự sinh (như CiliumEndpoint hoặc Knative Revision) khỏi tầm kiểm soát của Argo CD?
-- **Đáp án:** Khai báo cấu hình `resource.exclusions` trong ConfigMap `argocd-cm` với `apiGroups` và `kinds` tương ứng. Điều này ngăn Controller mở Watcher theo dõi các CRD biến động tần suất cao, giúp tiết kiệm bộ nhớ RAM đáng kể.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để loại trừ các tài nguyên tự sinh (như CiliumEndpoint hoặc Knative Revision) khỏi tầm kiểm soát của Argo CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khai báo cấu hình `resource.exclusions` trong ConfigMap `argocd-cm` với `apiGroups` và `kinds` tương ứng. Điều này ngăn Controller mở Watcher theo dõi các CRD biến động tần suất cao, giúp tiết kiệm bộ nhớ RAM đáng kể.
+</div>
+</details>
 
 ---
 

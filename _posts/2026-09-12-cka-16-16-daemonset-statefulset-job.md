@@ -15,8 +15,12 @@ series_order: 16
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.16] Hướng dẫn chuyên sâu Chuyên Sâu Workloads Phức Tạp: DaemonSet, StatefulSet (Headless Service), Job & CronJob Xử Lý Batch: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Chuyên Sâu Workloads Phức Tạp: DaemonSet, StatefulSet (Headless Service), Job & CronJob Xử Lý Batch."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 16] CHUYÊN SÂU WORKLOADS PHỨC TẠP: DAEMONSET, STATEFULSET (HEADLESS SERVICE), JOB & CRONJOB XỬ LÝ BATCH
 
@@ -170,10 +174,10 @@ graph TD
         POD1 --> PVC1["volumeClaimTemplates: data-db-1 (PV riêng 10Gi)"]
     end
 
-    style HEADLESS fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style STS fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style PVC0 fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
-    style PVC1 fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style HEADLESS fill:none,stroke:#0288d1,stroke-width:2px
+    style STS fill:none,stroke:#f57c00,stroke-width:2px
+    style PVC0 fill:none,stroke:#388e3c,stroke-width:2px
+    style PVC1 fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -405,10 +409,10 @@ graph TD
     A --> C["StatefulSet: Stateful Apps (Headless Service + volumeClaimTemplates)"]
     A --> D["Job & CronJob: Batch Workloads (restartPolicy: OnFailure + concurrencyPolicy)"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#ffe0b2,stroke:#333,stroke-width:2px
-    style D fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style D fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -546,9 +550,9 @@ graph TD
 
     DS_Lab --> STS_Lab --> Batch_Lab
 
-    style DS_Lab fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style STS_Lab fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Batch_Lab fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style DS_Lab fill:none,stroke:#f57c00,stroke-width:2px
+    style STS_Lab fill:none,stroke:#0288d1,stroke-width:2px
+    style Batch_Lab fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -960,12 +964,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Trình bày sự khác nhau cốt lõi giữa `Deployment`, `DaemonSet` và `StatefulSet` về mục đích sử dụng và cách thức tạo Pod.
-
-**Đáp án chuẩn:**
-- **`Deployment` (Ứng dụng không trạng thái):**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trình bày sự khác nhau cốt lõi giữa `Deployment`, `DaemonSet` và `StatefulSet` về mục đích sử dụng và cách thức tạo Pod.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **`Deployment` (Ứng dụng không trạng thái):**
   - *Mục đích:* Quản lý các ứng dụng Web/Microservices không trạng thái (Stateless).
   - *Tạo Pod:* Số lượng Pods do cờ `replicas` quy định, Pods mang tên ngẫu nhiên (như `web-8f7g-2x9z`), có thể tạo trên bất kỳ Node nào.
 - **`DaemonSet` (Tiến trình nền hạ tầng):**
@@ -982,6 +997,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, minh hoạ bằng các ứng dụng thực tế sản xuất.
 
 **Câu hỏi đào sâu:** Nếu muốn chạy đúng 1 Pod agent thu thập log trên tất cả các Worker Nodes thì dùng đối tượng nào? *(Đáp án: Dùng đối tượng `DaemonSet`).*
+</div>
+</details>
 
 ---
 

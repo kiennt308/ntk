@@ -15,8 +15,12 @@ series_order: 4
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.04] Hướng dẫn chuyên sâu Làm Chủ Các Modules Cốt Lõi: File, Copy, Template, Package, Service, Command vs Shell vs Raw: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Làm Chủ Các Modules Cốt Lõi: File, Copy, Template, Package, Service, Command vs Shell vs Raw."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 04] LÀM CHỦ CÁC MODULES CỐT LÕI: FILE, COPY, TEMPLATE, PACKAGE, SERVICE, COMMAND VS SHELL VS RAW
 
@@ -698,8 +702,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Quản lý Gói đa nền tảng với `ansible.builtin.package` 🔥
-**Hỏi:** Module `ansible.builtin.package` có ưu điểm gì vượt trội so với các module quản lý gói riêng biệt như `apt` hay `dnf`? Phân biệt `state=present` và `state=latest`. *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Quản lý Gói đa nền tảng với `ansible.builtin.package` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Module `ansible.builtin.package` có ưu điểm gì vượt trội so với các module quản lý gói riêng biệt như `apt` hay `dnf`? Phân biệt `state=present` và `state=latest`. *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Module `package` là module trừu tượng hóa (generic package manager), tự động nhận diện hệ điều hành của máy đích (RHEL dùng `dnf`, Ubuntu dùng `apt`, Alpine dùng `apk`), giúp viết kịch bản dùng chung cho hạ tầng đa OS. `state=present` đảm bảo gói đã cài đặt (nếu đã có gói thì bỏ qua không làm gì), còn `state=latest` kiểm tra và nâng cấp gói lên phiên bản mới nhất nếu kho phần mềm có bản mới.
 **Tiêu chí chấm:**
 - 0: Không biết tác dụng của module `package`.
@@ -707,6 +725,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Phân biệt chính xác cơ chế đa nền tảng + khác biệt `present` vs `latest`.
 - 3: Nêu đúng + minh họa câu lệnh ad-hoc cài gói và chỉ ra tính Idempotency lần 2.
 **Câu hỏi đào sâu:** Khi nào nên dùng module chuyên biệt `ansible.builtin.apt` thay vì `package`? *(Khi cần các tính năng đặc thụ riêng của Debian/Ubuntu như `update_cache=yes` hay `autoremove=yes`.)*
+</div>
+</details>
 
 ---
 

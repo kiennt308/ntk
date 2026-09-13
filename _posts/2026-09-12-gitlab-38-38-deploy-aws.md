@@ -15,8 +15,12 @@ series_order: 38
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.38] Hướng dẫn chuyên sâu Tự Động Hóa Triển Khai Lên AWS: OIDC Role Assume, CloudFormation, AWS ECS / EKS Deploy & S3 / CloudFront Sync: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tự Động Hóa Triển Khai Lên AWS: OIDC Role Assume, CloudFormation, AWS ECS / EKS Deploy & S3 / CloudFront Sync."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 38] TỰ ĐỘNG HÓA TRIỂN KHAI LÊN AWS: OIDC ROLE ASSUME, CLOUDFORMATION, AWS ECS / EKS DEPLOY & S3 / CLOUDFRONT SYNC
 
@@ -1779,10 +1783,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Giá trị chuẩn của cờ `aud` (Audience) khi sinh OIDC JWT Token dành riêng cho AWS IAM OIDC Provider là gì?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Giá trị chuẩn của cờ `aud` (Audience) khi sinh OIDC JWT Token dành riêng cho AWS IAM OIDC Provider là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Giá trị chuẩn duy nhất bắt buộc là `https://aws.amazon.com`, trùng khớp với Client ID đã đăng ký trên AWS IAM OIDC Provider settings.
 
 **Đáp án chuẩn:**
@@ -1797,6 +1813,8 @@ Giá trị chuẩn duy nhất bắt buộc là `https://aws.amazon.com`, trùng 
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Tự điền `aud: aws` hoặc `aud: https://gitlab.com` do tưởng nhầm rằng `aud` là tên của công nghệ hoặc tên miền của nơi sinh token.
+</div>
+</details>
 
 ---
 

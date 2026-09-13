@@ -15,8 +15,12 @@ series_order: 2
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.02] Hướng dẫn chuyên sâu Thiết Kế & Đóng Gói Container Chuẩn Production: Dockerfile Đa Tầng, Entrypoint vs Command & Ảnh Mỏng: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Thiết Kế & Đóng Gói Container Chuẩn Production: Dockerfile Đa Tầng, Entrypoint vs Command & Ảnh Mỏng."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 02] THIẾT KẾ & ĐÓNG GÓI CONTAINER CHUẨN PRODUCTION: DOCKERFILE ĐA TẦNG, ENTRYPOINT VS COMMAND & ẢNH MỎNG
 
@@ -351,41 +355,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Trường `command` trong Kubernetes Manifest ghi đè chỉ thị nào của Dockerfile?
-   - **Đáp án:** Ghi đè chỉ thị `ENTRYPOINT`.
 
-2. Trường `args` trong Kubernetes Manifest ghi đè chỉ thị nào của Dockerfile?
-   - **Đáp án:** Ghi đè chỉ thị `CMD`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trường `command` trong Kubernetes Manifest ghi đè chỉ thị nào của Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ghi đè chỉ thị `ENTRYPOINT`.
+</div>
+</details>
 
-3. Chuyện gì xảy ra với chỉ thị `CMD` của Dockerfile nếu trong Kubernetes YAML bạn khai báo cờ `command` nhưng bỏ trống `args`?
-   - **Đáp án:** Chỉ thị `CMD` của Dockerfile sẽ bị xóa bỏ hoàn toàn và không được truyền vào container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Trường `args` trong Kubernetes Manifest ghi đè chỉ thị nào của Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ghi đè chỉ thị `CMD`.
+</div>
+</details>
 
-4. Mục đích cốt lõi của kỹ thuật Multi-stage build trong Dockerfile là gì?
-   - **Đáp án:** Tách biệt môi trường Build (nặng) và môi trường Runtime (mỏng), chỉ giữ lại file thực thi giúp giảm dung lượng ảnh.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Chuyện gì xảy ra với chỉ thị `CMD` của Dockerfile nếu trong Kubernetes YAML bạn khai báo cờ `command` nhưng bỏ trống `args`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chỉ thị `CMD` của Dockerfile sẽ bị xóa bỏ hoàn toàn và không được truyền vào container.
+</div>
+</details>
 
-5. Ảnh cơ sở Alpine hoặc Distroless giúp giảm bao nhiêu % dung lượng so với ảnh Ubuntu/Debian truyền thống?
-   - **Đáp án:** Giảm hơn 95 % dung lượng (từ ~800 MB xuống ~5-30 MB).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Mục đích cốt lõi của kỹ thuật Multi-stage build trong Dockerfile là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tách biệt môi trường Build (nặng) và môi trường Runtime (mỏng), chỉ giữ lại file thực thi giúp giảm dung lượng ảnh.
+</div>
+</details>
 
-6. Tại sao tiến trình ứng dụng chính nên chạy ở vị trí PID 1 bên trong container?
-   - **Đáp án:** Để nhận trực tiếp tín hiệu ngắt `SIGTERM` từ Kubelet giúp ứng dụng dừng êm ái (Graceful Shutdown).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Ảnh cơ sở Alpine hoặc Distroless giúp giảm bao nhiêu % dung lượng so với ảnh Ubuntu/Debian truyền thống?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giảm hơn 95 % dung lượng (từ ~800 MB xuống ~5-30 MB).
+</div>
+</details>
 
-7. Tại sao nên dùng Exec Form (`CMD ["node", "app.js"]`) thay vì Shell Form (`CMD node app.js`) trong Dockerfile?
-   - **Đáp án:** Vì Shell Form sẽ chạy qua `/bin/sh` chiếm PID 1 và nuốt mất ngắt `SIGTERM` của ứng dụng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao tiến trình ứng dụng chính nên chạy ở vị trí PID 1 bên trong container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để nhận trực tiếp tín hiệu ngắt `SIGTERM` từ Kubelet giúp ứng dụng dừng êm ái (Graceful Shutdown).
+</div>
+</details>
 
-8. Tệp `.dockerignore` có vai trò gì trong quá trình đóng gói ảnh container?
-   - **Đáp án:** Loại bỏ các tệp và thư mục rác (như `.git`, `node_modules`) không gửi vào build context, giúp build ảnh nhanh hơn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tại sao nên dùng Exec Form (`CMD ["node", "app.js"]`) thay vì Shell Form (`CMD node app.js`) trong Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Shell Form sẽ chạy qua `/bin/sh` chiếm PID 1 và nuốt mất ngắt `SIGTERM` của ứng dụng.
+</div>
+</details>
 
-9. Tại sao phải xóa cache của trình quản lý gói (như `rm -rf /var/lib/apt/lists/*`) ngay trong cùng một câu lệnh `RUN`?
-   - **Đáp án:** Để tránh việc dung lượng cache bị khóa lại bất biến trong layer đệm đó làm phồng ảnh.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Tệp `.dockerignore` có vai trò gì trong quá trình đóng gói ảnh container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Loại bỏ các tệp và thư mục rác (như `.git`, `node_modules`) không gửi vào build context, giúp build ảnh nhanh hơn.
+</div>
+</details>
 
-10. Cú pháp cờ `kubectl run` nào giúp thiết lập trường `command` trực tiếp từ CLI?
-    - **Đáp án:** `kubectl run <name> --image=<image> --command -- <cmd> <args>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Tại sao phải xóa cache của trình quản lý gói (như `rm -rf /var/lib/apt/lists/*`) ngay trong cùng một câu lệnh `RUN`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để tránh việc dung lượng cache bị khóa lại bất biến trong layer đệm đó làm phồng ảnh.
+</div>
+</details>
 
-11. Ảnh `distroless` khác ảnh `alpine` ở điểm đặc biệt nào về mặt công cụ hệ điều hành?
-    - **Đáp án:** Ảnh `distroless` hoàn toàn không chứa vỏ lệnh shell (`sh`/`bash`) hay bất kỳ tiện ích OS nào.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Cú pháp cờ `kubectl run` nào giúp thiết lập trường `command` trực tiếp từ CLI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl run <name> --image=<image> --command -- <cmd> <args>`.
+</div>
+</details>
 
-12. Cờ `imagePullPolicy: IfNotPresent` ra lệnh gì cho Kubelet khi khởi tạo Pod?
-    - **Đáp án:** Kubelet chỉ kéo ảnh từ registry về nếu ổ đĩa cục bộ trên Worker Node chưa có sẵn bản ảnh đó.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Ảnh `distroless` khác ảnh `alpine` ở điểm đặc biệt nào về mặt công cụ hệ điều hành?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ảnh `distroless` hoàn toàn không chứa vỏ lệnh shell (`sh`/`bash`) hay bất kỳ tiện ích OS nào.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cờ `imagePullPolicy: IfNotPresent` ra lệnh gì cho Kubelet khi khởi tạo Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubelet chỉ kéo ảnh từ registry về nếu ổ đĩa cục bộ trên Worker Node chưa có sẵn bản ảnh đó.
+</div>
+</details>
 
 ---
 
@@ -756,10 +953,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Trường `command` và `args` trong Kubernetes Pod manifest tương ứng ghi đè những chỉ thị nào trong Dockerfile?
 
-**Đáp án chuẩn:** Trường `command` trong Kubernetes Manifest ghi đè chỉ thị `ENTRYPOINT` của Dockerfile. Trường `args` trong Kubernetes Manifest ghi đè chỉ thị `CMD` của Dockerfile.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Trường `command` và `args` trong Kubernetes Pod manifest tương ứng ghi đè những chỉ thị nào trong Dockerfile?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trường `command` trong Kubernetes Manifest ghi đè chỉ thị `ENTRYPOINT` của Dockerfile. Trường `args` trong Kubernetes Manifest ghi đè chỉ thị `CMD` của Dockerfile.
 
 **Tiêu chí chấm:**
 - 0đ: Trả lời nhầm lẫn giữa command và args.
@@ -767,6 +977,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Trả lời chính xác tuyệt đối cả 2 vế tương quan.
 
 **Câu hỏi đào sâu:** (Nếu Dockerfile có cả ENTRYPOINT và CMD mà trên K8s chỉ khai báo `command` thì điều gì sẽ xảy ra? — Toàn bộ ENTRYPOINT và CMD của Dockerfile đều bị xóa bỏ, container chỉ chạy duy nhất lệnh trong `command`).
+</div>
+</details>
 
 ---
 
@@ -1004,17 +1216,45 @@ Tạo Deployment tên là `app-deploy` 2 replicas trong Namespace `prod` chạy 
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Pod `cmd-pod` ghi đè command
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Pod `cmd-pod` ghi đè command</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 kubectl run cmd-pod --image=busybox:1.36 -n prod --command -- sh -c "echo Hello CKAD && sleep 3600"
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo Pod `args-pod` có command và args
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo Pod `args-pod` có command và args</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1029,10 +1269,25 @@ spec:
       args: ["HOSTNAME", "KUBERNETES_PORT"]
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo Pod đa container `multi-command`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo Pod đa container `multi-command</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1049,14 +1304,31 @@ spec:
       command: ["sh", "-c", "echo C2_RUNNING && sleep 3600"]
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo Deployment `app-deploy` 2 Replicas ghi đè command
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo Deployment `app-deploy` 2 Replicas ghi đè command</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create deploy app-deploy --image=nginx:alpine --replicas=2 -n prod --dry-run=client -o yaml --command -- sh -c "echo DEPLOY_OK && nginx -g 'daemon off;'" | kubectl apply -f -
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy mất điểm
 

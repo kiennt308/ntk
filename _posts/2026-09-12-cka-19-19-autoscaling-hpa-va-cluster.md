@@ -15,8 +15,12 @@ series_order: 19
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.19] Hướng dẫn chuyên sâu Tự Động Co Giãn Tài Nguyên: Horizontal Pod Autoscaler (HPA), Metrics-Server & Giới Hạn Scaling: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tự Động Co Giãn Tài Nguyên: Horizontal Pod Autoscaler (HPA), Metrics-Server & Giới Hạn Scaling."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 19] TỰ ĐỘNG CO GIÃN TÀI NGUYÊN: HORIZONTAL POD AUTOSCALER (HPA), METRICS-SERVER & GIỚI HẠN SCALING
 
@@ -160,9 +164,9 @@ graph TD
         FORMULA -->|Update spec.replicas| DEPLOY["Deployment (scale out / scale in)"]
     end
 
-    style HPA_CTRL fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
-    style FORMULA fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style DEPLOY fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style HPA_CTRL fill:none,stroke:#388e3c,stroke-width:2px
+    style FORMULA fill:none,stroke:#f57c00,stroke-width:2px
+    style DEPLOY fill:none,stroke:#0288d1,stroke-width:2px
 ```
 
 ---
@@ -398,10 +402,10 @@ graph TD
     A --> D["Điều kiện bắt buộc: 100% containers có resources.requests.cpu"]
     A --> E["Chống Flapping: scaleDown stabilizationWindowSeconds (300s / 5 phút)"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#c8e6c9,stroke:#333,stroke-width:2px
-    style E fill:#ffe0b2,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style E fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -532,9 +536,9 @@ graph TD
 
     Deploy_Setup --> Load_Testing --> ScaleDown_Stabilization
 
-    style Deploy_Setup fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Load_Testing fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style ScaleDown_Stabilization fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Deploy_Setup fill:none,stroke:#0288d1,stroke-width:2px
+    style Load_Testing fill:none,stroke:#f57c00,stroke-width:2px
+    style ScaleDown_Stabilization fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -978,12 +982,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Phân biệt sự khác nhau giữa co giãn hàng ngang (HorizontalPodAutoscaler - HPA) và co giãn hàng dọc (VerticalPodAutoscaler - VPA) trong Kubernetes.
-
-**Đáp án chuẩn:**
-- **`HorizontalPodAutoscaler` (HPA - Co giãn hàng ngang):**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phân biệt sự khác nhau giữa co giãn hàng ngang (HorizontalPodAutoscaler - HPA) và co giãn hàng dọc (VerticalPodAutoscaler - VPA) trong Kubernetes.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **`HorizontalPodAutoscaler` (HPA - Co giãn hàng ngang):**
   - *Cơ chế:* Tự động tăng hoặc giảm **số lượng bản sao Pods (Replicas)** (scale out / scale in).
   - *Ứng dụng:* Phù hợp tuyệt đối cho các ứng dụng Stateless Web / Microservices có khả năng chia tải.
 - **`VerticalPodAutoscaler` (VPA - Co giãn hàng dọc):**
@@ -997,6 +1012,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, chỉ ra lý do không nên vừa bật HPA vừa bật VPA trên cùng 1 chỉ số CPU.
 
 **Câu hỏi đào sâu:** Tại sao không nên cấu hình cả HPA và VPA cùng co giãn dựa trên 1 chỉ số CPU của 1 Deployment? *(Đáp án: Vì 2 bộ controller sẽ xung đột lẫn nhau: HPA đòi tăng bản sao trong khi VPA đòi tăng CPU request).*
+</div>
+</details>
 
 ---
 

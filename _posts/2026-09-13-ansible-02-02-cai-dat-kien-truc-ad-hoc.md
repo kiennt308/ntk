@@ -15,8 +15,12 @@ series_order: 2
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.02] Hướng dẫn chuyên sâu Kiến Trúc Ansible & Lệnh Ad-Hoc: Control Node, Managed Nodes, SSH Authentication & Thực Thi Module Tức Thì: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiến Trúc Ansible & Lệnh Ad-Hoc: Control Node, Managed Nodes, SSH Authentication & Thực Thi Module Tức Thì."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 02] KIẾN TRÚC ANSIBLE & LỆNH AD-HOC: CONTROL NODE, MANAGED NODES, SSH AUTHENTICATION & THỰC THI MODULE TỨC THÌ
 
@@ -690,8 +694,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Thứ tự ưu tiên cấu hình `ansible.cfg` 🔥
-**Hỏi:** Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình `ansible.cfg`. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Thứ tự ưu tiên cấu hình `ansible.cfg` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình `ansible.cfg`. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Ansible tìm kiếm theo thứ tự ưu tiên giảm dần: (1) Biến môi trường `ANSIBLE_CONFIG`, (2) File `./ansible.cfg` tại thư mục hiện tại, (3) File ẩn `~/.ansible.cfg` tại thư mục cá nhân người dùng, (4) File cấu hình mặc định hệ thống `/etc/ansible/ansible.cfg`. Để biết chính xác file đang được áp dụng, chạy lệnh `ansible --version` và quan sát dòng `config file = ...`.
 **Tiêu chí chấm:** 
 - 0: Không nêu được các tầng cấu hình.
@@ -699,6 +717,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Nêu đúng 4 tầng theo thứ tự chính xác.
 - 3: Nêu đúng 4 tầng + chỉ ra lệnh `ansible --version` và bẫy file `./ansible.cfg` bị bỏ qua nếu lỡ gán quyền `world-writable` (`chmod 777`).
 **Câu hỏi đào sâu:** Nếu file `./ansible.cfg` bị gán quyền `chmod 777`, Ansible sẽ xử lý thế nào? *(Bỏ qua file đó vì lý do an toàn bảo mật và tự động lùi về dùng file tầng thấp hơn.)*
+</div>
+</details>
 
 ---
 

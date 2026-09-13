@@ -14,8 +14,12 @@ series_order: 15
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80"
 summary: "Làm chủ hệ thống Built-in Functions mạnh mẽ trong HCL, xây dựng Type Constraints"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise
 
@@ -42,11 +46,11 @@ flowchart TD
     D -->|Thành công| E["Tầng 4: Precondition / Postcondition Checks"]
     E --> F["Graph Node Ready: Tính Toán Resource Change"]
 
-    style A fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style ERR1 fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style ERR2 fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style ERR3 fill:#ffcccc,stroke:#ff0000,stroke-width:2px
-    style F fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style ERR1 fill:none,stroke:#ff0000,stroke-width:2px
+    style ERR2 fill:none,stroke:#ff0000,stroke-width:2px
+    style ERR3 fill:none,stroke:#ff0000,stroke-width:2px
+    style F fill:none,stroke:#28a745,stroke-width:2px
 
 
 ```
@@ -643,34 +647,160 @@ rm -rf terraform-lab15-validation
 
 ## 7. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-### Q1: Điểm khác biệt mấu chốt giữa `type = any` và `type = object({...})` là gì?
-- **Trả lời**: `type = any` đóng vai trò là wildcard, tắt toàn bộ cơ chế type checking tại thời điểm parse HCL, dễ dẫn đến lỗi runtime nếu module truy cập thuộc tính không tồn tại. `type = object({...})` định nghĩa hợp đồng dữ liệu (data contract) tường minh, hỗ trợ kiểm tra kiểu của từng trường con, bắt buộc truyền đủ thuộc tính (trừ khi có `optional()`), giúp phát hiện lỗi sai cấu trúc ngay lập tức.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Điểm khác biệt mấu chốt giữa `type = any` và `type = object({...})` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : `type = any` đóng vai trò là wildcard, tắt toàn bộ cơ chế type checking tại thời điểm parse HCL, dễ dẫn đến lỗi runtime nếu module truy cập thuộc tính không tồn tại. `type = object({...})` định nghĩa hợp đồng dữ liệu (data contract) tường minh, hỗ trợ kiểm tra kiểu của từng trường con, bắt buộc truyền đủ thuộc tính (trừ khi có `optional()`), giúp phát hiện lỗi sai cấu trúc ngay lập tức.
+</div>
+</details>
 
-### Q2: Khối `validation` trong biến số có thể tham chiếu (reference) tới các biến số khác trong cùng module không?
-- **Trả lời**: **KHÔNG**. Khối `validation` bên trong một `variable` chỉ có thể tham chiếu trực tiếp đến chính biến đó (`var.<variable_name>`). Nó không thể tham chiếu đến biến số khác, `local values`, hay `data sources` để tránh tạo ra vòng lặp phụ thuộc (dependency cycle) trong quá trình parse biến số ban đầu. Nếu cần validate tương quan giữa 2 biến, ta phải sử dụng `check` block hoặc `precondition` trong resource/lifecycle.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Khối `validation` trong biến số có thể tham chiếu (reference) tới các biến số khác trong cùng module không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : **KHÔNG**. Khối `validation` bên trong một `variable` chỉ có thể tham chiếu trực tiếp đến chính biến đó (`var.<variable_name>`). Nó không thể tham chiếu đến biến số khác, `local values`, hay `data sources` để tránh tạo ra vòng lặp phụ thuộc (dependency cycle) trong quá trình parse biến số ban đầu. Nếu cần validate tương quan giữa 2 biến, ta phải sử dụng `check` block hoặc `precondition` trong resource/lifecycle.
+</div>
+</details>
 
-### Q3: Đoạn code `can(regex("^[0-9]+$", var.age))` hoạt động như thế nào khi `var.age` là `null` hoặc chuỗi `"abc"`?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Đoạn code `can(regex("^[0-9]+$", var.age))` hoạt động như thế nào khi `var.age` là `null` hoặc chuỗi `"abc"`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - Nếu `var.age = "abc"`, hàm `regex()` không tìm thấy kết quả khớp và ném ra lỗi. Hàm `can()` bắt lỗi này và chuyển đổi thành `false`.
   - Nếu `var.age = null`, hàm `regex()` gặp lỗi null argument. `can()` bắt lỗi và trả về `false`.
   - Nếu `var.age = "25"`, `regex()` khớp thành công, `can()` trả về `true`.
+</div>
+</details>
 
-### Q4: Sự khác nhau giữa `alltrue([for item in list: condition])` và `contains(list, value)`?
-- **Trả lời**: `alltrue()` nhận vào một danh sách các giá trị boolean và chỉ trả về `true` nếu **100% các phần tử** trong mảng là `true`. `contains()` kiểm tra xem một giá trị cụ thể có xuất hiện trong danh sách hay không. Trong validation cho danh sách các object, `alltrue()` kết hợp với for expression là tiêu chuẩn vàng để duyệt kiểm tra từng phần tử.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Sự khác nhau giữa `alltrue([for item in list: condition])` và `contains(list, value)`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : `alltrue()` nhận vào một danh sách các giá trị boolean và chỉ trả về `true` nếu **100% các phần tử** trong mảng là `true`. `contains()` kiểm tra xem một giá trị cụ thể có xuất hiện trong danh sách hay không. Trong validation cho danh sách các object, `alltrue()` kết hợp với for expression là tiêu chuẩn vàng để duyệt kiểm tra từng phần tử.
+</div>
+</details>
 
-### Q5: Khi nào nên sử dụng `precondition` và `postcondition` thay vì Variable Validation?
-- **Trả lời**: 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Khi nào nên sử dụng `precondition` và `postcondition` thay vì Variable Validation?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : 
   - Dùng **Variable Validation** khi muốn kiểm tra dữ liệu đầu vào tĩnh đã biết ngay trước khi tính toán đồ thị (ví dụ: regex string, dải số, enum value).
   - Dùng **Precondition / Postcondition** khi điều kiện kiểm tra phụ thuộc vào kết quả của một `data source`, một `resource` khác, hoặc thuộc tính chỉ được biết sau khi Cloud Provider phản hồi (ví dụ: kiểm tra AMI ID có tag `"Production-Approved"` trước khi tạo EC2).
+</div>
+</details>
 
-### Q6: Tại sao nên ưu tiên dùng `formatlist()` hoặc `for` expression thay vì hardcode string concatenation?
-- **Trả lời**: `formatlist()` và `for` expressions hỗ trợ xử lý linh hoạt các mảng có kích thước động, tự động áp dụng hàm biến đổi cho từng phần tử mà không gây lỗi index out of range, đồng thời giúp code HCL giữ vững nguyên lý Declarative.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Tại sao nên ưu tiên dùng `formatlist()` hoặc `for` expression thay vì hardcode string concatenation?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : `formatlist()` và `for` expressions hỗ trợ xử lý linh hoạt các mảng có kích thước động, tự động áp dụng hàm biến đổi cho từng phần tử mà không gây lỗi index out of range, đồng thời giúp code HCL giữ vững nguyên lý Declarative.
+</div>
+</details>
 
-### Q7: Hàm `compact()` loại bỏ những phần tử nào trong một danh sách?
-- **Trả lời**: `compact()` chỉ nhận đầu vào là `list(string)` và loại bỏ tất cả các phần tử là **chuỗi rỗng `""`** hoặc `null`. Nó không loại bỏ số 0 hay boolean false.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Hàm `compact()` loại bỏ những phần tử nào trong một danh sách?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : `compact()` chỉ nhận đầu vào là `list(string)` và loại bỏ tất cả các phần tử là **chuỗi rỗng `""`** hoặc `null`. Nó không loại bỏ số 0 hay boolean false.
+</div>
+</details>
 
-### Q8: Làm thế nào để kiểm tra một biến kiểu `map(string)` không chứa bất kỳ key nào bắt đầu bằng từ khóa `"aws:"`?
-- **Trả lời**:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Làm thế nào để kiểm tra một biến kiểu `map(string)` không chứa bất kỳ key nào bắt đầu bằng từ khóa `"aws:"`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  :
 ```hcl
 validation {
   condition = alltrue([
@@ -679,12 +809,46 @@ validation {
   error_message = "Tags do người dùng định nghĩa không được phép bắt đầu bằng tiền tố bảo lưu 'aws:'."
 }
 ```
+</div>
+</details>
 
-### Q9: Điều gì xảy ra nếu hàm `try(local.a, local.b)` có `local.a` chứa syntax error (sai cú pháp HCL)?
-- **Trả lời**: `try()` chỉ bắt các **lỗi runtime evaluation** (như truy cập key không tồn tại, chia cho 0, parse fail). Nếu `local.a` có lỗi cú pháp HCL (Syntax Error), Terraform sẽ báo lỗi cú pháp ngay trong giai đoạn Lexer/Parser và dừng chương trình, `try()` không thể che giấu được lỗi cú pháp.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Điều gì xảy ra nếu hàm `try(local.a, local.b)` có `local.a` chứa syntax error (sai cú pháp HCL)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : `try()` chỉ bắt các **lỗi runtime evaluation** (như truy cập key không tồn tại, chia cho 0, parse fail). Nếu `local.a` có lỗi cú pháp HCL (Syntax Error), Terraform sẽ báo lỗi cú pháp ngay trong giai đoạn Lexer/Parser và dừng chương trình, `try()` không thể che giấu được lỗi cú pháp.
+</div>
+</details>
 
-### Q10: Làm thế nào để thiết lập một giá trị mặc định phức tạp cho biến `object` mà trong đó có thuộc tính lồng nhau (nested optional attributes)?
-- **Trả lời**: Sử dụng cú pháp `optional(type, default_value)` ở mọi cấp lồng nhau trong định nghĩa `type` của biến. Ví dụ: `type = object({ db = optional(object({ port = optional(number, 5432) }), {}) })`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Làm thế nào để thiết lập một giá trị mặc định phức tạp cho biến `object` mà trong đó có thuộc tính lồng nhau (nested optional attributes)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  : Sử dụng cú pháp `optional(type, default_value)` ở mọi cấp lồng nhau trong định nghĩa `type` của biến. Ví dụ: `type = object({ db = optional(object({ port = optional(number, 5432) }), {}) })`.
+</div>
+</details>
 
 ---
 

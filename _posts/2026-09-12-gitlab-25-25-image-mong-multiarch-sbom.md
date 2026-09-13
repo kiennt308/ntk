@@ -15,8 +15,12 @@ series_order: 25
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.25] Hướng dẫn chuyên sâu Tối Ưu Container Image Nâng Cao: Multi-Stage Builds, Distroless Images, Multi-Arch Buildx & SBOM Generation: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tối Ưu Container Image Nâng Cao: Multi-Stage Builds, Distroless Images, Multi-Arch Buildx & SBOM Generation."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 25] TỐI ƯU CONTAINER IMAGE NÂNG CAO: MULTI-STAGE BUILDS, DISTROLESS IMAGES, MULTI-ARCH BUILDX & SBOM GENERATION
 
@@ -1650,121 +1654,277 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-### Câu 1
-**Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định kích thước Container Image chính là **"Chi phí băng thông nhân với số lần kéo"** trong môi trường Cloud Native Auto-scaling?
-
-**Đáp án chuẩn:**
-- Trong cụm Kubernetes, khi xảy ra sự kiện Auto-scaling (scale từ 10 Pods lên 100 Pods), các Worker Nodes phải đồng loạt tải Image qua đường truyền mạng nội bộ.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định kích thước Container Image chính là **"Chi phí băng thông nhân với số lần kéo"** trong môi trường Cloud Native Auto-scaling?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Trong cụm Kubernetes, khi xảy ra sự kiện Auto-scaling (scale từ 10 Pods lên 100 Pods), các Worker Nodes phải đồng loạt tải Image qua đường truyền mạng nội bộ.
 - Nếu Image dung lượng 1 GB, hệ thống phải truyền tải **100 GB** dữ liệu, khiến thời gian khởi tạo Pod kéo dài 3–5 phút. Khi tối ưu Image xuống < 20 MB bằng Base Image `Distroless`, tổng dung lượng truyền tải giảm xuống chỉ còn 2 GB, giúp Pod chuyển sang trạng thái `Running` chỉ trong **3 giây**, đồng thời tiết kiệm 95% chi phí băng thông egress.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Phân tích sự khác biệt về mặt kiến trúc an ninh và dung lượng giữa 3 loại Base Image: `Ubuntu/Debian`, `Alpine Linux`, và `Google Distroless`?
-
-**Đáp án chuẩn:**
-- **Ubuntu/Debian:** Dung lượng 80–600 MB, chứa đầy đủ các công cụ hệ điều hành, shell CLI (`bash`/`sh`), package manager (`apt`). Độ an toàn thấp do chứa hàng trăm lỗ hổng CVEs rác.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Phân tích sự khác biệt về mặt kiến trúc an ninh và dung lượng giữa 3 loại Base Image: `Ubuntu/Debian`, `Alpine Linux`, và `Google Distroless`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Ubuntu/Debian:** Dung lượng 80–600 MB, chứa đầy đủ các công cụ hệ điều hành, shell CLI (`bash`/`sh`), package manager (`apt`). Độ an toàn thấp do chứa hàng trăm lỗ hổng CVEs rác.
 - **Alpine Linux:** Dung lượng ~7 MB (dùng musl libc), có shell (`sh`) và `apk`. Độ an toàn trung bình, đôi khi gặp lỗi tương thích thư viện C với các ứng dụng biên dịch trên `glibc`.
 - **Google Distroless:** Dung lượng 2–15 MB, chỉ chứa duy nhất runtime và thư viện C cần thiết (`glibc`), **loại bỏ 100% Shell CLI và Package Manager**. Độ an toàn cao nhất, triệt tiêu 90% bề mặt tấn công.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Nguyên lý của kỹ thuật Thu hẹp bề mặt tấn công (Attack Surface Reduction) khi loại bỏ Shell CLI (`sh`/`bash`) khỏi Container Image Production?
-
-**Đáp án chuẩn:**
-- Hầu hết các cuộc tấn công khai thác lỗ hổng Remote Code Execution (RCE) đều cố gắng thực thi các câu lệnh shell (như `sh -c` hoặc `/bin/bash`) để tạo đường truyền Reverse Shell về máy chủ hacker.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Nguyên lý của kỹ thuật Thu hẹp bề mặt tấn công (Attack Surface Reduction) khi loại bỏ Shell CLI (`sh`/`bash`) khỏi Container Image Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Hầu hết các cuộc tấn công khai thác lỗ hổng Remote Code Execution (RCE) đều cố gắng thực thi các câu lệnh shell (như `sh -c` hoặc `/bin/bash`) để tạo đường truyền Reverse Shell về máy chủ hacker.
 - Khi ứng dụng chạy trên Base Image `Distroless` (0 Shell CLI), dù hacker có phát hiện ra lỗ hổng RCE trên code ứng dụng, lệnh gọi shell của hacker cũng lập tức bị Linux Kernel từ chối với lỗi `exec failed: executable file not found in $PATH`, chặn đứng 100% nguy cơ chiếm Interactive Shell.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Nguyên lý hoạt động của cơ chế Multi-Arch Build (biên dịch đa kiến trúc CPU) và vai trò của OCI Manifest Index?
-
-**Đáp án chuẩn:**
-- Multi-Arch Build biên dịch ứng dụng thành các tệp nhị phân riêng biệt cho từng kiến trúc CPU target (`linux/amd64` và `linux/arm64`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Nguyên lý hoạt động của cơ chế Multi-Arch Build (biên dịch đa kiến trúc CPU) và vai trò của OCI Manifest Index?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Multi-Arch Build biên dịch ứng dụng thành các tệp nhị phân riêng biệt cho từng kiến trúc CPU target (`linux/amd64` và `linux/arm64`).
 - **OCI Manifest Index** đóng vai trò là tệp chỉ mục hợp nhất. Nó liệt kê danh sách các Manifest vật lý kèm theo nhãn architecture. Khi Docker Engine hoặc K8s Node pull Image `my-app:v1.0.0`, nó sẽ đọc OCI Manifest Index và tự chọn kéo đúng layer dành cho kiến trúc CPU của máy chủ đó mà không cần sửa Tag Image.
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tại sao các doanh nghiệp dịch chuyển hạ tầng lên AWS Graviton (ARM64) bắt buộc phải áp dụng Multi-Arch Build trong CI/CD Pipeline?
-
-**Đáp án chuẩn:**
-- AWS Graviton sử dụng kiến trúc CPU ARM64 mang lại hiệu năng/chi phí tốt hơn 20–40% so với x86_64.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tại sao các doanh nghiệp dịch chuyển hạ tầng lên AWS Graviton (ARM64) bắt buộc phải áp dụng Multi-Arch Build trong CI/CD Pipeline?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - AWS Graviton sử dụng kiến trúc CPU ARM64 mang lại hiệu năng/chi phí tốt hơn 20–40% so với x86_64.
 - Nếu không đóng gói Multi-Arch Build, Image chỉ chứa mã lệnh x86_64 khi deploy lên K8s Node ARM64 sẽ nổ lỗi rực đỏ `exec format error`. Việc tạo OCI Manifest Index đa kiến trúc cho phép 1 Pipeline duy nhất phục vụ mượt mà cho cả cụm Node x86 cũ và cụm Node ARM64 mới.
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Khái niệm SBOM (Software Bill of Materials) là gì và tại sao nó trở thành điều kiện cần (Prerequisite) của mọi quy trình Security trong CI/CD?
-
-**Đáp án chuẩn:**
-- SBOM là bản khai sinh danh mục kê khai 100% tất cả các thư viện, gói mã nguồn mở, phiên bản và mã băm SHA-256 có mặt trong sản phẩm phần mềm.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Khái niệm SBOM (Software Bill of Materials) là gì và tại sao nó trở thành điều kiện cần (Prerequisite) của mọi quy trình Security trong CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - SBOM là bản khai sinh danh mục kê khai 100% tất cả các thư viện, gói mã nguồn mở, phiên bản và mã băm SHA-256 có mặt trong sản phẩm phần mềm.
 - SBOM là điều kiện cần vì nếu không có danh mục kê khai minh bạch, các công cụ quét an ninh (Scanner) không thể đối soát và phát hiện các lỗ hổng CVE mới công bố trong chuỗi cung ứng phần mềm (Supply Chain Attacks).
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** So sánh 2 chuẩn SBOM quốc tế phổ biến nhất hiện nay: OWASP `CycloneDX` và Linux Foundation `SPDX`?
-
-**Đáp án chuẩn:**
-- **OWASP CycloneDX:** Được thiết kế tối ưu cho lĩnh vực An toàn thông tin (Cybersecurity), phân tích lỗ hổng bảo mật và bảo vệ chuỗi cung ứng phần mềm. Định dạng JSON/XML nhỏ mỏng, dễ tích hợp với K8s Security Gates.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** So sánh 2 chuẩn SBOM quốc tế phổ biến nhất hiện nay: OWASP `CycloneDX` và Linux Foundation `SPDX`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **OWASP CycloneDX:** Được thiết kế tối ưu cho lĩnh vực An toàn thông tin (Cybersecurity), phân tích lỗ hổng bảo mật và bảo vệ chuỗi cung ứng phần mềm. Định dạng JSON/XML nhỏ mỏng, dễ tích hợp với K8s Security Gates.
 - **Linux Foundation SPDX:** Được thiết kế tối ưu cho kiểm toán tính tuân thủ bản quyền giấy phép (License Compliance) và pháp lý phần mềm. Phù hợp cho các tập đoàn lớn kiểm tra vi phạm bản quyền mở.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Công cụ Anchore `Syft` thực hiện phân tích và trích xuất tệp SBOM dựa trên những cơ chế nào?
-
-**Đáp án chuẩn:**
-- `Syft` bóc tách từng lớp layer container và tự động kích hoạt các trình phân tích (Catalogers):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Công cụ Anchore `Syft` thực hiện phân tích và trích xuất tệp SBOM dựa trên những cơ chế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - `Syft` bóc tách từng lớp layer container và tự động kích hoạt các trình phân tích (Catalogers):
   1. Quét các tệp quản lý phụ thuộc (Lockfiles) như `go.sum`, `package-lock.json`, `pom.xml`, `requirements.txt`.
   2. Phân tích cơ sở dữ liệu package manager của hệ điều hành (`dpkg`, `apk`, `rpm`).
   3. Tính toán mã băm SHA-256 bất biến cho từng gói và tổng hợp thành tệp SBOM định dạng CycloneDX hoặc SPDX JSON trong vài giây.
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Tác dụng của cờ `-ldflags="-w -s"` khi biên dịch ứng dụng Go/Rust và trường hợp nào KHÔNG nên sử dụng cờ này?
-
-**Đáp án chuẩn:**
-- **Tác dụng:** Cờ `-w` loại bỏ thông tin DWARF debug table; cờ `-s` loại bỏ symbol table. Kết hợp lại giúp cắt giảm tới **40% dung lượng tệp nhị phân**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Tác dụng của cờ `-ldflags="-w -s"` khi biên dịch ứng dụng Go/Rust và trường hợp nào KHÔNG nên sử dụng cờ này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Tác dụng:** Cờ `-w` loại bỏ thông tin DWARF debug table; cờ `-s` loại bỏ symbol table. Kết hợp lại giúp cắt giảm tới **40% dung lượng tệp nhị phân**.
 - **Khi KHÔNG nên dùng:** Khi ứng dụng chạy ở môi trường Dev/Staging cần trích xuất chi tiết Stack Trace dòng code bị sập (Panic Line Number) hoặc khi cần dùng công cụ Profiling (`pprof`/`gdb`) để debug sâu.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Cách thiết lập cờ Gatekeeper kiểm tra giới hạn dung lượng Image (Size Budget) tự động trong CI Job?
-
-**Đáp án chuẩn:**
-- Viết 1 script Bash trong CI Stage test:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Cách thiết lập cờ Gatekeeper kiểm tra giới hạn dung lượng Image (Size Budget) tự động trong CI Job?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Viết 1 script Bash trong CI Stage test:
   1. Sử dụng `docker image inspect` hoặc API Registry lấy dung lượng Image theo Byte.
   2. Quyết đổi sang MB và so sánh với ngưỡng `MAX_SIZE_MB=50`.
   3. Nếu dung lượng lớn hơn 50 MB, script in ra thông báo lỗi đỏ và gọi `exit 1` để dừng ngắt toàn bộ Pipeline, ngăn không cho Image phình to lọt ra Prod.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Phương pháp đính kèm SBOM Attestation trực tiếp vào Container Registry qua công cụ `Cosign`?
-
-**Đáp án chuẩn:**
-- Sau khi sinh tệp `sbom.cyclonedx.json`, thực thi câu lệnh:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Phương pháp đính kèm SBOM Attestation trực tiếp vào Container Registry qua công cụ `Cosign`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Sau khi sinh tệp `sbom.cyclonedx.json`, thực thi câu lệnh:
   `cosign attest --type cyclonedx --predicate sbom.cyclonedx.json $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA`
 - `Cosign` sẽ biến tệp SBOM thành 1 OCI Attestation Blob và đẩy trực tiếp lên Registry gắn liền bất biến với Tag Image. Các Policy Engine trên Kubernetes (như Kyverno) có thể kiểm tra Attestation này trước khi cho phép Pod chạy.
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tổng kết quy trình 4 bước đóng gói Container Image chuẩn Enterprise?
-
-**Đáp án chuẩn:**
-1. **Multi-stage Build:** Tách riêng biệt Stage 1 build SDK và Stage 2 Runtime mỏng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tổng kết quy trình 4 bước đóng gói Container Image chuẩn Enterprise?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. **Multi-stage Build:** Tách riêng biệt Stage 1 build SDK và Stage 2 Runtime mỏng.
 2. **Minimal Base Image:** Sử dụng `Google Distroless` hoặc `Scratch` loại bỏ 100% Shell CLI và Package Manager.
 3. **Multi-Arch Build:** Đóng gói cho `linux/amd64` và `linux/arm64` hợp nhất dưới 1 OCI Manifest Index.
 4. **Automated SBOM & Size Gatekeeper:** Trích xuất `sbom.cyclonedx.json` bằng `Syft` và kiểm tra Size Budget < 50 MB trước khi deploy.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn (Interview Takeaway Statements)
 

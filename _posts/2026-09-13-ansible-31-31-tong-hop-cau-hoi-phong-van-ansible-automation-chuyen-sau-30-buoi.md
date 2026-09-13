@@ -15,8 +15,12 @@ series_order: 31
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.31] Đại cẩm nang tổng hợp hơn 350 câu hỏi phỏng vấn Ansible Automation chuyên sâu từ 30 chuyên đề: kiến trúc agentless, module FQCN, idempotency, variable precedence, Jinja2, roles/collections, vault security, tối ưu forks/pipelining và AWX/AAP."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Ansible Automation & DevOps Chuyên Sâu (30 Buổi)."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 31] TUYỂN TẬP 100+ CÂU HỎI PHỎNG VẤN ANSIBLE AUTOMATION & DEVOPS CHUYÊN SÂU (30 BUỔI)
 
@@ -36,94 +40,275 @@ cơ chế · `2` đúng cơ chế · `3` đúng cơ chế **và** nêu lệnh/co
 
 ## V2. Bộ câu hỏi — ĐÚNG 12 câu
 
-### Câu 1 — Push, agentless 🔥
-**Hỏi:** Ansible push-based và agentless nghĩa là gì? Máy đích cần cài gì?
-**Đáp án chuẩn:** Push: control node chủ động đẩy module qua SSH khi ta chạy. Agentless: máy đích **không**
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ansible push-based và agentless nghĩa là gì? Máy đích cần cài gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Push: control node chủ động đẩy module qua SSH khi ta chạy. Agentless: máy đích **không**
 cần agent Ansible, chỉ cần **Python + sshd**. Kết nối do control node khởi tạo, chạy xong đóng.
 **Tiêu chí chấm:** 0 sai · 1 nói "không cần agent" mà không rõ · 2 đúng push+agentless · 3 kèm "máy đích chỉ cần Python+sshd" và ví dụ `ping`.
 **Câu hỏi đào sâu:** So với Puppet cổ điển? *(Puppet pull+agent, tự kéo theo chu kỳ.)*
+</div>
+</details>
 
-### Câu 2 — Idempotency 🔥
-**Hỏi:** Idempotency là gì? Bằng chứng cụ thể là gì?
-**Đáp án chuẩn:** Chạy playbook lần hai trên máy đã đúng trạng thái **không đổi gì**. Bằng chứng:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Idempotency là gì? Bằng chứng cụ thể là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chạy playbook lần hai trên máy đã đúng trạng thái **không đổi gì**. Bằng chứng:
 `changed=0` ở PLAY RECAP lần hai. Mô tả *trạng thái muốn*, không phải *lệnh cần chạy*.
 **Tiêu chí chấm:** 0 không biết · 1 "chạy lại vẫn được" · 2 nêu `changed=0` · 3 kèm cách chứng minh (chạy hai lần) và vì sao nó là linh hồn CM.
 **Câu hỏi đào sâu:** Lần hai vẫn `changed` mà không ai đổi máy — nghi gì? *(Task `command`/`shell` không idempotent.)*
+</div>
+</details>
 
-### Câu 3 — command/shell không idempotent ★★★
-**Hỏi:** Vì sao `command`/`shell` không idempotent? Sửa thế nào?
-**Đáp án chuẩn:** Chúng không có khái niệm trạng thái, chỉ chạy lệnh → luôn `changed`. Sửa: dùng module
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Vì sao `command`/`shell` không idempotent? Sửa thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chúng không có khái niệm trạng thái, chỉ chạy lệnh → luôn `changed`. Sửa: dùng module
 chuyên (idempotent), hoặc thêm `creates`/`removes`/`changed_when` để chặn chạy lại/định nghĩa "đổi".
 **Tiêu chí chấm:** 0 không biết · 1 "shell xấu" chung chung · 2 đúng lý do · 3 kèm `creates`/`changed_when` và ví dụ module chuyên thay thế.
 **Câu hỏi đào sâu:** Khi nào buộc phải dùng `shell`? *(Khi không có module chuyên; khi đó thêm creates/changed_when.)*
+</div>
+</details>
 
-### Câu 4 — PLAY RECAP không phải sự thật 🔥
-**Hỏi:** `PLAY RECAP` xanh có đảm bảo máy đúng trạng thái không? Vì sao?
-**Đáp án chuẩn:** Không. Recap chỉ tổng hợp cái **module báo cáo** cho controller. `ignore_errors` giấu
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>PLAY RECAP` xanh có đảm bảo máy đúng trạng thái không? Vì sao?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Không. Recap chỉ tổng hợp cái **module báo cáo** cho controller. `ignore_errors` giấu
 lỗi, `changed_when: false` che thay đổi, nhầm inventory chạy sai host — recap vẫn xanh. Kiểm máy đích:
 `docker exec ... systemctl is-active`.
 **Tiêu chí chấm:** 0 "recap xanh là xong" (trần 1) · 1 mơ hồ · 2 nói recap không đủ · 3 kèm ≥2 ca xanh-mà-sai và lệnh kiểm máy đích.
 **Câu hỏi đào sâu:** Kiểm dịch vụ chạy thật bằng lệnh gì? *(`docker exec <target> systemctl is-active <svc>`.)*
+</div>
+</details>
 
-### Câu 5 — Ba cách "xanh mà sai"
-**Hỏi:** Nêu ba cách làm recap "xanh mà sai".
-**Đáp án chuẩn:** `ignore_errors: true` (biến task đỏ thành tiếp tục), `changed_when: false` (ép luôn `ok`),
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Nêu ba cách làm recap "xanh mà sai".</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `ignore_errors: true` (biến task đỏ thành tiếp tục), `changed_when: false` (ép luôn `ok`),
 nhầm inventory pattern (chạy đúng nhưng trên host khác cái ta tưởng).
 **Tiêu chí chấm:** 0 không biết · 1 một cách · 2 hai cách · 3 ba cách + hệ quả từng cái.
 **Câu hỏi đào sâu:** `ignore_errors` có bao giờ hợp lý không? *(Có — khi lỗi dự kiến và xử ở task sau; phải có chủ đích.)*
+</div>
+</details>
 
-### Câu 6 — Inventory và pattern
-**Hỏi:** Inventory là gì? Kiểm pattern trước khi chạy bằng lệnh nào?
-**Đáp án chuẩn:** Danh sách máy bị quản + nhóm + biến kết nối (host, user). Pattern (`all`, tên nhóm,
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Inventory là gì? Kiểm pattern trước khi chạy bằng lệnh nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Danh sách máy bị quản + nhóm + biến kết nối (host, user). Pattern (`all`, tên nhóm,
 `web:!db`) chọn tập host mỗi lần chạy. Kiểm: `ansible-inventory --graph`, `ansible <pattern> --list-hosts`.
 **Tiêu chí chấm:** 0 không biết · 1 "danh sách máy" · 2 đủ + pattern · 3 kèm lệnh kiểm và vì sao kiểm trước khi chạy task đổi trạng thái.
 **Câu hỏi đào sâu:** Vì sao kiểm `--list-hosts` trước? *(Tránh chạy nhầm máy — recap xanh trên sai host.)*
+</div>
+</details>
 
-### Câu 7 — Ad-hoc vs playbook
-**Hỏi:** Ad-hoc khác playbook ở đâu? Khi nào dùng cái nào?
-**Đáp án chuẩn:** Ad-hoc: một module một lần (`ansible <pat> -m <mod> -a "..."`), nhanh, không lưu, không
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Ad-hoc khác playbook ở đâu? Khi nào dùng cái nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ad-hoc: một module một lần (`ansible <pat> -m <mod> -a "..."`), nhanh, không lưu, không
 version. Playbook: nhiều task, lặp lại được, đưa vào git. Việc >1 lần hoặc cần review → playbook.
 **Tiêu chí chấm:** 0 không biết · 1 nêu tên · 2 đúng khác biệt · 3 kèm tiêu chí chọn và "mất vết" khi ad-hoc prod.
 **Câu hỏi đào sâu:** Ad-hoc có idempotent không? *(Có nếu dùng module idempotent — cùng module với playbook.)*
+</div>
+</details>
 
-### Câu 8 — Ansible vs Puppet/Chef ★★★
-**Hỏi:** Ansible khác Puppet/Chef ở mô hình nào? Đánh đổi là gì?
-**Đáp án chuẩn:** Ansible push + agentless (chạy khi gọi, không agent); Puppet/Chef cổ điển pull + agent
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Ansible khác Puppet/Chef ở mô hình nào? Đánh đổi là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ansible push + agentless (chạy khi gọi, không agent); Puppet/Chef cổ điển pull + agent
 (tự kéo theo chu kỳ). Push: đơn giản, nhanh triển khai, kiểm soát thời điểm. Pull: hội tụ liên tục, tự
 sửa drift, mở rộng hạm đội lớn tốt hơn.
 **Tiêu chí chấm:** 0 "giống nhau" · 1 nói khác mà không rõ · 2 đúng push/pull · 3 kèm đánh đổi hai chiều.
 **Câu hỏi đào sâu:** Muốn Ansible hội tụ định kỳ thì sao? *(Lên lịch cron/AWX — Ansible không tự chạy nền.)*
+</div>
+</details>
 
-### Câu 9 — Ansible vs Terraform 🔥
-**Hỏi:** Ansible khác Terraform ở mục đích nào? Ghép thế nào?
-**Đáp án chuẩn:** Ansible = configuration management (cấu hình bên trong máy đã có, không state tập trung);
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Ansible khác Terraform ở mục đích nào? Ghép thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ansible = configuration management (cấu hình bên trong máy đã có, không state tập trung);
 Terraform = provisioning (tạo/huỷ hạ tầng, có state, plan/diff). Ghép: Terraform dựng VM → xuất IP →
 Ansible dùng IP làm inventory cài phần mềm.
 **Tiêu chí chấm:** 0 "giống nhau" · 1 khác mà không rõ · 2 đúng phân vai · 3 kèm mẫu ghép cụ thể.
 **Câu hỏi đào sâu:** Dùng Terraform `provisioner` cài phần mềm có nên không? *(Không — chống thiết kế, không idempotent; dùng Ansible.)*
+</div>
+</details>
 
-### Câu 10 — UNREACHABLE
-**Hỏi:** `UNREACHABLE` thường do đâu, KHÔNG phải do đâu?
-**Đáp án chuẩn:** Do **SSH/inventory**: chưa trao key, sai `ansible_host`/user, host không tới được. KHÔNG
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>UNREACHABLE` thường do đâu, KHÔNG phải do đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Do **SSH/inventory**: chưa trao key, sai `ansible_host`/user, host không tới được. KHÔNG
 phải do module hay logic playbook — module còn chưa chạy được vì chưa kết nối. Kiểm `ssh ansible@<ip> true`.
 **Tiêu chí chấm:** 0 đổ lỗi module · 1 "lỗi kết nối" · 2 chỉ ra SSH/inventory · 3 kèm bước chẩn đoán (`ssh ... true`, `--list-hosts`).
 **Câu hỏi đào sâu:** Khác `FAILED` chỗ nào? *(UNREACHABLE = không kết nối được; FAILED = kết nối được nhưng task lỗi.)*
+</div>
+</details>
 
-### Câu 11 — FQCN
-**Hỏi:** Vì sao nên dùng FQCN như `ansible.builtin.copy`?
-**Đáp án chuẩn:** Nêu rõ module thuộc collection nào, tránh nhầm khi tên trùng giữa các collection, và ổn
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Vì sao nên dùng FQCN như `ansible.builtin.copy`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nêu rõ module thuộc collection nào, tránh nhầm khi tên trùng giữa các collection, và ổn
 định khi bản đổi (nhiều module đã rời `ansible.builtin` sang collection riêng). Rõ ràng, dễ bảo trì.
 **Tiêu chí chấm:** 0 không biết · 1 "tên đầy đủ" · 2 đúng lý do · 3 kèm ví dụ nhầm tên và bối cảnh module rời collection.
 **Câu hỏi đào sâu:** `ansible-doc -l` dùng làm gì? *(Liệt kê module có sẵn để tra FQCN đúng.)*
+</div>
+</details>
 
-### Câu 12 — Tổng hợp 🔥
-**Hỏi:** Kể lại vòng đời từ inventory tới chứng minh idempotent, và ba chỗ bạn kiểm "thật".
-**Đáp án chuẩn:** Dựng inventory → `ping` (SUCCESS) → viết `site.yml` module chuyên → chạy (recap
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Kể lại vòng đời từ inventory tới chứng minh idempotent, và ba chỗ bạn kiểm "thật".</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Dựng inventory → `ping` (SUCCESS) → viết `site.yml` module chuyên → chạy (recap
 `failed=0`) → **kiểm thật** `docker exec systemctl is-active` → chạy **lần hai** (`changed=0`, idempotent)
 → (bẫy) thấy `shell` không idempotent → sửa bằng `creates` → thấy `ignore_errors` giấu lỗi. Ba chỗ kiểm
 thật: sau chạy lần một, sau lần hai, và sau khi sửa task shell.
 **Tiêu chí chấm:** 0 kể thiếu · 1 chỉ chạy một lần · 2 đủ vòng đời · 3 đủ + ba điểm kiểm thật + bài học ignore_errors.
 **Câu hỏi đào sâu:** Nếu recap `failed=0` mà dịch vụ inactive thì kết luận gì? *(Không tin recap; có thể `ignore_errors`/nhầm host — kiểm máy đích.)*
+</div>
+</details>
 
 ## V3. Câu chốt để nói khi phỏng vấn
 
@@ -182,8 +367,22 @@ module setup/facts, và các module ad-hoc thường dùng.
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Thứ tự ưu tiên cấu hình `ansible.cfg` 🔥
-**Hỏi:** Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình `ansible.cfg`. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Thứ tự ưu tiên cấu hình `ansible.cfg` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình `ansible.cfg`. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Ansible tìm kiếm theo thứ tự ưu tiên giảm dần: (1) Biến môi trường `ANSIBLE_CONFIG`, (2) File `./ansible.cfg` tại thư mục hiện tại, (3) File ẩn `~/.ansible.cfg` tại thư mục cá nhân người dùng, (4) File cấu hình mặc định hệ thống `/etc/ansible/ansible.cfg`. Để biết chính xác file đang được áp dụng, chạy lệnh `ansible --version` và quan sát dòng `config file = ...`.
 **Tiêu chí chấm:** 
 - 0: Không nêu được các tầng cấu hình.
@@ -191,6 +390,8 @@ module setup/facts, và các module ad-hoc thường dùng.
 - 2: Nêu đúng 4 tầng theo thứ tự chính xác.
 - 3: Nêu đúng 4 tầng + chỉ ra lệnh `ansible --version` và bẫy file `./ansible.cfg` bị bỏ qua nếu lỡ gán quyền `world-writable` (`chmod 777`).
 **Câu hỏi đào sâu:** Nếu file `./ansible.cfg` bị gán quyền `chmod 777`, Ansible sẽ xử lý thế nào? *(Bỏ qua file đó vì lý do an toàn bảo mật và tự động lùi về dùng file tầng thấp hơn.)*
+</div>
+</details>
 
 ---
 
@@ -362,8 +563,22 @@ Khi nhà tuyển dụng phỏng vấn về năng lực vận hành Ansible và l
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Khái niệm và Hai Nhóm mặc định trong Inventory 🔥
-**Hỏi:** Inventory trong Ansible có vai trò gì? Hai nhóm mặc định nào luôn tự động tồn tại trong mọi Inventory? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Khái niệm và Hai Nhóm mặc định trong Inventory 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Inventory trong Ansible có vai trò gì? Hai nhóm mặc định nào luôn tự động tồn tại trong mọi Inventory? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Inventory là nguồn chân lý chứa danh sách các máy chủ bị quản lý, thông tin phân nhóm và các biến kết nối tương ứng. Hai nhóm mặc định luôn tồn tại trong mọi Inventory là: (1) `all` (chứa tất cả các máy chủ có trong inventory) và (2) `ungrouped` (chứa các máy chủ không thuộc bất kỳ nhóm tùy chỉnh nào).
 **Tiêu chí chấm:**
 - 0: Không nêu được vai trò của Inventory.
@@ -371,6 +586,8 @@ Khi nhà tuyển dụng phỏng vấn về năng lực vận hành Ansible và l
 - 2: Nêu chính xác vai trò và 2 nhóm mặc định `all` và `ungrouped`.
 - 3: Nêu chính xác + giải thích ý nghĩa của 2 nhóm mặc định trong việc nạp biến toàn cục (`group_vars/all.yml`).
 **Câu hỏi đào sâu:** Nếu một máy chủ nằm trong nhóm `web`, máy chủ đó có đồng thời thuộc nhóm `all` không? *(Có, 100% mọi host đều thuộc nhóm `all`.)*
+</div>
+</details>
 
 ---
 
@@ -552,8 +769,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý Inventory v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Quản lý Gói đa nền tảng với `ansible.builtin.package` 🔥
-**Hỏi:** Module `ansible.builtin.package` có ưu điểm gì vượt trội so với các module quản lý gói riêng biệt như `apt` hay `dnf`? Phân biệt `state=present` và `state=latest`. *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Quản lý Gói đa nền tảng với `ansible.builtin.package` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Module `ansible.builtin.package` có ưu điểm gì vượt trội so với các module quản lý gói riêng biệt như `apt` hay `dnf`? Phân biệt `state=present` và `state=latest`. *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Module `package` là module trừu tượng hóa (generic package manager), tự động nhận diện hệ điều hành của máy đích (RHEL dùng `dnf`, Ubuntu dùng `apt`, Alpine dùng `apk`), giúp viết kịch bản dùng chung cho hạ tầng đa OS. `state=present` đảm bảo gói đã cài đặt (nếu đã có gói thì bỏ qua không làm gì), còn `state=latest` kiểm tra và nâng cấp gói lên phiên bản mới nhất nếu kho phần mềm có bản mới.
 **Tiêu chí chấm:**
 - 0: Không biết tác dụng của module `package`.
@@ -561,6 +792,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý Inventory v�
 - 2: Phân biệt chính xác cơ chế đa nền tảng + khác biệt `present` vs `latest`.
 - 3: Nêu đúng + minh họa câu lệnh ad-hoc cài gói và chỉ ra tính Idempotency lần 2.
 **Câu hỏi đào sâu:** Khi nào nên dùng module chuyên biệt `ansible.builtin.apt` thay vì `package`? *(Khi cần các tính năng đặc thụ riêng của Debian/Ubuntu như `update_cache=yes` hay `autoremove=yes`.)*
+</div>
+</details>
 
 ---
 
@@ -737,8 +970,22 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng sử dụng các module An
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Cấu trúc tiêu chuẩn của một Playbook YAML 🔥
-**Hỏi:** Trình bày cấu trúc cú pháp tiêu chuẩn của một file Playbook Ansible YAML. Ký tự nào bắt buộc nằm ở đầu file? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cấu trúc tiêu chuẩn của một Playbook YAML 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày cấu trúc cú pháp tiêu chuẩn của một file Playbook Ansible YAML. Ký tự nào bắt buộc nằm ở đầu file? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Một file Playbook bắt đầu bằng dòng đánh dấu tài liệu `---` (ba dấu gạch ngang). File chứa một danh sách các Play (bắt đầu bằng dấu gạch ngang `-`). Trong mỗi Play khai báo các phần tử cốt lõi: `name:` (tên Play), `hosts:` (nhóm máy đích), `become: true` (quyền root), `vars:` (biến Play) và `tasks:` (danh sách các nhiệm vụ đơn lẻ bên dưới).
 **Tiêu chí chấm:**
 - 0: Không nêu được cấu trúc Playbook.
@@ -746,6 +993,8 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng sử dụng các module An
 - 2: Nêu đầy đủ các phần tử cốt lõi của Playbook YAML.
 - 3: Nêu đúng + giải thích quy tắc dùng 2 dấu cách thay cho phím Tab trong định dạng YAML.
 **Câu hỏi đào sâu:** Tại sao phím Tab bị cấm tuyệt đối khi viết Playbook YAML? *(Vì trình biên dịch YAML dùng số lượng dấu cách để phân định cấp độ cấu trúc dữ liệu; dùng Tab sẽ gây lỗi parse syntax ngay lập tức.)*
+</div>
+</details>
 
 ---
 
@@ -930,8 +1179,22 @@ Khi nhà tuyển dụng phỏng vấn về năng lực viết và vận hành An
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Triết lý Idempotency trong Quản trị Cấu hình 🔥
-**Hỏi:** Tại sao tính Idempotency (tính bất biến) lại được coi là tiêu chuẩn vàng định nghĩa một công cụ Quản trị Cấu hình (Configuration Management)? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Triết lý Idempotency trong Quản trị Cấu hình 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Tại sao tính Idempotency (tính bất biến) lại được coi là tiêu chuẩn vàng định nghĩa một công cụ Quản trị Cấu hình (Configuration Management)? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Idempotency đảm bảo rằng việc thực thi một kịch bản cấu hình một lần hay nhiều lần trên cùng một hệ thống đều mang lại KẾT QUẢ TRẠNG THÁI CUỐI CÙNG GIỐNG NHAU, mà không gây ra tác dụng phụ (như đè đúp dữ liệu, tạo file rác trùng lặp, làm sập dịch vụ). Nó chuyển đổi tư duy từ "gõ chuỗi lệnh thủ công" (Imperative) sang "khai báo trạng thái muốn có" (Declarative), giúp kịch bản chạy an toàn định kỳ trên hạ tầng quy mô lớn.
 **Tiêu chí chấm:**
 - 0: Không biết định nghĩa Idempotency.
@@ -939,6 +1202,8 @@ Khi nhà tuyển dụng phỏng vấn về năng lực viết và vận hành An
 - 2: Giải thích đúng cơ chế Declarative và tính an toàn khi chạy lại nhiều lần.
 - 3: Phân tích xuất sắc sự khác biệt giữa Script Bash (Imperative) và Ansible Playbook (Declarative) kèm ví dụ thực tế.
 **Câu hỏi đào sâu:** Nếu một script Bash gõ lệnh `echo "export PATH=$PATH:/opt/bin" >> /etc/profile` được chạy 10 lần, điều gì sẽ xảy ra? *(Dòng cấu hình bị nối thêm 10 lần vào file profile làm hỏng file, thể hiện sự thiếu Idempotency.)*
+</div>
+</details>
 
 ---
 
@@ -1124,8 +1389,22 @@ Khi nhà tuyển dụng phỏng vấn về tư duy kiểm soát Idempotency tron
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Cú pháp Khai báo và Sử dụng Biến Jinja2 🔥
-**Hỏi:** Trình bày cú pháp chuẩn để khai báo và truy vấn một biến trong Ansible Playbook. Khi nào bắt buộc phải bọc ngoặc kép quanh cú pháp `{{ }}`? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cú pháp Khai báo và Sử dụng Biến Jinja2 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày cú pháp chuẩn để khai báo và truy vấn một biến trong Ansible Playbook. Khi nào bắt buộc phải bọc ngoặc kép quanh cú pháp `{{ }}`? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Biến được truy vấn bằng cú pháp Jinja2 bọc trong cặp ngoặc nhọn đúp `{{ variable_name }}`. Bắt buộc phải bọc ngoặc kép `"{{ variable_name }}"` khi biểu thức Jinja2 nằm ở ĐẦU GIÁ TRỊ của một thuộc tính YAML (ví dụ `dest: "{{ my_path }}"`), để ngăn trình biên dịch YAML hiểu nhầm cặp ngoặc nhọn `{` là mở đầu của một Dictionary YAML.
 **Tiêu chí chấm:**
 - 0: Không biết cú pháp Jinja2 `{{ }}`.
@@ -1133,6 +1412,8 @@ Khi nhà tuyển dụng phỏng vấn về tư duy kiểm soát Idempotency tron
 - 2: Phân tích chính xác cú pháp Jinja2 + lý do bọc ngoặc kép do quy chuẩn parser YAML.
 - 3: Nêu đúng + viết đoạn mã YAML minh họa lỗi nếu thiếu ngoặc kép và cách khắc phục.
 **Câu hỏi đào sâu:** Nếu viết `dest: /etc/{{ app_name }}.conf` (không nằm ở đầu dòng giá trị), có bắt buộc phải bọc ngoặc kép không? *(Không bắt buộc, nhưng khuyến khích bọc toàn bộ chuỗi trong ngoặc kép để tạo thói quen an toàn.)*
+</div>
+</details>
 
 ---
 
@@ -1320,8 +1601,22 @@ Khi nhà tuyển dụng phỏng vấn về năng lực quản lý biến và x�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Bản chất của Ansible Facts và Module Setup 🔥
-**Hỏi:** Ansible Facts là gì? Module nào chịu trách nhiệm tự động thu thập Facts ở đầu mỗi Play? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Bản chất của Ansible Facts và Module Setup 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Ansible Facts là gì? Module nào chịu trách nhiệm tự động thu thập Facts ở đầu mỗi Play? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Ansible Facts là tập hợp toàn bộ dữ liệu cấu hình thực tế về phần cứng (CPU, RAM, đĩa cứng), mạng (IP, MAC, hostname), và hệ điều hành của máy đích tại thời điểm chạy. Module `ansible.builtin.setup` được Ansible Engine tự động gọi ở đầu mỗi Play (nếu `gather_facts: true`) để thực hiện công việc tự khám phá (Auto-discovery) và đóng gói dữ liệu thành biến `ansible_facts`.
 **Tiêu chí chấm:**
 - 0: Không biết định nghĩa Ansible Facts.
@@ -1329,6 +1624,8 @@ Khi nhà tuyển dụng phỏng vấn về năng lực quản lý biến và x�
 - 2: Phân tích chính xác khái niệm Facts + cơ chế tự động gọi module `setup` ở đầu Play.
 - 3: Nêu đúng + minh họa câu lệnh CLI Ad-hoc `ansible target1 -m setup` để soi facts.
 **Câu hỏi đào sâu:** Bước `Gathering Facts` diễn ra trước hay sau các Task khai báo trong Playbook? *(Diễn ra đầu tiên trước tất cả các Task khai báo trong Play.)*
+</div>
+</details>
 
 ---
 
@@ -1538,8 +1835,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm khai thác Ansible Fact
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Vai trò và Cơ chế Mệnh đề `when` 🔥
-**Hỏi:** Mệnh đề `when` trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Vai trò và Cơ chế Mệnh đề `when` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Mệnh đề `when` trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Mệnh đề `when` cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau `when:` đánh giá kết quả là `TRUE`. Mệnh đề `when` được Ansible Engine đánh giá ngay tại thời điểm runtime TRƯỚC KHU TASK ĐƯỢC GỬI THI HÀNH trên máy đích. Nếu điều kiện đánh giá `FALSE`, Task lập tức bị bỏ qua với trạng thái `skipped`.
 **Tiêu chí chấm:**
 - 0: Không biết tác dụng của `when`.
@@ -1547,6 +1858,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm khai thác Ansible Fact
 - 2: Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.
 - 3: Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo `ansible_facts.os_family`.
 **Câu hỏi đào sâu:** Mệnh đề `when` được đánh giá trên Control Node hay trên Managed Node? *(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)*
+</div>
+</details>
 
 ---
 
@@ -1760,8 +2073,22 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng thiết kế kịch bản 
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Vai trò và Cơ chế Từ khóa Vòng lặp `loop:` 🔥
-**Hỏi:** Từ khóa `loop:` trong Ansible Playbook dùng để làm gì? Phân biệt sự khác nhau giữa `loop:` hiện đại và `with_items:` legacy. *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Vai trò và Cơ chế Từ khóa Vòng lặp `loop:` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Từ khóa `loop:` trong Ansible Playbook dùng để làm gì? Phân biệt sự khác nhau giữa `loop:` hiện đại và `with_items:` legacy. *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Từ khóa `loop:` dùng để lặp qua một danh sách các phần tử (List hoặc List of Dictionaries) nhằm thực thi cùng 1 Task nhiều lần với dữ liệu khác nhau, giúp rút gọn mã nguồn. Phân biệt: `loop:` là cú pháp chuẩn hiện đại (từ bản 2.5+) duyệt danh sách trực tiếp và ít bị lỗi xung đột; `with_items:` là cú pháp legacy cũ tự động phẳng hóa (flatten) mảng 2 chiều và sắp bị loại bỏ ở các bản mới.
 **Tiêu chí chấm:**
 - 0: Không biết từ khóa `loop:`.
@@ -1769,6 +2096,8 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng thiết kế kịch bản 
 - 2: Phân tích chính xác vai trò rút gọn mã của `loop:` và sự khác biệt về phẳng hóa mảng với `with_items:`.
 - 3: Nêu đúng + minh họa ví dụ cài đặt 4 gói phần mềm bằng 1 Task `loop:`.
 **Câu hỏi đào sâu:** Nếu truyền một mảng 2 chiều `[[a, b], [c, d]]` vào `loop:`, Ansible sẽ lặp thế nào? *(Ansible lặp 2 lượt: lượt 1 item=[a, b], lượt 2 item=[c, d]; muốn phẳng hóa phải dùng filter `loop: "{{ list | flatten }}"`.)*
+</div>
+</details>
 
 ---
 
@@ -1966,8 +2295,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm xử lý vòng lặp v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Vai trò của `handlers` và `notify` 🔥
-**Hỏi:** Cơ chế `handlers` và từ khóa `notify:` trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới `tasks:`? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Vai trò của `handlers` và `notify` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Cơ chế `handlers` và từ khóa `notify:` trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới `tasks:`? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:** Khối `handlers:` chứa các Task đặc biệt chỉ được kích hoạt thi hành khi nhận được thông báo từ thuộc tính `notify:` của các Task chính. Không nên restart dịch vụ trực tiếp dưới `tasks:` vì nó sẽ khiến dịch vụ bị restart vô điều kiện ở mọi lượt chạy kịch bản ngay cả khi tệp cấu hình KHÔNG đổi, gây gián đoạn dịch vụ lãng phí. Dùng `notify/handlers` đảm bảo dịch vụ CHỈ RESTART khi file cấu hình thực sự có sự thay đổi (`changed: true`).
 **Tiêu chí chấm:**
 - 0: Không biết vai trò của `handlers` và `notify`.
@@ -1975,6 +2318,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm xử lý vòng lặp v�
 - 2: Phân tích chính xác vai trò phản ứng sự kiện và điều kiện kích hoạt `changed: true`.
 - 3: Nêu đúng + minh họa ví dụ chép file cấu hình Nginx phát `notify: Restart Nginx`.
 **Câu hỏi đào sâu:** Khối `handlers:` nằm cùng cấp thụt lề với từ khóa nào trong file Playbook? *(Nằm ở cấp độ Play, cùng cấp thụt lề với từ khóa `tasks:`.)*
+</div>
+</details>
 
 ---
 
@@ -2156,8 +2501,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm thiết kế kịch b�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Phân biệt Module `template` và Module `copy` 🔥
-**Hỏi:** Module `ansible.builtin.template` khác module `ansible.builtin.copy` ở điểm cốt lõi nào? Khi nào thì bắt buộc phải dùng `template`? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Phân biệt Module `template` và Module `copy` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Module `ansible.builtin.template` khác module `ansible.builtin.copy` ở điểm cốt lõi nào? Khi nào thì bắt buộc phải dùng `template`? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Module `copy`: Chỉ chép nguyên vẹn dữ liệu thô (raw content) của tệp nguồn sang máy đích, KHÔNG HỀ tính toán hay giải mã các biểu thức Jinja2 bên trong tệp.
 - Module `template`: Khởi chạy bộ máy Jinja2 Engine trên Control Node để thế giá trị các biến `{{ var }}`, thực thi các vòng lặp `{% for %}` và rẽ nhánh `{% if %}` để sinh ra tệp cấu hình động hoàn chỉnh trước khi gửi tới máy đích.
@@ -2168,6 +2527,8 @@ Bắt buộc dùng `template` khi tệp nguồn là tệp mẫu thiết kế `.j
 - 2: Phân tích chính xác sự khác biệt giữa chép thô và rendering động trên Control Node.
 - 3: Nêu đúng + minh họa ví dụ tệp `nginx.conf.j2` sinh `worker_processes` theo CPU.
 **Câu hỏi đào sâu:** Nếu dùng module `copy` chép file `app.conf.j2`, nội dung file trên máy đích sẽ ra sao? *(Nó sẽ chứa nguyên văn chuỗi thô `{{ ansible_facts.memtotal_mb }}` chưa được giải mã.)*
+</div>
+</details>
 
 ---
 
@@ -2357,8 +2718,22 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng tự động hóa sinh fil
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Cấu trúc Xử lý Lỗi Bộ ba `block`, `rescue`, `always` 🔥
-**Hỏi:** Trình bày cơ chế hoạt động của bộ ba khối `block:`, `rescue:`, và `always:` trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cấu trúc Xử lý Lỗi Bộ ba `block`, `rescue`, `always` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày cơ chế hoạt động của bộ ba khối `block:`, `rescue:`, và `always:` trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - `block:` Nơi chứa các Task thực thi chính.
 - `rescue:` Nơi chứa các Task cứu hộ/phục hồi CHỈ CHẠY khi có Task trong `block` bị văng lỗi.
@@ -2370,6 +2745,8 @@ Cấu trúc này tương đương 100% với mô hình `try...catch...finally` t
 - 2: Phân tích chính xác vai trò và điều kiện thi hành của từng khối `block`, `rescue`, `always`.
 - 3: Nêu đúng + minh họa ví dụ cập nhật Database có Rollback trong `rescue` và xóa file tạm trong `always`.
 **Câu hỏi đào sâu:** Khối `rescue:` và `always:` được đặt cùng cấp thụt lề với từ khóa nào trong YAML? *(Được đặt cùng cấp thụt lề với từ khóa `block:`.)*
+</div>
+</details>
 
 ---
 
@@ -2560,8 +2937,22 @@ Chúc mừng học viên đã **HOÀN THÀNH 100% GIAI ĐOẠN 2 (Buổi 07–13
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Khái niệm và Lợi ích của Ansible Role 🔥
-**Hỏi:** Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Khái niệm và Lợi ích của Ansible Role 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 Ansible Role là chuẩn tổ chức mã nguồn tự động hóa dưới dạng mô-đun độc lập, gom toàn bộ Tasks, Handlers, Variables, Templates và Files vào một cấu trúc thư mục quy chuẩn.
 Lợi ích chuẩn mực Enterprise:
@@ -2574,6 +2965,8 @@ Lợi ích chuẩn mực Enterprise:
 - 2: Phân tích chính xác khái niệm Role và nguyên lý đóng gói mô-đun hóa.
 - 3: Nêu đúng + minh họa kiến trúc tổ chức Role cho hệ thống Web/DB Enterprise.
 **Câu hỏi đào sâu:** Nếu không dùng Role, một file Playbook triển khai cụm ứng dụng lớn sẽ gặp khó khăn gì? *(Mã nguồn rườm rà hàng nghìn dòng, trùng lặp code, cực kỳ khó bảo trì và không thể tái sử dụng.)*
+</div>
+</details>
 
 ---
 
@@ -2784,8 +3177,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm cấu trúc mã nguồn
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Phân biệt `import_role` và `include_role` 🔥
-**Hỏi:** So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa `ansible.builtin.import_role` và `ansible.builtin.include_role`. *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Phân biệt `import_role` và `include_role` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa `ansible.builtin.import_role` và `ansible.builtin.include_role`. *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - `import_role` (Static Import): Nạp tĩnh tại thời điểm **Parse Playbook** (Pre-parse). Toàn bộ các Task của Role được chèn trực tiếp vào cây Playbook trước khi chạy. Hỗ trợ đầy đủ cờ `tags` và `handlers` toàn cục.
 - `include_role` (Dynamic Include): Nạp động tại thời điểm **Runtime** khi tiến trình chạy đến đúng Task đó. Cho phép kết hợp linh hoạt với vòng lặp `loop:` và điều kiện `when:`.
@@ -2795,6 +3202,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm cấu trúc mã nguồn
 - 2: Phân tích chính xác sự khác biệt về Parse time vs Runtime và khả năng dùng với `loop:`.
 - 3: Nêu đúng + minh họa ví dụ kịch bản thực tế khi nào dùng `import_role` vs `include_role`.
 **Câu hỏi đào sâu:** Nếu muốn gọi 1 Role lặp qua một mảng danh sách IP, bắt buộc phải dùng module nào? *(Bắt buộc dùng `ansible.builtin.include_role`.)*
+</div>
+</details>
 
 ---
 
@@ -3016,8 +3425,22 @@ Chúc mừng học viên đã **ĐẠT MỐC 50% KHÓA HỌC (Buổi 01–15)**!
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Khái niệm và Lợi ích của Ansible Galaxy 🔥
-**Hỏi:** Ansible Galaxy (galaxy.ansible.com) là gì? Việc khai thác kho tài nguyên công cộng Galaxy mang lại lợi ích gì cho các dự án tự động hóa Doanh nghiệp? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Khái niệm và Lợi ích của Ansible Galaxy 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Ansible Galaxy (galaxy.ansible.com) là gì? Việc khai thác kho tài nguyên công cộng Galaxy mang lại lợi ích gì cho các dự án tự động hóa Doanh nghiệp? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 Ansible Galaxy là kho tài nguyên công cộng chính thức lưu trữ hàng vạn Roles và Collections tự động hóa được đóng gói sẵn bởi Red Hat và cộng đồng kỹ sư toàn cầu.
 Lợi ích Doanh nghiệp:
@@ -3030,6 +3453,8 @@ Lợi ích Doanh nghiệp:
 - 2: Phân tích chính xác vai trò kho tài nguyên công cộng và lợi ích tiết kiệm thời gian triển khai.
 - 3: Nêu đúng + minh họa ví dụ lệnh CLI `ansible-galaxy search nginx` tìm kiếm tài nguyên.
 **Câu hỏi đào sâu:** Có thể xem thông tin tác giả và điểm đánh giá chất lượng của một Role trên Galaxy bằng lệnh CLI nào? *(Lệnh `ansible-galaxy role info <author.role_name>`.)*
+</div>
+</details>
 
 ---
 
@@ -3247,8 +3672,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm khai thác kho tài ngu
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Cấu trúc 3 Thành phần của FQCN 🔥
-**Hỏi:** FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ. *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cấu trúc 3 Thành phần của FQCN 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ. *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 FQCN là chuẩn đặt tên định danh đầy đủ giúp Ansible Engine xác định chính xác tuyệt đối vị trí mã nguồn của module/plugin.
 Cấu trúc 3 thành phần: `<namespace>.<collection_name>.<plugin_name>`
@@ -3262,6 +3701,8 @@ Ví dụ: `ansible.builtin.copy` hoặc `community.general.ini_file`.
 - 2: Phân tích chính xác cấu trúc 3 thành phần và nêu lý do chống xung đột module.
 - 3: Nêu đúng + viết ví dụ 3 tên FQCN thực tế cho module Core, Community và Cloud.
 **Câu hỏi đào sâu:** Từ phiên bản Ansible nào trở đi Red Hat khuyến nghị bắt buộc phải dùng FQCN? *(Từ Ansible 2.9 và Ansible Core 2.10 trở đi.)*
+</div>
+</details>
 
 ---
 
@@ -3476,8 +3917,22 @@ Khi nhà tuyển dụng phỏng vấn về tiêu chuẩn viết mã Ansible hi�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Phân biệt `import_tasks` vs `include_tasks` 🔥
-**Hỏi:** Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa `ansible.builtin.import_tasks` (Static Import) và `ansible.builtin.include_tasks` (Dynamic Include)? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Phân biệt `import_tasks` vs `include_tasks` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa `ansible.builtin.import_tasks` (Static Import) và `ansible.builtin.include_tasks` (Dynamic Include)? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - `import_tasks` (Static Import): Nạp tĩnh tại thời điểm **Parse-time** (trước khi Playbook chạy). Toàn bộ nội dung tệp task con được hòa trộn phẳng vào cây Playbook chính ngay ở bước đọc file.
 - `include_tasks` (Dynamic Include): Nạp động tại thời điểm **Runtime** (khi tiến trình chạy tới đúng Task đó). Tệp task con chỉ được đọc và phân tích khi execution engine chạy tới task include.
@@ -3487,6 +3942,8 @@ Khi nhà tuyển dụng phỏng vấn về tiêu chuẩn viết mã Ansible hi�
 - 2: Phân tích chính xác bản chất Parse-time hòa trộn phẳng vs Runtime nạp tại thời điểm chạy.
 - 3: Nêu đúng + minh họa ví dụ sử dụng thực tế của 2 module trong Playbook.
 **Câu hỏi đào sâu:** Module nào chạy nhanh hơn về mặt hiệu năng thi hành? *(`import_tasks` chạy nhanh hơn vì không mất overhead phân tích file ở runtime.)*
+</div>
+</details>
 
 ---
 
@@ -3700,8 +4157,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tổ chức mã nguồn
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Tổ chức Thư mục Inventory Đa Môi trường 🔥
-**Hỏi:** Tại sao Red Hat khuyến nghị tổ chức đa môi trường qua cấu trúc thư mục `inventory/staging/` và `inventory/production/` riêng biệt thay vì gom chung vào 1 file inventory? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tổ chức Thư mục Inventory Đa Môi trường 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Tại sao Red Hat khuyến nghị tổ chức đa môi trường qua cấu trúc thư mục `inventory/staging/` và `inventory/production/` riêng biệt thay vì gom chung vào 1 file inventory? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 Lý do cô lập:
 1. **Cô lập 100% dữ liệu:** Tách biệt hoàn toàn danh sách IP máy chủ và các biến cấu hình giữa Staging và Production, triệt tiêu nguy cơ biến Staging bị rò rỉ đè hỏng cấu hình Production.
@@ -3712,6 +4183,8 @@ Lý do cô lập:
 - 2: Phân tích chính xác vai trò cô lập biến và triệt tiêu nguy cơ rò rỉ cấu hình Production.
 - 3: Nêu đúng + vẽ sơ đồ cây thư mục chuẩn `inventory/staging/` và `inventory/production/`.
 **Câu hỏi đào sâu:** Nếu dự án có thêm môi trường UAT, ta tạo thư mục nào? *(Tạo thư mục `inventory/uat/` chứa `hosts.ini` và `group_vars/` tương tự.)*
+</div>
+</details>
 
 ---
 
@@ -3922,8 +4395,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý đa môi tr�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Khái niệm và Vai trò của Ansible Vault 🔥
-**Hỏi:** Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Khái niệm và Vai trò của Ansible Vault 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Ansible Vault là tính năng bảo mật tích hợp sẵn trong Ansible Core, sử dụng thuật toán mã hóa đối xứng AES-256 để bảo vệ thông tin nhạy cảm.
 - Yêu cầu sinh tử: Trong dự án IaC, Playbook chứa rất nhiều thông tin bí mật (mật khẩu DB, SSH keys, API tokens). Nếu không dùng Vault mã hóa, lưu plaintext rồi push lên Git public sẽ dẫn tới nguy cơ lộ bí mật Doanh nghiệp, bị tin tặc tấn công chiếm đoạt hệ thống.
@@ -3933,6 +4420,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý đa môi tr�
 - 2: Phân tích chính xác cơ chế mã hóa AES-256 tích hợp giúp bảo vệ thông tin nhạy cảm trên Git repository.
 - 3: Nêu đúng + minh họa đoạn header mã hóa `$ANSIBLE_VAULT;1.1;AES256` trên terminal.
 **Câu hỏi đào sâu:** Thuật toán mã hóa đối xứng AES-256 sử dụng mấy khóa để mã hóa và giải mã? *(Sử dụng đúng 1 khóa bí mật chung - Secret Key / Passphrase.)*
+</div>
+</details>
 
 ---
 
@@ -4140,8 +4629,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm bảo mật dữ liệu
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Khái niệm và Lợi ích của RHEL System Roles 🔥
-**Hỏi:** RHEL System Roles (`redhat.rhel_system_roles`) là gì? Tại sao Red Hat lại khuyến nghị áp dụng bộ System Roles này trong các dự án tự động hóa Enterprise? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Khái niệm và Lợi ích của RHEL System Roles 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** RHEL System Roles (`redhat.rhel_system_roles`) là gì? Tại sao Red Hat lại khuyến nghị áp dụng bộ System Roles này trong các dự án tự động hóa Enterprise? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - RHEL System Roles là bộ sưu tập các Roles được Red Hat kiểm thử, bảo trì và phát hành chính thức để tự động hóa các dịch vụ hệ thống cốt lõi của RHEL (như SELinux, Firewall, Timesync, Network, Storage).
 - Lợi ích Enterprise:
@@ -4154,6 +4657,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm bảo mật dữ liệu
 - 2: Phân tích chính xác khái niệm và vai trò chuẩn hóa hệ thống RHEL.
 - 3: Nêu đúng + minh họa ví dụ nạp collection `redhat.rhel_system_roles` trong `requirements.yml`.
 **Câu hỏi đào sâu:** Kể tên 3 System Role phổ biến nhất trong bộ sưu tập RHEL System Roles. *(`redhat.rhel_system_roles.selinux`, `timesync`, `firewall`, `network`.)*
+</div>
+</details>
 
 ---
 
@@ -4390,8 +4895,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản trị bảo mậ
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Tối ưu hóa Tiến trình Song song `forks` 🔥
-**Hỏi:** Tham số `forks` trong `ansible.cfg` quy định điều gì? Mặc định `forks` bằng bao nhiêu? Tại sao điều chỉnh `forks` lại là bước đầu tiên khi tối ưu Playbook quy mô lớn? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tối ưu hóa Tiến trình Song song `forks` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Tham số `forks` trong `ansible.cfg` quy định điều gì? Mặc định `forks` bằng bao nhiêu? Tại sao điều chỉnh `forks` lại là bước đầu tiên khi tối ưu Playbook quy mô lớn? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Quy định: Tham số `forks` quy định số lượng kết nối SSH và tiến trình xử lý song song tối đa mà Control Node có thể mở đồng thời tới các máy chủ Managed Nodes.
 - Mặc định: `forks = 5`.
@@ -4402,6 +4921,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản trị bảo mậ
 - 2: Phân tích chính xác cơ chế mở tiến trình song song SSH của `forks`.
 - 3: Nêu đúng + viết đoạn cấu hình `ansible.cfg` cài đặt `forks = 10`.
 **Câu hỏi đào sâu:** Công thức ước tính số `forks` an toàn dựa trên dung lượng RAM của Control Node là gì? *(`forks = (RAM_GB - 2) * 20`, giả định mỗi fork tốn khoảng 50MB RAM.)*
+</div>
+</details>
 
 ---
 
@@ -4634,8 +5155,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tối ưu hóa hiệu n
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Bỏ qua Lỗi Task với `ignore_errors` 🔥
-**Hỏi:** Thuộc tính `ignore_errors: true` trong Ansible Task có tác dụng gì? Khi nào NÊN và KHÔNG NÊN sử dụng `ignore_errors: true`? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Bỏ qua Lỗi Task với `ignore_errors` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Thuộc tính `ignore_errors: true` trong Ansible Task có tác dụng gì? Khi nào NÊN và KHÔNG NÊN sử dụng `ignore_errors: true`? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Tác dụng: Cho phép Ansible tiếp tục thi hành các Task phía sau trong Playbook ngay cả khi Task hiện tại bị trả về trạng thái lỗi (`failed`).
 - khi NÊN dùng: Cho các task kiểm tra thông tin không quan trọng (như dọn dẹp file tạm `/tmp`, xóa cache cũ) mà sự thất bại của nó không ảnh hưởng đến kịch bản chính.
@@ -4646,6 +5181,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tối ưu hóa hiệu n
 - 2: Phân tích chính xác tác dụng và cảnh báo nguy cơ che đậy lỗi nghiêm trọng của `ignore_errors`.
 - 3: Nêu đúng + viết đoạn Task YAML minh họa dọn dẹp cache dùng `ignore_errors: true`.
 **Câu hỏi đào sâu:** Thuộc tính `ignore_unreachable: true` khác `ignore_errors: true` như thế nào? *(`ignore_errors` bỏ qua lỗi execution của module; `ignore_unreachable` bỏ qua lỗi mất kết nối SSH tới máy đích.)*
+</div>
+</details>
 
 ---
 
@@ -4855,8 +5392,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm xử lý lỗi nâng ca
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Khái niệm và Vai trò của Dynamic Inventory Plugin 🔥
-**Hỏi:** Dynamic Inventory Plugin là gì? Tại sao trong môi trường Đám mây (Cloud Auto-scaling) việc sử dụng Static Inventory lại trở nên bất khả thi? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Khái niệm và Vai trò của Dynamic Inventory Plugin 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Dynamic Inventory Plugin là gì? Tại sao trong môi trường Đám mây (Cloud Auto-scaling) việc sử dụng Static Inventory lại trở nên bất khả thi? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Dynamic Inventory Plugin: Là cơ chế tự động kết nối API của Cloud Provider (AWS, Azure, GCP) hoặc Facts hệ thống để tự động phát hiện danh sách máy chủ, địa chỉ IP và trạng thái realtime.
 - Tại sao Static Inventory bất khả thi: Trên môi trường Cloud, các VM/Container liên tục được tạo mới, thay đổi địa chỉ IP hoặc tự động co giãn (Auto-scaling). Việc duy trì tệp `inventory.ini` tĩnh sửa tay thủ công sẽ gây tốn thời gian, chậm trễ và nguy cơ cao bỏ sót máy chủ chưa được cấu hình.
@@ -4866,6 +5417,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm xử lý lỗi nâng ca
 - 2: Phân tích chính xác cơ chế tự động kết nối API Cloud để phát hiện danh sách máy chủ realtime.
 - 3: Nêu đúng + minh họa ví dụ tệp Dynamic Inventory Plugin `inventory/02-cloud.aws_ec2.yml`.
 **Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa Dynamic Inventory Script (kiểu cũ) và Dynamic Inventory Plugin (kiểu mới). *(Script cũ dùng file thực thi Python/Bash trả về JSON; Plugin mới dùng tệp cấu hình YAML tích hợp sẵn trong Ansible Core/Collections với khả năng caching và keyed_groups.)*
+</div>
+</details>
 
 ---
 
@@ -5113,8 +5666,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý hạ tầng 
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Kiểm tra Cú pháp Static với `--syntax-check` 🔥
-**Hỏi:** Cờ `--syntax-check` trong câu lệnh `ansible-playbook` dùng để làm gì? Tại sao việc chạy `--syntax-check` lại là bước đầu tiên trong quy trình CI/CD? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Kiểm tra Cú pháp Static với `--syntax-check` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Cờ `--syntax-check` trong câu lệnh `ansible-playbook` dùng để làm gì? Tại sao việc chạy `--syntax-check` lại là bước đầu tiên trong quy trình CI/CD? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Tác dụng: Dùng để kiểm tra cú pháp tĩnh (Static Syntax Check) của tệp Playbook mà không thực hiện kết nối SSH tới các máy chủ Managed Nodes.
 - Tại sao là bước đầu tiên trong CI/CD: Giúp phát hiện ngay lập tức các lỗi cú pháp cơ bản (như sai khoảng trắng indent YAML, thiếu dấu hai chấm, thiếu từ khóa `hosts:`) chỉ trong 1 giây. Chặn không cho các commit lỗi cú pháp đi tiếp vào các bước build tốn nhiều tài nguyên hơn.
@@ -5124,6 +5691,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý hạ tầng 
 - 2: Phân tích chính xác cơ chế Static Syntax Check và vai trò Fail-Fast trong CI/CD.
 - 3: Nêu đúng + viết câu lệnh CLI thực thi `ansible-playbook --syntax-check site-testing.yml`.
 **Câu hỏi đào sâu:** Cờ `--syntax-check` có kiểm tra được biến rỗng hay lỗi SSH connection không? *(Không, nó chỉ kiểm tra cấu trúc cú pháp tĩnh của file YAML.)*
+</div>
+</details>
 
 ---
 
@@ -5358,8 +5927,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm kiểm thử kịch b�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Cấu trúc Pipeline CI/CD 4 Giai đoạn 🔥
-**Hỏi:** Trình bày 4 giai đoạn (Stages) tiêu chuẩn trong một pipeline CI/CD tự động hóa Ansible cấp Enterprise. Tại sao việc chia 4 stage này lại là bắt buộc? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cấu trúc Pipeline CI/CD 4 Giai đoạn 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày 4 giai đoạn (Stages) tiêu chuẩn trong một pipeline CI/CD tự động hóa Ansible cấp Enterprise. Tại sao việc chia 4 stage này lại là bắt buộc? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - 4 Giai đoạn:
   1. `lint`: Kiểm tra cú pháp tĩnh (`--syntax-check`) và linter (`ansible-lint`).
@@ -5373,6 +5956,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm kiểm thử kịch b�
 - 2: Phân tích chính xác vai trò lá chắn Fail-Fast đa tầng của 4 stages trong pipeline CI/CD.
 - 3: Nêu đúng + viết đoạn YAML `stages:` trong tệp `.gitlab-ci.yml`.
 **Câu hỏi đào sâu:** Nếu Stage 1 (`lint`) bị lỗi, runner sẽ xử lý các Stage tiếp theo như thế nào? *(Runner sẽ ngắt pipeline ngay lập tức, không chạy các Stage `test`, `staging`, `production` phía sau.)*
+</div>
+</details>
 
 ---
 
@@ -5625,8 +6210,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tích hợp Ansible và
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Cấu trúc 3 Phần của Systemd Unit File 🔥
-**Hỏi:** Trình bày cấu trúc 3 phần bắt buộc trong một tệp Systemd Unit File (`.service`). Mỗi phần chứa các chỉ thị quan trọng nào? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cấu trúc 3 Phần của Systemd Unit File 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày cấu trúc 3 phần bắt buộc trong một tệp Systemd Unit File (`.service`). Mỗi phần chứa các chỉ thị quan trọng nào? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - 3 Phần cấu trúc:
   1. `[Unit]`: Chứa mô tả dịch vụ (`Description=`) và sự phụ thuộc khởi động (`After=network.target`).
@@ -5638,6 +6237,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tích hợp Ansible và
 - 2: Phân tích chính xác vai trò 3 phần `[Unit]`, `[Service]`, `[Install]`.
 - 3: Nêu đúng + viết đoạn Unit File mẫu `my-app.service.j2` hoàn chỉnh.
 **Câu hỏi đào sâu:** Điều gì xảy ra nếu một tệp `.service` bị thiếu phần `[Install]`? *(Lệnh `systemctl enable` sẽ báo lỗi từ chối tạo symbolic link tự khởi động cùng boot.)*
+</div>
+</details>
 
 ---
 
@@ -5853,8 +6454,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm đóng gói ứng dụn
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Collection FQCN `ansible.posix.firewalld` 🔥
-**Hỏi:** Ansible Collection FQCN nào là công cụ tiêu chuẩn để quản lý dịch vụ tường lửa Firewalld trên Enterprise Linux? Nêu 3 tham số cơ bản của module này. *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Collection FQCN `ansible.posix.firewalld` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Ansible Collection FQCN nào là công cụ tiêu chuẩn để quản lý dịch vụ tường lửa Firewalld trên Enterprise Linux? Nêu 3 tham số cơ bản của module này. *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Collection FQCN: `ansible.posix.firewalld`
 - 3 Tham số cơ bản:
@@ -5867,6 +6482,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm đóng gói ứng dụn
 - 2: Phân tích chính xác vai trò Collection FQCN chính chủ của Red Hat trong quản lý Firewalld.
 - 3: Nêu đúng + viết đoạn Task Ansible `ansible.posix.firewalld` hoàn chỉnh.
 **Câu hỏi đào sâu:** Làm thế nào để cài đặt Collection `ansible.posix` nếu môi trường Control Node bị thiếu? *(Chạy lệnh `ansible-galaxy collection install ansible.posix`.)*
+</div>
+</details>
 
 ---
 
@@ -6110,8 +6727,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý tường l�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Kiến trúc AWX / AAP và Chuyển đổi từ CLI sang Web UI 🔥
-**Hỏi:** AWX và Red Hat Ansible Automation Platform (AAP) là gì? Trình bày 4 lý do lớn tại sao Doanh nghiệp phải chuyển đổi từ chạy Ansible CLI cá nhân sang nền tảng tập trung AWX / AAP. *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Kiến trúc AWX / AAP và Chuyển đổi từ CLI sang Web UI 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** AWX và Red Hat Ansible Automation Platform (AAP) là gì? Trình bày 4 lý do lớn tại sao Doanh nghiệp phải chuyển đổi từ chạy Ansible CLI cá nhân sang nền tảng tập trung AWX / AAP. *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Định nghĩa: AWX (Open Source) và AAP (Enterprise) là nền tảng quản trị tập trung kịch bản tự động hóa Ansible qua giao diện Web UI, REST API và mô hình phân quyền RBAC.
 - 4 Lý do chuyển đổi:
@@ -6125,6 +6756,8 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý tường l�
 - 2: Phân tích chính xác vai trò chuyển đổi quy mô Enterprise từ CLI cá nhân lên nền tảng tập trung AWX.
 - 3: Nêu đúng + minh họa ví dụ tệp định nghĩa AWX Project & Job Template.
 **Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa AWX và Red Hat Ansible Automation Platform (AAP). *(AWX là dự án mã nguồn mở upstream của cộng đồng; AAP là sản phẩm thương mại được Red Hat hỗ trợ chính thức có thêm tính năng Enterprise Automation Controller, Private Automation Hub và Event-Driven Ansible.)*
+</div>
+</details>
 
 ---
 
@@ -6362,8 +6995,22 @@ Các câu hỏi gắn nhãn 🔥 là **câu hỏi tủ tốt nghiệp bắt bu�
 
 ## V2. Bộ câu hỏi — ĐÚNG 12 câu
 
-### Câu 1 — Kiến trúc Hạ tầng Enterprise 3 Tầng trong Capstone 🔥
-**Hỏi:** Trình bày mô hình kiến trúc Enterprise 3 tầng (Nginx LB -> Web Cluster -> PostgreSQL DB) trong Dự án Capstone. Tại sao việc chia 3 tầng độc lập lại vượt trội hơn cài gộp vào 1 server? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Kiến trúc Hạ tầng Enterprise 3 Tầng trong Capstone 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày mô hình kiến trúc Enterprise 3 tầng (Nginx LB -> Web Cluster -> PostgreSQL DB) trong Dự án Capstone. Tại sao việc chia 3 tầng độc lập lại vượt trội hơn cài gộp vào 1 server? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - Mô hình 3 tầng:
   1. **Tầng 1 (Load Balancer Nginx):** Tiếp nhận lưu lượng HTTP/HTTPS cổng 80/443 từ công chúng và điều hướng round-robin tới cụm Web Nodes.
@@ -6376,6 +7023,8 @@ Các câu hỏi gắn nhãn 🔥 là **câu hỏi tủ tốt nghiệp bắt bu�
 - 2: Phân tích chính xác vai trò của 3 tầng Nginx LB, Systemd Web App và PostgreSQL DB.
 - 3: Nêu đúng + vẽ sơ đồ luồng dữ liệu 3 tầng xuất sắc.
 **Câu hỏi đào sâu:** Làm thế nào để thêm máy chủ Web Node thứ 3 vào cụm Web Cluster mà không phải sửa file Playbook? *(Chỉ cần khai báo thêm host `web3` vào nhóm `[web]` trong `inventory/capstone-hosts.ini`, Nginx Upstream Jinja2 Template sẽ tự động phát hiện và sinh cấu hình mới.)*
+</div>
+</details>
 
 ---
 

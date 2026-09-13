@@ -15,8 +15,12 @@ series_order: 47
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.47] Hướng dẫn chuyên sâu Phẫu Thuật Sự Cố Pipeline Thực Chiến: Xử Lý Kẹt Job, Timeout, Runner OOMKilled, Network Glitch & Registry Rate Limit: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Phẫu Thuật Sự Cố Pipeline Thực Chiến: Xử Lý Kẹt Job, Timeout, Runner OOMKilled, Network Glitch & Registry Rate Limit."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 47] PHẪU THUẬT SỰ CỐ PIPELINE THỰC CHIẾN: XỬ LÝ KẸT JOB, TIMEOUT, RUNNER OOMKILLED, NETWORK GLITCH & REGISTRY RATE LIMIT
 
@@ -1217,11 +1221,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. Bộ câu hỏi Vấn đáp Trực tiếp (12 Câu)
 
-### Câu 1
-**Hỏi:** Khi một job trong GitLab CI bị đỏ thất bại với thông báo chung chung `Command exited with code 1` mà log console hoàn toàn không hiển thị dòng code gây lỗi nào, bước đầu tiên bạn sẽ làm gì để truy vết sự cố?
-
-**Đáp án chuẩn:**
-Bước đầu tiên và chuẩn mực nhất là bật cờ `CI_DEBUG_TRACE: "true"` trực tiếp trong phần `variables` của job bị lỗi trong `.gitlab-ci.yml`. 
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Khi một job trong GitLab CI bị đỏ thất bại với thông báo chung chung `Command exited with code 1` mà log console hoàn toàn không hiển thị dòng code gây lỗi nào, bước đầu tiên bạn sẽ làm gì để truy vết sự cố?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Bước đầu tiên và chuẩn mực nhất là bật cờ `CI_DEBUG_TRACE: "true"` trực tiếp trong phần `variables` của job bị lỗi trong `.gitlab-ci.yml`. 
 - Cờ này sẽ buộc Runner Engine bật chế độ `set -x` trên Shell Executor, in ra từng dòng lệnh được mở rộng, các phép gán biến môi trường, và các rẽ nhánh điều kiện `if/else` trước khi thực thi.
 - **Chi tiết kỹ thuật sâu:** Khi `CI_DEBUG_TRACE` hoạt động, mỗi dòng lệnh shell trước khi thực thi sẽ được prefix bởi dấu `+` kèm theo giá trị mở rộng thực sự của biến. Ví dụ: `+ curl -u admin:secret123 https://api.internal/deploy`. Nhờ đó, bạn sẽ phát hiện ra các biến bị rỗng (`""`), các lỗi cú pháp ẩn, hoặc câu lệnh bị thất bại ở rẽ nhánh nào.
 - **Quy trình xử lý sự cố:**
@@ -1231,6 +1246,8 @@ Bước đầu tiên và chuẩn mực nhất là bật cờ `CI_DEBUG_TRACE: "t
   4. Sửa lỗi logic hoặc cấu hình.
   5. Xóa bỏ cờ debug khỏi file cấu hình trước khi merge vào nhánh chính.
 - **Lưu ý bảo mật nghiêm ngặt:** Vì `CI_DEBUG_TRACE` sẽ in ra toàn bộ giá trị các biến môi trường (kể cả biến chưa được masked hoặc các secret nạp từ HashiCorp Vault), sau khi hoàn tất debug phải lập tức xóa cờ này khỏi repo, hủy kết quả pipeline trace, và xóa các phiên log nhạy cảm để tránh rò rỉ token/mật khẩu theo quy tắc buổi 47 QT 47.1.
+</div>
+</details>
 
 ---
 

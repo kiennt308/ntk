@@ -15,8 +15,12 @@ series_order: 13
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.13] Hướng dẫn chuyên sâu Vận Hành GitLab Runner Quy Mô Lớn: Autoscaling Runner Với Docker Machine & Kubernetes Pod Autoscaling: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Vận Hành GitLab Runner Quy Mô Lớn: Autoscaling Runner Với Docker Machine & Kubernetes Pod Autoscaling."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 13] VẬN HÀNH GITLAB RUNNER QUY MÔ LỚN: AUTOSCALING RUNNER VỚI DOCKER MACHINE & KUBERNETES POD AUTOSCALING
 
@@ -1962,11 +1966,22 @@ Nội dung phần này tổng hợp 12 câu hỏi phỏng vấn sát thực tế
 
 ## §V2. Danh sách 12 Câu hỏi Vấn đáp Thực chiến
 
-### Câu 1
-**Hỏi:** Ba đại lượng cốt lõi và tỉ số duy nhất điều khiển thời gian chờ của Job trong hệ thống Runner là gì?
-
-**Đáp án chuẩn:**
-Ba đại lượng cốt lõi gồm:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Ba đại lượng cốt lõi và tỉ số duy nhất điều khiển thời gian chờ của Job trong hệ thống Runner là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba đại lượng cốt lõi gồm:
 1. **$\lambda$ (Lambda):** Tốc độ Job đến hệ thống (Job/giờ).
 2. **$S$ (Service Time):** Thời lượng trung vị của một Job (tính bằng giờ hoặc giây).
 3. **$c$ (Concurrency):** Số Slot thực thi song song thực tế khả dụng.
@@ -1988,23 +2003,49 @@ Lý thuyết xếp hàng (M/M/c Queueing Model) khẳng định rằng đồ th�
 ```
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Hỏi:** Cho $\lambda = 60$ job/giờ, thời lượng Job $S = 3$ phút ($0.05$ giờ), và số Slot $c = 4$. Hãy tính chỉ số mức no $\rho$ và đưa ra nhận xét?
-
-**Đáp án chuẩn:**
-Áp dụng công thức tính Mức no $\rho$:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>** Cho $\lambda = 60$ job/giờ, thời lượng Job $S = 3$ phút ($0.05$ giờ), và số Slot $c = 4$. Hãy tính chỉ số mức no $\rho$ và đưa ra nhận xét?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Áp dụng công thức tính Mức no $\rho$:
 $$\rho = \frac{\lambda \cdot S}{c} = \frac{60 \times 0.05}{4} = \frac{3}{4} = \mathbf{0.75}$$
 
 **Nhận xét kỹ thuật:** Với $\rho = 0.75$, hệ thống nằm trong vùng vận hành tối ưu (gần mốc 0.80). Thời gian chờ trung bình rơi vào khoảng $0.8 \cdot S$ (tương đương 2.4 phút). Hệ thống vận hành ổn định, không cần thiết phải mua thêm máy chủ Runner.
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Hỏi:** Khi doanh nghiệp thêm 50% số lượng máy chủ Runner nhưng thời gian chờ của lập trình viên không giảm, nguyên nhân gốc rễ có thể nằm ở đâu?
-
-**Đáp án chuẩn:**
-Nguyên nhân gốc rễ có thể thuộc 1 trong 2 trường hợp:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>** Khi doanh nghiệp thêm 50% số lượng máy chủ Runner nhưng thời gian chờ của lập trình viên không giảm, nguyên nhân gốc rễ có thể nằm ở đâu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nguyên nhân gốc rễ có thể thuộc 1 trong 2 trường hợp:
 1. **Hệ thống đang ở mức no thấp ($\rho \le 0.5$):** Thời gian chờ `queued_duration` vốn đã gần bằng 0. Việc tăng thêm số Slot $c$ không làm giảm thời gian chờ vì nút cổ chai không nằm ở số Slot.
 2. **Nút cổ chai nằm ở phần cứng máy chủ Runner (CPU / Disk I/O / Network):** Việc tăng số Job chạy song song khiến máy chủ bị quá tải I/O đĩa hoặc CPU, làm thời lượng chạy $S$ của từng Job tăng vọt lên, bù trừ hoàn toàn lợi ích của việc tăng số Slot $c$.
 
@@ -2014,12 +2055,25 @@ Kỹ sư cần đo đạc thời lượng $S$ ở 2 mức `concurrent`:
 - Đo $S$ tại `concurrent = 12`: Nếu $S$ tăng vọt lên $95\text{s}$, chứng tỏ máy chủ bị chạm trần CPU/Disk I/O. Biện pháp đúng là nâng cấp SSD NVMe hoặc tách máy chủ, không phải tăng `concurrent`.
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Hỏi:** Số Slot thực tế $c$ được tính toán như thế nào từ tệp `/etc/gitlab-runner/config.toml`? Nếu cấu hình 6 Runner, mỗi Runner có `limit = 4`, và biến `concurrent = 4` thì $c$ bằng bao nhiêu?
-
-**Đáp án chuẩn:**
-Số Slot thực tế $c$ được tính theo công thức:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>** Số Slot thực tế $c$ được tính toán như thế nào từ tệp `/etc/gitlab-runner/config.toml`? Nếu cấu hình 6 Runner, mỗi Runner có `limit = 4`, và biến `concurrent = 4` thì $c$ bằng bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Số Slot thực tế $c$ được tính theo công thức:
 $$c = \min\left(\text{concurrent}, \sum \text{limit}\right)$$
 
 Trường hợp trên: Tổng các `limit` là $6 \times 4 = 24$. Tuy nhiên, biến trần toàn cục `concurrent = 4`. Do đó:
@@ -2040,12 +2094,25 @@ concurrent = 4 # <--- TRẦN TOÀN CỤC CHẶN TẤT CẢ RUNNER BÊN DƯỚI!
 ```
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Hỏi:** Trình bày 3 ca làm Job bị mắc kẹt ở trạng thái `pending` và câu lệnh chẩn đoán bắt buộc cho từng ca?
-
-**Đáp án chuẩn:**
-Ba ca Job `pending` gồm:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>** Trình bày 3 ca làm Job bị mắc kẹt ở trạng thái `pending` và câu lệnh chẩn đoán bắt buộc cho từng ca?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba ca Job `pending` gồm:
 1. **Ca 1 (Thiếu Runner khớp Tag):** Không có Runner nào online khớp với thuộc tính `tags:` trong Job.
    - *Lệnh chẩn đoán:* `GET /api/v4/projects/:id/jobs` (Kiểm tra trường `runner` bị null).
 2. **Ca 2 (Hết Slot xử lý):** Các Runner đều bận và $c$ chạm trần.
@@ -2054,43 +2121,95 @@ Ba ca Job `pending` gồm:
    - *Lệnh chẩn đoán:* **`kubectl get events --sort-by=.lastTimestamp`** trên cụm Kubernetes (API của GitLab không hiển thị nguyên nhân này).
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Hỏi:** Tại sao tính năng Autoscaling Runner lại cải thiện giá trị trung vị của thời gian chờ nhưng **không** làm giảm phân vị P95 của `queued_duration`?
-
-**Đáp án chuẩn:**
-Vì Autoscaling mang theo một **hằng số khởi tạo hạ tầng (Time-to-provision)**:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>** Tại sao tính năng Autoscaling Runner lại cải thiện giá trị trung vị của thời gian chờ nhưng **không** làm giảm phân vị P95 của `queued_duration`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì Autoscaling mang theo một **hằng số khởi tạo hạ tầng (Time-to-provision)**:
 - Khởi tạo máy ảo mới (EC2/GCE): Tốn **30 đến 90 giây**.
 - Khởi tạo Pod K8s mới: Tốn **2 đến 10 giây**.
 
 Hằng số khởi tạo này được cộng thẳng vào `queued_duration` của Job đầu tiên trên máy mới. Phân vị P95 phản ánh 5% các Job chịu thời gian chờ tệ nhất, rơi đúng vào những Job chịu hằng số khởi tạo này. Do đó, P95 không giảm nếu không duy trì môi trường rỗi (`IdleCount`).
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Hỏi:** Tham số `IdleCount = 2` tốn bao nhiêu chi phí USD mỗi tháng nếu giá thuê máy ảo là $0.10$ USD/giờ, và lợi ích kỹ thuật mang lại là gì?
-
-**Đáp án chuẩn:**
-Chi phí duy trì 2 máy ảo rỗi 24/7:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>** Tham số `IdleCount = 2` tốn bao nhiêu chi phí USD mỗi tháng nếu giá thuê máy ảo là $0.10$ USD/giờ, và lợi ích kỹ thuật mang lại là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Chi phí duy trì 2 máy ảo rỗi 24/7:
 $$\text{Chi phí} = 2 \text{ máy} \times 24 \text{ giờ} \times 30 \text{ ngày} \times 0.10 \text{ USD} = \mathbf{144 \text{ USD/tháng}}$$
 
 **Lợi ích kỹ thuật:** Giữ sẵn 2 máy rỗi giúp xóa bỏ hoàn toàn hằng số khởi tạo **30 đến 90 giây** cho Job đầu tiên sau một giai đoạn rỗi.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Hỏi:** Tại sao việc kích hoạt Distributed Cache (MinIO S3) trên hệ thống chỉ có 1 Runner duy nhất lại làm thời gian chạy Job bị **chậm hơn**?
-
-**Đáp án chuẩn:**
-Cache Cục bộ (Local Cache) đọc/ghi trực tiếp từ ổ SSD local nên tốc độ đạt hàng trăm MB/s. Khi chỉ có **1 Runner**, tỉ lệ trúng Cache cục bộ đã là $100\%$. Nếu bật S3 Cache qua MinIO, tỉ lệ trúng không tăng thêm nhưng mỗi Job bị cộng thêm **3 đến 6 giây** truyền nạp dữ liệu qua mạng HTTP (`Restoring cache` và `Creating cache`). Distributed Cache chỉ có lợi khi hệ thống có từ **2 Runner trở lên** ($N \ge 2$).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>** Tại sao việc kích hoạt Distributed Cache (MinIO S3) trên hệ thống chỉ có 1 Runner duy nhất lại làm thời gian chạy Job bị **chậm hơn**?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cache Cục bộ (Local Cache) đọc/ghi trực tiếp từ ổ SSD local nên tốc độ đạt hàng trăm MB/s. Khi chỉ có **1 Runner**, tỉ lệ trúng Cache cục bộ đã là $100\%$. Nếu bật S3 Cache qua MinIO, tỉ lệ trúng không tăng thêm nhưng mỗi Job bị cộng thêm **3 đến 6 giây** truyền nạp dữ liệu qua mạng HTTP (`Restoring cache` và `Creating cache`). Distributed Cache chỉ có lợi khi hệ thống có từ **2 Runner trở lên** ($N \ge 2$).
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Hỏi:** Ba cách giảm Mức no $\rho$ theo thứ tự giá tiền tăng dần là gì, và tại sao hầu hết các đội ngũ DevOps lại làm ngược thứ tự này?
-
-**Đáp án chuẩn:**
-Ba cách giảm $\rho = \lambda \cdot S / c$ theo thứ tự chi phí:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>** Ba cách giảm Mức no $\rho$ theo thứ tự giá tiền tăng dần là gì, và tại sao hầu hết các đội ngũ DevOps lại làm ngược thứ tự này?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba cách giảm $\rho = \lambda \cdot S / c$ theo thứ tự chi phí:
 1. **Giảm $\lambda$ (Rẻ nhất - 0 USD):** Bật `interruptible: true` và `workflow:rules` chuẩn để hủy các Pipeline dư thừa (Cắt 20–40% $\lambda$).
 2. **Giảm $S$ (Chi phí vừa phải):** Dùng Image mỏng, tối ưu Cache, loại bỏ các bước dư thừa (Buổi 14).
 3. **Tăng $c$ (Đắt nhất):** Mua thêm máy chủ Runner, bật Autoscaling.
@@ -2098,23 +2217,49 @@ Ba cách giảm $\rho = \lambda \cdot S / c$ theo thứ tự chi phí:
 Các đội làm ngược thứ tự vì việc bấm mua thêm máy (Tăng $c$) là giải pháp dễ thao tác nhất về mặt quản trị, không đòi hỏi phải đọc log hay tối ưu mã nguồn YAML.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Hỏi:** Nguyên nhân khiến một Job 90 giây mà pha `Preparing environment` ngốn mất 45 giây là gì và cách khắc phục?
-
-**Đáp án chuẩn:**
-- **Nguyên nhân:** Do Docker Image sử dụng có dung lượng quá cồng kềnh (ví dụ `python:3.11-full` dung lượng 1.2 GB), khiến Runner mất 45 giây để kéo các Layer từ Registry về môi trường mới.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>** Nguyên nhân khiến một Job 90 giây mà pha `Preparing environment` ngốn mất 45 giây là gì và cách khắc phục?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **Nguyên nhân:** Do Docker Image sử dụng có dung lượng quá cồng kềnh (ví dụ `python:3.11-full` dung lượng 1.2 GB), khiến Runner mất 45 giây để kéo các Layer từ Registry về môi trường mới.
 - **Cách khắc phục:**
   1. Chuyển sang sử dụng Image mỏng (Alpine hoặc Slim, ví dụ `python:3.11-slim` dung lượng 180 MB), giúp rút ngắn thời gian kéo xuống còn **8 giây** (Tiết kiệm 37 giây/job).
   2. Triển khai **Pull-Through Cache Registry** nằm trong mạng LAN của Runner pool.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Hỏi:** Tại sao không nên dùng 1 hồ Runner duy nhất cho tất cả các loại Job trong tập đoàn? Hãy đưa ra 2 trục phân tách hồ Runner chuẩn?
-
-**Đáp án chuẩn:**
-Không dùng 1 hồ Runner chung vì:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>** Tại sao không nên dùng 1 hồ Runner duy nhất cho tất cả các loại Job trong tập đoàn? Hãy đưa ra 2 trục phân tách hồ Runner chuẩn?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Không dùng 1 hồ Runner chung vì:
 - Job 20 giây bị nghẽn sau Job 30 phút.
 - Mọi Job đều truy cập Docker Socket, gây rủi ro an ninh mạng.
 
@@ -2123,17 +2268,32 @@ Hai trục phân tách chuẩn:
 2. **Theo đặc quyền:** Hồ Unprivileged (No Docker socket) vs Hồ Privileged (Có Docker socket/Deploy key).
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Hỏi:** Khi đội ngũ kỹ sư đề xuất mua thêm 4 máy chủ Runner, bạn sẽ hỏi 3 con số nào trước khi phê duyệt ngân sách?
-
-**Đáp án chuẩn:**
-Ba con số bắt buộc yêu cầu cung cấp:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>** Khi đội ngũ kỹ sư đề xuất mua thêm 4 máy chủ Runner, bạn sẽ hỏi 3 con số nào trước khi phê duyệt ngân sách?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ba con số bắt buộc yêu cầu cung cấp:
 1. **Chỉ số Mức no $\rho$ hiện tại:** Tính từ 3 đại lượng $\lambda, S, c$. Nếu $\rho < 0.6$, từ chối mua thêm.
 2. **Phân vị P95 của `queued_duration`:** Để đối soát thời gian chờ thực tế của người dùng.
 3. **Phần trăm $\lambda$ cắt giảm được nếu bật `interruptible: true`:** Kiểm tra xem đã tối ưu 0 USD trước khi xin tiền hay chưa.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 

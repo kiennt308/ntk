@@ -15,8 +15,12 @@ series_order: 7
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.07] Hướng dẫn chuyên sâu Hạ Tầng Khóa Công Khai (PKI) & Kubeconfig: Quản Trị Chứng Chỉ TLS, Gia Hạn & Xác Thực Người Dùng: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Hạ Tầng Khóa Công Khai (PKI) & Kubeconfig: Quản Trị Chứng Chỉ TLS, Gia Hạn & Xác Thực Người Dùng."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 07] HẠ TẦNG KHÓA CÔNG KHAI (PKI) & KUBECONFIG: QUẢN TRỊ CHỨNG CHỈ TLS, GIA HẠN & XÁC THỰC NGƯỜI DÙNG
 
@@ -133,10 +137,10 @@ graph TD
         SA_PUB["sa.pub (Public Verification Key)"]
     end
 
-    style Root_CA fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Front_Proxy_CA fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
-    style ETCD_CA fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style SA_Keys fill:#f8bbd0,stroke:#c2185b,stroke-width:2px
+    style Root_CA fill:none,stroke:#f57c00,stroke-width:2px
+    style Front_Proxy_CA fill:none,stroke:#fbc02d,stroke-width:2px
+    style ETCD_CA fill:none,stroke:#0288d1,stroke-width:2px
+    style SA_Keys fill:none,stroke:#c2185b,stroke-width:2px
 ```
 
 ---
@@ -379,9 +383,9 @@ graph TD
     C --> D["CSR API 4 bước cấp User mới (CN=User, O=Group)"]
     D --> E["kubeadm certs renew all (Gia hạn cert 365 ngày)"]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#bbf,stroke:#333,stroke-width:2px
-    style E fill:#bfb,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style E fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -520,9 +524,9 @@ graph TD
     CERT_OUT -->|Nhúng Base64| KUBECONFIG
     ROOT_CA -->|Ký chứng chỉ| APPROVE
 
-    style PKI_Storage fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style CSR_Workflow fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style Kubeconfig_Output fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style PKI_Storage fill:none,stroke:#f57c00,stroke-width:2px
+    style CSR_Workflow fill:none,stroke:#0288d1,stroke-width:2px
+    style Kubeconfig_Output fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -898,12 +902,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Thư mục `/etc/kubernetes/pki/` chứa mấy cây CA độc lập? Nêu vai trò của từng cây CA.
-
-**Đáp án chuẩn:**
-- Chứa **3 cây CA độc lập**:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thư mục `/etc/kubernetes/pki/` chứa mấy cây CA độc lập? Nêu vai trò của từng cây CA.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - Chứa **3 cây CA độc lập**:
   1. `Root CA` (`ca.crt`, `ca.key`): CA tối cao ký duyệt chứng chỉ cho API Server, Kubelet client/server và admin Kubeconfig.
   2. `Front Proxy CA` (`front-proxy-ca.crt`, `front-proxy-ca.key`): CA riêng phục vụ xác thực người dùng khi truy cập qua Aggregated API Server (như metrics-server).
   3. `etcd CA` (`etcd/ca.crt`, `etcd/ca.key`): CA riêng bảo vệ giao tiếp TLS giữa các node etcd và giữa etcd với API Server.
@@ -915,6 +930,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, nêu đường dẫn các file `.crt` và cảnh báo nguy cơ nếu lộ tệp `ca.key`.
 
 **Câu hỏi đào sâu:** Tại sao không nên dùng chung Root CA cho etcd? *(Đáp án: Để cô lập etcd; nếu API Server bị tấn công lộ CA thì hacker vẫn không thể truy cập thẳng etcd database).*
+</div>
+</details>
 
 ---
 

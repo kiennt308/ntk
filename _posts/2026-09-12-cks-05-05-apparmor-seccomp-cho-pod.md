@@ -15,8 +15,12 @@ series_order: 5
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKS P.05] Hướng dẫn chuyên sâu Kiểm Soát Quyền Hạn Linux Kernel: AppArmor Profiles, Seccomp BPF & Gia Cố Pod Security: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kiểm Soát Quyền Hạn Linux Kernel: AppArmor Profiles, Seccomp BPF & Gia Cố Pod Security."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 05] KIỂM SOÁT QUYỀN HẠN LINUX KERNEL: APPARMOR PROFILES, SECCOMP BPF & GIA CỐ POD SECURITY
 
@@ -340,48 +344,237 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Cấu hình YAML chuẩn để bật Seccomp profile mặc định của container runtime (`RuntimeDefault`) cho một Pod là gì?
-   - **Đáp án:**
-     ```yaml
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Cấu hình YAML chuẩn để bật Seccomp profile mặc định của container runtime (`RuntimeDefault`) cho một Pod là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```yaml
      spec:
        securityContext:
          seccompProfile:
            type: RuntimeDefault
      ```
+</div>
+</details>
 
-2. Thư mục mặc định trên Node Kubernetes được Kubelet sử dụng để lưu trữ các tệp Seccomp Profile JSON là gì?
-   - **Đáp án:** Thư mục `/var/lib/kubelet/seccomp/`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Thư mục mặc định trên Node Kubernetes được Kubelet sử dụng để lưu trữ các tệp Seccomp Profile JSON là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thư mục `/var/lib/kubelet/seccomp/`.
+</div>
+</details>
 
-3. Khi cấu hình `seccompProfile.type: Localhost`, giá trị của thuộc tính `localhostProfile` phải được điền theo dạng đường dẫn nào?
-   - **Đáp án:** Phải được điền theo dạng **đường dẫn TƯƠNG ĐỐI** so với thư mục `/var/lib/kubelet/seccomp/` (ví dụ `profiles/deny-mkdir.json`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khi cấu hình `seccompProfile.type: Localhost`, giá trị của thuộc tính `localhostProfile` phải được điền theo dạng đường dẫn nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Phải được điền theo dạng **đường dẫn TƯƠNG ĐỐI** so với thư mục `/var/lib/kubelet/seccomp/` (ví dụ `profiles/deny-mkdir.json`).
+</div>
+</details>
 
-4. Lệnh CLI Linux nào được dùng để nạp một tệp AppArmor Profile mới vào Linux Kernel của Node?
-   - **Đáp án:** Lệnh `sudo apparmor_parser -r -W /path/to/profile`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Lệnh CLI Linux nào được dùng để nạp một tệp AppArmor Profile mới vào Linux Kernel của Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `sudo apparmor_parser -r -W /path/to/profile`.
+</div>
+</details>
 
-5. Lệnh CLI Linux nào được dùng để kiểm tra danh sách các AppArmor Profiles hiện đang được nạp ở chế độ Enforcing trên Node?
-   - **Đáp án:** Lệnh `sudo aa-status`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Lệnh CLI Linux nào được dùng để kiểm tra danh sách các AppArmor Profiles hiện đang được nạp ở chế độ Enforcing trên Node?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `sudo aa-status`.
+</div>
+</details>
 
-6. Cú pháp annotation chuẩn để áp dụng một AppArmor Profile có tên `k8s-deny-write` cho container có tên `web` trong Pod là gì?
-   - **Đáp án:** `apparmor.security.beta.kubernetes.io/container.web: "localhost/k8s-deny-write"`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Cú pháp annotation chuẩn để áp dụng một AppArmor Profile có tên `k8s-deny-write` cho container có tên `web` trong Pod là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `apparmor.security.beta.kubernetes.io/container.web: "localhost/k8s-deny-write"`.
+</div>
+</details>
 
-7. Thuộc tính `defaultAction` nào trong tệp Seccomp Profile JSON được dùng để mặc định từ chối tất cả các lệnh gọi hệ thống chưa được phép?
-   - **Đáp án:** Thuộc tính `"defaultAction": "SCMP_ACT_ERRNO"`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Thuộc tính `defaultAction` nào trong tệp Seccomp Profile JSON được dùng để mặc định từ chối tất cả các lệnh gọi hệ thống chưa được phép?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Thuộc tính `"defaultAction": "SCMP_ACT_ERRNO"`.
+</div>
+</details>
 
-8. Điều gì xảy ra nếu một Pod được xếp lịch rơi vào một Worker Node chưa được nạp tệp AppArmor Profile tương ứng?
-   - **Đáp án:** Pod sẽ bị kẹt không thể khởi tạo container với lỗi `BlockedByAppArmor` hoặc `CreateContainerError`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Điều gì xảy ra nếu một Pod được xếp lịch rơi vào một Worker Node chưa được nạp tệp AppArmor Profile tương ứng?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Pod sẽ bị kẹt không thể khởi tạo container với lỗi `BlockedByAppArmor` hoặc `CreateContainerError`.
+</div>
+</details>
 
-9. Mã lỗi hệ thống nào được trả về khi một ứng dụng trong container thực thi một syscall bị Seccomp profile từ chối?
-   - **Đáp án:** Mã lỗi `Operation not permitted` (hoặc `Permission denied`).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Mã lỗi hệ thống nào được trả về khi một ứng dụng trong container thực thi một syscall bị Seccomp profile từ chối?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mã lỗi `Operation not permitted` (hoặc `Permission denied`).
+</div>
+</details>
 
-10. Lệnh CLI Kernel nào trên Node dùng để tra cứu nhật ký bị từ chối truy cập bởi AppArmor hoặc Seccomp?
-    - **Đáp án:** Lệnh `sudo dmesg | grep -i "apparmor\|seccomp"`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Lệnh CLI Kernel nào trên Node dùng để tra cứu nhật ký bị từ chối truy cập bởi AppArmor hoặc Seccomp?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `sudo dmesg | grep -i "apparmor\|seccomp"`.
+</div>
+</details>
 
-11. Tại sao không nên cấu hình `seccompProfile.type: Unconfined` cho các Pods trong môi trường Production?
-    - **Đáp án:** Vì cờ `Unconfined` sẽ vô hiệu hóa hoàn toàn rào chắn Seccomp, mở toang toàn bộ hơn 300 syscalls của Linux Kernel cho container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Tại sao không nên cấu hình `seccompProfile.type: Unconfined` cho các Pods trong môi trường Production?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì cờ `Unconfined` sẽ vô hiệu hóa hoàn toàn rào chắn Seccomp, mở toang toàn bộ hơn 300 syscalls của Linux Kernel cho container.
+</div>
+</details>
 
-12. Cú pháp YAML chuẩn của một Pod Hardened hoàn chỉnh kết hợp cả Seccomp `RuntimeDefault` và AppArmor profile là gì?
-    - **Đáp án:**
-      ```yaml
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp YAML chuẩn của một Pod Hardened hoàn chỉnh kết hợp cả Seccomp `RuntimeDefault` và AppArmor profile là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```yaml
       apiVersion: v1
       kind: Pod
       metadata:
@@ -396,6 +589,8 @@ graph TD
           - name: app
             image: nginx:alpine
       ```
+</div>
+</details>
 
 ---
 
@@ -779,10 +974,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Sự khác biệt về ranh giới bảo mật giữa `Seccomp Profile` và `AppArmor Profile` khi gia cố nhân Linux Kernel cho Pods là gì?
 
-**Đáp án chuẩn:** `Seccomp` hoạt động ở tầng **System Calls** (giới hạn các lệnh gọi kernel như `reboot`, `mkdir` mà tiến trình được phép gọi). `AppArmor` hoạt động ở tầng **Resource Control** (phân quyền chi tiết các đường dẫn tệp tin `/etc`, khả năng truy cập mạng hoặc thực thi file nhị phân).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt về ranh giới bảo mật giữa `Seccomp Profile` và `AppArmor Profile` khi gia cố nhân Linux Kernel cho Pods là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `Seccomp` hoạt động ở tầng **System Calls** (giới hạn các lệnh gọi kernel như `reboot`, `mkdir` mà tiến trình được phép gọi). `AppArmor` hoạt động ở tầng **Resource Control** (phân quyền chi tiết các đường dẫn tệp tin `/etc`, khả năng truy cập mạng hoặc thực thi file nhị phân).
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được Seccomp và AppArmor.
@@ -790,6 +998,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo ranh giới bảo mật L3/L4 syscalls của Seccomp vs Resource Control của AppArmor.
 
 **Câu hỏi đào sâu:** (Nếu muốn chặn một tiến trình trong container không được tạo thư mục mới thì dùng Seccomp hay AppArmor hiệu quả hơn? — Dùng Seccomp chặn syscall `mkdir` hoặc AppArmor deny write thư mục).
+</div>
+</details>
 
 ---
 
@@ -1052,9 +1262,22 @@ Chẩn đoán và sửa lỗi Pod `broken-profile-pod` bị kẹt `CreateContain
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Pod `web-pod` Seccomp RuntimeDefault
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Pod `web-pod` Seccomp RuntimeDefault</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1072,10 +1295,25 @@ spec:
       image: nginx:alpine
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Nạp AppArmor Profile và tạo Pod `apparmor-web`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Nạp AppArmor Profile và tạo Pod `apparmor-web</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 # Nạp profile vào Kernel (giả lập tệp profile nếu chưa có):
 sudo mkdir -p /etc/apparmor.d
 cat <<EOF | sudo tee /etc/apparmor.d/very-secure 2>/dev/null
@@ -1101,10 +1339,25 @@ spec:
       image: nginx:alpine
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Cấu hình Seccomp Localhost Profile
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Cấu hình Seccomp Localhost Profile</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 sudo mkdir -p /var/lib/kubelet/seccomp/profiles
 cat <<EOF | sudo tee /var/lib/kubelet/seccomp/profiles/custom.json 2>/dev/null
 {"defaultAction":"SCMP_ACT_ALLOW"}
@@ -1126,10 +1379,25 @@ spec:
       image: nginx:alpine
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Sửa Pod `broken-profile-pod` đường dẫn TƯƠNG ĐỐI
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Sửa Pod `broken-profile-pod` đường dẫn TƯƠNG ĐỐI</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1148,6 +1416,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

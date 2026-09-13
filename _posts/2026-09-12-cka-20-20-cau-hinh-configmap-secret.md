@@ -15,8 +15,12 @@ series_order: 20
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKA P.20] Hướng dẫn chuyên sâu Quản Lý Cấu Hình Ứng Dụng: ConfigMap, Secret, EnvFrom, Projected Volumes & Kỹ Thuật Hot Reload: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Lý Cấu Hình Ứng Dụng: ConfigMap, Secret, EnvFrom, Projected Volumes & Kỹ Thuật Hot Reload."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 20] QUẢN LÝ CẤU HÌNH ỨNG DỤNG: CONFIGMAP, SECRET, ENVFROM, PROJECTED VOLUMES & KỸ THUẬT HOT RELOAD
 
@@ -164,9 +168,9 @@ graph TD
     ENV_BULK --> POD_RUN2["Biến môi trường (Cần restart Pod khi đổi)"]
     VOL_MOUNT --> POD_RUN3["Tệp tin Mount (Hot Reloading tự đổi trong Pod)"]
 
-    style ENV_KEY fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style ENV_BULK fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    style VOL_MOUNT fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style ENV_KEY fill:none,stroke:#f57c00,stroke-width:2px
+    style ENV_BULK fill:none,stroke:#0288d1,stroke-width:2px
+    style VOL_MOUNT fill:none,stroke:#388e3c,stroke-width:2px
 ```
 
 ---
@@ -395,10 +399,10 @@ graph TD
     B --> E["Inject 2: Volume Mount (Tệp tin - Hot Reloading 10-60s tự đổi)"]
     C --> E
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#ffe0b2,stroke:#333,stroke-width:2px
-    style E fill:#c8e6c9,stroke:#333,stroke-width:2px
+    style A fill:none,stroke:#333,stroke-width:2px
+    style B fill:none,stroke:#333,stroke-width:2px
+    style C fill:none,stroke:#333,stroke-width:2px
+    style E fill:none,stroke:#333,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -529,9 +533,9 @@ graph TD
 
     Config_Creation --> Volume_Mounting --> TLS_Setup
 
-    style Config_Creation fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
-    style Volume_Mounting fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
-    style TLS_Setup fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Config_Creation fill:none,stroke:#f57c00,stroke-width:2px
+    style Volume_Mounting fill:none,stroke:#388e3c,stroke-width:2px
+    style TLS_Setup fill:none,stroke:#0288d1,stroke-width:2px
 ```
 
 ---
@@ -895,12 +899,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Phân biệt sự khác nhau cốt lõi về bản chất bảo mật và mục đích sử dụng giữa đối tượng `ConfigMap` và `Secret` trong Kubernetes.
-
-**Đáp án chuẩn:**
-- **`ConfigMap` (Plaintext - Dữ liệu công khai):**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Phân biệt sự khác nhau cốt lõi về bản chất bảo mật và mục đích sử dụng giữa đối tượng `ConfigMap` và `Secret` trong Kubernetes.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - **`ConfigMap` (Plaintext - Dữ liệu công khai):**
   - *Mục đích:* Lưu trữ các thông số cấu hình không nhạy cảm (như domain name, port, log level, tệp cấu hình `nginx.conf`).
   - *Dữ liệu:* Lưu dạng **Plaintext rõ ràng**.
 - **`Secret` (Base64 Obfuscation - Dữ liệu nhạy cảm):**
@@ -914,6 +929,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - **3đ:** Trả lời xuất sắc, chỉ ra tính năng `Encryption at Rest` trong etcd cho Secret.
 
 **Câu hỏi đào sâu:** Nếu lỡ lưu mật khẩu Database vào ConfigMap thì hệ thống có báo lỗi crash không? *(Đáp án: Không crash, nhưng vi phạm nghiêm trọng tiêu chuẩn bảo mật và dễ bị lộ trên Git).*
+</div>
+</details>
 
 ---
 

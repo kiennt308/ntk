@@ -15,8 +15,12 @@ series_order: 8
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.08] Hướng dẫn chuyên sâu Tối Ưu Pipeline Phi Tuyến Tính Với Directed Acyclic Graph (DAG): needs, parallel & Matrix Builds: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tối Ưu Pipeline Phi Tuyến Tính Với Directed Acyclic Graph (DAG): needs, parallel & Matrix Builds."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 08] TỐI ƯU PIPELINE PHI TUYẾN TÍNH VỚI DIRECTED ACYCLIC GRAPH (DAG): NEEDS, PARALLEL & MATRIX BUILDS
 
@@ -2857,11 +2861,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Thời gian chạy của một pipeline được tính thế nào? Có mấy công thức, và hiệu của chúng gọi là gì?
-
-**Đáp án chuẩn:** **Hai** công thức, cho hai con số khác nhau trên **cùng** một tập job (QT 4.1). Tuần tự: `T = Σ max(job trong stage)` — **tổng của các max**. DAG: `T = max Σ(job trên một đường)` — **max của các tổng**. Hiệu gọi là **lãng phí hàng rào**: hàng rào `stage` buộc mọi job chờ job chậm nhất **cùng stage**, kể cả job không có quan hệ dữ liệu nào với nó (buổi 03 QT 5.3 — lần thứ **2**, lần này là lần **sửa**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Thời gian chạy của một pipeline được tính thế nào? Có mấy công thức, và hiệu của chúng gọi là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hai** công thức, cho hai con số khác nhau trên **cùng** một tập job (QT 4.1). Tuần tự: `T = Σ max(job trong stage)` — **tổng của các max**. DAG: `T = max Σ(job trên một đường)` — **max của các tổng**. Hiệu gọi là **lãng phí hàng rào**: hàng rào `stage` buộc mọi job chờ job chậm nhất **cùng stage**, kể cả job không có quan hệ dữ liệu nào với nó (buổi 03 QT 5.3 — lần thứ **2**, lần này là lần **sửa**).
 
 Ví dụ chuẩn **7 job**: tổng theo stage **325 s**, đường găng **235 s**, lãng phí **90 s = 28%** — thủ phạm là `scan` **150 s** chặn cả pipeline mà không ai cần kết quả của nó. Phải nói kèm: **phút runner 540 s ở CẢ HAI ca**, vì `needs` không bỏ job nào, nó bỏ **điều kiện chờ**. Vùng con số 28% không đúng: repo không có job dài lệch pha thì lãng phí gần **0**, và dưới khoảng **10%** thì chuyển sang DAG là đổi vài giây lấy một lớp hỏng im lặng.
 
@@ -2872,6 +2888,8 @@ Ví dụ chuẩn **7 job**: tổng theo stage **325 s**, đường găng **235 s
 - 3đ: Như trên, **và** đưa **325 · 235 · 90 s = 28%**, **và** chốt **540 s** không đổi, **và** nêu vùng con số 28% không đúng.
 
 **Câu hỏi đào sâu:** Bỏ hẳn `scan` khỏi pipeline thì hai con số thành mấy? *(**265 s** và **235 s**, lãng phí còn **30 s = 11%**, phút runner giảm **150 s** — nhưng khoản đó do **bỏ job**, không do DAG.)*
+</div>
+</details>
 
 ---
 

@@ -15,8 +15,12 @@ series_order: 36
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.36] Hướng dẫn chuyên sâu Quản Trị Môi Trường Triển Khai (Environments): Dynamic Review Apps, URL Mapping & Manual Approval Gates: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Môi Trường Triển Khai (Environments): Dynamic Review Apps, URL Mapping & Manual Approval Gates."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 36] QUẢN TRỊ MÔI TRƯỜNG TRIỂN KHAI (ENVIRONMENTS): DYNAMIC REVIEW APPS, URL MAPPING & MANUAL APPROVAL GATES
 
@@ -1525,10 +1529,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-### Câu 1
-**Hỏi:** Từ khóa `environment` trong GitLab CI/CD mang lại giá trị cốt lõi gì so với một CI job chạy câu lệnh deployment thông thường?
-
-**Gợi ý trả lời ngắn:**
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>** Từ khóa `environment` trong GitLab CI/CD mang lại giá trị cốt lõi gì so với một CI job chạy câu lệnh deployment thông thường?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Gợi ý trả lời ngắn:**
 Từ khóa `environment` định danh một job CI thành một sự kiện deployment có lịch sử, lưu giữ commit SHA đang chạy trên từng server, hỗ trợ nút bấm Rollback 1-click và tích hợp hiển thị URL trên Merge Request.
 
 **Đáp án chuẩn:**
@@ -1541,6 +1557,8 @@ Từ khóa `environment` định danh một job CI thành một sự kiện depl
 
 **Bẫy tuyển dụng / Trả lời sai hay gặp:**
 Nói rằng "environment chỉ là chỗ đặt tên cho vui". Cần phân tích sâu tính chất State Management và Observability củađối tượng Environment.
+</div>
+</details>
 
 ---
 

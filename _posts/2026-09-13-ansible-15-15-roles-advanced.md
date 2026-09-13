@@ -15,8 +15,12 @@ series_order: 15
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.15] Hướng dẫn chuyên sâu Kỹ Thuật Role Nâng Cao: Role Dependencies, Search Paths, Parameterized Roles & Tái Cấu Trúc Playbook Quy Mô Lớn: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Kỹ Thuật Role Nâng Cao: Role Dependencies, Search Paths, Parameterized Roles & Tái Cấu Trúc Playbook Quy Mô Lớn."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 15] KỸ THUẬT ROLE NÂNG CAO: ROLE DEPENDENCIES, SEARCH PATHS, PARAMETERIZED ROLES & TÁI CẤU TRÚC PLAYBOOK QUY MÔ LỚN
 
@@ -825,8 +829,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Phân biệt `import_role` và `include_role` 🔥
-**Hỏi:** So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa `ansible.builtin.import_role` và `ansible.builtin.include_role`. *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Phân biệt `import_role` và `include_role` 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa `ansible.builtin.import_role` và `ansible.builtin.include_role`. *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - `import_role` (Static Import): Nạp tĩnh tại thời điểm **Parse Playbook** (Pre-parse). Toàn bộ các Task của Role được chèn trực tiếp vào cây Playbook trước khi chạy. Hỗ trợ đầy đủ cờ `tags` và `handlers` toàn cục.
 - `include_role` (Dynamic Include): Nạp động tại thời điểm **Runtime** khi tiến trình chạy đến đúng Task đó. Cho phép kết hợp linh hoạt với vòng lặp `loop:` và điều kiện `when:`.
@@ -836,6 +854,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Phân tích chính xác sự khác biệt về Parse time vs Runtime và khả năng dùng với `loop:`.
 - 3: Nêu đúng + minh họa ví dụ kịch bản thực tế khi nào dùng `import_role` vs `include_role`.
 **Câu hỏi đào sâu:** Nếu muốn gọi 1 Role lặp qua một mảng danh sách IP, bắt buộc phải dùng module nào? *(Bắt buộc dùng `ansible.builtin.include_role`.)*
+</div>
+</details>
 
 ---
 

@@ -15,8 +15,12 @@ series_order: 7
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.07] Hướng dẫn chuyên sâu Cơ Chế Probes Toàn Diện: StartupProbe, ReadinessProbe, LivenessProbe & 3 Kịch Bản Sập Ứng Dụng: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Cơ Chế Probes Toàn Diện: StartupProbe, ReadinessProbe, LivenessProbe & 3 Kịch Bản Sập Ứng Dụng."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 07] CƠ CHẾ PROBES TOÀN DIỆN: STARTUPPROBE, READINESSPROBE, LIVENESSPROBE & 3 KỊCH BẢN SẬP ỨNG DỤNG
 
@@ -347,41 +351,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Ba loại Probe kiểm tra sức khỏe ứng dụng trong Kubernetes là gì?
-   - **Đáp án:** `startupProbe`, `readinessProbe`, và `livenessProbe`.
 
-2. Điều gì xảy ra đối với các loại Probe khác khi `startupProbe` chưa chạy thành công?
-   - **Đáp án:** Tất cả các `livenessProbe` và `readinessProbe` đều bị vô hiệu hóa cho tới khi `startupProbe` thành công.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ba loại Probe kiểm tra sức khỏe ứng dụng trong Kubernetes là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `startupProbe`, `readinessProbe`, và `livenessProbe`.
+</div>
+</details>
 
-3. Sự khác biệt về hành vi của Kubelet khi `readinessProbe` bị thất bại so với khi `livenessProbe` bị thất bại là gì?
-   - **Đáp án:** `readinessProbe` fail chỉ gỡ IP Pod khỏi Service Endpoints; `livenessProbe` fail sẽ tiêu diệt và khởi động lại container.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Điều gì xảy ra đối với các loại Probe khác khi `startupProbe` chưa chạy thành công?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Tất cả các `livenessProbe` và `readinessProbe` đều bị vô hiệu hóa cho tới khi `startupProbe` thành công.
+</div>
+</details>
 
-4. Ba phương thức hành động (Actions) được dùng để kiểm tra Probe là gì?
-   - **Đáp án:** `httpGet`, `exec`, và `tcpSocket`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Sự khác biệt về hành vi của Kubelet khi `readinessProbe` bị thất bại so với khi `livenessProbe` bị thất bại là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `readinessProbe` fail chỉ gỡ IP Pod khỏi Service Endpoints; `livenessProbe` fail sẽ tiêu diệt và khởi động lại container.
+</div>
+</details>
 
-5. Phương thức `httpGet` đánh giá Probe thành công khi mã trạng thái HTTP trả về nằm trong khoảng nào?
-   - **Đáp án:** Trong khoảng từ 200 đến 399 (mã 2xx và 3xx).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Ba phương thức hành động (Actions) được dùng để kiểm tra Probe là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `httpGet`, `exec`, và `tcpSocket`.
+</div>
+</details>
 
-6. Phương thức `exec` đánh giá Probe thành công khi câu lệnh thực thi trả về mã exit code bằng bao nhiêu?
-   - **Đáp án:** Trả về Exit Code 0.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Phương thức `httpGet` đánh giá Probe thành công khi mã trạng thái HTTP trả về nằm trong khoảng nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong khoảng từ 200 đến 399 (mã 2xx và 3xx).
+</div>
+</details>
 
-7. Trường `initialDelaySeconds` trong cấu hình Probe có ý nghĩa là gì?
-   - **Đáp án:** Định nghĩa số giây Kubelet chờ trước khi thực hiện lượt kiểm tra Probe đầu tiên.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Phương thức `exec` đánh giá Probe thành công khi câu lệnh thực thi trả về mã exit code bằng bao nhiêu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trả về Exit Code 0.
+</div>
+</details>
 
-8. Trường `periodSeconds` trong cấu hình Probe có ý nghĩa là gì?
-   - **Đáp án:** Định nghĩa khoảng thời gian giữa các lần thực hiện Probe định kỳ nối tiếp nhau.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Trường `initialDelaySeconds` trong cấu hình Probe có ý nghĩa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Định nghĩa số giây Kubelet chờ trước khi thực hiện lượt kiểm tra Probe đầu tiên.
+</div>
+</details>
 
-9. Trường `failureThreshold: 3` trong cấu hình Probe có ý nghĩa là gì?
-   - **Đáp án:** Định nghĩa số lần Probe dính lỗi liên tiếp tối đa (3 lần) trước khi bị tính là thất bại hoàn toàn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Trường `periodSeconds` trong cấu hình Probe có ý nghĩa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Định nghĩa khoảng thời gian giữa các lần thực hiện Probe định kỳ nối tiếp nhau.
+</div>
+</details>
 
-10. Tại sao KHÔNG nên cấu hình `livenessProbe` trỏ vào đường dẫn endpoint có kiểm tra kết nối cơ sở dữ liệu?
-    - **Đáp án:** Vì khi DB bị gián đoạn mạng, toàn bộ các Pod trên cụm sẽ bị Kubelet diệt đồng loạt, gây thảm họa sập hệ thống dây chuyền.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Trường `failureThreshold: 3` trong cấu hình Probe có ý nghĩa là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Định nghĩa số lần Probe dính lỗi liên tiếp tối đa (3 lần) trước khi bị tính là thất bại hoàn toàn.
+</div>
+</details>
 
-11. Ứng dụng khởi động chậm (như Java Spring Boot) cần loại Probe nào để tránh bị Kubelet diệt nhầm?
-    - **Đáp án:** Cần bổ sung `startupProbe`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Tại sao KHÔNG nên cấu hình `livenessProbe` trỏ vào đường dẫn endpoint có kiểm tra kết nối cơ sở dữ liệu?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Vì khi DB bị gián đoạn mạng, toàn bộ các Pod trên cụm sẽ bị Kubelet diệt đồng loạt, gây thảm họa sập hệ thống dây chuyền.
+</div>
+</details>
 
-12. Cờ lệnh CLI nào giúp xem các sự kiện cảnh báo Probe fail của một Pod?
-    - **Đáp án:** Lệnh `kubectl describe pod <pod-name>`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Ứng dụng khởi động chậm (như Java Spring Boot) cần loại Probe nào để tránh bị Kubelet diệt nhầm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cần bổ sung `startupProbe`.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cờ lệnh CLI nào giúp xem các sự kiện cảnh báo Probe fail của một Pod?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh `kubectl describe pod <pod-name>`.
+</div>
+</details>
 
 ---
 
@@ -804,10 +1001,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Ba loại Probe kiểm tra sức khỏe trong Kubernetes (`startupProbe`, `readinessProbe`, `livenessProbe`) khác nhau ở điểm cốt lõi nào?
 
-**Đáp án chuẩn:** `startupProbe` kiểm tra xem container đã boot xong chưa (che chắn cho liveness/readiness). `readinessProbe` quyết định xem Pod có sẵn sàng nhận traffic từ Service hay không. `livenessProbe` quyết định xem Kubelet có tiêu diệt và restart lại container hay không.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Ba loại Probe kiểm tra sức khỏe trong Kubernetes (`startupProbe`, `readinessProbe`, `livenessProbe`) khác nhau ở điểm cốt lõi nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `startupProbe` kiểm tra xem container đã boot xong chưa (che chắn cho liveness/readiness). `readinessProbe` quyết định xem Pod có sẵn sàng nhận traffic từ Service hay không. `livenessProbe` quyết định xem Kubelet có tiêu diệt và restart lại container hay không.
 
 **Tiêu chí chấm:**
 - 0đ: Không phân biệt được 3 loại Probe.
@@ -815,6 +1025,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích thấu đáo công dụng và thời điểm tác động của cả 3 loại Probe.
 
 **Câu hỏi đào sâu:** (Khi `startupProbe` đang chạy thì `livenessProbe` có được chạy không? — Không được chạy, livenessProbe bị vô hiệu hóa cho tới khi startupProbe thành công).
+</div>
+</details>
 
 ---
 
@@ -1067,9 +1279,22 @@ Tạo Deployment tên là `probe-deploy` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Pod `liveness-pod` có `livenessProbe` httpGet
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Pod `liveness-pod` có `livenessProbe` httpGet</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1092,10 +1317,25 @@ spec:
         periodSeconds: 10
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo Pod `readiness-pod` có `readinessProbe` exec
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo Pod `readiness-pod` có `readinessProbe` exec</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1116,10 +1356,25 @@ spec:
         failureThreshold: 2
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo Pod `tcp-startup-pod` có `startupProbe` tcpSocket
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo Pod `tcp-startup-pod` có `startupProbe` tcpSocket</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1139,10 +1394,25 @@ spec:
         periodSeconds: 5
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo Deployment `probe-deploy` chứa đủ 3 loại Probe
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo Deployment `probe-deploy` chứa đủ 3 loại Probe</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -1183,6 +1453,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy hay gặp
 

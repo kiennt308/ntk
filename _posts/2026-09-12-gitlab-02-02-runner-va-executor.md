@@ -15,8 +15,12 @@ series_order: 2
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.02] Hướng dẫn chuyên sâu GitLab Runner & Các Loại Executor: Shell, Docker, Kubernetes Executor & Cơ Chế Đăng Ký Token Mới: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về GitLab Runner & Các Loại Executor: Shell, Docker, Kubernetes Executor & Cơ Chế Đăng Ký Token Mới."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 02] GITLAB RUNNER & CÁC LOẠI EXECUTOR: SHELL, DOCKER, KUBERNETES EXECUTOR & CƠ CHẾ ĐĂNG KÝ TOKEN MỚI
 
@@ -1809,11 +1813,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** Một job GitLab CI được cấu hình bởi những tệp nào? Mỗi tệp quyết định điều gì?
-
-**Đáp án chuẩn:** **Hai** tệp, do **hai** người thường thuộc hai đội khác nhau viết.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Một job GitLab CI được cấu hình bởi những tệp nào? Mỗi tệp quyết định điều gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hai** tệp, do **hai** người thường thuộc hai đội khác nhau viết.
 
 `.gitlab-ci.yml` nói job **làm gì**: lệnh chạy, image mong muốn, artifact cần, khi nào chạy (`rules`), đòi runner có tag gì. Nó nằm trong repo, sửa bằng merge request, có tác giả và có lịch sử git, và chỉ ảnh hưởng một project.
 
@@ -1828,6 +1844,8 @@ Ranh giới ấy chính là ranh giới giữa "lỗi của tôi" và "lỗi c�
 - 3đ: Như trên, **và** nêu con số 3/8 pha, **và** nêu được khác biệt về **phạm vi ảnh hưởng** khi sửa hai tệp.
 
 **Câu hỏi đào sâu:** Có thứ nào cả hai tệp cùng nói tới không? *(Có — `image`. `config.toml` cho mặc định, `image:` trong job ghi đè. Đây cũng là câu BTVN 4 chuẩn bị cho buổi 03 về thứ tự ưu tiên.)*
+</div>
+</details>
 
 ---
 

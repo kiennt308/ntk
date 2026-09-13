@@ -15,8 +15,12 @@ series_order: 5
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.05] Hướng dẫn chuyên sâu Quản Trị Dữ Liệu Tạm Thời: Phân Biệt Artifacts vs Caching, S3 MinIO Backend & Tối Ưu Tốc Độ Build: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Dữ Liệu Tạm Thời: Phân Biệt Artifacts vs Caching, S3 MinIO Backend & Tối Ưu Tốc Độ Build."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 05] QUẢN TRỊ DỮ LIỆU TẠM THỜI: PHÂN BIỆT ARTIFACTS VS CACHING, S3 MINIO BACKEND & TỐI ƯU TỐC ĐỘ BUILD
 
@@ -2817,11 +2821,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** `artifacts` và `cache` khác nhau ở đâu? Trả lời bằng **cơ chế**, đừng trả lời bằng định nghĩa.
-
-**Đáp án chuẩn:** Khác ở **ai giữ**; mọi khác biệt còn lại là hệ quả. Có **2** kho, chỉ **1** trong 2 có API đọc.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>artifacts` và `cache` khác nhau ở đâu? Trả lời bằng **cơ chế**, đừng trả lời bằng định nghĩa.</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khác ở **ai giữ**; mọi khác biệt còn lại là hệ quả. Có **2** kho, chỉ **1** trong 2 có API đọc.
 
 `artifacts` đi **lên server GitLab**: cuối job runner nén và upload; GitLab ghi một bản ghi vào cơ sở dữ liệu, cấp URL tải, gắn `expire_in`, cộng số byte vào dung lượng project. Vì có bản ghi nên có API — `GET /projects/:id/jobs/:job_id/artifacts` trả `200` kèm nội dung hoặc `404`. Tức artifact **kiểm chứng được từ ngoài job**.
 
@@ -2836,6 +2852,8 @@ Nói gọn để đạt 3 điểm: **`artifacts` là hợp đồng, `cache` là 
 - 3đ: Như trên, **và** nêu chỉ artifact có API đọc nên chỉ nó kiểm chứng được từ ngoài, **và** đưa được câu hỏi chọn "sai hay chỉ chậm".
 
 **Câu hỏi đào sâu:** Bật distributed cache thì cache có thành hợp đồng chưa? *(Chưa. Nó chỉ chuyển cache từ đĩa một runner sang kho dùng chung, tức tăng tỉ lệ trúng. Vẫn không có bản ghi trong cơ sở dữ liệu GitLab, không có API đọc, runner vẫn không báo lỗi khi thiếu. Đổi tỉ lệ trúng không đổi loại đảm bảo.)*
+</div>
+</details>
 
 ---
 

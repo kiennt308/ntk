@@ -15,8 +15,12 @@ series_order: 1
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=format&fit=crop&w=1200&q=80"
 summary: "[CKAD P.01] Hướng dẫn chuyên sâu Tư Duy Người Phát Triển Ứng Dụng Cloud Native: So Sánh Toàn Diện CKAD vs CKA: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tư Duy Người Phát Triển Ứng Dụng Cloud Native: So Sánh Toàn Diện CKAD vs CKA."
+  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
+  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 01] TƯ DUY NGƯỜI PHÁT TRIỂN ỨNG DỤNG CLOUD NATIVE: SO SÁNH TOÀN DIỆN CKAD VS CKA
 
@@ -384,41 +388,234 @@ graph TD
 
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
-1. Điểm khác biệt lớn nhất về phạm vi trách nhiệm giữa chứng chỉ CKA và CKAD là gì?
-   - **Đáp án:** CKA tập trung vào Quản trị hạ tầng cụm (System Admin), CKAD tập trung vào Phát triển và thiết kế ứng dụng (App Developer).
 
-2. Hai miền kiến thức nào chiếm tổng trọng số cao nhất (45 %) trong kỳ thi CKAD?
-   - **Đáp án:** Miền `Environment, Configuration and Security` (25 %) và `Application Design and Build` (20 %).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Điểm khác biệt lớn nhất về phạm vi trách nhiệm giữa chứng chỉ CKA và CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  CKA tập trung vào Quản trị hạ tầng cụm (System Admin), CKAD tập trung vào Phát triển và thiết kế ứng dụng (App Developer).
+</div>
+</details>
 
-3. Bạn có cần SSH vào các Worker Node để làm bài thi CKAD hay không?
-   - **Đáp án:** Không. Bài thi CKAD 100 % thực hiện từ Client Terminal thông qua API Server.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Hai miền kiến thức nào chiếm tổng trọng số cao nhất (45 %) trong kỳ thi CKAD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Miền `Environment, Configuration and Security` (25 %) và `Application Design and Build` (20 %).
+</div>
+</details>
 
-4. Cờ cấu hình nào trong `securityContext` ngăn không cho container chạy dưới quyền root (UID 0)?
-   - **Đáp án:** Cờ `runAsNonRoot: true`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Bạn có cần SSH vào các Worker Node để làm bài thi CKAD hay không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Không. Bài thi CKAD 100 % thực hiện từ Client Terminal thông qua API Server.
+</div>
+</details>
 
-5. Cờ lệnh nào giúp nạp đồng thời toàn bộ cặp Key-Value từ ConfigMap làm biến môi trường container?
-   - **Đáp án:** Cờ `envFrom: [{configMapRef: {name: <configmap-name>}}]`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Cờ cấu hình nào trong `securityContext` ngăn không cho container chạy dưới quyền root (UID 0)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `runAsNonRoot: true`.
+</div>
+</details>
 
-6. Sự khác biệt về mục đích giữa `livenessProbe` và `readinessProbe` là gì?
-   - **Đáp án:** `livenessProbe` giúp Kubelet restart container khi bị lỗi treo, `readinessProbe` giúp Service ngừng chuyển traffic khi app chưa sẵn sàng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Cờ lệnh nào giúp nạp đồng thời toàn bộ cặp Key-Value từ ConfigMap làm biến môi trường container?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cờ `envFrom: [{configMapRef: {name: <configmap-name>}}]`.
+</div>
+</details>
 
-7. Tại sao ứng dụng Cloud Native nên được thiết kế theo mô hình Stateless?
-   - **Đáp án:** Để Pod có thể bị tiêu diệt và khởi tạo lại linh hoạt trên bất kỳ Node nào mà không làm mất dữ liệu người dùng.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Sự khác biệt về mục đích giữa `livenessProbe` và `readinessProbe` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `livenessProbe` giúp Kubelet restart container khi bị lỗi treo, `readinessProbe` giúp Service ngừng chuyển traffic khi app chưa sẵn sàng.
+</div>
+</details>
 
-8. Cờ `imagePullPolicy: IfNotPresent` có tác dụng gì đối với Kubelet?
-   - **Đáp án:** Kubelet chỉ kéo ảnh container từ registry về nếu ổ đĩa trên Node đó chưa có sẵn bản ảnh đó.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Tại sao ứng dụng Cloud Native nên được thiết kế theo mô hình Stateless?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Để Pod có thể bị tiêu diệt và khởi tạo lại linh hoạt trên bất kỳ Node nào mà không làm mất dữ liệu người dùng.
+</div>
+</details>
 
-9. Mẫu thiết kế Pod đa container nào dùng một container phụ chạy song song để thu thập log của container chính?
-   - **Đáp án:** Mẫu thiết kế Sidecar (Sidecar Container Pattern).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Cờ `imagePullPolicy: IfNotPresent` có tác dụng gì đối với Kubelet?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kubelet chỉ kéo ảnh container từ registry về nếu ổ đĩa trên Node đó chưa có sẵn bản ảnh đó.
+</div>
+</details>
 
-10. Điều gì xảy ra khi đặt cờ `readOnlyRootFilesystem: true` trong container mà ứng dụng cần ghi file tạm?
-    - **Đáp án:** Ứng dụng sẽ bị sập do lỗi permission denied khi cố ghi file, trừ khi mount một volume `emptyDir` vào thư mục tạm đó.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Mẫu thiết kế Pod đa container nào dùng một container phụ chạy song song để thu thập log của container chính?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mẫu thiết kế Sidecar (Sidecar Container Pattern).
+</div>
+</details>
 
-11. Trường `resources.requests` và `resources.limits` có mối quan hệ ràng buộc gì về giá trị?
-    - **Đáp án:** Giá trị `limits` phải luôn lớn hơn hoặc bằng giá trị `requests`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Điều gì xảy ra khi đặt cờ `readOnlyRootFilesystem: true` trong container mà ứng dụng cần ghi file tạm?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ứng dụng sẽ bị sập do lỗi permission denied khi cố ghi file, trừ khi mount một volume `emptyDir` vào thư mục tạm đó.
+</div>
+</details>
 
-12. Cú pháp cờ lệnh imperative chuẩn để tạo khung YAML của Pod trong CKAD là gì?
-    - **Đáp án:** `kubectl run <pod-name> --image=<image> --dry-run=client -o yaml > pod.yaml`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Trường `resources.requests` và `resources.limits` có mối quan hệ ràng buộc gì về giá trị?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Giá trị `limits` phải luôn lớn hơn hoặc bằng giá trị `requests`.
+</div>
+</details>
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Cú pháp cờ lệnh imperative chuẩn để tạo khung YAML của Pod trong CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  `kubectl run <pod-name> --image=<image> --dry-run=client -o yaml > pod.yaml`.
+</div>
+</details>
 
 ---
 
@@ -810,10 +1007,23 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
-**Hỏi:** Sự khác biệt bản chất giữa phạm vi kiến thức và trách nhiệm của chứng chỉ CKA và CKAD là gì?
 
-**Đáp án chuẩn:** CKA dành cho Quản trị viên hạ tầng (SysAdmin/DevOps), tập trung vào dựng cụm, etcd, Kubelet, CNI và nâng cấp cụm. CKAD dành cho Lập trình viên phát triển ứng dụng (Software Engineer/Developer), tập trung 100% vào đóng gói container, thiết kế Pod đa container, cấu hình biến môi trường, bảo mật SecurityContext và giám sát Probes.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Sự khác biệt bản chất giữa phạm vi kiến thức và trách nhiệm của chứng chỉ CKA và CKAD là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  CKA dành cho Quản trị viên hạ tầng (SysAdmin/DevOps), tập trung vào dựng cụm, etcd, Kubelet, CNI và nâng cấp cụm. CKAD dành cho Lập trình viên phát triển ứng dụng (Software Engineer/Developer), tập trung 100% vào đóng gói container, thiết kế Pod đa container, cấu hình biến môi trường, bảo mật SecurityContext và giám sát Probes.
 
 **Tiêu chí chấm:**
 - 0đ: Trả lời chung chung không phân biệt được 2 đối tượng.
@@ -822,6 +1032,8 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 - 3đ: Phân tích mạch lạc, chính xác sự chuyển đổi tư duy từ Infrastructure (CKA) sang Workloads (CKAD).
 
 **Câu hỏi đào sâu:** (Bài thi CKAD có câu hỏi nào về etcd backup hay nâng cấp kubeadm không? — Không có, toàn bộ 100% là bài tập cấu hình Workloads qua API Server).
+</div>
+</details>
 
 ---
 
@@ -1061,9 +1273,22 @@ Tạo Pod đa container tên là `logger-pod` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-### Câu 1 — Tạo Pod `web-app` có Resource Limits
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Tạo Pod `web-app` có Resource Limits</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1085,10 +1310,25 @@ spec:
           memory: 128Mi
 EOF
 ```
+</div>
+</details>
 
-### Câu 2 — Tạo Secret `db-pass` và nạp biến `DB_PASS`
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>— Tạo Secret `db-pass` và nạp biến `DB_PASS</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 kubectl create secret generic db-pass --from-literal=password=Secret123 -n prod
 
 cat <<EOF | kubectl apply -f -
@@ -1110,10 +1350,25 @@ spec:
               key: password
 EOF
 ```
+</div>
+</details>
 
-### Câu 3 — Tạo Pod `app-health` với LivenessProbe
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>— Tạo Pod `app-health` với LivenessProbe</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1132,10 +1387,25 @@ spec:
         periodSeconds: 10
 EOF
 ```
+</div>
+</details>
 
-### Câu 4 — Tạo Pod đa container `logger-pod` Sidecar
-
-```bash
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>— Tạo Pod đa container `logger-pod` Sidecar</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1163,6 +1433,8 @@ EOF
 ```
 
 ---
+</div>
+</details>
 
 ## T4. Bẫy mất điểm
 

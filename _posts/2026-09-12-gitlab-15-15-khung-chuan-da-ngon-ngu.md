@@ -15,8 +15,12 @@ series_order: 15
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee02e1?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.15] Hướng dẫn chuyên sâu Thiết Kế Khung CI/CD Chuẩn Đa Ngôn Ngữ: Kiến Trúc Polyglot Pipeline Cho Hệ Thống Microservices: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Thiết Kế Khung CI/CD Chuẩn Đa Ngôn Ngữ: Kiến Trúc Polyglot Pipeline Cho Hệ Thống Microservices."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 15] THIẾT KẾ KHUNG CI/CD CHUẨN ĐA NGÔN NGỮ: KIẾN TRÚC POLYGLOT PIPELINE CHO HỆ THỐNG MICROSERVICES
 
@@ -1907,11 +1911,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. Chi tiết 12 câu hỏi vấn đáp & Đáp án chuẩn phỏng vấn
 
-### Câu 1
-**Câu hỏi:** Tại sao trong kiến trúc CI/CD nâng cao, ta có thể khẳng định 6 ngôn ngữ lập trình phổ biến (Node.js, Java, Python, Go, .NET, PHP) chỉ khác nhau ở đúng 3 trục thuộc tính trong tệp cấu hình GitLab CI?
-
-**Đáp án chuẩn:**
-Qua thực nghiệm phân giải và đo đạc thực tế 570 dòng YAML của 6 repository mẫu qua API `POST /ci/lint` (**QT 4.3**), ta nhận thấy tất cả các tệp CI/CD thuộc mọi ngôn ngữ đều chia sẻ chung 9 thuộc tính nền tảng: `stages`, `default:interruptible`, `default:retry`, `default:timeout`, `rules`, `artifacts:paths`, `artifacts:reports:junit`, `artifacts:expire_in`, và `cache:policy`.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Câu hỏi:** Tại sao trong kiến trúc CI/CD nâng cao, ta có thể khẳng định 6 ngôn ngữ lập trình phổ biến (Node.js, Java, Python, Go, .NET, PHP) chỉ khác nhau ở đúng 3 trục thuộc tính trong tệp cấu hình GitLab CI?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Qua thực nghiệm phân giải và đo đạc thực tế 570 dòng YAML của 6 repository mẫu qua API `POST /ci/lint` (**QT 4.3**), ta nhận thấy tất cả các tệp CI/CD thuộc mọi ngôn ngữ đều chia sẻ chung 9 thuộc tính nền tảng: `stages`, `default:interruptible`, `default:retry`, `default:timeout`, `rules`, `artifacts:paths`, `artifacts:reports:junit`, `artifacts:expire_in`, và `cache:policy`.
 
 Sự khác biệt duy nhất giữa 6 ngôn ngữ nằm ở đúng **3 trục biến thiên** (**QT 4.1**):
 1. **Trục 1: Docker Image chứa công cụ dịch/biên dịch (`image:`):** Môi trường thực thi lệnh (Ví dụ: `node:20-alpine`, `maven:3.9-temurin-21`, `python:3.12-slim`, `golang:1.23-alpine`, `mcr.microsoft.com/dotnet/sdk:8.0`, `php:8.3-cli`).
@@ -1924,12 +1939,25 @@ Bằng việc phân lập 3 trục này thành các biến môi trường (`vari
 Việc đưa 3 trục biến thiên này vào tệp `khung.yml` giúp kỹ sư DevOps quản lý chính xác từng phiên bản runtime mà không làm ảnh hưởng đến luồng điều khiển chung của Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 2
-**Câu hỏi:** Kỹ thuật "Lockfile Hashing" trong thuộc tính `cache:key` giúp giải quyết bài toán gì và được cài đặt như thế nào để tối ưu tốc độ nạp Cache giữa các lần Commit?
-
-**Đáp án chuẩn:**
-Kỹ thuật Lockfile Hashing giải quyết bài toán **Cache Invalidation (Vô hiệu hóa đệm rác)** và **Cache Hit Rate (Tỷ lệ trúng đệm)** (**QT 6.1**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Câu hỏi:** Kỹ thuật "Lockfile Hashing" trong thuộc tính `cache:key` giúp giải quyết bài toán gì và được cài đặt như thế nào để tối ưu tốc độ nạp Cache giữa các lần Commit?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Kỹ thuật Lockfile Hashing giải quyết bài toán **Cache Invalidation (Vô hiệu hóa đệm rác)** và **Cache Hit Rate (Tỷ lệ trúng đệm)** (**QT 6.1**).
 
 Nếu dùng `cache:key` cố định theo nhánh (ví dụ: `key: "$CI_COMMIT_REF_SLUG"`), khi lập trình viên thêm hoặc xóa một thư viện trong tệp khóa phiên bản (`package-lock.json`, `pom.xml`, `requirements.txt`, `go.sum`, `packages.lock.json`, `composer.lock`), Runner vẫn nạp lại đệm zip cũ chứa các thư viện đã bị xoá. Điều này làm lãng phí dung lượng đĩa đệm và dễ gây xung đột phiên bản giữa các dependency.
 
@@ -1950,12 +1978,25 @@ cache:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 3
-**Câu hỏi:** Tại sao việc khai báo đường dẫn `cache:paths:` trỏ ra ngoài workspace làm việc của dự án (ví dụ: `cache:paths: [/root/.m2/repository]`) lại khiến tỉ lệ hit Cache bằng 0% mặc dù Job vẫn báo XANH 100%?
-
-**Đáp án chuẩn:**
-Đây là **Chế độ hỏng im lặng Ca B (Silent Failure Mode B)** trong GitLab CI/CD (**QT 6.2**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Câu hỏi:** Tại sao việc khai báo đường dẫn `cache:paths:` trỏ ra ngoài workspace làm việc của dự án (ví dụ: `cache:paths: [/root/.m2/repository]`) lại khiến tỉ lệ hit Cache bằng 0% mặc dù Job vẫn báo XANH 100%?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là **Chế độ hỏng im lặng Ca B (Silent Failure Mode B)** trong GitLab CI/CD (**QT 6.2**).
 
 Bản chất kỹ thuật của GitLab Runner (đặc biệt là Docker Executor):
 - Trình nén đệm `gitlab-runner-helper` chạy dưới dạng container độc lập hoặc process bên ngoài chỉ cho phép nén zip các tệp nằm **bên trong** thư mục làm việc của dự án (`$CI_PROJECT_DIR`).
@@ -1966,12 +2007,25 @@ Bản chất kỹ thuật của GitLab Runner (đặc biệt là Docker Executor
 **Cách khắc phục:** Cưỡng chế sử dụng 6 biến môi trường đổi hướng Cache ép toàn bộ thư mục đệm về nằm bên trong thư mục `$CI_PROJECT_DIR` (**QT 4.4**).
 
 ---
+</div>
+</details>
 
-### Câu 4
-**Câu hỏi:** Khi sử dụng từ khóa `extends:` để kế thừa từ tệp khung `khung.yml`, làm thế nào để ngăn chặn việc Job thành viên cố tình ghi đè mảng `script:` làm mất đi các câu lệnh khẳng định cưỡng chế tự động?
-
-**Đáp án chuẩn:**
-Trong cú pháp YAML của GitLab CI, khi một Job con dùng `extends: .build_template` và tự khai báo khối `script:`, mảng `script` ở Job con sẽ **ghi đè hoàn toàn (Overwritten)** mảng `script` của Job cha thay vì hợp nhất (Merged) (**QT 5.2**). Điều này làm mất toàn bộ bộ 2 khẳng định cưỡng chế tự động (`.khung_assertions`), dẫn đến nguy cơ hiện vật rỗng 0 byte hoặc 0 testcase nhưng Job vẫn báo XANH.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Câu hỏi:** Khi sử dụng từ khóa `extends:` để kế thừa từ tệp khung `khung.yml`, làm thế nào để ngăn chặn việc Job thành viên cố tình ghi đè mảng `script:` làm mất đi các câu lệnh khẳng định cưỡng chế tự động?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong cú pháp YAML của GitLab CI, khi một Job con dùng `extends: .build_template` và tự khai báo khối `script:`, mảng `script` ở Job con sẽ **ghi đè hoàn toàn (Overwritten)** mảng `script` của Job cha thay vì hợp nhất (Merged) (**QT 5.2**). Điều này làm mất toàn bộ bộ 2 khẳng định cưỡng chế tự động (`.khung_assertions`), dẫn đến nguy cơ hiện vật rỗng 0 byte hoặc 0 testcase nhưng Job vẫn báo XANH.
 
 **Phương án khắc phục chuẩn 2 lớp:**
 1. **Lớp 1 (Chỉ dùng biến làm tham số):** Tuyệt đối không khai báo mảng `script:` ở Job con. Tất cả lệnh đóng gói và kiểm thử được đẩy vào 3 biến môi trường string (`CMD_INSTALL`, `CMD_BUILD`, `CMD_TEST`).
@@ -1985,12 +2039,25 @@ Trong cú pháp YAML của GitLab CI, khi một Job con dùng `extends: .build_t
    ```
 
 ---
+</div>
+</details>
 
-### Câu 5
-**Câu hỏi:** Tại sao Golang là ngôn ngữ duy nhất trong 6 ngôn ngữ bắt buộc phải khai báo tới 2 đường dẫn Cache (`GOMODCACHE` và `GOCACHE`) trong tệp cấu hình CI/CD?
-
-**Đáp án chuẩn:**
-Khác với các ngôn ngữ như Node.js (chỉ nạp vào `.npm`), Java (chỉ nạp vào `.m2`), hay Python (chỉ nạp vào `.cache/pip`), cơ chế trình biên dịch của Golang (từ Go 1.11+) chia bộ đệm thành 2 vùng độc lập có bản chất kỹ thuật hoàn toàn khác nhau (**QT 4.4**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Câu hỏi:** Tại sao Golang là ngôn ngữ duy nhất trong 6 ngôn ngữ bắt buộc phải khai báo tới 2 đường dẫn Cache (`GOMODCACHE` và `GOCACHE`) trong tệp cấu hình CI/CD?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khác với các ngôn ngữ như Node.js (chỉ nạp vào `.npm`), Java (chỉ nạp vào `.m2`), hay Python (chỉ nạp vào `.cache/pip`), cơ chế trình biên dịch của Golang (từ Go 1.11+) chia bộ đệm thành 2 vùng độc lập có bản chất kỹ thuật hoàn toàn khác nhau (**QT 4.4**):
 
 1. **Vùng 1 (`GOMODCACHE` - Module Download Cache):**
    - Vị trí mặc định: `$GOPATH/pkg/mod`.
@@ -2017,12 +2084,25 @@ go:build:
 ```
 
 ---
+</div>
+</details>
 
-### Câu 6
-**Câu hỏi:** Tại sao Quy tắc **QT 4.2** bắt buộc phải ghim Docker Image bằng SHA256 Digest thay vì ghim bằng Tag phiên bản (ví dụ: `image: node:20.18.0-alpine3.20@sha256:...`)?
-
-**Đáp án chuẩn:**
-Ghim Docker Image bằng Tag phiên bản (kể cả tag cụ thể như `node:20.18.0-alpine3.20`) vẫn tiềm ẩn nguy cơ **Non-deterministic Builds (Build không bất biến)** vì 3 lý do kỹ thuật:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Câu hỏi:** Tại sao Quy tắc **QT 4.2** bắt buộc phải ghim Docker Image bằng SHA256 Digest thay vì ghim bằng Tag phiên bản (ví dụ: `image: node:20.18.0-alpine3.20@sha256:...`)?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Ghim Docker Image bằng Tag phiên bản (kể cả tag cụ thể như `node:20.18.0-alpine3.20`) vẫn tiềm ẩn nguy cơ **Non-deterministic Builds (Build không bất biến)** vì 3 lý do kỹ thuật:
 
 1. **Tag có thể bị ghi đè (Mutable Tags):** Nhà phát hành Docker Image có thể build lại và push đè một Image mới lên cùng tag `20.18.0-alpine3.20` để vá lỗi bảo mật OS. Các Runner ở các mốc thời gian khác nhau sẽ kéo 2 Image khác nhau dù dùng chung tag.
 2. **Nguy cơ tấn công Chuỗi cung ứng (Supply Chain Attack):** Nếu tài khoản Docker Hub của nhà phát hành bị chiếm đoạt, kẻ tấn công có thể push mã độc đè lên tag phiên bản cũ.
@@ -2031,12 +2111,25 @@ Ghim Docker Image bằng Tag phiên bản (kể cả tag cụ thể như `node:2
 **SHA256 Digest là mã băm mã hóa duy nhất của nội dung Image.** Khi ghim `image: name@sha256:<hash>`, bất kỳ sự thay đổi dù nhỏ nhất trong Image cũng làm thay đổi SHA256, đảm bảo $100\%$ tính bất biến và an toàn cho Pipeline.
 
 ---
+</div>
+</details>
 
-### Câu 7
-**Câu hỏi:** Cơ chế "Self-testing Pipeline (Pipeline tự kiểm tra)" trong tệp `khung.yml` hoạt động như thế nào và nó bảo vệ hệ thống CI/CD dùng chung khỏi rủi ro gì?
-
-**Đáp án chuẩn:**
-Cơ chế "Self-testing Pipeline" (**QT 7.2**) hoạt động theo mô hình Parent-Child Pipeline tự kích hoạt:
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Câu hỏi:** Cơ chế "Self-testing Pipeline (Pipeline tự kiểm tra)" trong tệp `khung.yml` hoạt động như thế nào và nó bảo vệ hệ thống CI/CD dùng chung khỏi rủi ro gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cơ chế "Self-testing Pipeline" (**QT 7.2**) hoạt động theo mô hình Parent-Child Pipeline tự kích hoạt:
 
 1. **Cách cài đặt:**
    Trong tệp `khung.yml` thuộc repository khung `devops/lab15-khung`, ở stage cuối cùng (`bao-cao`), ta khai báo 6 Job trigger chạy song song hướng về 6 repository mẫu:
@@ -2051,12 +2144,25 @@ Cơ chế "Self-testing Pipeline" (**QT 7.2**) hoạt động theo mô hình Par
 3. **Rủi ro ngăn chặn:** Bảo vệ hệ thống khỏi rủi ro **Breaking Changes ở Khung dùng chung**. Khi kỹ sư DevOps sửa một câu lệnh trong `khung.yml` (ví dụ: sửa script khẳng định), thay vì commit trực tiếp làm vỡ hàng trăm dự án trong tập đoàn, Pipeline tự kiểm tra sẽ chạy thử thay đổi đó trên cả 6 ngôn ngữ mẫu ở môi trường thử nghiệm trước khi merge tệp khung.
 
 ---
+</div>
+</details>
 
-### Câu 8
-**Câu hỏi:** Tại sao ta phải cài đặt bộ 2 khẳng định cưỡng chế tự động (`.khung_assertions`) trực tiếp bên trong tệp khung thay vì tin tưởng vào exit code của câu lệnh build?
-
-**Đáp án chuẩn:**
-Trong thực tế triển khai CI/CD, có rất nhiều công cụ biên dịch hoặc công cụ chạy test bị lỗi nhưng vẫn trả về **Exit Code 0** (Job vẫn báo XANH 100%) (**QT 6.3**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Câu hỏi:** Tại sao ta phải cài đặt bộ 2 khẳng định cưỡng chế tự động (`.khung_assertions`) trực tiếp bên trong tệp khung thay vì tin tưởng vào exit code của câu lệnh build?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trong thực tế triển khai CI/CD, có rất nhiều công cụ biên dịch hoặc công cụ chạy test bị lỗi nhưng vẫn trả về **Exit Code 0** (Job vẫn báo XANH 100%) (**QT 6.3**):
 
 - **Trường hợp 1 (Build sinh file rỗng 0 byte):** Do hết đĩa đệm, thiếu biến môi trường hoặc script shell bị dính lỗi `set +e`, lệnh build kết thúc êm đẹp nhưng tệp sản phẩm (`dist/app.tar.gz`, `target/app.jar`) bị rỗng 0 byte.
 - **Trường hợp 2 (Báo cáo JUnit 0 testcase):** Lập trình viên trỏ sai đường dẫn file test, trình test không tìm thấy file nào nên in `0 tests executed` và trả về exit code 0.
@@ -2075,12 +2181,25 @@ fi
 ```
 
 ---
+</div>
+</details>
 
-### Câu 9
-**Câu hỏi:** Trình bày chi tiết cơ chế hoạt động của 6 biến môi trường đổi hướng Cache đối với Docker Executor trên GitLab Runner?
-
-**Đáp án chuẩn:**
-Mặc định, các trình quản lý gói của 6 ngôn ngữ sẽ lưu phụ thuộc vào thư mục Home (`~`) của User bên trong Docker Container (**QT 4.4**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Câu hỏi:** Trình bày chi tiết cơ chế hoạt động của 6 biến môi trường đổi hướng Cache đối với Docker Executor trên GitLab Runner?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Mặc định, các trình quản lý gói của 6 ngôn ngữ sẽ lưu phụ thuộc vào thư mục Home (`~`) của User bên trong Docker Container (**QT 4.4**):
 - Node.js: `~/.npm`
 - Java Maven: `~/.m2/repository`
 - Python pip: `~/.cache/pip`
@@ -2102,12 +2221,25 @@ Ta dùng thuộc tính `variables:` khai báo các biến môi trường chuẩn
 Khi đó, thuộc tính `cache:paths:` chỉ cần trỏ vào các thư mục tương đối này (ví dụ: `- .npm/`), Runner sẽ nén và khôi phục Cache thành công $100\%$.
 
 ---
+</div>
+</details>
 
-### Câu 10
-**Câu hỏi:** Giả sử một hệ thống CI/CD dùng chung `cache:key: "$CI_COMMIT_REF_SLUG"` cho cả dự án Node.js và dự án Java trên cùng một Runner. Điều gì sẽ xảy ra và cách xử lý triệt để?
-
-**Đáp án chuẩn:**
-Đây là **Chế độ hỏng im lặng Ca A (Trúng Cache ngôn ngữ khác - Cache Collision)** (**QT 6.1**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Câu hỏi:** Giả sử một hệ thống CI/CD dùng chung `cache:key: "$CI_COMMIT_REF_SLUG"` cho cả dự án Node.js và dự án Java trên cùng một Runner. Điều gì sẽ xảy ra và cách xử lý triệt để?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Đây là **Chế độ hỏng im lặng Ca A (Trúng Cache ngôn ngữ khác - Cache Collision)** (**QT 6.1**).
 
 **Diễn biến sự cố:**
 1. Job Node.js chạy trên nhánh `main`, tải 210 MB thư viện `.npm/` và nén lên đĩa đệm S3/MinIO với khóa `main.zip`.
@@ -2120,12 +2252,25 @@ Khi đó, thuộc tính `cache:paths:` chỉ cần trỏ vào các thư mục t�
 **Cách xử lý triệt để:** Bắt buộc thêm tiền tố tên ngôn ngữ vào khóa Cache: `key: "<ngôn-ngữ>-$CI_COMMIT_REF_SLUG-${CI_HASH_LOCKFILE}"`.
 
 ---
+</div>
+</details>
 
-### Câu 11
-**Câu hỏi:** Trong quy trình chạy "Self-testing Pipeline", nếu có 6 repository mẫu cùng kích hoạt 6 Pipeline con đồng thời làm nghẽn hàng đợi (Pending) do hết cờ `concurrent` của Runner, bạn sẽ xử lý thế nào?
-
-**Đáp án chuẩn:**
-Nguyên nhân kỹ thuật: Tệp `config.toml` của GitLab Runner khai báo cờ `concurrent` (số lượng Job tối đa Runner được phép chạy song song tại một thời điểm) nhỏ hơn tổng số Job phát sinh từ Pipeline cha và 6 Pipeline con (**QT 7.2**).
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q11</span>
+    <span>Câu hỏi:** Trong quy trình chạy "Self-testing Pipeline", nếu có 6 repository mẫu cùng kích hoạt 6 Pipeline con đồng thời làm nghẽn hàng đợi (Pending) do hết cờ `concurrent` của Runner, bạn sẽ xử lý thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Nguyên nhân kỹ thuật: Tệp `config.toml` của GitLab Runner khai báo cờ `concurrent` (số lượng Job tối đa Runner được phép chạy song song tại một thời điểm) nhỏ hơn tổng số Job phát sinh từ Pipeline cha và 6 Pipeline con (**QT 7.2**).
 
 **Phương án xử lý 3 bước:**
 1. **Tăng tham số `concurrent` trong `config.toml`:**
@@ -2137,12 +2282,25 @@ Nguyên nhân kỹ thuật: Tệp `config.toml` của GitLab Runner khai báo c�
 3. **Áp dụng cờ `stage` phân tầng:** Nếu tài nguyên phần cứng Runner có hạn (RAM/CPU thấp), thay vì cho 6 Job trigger chạy song song ở stage `bao-cao`, chia 6 Job con thành 2 stage nối tiếp (stage `test_group_1` chạy Node/Java/Python và stage `test_group_2` chạy Go/.NET/PHP).
 
 ---
+</div>
+</details>
 
-### Câu 12
-**Câu hỏi:** Tại sao việc gửi 6 tệp cấu hình `.gitlab-ci.yml` qua API `POST /ci/lint` là bước bắt buộc trước khi tiến hành phân tích điểm khác biệt `diff` để xây dựng tệp khung dùng chung?
-
-**Đáp án chuẩn:**
-Trước khi hợp nhất mã nguồn CI/CD, ta không thể so sánh `diff` trực tiếp các tệp `.gitlab-ci.yml` thô (Raw YAML) vì **Nhiêu Cú Pháp (Syntax Noise)** (**QT 4.3**):
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q12</span>
+    <span>Câu hỏi:** Tại sao việc gửi 6 tệp cấu hình `.gitlab-ci.yml` qua API `POST /ci/lint` là bước bắt buộc trước khi tiến hành phân tích điểm khác biệt `diff` để xây dựng tệp khung dùng chung?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Trước khi hợp nhất mã nguồn CI/CD, ta không thể so sánh `diff` trực tiếp các tệp `.gitlab-ci.yml` thô (Raw YAML) vì **Nhiêu Cú Pháp (Syntax Noise)** (**QT 4.3**):
 - Mỗi lập trình viên có phong cách viết YAML khác nhau (thụt lề 2 space vs 4 space, thứ tự các thuộc tính `stage`, `image`, `script` bị đảo lộn, sử dụng dấu ngoặc đơn/ngoặc kép khác nhau).
 - Việc `diff` trực tiếp file thô sẽ tạo ra hàng trăm dòng khác biệt giả tạo (False Positives), che khuất các thuộc tính bản chất.
 
@@ -2152,6 +2310,8 @@ Trước khi hợp nhất mã nguồn CI/CD, ta không thể so sánh `diff` tr�
 3. Sau khi đi qua `/ci/lint`, 6 tệp YAML trở nên hoàn toàn đồng dạng về mặt cấu trúc. Lúc này, chạy lệnh `diff` sẽ trích xuất được chính xác $100\%$ danh sách 9 thuộc tính dùng chung và 3 trục biến thiên mà không bị nhiễu bởi định dạng văn bản.
 
 ---
+</div>
+</details>
 
 ## §V3. Câu chốt để nói khi phỏng vấn
 

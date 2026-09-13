@@ -14,8 +14,12 @@ series_order: 8
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
 summary: "Hướng dẫn thực chiến phẫu thuật Terraform State: làm chủ các lệnh ngoại"
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Phẫu Thuật State: Làm Chủ State Subcommands (mv, rm, replace) & Declarative."
+  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
+  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # Phẫu Thuật State: Làm Chủ State Subcommands (mv, rm, replace) & Declarative Import Block
 
@@ -352,68 +356,199 @@ cd .. && rm -rf /tmp/state-surgery-lab
 
 ## 8. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-### Câu 1: Lệnh `terraform state mv` thực hiện hành động gì lên hạ tầng thực tế trên Cloud?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-<b>HOÀN TOÀN KHÔNG CHẠM VÀO CLOUD</b>. Lệnh <code>state mv</code> chỉ sửa đổi đường dẫn địa chỉ (Resource Address) bên trong tài liệu JSON của State File. Tài nguyên vật lý trên AWS/GCP/Azure vẫn tiếp tục hoạt động liên tục mà không hề bị gián đoạn hay restart.
+
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>Lệnh `terraform state mv` thực hiện hành động gì lên hạ tầng thực tế trên Cloud?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <b style="color: var(--accent-primary);">HOÀN TOÀN KHÔNG CHẠM VÀO CLOUD</b>. Lệnh <code>state mv</code> chỉ sửa đổi đường dẫn địa chỉ (Resource Address) bên trong tài liệu JSON của State File. Tài nguyên vật lý trên AWS/GCP/Azure vẫn tiếp tục hoạt động liên tục mà không hề bị gián đoạn hay restart.
+</div>
 </details>
 
-### Câu 2: Sự khác biệt cơ bản giữa `terraform state rm` và `terraform destroy` là gì?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-- <code>state rm</code>: Chỉ xóa bản ghi ánh xạ của tài nguyên ra khỏi State File (Untrack), tài nguyên thực tế trên Cloud <b>VẪN CÒN NGUYÊN</b>.<br/>
-- <code>destroy</code>: Gửi lệnh API lên Cloud để <b>XÓA VĨNH VIỄN</b> tài nguyên thực tế.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q02</span>
+    <span>Sự khác biệt cơ bản giữa `terraform state rm` và `terraform destroy` là gì?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  - <code>state rm</code>: Chỉ xóa bản ghi ánh xạ của tài nguyên ra khỏi State File (Untrack), tài nguyên thực tế trên Cloud <b style="color: var(--accent-primary);">VẪN CÒN NGUYÊN</b>.<br/>
+- <code>destroy</code>: Gửi lệnh API lên Cloud để <b style="color: var(--accent-primary);">XÓA VĨNH VIỄN</b> tài nguyên thực tế.
+</div>
 </details>
 
-### Câu 3: Khối `import {}` trong Terraform 1.5+ có ưu điểm gì vượt trội so với lệnh `terraform import` cũ?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-1. Tính chất Declarative: Kế hoạch import được lưu trữ trong mã nguồn Git, có thể review qua Pull Request.<br/>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q03</span>
+    <span>Khối `import {}` trong Terraform 1.5+ có ưu điểm gì vượt trội so với lệnh `terraform import` cũ?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  1. Tính chất Declarative: Kế hoạch import được lưu trữ trong mã nguồn Git, có thể review qua Pull Request.<br/>
 2. Xem trước kế hoạch (Preview): Cho phép chạy <code>terraform plan</code> để đối soát trước khi import.<br/>
 3. Tự động sinh mã nguồn (Code Generation): Tự động tạo code HCL chuẩn xác bằng cờ <code>-generate-config-out</code>.
+</div>
 </details>
 
-### Câu 4: Khi di chuyển tài nguyên từ Root Module vào Child Module, lệnh `state mv` được viết như thế nào?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Cú pháp: <code>terraform state mv <source_address> <destination_address></code>.<br/>
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q04</span>
+    <span>Khi di chuyển tài nguyên từ Root Module vào Child Module, lệnh `state mv` được viết như thế nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Cú pháp: <code>terraform state mv <source_address> <destination_address></code>.<br/>
 Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_security_group.web</code>.
+</div>
 </details>
 
-### Câu 5: Vì sao lệnh `terraform plan -replace` lại an toàn hơn lệnh cũ `terraform taint`?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Lệnh cũ <code>taint</code> ghi đè trực tiếp trạng thái nguy hiểm vào State ngay lập tức. Trong khi <code>-replace</code> chỉ tạo ra một kế hoạch thay thế tạm thời trong bộ nhớ Plan, cho phép kỹ sư xem xét kỹ lưỡng và chỉ thực thi khi đã kiểm duyệt an toàn.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q05</span>
+    <span>Vì sao lệnh `terraform plan -replace` lại an toàn hơn lệnh cũ `terraform taint`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Lệnh cũ <code>taint</code> ghi đè trực tiếp trạng thái nguy hiểm vào State ngay lập tức. Trong khi <code>-replace</code> chỉ tạo ra một kế hoạch thay thế tạm thời trong bộ nhớ Plan, cho phép kỹ sư xem xét kỹ lưỡng và chỉ thực thi khi đã kiểm duyệt an toàn.
+</div>
 </details>
 
-### Câu 6: Làm thế nào để định vị một tài nguyên nằm trong vòng lặp `for_each` khi chạy `state show`?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Sử dụng cú pháp: <code>terraform state show '<resource_type>.<name>["<key>"]'</code> (Bắt buộc bọc trong dấu nháy đơn để tránh lỗi Shell interpolation). Ví dụ: <code>terraform state show 'aws_instance.server["prod"]'</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q06</span>
+    <span>Làm thế nào để định vị một tài nguyên nằm trong vòng lặp `for_each` khi chạy `state show`?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Sử dụng cú pháp: <code>terraform state show '<resource_type>.<name>["<key>"]'</code> (Bắt buộc bọc trong dấu nháy đơn để tránh lỗi Shell interpolation). Ví dụ: <code>terraform state show 'aws_instance.server["prod"]'</code>.
+</div>
 </details>
 
-### Câu 7: Điều gì xảy ra nếu bạn đổi tên resource trong HCL nhưng quên chạy `state mv` trước khi apply?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Terraform sẽ coi tài nguyên có tên cũ đã bị xóa khỏi code (tạo hành vi <b>Destroy</b>) và tài nguyên có tên mới là một tài nguyên hoàn toàn mới (tạo hành vi <b>Create</b>). Điều này dẫn tới việc xóa mất tài nguyên đang chạy và làm mất mát dữ liệu!
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q07</span>
+    <span>Điều gì xảy ra nếu bạn đổi tên resource trong HCL nhưng quên chạy `state mv` trước khi apply?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Terraform sẽ coi tài nguyên có tên cũ đã bị xóa khỏi code (tạo hành vi <b style="color: var(--accent-primary);">Destroy</b>) và tài nguyên có tên mới là một tài nguyên hoàn toàn mới (tạo hành vi <b style="color: var(--accent-primary);">Create</b>). Điều này dẫn tới việc xóa mất tài nguyên đang chạy và làm mất mát dữ liệu!
+</div>
 </details>
 
-### Câu 8: Sau khi import thành công bằng khối `import {}`, có nên giữ lại khối `import` đó trong code không?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Từ Terraform 1.5+, bạn <b>hoàn toàn có thể giữ lại</b> khối <code>import {}</code> trong mã nguồn như một tài liệu ghi nhớ lịch sử nguồn gốc tài nguyên mà không gây ảnh hưởng gì tới các đợt apply tiếp theo. Hoặc bạn có thể xóa đi sau khi tài nguyên đã nằm an toàn trong State.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q08</span>
+    <span>Sau khi import thành công bằng khối `import {}`, có nên giữ lại khối `import` đó trong code không?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Từ Terraform 1.5+, bạn <b style="color: var(--accent-primary);">hoàn toàn có thể giữ lại</b> khối <code>import {}</code> trong mã nguồn như một tài liệu ghi nhớ lịch sử nguồn gốc tài nguyên mà không gây ảnh hưởng gì tới các đợt apply tiếp theo. Hoặc bạn có thể xóa đi sau khi tài nguyên đã nằm an toàn trong State.
+</div>
 </details>
 
-### Câu 9: Lệnh `terraform state pull` và `terraform state push` được dùng trong tình huống nào?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Dùng để tải trực tiếp nội dung State thô (Raw JSON) về máy (<code>state pull > state.json</code>) để chỉnh sửa cứu hộ khẩn cấp khi State bị corrupt, sau đó đẩy ngược lại Remote Backend một cách có kiểm soát bằng lệnh <code>state push</code>.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q09</span>
+    <span>Lệnh `terraform state pull` và `terraform state push` được dùng trong tình huống nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Dùng để tải trực tiếp nội dung State thô (Raw JSON) về máy (<code>state pull > state.json</code>) để chỉnh sửa cứu hộ khẩn cấp khi State bị corrupt, sau đó đẩy ngược lại Remote Backend một cách có kiểm soát bằng lệnh <code>state push</code>.
+</div>
 </details>
 
-### Câu 10: Rào chắn an ninh nào trong HCL giúp ngăn chặn hoàn toàn việc xóa nhầm tài nguyên khi chạy apply sai sót?
-<details>
-<summary><b>Xem lời giải chi tiết</b></summary>
-Khai báo khối <code>lifecycle { prevent_destroy = true }</code> trực tiếp bên trong tài nguyên cần bảo vệ. Bất kỳ lệnh Plan nào có ý định xóa tài nguyên này đều sẽ bị Terraform chặn đứng ngay lập tức.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q10</span>
+    <span>Rào chắn an ninh nào trong HCL giúp ngăn chặn hoàn toàn việc xóa nhầm tài nguyên khi chạy apply sai sót?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  Khai báo khối <code>lifecycle { prevent_destroy = true }</code> trực tiếp bên trong tài nguyên cần bảo vệ. Bất kỳ lệnh Plan nào có ý định xóa tài nguyên này đều sẽ bị Terraform chặn đứng ngay lập tức.
+</div>
 </details>
 
 ---

@@ -15,8 +15,12 @@ series_order: 4
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
 summary: "[GitLab CI/CD P.04] Hướng dẫn chuyên sâu Điều Khiển Luồng Thực Thi Nâng Cao Với Rules & Workflow: rules:if, changes, exists & workflow:rules: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Điều Khiển Luồng Thực Thi Nâng Cao Với Rules & Workflow: rules:if, changes, exists & workflow:rules."
+  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
+  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 04] ĐIỀU KHIỂN LUỒNG THỰC THI NÂNG CAO VỚI RULES & WORKFLOW: RULES:IF, CHANGES, EXISTS & WORKFLOW:RULES
 
@@ -1888,11 +1892,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## V2. Bộ câu hỏi
 
-### Câu 1 — 🔥
 
-**Hỏi:** `rules` được đánh giá lúc nào?
-
-**Đáp án chuẩn:** **Đúng một lần, lúc pipeline được tạo** — gọi thời điểm ấy là `t0`. Danh sách job của pipeline chốt tại đó và **không gì đổi được nó sau đó**.
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>rules` được đánh giá lúc nào?</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Đúng một lần, lúc pipeline được tạo** — gọi thời điểm ấy là `t0`. Danh sách job của pipeline chốt tại đó và **không gì đổi được nó sau đó**.
 
 Cơ chế: GitLab dựng pipeline như một **đối tượng tĩnh**. Nó phân giải tệp, đánh giá `workflow`, đánh giá `rules` của từng job, rồi ghi vào cơ sở dữ liệu một danh sách job cố định cùng quan hệ giữa chúng. Runner sau đó chỉ **lấy job từ danh sách ấy**. Không có bước nào đánh giá lại `rules`.
 
@@ -1911,6 +1927,8 @@ Ba hệ quả kiểm chứng được:
 - 3đ: Như trên, **và** nêu được phép đo ba giá trị (trước / sau retry / pipeline mới).
 
 **Câu hỏi đào sâu:** Vậy muốn đổi danh sách job thì làm gì? *(Tạo pipeline mới — push commit mới, hoặc gọi API `POST /projects/:id/pipeline`. Retry không đủ.)*
+</div>
+</details>
 
 ---
 

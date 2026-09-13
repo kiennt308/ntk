@@ -15,8 +15,12 @@ series_order: 26
 difficulty: Advanced
 thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80"
 summary: "[Ansible P.26] Hướng dẫn chuyên sâu Tích Hợp Ansible Trong CI/CD: GitLab CI, GitHub Actions, Jenkins Automation & Quản Lý SSH Private Keys Không Để Lộ: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+tldr:
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tích Hợp Ansible Trong CI/CD: GitLab CI, GitHub Actions, Jenkins Automation & Quản Lý SSH Private Keys Không Để Lộ."
+  - "Xây dựng hạ tầng tự động hóa với tính Idempotency tuyệt đối qua Playbooks, Roles và Ansible Collections."
+  - "Quản trị cấu hình máy chủ quy mô lớn an toàn, bảo mật dữ liệu nhạy cảm với Ansible Vault."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
-
 {% raw %}
 # [BÀI 26] TÍCH HỢP ANSIBLE TRONG CI/CD: GITLAB CI, GITHUB ACTIONS, JENKINS AUTOMATION & QUẢN LÝ SSH PRIVATE KEYS KHÔNG ĐỂ LỘ
 
@@ -845,8 +849,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-### Câu 1 — Cấu trúc Pipeline CI/CD 4 Giai đoạn 🔥
-**Hỏi:** Trình bày 4 giai đoạn (Stages) tiêu chuẩn trong một pipeline CI/CD tự động hóa Ansible cấp Enterprise. Tại sao việc chia 4 stage này lại là bắt buộc? *(Liên quan QT 4.1)*
+<details class="qa-card">
+<summary class="qa-summary">
+  <div class="qa-summary-left">
+    <span class="qa-num-badge">Q01</span>
+    <span>— Cấu trúc Pipeline CI/CD 4 Giai đoạn 🔥</span>
+  </div>
+  <span class="qa-chevron">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  **Hỏi:** Trình bày 4 giai đoạn (Stages) tiêu chuẩn trong một pipeline CI/CD tự động hóa Ansible cấp Enterprise. Tại sao việc chia 4 stage này lại là bắt buộc? *(Liên quan QT 4.1)*
 **Đáp án chuẩn:**
 - 4 Giai đoạn:
   1. `lint`: Kiểm tra cú pháp tĩnh (`--syntax-check`) và linter (`ansible-lint`).
@@ -860,6 +878,8 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 - 2: Phân tích chính xác vai trò lá chắn Fail-Fast đa tầng của 4 stages trong pipeline CI/CD.
 - 3: Nêu đúng + viết đoạn YAML `stages:` trong tệp `.gitlab-ci.yml`.
 **Câu hỏi đào sâu:** Nếu Stage 1 (`lint`) bị lỗi, runner sẽ xử lý các Stage tiếp theo như thế nào? *(Runner sẽ ngắt pipeline ngay lập tức, không chạy các Stage `test`, `staging`, `production` phía sau.)*
+</div>
+</details>
 
 ---
 

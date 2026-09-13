@@ -412,7 +412,7 @@ rm -rf terraform-lab20-secrets
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Cờ `sensitive = true` trên biến số hoặc output có mã hóa giá trị trong file `terraform.tfstate` không?</span>
+    <span>Cờ <code>sensitive = true</code> trên biến số hoặc output có mã hóa giá trị trong file <code>terraform.tfstate</code> không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -423,7 +423,7 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **HOÀN TOÀN KHÔNG**. Cờ `sensitive = true` chỉ là một tính năng hiển thị ở tầng UI/CLI của Terraform Core, nhằm ngăn chặn việc in giá trị ra màn hình console hoặc log CI/CD. Trong file `terraform.tfstate`, dữ liệu vẫn được lưu trữ nguyên vẹn dưới dạng văn bản thuần (Plaintext JSON).
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">HOÀN TOÀN KHÔNG</b>. Cờ <code>sensitive = true</code> chỉ là một tính năng hiển thị ở tầng UI/CLI của Terraform Core, nhằm ngăn chặn việc in giá trị ra màn hình console hoặc log CI/CD. Trong file <code>terraform.tfstate</code>, dữ liệu vẫn được lưu trữ nguyên vẹn dưới dạng văn bản thuần (Plaintext JSON).</p>
 </div>
 </details>
 
@@ -442,11 +442,11 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - **Mã Hóa Lưu Trữ (Encryption at Rest)**: Sử dụng AWS KMS Customer Managed Key (SSE-KMS) hoặc Azure Key Vault để mã hóa State Bucket.
-  - **Mã Hóa Đường Truyền (Encryption in Transit)**: Ép buộc kết nối qua TLS 1.2/1.3 với S3 Bucket Policy (`aws:SecureTransport = true`).
-  - **Kiểm Soát Quyền Truy Cập Tối Thiểu (Least Privilege)**: Chỉ cấp quyền đọc State cho CI/CD Execution Role, cấm toàn bộ Developer đọc trực tiếp S3 State của Production.
-  - **Bật Versioning & Object Lock**: Ngăn chặn việc ghi đè hoặc xóa State độc hại.
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Mã Hóa Lưu Trữ (Encryption at Rest)</b>: Sử dụng AWS KMS Customer Managed Key (SSE-KMS) hoặc Azure Key Vault để mã hóa State Bucket.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Mã Hóa Đường Truyền (Encryption in Transit)</b>: Ép buộc kết nối qua TLS 1.2/1.3 với S3 Bucket Policy (<code>aws:SecureTransport = true</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiểm Soát Quyền Truy Cập Tối Thiểu (Least Privilege)</b>: Chỉ cấp quyền đọc State cho CI/CD Execution Role, cấm toàn bộ Developer đọc trực tiếp S3 State của Production.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bật Versioning & Object Lock</b>: Ngăn chặn việc ghi đè hoặc xóa State độc hại.</div>
 </div>
 </details>
 
@@ -465,7 +465,7 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : SOPS cho phép bạn viết file `.yaml` chứa secrets, sau đó dùng AWS KMS, GCP KMS, Azure Key Vault hoặc PGP Key để **chỉ mã hóa các giá trị (values)** trong khi giữ nguyên các key. File mã hóa này (`secrets.enc.yaml`) có thể commit an toàn vào Git. Khi chạy Terraform, provider `carlpett/sops` sẽ giải mã file trực tiếp trong bộ nhớ RAM lúc runtime.
+  <p style="margin: 0.4rem 0;">SOPS cho phép bạn viết file <code>.yaml</code> chứa secrets, sau đó dùng AWS KMS, GCP KMS, Azure Key Vault hoặc PGP Key để <b style="color: var(--accent-primary);">chỉ mã hóa các giá trị (values)</b> trong khi giữ nguyên các key. File mã hóa này (<code>secrets.enc.yaml</code>) có thể commit an toàn vào Git. Khi chạy Terraform, provider <code>carlpett/sops</code> sẽ giải mã file trực tiếp trong bộ nhớ RAM lúc runtime.</p>
 </div>
 </details>
 
@@ -484,9 +484,9 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - **SSM Parameter Store**: Thích hợp cho cấu hình phân cấp, chi phí rẻ (Standard parameters miễn phí), hỗ trợ mã hóa KMS (SecureString).
-  - **AWS Secrets Manager**: Được thiết kế chuyên biệt cho thông tin xác thực, có chi phí cao hơn ($0.40/secret/tháng), hỗ trợ tính năng **Tự động Xoay Vòng Mật Khẩu (Automatic Secret Rotation)** tích hợp sẵn với RDS/Lambda.
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SSM Parameter Store</b>: Thích hợp cho cấu hình phân cấp, chi phí rẻ (Standard parameters miễn phí), hỗ trợ mã hóa KMS (SecureString).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">AWS Secrets Manager</b>: Được thiết kế chuyên biệt cho thông tin xác thực, có chi phí cao hơn ($0.40/secret/tháng), hỗ trợ tính năng <b style="color: var(--accent-primary);">Tự động Xoay Vòng Mật Khẩu (Automatic Secret Rotation)</b> tích hợp sẵn với RDS/Lambda.</div>
 </div>
 </details>
 
@@ -494,7 +494,7 @@ rm -rf terraform-lab20-secrets
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Tại sao việc sử dụng biến môi trường `TF_VAR_xyz` lại an toàn hơn việc lưu mật khẩu trong file `terraform.tfvars`?</span>
+    <span>Tại sao việc sử dụng biến môi trường <code>TF_VAR_xyz</code> lại an toàn hơn việc lưu mật khẩu trong file <code>terraform.tfvars</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -505,7 +505,7 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Vì file `terraform.tfvars` rất dễ bị kỹ sư vô tình commit lên Git repository. Biến môi trường `TF_VAR_xyz` được inject động trực tiếp từ bộ nhớ của CI/CD Runner và tự hủy khi Job kết thúc, không để lại dấu vết file trên đĩa cứng.
+  <p style="margin: 0.4rem 0;">Vì file <code>terraform.tfvars</code> rất dễ bị kỹ sư vô tình commit lên Git repository. Biến môi trường <code>TF_VAR_xyz</code> được inject động trực tiếp từ bộ nhớ của CI/CD Runner và tự hủy khi Job kết thúc, không để lại dấu vết file trên đĩa cứng.</p>
 </div>
 </details>
 
@@ -513,7 +513,7 @@ rm -rf terraform-lab20-secrets
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q06</span>
-    <span>Tính năng `ephemeral = true` trong Terraform 1.10+ giải quyết triệt để bài toán nào?</span>
+    <span>Tính năng <code>ephemeral = true</code> trong Terraform 1.10+ giải quyết triệt để bài toán nào?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -524,7 +524,7 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Nó cho phép định nghĩa các biến số, data sources và tài nguyên chỉ tồn tại tạm thời trong bộ nhớ RAM của quá trình Plan/Apply và **bị loại trừ hoàn toàn khỏi tệp `terraform.tfstate`**. Nhờ đó, State file không còn chứa bất kỳ Plaintext Secret nào.
+  <p style="margin: 0.4rem 0;">Nó cho phép định nghĩa các biến số, data sources và tài nguyên chỉ tồn tại tạm thời trong bộ nhớ RAM của quá trình Plan/Apply và <b style="color: var(--accent-primary);">bị loại trừ hoàn toàn khỏi tệp <code>terraform.tfstate</code></b>. Nhờ đó, State file không còn chứa bất kỳ Plaintext Secret nào.</p>
 </div>
 </details>
 
@@ -543,12 +543,12 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  1. Coi như mật khẩu đã bị xâm phạm (Compromised).
-  2. Lập tức đổi mật khẩu trực tiếp trên Database hoặc kích hoạt xoay vòng khóa trên Secrets Manager.
-  3. Cập nhật mã nguồn Terraform để đọc secret mới.
-  4. Chạy `terraform apply` để ghi đè State.
-  5. Xóa các phiên bản State cũ (State Versions) trong S3 Versioning để loại bỏ hoàn toàn dấu vết mật khẩu cũ.
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Coi như mật khẩu đã bị xâm phạm (Compromised).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Lập tức đổi mật khẩu trực tiếp trên Database hoặc kích hoạt xoay vòng khóa trên Secrets Manager.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Cập nhật mã nguồn Terraform để đọc secret mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Chạy <code>terraform apply</code> để ghi đè State.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> Xóa các phiên bản State cũ (State Versions) trong S3 Versioning để loại bỏ hoàn toàn dấu vết mật khẩu cũ.</div>
 </div>
 </details>
 
@@ -556,7 +556,7 @@ rm -rf terraform-lab20-secrets
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Tại sao không nên dùng hàm `file()` để đọc Private SSH Key trực tiếp vào resource?</span>
+    <span>Tại sao không nên dùng hàm <code>file()</code> để đọc Private SSH Key trực tiếp vào resource?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -567,7 +567,7 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Vì hàm `file()` sẽ nạp toàn bộ nội dung của Private Key vào bộ nhớ HCL và ghi thẳng chuỗi Private Key đó vào thuộc tính của resource trong State file. Thay vào đó, nên quản lý SSH Keys thông qua AWS EC2 Key Pair (chỉ lưu Public Key) hoặc truyền qua AWS SSM Session Manager (không cần SSH Key).
+  <p style="margin: 0.4rem 0;">Vì hàm <code>file()</code> sẽ nạp toàn bộ nội dung của Private Key vào bộ nhớ HCL và ghi thẳng chuỗi Private Key đó vào thuộc tính của resource trong State file. Thay vào đó, nên quản lý SSH Keys thông qua AWS EC2 Key Pair (chỉ lưu Public Key) hoặc truyền qua AWS SSM Session Manager (không cần SSH Key).</p>
 </div>
 </details>
 
@@ -586,14 +586,12 @@ rm -rf terraform-lab20-secrets
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khai báo cờ `sensitive = true` trong khối output:
-```hcl
-output "db_connection_string" {
-  value     = "postgresql://${aws_db_instance.core.username}:${aws_db_instance.core.password}@${aws_db_instance.core.endpoint}"
+  <p style="margin: 0.4rem 0;">Khai báo cờ <code>sensitive = true</code> trong khối output:</p>
+  <pre style="background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0;"><code class="language-hcl">output &quot;db_connection_string&quot; {
+  value     = &quot;postgresql://${aws_db_instance.core.username}:${aws_db_instance.core.password}@${aws_db_instance.core.endpoint}&quot;
   sensitive = true
-}
-```
-Nếu output tham chiếu đến một thuộc tính đã được đánh dấu nhạy cảm mà bạn không đặt `sensitive = true`, Terraform sẽ báo lỗi ngay trong bước Plan.
+}</code></pre>
+  <p style="margin: 0.4rem 0;">Nếu output tham chiếu đến một thuộc tính đã được đánh dấu nhạy cảm mà bạn không đặt <code>sensitive = true</code>, Terraform sẽ báo lỗi ngay trong bước Plan.</p>
 </div>
 </details>
 
@@ -612,7 +610,7 @@ Nếu output tham chiếu đến một thuộc tính đã được đánh dấu 
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Sử dụng phương thức xác thực **Vault AppRole** (truyền qua ENV `VAULT_ROLE_ID` và `VAULT_SECRET_ID`), **AWS IAM Auth** (Terraform ký request bằng AWS STS identity để Vault xác thực), hoặc **Kubernetes Service Account Token** nếu Terraform chạy trong Kubernetes Pod.
+  <p style="margin: 0.4rem 0;">Sử dụng phương thức xác thực <b style="color: var(--accent-primary);">Vault AppRole</b> (truyền qua ENV <code>VAULT_ROLE_ID</code> và <code>VAULT_SECRET_ID</code>), <b style="color: var(--accent-primary);">AWS IAM Auth</b> (Terraform ký request bằng AWS STS identity để Vault xác thực), hoặc <b style="color: var(--accent-primary);">Kubernetes Service Account Token</b> nếu Terraform chạy trong Kubernetes Pod.</p>
 </div>
 </details>
 

@@ -391,7 +391,7 @@ rm -rf terraform-lab24-refactor
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Sau khi đã chạy `terraform apply` thành công và các tài nguyên đã được chuyển đổi vị trí trong State, bạn có nên xóa các khối `moved` khỏi file `.tf` không?</span>
+    <span>Sau khi đã chạy <code>terraform apply</code> thành công và các tài nguyên đã được chuyển đổi vị trí trong State, bạn có nên xóa các khối <code>moved</code> khỏi file <code>.tf</code> không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -402,9 +402,9 @@ rm -rf terraform-lab24-refactor
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - **Với Root Module nội bộ**: Bạn có thể xóa khối `moved` sau khi apply thành công trên tất cả các môi trường (Dev, Staging, Prod).
-  - **Với Shared Module phát hành ra công chúng / Private Registry**: **BẮT BUỘC PHẢI GIỮ LẠI** khối `moved` qua ít nhất 1-2 phiên bản Major/Minor tiếp theo để đảm bảo những người dùng khác khi nâng cấp module không bị phá hủy tài nguyên của họ.
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Với Root Module nội bộ</b>: Bạn có thể xóa khối <code>moved</code> sau khi apply thành công trên tất cả các môi trường (Dev, Staging, Prod).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Với Shared Module phát hành ra công chúng / Private Registry</b>: <b style="color: var(--accent-primary);">BẮT BUỘC PHẢI GIỮ LẠI</b> khối <code>moved</code> qua ít nhất 1-2 phiên bản Major/Minor tiếp theo để đảm bảo những người dùng khác khi nâng cấp module không bị phá hủy tài nguyên của họ.</div>
 </div>
 </details>
 
@@ -412,7 +412,7 @@ rm -rf terraform-lab24-refactor
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q02</span>
-    <span>Khối `moved` có thể di chuyển tài nguyên xuyên qua các State files khác nhau (Cross-State) không?</span>
+    <span>Khối <code>moved</code> có thể di chuyển tài nguyên xuyên qua các State files khác nhau (Cross-State) không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -423,7 +423,7 @@ rm -rf terraform-lab24-refactor
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **KHÔNG**. Khối `moved` chỉ có hiệu lực bên trong phạm vi của một State file duy nhất (cùng Root Module). Nếu muốn chuyển tài nguyên sang một State file hoàn toàn khác (ví dụ: tách từ monolith state sang micro-state), bạn bắt buộc phải dùng lệnh `terraform state rm` ở state cũ và dùng khối `import` ở state mới.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">KHÔNG</b>. Khối <code>moved</code> chỉ có hiệu lực bên trong phạm vi của một State file duy nhất (cùng Root Module). Nếu muốn chuyển tài nguyên sang một State file hoàn toàn khác (ví dụ: tách từ monolith state sang micro-state), bạn bắt buộc phải dùng lệnh <code>terraform state rm</code> ở state cũ và dùng khối <code>import</code> ở state mới.</p>
 </div>
 </details>
 
@@ -431,7 +431,7 @@ rm -rf terraform-lab24-refactor
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q03</span>
-    <span>Tính năng `-generate-config-out` trong `terraform plan` (Terraform 1.5+) có những giới hạn nào cần lưu ý?</span>
+    <span>Tính năng <code>-generate-config-out</code> trong <code>terraform plan</code> (Terraform 1.5+) có những giới hạn nào cần lưu ý?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -442,7 +442,7 @@ rm -rf terraform-lab24-refactor
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Mã HCL tự sinh thường chứa tất cả các giá trị mặc định của Cloud Provider và có thể bị hardcode các chuỗi ID. Kỹ sư vẫn bắt buộc phải thực hiện bước kiểm tra (Review & Refactor) để biến đổi các giá trị hardcode đó thành biến số (`var.*`) và hàm liên kết trước khi commit vào Git.
+  <p style="margin: 0.4rem 0;">Mã HCL tự sinh thường chứa tất cả các giá trị mặc định của Cloud Provider và có thể bị hardcode các chuỗi ID. Kỹ sư vẫn bắt buộc phải thực hiện bước kiểm tra (Review & Refactor) để biến đổi các giá trị hardcode đó thành biến số (<code>var.*</code>) và hàm liên kết trước khi commit vào Git.</p>
 </div>
 </details>
 
@@ -450,7 +450,7 @@ rm -rf terraform-lab24-refactor
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Điều gì xảy ra nếu bạn khai báo khối `import` cho một tài nguyên nhưng địa chỉ `to = ...` đó đã tồn tại sẵn trong State file?</span>
+    <span>Điều gì xảy ra nếu bạn khai báo khối <code>import</code> cho một tài nguyên nhưng địa chỉ <code>to = ...</code> đó đã tồn tại sẵn trong State file?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -461,7 +461,7 @@ rm -rf terraform-lab24-refactor
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Terraform sẽ báo lỗi xung đột (Conflict Error) trong bước Plan: `Resource already managed by Terraform`. Khối `import` chỉ áp dụng cho các tài nguyên chưa có mặt trong State file hiện tại.
+  <p style="margin: 0.4rem 0;">Terraform sẽ báo lỗi xung đột (Conflict Error) trong bước Plan: <code>Resource already managed by Terraform</code>. Khối <code>import</code> chỉ áp dụng cho các tài nguyên chưa có mặt trong State file hiện tại.</p>
 </div>
 </details>
 
@@ -469,7 +469,7 @@ rm -rf terraform-lab24-refactor
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Có thể lồng khối `moved` bên trong một Child Module không?</span>
+    <span>Có thể lồng khối <code>moved</code> bên trong một Child Module không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -480,7 +480,7 @@ rm -rf terraform-lab24-refactor
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Có thể. Một Child Module có thể tự định nghĩa khối `moved` nội bộ để tái cấu trúc cấu trúc file bên trong nó mà không làm ảnh hưởng đến cấu hình gọi module của Root Module.
+  <p style="margin: 0.4rem 0;">Có thể. Một Child Module có thể tự định nghĩa khối <code>moved</code> nội bộ để tái cấu trúc cấu trúc file bên trong nó mà không làm ảnh hưởng đến cấu hình gọi module của Root Module.</p>
 </div>
 </details>
 
@@ -488,7 +488,7 @@ rm -rf terraform-lab24-refactor
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q06</span>
-    <span>Làm thế nào để chuyển đổi một Module con `module.a` thành `module.b` bằng khối `moved`?</span>
+    <span>Làm thế nào để chuyển đổi một Module con <code>module.a</code> thành <code>module.b</code> bằng khối <code>moved</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -499,14 +499,12 @@ rm -rf terraform-lab24-refactor
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  :
-```hcl
-moved {
+  <p style="margin: 0.4rem 0;"></p>
+  <pre style="background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0;"><code class="language-hcl">moved {
   from = module.old_network_name
   to   = module.new_network_name
-}
-```
-Terraform sẽ tự động chuyển toàn bộ tất cả các tài nguyên con bên trong `module.old_network_name` sang `module.new_network_name` chỉ với một khối `moved` duy nhất!
+}</code></pre>
+  <p style="margin: 0.4rem 0;">Terraform sẽ tự động chuyển toàn bộ tất cả các tài nguyên con bên trong <code>module.old_network_name</code> sang <code>module.new_network_name</code> chỉ với một khối <code>moved</code> duy nhất!</p>
 </div>
 </details>
 
@@ -514,7 +512,7 @@ Terraform sẽ tự động chuyển toàn bộ tất cả các tài nguyên con
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q07</span>
-    <span>Tại sao khối `moved` được coi là an toàn hơn nhiều so với việc chạy lệnh CLI `terraform state mv`?</span>
+    <span>Tại sao khối <code>moved</code> được coi là an toàn hơn nhiều so với việc chạy lệnh CLI <code>terraform state mv</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -525,7 +523,7 @@ Terraform sẽ tự động chuyển toàn bộ tất cả các tài nguyên con
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Vì khối `moved` được lưu dưới dạng mã nguồn (Code-defined), có thể lưu vết lịch sử trên Git, được kiểm tra qua Pull Request bởi các kỹ sư khác, và được mô phỏng chi tiết trong `terraform plan` trước khi thực sự thay đổi dữ liệu trong State.
+  <p style="margin: 0.4rem 0;">Vì khối <code>moved</code> được lưu dưới dạng mã nguồn (Code-defined), có thể lưu vết lịch sử trên Git, được kiểm tra qua Pull Request bởi các kỹ sư khác, và được mô phỏng chi tiết trong <code>terraform plan</code> trước khi thực sự thay đổi dữ liệu trong State.</p>
 </div>
 </details>
 
@@ -533,7 +531,7 @@ Terraform sẽ tự động chuyển toàn bộ tất cả các tài nguyên con
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Khối `import` trong Terraform 1.5+ có hỗ trợ import danh sách nhiều tài nguyên thông qua vòng lặp `for_each` không?</span>
+    <span>Khối <code>import</code> trong Terraform 1.5+ có hỗ trợ import danh sách nhiều tài nguyên thông qua vòng lặp <code>for_each</code> không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -544,14 +542,12 @@ Terraform sẽ tự động chuyển toàn bộ tất cả các tài nguyên con
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Có hỗ trợ. Khối `import` có thể kết hợp với `for_each` (kể từ Terraform 1.7+) để import hàng loạt tài nguyên có cấu trúc tương tự nhau:
-```hcl
-import {
+  <p style="margin: 0.4rem 0;">Có hỗ trợ. Khối <code>import</code> có thể kết hợp với <code>for_each</code> (kể từ Terraform 1.7+) để import hàng loạt tài nguyên có cấu trúc tương tự nhau:</p>
+  <pre style="background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0;"><code class="language-hcl">import {
   for_each = var.subnet_mapping
   to       = aws_subnet.imported[each.key]
   id       = each.value.id
-}
-```
+}</code></pre>
 </div>
 </details>
 
@@ -570,17 +566,15 @@ import {
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - Cách 1: Chạy lệnh `terraform state rm <resource_address>`.
-  - Cách 2: Kể từ Terraform 1.7+, sử dụng khối cấu hình `removed` khai báo:
-```hcl
-removed {
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cách 1: Chạy lệnh <code>terraform state rm &lt;resource_address&gt;</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cách 2: Kể từ Terraform 1.7+, sử dụng khối cấu hình <code>removed</code> khai báo:</div>
+  <pre style="background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0;"><code class="language-hcl">removed {
   from = aws_instance.legacy_server
   lifecycle {
     destroy = false # Chỉ xóa khỏi State, giữ nguyên máy chủ trên AWS!
   }
-}
-```
+}</code></pre>
 </div>
 </details>
 
@@ -599,7 +593,7 @@ removed {
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khi thay đổi liên quan đến các thuộc tính bất biến của chính Cloud Provider mà nhà cung cấp không hỗ trợ sửa đổi trực tiếp (In-place update) lẫn `create_before_destroy` (ví dụ: đổi dải CIDR gốc của một AWS VPC đang chứa hàng trăm máy chủ đang chạy). Trong trường hợp này, bắt buộc phải dựng VPC mới song song và lập kế hoạch di trú dữ liệu (Data Migration Window).
+  <p style="margin: 0.4rem 0;">Khi thay đổi liên quan đến các thuộc tính bất biến của chính Cloud Provider mà nhà cung cấp không hỗ trợ sửa đổi trực tiếp (In-place update) lẫn <code>create_before_destroy</code> (ví dụ: đổi dải CIDR gốc của một AWS VPC đang chứa hàng trăm máy chủ đang chạy). Trong trường hợp này, bắt buộc phải dựng VPC mới song song và lập kế hoạch di trú dữ liệu (Data Migration Window).</p>
 </div>
 </details>
 

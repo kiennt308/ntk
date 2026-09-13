@@ -475,7 +475,7 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **HOÀN TOÀN KHÔNG**. CDKTF chỉ đóng vai trò là một trình chuyển dịch (Transpiler / Synthesizer). Nó nhận mã TypeScript/Python và biên dịch thành tệp `cdk.tf.json`. Mọi thao tác gửi API, quản lý State và xây dựng DAG vẫn do chính Terraform Core Engine và các Terraform Providers nguyên bản chịu trách nhiệm.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">HOÀN TOÀN KHÔNG</b>. CDKTF chỉ đóng vai trò là một trình chuyển dịch (Transpiler / Synthesizer). Nó nhận mã TypeScript/Python và biên dịch thành tệp <code>cdk.tf.json</code>. Mọi thao tác gửi API, quản lý State và xây dựng DAG vẫn do chính Terraform Core Engine và các Terraform Providers nguyên bản chịu trách nhiệm.</p>
 </div>
 </details>
 
@@ -494,7 +494,7 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Diễn ra qua giao thức **gRPC (Google Remote Procedure Call)** chạy trên nền tảng **HTTP/2** thông qua Unix Domain Sockets (trên Linux/macOS) hoặc Windows Named Pipes. Nhờ gRPC và Protocol Buffers (protobuf), Terraform Core có thể giao tiếp với các Provider viết bằng bất kỳ ngôn ngữ nào với độ trễ cực thấp và tính toàn vẹn dữ liệu cao.
+  <p style="margin: 0.4rem 0;">Diễn ra qua giao thức <b style="color: var(--accent-primary);">gRPC (Google Remote Procedure Call)</b> chạy trên nền tảng <b style="color: var(--accent-primary);">HTTP/2</b> thông qua Unix Domain Sockets (trên Linux/macOS) hoặc Windows Named Pipes. Nhờ gRPC và Protocol Buffers (protobuf), Terraform Core có thể giao tiếp với các Provider viết bằng bất kỳ ngôn ngữ nào với độ trễ cực thấp và tính toàn vẹn dữ liệu cao.</p>
 </div>
 </details>
 
@@ -513,10 +513,10 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khi:
-  - Đội ngũ kỹ sư phần mềm (App Developers) chiếm đa số và đã thành thạo TypeScript/Python, không muốn học cú pháp HCL riêng biệt.
-  - Hạ tầng có các bài toán logic phức tạp cần xử lý bằng vòng lặp nâng cao, cấu trúc dữ liệu đệ quy, hoặc tích hợp các thư viện bên ngoài (như gọi SDK tính toán toán học, parse YAML bên thứ ba).
-  - Doanh nghiệp muốn áp dụng các framework Unit Test phần mềm tiêu chuẩn (Jest, PyTest) để kiểm thử hạ tầng.
+  <p style="margin: 0.4rem 0;">Khi:</p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đội ngũ kỹ sư phần mềm (App Developers) chiếm đa số và đã thành thạo TypeScript/Python, không muốn học cú pháp HCL riêng biệt.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hạ tầng có các bài toán logic phức tạp cần xử lý bằng vòng lặp nâng cao, cấu trúc dữ liệu đệ quy, hoặc tích hợp các thư viện bên ngoài (như gọi SDK tính toán toán học, parse YAML bên thứ ba).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Doanh nghiệp muốn áp dụng các framework Unit Test phần mềm tiêu chuẩn (Jest, PyTest) để kiểm thử hạ tầng.</div>
 </div>
 </details>
 
@@ -524,7 +524,7 @@ rm -rf cdktf-lab28-typescript
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Trong Terraform Plugin Framework (Golang), phương thức `Read` được gọi vào những thời điểm nào?</span>
+    <span>Trong Terraform Plugin Framework (Golang), phương thức <code>Read</code> được gọi vào những thời điểm nào?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -535,10 +535,10 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Phương thức `Read` được gọi:
-  1. Trong bước **State Refresh** (mỗi khi chạy `terraform plan` hoặc `terraform apply`) để đồng bộ trạng thái thực tế từ Cloud về State.
-  2. Ngay sau khi phương thức `Create` hoặc `Update` hoàn tất để đảm bảo các thuộc tính Computed (như ID, ARN) đã được ghi nhận chính xác vào State.
-  3. Khi thực hiện lệnh `terraform import`.
+  <p style="margin: 0.4rem 0;">Phương thức <code>Read</code> được gọi:</p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Trong bước <b style="color: var(--accent-primary);">State Refresh</b> (mỗi khi chạy <code>terraform plan</code> hoặc <code>terraform apply</code>) để đồng bộ trạng thái thực tế từ Cloud về State.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Ngay sau khi phương thức <code>Create</code> hoặc <code>Update</code> hoàn tất để đảm bảo các thuộc tính Computed (như ID, ARN) đã được ghi nhận chính xác vào State.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Khi thực hiện lệnh <code>terraform import</code>.</div>
 </div>
 </details>
 
@@ -557,7 +557,7 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : JSII (phát triển bởi AWS) cho phép một codebase viết bằng TypeScript có thể tự động sinh ra các gói thư viện (Package Bindings) và chạy mượt mà trên nhiều ngôn ngữ khác nhau như Python, Go, Java, và C# mà không cần viết lại mã nguồn.
+  <p style="margin: 0.4rem 0;">JSII (phát triển bởi AWS) cho phép một codebase viết bằng TypeScript có thể tự động sinh ra các gói thư viện (Package Bindings) và chạy mượt mà trên nhiều ngôn ngữ khác nhau như Python, Go, Java, và C# mà không cần viết lại mã nguồn.</p>
 </div>
 </details>
 
@@ -576,7 +576,7 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Cấu hình khối `provider_installation` trong tệp cấu hình CLI `~/.terraformrc` (hoặc `terraform.rc` trên Windows) sử dụng cơ chế **`filesystem_mirror`** hoặc **`dev_overrides`** để trỏ trực tiếp đến thư mục chứa file binary đã compile của provider.
+  <p style="margin: 0.4rem 0;">Cấu hình khối <code>provider_installation</code> trong tệp cấu hình CLI <code>~/.terraformrc</code> (hoặc <code>terraform.rc</code> trên Windows) sử dụng cơ chế <b style="color: var(--accent-primary);"><code>filesystem_mirror</code></b> hoặc <b style="color: var(--accent-primary);"><code>dev_overrides</code></b> để trỏ trực tiếp đến thư mục chứa file binary đã compile của provider.</p>
 </div>
 </details>
 
@@ -595,10 +595,10 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Plugin Framework mới cung cấp:
-  - Hệ thống kiểu dữ liệu Type-Safe chặt chẽ hơn bằng Go native types.
-  - Hỗ trợ đầy đủ các tính năng hiện đại của Terraform như Structural Types, Optional Attributes with Defaults, Dynamic Expressions, và Unknown Values.
-  - Báo cáo lỗi (Diagnostics) chi tiết và trực quan hơn.
+  <p style="margin: 0.4rem 0;">Plugin Framework mới cung cấp:</p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hệ thống kiểu dữ liệu Type-Safe chặt chẽ hơn bằng Go native types.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hỗ trợ đầy đủ các tính năng hiện đại của Terraform như Structural Types, Optional Attributes with Defaults, Dynamic Expressions, và Unknown Values.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Báo cáo lỗi (Diagnostics) chi tiết và trực quan hơn.</div>
 </div>
 </details>
 
@@ -606,7 +606,7 @@ rm -rf cdktf-lab28-typescript
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Lệnh `cdktf diff` tương đương với câu lệnh nào trong Terraform CLI truyền thống?</span>
+    <span>Lệnh <code>cdktf diff</code> tương đương với câu lệnh nào trong Terraform CLI truyền thống?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -617,7 +617,7 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Tương đương với lệnh `terraform plan`. Nó biên dịch mã nguồn thành JSON và so sánh với State hiện tại để hiển thị danh sách các tài nguyên dự kiến sẽ được thêm, sửa, hoặc xóa.
+  <p style="margin: 0.4rem 0;">Tương đương với lệnh <code>terraform plan</code>. Nó biên dịch mã nguồn thành JSON và so sánh với State hiện tại để hiển thị danh sách các tài nguyên dự kiến sẽ được thêm, sửa, hoặc xóa.</p>
 </div>
 </details>
 
@@ -636,7 +636,7 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Trong định nghĩa Schema của thuộc tính, sử dụng thuộc tính `PlanModifiers` và gắn thêm modifier `stringplanmodifier.RequiresReplace()` (hoặc modifier tương ứng cho Int/Bool).
+  <p style="margin: 0.4rem 0;">Trong định nghĩa Schema của thuộc tính, sử dụng thuộc tính <code>PlanModifiers</code> và gắn thêm modifier <code>stringplanmodifier.RequiresReplace()</code> (hoặc modifier tương ứng cho Int/Bool).</p>
 </div>
 </details>
 
@@ -655,10 +655,10 @@ rm -rf cdktf-lab28-typescript
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - Thêm một tầng trừu tượng (Abstraction Layer) làm tăng thời gian build/synth.
-  - Đòi hỏi phải quản lý thêm môi trường runtime (NodeJS / Python Virtualenv / npm dependencies).
-  - Khó debug hơn khi có lỗi biên dịch giữa tầng mã nguồn và tầng JSON của Terraform Core.
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thêm một tầng trừu tượng (Abstraction Layer) làm tăng thời gian build/synth.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đòi hỏi phải quản lý thêm môi trường runtime (NodeJS / Python Virtualenv / npm dependencies).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khó debug hơn khi có lỗi biên dịch giữa tầng mã nguồn và tầng JSON của Terraform Core.</div>
 </div>
 </details>
 

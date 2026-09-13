@@ -506,7 +506,7 @@ rm -rf terraform-lab19-oidc
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Tại sao việc chạy `terraform apply` trực tiếp trên máy cục bộ của kỹ sư (Laptop Ops) bị cấm trong các môi trường tài chính, ngân hàng?</span>
+    <span>Tại sao việc chạy <code>terraform apply</code> trực tiếp trên máy cục bộ của kỹ sư (Laptop Ops) bị cấm trong các môi trường tài chính, ngân hàng?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -517,11 +517,11 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Vì Laptop Ops tiềm ẩn nhiều rủi ro:
-  - Thiếu tính minh bạch và audit log (không biết chính xác ai đã deploy phiên bản commit nào).
-  - Nguy cơ lộ Access Key lưu trên máy cá nhân khi bị dính malware.
-  - Sự khác biệt về phiên bản CLI, biến môi trường và mạng nội bộ giữa các máy trạm dẫn đến trạng thái State không nhất quán.
-  - Không thể thực thi quy trình thẩm định 4 mắt (Peer Review / 4-Eyes Principle).
+  <p style="margin: 0.4rem 0;">Vì Laptop Ops tiềm ẩn nhiều rủi ro:</p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thiếu tính minh bạch và audit log (không biết chính xác ai đã deploy phiên bản commit nào).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nguy cơ lộ Access Key lưu trên máy cá nhân khi bị dính malware.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sự khác biệt về phiên bản CLI, biến môi trường và mạng nội bộ giữa các máy trạm dẫn đến trạng thái State không nhất quán.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không thể thực thi quy trình thẩm định 4 mắt (Peer Review / 4-Eyes Principle).</div>
 </div>
 </details>
 
@@ -540,7 +540,7 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Hoạt động dựa trên chuẩn mã hóa **OpenID Connect (OIDC)** xây dựng trên nền tảng **OAuth 2.0** và **JSON Web Tokens (JWT)**. GitHub Actions ký số JWT token bằng Private Key của mình, và AWS STS xác thực chữ ký này thông qua bộ khóa công khai (Public Keys) được công bố tại endpoint `.well-known/openid-configuration` của GitHub.
+  <p style="margin: 0.4rem 0;">Hoạt động dựa trên chuẩn mã hóa <b style="color: var(--accent-primary);">OpenID Connect (OIDC)</b> xây dựng trên nền tảng <b style="color: var(--accent-primary);">OAuth 2.0</b> và <b style="color: var(--accent-primary);">JSON Web Tokens (JWT)</b>. GitHub Actions ký số JWT token bằng Private Key của mình, và AWS STS xác thực chữ ký này thông qua bộ khóa công khai (Public Keys) được công bố tại endpoint <code>.well-known/openid-configuration</code> của GitHub.</p>
 </div>
 </details>
 
@@ -548,7 +548,7 @@ rm -rf terraform-lab19-oidc
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q03</span>
-    <span>Trong Trust Policy của AWS IAM Role dành cho GitHub OIDC, trường `token.actions.githubusercontent.com:sub` đại diện cho thông tin gì?</span>
+    <span>Trong Trust Policy của AWS IAM Role dành cho GitHub OIDC, trường <code>token.actions.githubusercontent.com:sub</code> đại diện cho thông tin gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -559,7 +559,7 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Trường `sub` (Subject Claim) chứa định danh ngữ cảnh thực thi của GitHub Actions, theo cấu trúc: `repo:<org>/<repo>:ref:<branch_or_tag>` hoặc `repo:<org>/<repo>:pull_request`. Đây là chốt chặn quan trọng nhất để ngăn chặn các GitHub repositories khác mạo danh và assume role của bạn.
+  <p style="margin: 0.4rem 0;">Trường <code>sub</code> (Subject Claim) chứa định danh ngữ cảnh thực thi của GitHub Actions, theo cấu trúc: <code>repo:&lt;org&gt;/&lt;repo&gt;:ref:&lt;branch_or_tag&gt;</code> hoặc <code>repo:&lt;org&gt;/&lt;repo&gt;:pull_request</code>. Đây là chốt chặn quan trọng nhất để ngăn chặn các GitHub repositories khác mạo danh và assume role của bạn.</p>
 </div>
 </details>
 
@@ -567,7 +567,7 @@ rm -rf terraform-lab19-oidc
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Tại sao trong file workflow GitHub Actions, bước `terraform plan` phải lưu file output nhị phân `terraform plan -out=tfplan.binary`?</span>
+    <span>Tại sao trong file workflow GitHub Actions, bước <code>terraform plan</code> phải lưu file output nhị phân <code>terraform plan -out=tfplan.binary</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -578,7 +578,7 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Để đảm bảo **tính tất định (Determinism)**. File `tfplan.binary` là một snapshot chứa chính xác danh sách các thay đổi đã được review và approve trong Pull Request. Khi chạy `terraform apply tfplan.binary`, Terraform chỉ thực thi đúng những gì đã được ghi nhận trong file đó, tránh trường hợp hạ tầng bị ai đó thay đổi ngầm giữa thời điểm Plan và Apply.
+  <p style="margin: 0.4rem 0;">Để đảm bảo <b style="color: var(--accent-primary);">tính tất định (Determinism)</b>. File <code>tfplan.binary</code> là một snapshot chứa chính xác danh sách các thay đổi đã được review và approve trong Pull Request. Khi chạy <code>terraform apply tfplan.binary</code>, Terraform chỉ thực thi đúng những gì đã được ghi nhận trong file đó, tránh trường hợp hạ tầng bị ai đó thay đổi ngầm giữa thời điểm Plan và Apply.</p>
 </div>
 </details>
 
@@ -597,7 +597,7 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khi cả hai job cùng chạy `terraform init` và `terraform plan`, cơ chế **State Locking** (thông qua DynamoDB hoặc S3 Native Locking) sẽ khóa state. Job chạy sau sẽ phải chờ job chạy trước nhả lock hoặc báo lỗi `State Lock Error`, ngăn chặn tình trạng race condition và xung đột dữ liệu.
+  <p style="margin: 0.4rem 0;">Khi cả hai job cùng chạy <code>terraform init</code> và <code>terraform plan</code>, cơ chế <b style="color: var(--accent-primary);">State Locking</b> (thông qua DynamoDB hoặc S3 Native Locking) sẽ khóa state. Job chạy sau sẽ phải chờ job chạy trước nhả lock hoặc báo lỗi <code>State Lock Error</code>, ngăn chặn tình trạng race condition và xung đột dữ liệu.</p>
 </div>
 </details>
 
@@ -616,9 +616,9 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - Đặt điều kiện `sub` trong IAM Trust Policy chỉ chấp nhận chính xác repo nội bộ (`repo:my-org/my-repo:*`).
-  - Trong cài đặt GitHub Repository Settings, tắt tùy chọn *"Send write tokens to workflows from fork pull requests"*.
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đặt điều kiện <code>sub</code> trong IAM Trust Policy chỉ chấp nhận chính xác repo nội bộ (<code>repo:my-org/my-repo:*</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong cài đặt GitHub Repository Settings, tắt tùy chọn *"Send write tokens to workflows from fork pull requests"*.</div>
 </div>
 </details>
 
@@ -637,7 +637,7 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Atlantis là một server chuyên dụng lắng nghe Webhooks từ GitHub/GitLab. Developer tương tác với Terraform bằng cách gõ comment trực tiếp trong PR (ví dụ: `atlantis plan`, `atlantis apply`). Atlantis tự động quản lý State Lock ở tầng PR level, khóa nhánh cho đến khi apply xong, rất tiện lợi nhưng đòi hỏi phải tự vận hành một máy chủ hoặc cluster để chạy Atlantis Server.
+  <p style="margin: 0.4rem 0;">Atlantis là một server chuyên dụng lắng nghe Webhooks từ GitHub/GitLab. Developer tương tác với Terraform bằng cách gõ comment trực tiếp trong PR (ví dụ: <code>atlantis plan</code>, <code>atlantis apply</code>). Atlantis tự động quản lý State Lock ở tầng PR level, khóa nhánh cho đến khi apply xong, rất tiện lợi nhưng đòi hỏi phải tự vận hành một máy chủ hoặc cluster để chạy Atlantis Server.</p>
 </div>
 </details>
 
@@ -645,7 +645,7 @@ rm -rf terraform-lab19-oidc
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Tại sao permission `id-token: write` là bắt buộc trong GitHub Actions Workflow khi dùng OIDC?</span>
+    <span>Tại sao permission <code>id-token: write</code> là bắt buộc trong GitHub Actions Workflow khi dùng OIDC?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -656,7 +656,7 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Mặc định, GitHub Actions cấp quyền `read` cho GITHUB_TOKEN để đảm bảo an toàn. Quyền `id-token: write` là yêu cầu bắt buộc để cho phép GitHub Runner gửi yêu cầu ký và nhận OIDC JSON Web Token (JWT) từ máy chủ OpenID Connect của GitHub.
+  <p style="margin: 0.4rem 0;">Mặc định, GitHub Actions cấp quyền <code>read</code> cho GITHUB_TOKEN để đảm bảo an toàn. Quyền <code>id-token: write</code> là yêu cầu bắt buộc để cho phép GitHub Runner gửi yêu cầu ký và nhận OIDC JSON Web Token (JWT) từ máy chủ OpenID Connect của GitHub.</p>
 </div>
 </details>
 
@@ -664,7 +664,7 @@ rm -rf terraform-lab19-oidc
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span>Làm thế nào để thiết lập quy trình kiểm tra mã nguồn tĩnh (Static Security Scanning) trước khi `terraform plan` chạy trong CI/CD?</span>
+    <span>Làm thế nào để thiết lập quy trình kiểm tra mã nguồn tĩnh (Static Security Scanning) trước khi <code>terraform plan</code> chạy trong CI/CD?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -675,9 +675,9 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Tích hợp các công cụ chuyên dụng vào các step trước `terraform plan`:
-  - `tflint`: Kiểm tra cú pháp, lỗi logic và chuẩn best practice.
-  - `trivy` hoặc `checkov`: Quét lỗ hổng bảo mật, phát hiện Security Group mở port nguy hiểm, S3 thiếu mã hóa, hoặc IAM quyền quá rộng.
+  <p style="margin: 0.4rem 0;">Tích hợp các công cụ chuyên dụng vào các step trước <code>terraform plan</code>:</p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>tflint</code>: Kiểm tra cú pháp, lỗi logic và chuẩn best practice.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>trivy</code> hoặc <code>checkov</code>: Quét lỗ hổng bảo mật, phát hiện Security Group mở port nguy hiểm, S3 thiếu mã hóa, hoặc IAM quyền quá rộng.</div>
 </div>
 </details>
 
@@ -685,7 +685,7 @@ rm -rf terraform-lab19-oidc
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q10</span>
-    <span>Khi sử dụng `terraform apply tfplan.binary`, có cần truyền lại biến `-var` hoặc `-var-file` không?</span>
+    <span>Khi sử dụng <code>terraform apply tfplan.binary</code>, có cần truyền lại biến <code>-var</code> hoặc <code>-var-file</code> không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -696,7 +696,7 @@ rm -rf terraform-lab19-oidc
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **KHÔNG CẦN**. Mọi giá trị biến số, cấu hình providers và kế hoạch thay đổi đã được đóng gói toàn vẹn bên trong file nhị phân `tfplan.binary`. Terraform sẽ từ chối nếu bạn cố tình truyền thêm cờ `-var` vào lệnh apply file plan.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">KHÔNG CẦN</b>. Mọi giá trị biến số, cấu hình providers và kế hoạch thay đổi đã được đóng gói toàn vẹn bên trong file nhị phân <code>tfplan.binary</code>. Terraform sẽ từ chối nếu bạn cố tình truyền thêm cờ <code>-var</code> vào lệnh apply file plan.</p>
 </div>
 </details>
 

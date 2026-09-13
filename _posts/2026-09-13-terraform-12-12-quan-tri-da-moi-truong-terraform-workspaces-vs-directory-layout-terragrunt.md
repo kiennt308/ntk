@@ -61,7 +61,7 @@ graph TD
 | Tiêu Chí Kỹ Thuật | Terraform CLI Workspaces | Directory-Based Layout | Terragrunt Orchestration |
 | :--- | :--- | :--- | :--- |
 | **Cấu Trúc Mã Nguồn** | 1 Thư mục HCL duy nhất | Tách thư mục `dev/`, `prod/` | Thư mục cấu hình `terragrunt.hcl` |
-| **Phân Lập State Backend** | Chung S3 Bucket (`env:/<name>/...`) | **Tách biệt hoàn toàn từng S3 Bucket** | **Tách biệt hoàn toàn từng S3 Bucket** |
+| **Phân Lập State Backend** | Chung S3 Bucket (`env:/&lt;name&gt;/...`) | **Tách biệt hoàn toàn từng S3 Bucket** | **Tách biệt hoàn toàn từng S3 Bucket** |
 | **Phân Lập Tài Khoản AWS** | Rất khó (Thường chung 1 Account) | **Hoàn hảo (Mỗi env 1 AWS Account)** | **Hoàn hảo (Hỗ trợ Assume Role tự động)** |
 | **Bán Kính Ảnh Hưởng (Blast Radius)**| **Cực lớn (Nguy cơ nhầm lẫn rất cao)**| **Nhỏ (Cô lập theo từng thư mục)** | **Rất nhỏ (Điều phối theo từng sub-module)** |
 | **Phân Quyền RBAC / IAM** | Không thể phân quyền chi tiết | **Dễ dàng phân quyền theo thư mục & S3**| **Phân quyền chặt chẽ cấp IAM Role** |
@@ -401,7 +401,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì Workspaces dùng chung một Remote State Bucket, chung tài khoản Cloud Provider và không có cơ chế cô lập bán kính ảnh hưởng (Blast Radius). Kỹ sư rất dễ nhầm lẫn ngữ cảnh (Context Confusion) và gõ lệnh xóa nhầm hạ tầng Production khi tưởng mình đang ở Dev.
+  <p style="margin: 0.4rem 0;">Vì Workspaces dùng chung một Remote State Bucket, chung tài khoản Cloud Provider và không có cơ chế cô lập bán kính ảnh hưởng (Blast Radius). Kỹ sư rất dễ nhầm lẫn ngữ cảnh (Context Confusion) và gõ lệnh xóa nhầm hạ tầng Production khi tưởng mình đang ở Dev.</p>
 </div>
 </details>
 
@@ -420,7 +420,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Workspaces cực kỳ lý tưởng cho các <b style="color: var(--accent-primary);">môi trường thử nghiệm tạm thời (Ephemeral / Preview Environments)</b> được tạo tự động cho từng Pull Request hoặc từng Developer, sau đó được hủy hoàn toàn khi kiểm thử xong.
+  <p style="margin: 0.4rem 0;">Workspaces cực kỳ lý tưởng cho các <b style="color: var(--accent-primary);">môi trường thử nghiệm tạm thời (Ephemeral / Preview Environments)</b> được tạo tự động cho từng Pull Request hoặc từng Developer, sau đó được hủy hoàn toàn khi kiểm thử xong.</p>
 </div>
 </details>
 
@@ -439,7 +439,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cô lập hoàn toàn bán kính ảnh hưởng (Blast Radius Isolation) và hỗ trợ mô hình Multi-Account Security. Môi trường Dev và Prod có thể chạy trên 2 tài khoản AWS hoàn toàn tách biệt với các S3 State Bucket riêng, giúp phân quyền IAM Least-Privilege tuyệt đối.
+  <p style="margin: 0.4rem 0;">Cô lập hoàn toàn bán kính ảnh hưởng (Blast Radius Isolation) và hỗ trợ mô hình Multi-Account Security. Môi trường Dev và Prod có thể chạy trên 2 tài khoản AWS hoàn toàn tách biệt với các S3 State Bucket riêng, giúp phân quyền IAM Least-Privilege tuyệt đối.</p>
 </div>
 </details>
 
@@ -447,7 +447,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Biến nội suy `terraform.workspace` trả về giá trị gì?</span>
+    <span>Biến nội suy <code>terraform.workspace</code> trả về giá trị gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -458,7 +458,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trả về tên của Workspace hiện tại đang được kích hoạt (ví dụ: <code>"default"</code>, <code>"dev"</code>, <code>"prod"</code>).
+  <p style="margin: 0.4rem 0;">Trả về tên của Workspace hiện tại đang được kích hoạt (ví dụ: <code>"default"</code>, <code>"dev"</code>, <code>"prod"</code>).</p>
 </div>
 </details>
 
@@ -477,7 +477,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Được lưu trong cùng một S3 Bucket nhưng nằm dưới tiền tố đặc biệt <code>env:/<workspace_name>/<state_key></code>. Ví dụ: <code>s3://my-bucket/env:/dev/app.tfstate</code>.
+  <p style="margin: 0.4rem 0;">Được lưu trong cùng một S3 Bucket nhưng nằm dưới tiền tố đặc biệt <code>env:/&lt;workspace_name&gt;/&lt;state_key&gt;</code>. Ví dụ: <code>s3://my-bucket/env:/dev/app.tfstate</code>.</p>
 </div>
 </details>
 
@@ -496,7 +496,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Terragrunt giúp loại bỏ 100% sự lặp lại mã nguồn (DRY Principle) của các khối cấu hình <code>backend "s3"</code> và <code>provider "aws"</code> ở từng thư mục môi trường thông qua cơ chế kế thừa <code>find_in_parent_folders()</code>.
+  <p style="margin: 0.4rem 0;">Terragrunt giúp loại bỏ 100% sự lặp lại mã nguồn (DRY Principle) của các khối cấu hình <code>backend "s3"</code> và <code>provider "aws"</code> ở từng thư mục môi trường thông qua cơ chế kế thừa <code>find_in_parent_folders()</code>.</p>
 </div>
 </details>
 
@@ -515,7 +515,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chạy lệnh <code>terraform workspace show</code> hoặc xem dấu sao <code>*</code> khi chạy lệnh <code>terraform workspace list</code>.
+  <p style="margin: 0.4rem 0;">Chạy lệnh <code>terraform workspace show</code> hoặc xem dấu sao <code>*</code> khi chạy lệnh <code>terraform workspace list</code>.</p>
 </div>
 </details>
 
@@ -523,7 +523,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Tại sao việc lạm dụng toán tử điều kiện tam nguyên (`? :`) theo workspace lại là Anti-Pattern?</span>
+    <span>Tại sao việc lạm dụng toán tử điều kiện tam nguyên (<code>? :</code>) theo workspace lại là Anti-Pattern?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -534,7 +534,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì nó làm ô nhiễm mã nguồn HCL, tạo ra các khối logic rẽ nhánh phức tạp khó đọc, khó kiểm thử đơn vị và dễ dẫn tới lỗi sai cấu hình ngầm giữa các môi trường.
+  <p style="margin: 0.4rem 0;">Vì nó làm ô nhiễm mã nguồn HCL, tạo ra các khối logic rẽ nhánh phức tạp khó đọc, khó kiểm thử đơn vị và dễ dẫn tới lỗi sai cấu hình ngầm giữa các môi trường.</p>
 </div>
 </details>
 
@@ -553,7 +553,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cả hai môi trường Dev và Prod đều phải gọi chung các <b style="color: var(--accent-primary);">Reusable Modules</b> đã được kiểm thử và gắn thẻ phiên bản bất biến (Semantic Version Tags) từ Git hoặc Private Registry.
+  <p style="margin: 0.4rem 0;">Cả hai môi trường Dev và Prod đều phải gọi chung các <b style="color: var(--accent-primary);">Reusable Modules</b> đã được kiểm thử và gắn thẻ phiên bản bất biến (Semantic Version Tags) từ Git hoặc Private Registry.</p>
 </div>
 </details>
 
@@ -572,7 +572,7 @@ cd /tmp && rm -rf /tmp/multi-env-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Kỹ sư cập nhật phiên bản Module trong thư mục <code>environments/dev/</code> $\rightarrow$ Test thành công $\rightarrow$ Mở Pull Request cập nhật phiên bản Module trong <code>environments/staging/</code> $\rightarrow$ Kiểm thử tích hợp $\rightarrow$ Mở Pull Request cập nhật sang <code>environments/prod/</code> với sự phê duyệt của Tech Lead.
+  <p style="margin: 0.4rem 0;">Kỹ sư cập nhật phiên bản Module trong thư mục <code>environments/dev/</code> $\rightarrow$ Test thành công $\rightarrow$ Mở Pull Request cập nhật phiên bản Module trong <code>environments/staging/</code> $\rightarrow$ Kiểm thử tích hợp $\rightarrow$ Mở Pull Request cập nhật sang <code>environments/prod/</code> với sự phê duyệt của Tech Lead.</p>
 </div>
 </details>
 

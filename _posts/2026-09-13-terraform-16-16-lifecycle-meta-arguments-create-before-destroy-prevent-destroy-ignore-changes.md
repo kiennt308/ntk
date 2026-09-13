@@ -505,7 +505,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Điều gì xảy ra khi bạn cấu hình `create_before_destroy = true` cho một AWS S3 Bucket có tên tĩnh `bucket = "company-finance-reports"`?</span>
+    <span>Điều gì xảy ra khi bạn cấu hình <code>create_before_destroy = true</code> cho một AWS S3 Bucket có tên tĩnh <code>bucket = "company-finance-reports"</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -516,7 +516,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Quá trình `terraform apply` sẽ bị lỗi `BucketAlreadyExists` khi cố gắng tạo bucket mới. Do tên S3 bucket là duy nhất toàn cầu và không thể trùng lặp, việc tạo bucket mới trước khi xóa bucket cũ sẽ thất bại. Với S3 bucket hoặc các tài nguyên tên tĩnh, bắt buộc phải dùng `bucket_prefix` hoặc chấp nhận quy trình destroy-then-create.
+  <p style="margin: 0.4rem 0;">Quá trình <code>terraform apply</code> sẽ bị lỗi <code>BucketAlreadyExists</code> khi cố gắng tạo bucket mới. Do tên S3 bucket là duy nhất toàn cầu và không thể trùng lặp, việc tạo bucket mới trước khi xóa bucket cũ sẽ thất bại. Với S3 bucket hoặc các tài nguyên tên tĩnh, bắt buộc phải dùng <code>bucket_prefix</code> hoặc chấp nhận quy trình destroy-then-create.</p>
 </div>
 </details>
 
@@ -524,7 +524,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q02</span>
-    <span>Tại sao `prevent_destroy` không bảo vệ được tài nguyên nếu ai đó xóa khối resource đó khỏi mã nguồn `.tf`?</span>
+    <span>Tại sao <code>prevent_destroy</code> không bảo vệ được tài nguyên nếu ai đó xóa khối resource đó khỏi mã nguồn <code>.tf</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -535,7 +535,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Nếu xóa hoàn toàn khối resource khỏi file `.tf`, Terraform hiểu rằng định nghĩa tài nguyên không còn tồn tại và sẽ lên kế hoạch xóa nó trong State. Tuy nhiên, nếu trong State vẫn còn lưu metadata của resource đó, Terraform vẫn chặn lại nếu file code cũ còn hiệu lực. Nhưng nếu kỹ sư xóa code và cố tình ép apply, Terraform sẽ báo lỗi `prevent_destroy`. Cách duy nhất để xóa tài nguyên có `prevent_destroy` là sửa tường minh `prevent_destroy = false` trong code trước.
+  <p style="margin: 0.4rem 0;">Nếu xóa hoàn toàn khối resource khỏi file <code>.tf</code>, Terraform hiểu rằng định nghĩa tài nguyên không còn tồn tại và sẽ lên kế hoạch xóa nó trong State. Tuy nhiên, nếu trong State vẫn còn lưu metadata của resource đó, Terraform vẫn chặn lại nếu file code cũ còn hiệu lực. Nhưng nếu kỹ sư xóa code và cố tình ép apply, Terraform sẽ báo lỗi <code>prevent_destroy</code>. Cách duy nhất để xóa tài nguyên có <code>prevent_destroy</code> là sửa tường minh <code>prevent_destroy = false</code> trong code trước.</p>
 </div>
 </details>
 
@@ -543,7 +543,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q03</span>
-    <span>Cú pháp `ignore_changes` có hỗ trợ biểu thức chính quy (Regex) hoặc ký tự đại diện wildcard `*` không?</span>
+    <span>Cú pháp <code>ignore_changes</code> có hỗ trợ biểu thức chính quy (Regex) hoặc ký tự đại diện wildcard <code>*</code> không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -554,7 +554,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **KHÔNG**. `ignore_changes` chỉ chấp nhận danh sách các thuộc tính tĩnh cụ thể (ví dụ: `tags["Environment"]`, `ami`, `user_data`) hoặc từ khóa toàn phần `all`. Nó không hỗ trợ cú pháp wildcard như `tags["*"]` hay regex.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">KHÔNG</b>. <code>ignore_changes</code> chỉ chấp nhận danh sách các thuộc tính tĩnh cụ thể (ví dụ: <code>tags["Environment"]</code>, <code>ami</code>, <code>user_data</code>) hoặc từ khóa toàn phần <code>all</code>. Nó không hỗ trợ cú pháp wildcard như <code>tags["*"]</code> hay regex.</p>
 </div>
 </details>
 
@@ -562,7 +562,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>replace_triggered_by` khác gì so with `depends_on`?</span>
+    <span>replace_triggered_by khác gì so withdepends_on?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -573,9 +573,9 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - `depends_on` chỉ định **thứ tự tạo/cập nhật** tài nguyên (tài nguyên A phải được tạo xong trước tài nguyên B).
-  - `replace_triggered_by` định nghĩa **quan hệ kích hoạt tái tạo** (khi tài nguyên A bị thay đổi hoặc recreate, tài nguyên B bắt buộc phải bị Destroy & Recreate theo).
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>depends_on</code> chỉ định <b style="color: var(--accent-primary);">thứ tự tạo/cập nhật</b> tài nguyên (tài nguyên A phải được tạo xong trước tài nguyên B).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>replace_triggered_by</code> định nghĩa <b style="color: var(--accent-primary);">quan hệ kích hoạt tái tạo</b> (khi tài nguyên A bị thay đổi hoặc recreate, tài nguyên B bắt buộc phải bị Destroy & Recreate theo).</div>
 </div>
 </details>
 
@@ -583,7 +583,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Khi nào một `postcondition` trong khối `lifecycle` được thực thi?</span>
+    <span>Khi nào một <code>postcondition</code> trong khối <code>lifecycle</code> được thực thi?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -594,7 +594,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : `postcondition` được đánh giá ngay **sau khi** Cloud Provider API phản hồi rằng tài nguyên đã được tạo/cập nhật thành công trong bước Apply Phase. Nếu điều kiện trong `postcondition` trả về `false`, Terraform sẽ ném ra lỗi, dừng pipeline ngay lập tức và đánh dấu tài nguyên trong State là `tainted` hoặc ghi nhận lỗi.
+  <p style="margin: 0.4rem 0;"><code>postcondition</code> được đánh giá ngay <b style="color: var(--accent-primary);">sau khi</b> Cloud Provider API phản hồi rằng tài nguyên đã được tạo/cập nhật thành công trong bước Apply Phase. Nếu điều kiện trong <code>postcondition</code> trả về <code>false</code>, Terraform sẽ ném ra lỗi, dừng pipeline ngay lập tức và đánh dấu tài nguyên trong State là <code>tainted</code> hoặc ghi nhận lỗi.</p>
 </div>
 </details>
 
@@ -613,7 +613,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Nếu muốn bỏ qua toàn bộ tags, dùng `ignore_changes = [tags, tags_all]`. Nếu muốn chỉ giữ các tags trong code và bỏ qua tags lạ, người ta thường dùng thuộc tính `ignore_tags` ở tầng AWS Provider configuration.
+  <p style="margin: 0.4rem 0;">Nếu muốn bỏ qua toàn bộ tags, dùng <code>ignore_changes = [tags, tags_all]</code>. Nếu muốn chỉ giữ các tags trong code và bỏ qua tags lạ, người ta thường dùng thuộc tính <code>ignore_tags</code> ở tầng AWS Provider configuration.</p>
 </div>
 </details>
 
@@ -621,7 +621,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q07</span>
-    <span>Tại sao việc sử dụng `create_before_destroy = true` có thể làm tăng chi phí hạ tầng tạm thời?</span>
+    <span>Tại sao việc sử dụng <code>create_before_destroy = true</code> có thể làm tăng chi phí hạ tầng tạm thời?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -632,7 +632,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Trong quá trình chuyển giao, cả hai phiên bản tài nguyên (cũ và mới) cùng tồn tại song song trong vài phút đến vài chục phút (cho đến khi Health Check pass và Draining hoàn tất). Trong khoảng thời gian đó, doanh nghiệp phải trả tiền thuê cho gấp đôi số lượng máy chủ/IPs/Load Balancers.
+  <p style="margin: 0.4rem 0;">Trong quá trình chuyển giao, cả hai phiên bản tài nguyên (cũ và mới) cùng tồn tại song song trong vài phút đến vài chục phút (cho đến khi Health Check pass và Draining hoàn tất). Trong khoảng thời gian đó, doanh nghiệp phải trả tiền thuê cho gấp đôi số lượng máy chủ/IPs/Load Balancers.</p>
 </div>
 </details>
 
@@ -640,7 +640,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Có thể truyền biến số (variable) vào `prevent_destroy = var.enable_protection` được không?</span>
+    <span>Có thể truyền biến số (variable) vào <code>prevent_destroy = var.enable_protection</code> được không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -651,7 +651,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **KHÔNG**. Thuộc tính `prevent_destroy` (cũng như `create_before_destroy`) bắt buộc phải là một giá trị boolean tĩnh (`true` hoặc `false`) được gán trực tiếp (hardcoded literal). Terraform Core Engine phân tích các trường này trước khi tính toán biểu thức biến số, do đó không hỗ trợ `var.*` hay `local.*`.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">KHÔNG</b>. Thuộc tính <code>prevent_destroy</code> (cũng như <code>create_before_destroy</code>) bắt buộc phải là một giá trị boolean tĩnh (<code>true</code> hoặc <code>false</code>) được gán trực tiếp (hardcoded literal). Terraform Core Engine phân tích các trường này trước khi tính toán biểu thức biến số, do đó không hỗ trợ <code>var.*</code> hay <code>local.*</code>.</p>
 </div>
 </details>
 
@@ -659,7 +659,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span>precondition` bên trong `lifecycle` của một `data source` có tác dụng gì?</span>
+    <span><code>precondition</code> bên <code>trong</code>lifecycle<code> của một </code>data <code>source</code> có tác dụng gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -670,7 +670,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Dùng để kiểm tra dữ liệu đọc về từ Cloud có thỏa mãn yêu cầu nghiệp vụ hay không trước khi các tài nguyên khác sử dụng dữ liệu đó. Ví dụ: Đảm bảo Data Source `aws_vpc` tìm thấy ít nhất 3 Availability Zones trước khi tiến hành tạo Subnets.
+  <p style="margin: 0.4rem 0;">Dùng để kiểm tra dữ liệu đọc về từ Cloud có thỏa mãn yêu cầu nghiệp vụ hay không trước khi các tài nguyên khác sử dụng dữ liệu đó. Ví dụ: Đảm bảo Data Source <code>aws_vpc</code> tìm thấy ít nhất 3 Availability Zones trước khi tiến hành tạo Subnets.</p>
 </div>
 </details>
 
@@ -678,7 +678,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q10</span>
-    <span>Nếu một tài nguyên có `create_before_destroy = true` bị lỗi ở bước tạo tài nguyên mới, tài nguyên cũ có bị xóa không?</span>
+    <span>Nếu một tài nguyên có <code>create_before_destroy = true</code> bị lỗi ở bước tạo tài nguyên mới, tài nguyên cũ có bị xóa không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -689,7 +689,7 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **KHÔNG**. Vì tài nguyên mới tạo thất bại (Apply Error), Terraform sẽ dừng pipeline ngay lập tức. Tài nguyên cũ vẫn đang hoạt động bình thường và tiếp tục phục vụ lưu lượng truy cập, giúp bảo toàn tính sẵn sàng cao của hệ thống.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">KHÔNG</b>. Vì tài nguyên mới tạo thất bại (Apply Error), Terraform sẽ dừng pipeline ngay lập tức. Tài nguyên cũ vẫn đang hoạt động bình thường và tiếp tục phục vụ lưu lượng truy cập, giúp bảo toàn tính sẵn sàng cao của hệ thống.</p>
 </div>
 </details>
 

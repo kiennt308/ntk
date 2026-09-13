@@ -662,7 +662,7 @@ rm -rf terraform-lab15-validation
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Điểm khác biệt mấu chốt giữa `type = any` và `type = object({...})` là gì?</span>
+    <span>Điểm khác biệt mấu chốt giữa <code>type = any</code> và <code>type = object({...})</code> là gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -673,7 +673,7 @@ rm -rf terraform-lab15-validation
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : `type = any` đóng vai trò là wildcard, tắt toàn bộ cơ chế type checking tại thời điểm parse HCL, dễ dẫn đến lỗi runtime nếu module truy cập thuộc tính không tồn tại. `type = object({...})` định nghĩa hợp đồng dữ liệu (data contract) tường minh, hỗ trợ kiểm tra kiểu của từng trường con, bắt buộc truyền đủ thuộc tính (trừ khi có `optional()`), giúp phát hiện lỗi sai cấu trúc ngay lập tức.
+  <p style="margin: 0.4rem 0;"><code>type = any</code> đóng vai trò là wildcard, tắt toàn bộ cơ chế type checking tại thời điểm parse HCL, dễ dẫn đến lỗi runtime nếu module truy cập thuộc tính không tồn tại. <code>type = object({...})</code> định nghĩa hợp đồng dữ liệu (data contract) tường minh, hỗ trợ kiểm tra kiểu của từng trường con, bắt buộc truyền đủ thuộc tính (trừ khi có <code>optional()</code>), giúp phát hiện lỗi sai cấu trúc ngay lập tức.</p>
 </div>
 </details>
 
@@ -681,7 +681,7 @@ rm -rf terraform-lab15-validation
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q02</span>
-    <span>Khối `validation` trong biến số có thể tham chiếu (reference) tới các biến số khác trong cùng module không?</span>
+    <span>Khối <code>validation</code> trong biến số có thể tham chiếu (reference) tới các biến số khác trong cùng module không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -692,7 +692,7 @@ rm -rf terraform-lab15-validation
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **KHÔNG**. Khối `validation` bên trong một `variable` chỉ có thể tham chiếu trực tiếp đến chính biến đó (`var.<variable_name>`). Nó không thể tham chiếu đến biến số khác, `local values`, hay `data sources` để tránh tạo ra vòng lặp phụ thuộc (dependency cycle) trong quá trình parse biến số ban đầu. Nếu cần validate tương quan giữa 2 biến, ta phải sử dụng `check` block hoặc `precondition` trong resource/lifecycle.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">KHÔNG</b>. Khối <code>validation</code> bên trong một <code>variable</code> chỉ có thể tham chiếu trực tiếp đến chính biến đó (<code>var.&lt;variable_name&gt;</code>). Nó không thể tham chiếu đến biến số khác, <code>local values</code>, hay <code>data sources</code> để tránh tạo ra vòng lặp phụ thuộc (dependency cycle) trong quá trình parse biến số ban đầu. Nếu cần validate tương quan giữa 2 biến, ta phải sử dụng <code>check</code> block hoặc <code>precondition</code> trong resource/lifecycle.</p>
 </div>
 </details>
 
@@ -700,7 +700,7 @@ rm -rf terraform-lab15-validation
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q03</span>
-    <span>Đoạn code `can(regex("^[0-9]+$", var.age))` hoạt động như thế nào khi `var.age` là `null` hoặc chuỗi `"abc"`?</span>
+    <span>Đoạn code <code>can(regex("^[0-9]+$", var.age))</code> hoạt động như thế nào khi <code>var.age</code> là <code>null</code> hoặc chuỗi <code>"abc"</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -711,10 +711,10 @@ rm -rf terraform-lab15-validation
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - Nếu `var.age = "abc"`, hàm `regex()` không tìm thấy kết quả khớp và ném ra lỗi. Hàm `can()` bắt lỗi này và chuyển đổi thành `false`.
-  - Nếu `var.age = null`, hàm `regex()` gặp lỗi null argument. `can()` bắt lỗi và trả về `false`.
-  - Nếu `var.age = "25"`, `regex()` khớp thành công, `can()` trả về `true`.
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu <code>var.age = "abc"</code>, hàm <code>regex()</code> không tìm thấy kết quả khớp và ném ra lỗi. Hàm <code>can()</code> bắt lỗi này và chuyển đổi thành <code>false</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu <code>var.age = null</code>, hàm <code>regex()</code> gặp lỗi null argument. <code>can()</code> bắt lỗi và trả về <code>false</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu <code>var.age = "25"</code>, <code>regex()</code> khớp thành công, <code>can()</code> trả về <code>true</code>.</div>
 </div>
 </details>
 
@@ -722,7 +722,7 @@ rm -rf terraform-lab15-validation
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Sự khác nhau giữa `alltrue([for item in list: condition])` và `contains(list, value)`?</span>
+    <span>Sự khác nhau giữa <code>alltrue([for item in list: condition])</code> và <code>contains(list, value)</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -733,7 +733,7 @@ rm -rf terraform-lab15-validation
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : `alltrue()` nhận vào một danh sách các giá trị boolean và chỉ trả về `true` nếu **100% các phần tử** trong mảng là `true`. `contains()` kiểm tra xem một giá trị cụ thể có xuất hiện trong danh sách hay không. Trong validation cho danh sách các object, `alltrue()` kết hợp với for expression là tiêu chuẩn vàng để duyệt kiểm tra từng phần tử.
+  <p style="margin: 0.4rem 0;"><code>alltrue()</code> nhận vào một danh sách các giá trị boolean và chỉ trả về <code>true</code> nếu <b style="color: var(--accent-primary);">100% các phần tử</b> trong mảng là <code>true</code>. <code>contains()</code> kiểm tra xem một giá trị cụ thể có xuất hiện trong danh sách hay không. Trong validation cho danh sách các object, <code>alltrue()</code> kết hợp với for expression là tiêu chuẩn vàng để duyệt kiểm tra từng phần tử.</p>
 </div>
 </details>
 
@@ -741,7 +741,7 @@ rm -rf terraform-lab15-validation
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Khi nào nên sử dụng `precondition` và `postcondition` thay vì Variable Validation?</span>
+    <span>Khi nào nên sử dụng <code>precondition</code> và <code>postcondition</code> thay vì Variable Validation?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -752,9 +752,9 @@ rm -rf terraform-lab15-validation
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - Dùng **Variable Validation** khi muốn kiểm tra dữ liệu đầu vào tĩnh đã biết ngay trước khi tính toán đồ thị (ví dụ: regex string, dải số, enum value).
-  - Dùng **Precondition / Postcondition** khi điều kiện kiểm tra phụ thuộc vào kết quả của một `data source`, một `resource` khác, hoặc thuộc tính chỉ được biết sau khi Cloud Provider phản hồi (ví dụ: kiểm tra AMI ID có tag `"Production-Approved"` trước khi tạo EC2).
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng <b style="color: var(--accent-primary);">Variable Validation</b> khi muốn kiểm tra dữ liệu đầu vào tĩnh đã biết ngay trước khi tính toán đồ thị (ví dụ: regex string, dải số, enum value).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng <b style="color: var(--accent-primary);">Precondition / Postcondition</b> khi điều kiện kiểm tra phụ thuộc vào kết quả của một <code>data source</code>, một <code>resource</code> khác, hoặc thuộc tính chỉ được biết sau khi Cloud Provider phản hồi (ví dụ: kiểm tra AMI ID có tag <code>"Production-Approved"</code> trước khi tạo EC2).</div>
 </div>
 </details>
 
@@ -762,7 +762,7 @@ rm -rf terraform-lab15-validation
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q06</span>
-    <span>Tại sao nên ưu tiên dùng `formatlist()` hoặc `for` expression thay vì hardcode string concatenation?</span>
+    <span>Tại sao nên ưu tiên dùng <code>formatlist()</code> hoặc <code>for</code> expression thay vì hardcode string concatenation?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -773,7 +773,7 @@ rm -rf terraform-lab15-validation
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : `formatlist()` và `for` expressions hỗ trợ xử lý linh hoạt các mảng có kích thước động, tự động áp dụng hàm biến đổi cho từng phần tử mà không gây lỗi index out of range, đồng thời giúp code HCL giữ vững nguyên lý Declarative.
+  <p style="margin: 0.4rem 0;"><code>formatlist()</code> và <code>for</code> expressions hỗ trợ xử lý linh hoạt các mảng có kích thước động, tự động áp dụng hàm biến đổi cho từng phần tử mà không gây lỗi index out of range, đồng thời giúp code HCL giữ vững nguyên lý Declarative.</p>
 </div>
 </details>
 
@@ -781,7 +781,7 @@ rm -rf terraform-lab15-validation
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q07</span>
-    <span>Hàm `compact()` loại bỏ những phần tử nào trong một danh sách?</span>
+    <span>Hàm <code>compact()</code> loại bỏ những phần tử nào trong một danh sách?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -792,7 +792,7 @@ rm -rf terraform-lab15-validation
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : `compact()` chỉ nhận đầu vào là `list(string)` và loại bỏ tất cả các phần tử là **chuỗi rỗng `""`** hoặc `null`. Nó không loại bỏ số 0 hay boolean false.
+  <p style="margin: 0.4rem 0;"><code>compact()</code> chỉ nhận đầu vào là <code>list(string)</code> và loại bỏ tất cả các phần tử là <b style="color: var(--accent-primary);">chuỗi rỗng <code>""</code></b> hoặc <code>null</code>. Nó không loại bỏ số 0 hay boolean false.</p>
 </div>
 </details>
 
@@ -800,7 +800,7 @@ rm -rf terraform-lab15-validation
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Làm thế nào để kiểm tra một biến kiểu `map(string)` không chứa bất kỳ key nào bắt đầu bằng từ khóa `"aws:"`?</span>
+    <span>Làm thế nào để kiểm tra một biến kiểu <code>map(string)</code> không chứa bất kỳ key nào bắt đầu bằng từ khóa <code>"aws:"</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -811,15 +811,13 @@ rm -rf terraform-lab15-validation
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  :
-```hcl
-validation {
+  <p style="margin: 0.4rem 0;"></p>
+  <pre style="background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0;"><code class="language-hcl">validation {
   condition = alltrue([
-    for k, v in var.tags : !startswith(lower(k), "aws:")
+    for k, v in var.tags : !startswith(lower(k), &quot;aws:&quot;)
   ])
-  error_message = "Tags do người dùng định nghĩa không được phép bắt đầu bằng tiền tố bảo lưu 'aws:'."
-}
-```
+  error_message = &quot;Tags do người dùng định nghĩa không được phép bắt đầu bằng tiền tố bảo lưu &#x27;aws:&#x27;.&quot;
+}</code></pre>
 </div>
 </details>
 
@@ -827,7 +825,7 @@ validation {
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span>Điều gì xảy ra nếu hàm `try(local.a, local.b)` có `local.a` chứa syntax error (sai cú pháp HCL)?</span>
+    <span>Điều gì xảy ra nếu hàm <code>try(local.a, local.b)</code> có <code>local.a</code> chứa syntax error (sai cú pháp HCL)?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -838,7 +836,7 @@ validation {
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : `try()` chỉ bắt các **lỗi runtime evaluation** (như truy cập key không tồn tại, chia cho 0, parse fail). Nếu `local.a` có lỗi cú pháp HCL (Syntax Error), Terraform sẽ báo lỗi cú pháp ngay trong giai đoạn Lexer/Parser và dừng chương trình, `try()` không thể che giấu được lỗi cú pháp.
+  <p style="margin: 0.4rem 0;"><code>try()</code> chỉ bắt các <b style="color: var(--accent-primary);">lỗi runtime evaluation</b> (như truy cập key không tồn tại, chia cho 0, parse fail). Nếu <code>local.a</code> có lỗi cú pháp HCL (Syntax Error), Terraform sẽ báo lỗi cú pháp ngay trong giai đoạn Lexer/Parser và dừng chương trình, <code>try()</code> không thể che giấu được lỗi cú pháp.</p>
 </div>
 </details>
 
@@ -846,7 +844,7 @@ validation {
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q10</span>
-    <span>Làm thế nào để thiết lập một giá trị mặc định phức tạp cho biến `object` mà trong đó có thuộc tính lồng nhau (nested optional attributes)?</span>
+    <span>Làm thế nào để thiết lập một giá trị mặc định phức tạp cho biến <code>object</code> mà trong đó có thuộc tính lồng nhau (nested optional attributes)?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -857,7 +855,7 @@ validation {
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Sử dụng cú pháp `optional(type, default_value)` ở mọi cấp lồng nhau trong định nghĩa `type` của biến. Ví dụ: `type = object({ db = optional(object({ port = optional(number, 5432) }), {}) })`.
+  <p style="margin: 0.4rem 0;">Sử dụng cú pháp <code>optional(type, default_value)</code> ở mọi cấp lồng nhau trong định nghĩa <code>type</code> của biến. Ví dụ: <code>type = object({ db = optional(object({ port = optional(number, 5432) }), {}) })</code>.</p>
 </div>
 </details>
 

@@ -375,7 +375,7 @@ rm -rf terraform-lab26-staterecovery
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Điều gì nguy hiểm nhất có thể xảy ra nếu bạn chạy `terraform force-unlock` khi tiến trình `apply` cũ vẫn đang thực sự chạy ngầm?</span>
+    <span>Điều gì nguy hiểm nhất có thể xảy ra nếu bạn chạy <code>terraform force-unlock</code> khi tiến trình <code>apply</code> cũ vẫn đang thực sự chạy ngầm?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -386,7 +386,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Nếu tiến trình cũ vẫn đang gửi API và chuẩn bị ghi cập nhật vào State, việc bạn mở khóa sẽ cho phép một tiến trình thứ hai ghi đè lên State cùng một lúc (Race Condition). Hậu quả là State file sẽ bị **Race Condition Corruption (ghi đè mất dữ liệu)** hoặc tạo ra các tài nguyên mồ côi ngoài Cloud mà Terraform không còn theo dõi được nữa.
+  <p style="margin: 0.4rem 0;">Nếu tiến trình cũ vẫn đang gửi API và chuẩn bị ghi cập nhật vào State, việc bạn mở khóa sẽ cho phép một tiến trình thứ hai ghi đè lên State cùng một lúc (Race Condition). Hậu quả là State file sẽ bị <b style="color: var(--accent-primary);">Race Condition Corruption (ghi đè mất dữ liệu)</b> hoặc tạo ra các tài nguyên mồ côi ngoài Cloud mà Terraform không còn theo dõi được nữa.</p>
 </div>
 </details>
 
@@ -405,7 +405,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : S3 Versioning lưu giữ lại toàn bộ lịch sử của mọi lần sửa đổi tệp State. Khi có sự cố State bị hỏng (corrupted), bị ghi đè sai sót hoặc bị ai đó xóa nhầm, kỹ sư SRE chỉ mất 30 giây để khôi phục lại phiên bản State nguyên vẹn trước đó (Last Known Good Version) từ S3 Version History.
+  <p style="margin: 0.4rem 0;">S3 Versioning lưu giữ lại toàn bộ lịch sử của mọi lần sửa đổi tệp State. Khi có sự cố State bị hỏng (corrupted), bị ghi đè sai sót hoặc bị ai đó xóa nhầm, kỹ sư SRE chỉ mất 30 giây để khôi phục lại phiên bản State nguyên vẹn trước đó (Last Known Good Version) từ S3 Version History.</p>
 </div>
 </details>
 
@@ -413,7 +413,7 @@ rm -rf terraform-lab26-staterecovery
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q03</span>
-    <span>Tham số `lineage` trong file `terraform.tfstate` có ý nghĩa gì?</span>
+    <span>Tham số <code>lineage</code> trong file <code>terraform.tfstate</code> có ý nghĩa gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -424,7 +424,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : `lineage` là một chuỗi UUID duy nhất được tạo ra khi State file được khởi tạo lần đầu tiên. Nó đóng vai trò như "mã định danh ADN" của State. Terraform kiểm tra trường này để đảm bảo bạn không vô tình nạp một file State của một dự án/hạ tầng hoàn toàn khác vào Backend hiện tại.
+  <p style="margin: 0.4rem 0;"><code>lineage</code> là một chuỗi UUID duy nhất được tạo ra khi State file được khởi tạo lần đầu tiên. Nó đóng vai trò như "mã định danh ADN" của State. Terraform kiểm tra trường này để đảm bảo bạn không vô tình nạp một file State của một dự án/hạ tầng hoàn toàn khác vào Backend hiện tại.</p>
 </div>
 </details>
 
@@ -432,7 +432,7 @@ rm -rf terraform-lab26-staterecovery
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Nếu bạn vô tình làm mất hoàn toàn file `terraform.tfstate` và không có bản sao lưu (Backup), điều gì sẽ xảy ra với hạ tầng đang chạy trên Cloud?</span>
+    <span>Nếu bạn vô tình làm mất hoàn toàn file <code>terraform.tfstate</code> và không có bản sao lưu (Backup), điều gì sẽ xảy ra với hạ tầng đang chạy trên Cloud?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -443,7 +443,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Hạ tầng trên Cloud (máy chủ EC2, cơ sở dữ liệu RDS, mạng VPC) **VẪN TIẾP TỤC HOẠT ĐỘNG BÌNH THƯỜNG** mà không bị sập. Tuy nhiên, Terraform đã hoàn toàn mất quyền kiểm soát (bị "mù"). Để khôi phục quyền quản lý, bạn bắt buộc phải viết lại mã nguồn HCL và sử dụng khối `import` để nạp từng tài nguyên trở lại một State file mới.
+  <p style="margin: 0.4rem 0;">Hạ tầng trên Cloud (máy chủ EC2, cơ sở dữ liệu RDS, mạng VPC) <b style="color: var(--accent-primary);">VẪN TIẾP TỤC HOẠT ĐỘNG BÌNH THƯỜNG</b> mà không bị sập. Tuy nhiên, Terraform đã hoàn toàn mất quyền kiểm soát (bị "mù"). Để khôi phục quyền quản lý, bạn bắt buộc phải viết lại mã nguồn HCL và sử dụng khối <code>import</code> để nạp từng tài nguyên trở lại một State file mới.</p>
 </div>
 </details>
 
@@ -451,7 +451,7 @@ rm -rf terraform-lab26-staterecovery
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Khi nào thì bạn nên sử dụng lệnh `terraform refresh` (hoặc `terraform apply -refresh-only`)?</span>
+    <span>Khi nào thì bạn nên sử dụng lệnh <code>terraform refresh</code> (hoặc <code>terraform apply -refresh-only</code>)?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -462,7 +462,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khi có những thay đổi hạ tầng diễn ra trực tiếp ngoài Cloud Console (Drift), hoặc sau khi bạn vừa mở khóa State / khôi phục State từ bản sao lưu và muốn đồng bộ hóa lại các giá trị thuộc tính thực tế mới nhất vào State mà không làm thay đổi hạ tầng.
+  <p style="margin: 0.4rem 0;">Khi có những thay đổi hạ tầng diễn ra trực tiếp ngoài Cloud Console (Drift), hoặc sau khi bạn vừa mở khóa State / khôi phục State từ bản sao lưu và muốn đồng bộ hóa lại các giá trị thuộc tính thực tế mới nhất vào State mà không làm thay đổi hạ tầng.</p>
 </div>
 </details>
 
@@ -481,7 +481,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Bắt buộc phải có tên chính xác là **`LockID`** (kiểu dữ liệu String). Nếu đặt tên khác (như `id` hay `lock_id`), Terraform AWS Provider sẽ báo lỗi `ResourceNotFoundException` hoặc không thể ghi bản ghi khóa.
+  <p style="margin: 0.4rem 0;">Bắt buộc phải có tên chính xác là <b style="color: var(--accent-primary);"><code>LockID</code></b> (kiểu dữ liệu String). Nếu đặt tên khác (như <code>id</code> hay <code>lock_id</code>), Terraform AWS Provider sẽ báo lỗi <code>ResourceNotFoundException</code> hoặc không thể ghi bản ghi khóa.</p>
 </div>
 </details>
 
@@ -489,7 +489,7 @@ rm -rf terraform-lab26-staterecovery
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q07</span>
-    <span>Tại sao lệnh `terraform state pull` lại là bước đầu tiên bắt buộc phải làm trước khi can thiệp thủ công vào State?</span>
+    <span>Tại sao lệnh <code>terraform state pull</code> lại là bước đầu tiên bắt buộc phải làm trước khi can thiệp thủ công vào State?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -500,7 +500,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Lệnh `terraform state pull > backup_state.json` tải bản State hiện tại từ Remote Backend về máy cục bộ kèm theo việc xác thực tính toàn vẹn của mã checksum SHA256. Đây là tấm lưới an toàn giúp bạn luôn có một bản snapshot để rollback nếu các thao tác chỉnh sửa sau đó gặp sự cố.
+  <p style="margin: 0.4rem 0;">Lệnh <code>terraform state pull &gt; backup_state.json</code> tải bản State hiện tại từ Remote Backend về máy cục bộ kèm theo việc xác thực tính toàn vẹn của mã checksum SHA256. Đây là tấm lưới an toàn giúp bạn luôn có một bản snapshot để rollback nếu các thao tác chỉnh sửa sau đó gặp sự cố.</p>
 </div>
 </details>
 
@@ -508,7 +508,7 @@ rm -rf terraform-lab26-staterecovery
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Khối `terraform.tfstate.backup` cục bộ được tạo ra vào thời điểm nào?</span>
+    <span>Khối <code>terraform.tfstate.backup</code> cục bộ được tạo ra vào thời điểm nào?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -519,7 +519,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Được tạo ra tự động ngay trước mỗi lần Terraform chuẩn bị ghi đè một trạng thái mới vào file `terraform.tfstate`. File `.backup` này lưu giữ trạng thái của ngay trước chu kỳ thực thi gần nhất.
+  <p style="margin: 0.4rem 0;">Được tạo ra tự động ngay trước mỗi lần Terraform chuẩn bị ghi đè một trạng thái mới vào file <code>terraform.tfstate</code>. File <code>.backup</code> này lưu giữ trạng thái của ngay trước chu kỳ thực thi gần nhất.</p>
 </div>
 </details>
 
@@ -538,7 +538,7 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Thông thường không nên bật TTL tự động trên bảng Lock DynamoDB vì có những tác vụ provisioning lớn (như tạo RDS Multi-AZ hoặc EKS) có thể mất từ 20-40 phút. Việc giải phóng lock phải luôn tuân theo quy trình kiểm tra thủ công có chủ đích của kỹ sư SRE.
+  <p style="margin: 0.4rem 0;">Thông thường không nên bật TTL tự động trên bảng Lock DynamoDB vì có những tác vụ provisioning lớn (như tạo RDS Multi-AZ hoặc EKS) có thể mất từ 20-40 phút. Việc giải phóng lock phải luôn tuân theo quy trình kiểm tra thủ công có chủ đích của kỹ sư SRE.</p>
 </div>
 </details>
 
@@ -546,7 +546,7 @@ rm -rf terraform-lab26-staterecovery
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q10</span>
-    <span>Khi sửa đổi thủ công JSON State, làm thế nào để kiểm tra cú pháp file JSON hợp lệ trước khi đẩy lên Backend bằng `terraform state push`?</span>
+    <span>Khi sửa đổi thủ công JSON State, làm thế nào để kiểm tra cú pháp file JSON hợp lệ trước khi đẩy lên Backend bằng <code>terraform state push</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -557,14 +557,10 @@ rm -rf terraform-lab26-staterecovery
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Sử dụng công cụ `jq` hoặc lệnh python:
-```bash
-jq empty state_modified.json && echo "JSON VALID"
-```
-Sau đó, nạp lên Backend một cách an toàn:
-```bash
-terraform state push state_modified.json
-```
+  <p style="margin: 0.4rem 0;">Sử dụng công cụ <code>jq</code> hoặc lệnh python:</p>
+  <pre style="background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0;"><code class="language-bash">jq empty state_modified.json &amp;&amp; echo &quot;JSON VALID&quot;</code></pre>
+  <p style="margin: 0.4rem 0;">Sau đó, nạp lên Backend một cách an toàn:</p>
+  <pre style="background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0;"><code class="language-bash">terraform state push state_modified.json</code></pre>
 </div>
 </details>
 

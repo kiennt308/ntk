@@ -67,12 +67,12 @@ graph TD
 
 | Cấu Trúc Khai Báo Trong HCL | Cú Pháp Địa Chỉ State (Resource Address) | Ví Dụ Thực Tế |
 | :--- | :--- | :--- |
-| **Tài nguyên đơn lẻ ở Root Module** | `<resource_type>.<name>` | `aws_instance.web` |
-| **Data Source ở Root Module** | `data.<resource_type>.<name>` | `data.aws_ami.ubuntu` |
-| **Tài nguyên trong Child Module** | `module.<mod_name>.<type>.<name>` | `module.vpc.aws_vpc.main` |
-| **Module lồng nhau đa cấp** | `module.<parent>.<child>.<type>.<name>` | `module.core.module.network.aws_subnet.pub` |
-| **Tài nguyên sử dụng vòng lặp `count`** | `<type>.<name>[<index_number>]` | `aws_subnet.public[0]`, `aws_subnet.public[1]` |
-| **Tài nguyên sử dụng `for_each` (Map/Set)**| `<type>.<name>["<key_string>"]` | `aws_instance.app["prod"]` |
+| **Tài nguyên đơn lẻ ở Root Module** | `&lt;resource_type&gt;.&lt;name&gt;` | `aws_instance.web` |
+| **Data Source ở Root Module** | `data.&lt;resource_type&gt;.&lt;name&gt;` | `data.aws_ami.ubuntu` |
+| **Tài nguyên trong Child Module** | `module.<mod_name>.&lt;type&gt;.&lt;name&gt;` | `module.vpc.aws_vpc.main` |
+| **Module lồng nhau đa cấp** | `module.<parent>.<child>.&lt;type&gt;.&lt;name&gt;` | `module.core.module.network.aws_subnet.pub` |
+| **Tài nguyên sử dụng vòng lặp `count`** | `&lt;type&gt;.&lt;name&gt;[<index_number>]` | `aws_subnet.public[0]`, `aws_subnet.public[1]` |
+| **Tài nguyên sử dụng `for_each` (Map/Set)**| `&lt;type&gt;.&lt;name&gt;["<key_string>"]` | `aws_instance.app["prod"]` |
 
 > [!WARNING]
 > **CẠM BẪY ESCAPE KÝ TỰ TRÊN TERMINAL SHELL:**
@@ -106,7 +106,7 @@ flowchart LR
 
 ### 3.1. `terraform state list` & `terraform state show`
 - `terraform state list`: Trả về toàn bộ danh sách địa chỉ tài nguyên đang có trong State. Hỗ trợ lọc theo tiền tố module: `terraform state list module.vpc`.
-- `terraform state show '<address>'`: Hiển thị chi tiết toàn bộ các thuộc tính (attributes) đang được ghi nhớ trong State mà không cần gửi request gọi Cloud API.
+- `terraform state show '&lt;address&gt;'`: Hiển thị chi tiết toàn bộ các thuộc tính (attributes) đang được ghi nhớ trong State mà không cần gửi request gọi Cloud API.
 
 ### 3.2. `terraform state mv` — Tái Cấu Trúc Zero-Downtime
 Lệnh `state mv` đổi tên logic hoặc di chuyển tài nguyên giữa các module trong State mà **hoàn toàn không chạm vào tài nguyên vật lý đang chạy trên Cloud**:
@@ -153,7 +153,7 @@ terraform apply replace.tfplan
 
 ## 4. Cuộc Cách Mạng: Declarative `import {}` Block (Terraform 1.5+)
 
-Trước phiên bản 1.5, việc import tài nguyên cũ vào Terraform đòi hỏi phải gõ lệnh Imperative `terraform import <address> <id>` và kỹ sư phải tự tay viết mã HCL khớp từng thuộc tính (rất dễ sai sót).
+Trước phiên bản 1.5, việc import tài nguyên cũ vào Terraform đòi hỏi phải gõ lệnh Imperative `terraform import &lt;address&gt; <id>` và kỹ sư phải tự tay viết mã HCL khớp từng thuộc tính (rất dễ sai sót).
 
 Từ Terraform 1.5+, cơ chế **Declarative Import Block** cho phép bạn khai báo ý định import trực tiếp trong code HCL và **tự động sinh mã nguồn** bằng cờ `-generate-config-out`:
 
@@ -206,10 +206,10 @@ Nhiều tài nguyên trên AWS không có một ID đơn lẻ mà được đị
 
 | Loại Tài Nguyên (Resource Type) | Cấu Trúc Composite ID Khi Import | Ví Dụ ID Thực Tế |
 | :--- | :--- | :--- |
-| **`aws_security_group_rule`** | `<sg_id>_<type>_<proto>_<from>_<to>_<cidr>` | `sg-0123456_ingress_tcp_443_443_0.0.0.0/0` |
+| **`aws_security_group_rule`** | `<sg_id>_&lt;type&gt;_<proto>_<from>_<to>_<cidr>` | `sg-0123456_ingress_tcp_443_443_0.0.0.0/0` |
 | **`aws_route`** | `<route_table_id>_<destination_cidr>` | `rtb-0987654_10.0.0.0/16` |
-| **`aws_iam_role_policy_attachment`** | `<role_name>/<policy_arn>` | `eks-node-role/arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy` |
-| **`aws_s3_bucket_policy`** | `<bucket_name>` | `showtech-prod-storage-ap-southeast-1` |
+| **`aws_iam_role_policy_attachment`** | `&lt;role_name&gt;/<policy_arn>` | `eks-node-role/arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy` |
+| **`aws_s3_bucket_policy`** | `&lt;bucket_name&gt;` | `showtech-prod-storage-ap-southeast-1` |
 
 ## 6. Xử Lý Hiện Tượng ForceNew Drift Khi Import Tài Nguyên Cũ
 
@@ -398,7 +398,7 @@ cd .. && rm -rf /tmp/state-surgery-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Lệnh `terraform state mv` thực hiện hành động gì lên hạ tầng thực tế trên Cloud?</span>
+    <span>Lệnh <code>terraform state mv</code> thực hiện hành động gì lên hạ tầng thực tế trên Cloud?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -409,7 +409,7 @@ cd .. && rm -rf /tmp/state-surgery-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  <b style="color: var(--accent-primary);">HOÀN TOÀN KHÔNG CHẠM VÀO CLOUD</b>. Lệnh <code>state mv</code> chỉ sửa đổi đường dẫn địa chỉ (Resource Address) bên trong tài liệu JSON của State File. Tài nguyên vật lý trên AWS/GCP/Azure vẫn tiếp tục hoạt động liên tục mà không hề bị gián đoạn hay restart.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">HOÀN TOÀN KHÔNG CHẠM VÀO CLOUD</b>. Lệnh <code>state mv</code> chỉ sửa đổi đường dẫn địa chỉ (Resource Address) bên trong tài liệu JSON của State File. Tài nguyên vật lý trên AWS/GCP/Azure vẫn tiếp tục hoạt động liên tục mà không hề bị gián đoạn hay restart.</p>
 </div>
 </details>
 
@@ -417,7 +417,7 @@ cd .. && rm -rf /tmp/state-surgery-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q02</span>
-    <span>Sự khác biệt cơ bản giữa `terraform state rm` và `terraform destroy` là gì?</span>
+    <span>Sự khác biệt cơ bản giữa <code>terraform state rm</code> và <code>terraform destroy</code> là gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -428,8 +428,8 @@ cd .. && rm -rf /tmp/state-surgery-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - <code>state rm</code>: Chỉ xóa bản ghi ánh xạ của tài nguyên ra khỏi State File (Untrack), tài nguyên thực tế trên Cloud <b style="color: var(--accent-primary);">VẪN CÒN NGUYÊN</b>.<br/>
-- <code>destroy</code>: Gửi lệnh API lên Cloud để <b style="color: var(--accent-primary);">XÓA VĨNH VIỄN</b> tài nguyên thực tế.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>state rm</code>: Chỉ xóa bản ghi ánh xạ của tài nguyên ra khỏi State File (Untrack), tài nguyên thực tế trên Cloud <b style="color: var(--accent-primary);">VẪN CÒN NGUYÊN</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>destroy</code>: Gửi lệnh API lên Cloud để <b style="color: var(--accent-primary);">XÓA VĨNH VIỄN</b> tài nguyên thực tế.</div>
 </div>
 </details>
 
@@ -437,7 +437,7 @@ cd .. && rm -rf /tmp/state-surgery-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q03</span>
-    <span>Khối `import {}` trong Terraform 1.5+ có ưu điểm gì vượt trội so với lệnh `terraform import` cũ?</span>
+    <span>Khối <code>import {}</code> trong Terraform 1.5+ có ưu điểm gì vượt trội so với lệnh <code>terraform import</code> cũ?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -448,9 +448,9 @@ cd .. && rm -rf /tmp/state-surgery-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. Tính chất Declarative: Kế hoạch import được lưu trữ trong mã nguồn Git, có thể review qua Pull Request.<br/>
-2. Xem trước kế hoạch (Preview): Cho phép chạy <code>terraform plan</code> để đối soát trước khi import.<br/>
-3. Tự động sinh mã nguồn (Code Generation): Tự động tạo code HCL chuẩn xác bằng cờ <code>-generate-config-out</code>.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Tính chất Declarative: Kế hoạch import được lưu trữ trong mã nguồn Git, có thể review qua Pull Request.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Xem trước kế hoạch (Preview): Cho phép chạy <code>terraform plan</code> để đối soát trước khi import.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Tự động sinh mã nguồn (Code Generation): Tự động tạo code HCL chuẩn xác bằng cờ <code>-generate-config-out</code>.</div>
 </div>
 </details>
 
@@ -458,7 +458,7 @@ cd .. && rm -rf /tmp/state-surgery-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Khi di chuyển tài nguyên từ Root Module vào Child Module, lệnh `state mv` được viết như thế nào?</span>
+    <span>Khi di chuyển tài nguyên từ Root Module vào Child Module, lệnh <code>state mv</code> được viết như thế nào?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -469,8 +469,8 @@ cd .. && rm -rf /tmp/state-surgery-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cú pháp: <code>terraform state mv <source_address> <destination_address></code>.<br/>
-Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_security_group.web</code>.
+  <p style="margin: 0.4rem 0;">Cú pháp: <code>terraform state mv &lt;source_address&gt; &lt;destination_address&gt;</code>.</p>
+  <p style="margin: 0.4rem 0;">Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_security_group.web</code>.</p>
 </div>
 </details>
 
@@ -478,7 +478,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Vì sao lệnh `terraform plan -replace` lại an toàn hơn lệnh cũ `terraform taint`?</span>
+    <span>Vì sao lệnh <code>terraform plan -replace</code> lại an toàn hơn lệnh cũ <code>terraform taint</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -489,7 +489,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh cũ <code>taint</code> ghi đè trực tiếp trạng thái nguy hiểm vào State ngay lập tức. Trong khi <code>-replace</code> chỉ tạo ra một kế hoạch thay thế tạm thời trong bộ nhớ Plan, cho phép kỹ sư xem xét kỹ lưỡng và chỉ thực thi khi đã kiểm duyệt an toàn.
+  <p style="margin: 0.4rem 0;">Lệnh cũ <code>taint</code> ghi đè trực tiếp trạng thái nguy hiểm vào State ngay lập tức. Trong khi <code>-replace</code> chỉ tạo ra một kế hoạch thay thế tạm thời trong bộ nhớ Plan, cho phép kỹ sư xem xét kỹ lưỡng và chỉ thực thi khi đã kiểm duyệt an toàn.</p>
 </div>
 </details>
 
@@ -497,7 +497,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q06</span>
-    <span>Làm thế nào để định vị một tài nguyên nằm trong vòng lặp `for_each` khi chạy `state show`?</span>
+    <span>Làm thế nào để định vị một tài nguyên nằm trong vòng lặp <code>for_each</code> khi chạy <code>state show</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -508,7 +508,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng cú pháp: <code>terraform state show '<resource_type>.<name>["<key>"]'</code> (Bắt buộc bọc trong dấu nháy đơn để tránh lỗi Shell interpolation). Ví dụ: <code>terraform state show 'aws_instance.server["prod"]'</code>.
+  <p style="margin: 0.4rem 0;">Sử dụng cú pháp: <code>terraform state show '&lt;resource_type&gt;.&lt;name&gt;["&lt;key&gt;"]'</code> (Bắt buộc bọc trong dấu nháy đơn để tránh lỗi Shell interpolation). Ví dụ: <code>terraform state show 'aws_instance.server["prod"]'</code>.</p>
 </div>
 </details>
 
@@ -516,7 +516,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q07</span>
-    <span>Điều gì xảy ra nếu bạn đổi tên resource trong HCL nhưng quên chạy `state mv` trước khi apply?</span>
+    <span>Điều gì xảy ra nếu bạn đổi tên resource trong HCL nhưng quên chạy <code>state mv</code> trước khi apply?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -527,7 +527,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Terraform sẽ coi tài nguyên có tên cũ đã bị xóa khỏi code (tạo hành vi <b style="color: var(--accent-primary);">Destroy</b>) và tài nguyên có tên mới là một tài nguyên hoàn toàn mới (tạo hành vi <b style="color: var(--accent-primary);">Create</b>). Điều này dẫn tới việc xóa mất tài nguyên đang chạy và làm mất mát dữ liệu!
+  <p style="margin: 0.4rem 0;">Terraform sẽ coi tài nguyên có tên cũ đã bị xóa khỏi code (tạo hành vi <b style="color: var(--accent-primary);">Destroy</b>) và tài nguyên có tên mới là một tài nguyên hoàn toàn mới (tạo hành vi <b style="color: var(--accent-primary);">Create</b>). Điều này dẫn tới việc xóa mất tài nguyên đang chạy và làm mất mát dữ liệu!</p>
 </div>
 </details>
 
@@ -535,7 +535,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Sau khi import thành công bằng khối `import {}`, có nên giữ lại khối `import` đó trong code không?</span>
+    <span>Sau khi import thành công bằng khối <code>import {}</code>, có nên giữ lại khối <code>import</code> đó trong code không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -546,7 +546,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Từ Terraform 1.5+, bạn <b style="color: var(--accent-primary);">hoàn toàn có thể giữ lại</b> khối <code>import {}</code> trong mã nguồn như một tài liệu ghi nhớ lịch sử nguồn gốc tài nguyên mà không gây ảnh hưởng gì tới các đợt apply tiếp theo. Hoặc bạn có thể xóa đi sau khi tài nguyên đã nằm an toàn trong State.
+  <p style="margin: 0.4rem 0;">Từ Terraform 1.5+, bạn <b style="color: var(--accent-primary);">hoàn toàn có thể giữ lại</b> khối <code>import {}</code> trong mã nguồn như một tài liệu ghi nhớ lịch sử nguồn gốc tài nguyên mà không gây ảnh hưởng gì tới các đợt apply tiếp theo. Hoặc bạn có thể xóa đi sau khi tài nguyên đã nằm an toàn trong State.</p>
 </div>
 </details>
 
@@ -554,7 +554,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span>Lệnh `terraform state pull` và `terraform state push` được dùng trong tình huống nào?</span>
+    <span>Lệnh <code>terraform state pull</code> và <code>terraform state push</code> được dùng trong tình huống nào?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -565,7 +565,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dùng để tải trực tiếp nội dung State thô (Raw JSON) về máy (<code>state pull > state.json</code>) để chỉnh sửa cứu hộ khẩn cấp khi State bị corrupt, sau đó đẩy ngược lại Remote Backend một cách có kiểm soát bằng lệnh <code>state push</code>.
+  <p style="margin: 0.4rem 0;">Dùng để tải trực tiếp nội dung State thô (Raw JSON) về máy (<code>state pull > state.json</code>) để chỉnh sửa cứu hộ khẩn cấp khi State bị corrupt, sau đó đẩy ngược lại Remote Backend một cách có kiểm soát bằng lệnh <code>state push</code>.</p>
 </div>
 </details>
 
@@ -584,7 +584,7 @@ Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_sec
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khai báo khối <code>lifecycle { prevent_destroy = true }</code> trực tiếp bên trong tài nguyên cần bảo vệ. Bất kỳ lệnh Plan nào có ý định xóa tài nguyên này đều sẽ bị Terraform chặn đứng ngay lập tức.
+  <p style="margin: 0.4rem 0;">Khai báo khối <code>lifecycle { prevent_destroy = true }</code> trực tiếp bên trong tài nguyên cần bảo vệ. Bất kỳ lệnh Plan nào có ý định xóa tài nguyên này đều sẽ bị Terraform chặn đứng ngay lập tức.</p>
 </div>
 </details>
 

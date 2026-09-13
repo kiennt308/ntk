@@ -398,7 +398,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Tại sao `for_each` an toàn hơn `count` khi quản lý tài nguyên Stateful (RDS, EBS, S3)?</span>
+    <span>Tại sao <code>for_each</code> an toàn hơn <code>count</code> khi quản lý tài nguyên Stateful (RDS, EBS, S3)?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -409,7 +409,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì <code>for_each</code> định danh tài nguyên bằng Khóa chuỗi duy nhất (String Key) thay vì số nguyên. Khi một phần tử bị xóa hoặc thêm vào giữa danh sách, các phần tử khác giữ nguyên khóa và hoàn toàn không bị ảnh hưởng, loại bỏ 100% thảm họa Index Shifting.
+  <p style="margin: 0.4rem 0;">Vì <code>for_each</code> định danh tài nguyên bằng Khóa chuỗi duy nhất (String Key) thay vì số nguyên. Khi một phần tử bị xóa hoặc thêm vào giữa danh sách, các phần tử khác giữ nguyên khóa và hoàn toàn không bị ảnh hưởng, loại bỏ 100% thảm họa Index Shifting.</p>
 </div>
 </details>
 
@@ -428,7 +428,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Là hiện tượng khi xóa một phần tử ở đầu hoặc giữa mảng dùng <code>count</code>, toàn bộ các phần tử phía sau bị dịch chuyển số thứ tự index (ví dụ từ [1] lùi về [0]), khiến Terraform hiểu nhầm là cần phải xóa bỏ và tạo mới lại (Destroy & Recreate) hàng loạt tài nguyên đang chạy.
+  <p style="margin: 0.4rem 0;">Là hiện tượng khi xóa một phần tử ở đầu hoặc giữa mảng dùng <code>count</code>, toàn bộ các phần tử phía sau bị dịch chuyển số thứ tự index (ví dụ từ [1] lùi về [0]), khiến Terraform hiểu nhầm là cần phải xóa bỏ và tạo mới lại (Destroy & Recreate) hàng loạt tài nguyên đang chạy.</p>
 </div>
 </details>
 
@@ -436,7 +436,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q03</span>
-    <span>Trường hợp nào là duy nhất được khuyến nghị sử dụng meta-argument `count`?</span>
+    <span>Trường hợp nào là duy nhất được khuyến nghị sử dụng meta-argument <code>count</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -447,7 +447,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dùng cho cơ chế <b style="color: var(--accent-primary);">Conditional Resource Toggle (Bật/Tắt tài nguyên 0 hoặc 1)</b> dựa trên biến boolean: <code>count = var.enable_feature ? 1 : 0</code>.
+  <p style="margin: 0.4rem 0;">Dùng cho cơ chế <b style="color: var(--accent-primary);">Conditional Resource Toggle (Bật/Tắt tài nguyên 0 hoặc 1)</b> dựa trên biến boolean: <code>count = var.enable_feature ? 1 : 0</code>.</p>
 </div>
 </details>
 
@@ -455,7 +455,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Khối `moved {}` trong Terraform 1.1+ có ưu điểm gì so với lệnh CLI `terraform state mv`?</span>
+    <span>Khối <code>moved {}</code> trong Terraform 1.1+ có ưu điểm gì so với lệnh CLI <code>terraform state mv</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -466,9 +466,9 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. <b style="color: var(--accent-primary);">Tính Declarative:</b> Được lưu trong mã nguồn Git, có thể review qua Pull Request.<br/>
-2. <b style="color: var(--accent-primary);">Tự động hóa trong CI/CD:</b> Pipeline tự động di chuyển state khi apply mà không cần kỹ sư can thiệp SSH chạy lệnh thủ công.<br/>
-3. <b style="color: var(--accent-primary);">An toàn cho Team:</b> Toàn bộ các thành viên khác trong nhóm đều tự động được cập nhật state mà không bị lỗi conflict.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Tính Declarative:</b> Được lưu trong mã nguồn Git, có thể review qua Pull Request.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Tự động hóa trong CI/CD:</b> Pipeline tự động di chuyển state khi apply mà không cần kỹ sư can thiệp SSH chạy lệnh thủ công.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">An toàn cho Team:</b> Toàn bộ các thành viên khác trong nhóm đều tự động được cập nhật state mà không bị lỗi conflict.</div>
 </div>
 </details>
 
@@ -476,7 +476,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Khi truyền một `list(string)` vào `for_each`, hàm nào bắt buộc phải được sử dụng?</span>
+    <span>Khi truyền một <code>list(string)</code> vào <code>for_each</code>, hàm nào bắt buộc phải được sử dụng?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -487,7 +487,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Bắt buộc dùng hàm <b style="color: var(--accent-primary);"><code>toset(var.my_list)</code></b> để chuyển đổi danh sách mảng thành tập hợp các chuỗi duy nhất (Set of strings) không chứa phần tử trùng lặp.
+  <p style="margin: 0.4rem 0;">Bắt buộc dùng hàm <b style="color: var(--accent-primary);"><code>toset(var.my_list)</code></b> để chuyển đổi danh sách mảng thành tập hợp các chuỗi duy nhất (Set of strings) không chứa phần tử trùng lặp.</p>
 </div>
 </details>
 
@@ -495,7 +495,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q06</span>
-    <span>Biến đối tượng `each.key` và `each.value` có giá trị gì khi `for_each` duyệt qua một `set`?</span>
+    <span>Biến đối tượng <code>each.key</code> và <code>each.value</code> có giá trị gì khi <code>for_each</code> duyệt qua một <code>set</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -506,7 +506,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi duyệt qua một <code>set</code>, cả <code>each.key</code> và <code>each.value</code> đều có giá trị giống hệt nhau (chính là giá trị chuỗi của phần tử đó).
+  <p style="margin: 0.4rem 0;">Khi duyệt qua một <code>set</code>, cả <code>each.key</code> và <code>each.value</code> đều có giá trị giống hệt nhau (chính là giá trị chuỗi của phần tử đó).</p>
 </div>
 </details>
 
@@ -514,7 +514,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q07</span>
-    <span>Hàm `one()` trong Terraform kết hợp với Splat Operator `[*]` giải quyết bài toán gì?</span>
+    <span>Hàm <code>one()</code> trong Terraform kết hợp với Splat Operator <code>[*]</code> giải quyết bài toán gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -525,7 +525,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dùng để truy xuất an toàn giá trị Output của tài nguyên có <code>count = 0/1</code>: Trả về giá trị chuỗi nếu tài nguyên được tạo (count = 1), và trả về <code>null</code> an toàn nếu tài nguyên không được tạo (count = 0) mà không gây lỗi Index Out of Bounds.
+  <p style="margin: 0.4rem 0;">Dùng để truy xuất an toàn giá trị Output của tài nguyên có <code>count = 0/1</code>: Trả về giá trị chuỗi nếu tài nguyên được tạo (count = 1), và trả về <code>null</code> an toàn nếu tài nguyên không được tạo (count = 0) mà không gây lỗi Index Out of Bounds.</p>
 </div>
 </details>
 
@@ -533,7 +533,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Có thể sử dụng cả `count` và `for_each` trên cùng một khối tài nguyên không?</span>
+    <span>Có thể sử dụng cả <code>count</code> và <code>for_each</code> trên cùng một khối tài nguyên không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -544,7 +544,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  <b style="color: var(--accent-primary);">KHÔNG</b>. <code>count</code> và <code>for_each</code> là hai cơ chế lặp loại trừ lẫn nhau (Mutually Exclusive). Một tài nguyên chỉ được phép khai báo duy nhất một trong hai meta-arguments này.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">KHÔNG</b>. <code>count</code> và <code>for_each</code> là hai cơ chế lặp loại trừ lẫn nhau (Mutually Exclusive). Một tài nguyên chỉ được phép khai báo duy nhất một trong hai meta-arguments này.</p>
 </div>
 </details>
 
@@ -552,7 +552,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span>Làm thế nào để lọc (filter) bớt các phần tử trước khi truyền vào `for_each`?</span>
+    <span>Làm thế nào để lọc (filter) bớt các phần tử trước khi truyền vào <code>for_each</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -563,11 +563,11 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng <b style="color: var(--accent-primary);">For Expressions</b> kết hợp mệnh đề <code>if</code>:
-<pre><code>for_each = {
-  for k, v in var.apps : k => v
-  if v.enabled == true
-}</code></pre>
+  <p style="margin: 0.4rem 0;">Sử dụng <b style="color: var(--accent-primary);">For Expressions</b> kết hợp mệnh đề <code>if</code>:</p>
+  <p style="margin: 0.4rem 0;"><pre><code>for_each = {</p>
+  <p style="margin: 0.4rem 0;">for k, v in var.apps : k => v</p>
+  <p style="margin: 0.4rem 0;">if v.enabled == true</p>
+  <p style="margin: 0.4rem 0;">}</code></pre></p>
 </div>
 </details>
 
@@ -575,7 +575,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q10</span>
-    <span>Sau khi chạy apply thành công với khối `moved {}`, có bắt buộc phải xóa khối `moved` đó không?</span>
+    <span>Sau khi chạy apply thành công với khối <code>moved {}</code>, có bắt buộc phải xóa khối <code>moved</code> đó không?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -586,7 +586,7 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  <b style="color: var(--accent-primary);">KHÔNG BẮT BUỘC</b>. Bạn nên giữ lại khối <code>moved {}</code> trong mã nguồn trong vài phiên bản để đảm bảo tất cả các môi trường (Dev, Staging, Prod) và các máy trạm của đồng nghiệp đều đã hoàn tất việc di chuyển State trước khi dọn dẹp.
+  <p style="margin: 0.4rem 0;"><b style="color: var(--accent-primary);">KHÔNG BẮT BUỘC</b>. Bạn nên giữ lại khối <code>moved {}</code> trong mã nguồn trong vài phiên bản để đảm bảo tất cả các môi trường (Dev, Staging, Prod) và các máy trạm của đồng nghiệp đều đã hoàn tất việc di chuyển State trước khi dọn dẹp.</p>
 </div>
 </details>
 

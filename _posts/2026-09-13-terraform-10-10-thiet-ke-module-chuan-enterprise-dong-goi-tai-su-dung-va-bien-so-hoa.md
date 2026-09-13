@@ -423,7 +423,7 @@ cd .. && rm -rf /tmp/module-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Tại sao không bao giờ được khai báo khối `provider "aws" {}` bên trong Child Module?</span>
+    <span>Tại sao không bao giờ được khai báo khối <code>provider "aws" {}</code> bên trong Child Module?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -434,7 +434,7 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì sẽ làm mất tính năng quan trọng nhất của Module: <b style="color: var(--accent-primary);">Không thể sử dụng `count` hoặc `for_each` trên Module đó</b>. Child Module chỉ được phép nhận Provider từ Root Module truyền xuống (Provider Inversion of Control).
+  <p style="margin: 0.4rem 0;">Vì sẽ làm mất tính năng quan trọng nhất của Module: <b style="color: var(--accent-primary);">Không thể sử dụng <code>count</code> hoặc <code>for_each</code> trên Module đó</b>. Child Module chỉ được phép nhận Provider từ Root Module truyền xuống (Provider Inversion of Control).</p>
 </div>
 </details>
 
@@ -442,7 +442,7 @@ cd .. && rm -rf /tmp/module-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q02</span>
-    <span>Tệp `versions.tf` trong Child Module có nhiệm vụ gì?</span>
+    <span>Tệp <code>versions.tf</code> trong Child Module có nhiệm vụ gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -453,7 +453,7 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dùng để khai báo ràng buộc phiên bản tối thiểu của Terraform CLI (<code>required_version</code>) và phiên bản của các Provider plugins (<code>required_providers</code>) mà Module này tương thích, giúp cảnh báo sớm cho người dùng nếu dùng sai phiên bản.
+  <p style="margin: 0.4rem 0;">Dùng để khai báo ràng buộc phiên bản tối thiểu của Terraform CLI (<code>required_version</code>) và phiên bản của các Provider plugins (<code>required_providers</code>) mà Module này tương thích, giúp cảnh báo sớm cho người dùng nếu dùng sai phiên bản.</p>
 </div>
 </details>
 
@@ -472,7 +472,7 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Phải theo định dạng <code>vMAJOR.MINOR.PATCH</code> (ví dụ: <code>v1.2.0</code>). Khi có Breaking Change (ví dụ đổi tên biến bắt buộc), bắt buộc phải tăng MAJOR version (<code>v2.0.0</code>).
+  <p style="margin: 0.4rem 0;">Phải theo định dạng <code>vMAJOR.MINOR.PATCH</code> (ví dụ: <code>v1.2.0</code>). Khi có Breaking Change (ví dụ đổi tên biến bắt buộc), bắt buộc phải tăng MAJOR version (<code>v2.0.0</code>).</p>
 </div>
 </details>
 
@@ -480,7 +480,7 @@ cd .. && rm -rf /tmp/module-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>Làm thế nào để tự động sinh tài liệu Markdown `README.md` chuyên nghiệp cho Module?</span>
+    <span>Làm thế nào để tự động sinh tài liệu Markdown <code>README.md</code> chuyên nghiệp cho Module?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -491,7 +491,7 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng công cụ mã nguồn mở tiêu chuẩn <b style="color: var(--accent-primary);"><code>terraform-docs</code></b> (lệnh: <code>terraform-docs markdown table --output-file README.md .</code>) để tự động quét toàn bộ variables, outputs, providers và render thành bảng trực quan.
+  <p style="margin: 0.4rem 0;">Sử dụng công cụ mã nguồn mở tiêu chuẩn <b style="color: var(--accent-primary);"><code>terraform-docs</code></b> (lệnh: <code>terraform-docs markdown table --output-file README.md .</code>) để tự động quét toàn bộ variables, outputs, providers và render thành bảng trực quan.</p>
 </div>
 </details>
 
@@ -510,8 +510,8 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - <b style="color: var(--accent-primary);">Local Path:</b> Thay đổi code module có hiệu lực ngay lập tức trong lần chạy plan tiếp theo, không kiểm soát được phiên bản.<br/>
-- <b style="color: var(--accent-primary);">Git Tag:</b> Module được khóa cứng vào một phiên bản bất biến (Immutable Version Tag), giúp các môi trường Staging/Production được bảo vệ an toàn khỏi các thay đổi chưa kiểm duyệt.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Local Path:</b> Thay đổi code module có hiệu lực ngay lập tức trong lần chạy plan tiếp theo, không kiểm soát được phiên bản.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Git Tag:</b> Module được khóa cứng vào một phiên bản bất biến (Immutable Version Tag), giúp các môi trường Staging/Production được bảo vệ an toàn khỏi các thay đổi chưa kiểm duyệt.</div>
 </div>
 </details>
 
@@ -519,7 +519,7 @@ cd .. && rm -rf /tmp/module-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q06</span>
-    <span>Biến `path.module` trong HCL trả về đường dẫn nào?</span>
+    <span>Biến <code>path.module</code> trong HCL trả về đường dẫn nào?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -530,7 +530,7 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trả về đường dẫn thư mục nơi tệp mã nguồn HCL hiện tại đang được định nghĩa (thư mục của chính Module con đó), rất hữu ích khi dùng với các hàm <code>file("${path.module}/template.json")</code>.
+  <p style="margin: 0.4rem 0;">Trả về đường dẫn thư mục nơi tệp mã nguồn HCL hiện tại đang được định nghĩa (thư mục của chính Module con đó), rất hữu ích khi dùng với các hàm <code>file("${path.module}/template.json")</code>.</p>
 </div>
 </details>
 
@@ -549,7 +549,7 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi đoạn code đó: (1) Được tái sử dụng ở từ 2 nơi trở lên; (2) Đại diện cho một mẫu kiến trúc logic độc lập (VPC, EKS, RDS Cluster); (3) Cần được phân quyền quản lý hoặc kiểm thử độc lập bởi một nhóm chuyên môn.
+  <p style="margin: 0.4rem 0;">Khi đoạn code đó: (1) Được tái sử dụng ở từ 2 nơi trở lên; (2) Đại diện cho một mẫu kiến trúc logic độc lập (VPC, EKS, RDS Cluster); (3) Cần được phân quyền quản lý hoặc kiểm thử độc lập bởi một nhóm chuyên môn.</p>
 </div>
 </details>
 
@@ -557,7 +557,7 @@ cd .. && rm -rf /tmp/module-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Toán tử `~>` (Pessimistic Constraint Operator) trong khai báo phiên bản hoạt động như thế nào?</span>
+    <span>Toán tử <code>~&gt;</code> (Pessimistic Constraint Operator) trong khai báo phiên bản hoạt động như thế nào?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -568,7 +568,7 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ví dụ <code>~> 1.2.0</code> cho phép tự động cập nhật các bản vá lỗi PATCH (từ <code>1.2.0</code> đến <code>1.2.99</code>) nhưng <b style="color: var(--accent-primary);">chặn đứng việc nâng lên MINOR 1.3.0</b>. Còn <code>~> 1.2</code> cho phép nâng cấp đến <code>1.99.0</code> nhưng chặn MAJOR <code>2.0.0</code>.
+  <p style="margin: 0.4rem 0;">Ví dụ <code>~> 1.2.0</code> cho phép tự động cập nhật các bản vá lỗi PATCH (từ <code>1.2.0</code> đến <code>1.2.99</code>) nhưng <b style="color: var(--accent-primary);">chặn đứng việc nâng lên MINOR 1.3.0</b>. Còn <code>~> 1.2</code> cho phép nâng cấp đến <code>1.99.0</code> nhưng chặn MAJOR <code>2.0.0</code>.</p>
 </div>
 </details>
 
@@ -576,7 +576,7 @@ cd .. && rm -rf /tmp/module-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span>Thư mục `examples/` bên trong Module đóng vai trò gì trong việc kiểm thử?</span>
+    <span>Thư mục <code>examples/</code> bên trong Module đóng vai trò gì trong việc kiểm thử?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -587,7 +587,7 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cung cấp các kịch bản triển khai mẫu thực tế (Working Examples) giúp người dùng dễ dàng hiểu cách sử dụng, đồng thời đóng vai trò là mã nguồn kiểm thử đầu vào cho các framework kiểm thử tự động như <code>terraform test</code> hoặc <code>Terratest</code>.
+  <p style="margin: 0.4rem 0;">Cung cấp các kịch bản triển khai mẫu thực tế (Working Examples) giúp người dùng dễ dàng hiểu cách sử dụng, đồng thời đóng vai trò là mã nguồn kiểm thử đầu vào cho các framework kiểm thử tự động như <code>terraform test</code> hoặc <code>Terratest</code>.</p>
 </div>
 </details>
 
@@ -606,13 +606,13 @@ cd .. && rm -rf /tmp/module-lab
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng tham số <code>providers</code> khi gọi module:
-<pre><code>module "us_storage" {
-  source    = "./modules/s3"
-  providers = {
-    aws = aws.us_east_1
-  }
-}</code></pre>
+  <p style="margin: 0.4rem 0;">Sử dụng tham số <code>providers</code> khi gọi module:</p>
+  <p style="margin: 0.4rem 0;"><pre><code>module "us_storage" {</p>
+  <p style="margin: 0.4rem 0;">source    = "./modules/s3"</p>
+  <p style="margin: 0.4rem 0;">providers = {</p>
+  <p style="margin: 0.4rem 0;">aws = aws.us_east_1</p>
+  <p style="margin: 0.4rem 0;">}</p>
+  <p style="margin: 0.4rem 0;">}</code></pre></p>
 </div>
 </details>
 

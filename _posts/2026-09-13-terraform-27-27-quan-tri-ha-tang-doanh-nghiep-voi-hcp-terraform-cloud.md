@@ -399,9 +399,9 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - **CLI Workspace**: Chỉ là một phân vùng State file riêng biệt trên cùng một Backend cục bộ hoặc S3.
-  - **HCP Terraform Workspace**: Là một đơn vị quản trị hoàn chỉnh bao gồm State file, cấu hình VCS Git liên kết, tập hợp biến số (Variables), lịch sử Audit Runs, cấu hình phân quyền người dùng (RBAC) và các chính sách Policy as Code gắn kèm.
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CLI Workspace</b>: Chỉ là một phân vùng State file riêng biệt trên cùng một Backend cục bộ hoặc S3.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">HCP Terraform Workspace</b>: Là một đơn vị quản trị hoàn chỉnh bao gồm State file, cấu hình VCS Git liên kết, tập hợp biến số (Variables), lịch sử Audit Runs, cấu hình phân quyền người dùng (RBAC) và các chính sách Policy as Code gắn kèm.</div>
 </div>
 </details>
 
@@ -420,7 +420,7 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Run Triggers cho phép thiết lập quan hệ phụ thuộc giữa các Workspaces. Khi Workspace nguồn (ví dụ: `01-networking`) thực thi `apply` thành công một thay đổi mới, HCP Terraform sẽ **tự động kích hoạt một lượt chạy `plan` mới** trên Workspace đích (ví dụ: `02-kubernetes-cluster`), giúp đồng bộ hóa hạ tầng tự động xuyên suốt các tầng.
+  <p style="margin: 0.4rem 0;">Run Triggers cho phép thiết lập quan hệ phụ thuộc giữa các Workspaces. Khi Workspace nguồn (ví dụ: <code>01-networking</code>) thực thi <code>apply</code> thành công một thay đổi mới, HCP Terraform sẽ <b style="color: var(--accent-primary);">tự động kích hoạt một lượt chạy <code>plan</code> mới</b> trên Workspace đích (ví dụ: <code>02-kubernetes-cluster</code>), giúp đồng bộ hóa hạ tầng tự động xuyên suốt các tầng.</p>
 </div>
 </details>
 
@@ -439,7 +439,7 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khi một kỹ sư tạo Pull Request trên GitHub/GitLab, HCP Terraform tự động kích hoạt một lượt chạy `plan` giả định (Speculative Plan) để tính toán trước các thay đổi và chi phí phát sinh mà **không khóa State file (No State Lock)** và **không cho phép apply**. Kết quả được post trực tiếp vào thảo luận PR để hỗ trợ thẩm định mã nguồn.
+  <p style="margin: 0.4rem 0;">Khi một kỹ sư tạo Pull Request trên GitHub/GitLab, HCP Terraform tự động kích hoạt một lượt chạy <code>plan</code> giả định (Speculative Plan) để tính toán trước các thay đổi và chi phí phát sinh mà <b style="color: var(--accent-primary);">không khóa State file (No State Lock)</b> và <b style="color: var(--accent-primary);">không cho phép apply</b>. Kết quả được post trực tiếp vào thảo luận PR để hỗ trợ thẩm định mã nguồn.</p>
 </div>
 </details>
 
@@ -458,9 +458,9 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - **Terraform Variables**: Tương đương với các giá trị truyền vào `var.<variable_name>` trong code HCL.
-  - **Environment Variables**: Là các biến môi trường của hệ điều hành Linux Runner (ví dụ: `AWS_DEFAULT_REGION`, `TF_LOG = "DEBUG"`, `CONFTEST_VERSION`).
+  <p style="margin: 0.4rem 0;"></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Terraform Variables</b>: Tương đương với các giá trị truyền vào <code>var.&lt;variable_name&gt;</code> trong code HCL.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Environment Variables</b>: Là các biến môi trường của hệ điều hành Linux Runner (ví dụ: <code>AWS_DEFAULT_REGION</code>, <code>TF_LOG = "DEBUG"</code>, <code>CONFTEST_VERSION</code>).</div>
 </div>
 </details>
 
@@ -479,7 +479,7 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khi hạ tầng đám mây của doanh nghiệp nằm trong các mạng riêng biệt (Isolated Private VPCs / On-Premise Data Centers) không mở cổng truy cập ra Internet công cộng. Bằng cách cài đặt **Terraform Cloud Agent** bên trong mạng nội bộ, Agent sẽ chủ động thiết lập kết nối ra ngoài (Outbound HTTPS) tới HCP để nhận lệnh mà không cần mở bất kỳ cổng Inbound nào.
+  <p style="margin: 0.4rem 0;">Khi hạ tầng đám mây của doanh nghiệp nằm trong các mạng riêng biệt (Isolated Private VPCs / On-Premise Data Centers) không mở cổng truy cập ra Internet công cộng. Bằng cách cài đặt <b style="color: var(--accent-primary);">Terraform Cloud Agent</b> bên trong mạng nội bộ, Agent sẽ chủ động thiết lập kết nối ra ngoài (Outbound HTTPS) tới HCP để nhận lệnh mà không cần mở bất kỳ cổng Inbound nào.</p>
 </div>
 </details>
 
@@ -498,7 +498,7 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Tích chọn vào ô **"Sensitive"** khi tạo biến số. Sau khi lưu, giá trị sẽ được mã hóa bằng thuật toán Vault của HashiCorp, vĩnh viễn bị ẩn trên giao diện Web UI và terminal, và không ai (kể cả Admin) có thể đọc lại giá trị plaintext đó nữa.
+  <p style="margin: 0.4rem 0;">Tích chọn vào ô <b style="color: var(--accent-primary);">"Sensitive"</b> khi tạo biến số. Sau khi lưu, giá trị sẽ được mã hóa bằng thuật toán Vault của HashiCorp, vĩnh viễn bị ẩn trên giao diện Web UI và terminal, và không ai (kể cả Admin) có thể đọc lại giá trị plaintext đó nữa.</p>
 </div>
 </details>
 
@@ -517,7 +517,7 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Bắt buộc phải tuân theo cấu trúc: `terraform-<PROVIDER>-<NAME>`. Ví dụ: `terraform-aws-secure-vpc` hoặc `terraform-azurerm-aks-cluster`.
+  <p style="margin: 0.4rem 0;">Bắt buộc phải tuân theo cấu trúc: <code>terraform-&lt;PROVIDER&gt;-&lt;NAME&gt;</code>. Ví dụ: <code>terraform-aws-secure-vpc</code> hoặc <code>terraform-azurerm-aks-cluster</code>.</p>
 </div>
 </details>
 
@@ -536,7 +536,7 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Thay vì hiển thị một khối văn bản log đen trắng khổng lồ hàng nghìn dòng, Structured Run Output bóc tách kết quả thành các thẻ UI trực quan: phân loại rõ ràng tài nguyên nào bị Add (+), Change (~), Destroy (-), Read (<=), giúp kỹ sư nắm bắt thay đổi chỉ trong vài giây.
+  <p style="margin: 0.4rem 0;">Thay vì hiển thị một khối văn bản log đen trắng khổng lồ hàng nghìn dòng, Structured Run Output bóc tách kết quả thành các thẻ UI trực quan: phân loại rõ ràng tài nguyên nào bị Add (+), Change (~), Destroy (-), Read (<=), giúp kỹ sư nắm bắt thay đổi chỉ trong vài giây.</p>
 </div>
 </details>
 
@@ -555,7 +555,7 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Cung cấp miễn phí quản trị State không giới hạn, hỗ trợ tối đa 500 tài nguyên được quản lý (Managed Resources) mỗi tháng, tích hợp VCS Git, phân quyền cơ bản và tính năng Remote Execution hoàn toàn miễn phí.
+  <p style="margin: 0.4rem 0;">Cung cấp miễn phí quản trị State không giới hạn, hỗ trợ tối đa 500 tài nguyên được quản lý (Managed Resources) mỗi tháng, tích hợp VCS Git, phân quyền cơ bản và tính năng Remote Execution hoàn toàn miễn phí.</p>
 </div>
 </details>
 
@@ -563,7 +563,7 @@ rm -rf terraform-lab27-hcp
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q10</span>
-    <span>Khi sử dụng `cloud` block, làm thế nào để chuyển đổi linh hoạt giữa môi trường Dev và Prod?</span>
+    <span>Khi sử dụng <code>cloud</code> block, làm thế nào để chuyển đổi linh hoạt giữa môi trường Dev và Prod?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -574,16 +574,14 @@ rm -rf terraform-lab27-hcp
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Sử dụng thẻ `tags` bên trong khối `workspaces`:
-```hcl
-cloud {
-  organization = "my-org"
+  <p style="margin: 0.4rem 0;">Sử dụng thẻ <code>tags</code> bên trong khối <code>workspaces</code>:</p>
+  <pre style="background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0;"><code class="language-hcl">cloud {
+  organization = &quot;my-org&quot;
   workspaces {
-    tags = ["infra", "network"]
+    tags = [&quot;infra&quot;, &quot;network&quot;]
   }
-}
-```
-Sau đó sử dụng biến môi trường `TF_WORKSPACE=prod-network` hoặc lệnh `terraform workspace select prod-network` trên CLI để chuyển đổi môi trường.
+}</code></pre>
+  <p style="margin: 0.4rem 0;">Sau đó sử dụng biến môi trường <code>TF_WORKSPACE=prod-network</code> hoặc lệnh <code>terraform workspace select prod-network</code> trên CLI để chuyển đổi môi trường.</p>
 </div>
 </details>
 

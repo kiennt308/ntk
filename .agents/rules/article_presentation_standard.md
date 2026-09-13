@@ -83,20 +83,31 @@ Sử dụng các biến CSS theme-aware thay vì hardcode mã màu:
 
 ---
 
-## 5. Chuẩn Hóa Sơ Đồ Kiến Trúc Mermaid
+## 5. Chuẩn Hóa Sơ Đồ Kiến Trúc Mermaid (Flowcharts & Sequence Diagrams)
 
-Mọi sơ đồ Mermaid phải tuân thủ các quy tắc sau:
-1. **Khối không dùng màu nền đặc**: Luôn dùng `fill:none` kết hợp viền màu kỹ thuật (`stroke:#...`, `stroke-width:1.5px` hoặc `2px`) để hiển thị sắc nét trên cả giao diện sáng lẫn tối và hỗ trợ chuẩn khi phóng to trong Lightbox.
-2. **Phân nhóm bằng Subgraph**: Đặt tên subgraph trực quan, có đánh số thứ tự (ví dụ `subgraph Inputs["1. ĐẦU VÀO HỆ THỐNG"]`).
-3. **Ngắt dòng thông minh**: Dùng `<br/>` để chia text trong các khối dài thành 2–3 dòng gọn gàng, tránh làm khối bị quá dài theo chiều ngang.
-4. **Màu viền quy ước**:
-   - Đầu vào / HCL: `#6366f1` (Indigo/Primary)
-   - Lưu trữ / State: `#f59e0b` (Amber)
-   - Cloud / Thực tế: `#0ea5e9` (Cyan)
-   - Engine tính toán: `#3b82f6` (Blue)
-   - Kế hoạch / Plan: `#f59e0b` (Amber)
-   - Thực thi / Thành công: `#10b981` (Emerald)
-   - Lỗi / Sự cố: `#f43f5e` hoặc `#dc2626` (Rose/Red)
+Mọi sơ đồ Mermaid (bao gồm `flowchart`, `graph`, và `sequenceDiagram`) phải tuân thủ nghiêm ngặt các quy tắc sau:
+
+### 5.1. Quy chuẩn chung & Lightbox Modal Zoom
+1. **Khử hoàn toàn nền đặc (Zero Solid Fill)**: Mọi khối hình, actor box, hay container đều phải trong suốt (`fill:none` hoặc `fill:transparent`) kết hợp viền màu kỹ thuật (`stroke-width: 1.5px - 2px`) để hiển thị sắc nét trên cả Light/Dark theme và không bị lóa/che lấp khi phóng to trong Lightbox.
+2. **Tăng cường độ tương phản (High Contrast)**: Phông chữ trong sơ đồ sử dụng màu `--text-primary` (`#f8fafc` trên nền tối, `#0f172a` trên nền sáng) với độ dày chữ `font-weight: 600 - 700`.
+3. **Phân nhóm bằng Subgraph**: Đặt tên subgraph trực quan, có đánh số thứ tự (ví dụ `subgraph Inputs["1. ĐẦU VÀO HỆ THỐNG"]`).
+4. **Ngắt dòng thông minh**: Dùng `<br/>` để chia text trong các khối dài thành 2–3 dòng gọn gàng, tránh làm khối bị quá dài theo chiều ngang.
+
+### 5.2. Quy chuẩn dành riêng cho Sequence Diagrams
+- **Actors / Participants**: Hộp actor phải có viền bo tròn (`rx: 8px`), viền màu kỹ thuật (Primary Blue `#38bdf8` / `#0284c7`), nền trong suốt `fill: transparent`, chữ in đậm dễ đọc.
+- **Actor Lifeline**: Đường thẳng dóng xuống dạng đứt nét `stroke-dasharray: 5, 5` với màu `--text-muted`.
+- **Message Lines & Arrows**: Nét vẽ rõ ràng (`stroke-width: 1.75px`), text trên đường truyền (`.messageText`) có màu rõ nét và không bị đè lên đường kẻ (`messageMargin: 35`).
+- **Ghi chú (Notes)**: Khối `Note over ...` sử dụng nền mờ cao cấp (`--bg-surface-elevated`), viền màu hổ phách `#f59e0b`, text màu Amber nổi bật và bo góc 6px.
+- **Đánh số tự động**: Luôn kích hoạt chỉ thị `autonumber` ở đầu mỗi sơ đồ `sequenceDiagram` để người đọc dễ dàng theo dõi tuần tự các bước tương tác.
+
+### 5.3. Bảng Màu Viền Quy Ước (Stroke Colors):
+- Đầu vào / HCL / Dev: `#6366f1` (Indigo/Primary)
+- Lưu trữ / State / S3: `#f59e0b` (Amber)
+- Cloud / Thực tế / AWS APIs: `#0ea5e9` (Cyan)
+- Engine tính toán / Core: `#3b82f6` (Blue)
+- Kế hoạch / Plan: `#f59e0b` (Amber)
+- Thực thi / Thành công: `#10b981` (Emerald)
+- Lỗi / Sự cố / Outage: `#f43f5e` hoặc `#dc2626` (Rose/Red)
 
 ---
 

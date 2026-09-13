@@ -2626,6 +2626,107 @@ mark.search-highlight {
   border: 1px solid var(--border-color, rgba(255,255,255,0.12)) !important;
 }
 
+/* ==========================================================================
+   Mermaid Sequence Diagram Enhancements (Transparent Actors & High Contrast)
+   ========================================================================== */
+.mermaid rect.actor,
+.mermaid-lightbox-content rect.actor,
+.mermaid .actor rect,
+.mermaid-lightbox-content .actor rect,
+.mermaid [class*="actor"] rect,
+.mermaid-lightbox-content [class*="actor"] rect {
+  fill: transparent !important;
+  stroke: var(--accent-primary, #3b82f6) !important;
+  stroke-width: 2px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+.mermaid text.actor,
+.mermaid-lightbox-content text.actor,
+.mermaid .actor text,
+.mermaid-lightbox-content .actor text,
+.mermaid [class*="actor"] text,
+.mermaid-lightbox-content [class*="actor"] text {
+  fill: var(--text-primary, #f8fafc) !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+}
+
+.mermaid .actor-line,
+.mermaid-lightbox-content .actor-line {
+  stroke: var(--text-muted, #64748b) !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 5, 5 !important;
+}
+
+.mermaid .messageLine0,
+.mermaid .messageLine1,
+.mermaid-lightbox-content .messageLine0,
+.mermaid-lightbox-content .messageLine1 {
+  stroke: var(--text-secondary, #94a3b8) !important;
+  stroke-width: 1.75px !important;
+}
+
+.mermaid .messageText,
+.mermaid-lightbox-content .messageText {
+  fill: var(--text-primary, #f8fafc) !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+}
+
+.mermaid g.note rect,
+.mermaid rect.note,
+.mermaid-lightbox-content g.note rect,
+.mermaid-lightbox-content rect.note,
+.mermaid [class*="note"] rect,
+.mermaid-lightbox-content [class*="note"] rect {
+  fill: var(--bg-surface-elevated, #1e293b) !important;
+  stroke: var(--accent-amber, #f59e0b) !important;
+  stroke-width: 1.5px !important;
+  rx: 6px !important;
+  ry: 6px !important;
+}
+
+.mermaid .noteText,
+.mermaid text.noteText,
+.mermaid-lightbox-content .noteText,
+.mermaid-lightbox-content text.noteText,
+.mermaid .noteText tspan,
+.mermaid-lightbox-content .noteText tspan {
+  fill: var(--accent-amber, #f59e0b) !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+}
+
+.mermaid .sequenceNumber,
+.mermaid-lightbox-content .sequenceNumber {
+  fill: #ffffff !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+.mermaid line.loopLine,
+.mermaid-lightbox-content line.loopLine,
+.mermaid rect.labelBox,
+.mermaid-lightbox-content rect.labelBox {
+  fill: transparent !important;
+  stroke: var(--border-color, #334155) !important;
+}
+
+.mermaid .labelText,
+.mermaid .loopText,
+.mermaid-lightbox-content .labelText,
+.mermaid-lightbox-content .loopText {
+  fill: var(--text-primary, #f8fafc) !important;
+  font-weight: 700 !important;
+}
+
 .mermaid-zoom-btn {
   position: absolute;
   top: 12px;

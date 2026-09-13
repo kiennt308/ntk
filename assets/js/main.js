@@ -895,7 +895,24 @@ document.addEventListener('DOMContentLoaded', () => {
         clusterBkg: 'transparent',
         clusterBorder: isDark ? '#334155' : '#cbd5e1',
         mainBkg: 'transparent',
-        nodeBkg: 'transparent'
+        nodeBkg: 'transparent',
+        // Sequence Diagram Theme Variables
+        actorBkg: 'transparent',
+        actorBorder: isDark ? '#38bdf8' : '#0284c7',
+        actorTextColor: isDark ? '#f8fafc' : '#0f172a',
+        actorLineColor: isDark ? '#64748b' : '#94a3b8',
+        signalColor: isDark ? '#94a3b8' : '#475569',
+        signalTextColor: isDark ? '#f8fafc' : '#0f172a',
+        labelBoxBkgColor: 'transparent',
+        labelBoxBorderColor: isDark ? '#334155' : '#cbd5e1',
+        labelTextColor: isDark ? '#f8fafc' : '#0f172a',
+        loopTextColor: isDark ? '#f8fafc' : '#0f172a',
+        noteBkgColor: isDark ? 'rgba(30, 41, 59, 0.85)' : 'rgba(241, 245, 249, 0.95)',
+        noteBorderColor: isDark ? '#f59e0b' : '#d97706',
+        noteTextColor: isDark ? '#fbbf24' : '#b45309',
+        activationBorderColor: '#38bdf8',
+        activationBkgColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(2, 132, 199, 0.1)',
+        sequenceNumberColor: '#ffffff'
       },
       flowchart: {
         htmlLabels: true,
@@ -904,6 +921,18 @@ document.addEventListener('DOMContentLoaded', () => {
         nodeSpacing: 55,
         rankSpacing: 55,
         useMaxWidth: false
+      },
+      sequence: {
+        actorMargin: 50,
+        boxMargin: 10,
+        boxTextMargin: 5,
+        noteMargin: 10,
+        messageMargin: 35,
+        mirrorActors: false,
+        bottomMarginAdj: 1,
+        useMaxWidth: false,
+        rightAngles: false,
+        showSequenceNumbers: true
       },
       securityLevel: 'loose'
     });

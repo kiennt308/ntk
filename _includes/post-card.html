@@ -1,11 +1,3 @@
-{% assign words = include.post.content | number_of_words %}
-{% if words < 360 %}
-  {% assign read_time_num = 1 %}
-{% else %}
-  {% assign read_time_num = words | divided_by: 180 %}
-{% endif %}
-{% assign read_time = read_time_num | append: " " | append: site.post_page.read_time_suffix | default: "min read" %}
-
 {% assign post_cat = include.post.categories | first | default: "DevOps" %}
 {% assign cat_class = "badge--primary" %}
 {% for topic in site.topics %}
@@ -38,11 +30,6 @@
       <span class="card__meta-item">
         {% include icon.html name="calendar" size=12 %}
         <span>{{ include.post.date | date: site.post_page.date_format_short | default: "%b %d, %Y" }}</span>
-      </span>
-      <span class="card__meta-dot"></span>
-      <span class="card__meta-item">
-        {% include icon.html name="clock" size=12 %}
-        <span>{{ read_time }}</span>
       </span>
     </div>
   </header>

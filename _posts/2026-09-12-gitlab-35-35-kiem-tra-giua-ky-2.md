@@ -1685,35 +1685,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ giữa kỳ 2
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Trình bày kiến trúc phòng thủ DevSecOps 6 lớp tự động trong CI/CD. Tại sao việc thiếu 1 trong 6 lớp lại gây ra điểm mù nguy hiểm cho doanh nghiệp?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
 Phòng thủ 6 lớp bao gồm: Secret/Code SAST (1), IaC Security (2), Vault Authentication (3), Container Scan (4), Supply Chain SBOM/Cosign (5) và Policy Quality Gate (6). Thiếu bất kỳ lớp nào cũng tạo ra một mắt xích yếu nhất để hacker tấn công vào chuỗi cung ứng.
 
-**Đáp án chuẩn:**
-- **Kiến trúc 6 Lớp:**
-  1. *Lớp 1 (Code & Secret):* Gitleaks + Semgrep SAST ngăn ngừa rò rỉ API key và lỗi lập trình logic từ bước viết mã.
-  2. *Lớp 2 (Infrastructure as Code):* Checkov kiểm tra tính an toàn của Dockerfile, Kubernetes Manifests và Terraform files.
-  3. *Lớp 3 (Identity & Dynamic Access):* HashiCorp Vault OIDC JWT cung cấp credential tạm thời tự hủy dưới 60 phút.
-  4. *Lớp 4 (Container Image Security):* Trivy quét lỗ hổng OS packages và application dependencies trên Distroless image.
-  5. *Lớp 5 (Supply Chain Security):* Syft xuất SBOM và Cosign ký số Keyless chứng thực nguồn gốc SLSA Provenance.
-  6. *Lớp 6 (Governance & Quality Gate):* OPA/Conftest Rego evaluation kiểm định quy tắc doanh nghiệp và Parser ngắt pipeline.
-- **Rủi ro khi thiếu lớp:** Ví dụ, nếu ứng dụng có SAST pass 100% nhưng thiếu Container Scan (Lớp 4) $\to$ Base Image Alpine chứa CVE RCE vẫn lọt lên Prod; nếu có Container Scan nhưng thiếu Cosign Signature (Lớp 5) $\to$ Hacker có thể tráo Image nguy hiểm trực tiếp trên Registry.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiến trúc 6 Lớp:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Lớp 1 (Code & Secret):* Gitleaks + Semgrep SAST ngăn ngừa rò rỉ API key và lỗi lập trình logic từ bước viết mã.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Lớp 2 (Infrastructure as Code):* Checkov kiểm tra tính an toàn của Dockerfile, Kubernetes Manifests và Terraform files.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> *Lớp 3 (Identity & Dynamic Access):* HashiCorp Vault OIDC JWT cung cấp credential tạm thời tự hủy dưới 60 phút.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> *Lớp 4 (Container Image Security):* Trivy quét lỗ hổng OS packages và application dependencies trên Distroless image.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> *Lớp 5 (Supply Chain Security):* Syft xuất SBOM và Cosign ký số Keyless chứng thực nguồn gốc SLSA Provenance.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">6.</b> *Lớp 6 (Governance & Quality Gate):* OPA/Conftest Rego evaluation kiểm định quy tắc doanh nghiệp và Parser ngắt pipeline.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Rủi ro khi thiếu lớp:</b> Ví dụ, nếu ứng dụng có SAST pass 100% nhưng thiếu Container Scan (Lớp 4) $\to$ Base Image Alpine chứa CVE RCE vẫn lọt lên Prod; nếu có Container Scan nhưng thiếu Cosign Signature (Lớp 5) $\to$ Hacker có thể tráo Image nguy hiểm trực tiếp trên Registry.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Trả lời qua loa "DevSecOps là cài SonarQube với Trivy là xong". Cần phân tích sâu cả 6 lớp từ Code đến Supply Chain & Policy Enforcement.
 </div>
 </details>

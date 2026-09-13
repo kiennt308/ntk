@@ -403,199 +403,108 @@ rm -rf terraform-lab25-blastradius
 
 ## 7. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao việc gom hơn 1,000 tài nguyên vào một file State duy nhất lại khiến `terraform plan` chạy cực kỳ chậm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Vì theo cơ chế mặc định, mỗi lần chạy `plan`, Terraform phải thực hiện bước **State Refresh**: Gửi hàng nghìn HTTP REST API requests đồng thời đến AWS/GCP để kiểm tra từng thuộc tính của từng tài nguyên. Việc này không chỉ tốn băng thông mạng và CPU mà còn dễ bị Cloud Provider kích hoạt cơ chế **API Rate Limiting / Throttling**, khiến pipeline bị treo từ 30-60 phút.
+  
+Vì theo cơ chế mặc định, mỗi lần chạy <code>plan</code>, Terraform phải thực hiện bước <b style="color: var(--accent-primary);">State Refresh</b>: Gửi hàng nghìn HTTP REST API requests đồng thời đến AWS/GCP để kiểm tra từng thuộc tính của từng tài nguyên. Việc này không chỉ tốn băng thông mạng và CPU mà còn dễ bị Cloud Provider kích hoạt cơ chế <b style="color: var(--accent-primary);">API Rate Limiting / Throttling</b>, khiến pipeline bị treo từ 30-60 phút.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Điểm khác nhau căn bản giữa việc chia sẻ dữ liệu qua `terraform_remote_state` và qua AWS SSM Parameter Store là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - `terraform_remote_state`: Tầng con phải kết nối trực tiếp vào S3 Backend của tầng cha và nạp toàn bộ State file của cha vào RAM. Nếu State cha chứa secrets, tầng con sẽ đọc được hết (vi phạm nguyên lý Least Privilege).
-  - `AWS SSM Parameter Store`: Tầng cha chủ động trích xuất các ID công khai cần chia sẻ và đẩy lên SSM. Tầng con chỉ cần quyền IAM đọc đúng tham số SSM đó, giúp phân tách quyền hạn (Decoupling) và bảo mật tuyệt đối.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>terraform_remote_state</code>: Tầng con phải kết nối trực tiếp vào S3 Backend của tầng cha và nạp toàn bộ State file của cha vào RAM. Nếu State cha chứa secrets, tầng con sẽ đọc được hết (vi phạm nguyên lý Least Privilege).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>AWS SSM Parameter Store</code>: Tầng cha chủ động trích xuất các ID công khai cần chia sẻ và đẩy lên SSM. Tầng con chỉ cần quyền IAM đọc đúng tham số SSM đó, giúp phân tách quyền hạn (Decoupling) và bảo mật tuyệt đối.</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Quy tắc đặt kích thước tối ưu cho một State file trong doanh nghiệp là bao nhiêu tài nguyên?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Theo tiêu chuẩn kiến trúc SRE của HashiCorp và AWS, một State file tối ưu nên chứa từ **50 đến 150 tài nguyên**. Không nên vượt quá 300 tài nguyên trên một State để đảm bảo thời gian chạy `terraform plan` luôn duy trì dưới 60 giây.
+  
+Theo tiêu chuẩn kiến trúc SRE của HashiCorp và AWS, một State file tối ưu nên chứa từ <b style="color: var(--accent-primary);">50 đến 150 tài nguyên</b>. Không nên vượt quá 300 tài nguyên trên một State để đảm bảo thời gian chạy <code>terraform plan</code> luôn duy trì dưới 60 giây.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Trong mô hình Monorepo, làm thế nào để CI/CD Pipeline biết chỉ chạy Terraform cho thư mục vừa có code thay đổi?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Sử dụng tính năng **Path-based Triggering** của hệ thống CI/CD. Ví dụ trên GitHub Actions dùng `paths: ['environments/production/network/**']`, trên GitLab CI dùng `rules: changes: ['environments/production/network/**']`.
+  
+Sử dụng tính năng <b style="color: var(--accent-primary);">Path-based Triggering</b> của hệ thống CI/CD. Ví dụ trên GitHub Actions dùng <code>paths: ['environments/production/network/<b style="color: var(--accent-primary);">']</code>, trên GitLab CI dùng <code>rules: changes: ['environments/production/network/</b>']</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Nếu một sự cố xảy ra làm corrupt (hỏng) State file của tầng Compute (EKS), các tầng Network và Database có bị downtime không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **HOÀN TOÀN KHÔNG**. Nhờ kiến trúc Micro-States, State file của Network và Database nằm ở các S3 Key hoàn toàn riêng biệt. Các máy chủ cơ sở dữ liệu và đường truyền mạng vẫn hoạt động bình thường trên AWS mà không bị gián đoạn.
+  
+<b style="color: var(--accent-primary);">HOÀN TOÀN KHÔNG</b>. Nhờ kiến trúc Micro-States, State file của Network và Database nằm ở các S3 Key hoàn toàn riêng biệt. Các máy chủ cơ sở dữ liệu và đường truyền mạng vẫn hoạt động bình thường trên AWS mà không bị gián đoạn.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Khi nào thì việc sử dụng `terraform plan -refresh=false` được coi là giải pháp tình thế chấp nhận được?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khi hệ thống đang gặp sự cố khẩn cấp (Incident Response / Hotfix) cần apply một thay đổi nhỏ ngay lập tức mà không muốn chờ 20 phút để refresh toàn bộ 1,000 tài nguyên. Tuy nhiên, cờ này chỉ nên dùng trong tình huống khẩn cấp vì nó bỏ qua bước phát hiện Drift.
+  
+Khi hệ thống đang gặp sự cố khẩn cấp (Incident Response / Hotfix) cần apply một thay đổi nhỏ ngay lập tức mà không muốn chờ 20 phút để refresh toàn bộ 1,000 tài nguyên. Tuy nhiên, cờ này chỉ nên dùng trong tình huống khẩn cấp vì nó bỏ qua bước phát hiện Drift.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Tại sao các tài nguyên Stateful (như RDS, DynamoDB) bắt buộc phải nằm ở một State file riêng biệt so với tài nguyên Stateless (như Web App, Pods)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Vì tần suất thay đổi và mức độ rủi ro của 2 nhóm tài nguyên này hoàn toàn trái ngược nhau. Stateless App thay đổi hàng chục lần mỗi ngày và có thể xóa tạo lại tùy ý. Stateful Database thay đổi rất ít và chứa dữ liệu sống còn của doanh nghiệp. Tách riêng giúp loại trừ 100% rủi ro việc cập nhật App vô tình kích hoạt lệnh xóa Database.
+  
+Vì tần suất thay đổi và mức độ rủi ro của 2 nhóm tài nguyên này hoàn toàn trái ngược nhau. Stateless App thay đổi hàng chục lần mỗi ngày và có thể xóa tạo lại tùy ý. Stateful Database thay đổi rất ít và chứa dữ liệu sống còn của doanh nghiệp. Tách riêng giúp loại trừ 100% rủi ro việc cập nhật App vô tình kích hoạt lệnh xóa Database.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Khái niệm "Blast Radius Reduction via AWS Account Separation" có nghĩa là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Là việc sử dụng nhiều tài khoản AWS riêng biệt (AWS Multi-Account Architecture) cho từng môi trường: `Dev-Account`, `Staging-Account`, `Prod-Account`, `Security-Account`. Khi đó, ngay cả khi một kỹ sư vô tình chạy nhầm lệnh `terraform destroy` với quyền Admin trên Dev Account, hạ tầng Production trên tài khoản khác vẫn được bảo vệ an toàn 100%.
+  
+Là việc sử dụng nhiều tài khoản AWS riêng biệt (AWS Multi-Account Architecture) cho từng môi trường: <code>Dev-Account</code>, <code>Staging-Account</code>, <code>Prod-Account</code>, <code>Security-Account</code>. Khi đó, ngay cả khi một kỹ sư vô tình chạy nhầm lệnh <code>terraform destroy</code> với quyền Admin trên Dev Account, hạ tầng Production trên tài khoản khác vẫn được bảo vệ an toàn 100%.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>File `CODEOWNERS` trong Git Repository giúp ích gì cho việc quản trị Blast Radius trong Terraform?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : `CODEOWNERS` cho phép thiết lập quy tắc bắt buộc phê duyệt Pull Request theo từng thư mục. Ví dụ: Bất kỳ thay đổi nào trong thư mục `environments/production/networking/` bắt buộc phải có sự phê duyệt (Approve) của nhóm `@network-sre-leads`, trong khi thư mục `apps/` chỉ cần nhóm `@app-devs` phê duyệt.
+  
+<code>CODEOWNERS</code> cho phép thiết lập quy tắc bắt buộc phê duyệt Pull Request theo từng thư mục. Ví dụ: Bất kỳ thay đổi nào trong thư mục <code>environments/production/networking/</code> bắt buộc phải có sự phê duyệt (Approve) của nhóm <code>@network-sre-leads</code>, trong khi thư mục <code>apps/</code> chỉ cần nhóm <code>@app-devs</code> phê duyệt.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Làm thế nào để di chuyển một nhóm tài nguyên từ Monolithic State cũ sang Micro-State mới mà không làm sập hệ thống?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Sử dụng quy trình 4 bước an toàn:
-  1. Chạy `terraform state rm <resource_address>` tại Monolithic State cũ (để giải phóng tài nguyên khỏi state cũ mà không destroy trên Cloud).
-  2. Viết mã nguồn HCL tương ứng tại thư mục Micro-State mới.
-  3. Dùng khối `import` hoặc lệnh `terraform import` để nạp tài nguyên vào State mới.
-  4. Chạy `terraform plan` tại cả 2 nơi để đảm bảo 0 add, 0 change, 0 destroy.
+  
+Sử dụng quy trình 4 bước an toàn:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Chạy <code>terraform state rm <resource_address></code> tại Monolithic State cũ (để giải phóng tài nguyên khỏi state cũ mà không destroy trên Cloud).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Viết mã nguồn HCL tương ứng tại thư mục Micro-State mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Dùng khối <code>import</code> hoặc lệnh <code>terraform import</code> để nạp tài nguyên vào State mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Chạy <code>terraform plan</code> tại cả 2 nơi để đảm bảo 0 add, 0 change, 0 destroy.</div>
 </div>
 </details>
 

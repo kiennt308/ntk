@@ -371,196 +371,106 @@ Trước khi chính thức bàn giao hệ thống Argo CD cho môi trường Pro
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao việc cấm chạy container với quyền root (`runAsNonRoot: true`) là bắt buộc đối với `argocd-repo-server`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `argocd-repo-server` là nơi thực thi các công cụ biên dịch mẫu bên ngoài (Helm, Kustomize, CMP scripts). Nếu một kẻ tấn công lợi dụng lỗ hổng RCE trong một plugin để thực thi mã độc, việc container chạy với quyền non-root (UID 999) và `readOnlyRootFilesystem: true` sẽ ngăn chặn kẻ tấn công ghi mã độc vào hệ điều hành hoặc leo quyền chiếm máy chủ vật lý (Host Takeover).
+  
+<code>argocd-repo-server</code> là nơi thực thi các công cụ biên dịch mẫu bên ngoài (Helm, Kustomize, CMP scripts). Nếu một kẻ tấn công lợi dụng lỗ hổng RCE trong một plugin để thực thi mã độc, việc container chạy với quyền non-root (UID 999) và <code>readOnlyRootFilesystem: true</code> sẽ ngăn chặn kẻ tấn công ghi mã độc vào hệ điều hành hoặc leo quyền chiếm máy chủ vật lý (Host Takeover).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Lệnh `argocd admin export` khác gì so với việc sao lưu database etcd của Kubernetes?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sao lưu etcd lưu trữ toàn bộ trạng thái của cả cụm (dung lượng lớn, khó khôi phục riêng lẻ). `argocd admin export` chỉ xuất đúng các đối tượng cấu hình tĩnh thuộc về Argo CD (CRD, Secret, ConfigMap) thành một tệp YAML nhỏ gọn, cho phép nhập lại vào bất kỳ cụm Kubernetes mới nào chỉ trong vài giây.
+  
+Sao lưu etcd lưu trữ toàn bộ trạng thái của cả cụm (dung lượng lớn, khó khôi phục riêng lẻ). <code>argocd admin export</code> chỉ xuất đúng các đối tượng cấu hình tĩnh thuộc về Argo CD (CRD, Secret, ConfigMap) thành một tệp YAML nhỏ gọn, cho phép nhập lại vào bất kỳ cụm Kubernetes mới nào chỉ trong vài giây.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Thuật toán Controller Sharding phân chia danh sách cụm mục tiêu cho các bản sao Controller dựa trên nguyên lý nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng hàm băm nhất quán (**Consistent Hash Ring**) dựa trên `Cluster Server URL` hoặc `Cluster UUID` để gán cố định cụm cho một chỉ số Shard cụ thể (`Shard 0`, `Shard 1`...). Điều này đảm bảo mỗi cụm từ xa chỉ do duy nhất 1 Controller quản lý, loại bỏ hoàn toàn hiện tượng xung đột tài nguyên.
+  
+Sử dụng hàm băm nhất quán (<b style="color: var(--accent-primary);">Consistent Hash Ring</b>) dựa trên <code>Cluster Server URL</code> hoặc <code>Cluster UUID</code> để gán cố định cụm cho một chỉ số Shard cụ thể (<code>Shard 0</code>, <code>Shard 1</code>...). Điều này đảm bảo mỗi cụm từ xa chỉ do duy nhất 1 Controller quản lý, loại bỏ hoàn toàn hiện tượng xung đột tài nguyên.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Cần mở những cổng mạng Egress nào trong NetworkPolicy của `argocd-repo-server`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Bắt buộc mở: (1) Cổng UDP/TCP `53` (truy vấn CoreDNS nội bộ), (2) Cổng TCP `443` (kéo mã nguồn từ GitHub/GitLab qua HTTPS), và (3) Cổng TCP `22` (nếu sử dụng giao thức Git SSH).
+  
+Bắt buộc mở: (1) Cổng UDP/TCP <code>53</code> (truy vấn CoreDNS nội bộ), (2) Cổng TCP <code>443</code> (kéo mã nguồn từ GitHub/GitLab qua HTTPS), và (3) Cổng TCP <code>22</code> (nếu sử dụng giao thức Git SSH).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Làm thế nào để tự động hóa sao lưu định kỳ toàn bộ trạng thái của Argo CD lên AWS S3?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Tạo một Kubernetes `CronJob` chạy hàng đêm trong namespace `argocd`. CronJob thực thi lệnh `argocd admin export`, mã hóa tệp kết quả bằng GPG/SOPS và sử dụng AWS CLI (gắn IAM Role qua IRSA) để đẩy tệp lên S3 Bucket có bật Object Versioning.
+  
+Tạo một Kubernetes <code>CronJob</code> chạy hàng đêm trong namespace <code>argocd</code>. CronJob thực thi lệnh <code>argocd admin export</code>, mã hóa tệp kết quả bằng GPG/SOPS và sử dụng AWS CLI (gắn IAM Role qua IRSA) để đẩy tệp lên S3 Bucket có bật Object Versioning.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Làm thế nào để vô hiệu hóa tài khoản `admin` mặc định sau khi đã tích hợp SSO OIDC thành công?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thiết lập cờ `admin.enabled: "false"` trong ConfigMap `argocd-cm` để đóng hoàn toàn cơ chế đăng nhập bằng tài khoản cục bộ.
+  
+Thiết lập cờ <code>admin.enabled: "false"</code> trong ConfigMap <code>argocd-cm</code> để đóng hoàn toàn cơ chế đăng nhập bằng tài khoản cục bộ.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Khi nào nên sử dụng Redis Sentinel thay vì Redis độc lập cho Argo CD?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trong môi trường Production High Availability (HA) quy mô lớn, Redis Sentinel cung cấp cơ chế tự động Failover khi Pod Redis Master gặp sự cố, đảm bảo bộ đệm cache không bị gián đoạn và tránh gây Reconcile Storm.
+  
+Trong môi trường Production High Availability (HA) quy mô lớn, Redis Sentinel cung cấp cơ chế tự động Failover khi Pod Redis Master gặp sự cố, đảm bảo bộ đệm cache không bị gián đoạn và tránh gây Reconcile Storm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Thuộc tính `securityContext.allowPrivilegeEscalation: false` bảo vệ container khỏi nguy cơ gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ngăn chặn các tiến trình con bên trong container giành thêm quyền hạn cao hơn tiến trình cha (ví dụ thông qua các tệp thực thi có cờ `setuid` hoặc `setgid`).
+  
+Ngăn chặn các tiến trình con bên trong container giành thêm quyền hạn cao hơn tiến trình cha (ví dụ thông qua các tệp thực thi có cờ <code>setuid</code> hoặc <code>setgid</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Lệnh nào cho phép xóa ép buộc một Application bị kẹt ở trạng thái `Terminating` do cụm đích không còn tồn tại?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Gỡ bỏ Finalizer của Application bằng lệnh:
+  
+Gỡ bỏ Finalizer của Application bằng lệnh:
   ```bash
   kubectl patch app <app-name> -n argocd -p '{"metadata":{"finalizers":null}}' --type=merge
   ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Tại sao nên kiểm tra định kỳ quy trình Disaster Recovery Restore trên cụm giả lập (Staging/Sandbox)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để đảm bảo bản sao lưu không bị hỏng, các Secret và Token giải mã vẫn còn hiệu lực, và quy trình khôi phục thực tế đạt chỉ số thời gian mục tiêu RTO (Recovery Time Objective) < 60 giây khi có thảm họa thật xảy ra.
+  
+Để đảm bảo bản sao lưu không bị hỏng, các Secret và Token giải mã vẫn còn hiệu lực, và quy trình khôi phục thực tế đạt chỉ số thời gian mục tiêu RTO (Recovery Time Objective) < 60 giây khi có thảm họa thật xảy ra.
 </div>
 </details>
 

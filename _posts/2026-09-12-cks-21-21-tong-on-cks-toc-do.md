@@ -339,79 +339,43 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tốc độ làm bài trung bình tính theo phút cho mỗi câu hỏi trong bài thi CKS tốc độ 16 câu 90 phút là bao nhiêu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Tốc độ trung bình **`5,5 phút`** mỗi câu.
+  
+Tốc độ trung bình <b style="color: var(--accent-primary);"><code>5,5 phút</code></b> mỗi câu.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Lệnh Linux CLI nào được dùng để nạp một tệp profile AppArmor vào Linux Kernel của Host Node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `sudo apparmor_parser -q -r /path/to/apparmor-profile`.
+  
+Lệnh <code>sudo apparmor_parser -q -r /path/to/apparmor-profile</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Cú pháp annotation chuẩn trong Pod spec để gán AppArmor profile có tên `k8s-deny-write` cho container `app` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `container.apparmor.security.beta.kubernetes.io/app: localhost/k8s-deny-write`.
+  
+<code>container.apparmor.security.beta.kubernetes.io/app: localhost/k8s-deny-write</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Cú pháp YAML chuẩn để khai báo Seccomp `RuntimeDefault` cho Pod trong Kubernetes v1.30+ là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
      spec:
        securityContext:
          seccompProfile:
@@ -420,155 +384,83 @@ graph TD
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Cờ từ khóa nào trong Kyverno `ClusterPolicy` được dùng để cưỡng chế từ chối các request vi phạm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ **`validationFailureAction: Enforce`**.
+  
+Cờ <b style="color: var(--accent-primary);"><code>validationFailureAction: Enforce</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Hai cờ câu lệnh bắt buộc phải bổ sung vào Static Pod `kube-apiserver.yaml` để bật Audit Logging là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `--audit-policy-file` và `--audit-log-path`.
+  
+Cờ <code>--audit-policy-file</code> và <code>--audit-log-path</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Năm thành tố bắt buộc phải có trong một quy tắc Falco Custom Rule là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  5 thành tố: **`rule`**, **`desc`**, **`condition`**, **`output`**, và **`priority`**.
+  
+5 thành tố: <b style="color: var(--accent-primary);"><code>rule</code></b>, <b style="color: var(--accent-primary);"><code>desc</code></b>, <b style="color: var(--accent-primary);"><code>condition</code></b>, <b style="color: var(--accent-primary);"><code>output</code></b>, và <b style="color: var(--accent-primary);"><code>priority</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Cơ chế xoay vòng log Audit trên `kube-apiserver` được cấu hình bằng 3 cờ câu lệnh nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `--audit-log-maxage`, `--audit-log-maxbackup`, và `--audit-log-maxsize`.
+  
+<code>--audit-log-maxage</code>, <code>--audit-log-maxbackup</code>, và <code>--audit-log-maxsize</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tại sao phải khai báo khối `exclude.resources.namespaces: [kube-system]` trong Kyverno Allowed Registries policy?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để **bảo vệ các Pods hệ thống** trong `kube-system` không bị chặn kéo ảnh làm sập cụm.
+  
+Để <b style="color: var(--accent-primary);">bảo vệ các Pods hệ thống</b> trong <code>kube-system</code> không bị chặn kéo ảnh làm sập cụm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Lệnh CLI nào giúp khôi phục khẩn cấp Control Plane trong 60 giây khi `kube-apiserver` bị crash do gõ sai syntax YAML?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver.yaml`.
+  
+Lệnh <code>sudo cp /tmp/apiserver.bak /etc/kubernetes/manifests/kube-apiserver.yaml</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Ba miền kiến thức CKS có trọng số điểm cao nhất (mỗi miền 20%) cần tập trung gom điểm là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Minimize Microservice Vulnerabilities**, **Supply Chain Security**, và **Monitoring, Logging and Runtime Security**.
+  
+<b style="color: var(--accent-primary);">Minimize Microservice Vulnerabilities</b>, <b style="color: var(--accent-primary);">Supply Chain Security</b>, và <b style="color: var(--accent-primary);">Monitoring, Logging and Runtime Security</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp CLI chuẩn thực hiện kiểm tra syntax tệp quy tắc Falco CKS là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
       falco -r /etc/falco/falco_rules.local.yaml
       ```
 </div>
@@ -991,34 +883,25 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tỉ lệ trọng số điểm số của 6 miền kiến thức trong kỳ thi CKS do CNCF quy định được phân bổ như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. Minimize Microservice Vulnerabilities: **20%**
-2. Supply Chain Security: **20%**
-3. Monitoring, Logging and Runtime Security: **20%**
-4. Cluster Hardening: **15%**
-5. System Hardening: **15%**
-6. Cluster Setup: **10%**
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Minimize Microservice Vulnerabilities: <b style="color: var(--accent-primary);">20%</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Supply Chain Security: <b style="color: var(--accent-primary);">20%</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Monitoring, Logging and Runtime Security: <b style="color: var(--accent-primary);">20%</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Cluster Hardening: <b style="color: var(--accent-primary);">15%</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> System Hardening: <b style="color: var(--accent-primary);">15%</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">6.</b> Cluster Setup: <b style="color: var(--accent-primary);">10%</b></div>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết trọng số 6 miền CKS.
-- 1đ: Nêu được 3 miền nhưng sai % trọng số.
-- 3đ: Kể tên chuẩn xác 100% trọng số của cả 6 miền kiến thức CKS.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết trọng số 6 miền CKS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 3 miền nhưng sai % trọng số.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Kể tên chuẩn xác 100% trọng số của cả 6 miền kiến thức CKS.</div>
 
-**Câu hỏi đào sâu:** (Chiến thuật gom điểm tập trung vào 3 miền 20% giúp đạt tổng cộng bao nhiêu điểm bài thi? — Gom trọn **`60 điểm`** bài thi CKS).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Chiến thuật gom điểm tập trung vào 3 miền 20% giúp đạt tổng cộng bao nhiêu điểm bài thi? — Gom trọn <b style="color: var(--accent-primary);"><code>60 điểm</code></b> bài thi CKS).
 </div>
 </details>
 
@@ -1287,22 +1170,13 @@ Biên soạn quy tắc Falco Custom Rule tại `/tmp/falco-bin.yaml`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Gán annotation AppArmor vào Pod spec</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/apparmor-pod.yaml
 apiVersion: v1
 kind: Pod
@@ -1313,29 +1187,20 @@ metadata:
     container.apparmor.security.beta.kubernetes.io/app: localhost/k8s-deny-write
 spec:
   containers:
-    - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx
 EOF
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Quét Kubesec xuất JSON output</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/kubesec-res.json
 [
   {
@@ -1349,53 +1214,35 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Biên soạn Audit Policy RequestResponse</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/audit-policy.yaml
 apiVersion: audit.k8s.io/v1
 kind: Policy
 rules:
-  - level: RequestResponse
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• level: RequestResponse</div>
     resources:
-      - group: ""
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• group: ""</div>
         resources: ["secrets"]
 EOF
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Biên soạn Falco Custom Rule `Detect Bin Write</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/falco-bin.yaml
-- rule: Detect Bin Write
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• rule: Detect Bin Write</div>
   desc: Phat hien ghi vao thu muc bin
   condition: spawned_process and container and proc.name = bash
   output: Write to bin directory (pod=%k8s.pod.name container=%container.name)

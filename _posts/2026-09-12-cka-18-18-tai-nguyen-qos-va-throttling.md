@@ -927,35 +927,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày sự khác nhau cốt lõi về vai trò giữa `resources.requests` và `resources.limits` trong Kubernetes.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **`resources.requests` (Mức cam kết tối thiểu):**
-  - *Vai trò:* Được **Kube-Scheduler sử dụng trong giai đoạn Lọc (Filtering)** để tìm xem Node nào còn đủ dung lượng tài nguyên nhàn rỗi để cọc cho Pod.
-  - *Ảnh hưởng:* Không giới hạn trần tiêu thụ thực tế của tiến trình.
-- **`resources.limits` (Mức trần tối đa):**
-  - *Vai trò:* Được **Kubelet và Linux Kernel áp dụng để kiểm soát trần tối đa** mà container được phép tiêu thụ trong quá trình chạy.
-  - *Ảnh hưởng:* Vượt CPU limit dính CFS Throttling; vượt RAM limit dính OOMKilled exit code 137.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>resources.requests</code> (Mức cam kết tối thiểu):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Vai trò:* Được <b style="color: var(--accent-primary);">Kube-Scheduler sử dụng trong giai đoạn Lọc (Filtering)</b> để tìm xem Node nào còn đủ dung lượng tài nguyên nhàn rỗi để cọc cho Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ảnh hưởng:* Không giới hạn trần tiêu thụ thực tế của tiến trình.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>resources.limits</code> (Mức trần tối đa):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Vai trò:* Được <b style="color: var(--accent-primary);">Kubelet và Linux Kernel áp dụng để kiểm soát trần tối đa</b> mà container được phép tiêu thụ trong quá trình chạy.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ảnh hưởng:* Vượt CPU limit dính CFS Throttling; vượt RAM limit dính OOMKilled exit code 137.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo 2 thuộc tính này hoàn toàn như nhau.
-- **1đ:** Trả lời requests là tối thiểu còn limits là tối đa nhưng không giải thích được Scheduler dùng requests để chọn Node vs Kubelet/Kernel dùng limits để siết trần (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác `requests` (Scheduler dùng lọc Node) vs `limits` (Kubelet/Kernel kiểm soát trần tối đa).
-- **3đ:** Trả lời xuất sắc, chỉ ra trường hợp Kubelet tự gán `requests = limits` khi chỉ khai báo limit.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 thuộc tính này hoàn toàn như nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời requests là tối thiểu còn limits là tối đa nhưng không giải thích được Scheduler dùng requests để chọn Node vs Kubelet/Kernel dùng limits để siết trần (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>requests</code> (Scheduler dùng lọc Node) vs <code>limits</code> (Kubelet/Kernel kiểm soát trần tối đa).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra trường hợp Kubelet tự gán <code>requests = limits</code> khi chỉ khai báo limit.</div>
 
-**Câu hỏi đào sâu:** Nếu một Pod chỉ khai báo `limits.memory: 512Mi` mà không khai báo `requests.memory` thì Kube-Scheduler sẽ coi `requests.memory` bằng bao nhiêu? *(Đáp án: Kube-Scheduler sẽ tự động coi `requests.memory = limits.memory = 512Mi`).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu một Pod chỉ khai báo <code>limits.memory: 512Mi</code> mà không khai báo <code>requests.memory</code> thì Kube-Scheduler sẽ coi <code>requests.memory</code> bằng bao nhiêu? *(Đáp án: Kube-Scheduler sẽ tự động coi <code>requests.memory = limits.memory = 512Mi</code>).*
 </div>
 </details>
 

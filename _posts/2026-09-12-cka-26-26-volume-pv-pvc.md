@@ -404,231 +404,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Sự khác nhau căn bản giữa PV và PVC trong Kubernetes là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  PV đại diện cho hạ tầng đĩa vật lý do Admin tạo cấp cụm (`Cluster-scoped`). PVC đại diện cho nhu cầu xin sử dụng đĩa của Dev ở từng Namespace (`Namespace-scoped`).
+  
+PV đại diện cho hạ tầng đĩa vật lý do Admin tạo cấp cụm (<code>Cluster-scoped</code>). PVC đại diện cho nhu cầu xin sử dụng đĩa của Dev ở từng Namespace (<code>Namespace-scoped</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Một PV có dung lượng 10Gi, `accessModes: ReadWriteOnce`. Một PVC xin 15Gi `ReadWriteOnce`. Trạng thái của PVC sẽ là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trạng thái `Pending` do dung lượng PV không đủ đáp ứng (10Gi < 15Gi).
+  
+Trạng thái <code>Pending</code> do dung lượng PV không đủ đáp ứng (10Gi < 15Gi).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Điều gì xảy ra với dữ liệu trên đĩa khi ta xóa PVC gắn với PV có `reclaimPolicy: Retain`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dữ liệu trên đĩa được giữ nguyên 100 %. PV chuyển sang trạng thái `Released`.
+  
+Dữ liệu trên đĩa được giữ nguyên 100 %. PV chuyển sang trạng thái <code>Released</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Làm thế nào để một PVC mới có thể bind vào một PV đang ở trạng thái `Released`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Xóa thông tin `claimRef` cũ trong PV bằng lệnh `kubectl patch pv <pv-name> -p '{"spec":{"claimRef":null}}'`.
+  
+Xóa thông tin <code>claimRef</code> cũ trong PV bằng lệnh <code>kubectl patch pv <pv-name> -p '{"spec":{"claimRef":null}}'</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Trình bày ý nghĩa của 3 chế độ `accessModes`: RWO, ROX, RWX.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  RWO (`ReadWriteOnce` - mount đọc ghi trên 1 Node), ROX (`ReadOnlyMany` - mount chỉ đọc trên nhiều Node), RWX (`ReadWriteMany` - mount đọc ghi đồng thời trên nhiều Node).
+  
+RWO (<code>ReadWriteOnce</code> - mount đọc ghi trên 1 Node), ROX (<code>ReadOnlyMany</code> - mount chỉ đọc trên nhiều Node), RWX (<code>ReadWriteMany</code> - mount đọc ghi đồng thời trên nhiều Node).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Tại sao không nên dùng `hostPath` cho các ứng dụng có tính sẵn sàng cao (HA) chạy trên cụm nhiều Node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì `hostPath` gắn chặt dữ liệu vào đĩa cục bộ của 1 Node. Khi Pod chuyển sang Node khác, nó không thể truy cập dữ liệu cũ.
+  
+Vì <code>hostPath</code> gắn chặt dữ liệu vào đĩa cục bộ của 1 Node. Khi Pod chuyển sang Node khác, nó không thể truy cập dữ liệu cũ.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Khai báo `emptyDir` có dữ liệu tồn tại sau khi Pod bị gỡ bỏ không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Không. `emptyDir` bị xóa sạch hoàn toàn ngay khi Pod ngưng tồn tại.
+  
+Không. <code>emptyDir</code> bị xóa sạch hoàn toàn ngay khi Pod ngưng tồn tại.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Nếu một Pod trỏ tới PVC ở trạng thái `Pending`, trạng thái của Pod sẽ là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `ContainerCreating` hoặc `Pending`.
+  
+<code>ContainerCreating</code> hoặc <code>Pending</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Sự khác biệt giữa `reclaimPolicy: Delete` và `Recycle` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `Delete` xóa sạch cả PV lẫn đĩa bên dưới. `Recycle` thực hiện `rm -rf` dữ liệu bên trong đĩa và đưa PV trở lại trạng thái `Available`.
+  
+<code>Delete</code> xóa sạch cả PV lẫn đĩa bên dưới. <code>Recycle</code> thực hiện <code>rm -rf</code> dữ liệu bên trong đĩa và đưa PV trở lại trạng thái <code>Available</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Quan hệ giữa PV và PVC khi bind là 1-1 hay 1-nhiều?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Là quan hệ 1-1 độc quyền.
+  
+Là quan hệ 1-1 độc quyền.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Trường `storageClassName` trong PV và PVC có vai trò gì khi bind tĩnh (Static Provisioning)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chúng bắt buộc phải khớp tên chuỗi với nhau. Nếu một bên có tên storageClass mà bên kia rỗng/khác tên thì sẽ không bind được.
+  
+Chúng bắt buộc phải khớp tên chuỗi với nhau. Nếu một bên có tên storageClass mà bên kia rỗng/khác tên thì sẽ không bind được.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Lệnh nào giúp kiểm tra chi tiết lý do PVC không bind được PV?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `kubectl describe pvc <tên-pvc>`.
+  
+<code>kubectl describe pvc <tên-pvc></code>.
 </div>
 </details>
 
@@ -1097,30 +989,21 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Hãy phân biệt sự khác nhau về phạm vi (Scope) và quản trị giữa PersistentVolume (PV) và PersistentVolumeClaim (PVC)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  PV là tài nguyên lưu trữ cấp cụm (`Cluster-scoped`) do Quản trị viên (Admin) khởi tạo để đại diện cho hạ tầng đĩa vật lý. PVC là yêu cầu xin dung lượng đĩa cấp Namespace (`Namespace-scoped`) do Lập trình viên (Developer) khai báo. Hai thành phần này gắn kết với nhau qua cơ chế Binding.
+  
+PV là tài nguyên lưu trữ cấp cụm (<code>Cluster-scoped</code>) do Quản trị viên (Admin) khởi tạo để đại diện cho hạ tầng đĩa vật lý. PVC là yêu cầu xin dung lượng đĩa cấp Namespace (<code>Namespace-scoped</code>) do Lập trình viên (Developer) khai báo. Hai thành phần này gắn kết với nhau qua cơ chế Binding.
 
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được PV và PVC.
-- 1đ: Nêu được PV là đĩa, PVC là yêu cầu dùng đĩa nhưng không nói được vai trò Admin/Dev.
-- 2đ: Nêu đúng vai trò Admin/Dev nhưng thiếu thông tin về phạm vi `Cluster-scoped` vs `Namespace-scoped`.
-- 3đ: Trình bày đầy đủ scope, vai trò quản trị và cơ chế Binding giữa PV và PVC.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được PV và PVC.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được PV là đĩa, PVC là yêu cầu dùng đĩa nhưng không nói được vai trò Admin/Dev.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng vai trò Admin/Dev nhưng thiếu thông tin về phạm vi <code>Cluster-scoped</code> vs <code>Namespace-scoped</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày đầy đủ scope, vai trò quản trị và cơ chế Binding giữa PV và PVC.</div>
 
-**Câu hỏi đào sâu:** (Nếu khai báo namespace vào YAML của PV thì điều gì xảy ra? — Kubernetes sẽ bỏ qua hoặc báo lỗi vì PV là đối tượng toàn cụm, không thuộc Namespace nào).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu khai báo namespace vào YAML của PV thì điều gì xảy ra? — Kubernetes sẽ bỏ qua hoặc báo lỗi vì PV là đối tượng toàn cụm, không thuộc Namespace nào).
 </div>
 </details>
 
@@ -1371,22 +1254,13 @@ Kiểm tra và sửa lỗi PVC `pvc-data-claim` thuộc Namespace `default` đan
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tạo PV `pv-analytics</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
@@ -1396,7 +1270,7 @@ spec:
   capacity:
     storage: 2Gi
   accessModes:
-    - ReadWriteMany
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ReadWriteMany</div>
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   hostPath:
@@ -1406,22 +1280,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Tạo Namespace `prod` và PVC `pvc-analytics</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1432,7 +1297,7 @@ metadata:
   namespace: prod
 spec:
   accessModes:
-    - ReadWriteMany
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ReadWriteMany</div>
   storageClassName: manual
   resources:
     requests:
@@ -1442,22 +1307,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Tạo Pod `web-analytics` mount PVC</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1466,13 +1322,13 @@ metadata:
   namespace: prod
 spec:
   containers:
-    - name: nginx
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: nginx</div>
       image: nginx:alpine
       volumeMounts:
-        - mountPath: /var/log/analytics
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• mountPath: /var/log/analytics</div>
           name: analytics-vol
   volumes:
-    - name: analytics-vol
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: analytics-vol</div>
       persistentVolumeClaim:
         claimName: pvc-analytics
 EOF
@@ -1480,22 +1336,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Sửa lỗi PVC `pvc-data-claim` bị Pending</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 # Export YAML của PVC cũ
 kubectl get pvc pvc-data-claim -o yaml > /tmp/pvc.yaml
 

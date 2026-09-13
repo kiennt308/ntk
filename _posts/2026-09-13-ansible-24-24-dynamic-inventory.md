@@ -814,31 +814,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Vai trò của Dynamic Inventory Plugin 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Dynamic Inventory Plugin là gì? Tại sao trong môi trường Đám mây (Cloud Auto-scaling) việc sử dụng Static Inventory lại trở nên bất khả thi? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Dynamic Inventory Plugin: Là cơ chế tự động kết nối API của Cloud Provider (AWS, Azure, GCP) hoặc Facts hệ thống để tự động phát hiện danh sách máy chủ, địa chỉ IP và trạng thái realtime.
-- Tại sao Static Inventory bất khả thi: Trên môi trường Cloud, các VM/Container liên tục được tạo mới, thay đổi địa chỉ IP hoặc tự động co giãn (Auto-scaling). Việc duy trì tệp `inventory.ini` tĩnh sửa tay thủ công sẽ gây tốn thời gian, chậm trễ và nguy cơ cao bỏ sót máy chủ chưa được cấu hình.
-**Tiêu chí chấm:**
-- 0: Không biết Dynamic Inventory Plugin.
-- 1: Biết Dynamic Inventory để phát hiện IP nhưng không giải thích được lý do Static Inventory bị phá phá vỡ trên môi trường Cloud Auto-scaling.
-- 2: Phân tích chính xác cơ chế tự động kết nối API Cloud để phát hiện danh sách máy chủ realtime.
-- 3: Nêu đúng + minh họa ví dụ tệp Dynamic Inventory Plugin `inventory/02-cloud.aws_ec2.yml`.
-**Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa Dynamic Inventory Script (kiểu cũ) và Dynamic Inventory Plugin (kiểu mới). *(Script cũ dùng file thực thi Python/Bash trả về JSON; Plugin mới dùng tệp cấu hình YAML tích hợp sẵn trong Ansible Core/Collections với khả năng caching và keyed_groups.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Dynamic Inventory Plugin là gì? Tại sao trong môi trường Đám mây (Cloud Auto-scaling) việc sử dụng Static Inventory lại trở nên bất khả thi? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dynamic Inventory Plugin: Là cơ chế tự động kết nối API của Cloud Provider (AWS, Azure, GCP) hoặc Facts hệ thống để tự động phát hiện danh sách máy chủ, địa chỉ IP và trạng thái realtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tại sao Static Inventory bất khả thi: Trên môi trường Cloud, các VM/Container liên tục được tạo mới, thay đổi địa chỉ IP hoặc tự động co giãn (Auto-scaling). Việc duy trì tệp <code>inventory.ini</code> tĩnh sửa tay thủ công sẽ gây tốn thời gian, chậm trễ và nguy cơ cao bỏ sót máy chủ chưa được cấu hình.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết Dynamic Inventory Plugin.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Dynamic Inventory để phát hiện IP nhưng không giải thích được lý do Static Inventory bị phá phá vỡ trên môi trường Cloud Auto-scaling.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế tự động kết nối API Cloud để phát hiện danh sách máy chủ realtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ tệp Dynamic Inventory Plugin <code>inventory/02-cloud.aws_ec2.yml</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Phân biệt sự khác nhau giữa Dynamic Inventory Script (kiểu cũ) và Dynamic Inventory Plugin (kiểu mới). *(Script cũ dùng file thực thi Python/Bash trả về JSON; Plugin mới dùng tệp cấu hình YAML tích hợp sẵn trong Ansible Core/Collections với khả năng caching và keyed_groups.)*
 </div>
 </details>
 

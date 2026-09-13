@@ -1221,31 +1221,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. Bộ câu hỏi Vấn đáp Trực tiếp (12 Câu)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Khi một job trong GitLab CI bị đỏ thất bại với thông báo chung chung `Command exited with code 1` mà log console hoàn toàn không hiển thị dòng code gây lỗi nào, bước đầu tiên bạn sẽ làm gì để truy vết sự cố?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Bước đầu tiên và chuẩn mực nhất là bật cờ `CI_DEBUG_TRACE: "true"` trực tiếp trong phần `variables` của job bị lỗi trong `.gitlab-ci.yml`. 
-- Cờ này sẽ buộc Runner Engine bật chế độ `set -x` trên Shell Executor, in ra từng dòng lệnh được mở rộng, các phép gán biến môi trường, và các rẽ nhánh điều kiện `if/else` trước khi thực thi.
-- **Chi tiết kỹ thuật sâu:** Khi `CI_DEBUG_TRACE` hoạt động, mỗi dòng lệnh shell trước khi thực thi sẽ được prefix bởi dấu `+` kèm theo giá trị mở rộng thực sự của biến. Ví dụ: `+ curl -u admin:secret123 https://api.internal/deploy`. Nhờ đó, bạn sẽ phát hiện ra các biến bị rỗng (`""`), các lỗi cú pháp ẩn, hoặc câu lệnh bị thất bại ở rẽ nhánh nào.
-- **Quy trình xử lý sự cố:**
-  1. Thêm `variables: { CI_DEBUG_TRACE: "true" }` vào job bị lỗi.
-  2. Kích hoạt `Retry` job trên giao diện GitLab CI.
-  3. Phân tích log chi tiết tại vị trí xuất hiện lỗi `exit code 1`.
-  4. Sửa lỗi logic hoặc cấu hình.
-  5. Xóa bỏ cờ debug khỏi file cấu hình trước khi merge vào nhánh chính.
-- **Lưu ý bảo mật nghiêm ngặt:** Vì `CI_DEBUG_TRACE` sẽ in ra toàn bộ giá trị các biến môi trường (kể cả biến chưa được masked hoặc các secret nạp từ HashiCorp Vault), sau khi hoàn tất debug phải lập tức xóa cờ này khỏi repo, hủy kết quả pipeline trace, và xóa các phiên log nhạy cảm để tránh rò rỉ token/mật khẩu theo quy tắc buổi 47 QT 47.1.
+  
+Bước đầu tiên và chuẩn mực nhất là bật cờ <code>CI_DEBUG_TRACE: "true"</code> trực tiếp trong phần <code>variables</code> của job bị lỗi trong <code>.gitlab-ci.yml</code>. 
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ này sẽ buộc Runner Engine bật chế độ <code>set -x</code> trên Shell Executor, in ra từng dòng lệnh được mở rộng, các phép gán biến môi trường, và các rẽ nhánh điều kiện <code>if/else</code> trước khi thực thi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chi tiết kỹ thuật sâu:</b> Khi <code>CI_DEBUG_TRACE</code> hoạt động, mỗi dòng lệnh shell trước khi thực thi sẽ được prefix bởi dấu <code>+</code> kèm theo giá trị mở rộng thực sự của biến. Ví dụ: <code>+ curl -u admin:secret123 https://api.internal/deploy</code>. Nhờ đó, bạn sẽ phát hiện ra các biến bị rỗng (<code>""</code>), các lỗi cú pháp ẩn, hoặc câu lệnh bị thất bại ở rẽ nhánh nào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy trình xử lý sự cố:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Thêm <code>variables: { CI_DEBUG_TRACE: "true" }</code> vào job bị lỗi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Kích hoạt <code>Retry</code> job trên giao diện GitLab CI.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Phân tích log chi tiết tại vị trí xuất hiện lỗi <code>exit code 1</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Sửa lỗi logic hoặc cấu hình.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> Xóa bỏ cờ debug khỏi file cấu hình trước khi merge vào nhánh chính.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lưu ý bảo mật nghiêm ngặt:</b> Vì <code>CI_DEBUG_TRACE</code> sẽ in ra toàn bộ giá trị các biến môi trường (kể cả biến chưa được masked hoặc các secret nạp từ HashiCorp Vault), sau khi hoàn tất debug phải lập tức xóa cờ này khỏi repo, hủy kết quả pipeline trace, và xóa các phiên log nhạy cảm để tránh rò rỉ token/mật khẩu theo quy tắc buổi 47 QT 47.1.</div>
 </div>
 </details>
 

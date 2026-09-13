@@ -379,193 +379,103 @@ argocd account can-i sync applications 'payment/*'
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao trong môi trường Production bắt buộc phải xóa Secret `argocd-initial-admin-secret`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì tệp Secret này chứa mật khẩu khởi tạo dạng thô (Cleartext). Nếu hacker xâm nhập được vào namespace `argocd` hoặc đọc được etcd backup, họ có thể giải mã lấy quyền `admin` tối cao. Xóa tệp này sau khi đổi mật khẩu là quy tắc bắt buộc của CIS Kubernetes Benchmark.
+  
+Vì tệp Secret này chứa mật khẩu khởi tạo dạng thô (Cleartext). Nếu hacker xâm nhập được vào namespace <code>argocd</code> hoặc đọc được etcd backup, họ có thể giải mã lấy quyền <code>admin</code> tối cao. Xóa tệp này sau khi đổi mật khẩu là quy tắc bắt buộc của CIS Kubernetes Benchmark.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Trong mô hình HA, nếu 1 Pod `argocd-server` bị khởi động lại (Crash), người dùng trên Web UI có bị đăng xuất không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Không!** Vì trong kiến trúc HA, toàn bộ phiên làm việc (User Sessions) được lưu trữ tập trung trên cụm **Redis Sentinel HA**, không lưu cục bộ trong bộ nhớ của Pod Server. Yêu cầu tiếp theo sẽ được chuyển sang Pod Server khác mà không làm gián đoạn phiên.
+  
+<b style="color: var(--accent-primary);">Không!</b> Vì trong kiến trúc HA, toàn bộ phiên làm việc (User Sessions) được lưu trữ tập trung trên cụm <b style="color: var(--accent-primary);">Redis Sentinel HA</b>, không lưu cục bộ trong bộ nhớ của Pod Server. Yêu cầu tiếp theo sẽ được chuyển sang Pod Server khác mà không làm gián đoạn phiên.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Làm thế nào để vô hiệu hóa hoàn toàn tài khoản cục bộ `admin` khi tổ chức đã chuyển sang đăng nhập SSO?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thêm dòng `admin.enabled: "false"` vào ConfigMap `argocd-cm`. Sau khi cấu hình, tài khoản admin cục bộ sẽ bị khóa hoàn toàn, buộc 100% người dùng phải đăng nhập qua hệ thống Identity Provider của doanh nghiệp.
+  
+Thêm dòng <code>admin.enabled: "false"</code> vào ConfigMap <code>argocd-cm</code>. Sau khi cấu hình, tài khoản admin cục bộ sẽ bị khóa hoàn toàn, buộc 100% người dùng phải đăng nhập qua hệ thống Identity Provider của doanh nghiệp.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Cờ `--insecure` trong lệnh `argocd login` có ý nghĩa gì? Có nên dùng trên Production không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `--insecure` bỏ qua việc kiểm tra tính hợp lệ của chứng chỉ SSL/TLS (áp dụng khi dùng Self-signed Certificate trong môi trường lab). Trên Production, **tuyệt đối không dùng** `--insecure` mà phải cấp phát chứng chỉ TLS hợp lệ (Let's Encrypt / Corporate CA) để chống tấn công Man-in-the-Middle (MitM).
+  
+Cờ <code>--insecure</code> bỏ qua việc kiểm tra tính hợp lệ của chứng chỉ SSL/TLS (áp dụng khi dùng Self-signed Certificate trong môi trường lab). Trên Production, <b style="color: var(--accent-primary);">tuyệt đối không dùng</b> <code>--insecure</code> mà phải cấp phát chứng chỉ TLS hợp lệ (Let's Encrypt / Corporate CA) để chống tấn công Man-in-the-Middle (MitM).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Sự khác nhau giữa `kubectl port-forward` và thiết lập Ingress cho Argo CD là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `kubectl port-forward` chỉ là giải pháp tạm thời dùng cho cá nhân gỡ lỗi (Debug) cục bộ qua cổng localhost. Ingress là giải pháp định tuyến mạng chính thức, cung cấp định danh tên miền, chấm dứt SSL/TLS, xác thực chứng chỉ và chịu tải cho toàn bộ người dùng và hệ thống Webhook bên ngoài.
+  
+<code>kubectl port-forward</code> chỉ là giải pháp tạm thời dùng cho cá nhân gỡ lỗi (Debug) cục bộ qua cổng localhost. Ingress là giải pháp định tuyến mạng chính thức, cung cấp định danh tên miền, chấm dứt SSL/TLS, xác thực chứng chỉ và chịu tải cho toàn bộ người dùng và hệ thống Webhook bên ngoài.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Vai trò của thành phần `argocd-redis-ha-haproxy` trong kiến trúc HA là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  HAProxy đóng vai trò là reverse proxy đứng trước cụm Redis. Nó liên tục thăm dò Redis Sentinel để biết Pod Redis nào đang là Master hiện tại, và định tuyến toàn bộ kết nối ghi (Write) tới đúng Node Master đó, giúp các vi dịch vụ Argo CD không cần tự implement logic Sentinel failover.
+  
+HAProxy đóng vai trò là reverse proxy đứng trước cụm Redis. Nó liên tục thăm dò Redis Sentinel để biết Pod Redis nào đang là Master hiện tại, và định tuyến toàn bộ kết nối ghi (Write) tới đúng Node Master đó, giúp các vi dịch vụ Argo CD không cần tự implement logic Sentinel failover.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Khi nào nên sử dụng mô hình Namespace-Scoped thay vì Cluster-Wide?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi cụm Kubernetes được chia sẻ cho nhiều phòng ban độc lập (Multi-Tenant) và đội ngũ quản trị Kubernetes không cho phép cấp quyền `ClusterRole` cấp cụm cho Argo CD. Lúc này Argo CD chỉ được cấp `Role` để tự quản lý trong một namespace hạn định.
+  
+Khi cụm Kubernetes được chia sẻ cho nhiều phòng ban độc lập (Multi-Tenant) và đội ngũ quản trị Kubernetes không cho phép cấp quyền <code>ClusterRole</code> cấp cụm cho Argo CD. Lúc này Argo CD chỉ được cấp <code>Role</code> để tự quản lý trong một namespace hạn định.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao việc sử dụng cờ `--grpc-web` trong CLI lại giải quyết được vấn đề lỗi proxy qua CDN/Ingress?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì `--grpc-web` đóng gói (encapsulate) các khung dữ liệu HTTP/2 gRPC nhị phân thành các gói HTTP/1.1 chuẩn (Base64 hoặc binary framing) mà bất kỳ reverse proxy, CDN (như Cloudflare), hay Ingress cũ nào cũng có thể định tuyến bình thường mà không cần hỗ trợ full HTTP/2 gRPC backend.
+  
+Vì <code>--grpc-web</code> đóng gói (encapsulate) các khung dữ liệu HTTP/2 gRPC nhị phân thành các gói HTTP/1.1 chuẩn (Base64 hoặc binary framing) mà bất kỳ reverse proxy, CDN (như Cloudflare), hay Ingress cũ nào cũng có thể định tuyến bình thường mà không cần hỗ trợ full HTTP/2 gRPC backend.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Làm thế nào để hạn chế quyền hạn của Token CI/CD Bot chỉ được phép xem mà không được quyền Sync?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trong `argocd-rbac-cm`, gán policy `p, role:ci-viewer, applications, get, *, allow` cho tài khoản bot và không cấp quyền `sync` hoặc `delete`.
+  
+Trong <code>argocd-rbac-cm</code>, gán policy <code>p, role:ci-viewer, applications, get, *, allow</code> cho tài khoản bot và không cấp quyền <code>sync</code> hoặc <code>delete</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Tác dụng của annotation `podAntiAffinity` trong file cài đặt HA của Argo CD là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `podAntiAffinity` ngăn cản Kubernetes Kubernetes Scheduler xếp các bản sao (Replicas) của cùng một dịch vụ (như 3 Pods `argocd-server`) lên cùng một Worker Node vật lý. Nhờ đó, nếu một Worker Node bị sập phần cứng, 2 bản sao còn lại trên các Node khác vẫn duy trì hệ thống hoạt động 100%.
+  
+<code>podAntiAffinity</code> ngăn cản Kubernetes Kubernetes Scheduler xếp các bản sao (Replicas) của cùng một dịch vụ (như 3 Pods <code>argocd-server</code>) lên cùng một Worker Node vật lý. Nhờ đó, nếu một Worker Node bị sập phần cứng, 2 bản sao còn lại trên các Node khác vẫn duy trì hệ thống hoạt động 100%.
 </div>
 </details>
 

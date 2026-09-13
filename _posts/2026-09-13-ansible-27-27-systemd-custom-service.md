@@ -853,33 +853,24 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc 3 Phần của Systemd Unit File 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày cấu trúc 3 phần bắt buộc trong một tệp Systemd Unit File (`.service`). Mỗi phần chứa các chỉ thị quan trọng nào? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- 3 Phần cấu trúc:
-  1. `[Unit]`: Chứa mô tả dịch vụ (`Description=`) và sự phụ thuộc khởi động (`After=network.target`).
-  2. `[Service]`: Chứa loại dịch vụ (`Type=simple`), tài khoản thực thi (`User=sysops`), lệnh khởi chạy (`ExecStart=`), và cơ chế tự khôi phục (`Restart=always`).
-  3. `[Install]`: Chứa điểm gắn kết khởi động cùng hệ thống khi boot (`WantedBy=multi-user.target`).
-**Tiêu chí chấm:**
-- 0: Không biết cấu trúc Unit File.
-- 1: Biết các phần nhưng không giải thích được vai trò chỉ thị `WantedBy=` hay `ExecStart=`.
-- 2: Phân tích chính xác vai trò 3 phần `[Unit]`, `[Service]`, `[Install]`.
-- 3: Nêu đúng + viết đoạn Unit File mẫu `my-app.service.j2` hoàn chỉnh.
-**Câu hỏi đào sâu:** Điều gì xảy ra nếu một tệp `.service` bị thiếu phần `[Install]`? *(Lệnh `systemctl enable` sẽ báo lỗi từ chối tạo symbolic link tự khởi động cùng boot.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cấu trúc 3 phần bắt buộc trong một tệp Systemd Unit File (<code>.service</code>). Mỗi phần chứa các chỉ thị quan trọng nào? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3 Phần cấu trúc:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>[Unit]</code>: Chứa mô tả dịch vụ (<code>Description=</code>) và sự phụ thuộc khởi động (<code>After=network.target</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>[Service]</code>: Chứa loại dịch vụ (<code>Type=simple</code>), tài khoản thực thi (<code>User=sysops</code>), lệnh khởi chạy (<code>ExecStart=</code>), và cơ chế tự khôi phục (<code>Restart=always</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>[Install]</code>: Chứa điểm gắn kết khởi động cùng hệ thống khi boot (<code>WantedBy=multi-user.target</code>).</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc Unit File.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết các phần nhưng không giải thích được vai trò chỉ thị <code>WantedBy=</code> hay <code>ExecStart=</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò 3 phần <code>[Unit]</code>, <code>[Service]</code>, <code>[Install]</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn Unit File mẫu <code>my-app.service.j2</code> hoàn chỉnh.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Điều gì xảy ra nếu một tệp <code>.service</code> bị thiếu phần <code>[Install]</code>? *(Lệnh <code>systemctl enable</code> sẽ báo lỗi từ chối tạo symbolic link tự khởi động cùng boot.)*
 </div>
 </details>
 

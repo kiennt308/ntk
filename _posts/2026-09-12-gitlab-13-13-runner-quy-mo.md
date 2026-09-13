@@ -1966,27 +1966,18 @@ Nội dung phần này tổng hợp 12 câu hỏi phỏng vấn sát thực tế
 
 ## §V2. Danh sách 12 Câu hỏi Vấn đáp Thực chiến
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Ba đại lượng cốt lõi và tỉ số duy nhất điều khiển thời gian chờ của Job trong hệ thống Runner là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ba đại lượng cốt lõi gồm:
-1. **$\lambda$ (Lambda):** Tốc độ Job đến hệ thống (Job/giờ).
-2. **$S$ (Service Time):** Thời lượng trung vị của một Job (tính bằng giờ hoặc giây).
-3. **$c$ (Concurrency):** Số Slot thực thi song song thực tế khả dụng.
+  
+Ba đại lượng cốt lõi gồm:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">$\lambda$ (Lambda):</b> Tốc độ Job đến hệ thống (Job/giờ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">$S$ (Service Time):</b> Thời lượng trung vị của một Job (tính bằng giờ hoặc giây).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">$c$ (Concurrency):</b> Số Slot thực thi song song thực tế khả dụng.</div>
 
-Tỉ số duy nhất điều khiển thời gian chờ là **Mức no hệ thống $\rho = \lambda \cdot S / c$**. Khi $\rho$ tiến sát tới 1 (ví dụ $\rho = 0.95$), thời gian chờ `queued_duration` bùng nổ **phi tuyến** gấp khoảng **9 lần** thời lượng chạy Job $S$.
+Tỉ số duy nhất điều khiển thời gian chờ là <b style="color: var(--accent-primary);">Mức no hệ thống $\rho = \lambda \cdot S / c$</b>. Khi $\rho$ tiến sát tới 1 (ví dụ $\rho = 0.95$), thời gian chờ <code>queued_duration</code> bùng nổ <b style="color: var(--accent-primary);">phi tuyến</b> gấp khoảng <b style="color: var(--accent-primary);">9 lần</b> thời lượng chạy Job $S$.
 
 #### Phân tích chuyên sâu từ góc độ Kỹ sư SRE:
 Lý thuyết xếp hàng (M/M/c Queueing Model) khẳng định rằng đồ thị mối quan hệ giữa Mức no $\rho$ và thời gian chờ là một đường cong tiệm cận. Hãy xem bảng mô phỏng giá trị chờ theo các mốc mức no:
@@ -2006,81 +1997,54 @@ Lý thuyết xếp hàng (M/M/c Queueing Model) khẳng định rằng đồ th�
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>** Cho $\lambda = 60$ job/giờ, thời lượng Job $S = 3$ phút ($0.05$ giờ), và số Slot $c = 4$. Hãy tính chỉ số mức no $\rho$ và đưa ra nhận xét?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Áp dụng công thức tính Mức no $\rho$:
+  
+Áp dụng công thức tính Mức no $\rho$:
 $$\rho = \frac{\lambda \cdot S}{c} = \frac{60 \times 0.05}{4} = \frac{3}{4} = \mathbf{0.75}$$
 
-**Nhận xét kỹ thuật:** Với $\rho = 0.75$, hệ thống nằm trong vùng vận hành tối ưu (gần mốc 0.80). Thời gian chờ trung bình rơi vào khoảng $0.8 \cdot S$ (tương đương 2.4 phút). Hệ thống vận hành ổn định, không cần thiết phải mua thêm máy chủ Runner.
+<b style="color: var(--accent-primary);">Nhận xét kỹ thuật:</b> Với $\rho = 0.75$, hệ thống nằm trong vùng vận hành tối ưu (gần mốc 0.80). Thời gian chờ trung bình rơi vào khoảng $0.8 \cdot S$ (tương đương 2.4 phút). Hệ thống vận hành ổn định, không cần thiết phải mua thêm máy chủ Runner.
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>** Khi doanh nghiệp thêm 50% số lượng máy chủ Runner nhưng thời gian chờ của lập trình viên không giảm, nguyên nhân gốc rễ có thể nằm ở đâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nguyên nhân gốc rễ có thể thuộc 1 trong 2 trường hợp:
-1. **Hệ thống đang ở mức no thấp ($\rho \le 0.5$):** Thời gian chờ `queued_duration` vốn đã gần bằng 0. Việc tăng thêm số Slot $c$ không làm giảm thời gian chờ vì nút cổ chai không nằm ở số Slot.
-2. **Nút cổ chai nằm ở phần cứng máy chủ Runner (CPU / Disk I/O / Network):** Việc tăng số Job chạy song song khiến máy chủ bị quá tải I/O đĩa hoặc CPU, làm thời lượng chạy $S$ của từng Job tăng vọt lên, bù trừ hoàn toàn lợi ích của việc tăng số Slot $c$.
+  
+Nguyên nhân gốc rễ có thể thuộc 1 trong 2 trường hợp:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Hệ thống đang ở mức no thấp ($\rho \le 0.5$):</b> Thời gian chờ <code>queued_duration</code> vốn đã gần bằng 0. Việc tăng thêm số Slot $c$ không làm giảm thời gian chờ vì nút cổ chai không nằm ở số Slot.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Nút cổ chai nằm ở phần cứng máy chủ Runner (CPU / Disk I/O / Network):</b> Việc tăng số Job chạy song song khiến máy chủ bị quá tải I/O đĩa hoặc CPU, làm thời lượng chạy $S$ của từng Job tăng vọt lên, bù trừ hoàn toàn lợi ích của việc tăng số Slot $c$.</div>
 
 #### Kịch bản kiểm tra đối chứng nút cổ chai phần cứng:
-Kỹ sư cần đo đạc thời lượng $S$ ở 2 mức `concurrent`:
-- Đo $S$ tại `concurrent = 4`: $S = 60\text{s}$.
-- Đo $S$ tại `concurrent = 12`: Nếu $S$ tăng vọt lên $95\text{s}$, chứng tỏ máy chủ bị chạm trần CPU/Disk I/O. Biện pháp đúng là nâng cấp SSD NVMe hoặc tách máy chủ, không phải tăng `concurrent`.
+Kỹ sư cần đo đạc thời lượng $S$ ở 2 mức <code>concurrent</code>:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đo $S$ tại <code>concurrent = 4</code>: $S = 60\text{s}$.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đo $S$ tại <code>concurrent = 12</code>: Nếu $S$ tăng vọt lên $95\text{s}$, chứng tỏ máy chủ bị chạm trần CPU/Disk I/O. Biện pháp đúng là nâng cấp SSD NVMe hoặc tách máy chủ, không phải tăng <code>concurrent</code>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>** Số Slot thực tế $c$ được tính toán như thế nào từ tệp `/etc/gitlab-runner/config.toml`? Nếu cấu hình 6 Runner, mỗi Runner có `limit = 4`, và biến `concurrent = 4` thì $c$ bằng bao nhiêu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Số Slot thực tế $c$ được tính theo công thức:
+  
+Số Slot thực tế $c$ được tính theo công thức:
 $$c = \min\left(\text{concurrent}, \sum \text{limit}\right)$$
 
-Trường hợp trên: Tổng các `limit` là $6 \times 4 = 24$. Tuy nhiên, biến trần toàn cục `concurrent = 4`. Do đó:
+Trường hợp trên: Tổng các <code>limit</code> là $6 \times 4 = 24$. Tuy nhiên, biến trần toàn cục <code>concurrent = 4</code>. Do đó:
 $$c = \min(4, 24) = \mathbf{4 \text{ Slot}}$$
-Biến `request_concurrency` hoàn toàn **không tham gia** vào việc tính toán số Slot $c$.
+Biến <code>request_concurrency</code> hoàn toàn <b style="color: var(--accent-primary);">không tham gia</b> vào việc tính toán số Slot $c$.
 
-#### Trích đoạn tệp `config.toml` minh họa ca sai lầm phổ biến:
+#### Trích đoạn tệp <code>config.toml</code> minh họa ca sai lầm phổ biến:
 ```toml
 concurrent = 4 # <--- TRẦN TOÀN CỤC CHẶN TẤT CẢ RUNNER BÊN DƯỚI!
 
@@ -2097,122 +2061,77 @@ concurrent = 4 # <--- TRẦN TOÀN CỤC CHẶN TẤT CẢ RUNNER BÊN DƯỚI!
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>** Trình bày 3 ca làm Job bị mắc kẹt ở trạng thái `pending` và câu lệnh chẩn đoán bắt buộc cho từng ca?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ba ca Job `pending` gồm:
-1. **Ca 1 (Thiếu Runner khớp Tag):** Không có Runner nào online khớp với thuộc tính `tags:` trong Job.
-   - *Lệnh chẩn đoán:* `GET /api/v4/projects/:id/jobs` (Kiểm tra trường `runner` bị null).
-2. **Ca 2 (Hết Slot xử lý):** Các Runner đều bận và $c$ chạm trần.
-   - *Lệnh chẩn đoán:* Đếm số Job `running` so với $c = \min(\text{concurrent}, \sum \text{limit})$.
-3. **Ca 3 (Pod K8s không xếp lịch được):** Sử dụng K8s Executor nhưng Pod bị kẹt ở K8s Scheduler do thiếu tài nguyên.
-   - *Lệnh chẩn đoán:* **`kubectl get events --sort-by=.lastTimestamp`** trên cụm Kubernetes (API của GitLab không hiển thị nguyên nhân này).
+  
+Ba ca Job <code>pending</code> gồm:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Ca 1 (Thiếu Runner khớp Tag):</b> Không có Runner nào online khớp với thuộc tính <code>tags:</code> trong Job.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Lệnh chẩn đoán:* <code>GET /api/v4/projects/:id/jobs</code> (Kiểm tra trường <code>runner</code> bị null).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Ca 2 (Hết Slot xử lý):</b> Các Runner đều bận và $c$ chạm trần.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Lệnh chẩn đoán:* Đếm số Job <code>running</code> so với $c = \min(\text{concurrent}, \sum \text{limit})$.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Ca 3 (Pod K8s không xếp lịch được):</b> Sử dụng K8s Executor nhưng Pod bị kẹt ở K8s Scheduler do thiếu tài nguyên.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Lệnh chẩn đoán:* <b style="color: var(--accent-primary);"><code>kubectl get events --sort-by=.lastTimestamp</code></b> trên cụm Kubernetes (API của GitLab không hiển thị nguyên nhân này).</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>** Tại sao tính năng Autoscaling Runner lại cải thiện giá trị trung vị của thời gian chờ nhưng **không** làm giảm phân vị P95 của `queued_duration`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì Autoscaling mang theo một **hằng số khởi tạo hạ tầng (Time-to-provision)**:
-- Khởi tạo máy ảo mới (EC2/GCE): Tốn **30 đến 90 giây**.
-- Khởi tạo Pod K8s mới: Tốn **2 đến 10 giây**.
+  
+Vì Autoscaling mang theo một <b style="color: var(--accent-primary);">hằng số khởi tạo hạ tầng (Time-to-provision)</b>:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khởi tạo máy ảo mới (EC2/GCE): Tốn <b style="color: var(--accent-primary);">30 đến 90 giây</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khởi tạo Pod K8s mới: Tốn <b style="color: var(--accent-primary);">2 đến 10 giây</b>.</div>
 
-Hằng số khởi tạo này được cộng thẳng vào `queued_duration` của Job đầu tiên trên máy mới. Phân vị P95 phản ánh 5% các Job chịu thời gian chờ tệ nhất, rơi đúng vào những Job chịu hằng số khởi tạo này. Do đó, P95 không giảm nếu không duy trì môi trường rỗi (`IdleCount`).
+Hằng số khởi tạo này được cộng thẳng vào <code>queued_duration</code> của Job đầu tiên trên máy mới. Phân vị P95 phản ánh 5% các Job chịu thời gian chờ tệ nhất, rơi đúng vào những Job chịu hằng số khởi tạo này. Do đó, P95 không giảm nếu không duy trì môi trường rỗi (<code>IdleCount</code>).
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>** Tham số `IdleCount = 2` tốn bao nhiêu chi phí USD mỗi tháng nếu giá thuê máy ảo là $0.10$ USD/giờ, và lợi ích kỹ thuật mang lại là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chi phí duy trì 2 máy ảo rỗi 24/7:
+  
+Chi phí duy trì 2 máy ảo rỗi 24/7:
 $$\text{Chi phí} = 2 \text{ máy} \times 24 \text{ giờ} \times 30 \text{ ngày} \times 0.10 \text{ USD} = \mathbf{144 \text{ USD/tháng}}$$
 
-**Lợi ích kỹ thuật:** Giữ sẵn 2 máy rỗi giúp xóa bỏ hoàn toàn hằng số khởi tạo **30 đến 90 giây** cho Job đầu tiên sau một giai đoạn rỗi.
+<b style="color: var(--accent-primary);">Lợi ích kỹ thuật:</b> Giữ sẵn 2 máy rỗi giúp xóa bỏ hoàn toàn hằng số khởi tạo <b style="color: var(--accent-primary);">30 đến 90 giây</b> cho Job đầu tiên sau một giai đoạn rỗi.
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>** Tại sao việc kích hoạt Distributed Cache (MinIO S3) trên hệ thống chỉ có 1 Runner duy nhất lại làm thời gian chạy Job bị **chậm hơn**?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cache Cục bộ (Local Cache) đọc/ghi trực tiếp từ ổ SSD local nên tốc độ đạt hàng trăm MB/s. Khi chỉ có **1 Runner**, tỉ lệ trúng Cache cục bộ đã là $100\%$. Nếu bật S3 Cache qua MinIO, tỉ lệ trúng không tăng thêm nhưng mỗi Job bị cộng thêm **3 đến 6 giây** truyền nạp dữ liệu qua mạng HTTP (`Restoring cache` và `Creating cache`). Distributed Cache chỉ có lợi khi hệ thống có từ **2 Runner trở lên** ($N \ge 2$).
+  
+Cache Cục bộ (Local Cache) đọc/ghi trực tiếp từ ổ SSD local nên tốc độ đạt hàng trăm MB/s. Khi chỉ có <b style="color: var(--accent-primary);">1 Runner</b>, tỉ lệ trúng Cache cục bộ đã là $100\%$. Nếu bật S3 Cache qua MinIO, tỉ lệ trúng không tăng thêm nhưng mỗi Job bị cộng thêm <b style="color: var(--accent-primary);">3 đến 6 giây</b> truyền nạp dữ liệu qua mạng HTTP (<code>Restoring cache</code> và <code>Creating cache</code>). Distributed Cache chỉ có lợi khi hệ thống có từ <b style="color: var(--accent-primary);">2 Runner trở lên</b> ($N \ge 2$).
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>** Ba cách giảm Mức no $\rho$ theo thứ tự giá tiền tăng dần là gì, và tại sao hầu hết các đội ngũ DevOps lại làm ngược thứ tự này?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ba cách giảm $\rho = \lambda \cdot S / c$ theo thứ tự chi phí:
-1. **Giảm $\lambda$ (Rẻ nhất - 0 USD):** Bật `interruptible: true` và `workflow:rules` chuẩn để hủy các Pipeline dư thừa (Cắt 20–40% $\lambda$).
-2. **Giảm $S$ (Chi phí vừa phải):** Dùng Image mỏng, tối ưu Cache, loại bỏ các bước dư thừa (Buổi 14).
-3. **Tăng $c$ (Đắt nhất):** Mua thêm máy chủ Runner, bật Autoscaling.
+  
+Ba cách giảm $\rho = \lambda \cdot S / c$ theo thứ tự chi phí:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Giảm $\lambda$ (Rẻ nhất - 0 USD):</b> Bật <code>interruptible: true</code> và <code>workflow:rules</code> chuẩn để hủy các Pipeline dư thừa (Cắt 20–40% $\lambda$).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Giảm $S$ (Chi phí vừa phải):</b> Dùng Image mỏng, tối ưu Cache, loại bỏ các bước dư thừa (Buổi 14).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Tăng $c$ (Đắt nhất):</b> Mua thêm máy chủ Runner, bật Autoscaling.</div>
 
 Các đội làm ngược thứ tự vì việc bấm mua thêm máy (Tăng $c$) là giải pháp dễ thao tác nhất về mặt quản trị, không đòi hỏi phải đọc log hay tối ưu mã nguồn YAML.
 
@@ -2220,76 +2139,49 @@ Các đội làm ngược thứ tự vì việc bấm mua thêm máy (Tăng $c$)
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>** Nguyên nhân khiến một Job 90 giây mà pha `Preparing environment` ngốn mất 45 giây là gì và cách khắc phục?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Nguyên nhân:** Do Docker Image sử dụng có dung lượng quá cồng kềnh (ví dụ `python:3.11-full` dung lượng 1.2 GB), khiến Runner mất 45 giây để kéo các Layer từ Registry về môi trường mới.
-- **Cách khắc phục:**
-  1. Chuyển sang sử dụng Image mỏng (Alpine hoặc Slim, ví dụ `python:3.11-slim` dung lượng 180 MB), giúp rút ngắn thời gian kéo xuống còn **8 giây** (Tiết kiệm 37 giây/job).
-  2. Triển khai **Pull-Through Cache Registry** nằm trong mạng LAN của Runner pool.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân:</b> Do Docker Image sử dụng có dung lượng quá cồng kềnh (ví dụ <code>python:3.11-full</code> dung lượng 1.2 GB), khiến Runner mất 45 giây để kéo các Layer từ Registry về môi trường mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách khắc phục:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Chuyển sang sử dụng Image mỏng (Alpine hoặc Slim, ví dụ <code>python:3.11-slim</code> dung lượng 180 MB), giúp rút ngắn thời gian kéo xuống còn <b style="color: var(--accent-primary);">8 giây</b> (Tiết kiệm 37 giây/job).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Triển khai <b style="color: var(--accent-primary);">Pull-Through Cache Registry</b> nằm trong mạng LAN của Runner pool.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>** Tại sao không nên dùng 1 hồ Runner duy nhất cho tất cả các loại Job trong tập đoàn? Hãy đưa ra 2 trục phân tách hồ Runner chuẩn?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Không dùng 1 hồ Runner chung vì:
-- Job 20 giây bị nghẽn sau Job 30 phút.
-- Mọi Job đều truy cập Docker Socket, gây rủi ro an ninh mạng.
+  
+Không dùng 1 hồ Runner chung vì:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Job 20 giây bị nghẽn sau Job 30 phút.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mọi Job đều truy cập Docker Socket, gây rủi ro an ninh mạng.</div>
 
 Hai trục phân tách chuẩn:
-1. **Theo thời lượng Job:** Hồ cho Job ngắn/nhẹ (< 2 phút) vs Hồ cho Job dài/nặng (> 15 phút).
-2. **Theo đặc quyền:** Hồ Unprivileged (No Docker socket) vs Hồ Privileged (Có Docker socket/Deploy key).
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Theo thời lượng Job:</b> Hồ cho Job ngắn/nhẹ (< 2 phút) vs Hồ cho Job dài/nặng (> 15 phút).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Theo đặc quyền:</b> Hồ Unprivileged (No Docker socket) vs Hồ Privileged (Có Docker socket/Deploy key).</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>** Khi đội ngũ kỹ sư đề xuất mua thêm 4 máy chủ Runner, bạn sẽ hỏi 3 con số nào trước khi phê duyệt ngân sách?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ba con số bắt buộc yêu cầu cung cấp:
-1. **Chỉ số Mức no $\rho$ hiện tại:** Tính từ 3 đại lượng $\lambda, S, c$. Nếu $\rho < 0.6$, từ chối mua thêm.
-2. **Phân vị P95 của `queued_duration`:** Để đối soát thời gian chờ thực tế của người dùng.
-3. **Phần trăm $\lambda$ cắt giảm được nếu bật `interruptible: true`:** Kiểm tra xem đã tối ưu 0 USD trước khi xin tiền hay chưa.
+  
+Ba con số bắt buộc yêu cầu cung cấp:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Chỉ số Mức no $\rho$ hiện tại:</b> Tính từ 3 đại lượng $\lambda, S, c$. Nếu $\rho < 0.6$, từ chối mua thêm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Phân vị P95 của <code>queued_duration</code>:</b> Để đối soát thời gian chờ thực tế của người dùng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Phần trăm $\lambda$ cắt giảm được nếu bật <code>interruptible: true</code>:</b> Kiểm tra xem đã tối ưu 0 USD trước khi xin tiền hay chưa.</div>
 
 ---
 </div>

@@ -886,34 +886,25 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Liệt kê đúng 5 trạng thái vòng đời (Pod Phases) cấp cao của một Pod Kubernetes và giải thích ngắn gọn ý nghĩa từng trạng thái.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. `Pending`: Pod đã được chấp nhận bởi API Server nhưng 1 hoặc nhiều container chưa được khởi tạo (đang chờ Scheduler gán node hoặc đang tải image).
-2. `Running`: Pod đã được gán vào node và tất cả container đã được tạo, trong đó có ít nhất 1 container đang ở trạng thái Running, Starting, hoặc Restarting.
-3. `Succeeded`: Tất cả container trong Pod đã kết thúc thành công (exit code 0) và sẽ không bị khởi động lại nữa.
-4. `Failed`: Tất cả container trong Pod đã kết thúc, và có ít nhất 1 container kết thúc thất bại (exit code khác 0).
-5. `Unknown`: API Server không thể kết nối tới Kubelet quản lý node chứa Pod (do đứt kết nối mạng hoặc node bị sập).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>Pending</code>: Pod đã được chấp nhận bởi API Server nhưng 1 hoặc nhiều container chưa được khởi tạo (đang chờ Scheduler gán node hoặc đang tải image).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>Running</code>: Pod đã được gán vào node và tất cả container đã được tạo, trong đó có ít nhất 1 container đang ở trạng thái Running, Starting, hoặc Restarting.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>Succeeded</code>: Tất cả container trong Pod đã kết thúc thành công (exit code 0) và sẽ không bị khởi động lại nữa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <code>Failed</code>: Tất cả container trong Pod đã kết thúc, và có ít nhất 1 container kết thúc thất bại (exit code khác 0).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> <code>Unknown</code>: API Server không thể kết nối tới Kubelet quản lý node chứa Pod (do đứt kết nối mạng hoặc node bị sập).</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được 5 trạng thái.
-- **1đ:** Liệt kê thiếu trạng thái hoặc nhầm lẫn giữa Pod Phase `Running` với Container State `Waiting`/`CrashLoopBackOff` (dính trần 1đ).
-- **2đ:** Liệt kê đủ 5 trạng thái `Pending`, `Running`, `Succeeded`, `Failed`, `Unknown` và giải thích chuẩn xác ý nghĩa từng cái.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng lệnh `kubectl get pod -o jsonpath='{.status.phase}'`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 5 trạng thái.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Liệt kê thiếu trạng thái hoặc nhầm lẫn giữa Pod Phase <code>Running</code> với Container State <code>Waiting</code>/<code>CrashLoopBackOff</code> (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Liệt kê đủ 5 trạng thái <code>Pending</code>, <code>Running</code>, <code>Succeeded</code>, <code>Failed</code>, <code>Unknown</code> và giải thích chuẩn xác ý nghĩa từng cái.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl get pod -o jsonpath='{.status.phase}'</code>.</div>
 
-**Câu hỏi đào sâu:** Khi 1 Pod chạy `Job` hoàn thành exit 0 thì Pod Phase chuyển sang trạng thái nào? *(Đáp án: Chuyển sang trạng thái `Succeeded`).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi 1 Pod chạy <code>Job</code> hoàn thành exit 0 thì Pod Phase chuyển sang trạng thái nào? *(Đáp án: Chuyển sang trạng thái <code>Succeeded</code>).*
 </div>
 </details>
 

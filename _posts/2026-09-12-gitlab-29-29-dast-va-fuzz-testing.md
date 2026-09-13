@@ -1604,276 +1604,168 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"SAST thấy cái bạn viết, DAST thấy cái bạn chạy — ứng dụng chỉ an toàn khi vượt qua cả kiểm thử tĩnh từ bên trong lẫn tấn công thực nghiệm từ bên ngoài"**?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Vì SAST chỉ phân tích mã nguồn tĩnh từ bên trong (Inside-Out) nhưng hoàn toàn bị mù trước các lỗi cấu hình ở môi trường Runtime (như thiếu Security Response Headers, CORS misconfiguration, SSL/TLS handshake errors, Cookie flags).
-- DAST đóng vai một kẻ tấn công thực nghiệm từ bên ngoài (Outside-In), kiểm tra phản ứng HTTP Response của ứng dụng đang chạy ở Runtime. Sự kết hợp giữa SAST và DAST tạo nên **Chiến lược bảo mật chiều sâu (Defense in Depth)** hoàn chỉnh.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì SAST chỉ phân tích mã nguồn tĩnh từ bên trong (Inside-Out) nhưng hoàn toàn bị mù trước các lỗi cấu hình ở môi trường Runtime (như thiếu Security Response Headers, CORS misconfiguration, SSL/TLS handshake errors, Cookie flags).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• DAST đóng vai một kẻ tấn công thực nghiệm từ bên ngoài (Outside-In), kiểm tra phản ứng HTTP Response của ứng dụng đang chạy ở Runtime. Sự kết hợp giữa SAST và DAST tạo nên <b style="color: var(--accent-primary);">Chiến lược bảo mật chiều sâu (Defense in Depth)</b> hoàn chỉnh.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Quét an ninh tĩnh (SAST) và Quét an ninh động (DAST)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **SAST:** Phân tích mã nguồn thô mà không cần biên dịch hay khởi chạy ứng dụng. Phát hiện lỗi mã nguồn tự viết (SQL Injection, Hardcoded Secrets). Thực thi ở giai đoạn sớm nhất của pipeline.
-- **DAST:** Đòi hỏi ứng dụng phải được biên dịch và khởi chạy lắng nghe HTTP Port ở môi trường Runtime. Phát hiện các lỗ hổng thực thi Runtime (XSS, CORS, Missing Security Headers, Broken Auth).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SAST:</b> Phân tích mã nguồn thô mà không cần biên dịch hay khởi chạy ứng dụng. Phát hiện lỗi mã nguồn tự viết (SQL Injection, Hardcoded Secrets). Thực thi ở giai đoạn sớm nhất của pipeline.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">DAST:</b> Đòi hỏi ứng dụng phải được biên dịch và khởi chạy lắng nghe HTTP Port ở môi trường Runtime. Phát hiện các lỗ hổng thực thi Runtime (XSS, CORS, Missing Security Headers, Broken Auth).</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Câu hỏi:** Tại sao tuyệt đối không được phép chạy câu lệnh quét DAST tấn công trực tiếp lên môi trường Production?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Vì câu lệnh quét DAST gửi hàng ngàn HTTP Requests chứa các payload tấn công độc hại (như SQL Injection payloads, Malformed JSONs, High-concurrency Requests).
-- Nếu chạy trực tiếp lên Production, DAST có thể làm biến đổi/xóa dữ liệu thật trong Production Database, làm tràn bộ nhớ cache và gây sập Downtime dịch vụ đang phục vụ khách hàng.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì câu lệnh quét DAST gửi hàng ngàn HTTP Requests chứa các payload tấn công độc hại (như SQL Injection payloads, Malformed JSONs, High-concurrency Requests).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu chạy trực tiếp lên Production, DAST có thể làm biến đổi/xóa dữ liệu thật trong Production Database, làm tràn bộ nhớ cache và gây sập Downtime dịch vụ đang phục vụ khách hàng.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ OWASP ZAP trong việc thực hiện Baseline Scan và Full Scan trên ứng dụng Web?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Baseline Scan (`zap-baseline.py`):** Là chế độ quét nhẹ nhàng tốc độ cao (mất 1–2 phút). ZAP Spider chủ yếu dò tìm đường dẫn và gửi các HTTP Requests thông thường để kiểm tra tính an toàn của các HTTP Response Headers, Cookie Flags, và CORS policies.
-- **Full Scan (`zap-full-scan.py`):** Là chế độ quét tấn công chủ động diện rộng (Active Scanning). ZAP bơm các payload tấn công (XSS, SQLi, Path Traversal) vào tất cả các tham số URL và Form inputs để thử nghiệm khả năng chịu lỗi của server.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Baseline Scan (<code>zap-baseline.py</code>):</b> Là chế độ quét nhẹ nhàng tốc độ cao (mất 1–2 phút). ZAP Spider chủ yếu dò tìm đường dẫn và gửi các HTTP Requests thông thường để kiểm tra tính an toàn của các HTTP Response Headers, Cookie Flags, và CORS policies.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Full Scan (<code>zap-full-scan.py</code>):</b> Là chế độ quét tấn công chủ động diện rộng (Active Scanning). ZAP bơm các payload tấn công (XSS, SQLi, Path Traversal) vào tất cả các tham số URL và Form inputs để thử nghiệm khả năng chịu lỗi của server.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Câu hỏi:** Nguyên lý hoạt động của kiểm thử Fuzzing (Fuzz Testing) và khả năng tìm kiếm các lỗ hổng ẩn sâu mà SAST/DAST bỏ qua?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Fuzzing Testing sử dụng động cơ sinh dữ liệu tự động (Fuzz Engine) tạo ra hàng triệu chuỗi dữ liệu đầu vào ngẫu nhiên dị dạng (chuỗi byte rác, số âm cực đại, ký tự Null, chuỗi vỡ đệm) nạp liên tục vào các hàm parse dữ liệu.
-- Fuzzing phát hiện được các lỗi kiểm tra biên ẩn sâu (như slice index out of range, nil pointer dereference, memory allocation overflow) khiến ứng dụng bị **Panic / Crash** mà SAST/DAST không thể phát hiện được.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Fuzzing Testing sử dụng động cơ sinh dữ liệu tự động (Fuzz Engine) tạo ra hàng triệu chuỗi dữ liệu đầu vào ngẫu nhiên dị dạng (chuỗi byte rác, số âm cực đại, ký tự Null, chuỗi vỡ đệm) nạp liên tục vào các hàm parse dữ liệu.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Fuzzing phát hiện được các lỗi kiểm tra biên ẩn sâu (như slice index out of range, nil pointer dereference, memory allocation overflow) khiến ứng dụng bị <b style="color: var(--accent-primary);">Panic / Crash</b> mà SAST/DAST không thể phát hiện được.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Câu hỏi:** Cách tạo và quản lý môi trường thử nghiệm ứng dụng tạm thời (Ephemeral Staging Environment) cho bước DAST scan?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Tại `before_script:` của CI Job, ta dùng lệnh `docker run -d --name ephemeral-app -p 8080:8080 $IMAGE` để dựng một Container ứng dụng tạm thời lắng nghe port `8080`.
-- Cho OWASP ZAP quét DAST trên URL `http://localhost:8080`. Sau khi quét xong, sử dụng thuộc tính `after_script:` gọi lệnh `docker rm -f ephemeral-app` để tự động tiêu hủy Container, đảm bảo cách ly 100%.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tại <code>before_script:</code> của CI Job, ta dùng lệnh <code>docker run -d --name ephemeral-app -p 8080:8080 $IMAGE</code> để dựng một Container ứng dụng tạm thời lắng nghe port <code>8080</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cho OWASP ZAP quét DAST trên URL <code>http://localhost:8080</code>. Sau khi quét xong, sử dụng thuộc tính <code>after_script:</code> gọi lệnh <code>docker rm -f ephemeral-app</code> để tự động tiêu hủy Container, đảm bảo cách ly 100%.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Câu hỏi:** Sự khác biệt giữa lỗ hổng cấu hình Runtime (như CORS misconfiguration, missing HSTS) và lỗ hổng mã nguồn tĩnh?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Lỗ hổng mã nguồn tĩnh:** Nằm ở câu lệnh code thô do lập trình viên viết (ví dụ `fmt.Sprintf("SELECT...")`). Khắc phục bằng cách sửa trực tiếp logic code Go/Python.
-- **Lỗ hổng cấu hình Runtime:** Nằm ở phản hồi HTTP Response Headers do web server (Nginx/Envoy) hoặc Middleware thiết lập. Khắc phục bằng cách bổ sung các HTTP Response Headers (`X-Frame-Options`, `Content-Security-Policy`, `Strict-Transport-Security`).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lỗ hổng mã nguồn tĩnh:</b> Nằm ở câu lệnh code thô do lập trình viên viết (ví dụ <code>fmt.Sprintf("SELECT...")</code>). Khắc phục bằng cách sửa trực tiếp logic code Go/Python.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lỗ hổng cấu hình Runtime:</b> Nằm ở phản hồi HTTP Response Headers do web server (Nginx/Envoy) hoặc Middleware thiết lập. Khắc phục bằng cách bổ sung các HTTP Response Headers (<code>X-Frame-Options</code>, <code>Content-Security-Policy</code>, <code>Strict-Transport-Security</code>).</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Câu hỏi:** Cách xuất và nạp báo cáo an ninh DAST theo định dạng chuẩn `gl-dast-report.json` lên GitLab Security Dashboard?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Trong lệnh ZAP, ta truyền cờ `-J gl-dast-report.json` để xuất báo cáo chuẩn JSON.
-- Trong `.gitlab-ci.yml`, ta nộp tệp báo cáo sang GitLab CI bằng thuộc tính:
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong lệnh ZAP, ta truyền cờ <code>-J gl-dast-report.json</code> để xuất báo cáo chuẩn JSON.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong <code>.gitlab-ci.yml</code>, ta nộp tệp báo cáo sang GitLab CI bằng thuộc tính:</div>
   ```yaml
   artifacts:
     reports:
       dast: gl-dast-report.json
   ```
-- GitLab UI sẽ tự động đọc và hiển thị kết quả quét DAST lên giao diện Security Dashboard và Merge Request Widget.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• GitLab UI sẽ tự động đọc và hiển thị kết quả quét DAST lên giao diện Security Dashboard và Merge Request Widget.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Câu hỏi:** Cách thiết lập Security Quality Gate tự động ngắt pipeline khi DAST phát hiện lỗi nghiêm trọng mức `CRITICAL` / `HIGH`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Trong câu lệnh Zaproxy runner, ta truyền cờ `-a` (fail on warning) hoặc truyền tệp `zap-rules.conf` cấu hình các mã rule nghiêm trọng thành `FAIL`.
-- Đồng thời đặt cờ `allow_failure: false` trong CI Job. Khi ZAP phát hiện lỗ hổng mức `CRITICAL` / `HIGH`, Job sẽ trả về `exit code 1` ngắt pipeline lập tức.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong câu lệnh Zaproxy runner, ta truyền cờ <code>-a</code> (fail on warning) hoặc truyền tệp <code>zap-rules.conf</code> cấu hình các mã rule nghiêm trọng thành <code>FAIL</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đồng thời đặt cờ <code>allow_failure: false</code> trong CI Job. Khi ZAP phát hiện lỗ hổng mức <code>CRITICAL</code> / <code>HIGH</code>, Job sẽ trả về <code>exit code 1</code> ngắt pipeline lập tức.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Câu hỏi:** Phương pháp quản lý cảnh báo giả trong DAST bằng tệp cấu hình `zap-rules.conf` có vết audit?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Khi xác định một cảnh báo của ZAP là giả (như cảnh báo Server Header Banner đã được che bởi Proxy):
-  1. Khai báo mã rule ID của ZAP (ví dụ `10036`) vào tệp `zap-rules.conf` với từ khóa `IGNORE` (`10036\tIGNORE`).
-  2. Bắt buộc đính kèm comment giải trình lý do an toàn và người phê duyệt (`Security Lead - Approved by Name`).
-  3. Quản lý tệp `zap-rules.conf` qua quy tắc `CODEOWNERS` của Git repo.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi xác định một cảnh báo của ZAP là giả (như cảnh báo Server Header Banner đã được che bởi Proxy):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Khai báo mã rule ID của ZAP (ví dụ <code>10036</code>) vào tệp <code>zap-rules.conf</code> với từ khóa <code>IGNORE</code> (<code>10036\tIGNORE</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Bắt buộc đính kèm comment giải trình lý do an toàn và người phê duyệt (<code>Security Lead - Approved by Name</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Quản lý tệp <code>zap-rules.conf</code> qua quy tắc <code>CODEOWNERS</code> của Git repo.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Câu hỏi:** Cách xử lý sự cố khi câu lệnh DAST scan làm quá tải CPU/RAM hoặc gây sập ứng dụng Staging giữa chừng?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Giới hạn tốc độ quét của ZAP bằng cờ delay giữa các requests (`-z "-config scanner.threadPerHost=2"`).
-- Giới hạn độ sâu Spidering bằng cờ `-d 3`.
-- Bổ sung khối `recover()` middleware trong mã nguồn ứng dụng Go để bắt các ngoại lệ Panic, ngăn ứng dụng bị crash khi nhận payload rác.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giới hạn tốc độ quét của ZAP bằng cờ delay giữa các requests (<code>-z "-config scanner.threadPerHost=2"</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giới hạn độ sâu Spidering bằng cờ <code>-d 3</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bổ sung khối <code>recover()</code> middleware trong mã nguồn ứng dụng Go để bắt các ngoại lệ Panic, ngăn ứng dụng bị crash khi nhận payload rác.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai DAST & Fuzzing chuẩn Enterprise trong CI/CD Pipeline?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. **Ephemeral App Deploy:** CI Runner khởi chạy Container ứng dụng tạm thời ở Stage test (`http://localhost:8080`).
-2. **DAST & Fuzzing Scan:** Chạy `zap-baseline.py` quét lỗ hổng Web Runtime và `go test -fuzz` kiểm tra lỗi Panic/Crash.
-3. **Quality Gate Check:** Tự động kiểm tra kết quả, ngắt pipeline (`exit 1`) nếu xuất hiện lỗ hổng `CRITICAL`/`HIGH` hoặc lỗi Crash.
-4. **Cleanup & Remediation:** Tiêu hủy Ephemeral App trong `after_script`, sửa code bổ sung Security Headers và len check.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Ephemeral App Deploy:</b> CI Runner khởi chạy Container ứng dụng tạm thời ở Stage test (<code>http://localhost:8080</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">DAST & Fuzzing Scan:</b> Chạy <code>zap-baseline.py</code> quét lỗ hổng Web Runtime và <code>go test -fuzz</code> kiểm tra lỗi Panic/Crash.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Quality Gate Check:</b> Tự động kiểm tra kết quả, ngắt pipeline (<code>exit 1</code>) nếu xuất hiện lỗ hổng <code>CRITICAL</code>/<code>HIGH</code> hoặc lỗi Crash.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Cleanup & Remediation:</b> Tiêu hủy Ephemeral App trong <code>after_script</code>, sửa code bổ sung Security Headers và len check.</div>
 
 ---
 </div>

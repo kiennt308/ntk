@@ -849,31 +849,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Phân biệt `import_tasks` vs `include_tasks` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa `ansible.builtin.import_tasks` (Static Import) và `ansible.builtin.include_tasks` (Dynamic Include)? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- `import_tasks` (Static Import): Nạp tĩnh tại thời điểm **Parse-time** (trước khi Playbook chạy). Toàn bộ nội dung tệp task con được hòa trộn phẳng vào cây Playbook chính ngay ở bước đọc file.
-- `include_tasks` (Dynamic Include): Nạp động tại thời điểm **Runtime** (khi tiến trình chạy tới đúng Task đó). Tệp task con chỉ được đọc và phân tích khi execution engine chạy tới task include.
-**Tiêu chí chấm:**
-- 0: Không phân biệt được Static vs Dynamic.
-- 1: Biết `import` là tĩnh `include` là động nhưng không giải thích được khái niệm Parse-time vs Runtime.
-- 2: Phân tích chính xác bản chất Parse-time hòa trộn phẳng vs Runtime nạp tại thời điểm chạy.
-- 3: Nêu đúng + minh họa ví dụ sử dụng thực tế của 2 module trong Playbook.
-**Câu hỏi đào sâu:** Module nào chạy nhanh hơn về mặt hiệu năng thi hành? *(`import_tasks` chạy nhanh hơn vì không mất overhead phân tích file ở runtime.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa <code>ansible.builtin.import_tasks</code> (Static Import) và <code>ansible.builtin.include_tasks</code> (Dynamic Include)? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>import_tasks</code> (Static Import): Nạp tĩnh tại thời điểm <b style="color: var(--accent-primary);">Parse-time</b> (trước khi Playbook chạy). Toàn bộ nội dung tệp task con được hòa trộn phẳng vào cây Playbook chính ngay ở bước đọc file.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>include_tasks</code> (Dynamic Include): Nạp động tại thời điểm <b style="color: var(--accent-primary);">Runtime</b> (khi tiến trình chạy tới đúng Task đó). Tệp task con chỉ được đọc và phân tích khi execution engine chạy tới task include.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được Static vs Dynamic.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>import</code> là tĩnh <code>include</code> là động nhưng không giải thích được khái niệm Parse-time vs Runtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác bản chất Parse-time hòa trộn phẳng vs Runtime nạp tại thời điểm chạy.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ sử dụng thực tế của 2 module trong Playbook.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Module nào chạy nhanh hơn về mặt hiệu năng thi hành? *(<code>import_tasks</code> chạy nhanh hơn vì không mất overhead phân tích file ở runtime.)*
 </div>
 </details>
 

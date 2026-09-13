@@ -394,197 +394,107 @@ cd .. && rm -rf /tmp/state-surgery-lab
 ## 8. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Lệnh `terraform state mv` thực hiện hành động gì lên hạ tầng thực tế trên Cloud?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  <b style="color: var(--accent-primary);">HOÀN TOÀN KHÔNG CHẠM VÀO CLOUD</b>. Lệnh <code>state mv</code> chỉ sửa đổi đường dẫn địa chỉ (Resource Address) bên trong tài liệu JSON của State File. Tài nguyên vật lý trên AWS/GCP/Azure vẫn tiếp tục hoạt động liên tục mà không hề bị gián đoạn hay restart.
+  
+<b style="color: var(--accent-primary);">HOÀN TOÀN KHÔNG CHẠM VÀO CLOUD</b>. Lệnh <code>state mv</code> chỉ sửa đổi đường dẫn địa chỉ (Resource Address) bên trong tài liệu JSON của State File. Tài nguyên vật lý trên AWS/GCP/Azure vẫn tiếp tục hoạt động liên tục mà không hề bị gián đoạn hay restart.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Sự khác biệt cơ bản giữa `terraform state rm` và `terraform destroy` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - <code>state rm</code>: Chỉ xóa bản ghi ánh xạ của tài nguyên ra khỏi State File (Untrack), tài nguyên thực tế trên Cloud <b style="color: var(--accent-primary);">VẪN CÒN NGUYÊN</b>.<br/>
-- <code>destroy</code>: Gửi lệnh API lên Cloud để <b style="color: var(--accent-primary);">XÓA VĨNH VIỄN</b> tài nguyên thực tế.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>state rm</code>: Chỉ xóa bản ghi ánh xạ của tài nguyên ra khỏi State File (Untrack), tài nguyên thực tế trên Cloud <b style="color: var(--accent-primary);">VẪN CÒN NGUYÊN</b>.<br/></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>destroy</code>: Gửi lệnh API lên Cloud để <b style="color: var(--accent-primary);">XÓA VĨNH VIỄN</b> tài nguyên thực tế.</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Khối `import {}` trong Terraform 1.5+ có ưu điểm gì vượt trội so với lệnh `terraform import` cũ?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. Tính chất Declarative: Kế hoạch import được lưu trữ trong mã nguồn Git, có thể review qua Pull Request.<br/>
-2. Xem trước kế hoạch (Preview): Cho phép chạy <code>terraform plan</code> để đối soát trước khi import.<br/>
-3. Tự động sinh mã nguồn (Code Generation): Tự động tạo code HCL chuẩn xác bằng cờ <code>-generate-config-out</code>.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Tính chất Declarative: Kế hoạch import được lưu trữ trong mã nguồn Git, có thể review qua Pull Request.<br/></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Xem trước kế hoạch (Preview): Cho phép chạy <code>terraform plan</code> để đối soát trước khi import.<br/></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Tự động sinh mã nguồn (Code Generation): Tự động tạo code HCL chuẩn xác bằng cờ <code>-generate-config-out</code>.</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Khi di chuyển tài nguyên từ Root Module vào Child Module, lệnh `state mv` được viết như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cú pháp: <code>terraform state mv <source_address> <destination_address></code>.<br/>
+  
+Cú pháp: <code>terraform state mv <source_address> <destination_address></code>.<br/>
 Ví dụ: <code>terraform state mv aws_security_group.web module.network.aws_security_group.web</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Vì sao lệnh `terraform plan -replace` lại an toàn hơn lệnh cũ `terraform taint`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh cũ <code>taint</code> ghi đè trực tiếp trạng thái nguy hiểm vào State ngay lập tức. Trong khi <code>-replace</code> chỉ tạo ra một kế hoạch thay thế tạm thời trong bộ nhớ Plan, cho phép kỹ sư xem xét kỹ lưỡng và chỉ thực thi khi đã kiểm duyệt an toàn.
+  
+Lệnh cũ <code>taint</code> ghi đè trực tiếp trạng thái nguy hiểm vào State ngay lập tức. Trong khi <code>-replace</code> chỉ tạo ra một kế hoạch thay thế tạm thời trong bộ nhớ Plan, cho phép kỹ sư xem xét kỹ lưỡng và chỉ thực thi khi đã kiểm duyệt an toàn.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Làm thế nào để định vị một tài nguyên nằm trong vòng lặp `for_each` khi chạy `state show`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng cú pháp: <code>terraform state show '<resource_type>.<name>["<key>"]'</code> (Bắt buộc bọc trong dấu nháy đơn để tránh lỗi Shell interpolation). Ví dụ: <code>terraform state show 'aws_instance.server["prod"]'</code>.
+  
+Sử dụng cú pháp: <code>terraform state show '<resource_type>.<name>["<key>"]'</code> (Bắt buộc bọc trong dấu nháy đơn để tránh lỗi Shell interpolation). Ví dụ: <code>terraform state show 'aws_instance.server["prod"]'</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Điều gì xảy ra nếu bạn đổi tên resource trong HCL nhưng quên chạy `state mv` trước khi apply?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Terraform sẽ coi tài nguyên có tên cũ đã bị xóa khỏi code (tạo hành vi <b style="color: var(--accent-primary);">Destroy</b>) và tài nguyên có tên mới là một tài nguyên hoàn toàn mới (tạo hành vi <b style="color: var(--accent-primary);">Create</b>). Điều này dẫn tới việc xóa mất tài nguyên đang chạy và làm mất mát dữ liệu!
+  
+Terraform sẽ coi tài nguyên có tên cũ đã bị xóa khỏi code (tạo hành vi <b style="color: var(--accent-primary);">Destroy</b>) và tài nguyên có tên mới là một tài nguyên hoàn toàn mới (tạo hành vi <b style="color: var(--accent-primary);">Create</b>). Điều này dẫn tới việc xóa mất tài nguyên đang chạy và làm mất mát dữ liệu!
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Sau khi import thành công bằng khối `import {}`, có nên giữ lại khối `import` đó trong code không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Từ Terraform 1.5+, bạn <b style="color: var(--accent-primary);">hoàn toàn có thể giữ lại</b> khối <code>import {}</code> trong mã nguồn như một tài liệu ghi nhớ lịch sử nguồn gốc tài nguyên mà không gây ảnh hưởng gì tới các đợt apply tiếp theo. Hoặc bạn có thể xóa đi sau khi tài nguyên đã nằm an toàn trong State.
+  
+Từ Terraform 1.5+, bạn <b style="color: var(--accent-primary);">hoàn toàn có thể giữ lại</b> khối <code>import {}</code> trong mã nguồn như một tài liệu ghi nhớ lịch sử nguồn gốc tài nguyên mà không gây ảnh hưởng gì tới các đợt apply tiếp theo. Hoặc bạn có thể xóa đi sau khi tài nguyên đã nằm an toàn trong State.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Lệnh `terraform state pull` và `terraform state push` được dùng trong tình huống nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dùng để tải trực tiếp nội dung State thô (Raw JSON) về máy (<code>state pull > state.json</code>) để chỉnh sửa cứu hộ khẩn cấp khi State bị corrupt, sau đó đẩy ngược lại Remote Backend một cách có kiểm soát bằng lệnh <code>state push</code>.
+  
+Dùng để tải trực tiếp nội dung State thô (Raw JSON) về máy (<code>state pull > state.json</code>) để chỉnh sửa cứu hộ khẩn cấp khi State bị corrupt, sau đó đẩy ngược lại Remote Backend một cách có kiểm soát bằng lệnh <code>state push</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Rào chắn an ninh nào trong HCL giúp ngăn chặn hoàn toàn việc xóa nhầm tài nguyên khi chạy apply sai sót?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khai báo khối <code>lifecycle { prevent_destroy = true }</code> trực tiếp bên trong tài nguyên cần bảo vệ. Bất kỳ lệnh Plan nào có ý định xóa tài nguyên này đều sẽ bị Terraform chặn đứng ngay lập tức.
+  
+Khai báo khối <code>lifecycle { prevent_destroy = true }</code> trực tiếp bên trong tài nguyên cần bảo vệ. Bất kỳ lệnh Plan nào có ý định xóa tài nguyên này đều sẽ bị Terraform chặn đứng ngay lập tức.
 </div>
 </details>
 

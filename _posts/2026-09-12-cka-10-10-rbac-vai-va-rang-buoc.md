@@ -797,32 +797,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Hệ thống RBAC của Kubernetes hoạt động theo cơ chế Mặc định cho phép (Default Allow) hay Mặc định từ chối (Default Deny)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Hoạt động theo cơ chế **Mặc định từ chối (Default Deny)**.
-- Mọi tài khoản User, Group hay ServiceAccount vừa được tạo ra sẽ có **đúng 0% quyền hạn** (không thể gõ bất kỳ lệnh `kubectl` nào hay gọi bất kỳ API nào).
-- Một thao tác chỉ được API Server chấp thuận khi và chỉ khi có ít nhất một quy tắc (Rule) trong RoleBinding hoặc ClusterRoleBinding cho phép rõ ràng thao tác đó.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hoạt động theo cơ chế <b style="color: var(--accent-primary);">Mặc định từ chối (Default Deny)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mọi tài khoản User, Group hay ServiceAccount vừa được tạo ra sẽ có <b style="color: var(--accent-primary);">đúng 0% quyền hạn</b> (không thể gõ bất kỳ lệnh <code>kubectl</code> nào hay gọi bất kỳ API nào).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Một thao tác chỉ được API Server chấp thuận khi và chỉ khi có ít nhất một quy tắc (Rule) trong RoleBinding hoặc ClusterRoleBinding cho phép rõ ràng thao tác đó.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo mặc định cho phép xem tất cả.
-- **1đ:** Trả lời từ chối nhưng không giải thích được con số 0% quyền hạn mặc định và cơ chế cần gán Binding rõ ràng (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác cơ chế Default Deny (0% quyền mặc định) và vai trò của RoleBinding.
-- **3đ:** Trả lời xuất sắc, nêu cờ `--authorization-mode=RBAC` trên API Server.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo mặc định cho phép xem tất cả.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời từ chối nhưng không giải thích được con số 0% quyền hạn mặc định và cơ chế cần gán Binding rõ ràng (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế Default Deny (0% quyền mặc định) và vai trò của RoleBinding.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu cờ <code>--authorization-mode=RBAC</code> trên API Server.</div>
 
-**Câu hỏi đào sâu:** Nếu 1 User được gán 2 RoleBinding (1 Role cho xem Pod, 1 Role từ chối xem Pod) thì User đó có xem được Pod không? *(Đáp án: Có xem được, vì RBAC Kubernetes chỉ có Deny mặc định chứ không có Explicit Deny rule).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu 1 User được gán 2 RoleBinding (1 Role cho xem Pod, 1 Role từ chối xem Pod) thì User đó có xem được Pod không? *(Đáp án: Có xem được, vì RBAC Kubernetes chỉ có Deny mặc định chứ không có Explicit Deny rule).*
 </div>
 </details>
 

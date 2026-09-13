@@ -849,35 +849,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc Pipeline CI/CD 4 Giai đoạn 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày 4 giai đoạn (Stages) tiêu chuẩn trong một pipeline CI/CD tự động hóa Ansible cấp Enterprise. Tại sao việc chia 4 stage này lại là bắt buộc? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- 4 Giai đoạn:
-  1. `lint`: Kiểm tra cú pháp tĩnh (`--syntax-check`) và linter (`ansible-lint`).
-  2. `test`: Kiểm thử Role trên container Docker cách ly bằng `molecule test`.
-  3. `staging`: Triển khai tự động lên môi trường Staging (`-i inventory/staging`).
-  4. `production`: Triển khai cuốn chiếu Zero Downtime lên Production sau khi có phê duyệt thủ công (`when: manual`).
-- Tại sao bắt buộc: Tạo lá chắn kiểm thử Fail-Fast đa tầng, phát hiện lỗi sớm từ bước 1, ngăn ngừa 100% rủi ro lọt code lỗi gây ngưng trệ máy chủ Production.
-**Tiêu chí chấm:**
-- 0: Không biết cấu trúc pipeline CI/CD.
-- 1: Biết các stage nhưng không liệt kê đủ 4 stage `lint` -> `test` -> `staging` -> `production`.
-- 2: Phân tích chính xác vai trò lá chắn Fail-Fast đa tầng của 4 stages trong pipeline CI/CD.
-- 3: Nêu đúng + viết đoạn YAML `stages:` trong tệp `.gitlab-ci.yml`.
-**Câu hỏi đào sâu:** Nếu Stage 1 (`lint`) bị lỗi, runner sẽ xử lý các Stage tiếp theo như thế nào? *(Runner sẽ ngắt pipeline ngay lập tức, không chạy các Stage `test`, `staging`, `production` phía sau.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày 4 giai đoạn (Stages) tiêu chuẩn trong một pipeline CI/CD tự động hóa Ansible cấp Enterprise. Tại sao việc chia 4 stage này lại là bắt buộc? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 4 Giai đoạn:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>lint</code>: Kiểm tra cú pháp tĩnh (<code>--syntax-check</code>) và linter (<code>ansible-lint</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>test</code>: Kiểm thử Role trên container Docker cách ly bằng <code>molecule test</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>staging</code>: Triển khai tự động lên môi trường Staging (<code>-i inventory/staging</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <code>production</code>: Triển khai cuốn chiếu Zero Downtime lên Production sau khi có phê duyệt thủ công (<code>when: manual</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tại sao bắt buộc: Tạo lá chắn kiểm thử Fail-Fast đa tầng, phát hiện lỗi sớm từ bước 1, ngăn ngừa 100% rủi ro lọt code lỗi gây ngưng trệ máy chủ Production.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc pipeline CI/CD.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết các stage nhưng không liệt kê đủ 4 stage <code>lint</code> -> <code>test</code> -> <code>staging</code> -> <code>production</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò lá chắn Fail-Fast đa tầng của 4 stages trong pipeline CI/CD.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML <code>stages:</code> trong tệp <code>.gitlab-ci.yml</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu Stage 1 (<code>lint</code>) bị lỗi, runner sẽ xử lý các Stage tiếp theo như thế nào? *(Runner sẽ ngắt pipeline ngay lập tức, không chạy các Stage <code>test</code>, <code>staging</code>, <code>production</code> phía sau.)*
 </div>
 </details>
 

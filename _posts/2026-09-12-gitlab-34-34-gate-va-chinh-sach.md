@@ -1515,31 +1515,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Quality Gate trong CI/CD pipeline là gì? Khác biệt cốt lõi giữa Quality Gate an ninh và Functional Gate thông thường là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
 Quality Gate là điểm kiểm soát tự động ngắt pipeline khi không đạt tiêu chí chất lượng hoặc an ninh. Gate an ninh tập trung vào mức độ rủi ro (Severity thresholds) và tính tuân thủ pháp lý/chính sách chứ không chỉ là đỗ/trượt các test case chức năng.
 
-**Đáp án chuẩn:**
-- **Khái niệm:** Quality Gate là một cơ chế cổng chặn lập trình được tích hợp vào pipeline, tự động phân tích các artifact hoặc kết quả kiểm thử ở các giai đoạn (stages) khác nhau để quyết định cho phép pipeline đi tiếp hay dừng lại khẩn cấp (`fail-fast`).
-- **Khác biệt cốt lõi:**
-  1. *Functional Gate:* Dựa vào chỉ số nhị phân (Binary Pass/Fail) của UnitTest, Integration Test hay Coverage percentage (ví dụ: coverage > 80%). Mục tiêu là đảm bảo phần mềm chạy đúng nghiệp vụ.
-  2. *Security Quality Gate:* Dựa vào ma trận rủi ro (Risk Matrix), số lượng lỗ hổng xếp theo Severity (Critical, High, Medium, Low), chỉ số CVSS score, thời hạn tồn tại lỗ hổng (SLA grace period) và chính sách tuân thủ (Compliance policy). Mục tiêu là đảm bảo không đưa bất kỳ rủi ro bảo mật hoặc bí mật kinh doanh nào lên môi trường production.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khái niệm:</b> Quality Gate là một cơ chế cổng chặn lập trình được tích hợp vào pipeline, tự động phân tích các artifact hoặc kết quả kiểm thử ở các giai đoạn (stages) khác nhau để quyết định cho phép pipeline đi tiếp hay dừng lại khẩn cấp (<code>fail-fast</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khác biệt cốt lõi:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Functional Gate:* Dựa vào chỉ số nhị phân (Binary Pass/Fail) của UnitTest, Integration Test hay Coverage percentage (ví dụ: coverage > 80%). Mục tiêu là đảm bảo phần mềm chạy đúng nghiệp vụ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Security Quality Gate:* Dựa vào ma trận rủi ro (Risk Matrix), số lượng lỗ hổng xếp theo Severity (Critical, High, Medium, Low), chỉ số CVSS score, thời hạn tồn tại lỗ hổng (SLA grace period) và chính sách tuân thủ (Compliance policy). Mục tiêu là đảm bảo không đưa bất kỳ rủi ro bảo mật hoặc bí mật kinh doanh nào lên môi trường production.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Ứng viên hay trả lời chung chung "Quality Gate là chạy test thấy pass thì cho deploy". Nhà tuyển dụng sẽ xoáy vào việc: "Nếu test pass 100% nhưng Trivy tìm thấy 1 CVE Critical RCE trong base image thì Gate xử lý thế nào?". Cần nhấn mạnh tính chất ưu tiên tuyệt đối của Security Quality Gate (ngắt pipeline ngay lập tức bất chấp UnitTest green).
 </div>
 </details>

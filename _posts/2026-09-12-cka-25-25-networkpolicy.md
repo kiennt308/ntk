@@ -952,34 +952,25 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày mô hình mạng mặc định của Kubernetes và điều kiện bắt buộc về CNI plugin để NetworkPolicy có hiệu lực thực thi.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **1. Mô hình mạng mặc định (Default Allow-All):**
-  - Mạng Kubernetes mặc định là **Mặc định mở 100% (Default Allow-All)**. Bất kỳ Pod nào ở bất kỳ Namespace nào cũng có thể gửi và nhận gói tin mạng tự do tới mọi Pods khác trên toàn cụm.
-- **2. Điều kiện bắt buộc về CNI Plugin:**
-  - Cụm bắt buộc phải sử dụng một CNI plugin có tính năng **Policy Enforcement** (như Calico, Cilium, Weave Net).
-  - CNI Flannel thuần túy KHÔNG hỗ trợ NetworkPolicy (nếu dùng Flannel, các tệp YAML NetworkPolicy apply thành công nhưng mạng vẫn mở toang 100%).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Mô hình mạng mặc định (Default Allow-All):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mạng Kubernetes mặc định là <b style="color: var(--accent-primary);">Mặc định mở 100% (Default Allow-All)</b>. Bất kỳ Pod nào ở bất kỳ Namespace nào cũng có thể gửi và nhận gói tin mạng tự do tới mọi Pods khác trên toàn cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Điều kiện bắt buộc về CNI Plugin:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cụm bắt buộc phải sử dụng một CNI plugin có tính năng <b style="color: var(--accent-primary);">Policy Enforcement</b> (như Calico, Cilium, Weave Net).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• CNI Flannel thuần túy KHÔNG hỗ trợ NetworkPolicy (nếu dùng Flannel, các tệp YAML NetworkPolicy apply thành công nhưng mạng vẫn mở toang 100%).</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo mạng Kubernetes mặc định bị khóa sẵn.
-- **1đ:** Trả lời mạng mở nhưng không giải thích được vai trò Policy Enforcement của CNI Calico/Cilium và việc Flannel không hỗ trợ (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác Default Allow-All (mở 100%) và điều kiện CNI phải hỗ trợ Policy Enforcement (như Calico hay Cilium).
-- **3đ:** Trả lời xuất sắc, chỉ ra cơ chế iptables/eBPF của CNI.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo mạng Kubernetes mặc định bị khóa sẵn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời mạng mở nhưng không giải thích được vai trò Policy Enforcement của CNI Calico/Cilium và việc Flannel không hỗ trợ (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Default Allow-All (mở 100%) và điều kiện CNI phải hỗ trợ Policy Enforcement (như Calico hay Cilium).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cơ chế iptables/eBPF của CNI.</div>
 
-**Câu hỏi đào sâu:** Nếu áp NetworkPolicy khóa mạng trong cụm chạy CNI Flannel thuần túy thì lệnh `kubectl apply` có báo lỗi không? *(Đáp án: Không báo lỗi, API Server lưu tệp bình thường nhưng Kubelet và CNI bỏ qua không thực thi).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu áp NetworkPolicy khóa mạng trong cụm chạy CNI Flannel thuần túy thì lệnh <code>kubectl apply</code> có báo lỗi không? *(Đáp án: Không báo lỗi, API Server lưu tệp bình thường nhưng Kubelet và CNI bỏ qua không thực thi).*
 </div>
 </details>
 

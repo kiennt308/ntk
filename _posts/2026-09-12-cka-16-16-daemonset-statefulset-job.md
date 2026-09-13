@@ -965,38 +965,29 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày sự khác nhau cốt lõi giữa `Deployment`, `DaemonSet` và `StatefulSet` về mục đích sử dụng và cách thức tạo Pod.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **`Deployment` (Ứng dụng không trạng thái):**
-  - *Mục đích:* Quản lý các ứng dụng Web/Microservices không trạng thái (Stateless).
-  - *Tạo Pod:* Số lượng Pods do cờ `replicas` quy định, Pods mang tên ngẫu nhiên (như `web-8f7g-2x9z`), có thể tạo trên bất kỳ Node nào.
-- **`DaemonSet` (Tiến trình nền hạ tầng):**
-  - *Mục đích:* Thu thập log (`Fluentd`), monitoring agent (`Prometheus Node Exporter`), CNI plugin mạng (`Calico`).
-  - *Tạo Pod:* Đảm bảo **mỗi Node chạy đúng 1 bản sao Pod**; Node mới gia nhập tự động có Pod.
-- **`StatefulSet` (Ứng dụng có trạng thái):**
-  - *Mục đích:* Quản lý các cụm cơ sở dữ liệu có trạng thái (MySQL, PostgreSQL, MongoDB, Redis).
-  - *Tạo Pod:* Pods mang tên chỉ số đếm cố định (`pod-0`, `pod-1`), đi kèm đĩa PVC riêng (`volumeClaimTemplates`) và Headless Service.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Deployment</code> (Ứng dụng không trạng thái):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Mục đích:* Quản lý các ứng dụng Web/Microservices không trạng thái (Stateless).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tạo Pod:* Số lượng Pods do cờ <code>replicas</code> quy định, Pods mang tên ngẫu nhiên (như <code>web-8f7g-2x9z</code>), có thể tạo trên bất kỳ Node nào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>DaemonSet</code> (Tiến trình nền hạ tầng):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Mục đích:* Thu thập log (<code>Fluentd</code>), monitoring agent (<code>Prometheus Node Exporter</code>), CNI plugin mạng (<code>Calico</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tạo Pod:* Đảm bảo <b style="color: var(--accent-primary);">mỗi Node chạy đúng 1 bản sao Pod</b>; Node mới gia nhập tự động có Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>StatefulSet</code> (Ứng dụng có trạng thái):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Mục đích:* Quản lý các cụm cơ sở dữ liệu có trạng thái (MySQL, PostgreSQL, MongoDB, Redis).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Tạo Pod:* Pods mang tên chỉ số đếm cố định (<code>pod-0</code>, <code>pod-1</code>), đi kèm đĩa PVC riêng (<code>volumeClaimTemplates</code>) và Headless Service.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo 3 đối tượng này giống hệt nhau.
-- **1đ:** Nêu được tên nhưng không phân biệt được cách tạo Pod ngẫu nhiên vs 1 Pod/Node vs Pod tên chỉ số đếm đĩa riêng (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác sự khác nhau về mục đích sử dụng và cơ chế tạo Pod của 3 đối tượng `Deployment`, `DaemonSet`, `StatefulSet`.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng các ứng dụng thực tế sản xuất.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 3 đối tượng này giống hệt nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được tên nhưng không phân biệt được cách tạo Pod ngẫu nhiên vs 1 Pod/Node vs Pod tên chỉ số đếm đĩa riêng (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác sự khác nhau về mục đích sử dụng và cơ chế tạo Pod của 3 đối tượng <code>Deployment</code>, <code>DaemonSet</code>, <code>StatefulSet</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng các ứng dụng thực tế sản xuất.</div>
 
-**Câu hỏi đào sâu:** Nếu muốn chạy đúng 1 Pod agent thu thập log trên tất cả các Worker Nodes thì dùng đối tượng nào? *(Đáp án: Dùng đối tượng `DaemonSet`).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu muốn chạy đúng 1 Pod agent thu thập log trên tất cả các Worker Nodes thì dùng đối tượng nào? *(Đáp án: Dùng đối tượng <code>DaemonSet</code>).*
 </div>
 </details>
 

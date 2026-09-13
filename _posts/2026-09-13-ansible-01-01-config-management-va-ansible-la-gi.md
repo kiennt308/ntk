@@ -634,272 +634,164 @@ cơ chế · `2` đúng cơ chế · `3` đúng cơ chế **và** nêu lệnh/co
 ## V2. Bộ câu hỏi — ĐÚNG 12 câu
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ansible push-based và agentless nghĩa là gì? Máy đích cần cài gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Push: control node chủ động đẩy module qua SSH khi ta chạy. Agentless: máy đích **không**
-cần agent Ansible, chỉ cần **Python + sshd**. Kết nối do control node khởi tạo, chạy xong đóng.
-**Tiêu chí chấm:** 0 sai · 1 nói "không cần agent" mà không rõ · 2 đúng push+agentless · 3 kèm "máy đích chỉ cần Python+sshd" và ví dụ `ping`.
-**Câu hỏi đào sâu:** So với Puppet cổ điển? *(Puppet pull+agent, tự kéo theo chu kỳ.)*
+  
+Push: control node chủ động đẩy module qua SSH khi ta chạy. Agentless: máy đích <b style="color: var(--accent-primary);">không</b>
+cần agent Ansible, chỉ cần <b style="color: var(--accent-primary);">Python + sshd</b>. Kết nối do control node khởi tạo, chạy xong đóng.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 sai · 1 nói "không cần agent" mà không rõ · 2 đúng push+agentless · 3 kèm "máy đích chỉ cần Python+sshd" và ví dụ <code>ping</code>.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> So với Puppet cổ điển? *(Puppet pull+agent, tự kéo theo chu kỳ.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Idempotency là gì? Bằng chứng cụ thể là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chạy playbook lần hai trên máy đã đúng trạng thái **không đổi gì**. Bằng chứng:
-`changed=0` ở PLAY RECAP lần hai. Mô tả *trạng thái muốn*, không phải *lệnh cần chạy*.
-**Tiêu chí chấm:** 0 không biết · 1 "chạy lại vẫn được" · 2 nêu `changed=0` · 3 kèm cách chứng minh (chạy hai lần) và vì sao nó là linh hồn CM.
-**Câu hỏi đào sâu:** Lần hai vẫn `changed` mà không ai đổi máy — nghi gì? *(Task `command`/`shell` không idempotent.)*
+  
+Chạy playbook lần hai trên máy đã đúng trạng thái <b style="color: var(--accent-primary);">không đổi gì</b>. Bằng chứng:
+<code>changed=0</code> ở PLAY RECAP lần hai. Mô tả *trạng thái muốn*, không phải *lệnh cần chạy*.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 "chạy lại vẫn được" · 2 nêu <code>changed=0</code> · 3 kèm cách chứng minh (chạy hai lần) và vì sao nó là linh hồn CM.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Lần hai vẫn <code>changed</code> mà không ai đổi máy — nghi gì? *(Task <code>command</code>/<code>shell</code> không idempotent.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Vì sao `command`/`shell` không idempotent? Sửa thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chúng không có khái niệm trạng thái, chỉ chạy lệnh → luôn `changed`. Sửa: dùng module
-chuyên (idempotent), hoặc thêm `creates`/`removes`/`changed_when` để chặn chạy lại/định nghĩa "đổi".
-**Tiêu chí chấm:** 0 không biết · 1 "shell xấu" chung chung · 2 đúng lý do · 3 kèm `creates`/`changed_when` và ví dụ module chuyên thay thế.
-**Câu hỏi đào sâu:** Khi nào buộc phải dùng `shell`? *(Khi không có module chuyên; khi đó thêm creates/changed_when.)*
+  
+Chúng không có khái niệm trạng thái, chỉ chạy lệnh → luôn <code>changed</code>. Sửa: dùng module
+chuyên (idempotent), hoặc thêm <code>creates</code>/<code>removes</code>/<code>changed_when</code> để chặn chạy lại/định nghĩa "đổi".
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 "shell xấu" chung chung · 2 đúng lý do · 3 kèm <code>creates</code>/<code>changed_when</code> và ví dụ module chuyên thay thế.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi nào buộc phải dùng <code>shell</code>? *(Khi không có module chuyên; khi đó thêm creates/changed_when.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>PLAY RECAP` xanh có đảm bảo máy đúng trạng thái không? Vì sao?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Không. Recap chỉ tổng hợp cái **module báo cáo** cho controller. `ignore_errors` giấu
-lỗi, `changed_when: false` che thay đổi, nhầm inventory chạy sai host — recap vẫn xanh. Kiểm máy đích:
-`docker exec ... systemctl is-active`.
-**Tiêu chí chấm:** 0 "recap xanh là xong" (trần 1) · 1 mơ hồ · 2 nói recap không đủ · 3 kèm ≥2 ca xanh-mà-sai và lệnh kiểm máy đích.
-**Câu hỏi đào sâu:** Kiểm dịch vụ chạy thật bằng lệnh gì? *(`docker exec <target> systemctl is-active <svc>`.)*
+  
+Không. Recap chỉ tổng hợp cái <b style="color: var(--accent-primary);">module báo cáo</b> cho controller. <code>ignore_errors</code> giấu
+lỗi, <code>changed_when: false</code> che thay đổi, nhầm inventory chạy sai host — recap vẫn xanh. Kiểm máy đích:
+<code>docker exec ... systemctl is-active</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 "recap xanh là xong" (trần 1) · 1 mơ hồ · 2 nói recap không đủ · 3 kèm ≥2 ca xanh-mà-sai và lệnh kiểm máy đích.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Kiểm dịch vụ chạy thật bằng lệnh gì? *(<code>docker exec <target> systemctl is-active <svc></code>.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Nêu ba cách làm recap "xanh mà sai".</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `ignore_errors: true` (biến task đỏ thành tiếp tục), `changed_when: false` (ép luôn `ok`),
+  
+<code>ignore_errors: true</code> (biến task đỏ thành tiếp tục), <code>changed_when: false</code> (ép luôn <code>ok</code>),
 nhầm inventory pattern (chạy đúng nhưng trên host khác cái ta tưởng).
-**Tiêu chí chấm:** 0 không biết · 1 một cách · 2 hai cách · 3 ba cách + hệ quả từng cái.
-**Câu hỏi đào sâu:** `ignore_errors` có bao giờ hợp lý không? *(Có — khi lỗi dự kiến và xử ở task sau; phải có chủ đích.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 một cách · 2 hai cách · 3 ba cách + hệ quả từng cái.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> <code>ignore_errors</code> có bao giờ hợp lý không? *(Có — khi lỗi dự kiến và xử ở task sau; phải có chủ đích.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Inventory là gì? Kiểm pattern trước khi chạy bằng lệnh nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Danh sách máy bị quản + nhóm + biến kết nối (host, user). Pattern (`all`, tên nhóm,
-`web:!db`) chọn tập host mỗi lần chạy. Kiểm: `ansible-inventory --graph`, `ansible <pattern> --list-hosts`.
-**Tiêu chí chấm:** 0 không biết · 1 "danh sách máy" · 2 đủ + pattern · 3 kèm lệnh kiểm và vì sao kiểm trước khi chạy task đổi trạng thái.
-**Câu hỏi đào sâu:** Vì sao kiểm `--list-hosts` trước? *(Tránh chạy nhầm máy — recap xanh trên sai host.)*
+  
+Danh sách máy bị quản + nhóm + biến kết nối (host, user). Pattern (<code>all</code>, tên nhóm,
+<code>web:!db</code>) chọn tập host mỗi lần chạy. Kiểm: <code>ansible-inventory --graph</code>, <code>ansible <pattern> --list-hosts</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 "danh sách máy" · 2 đủ + pattern · 3 kèm lệnh kiểm và vì sao kiểm trước khi chạy task đổi trạng thái.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Vì sao kiểm <code>--list-hosts</code> trước? *(Tránh chạy nhầm máy — recap xanh trên sai host.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Ad-hoc khác playbook ở đâu? Khi nào dùng cái nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ad-hoc: một module một lần (`ansible <pat> -m <mod> -a "..."`), nhanh, không lưu, không
+  
+Ad-hoc: một module một lần (<code>ansible <pat> -m <mod> -a "..."</code>), nhanh, không lưu, không
 version. Playbook: nhiều task, lặp lại được, đưa vào git. Việc >1 lần hoặc cần review → playbook.
-**Tiêu chí chấm:** 0 không biết · 1 nêu tên · 2 đúng khác biệt · 3 kèm tiêu chí chọn và "mất vết" khi ad-hoc prod.
-**Câu hỏi đào sâu:** Ad-hoc có idempotent không? *(Có nếu dùng module idempotent — cùng module với playbook.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 nêu tên · 2 đúng khác biệt · 3 kèm tiêu chí chọn và "mất vết" khi ad-hoc prod.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Ad-hoc có idempotent không? *(Có nếu dùng module idempotent — cùng module với playbook.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Ansible khác Puppet/Chef ở mô hình nào? Đánh đổi là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ansible push + agentless (chạy khi gọi, không agent); Puppet/Chef cổ điển pull + agent
+  
+Ansible push + agentless (chạy khi gọi, không agent); Puppet/Chef cổ điển pull + agent
 (tự kéo theo chu kỳ). Push: đơn giản, nhanh triển khai, kiểm soát thời điểm. Pull: hội tụ liên tục, tự
 sửa drift, mở rộng hạm đội lớn tốt hơn.
-**Tiêu chí chấm:** 0 "giống nhau" · 1 nói khác mà không rõ · 2 đúng push/pull · 3 kèm đánh đổi hai chiều.
-**Câu hỏi đào sâu:** Muốn Ansible hội tụ định kỳ thì sao? *(Lên lịch cron/AWX — Ansible không tự chạy nền.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 "giống nhau" · 1 nói khác mà không rõ · 2 đúng push/pull · 3 kèm đánh đổi hai chiều.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Muốn Ansible hội tụ định kỳ thì sao? *(Lên lịch cron/AWX — Ansible không tự chạy nền.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Ansible khác Terraform ở mục đích nào? Ghép thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ansible = configuration management (cấu hình bên trong máy đã có, không state tập trung);
+  
+Ansible = configuration management (cấu hình bên trong máy đã có, không state tập trung);
 Terraform = provisioning (tạo/huỷ hạ tầng, có state, plan/diff). Ghép: Terraform dựng VM → xuất IP →
 Ansible dùng IP làm inventory cài phần mềm.
-**Tiêu chí chấm:** 0 "giống nhau" · 1 khác mà không rõ · 2 đúng phân vai · 3 kèm mẫu ghép cụ thể.
-**Câu hỏi đào sâu:** Dùng Terraform `provisioner` cài phần mềm có nên không? *(Không — chống thiết kế, không idempotent; dùng Ansible.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 "giống nhau" · 1 khác mà không rõ · 2 đúng phân vai · 3 kèm mẫu ghép cụ thể.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Dùng Terraform <code>provisioner</code> cài phần mềm có nên không? *(Không — chống thiết kế, không idempotent; dùng Ansible.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>UNREACHABLE` thường do đâu, KHÔNG phải do đâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Do **SSH/inventory**: chưa trao key, sai `ansible_host`/user, host không tới được. KHÔNG
-phải do module hay logic playbook — module còn chưa chạy được vì chưa kết nối. Kiểm `ssh ansible@<ip> true`.
-**Tiêu chí chấm:** 0 đổ lỗi module · 1 "lỗi kết nối" · 2 chỉ ra SSH/inventory · 3 kèm bước chẩn đoán (`ssh ... true`, `--list-hosts`).
-**Câu hỏi đào sâu:** Khác `FAILED` chỗ nào? *(UNREACHABLE = không kết nối được; FAILED = kết nối được nhưng task lỗi.)*
+  
+Do <b style="color: var(--accent-primary);">SSH/inventory</b>: chưa trao key, sai <code>ansible_host</code>/user, host không tới được. KHÔNG
+phải do module hay logic playbook — module còn chưa chạy được vì chưa kết nối. Kiểm <code>ssh ansible@<ip> true</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 đổ lỗi module · 1 "lỗi kết nối" · 2 chỉ ra SSH/inventory · 3 kèm bước chẩn đoán (<code>ssh ... true</code>, <code>--list-hosts</code>).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khác <code>FAILED</code> chỗ nào? *(UNREACHABLE = không kết nối được; FAILED = kết nối được nhưng task lỗi.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Vì sao nên dùng FQCN như `ansible.builtin.copy`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nêu rõ module thuộc collection nào, tránh nhầm khi tên trùng giữa các collection, và ổn
-định khi bản đổi (nhiều module đã rời `ansible.builtin` sang collection riêng). Rõ ràng, dễ bảo trì.
-**Tiêu chí chấm:** 0 không biết · 1 "tên đầy đủ" · 2 đúng lý do · 3 kèm ví dụ nhầm tên và bối cảnh module rời collection.
-**Câu hỏi đào sâu:** `ansible-doc -l` dùng làm gì? *(Liệt kê module có sẵn để tra FQCN đúng.)*
+  
+Nêu rõ module thuộc collection nào, tránh nhầm khi tên trùng giữa các collection, và ổn
+định khi bản đổi (nhiều module đã rời <code>ansible.builtin</code> sang collection riêng). Rõ ràng, dễ bảo trì.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 "tên đầy đủ" · 2 đúng lý do · 3 kèm ví dụ nhầm tên và bối cảnh module rời collection.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> <code>ansible-doc -l</code> dùng làm gì? *(Liệt kê module có sẵn để tra FQCN đúng.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Kể lại vòng đời từ inventory tới chứng minh idempotent, và ba chỗ bạn kiểm "thật".</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dựng inventory → `ping` (SUCCESS) → viết `site.yml` module chuyên → chạy (recap
-`failed=0`) → **kiểm thật** `docker exec systemctl is-active` → chạy **lần hai** (`changed=0`, idempotent)
-→ (bẫy) thấy `shell` không idempotent → sửa bằng `creates` → thấy `ignore_errors` giấu lỗi. Ba chỗ kiểm
+  
+Dựng inventory → <code>ping</code> (SUCCESS) → viết <code>site.yml</code> module chuyên → chạy (recap
+<code>failed=0</code>) → <b style="color: var(--accent-primary);">kiểm thật</b> <code>docker exec systemctl is-active</code> → chạy <b style="color: var(--accent-primary);">lần hai</b> (<code>changed=0</code>, idempotent)
+→ (bẫy) thấy <code>shell</code> không idempotent → sửa bằng <code>creates</code> → thấy <code>ignore_errors</code> giấu lỗi. Ba chỗ kiểm
 thật: sau chạy lần một, sau lần hai, và sau khi sửa task shell.
-**Tiêu chí chấm:** 0 kể thiếu · 1 chỉ chạy một lần · 2 đủ vòng đời · 3 đủ + ba điểm kiểm thật + bài học ignore_errors.
-**Câu hỏi đào sâu:** Nếu recap `failed=0` mà dịch vụ inactive thì kết luận gì? *(Không tin recap; có thể `ignore_errors`/nhầm host — kiểm máy đích.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 kể thiếu · 1 chỉ chạy một lần · 2 đủ vòng đời · 3 đủ + ba điểm kiểm thật + bài học ignore_errors.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu recap <code>failed=0</code> mà dịch vụ inactive thì kết luận gì? *(Không tin recap; có thể <code>ignore_errors</code>/nhầm host — kiểm máy đích.)*
 </div>
 </details>
 

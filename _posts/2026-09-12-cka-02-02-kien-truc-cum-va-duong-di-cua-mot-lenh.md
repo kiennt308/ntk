@@ -1051,36 +1051,27 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày 7 chặng của một lệnh `kubectl apply` từ khi gõ phím đến khi container chạy thực sự trên Worker Node.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. Chặng 1 (Client Config): `kubectl` đọc Kubeconfig lấy API Server URL (`https://127.0.0.1:6443`) và credentials.
-2. Chặng 2 (AuthN): API Server xác thực danh tính client (X.509 cert/token), thất bại trả `401 Unauthorized`.
-3. Chặng 3 (AuthZ): API Server kiểm tra quyền RBAC, thất bại trả `403 Forbidden`.
-4. Chặng 4 (Admission Control): Mutating Webhooks sửa/bổ sung payload; Validating Webhooks duyệt quy tắc.
-5. Chặng 5 (etcd Persistence): API Server ghi JSON object vào etcd, phản hồi `201 Created` cho `kubectl`.
-6. Chặng 6 (Controller Reconcile): Controller Manager thấy Deployment mới, sinh ReplicaSet và các Pod có `spec.nodeName=""`.
-7. Chặng 7 (Scheduler & Kubelet): Scheduler lọc/chấm điểm Node (7a) ghi `spec.nodeName="worker1"`; Kubelet trên worker1 gọi CRI (7b) kéo ảnh và khởi chạy container, cập nhật status `Running`.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Chặng 1 (Client Config): <code>kubectl</code> đọc Kubeconfig lấy API Server URL (<code>https://127.0.0.1:6443</code>) và credentials.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Chặng 2 (AuthN): API Server xác thực danh tính client (X.509 cert/token), thất bại trả <code>401 Unauthorized</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Chặng 3 (AuthZ): API Server kiểm tra quyền RBAC, thất bại trả <code>403 Forbidden</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Chặng 4 (Admission Control): Mutating Webhooks sửa/bổ sung payload; Validating Webhooks duyệt quy tắc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> Chặng 5 (etcd Persistence): API Server ghi JSON object vào etcd, phản hồi <code>201 Created</code> cho <code>kubectl</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">6.</b> Chặng 6 (Controller Reconcile): Controller Manager thấy Deployment mới, sinh ReplicaSet và các Pod có <code>spec.nodeName=""</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">7.</b> Chặng 7 (Scheduler & Kubelet): Scheduler lọc/chấm điểm Node (7a) ghi <code>spec.nodeName="worker1"</code>; Kubelet trên worker1 gọi CRI (7b) kéo ảnh và khởi chạy container, cập nhật status <code>Running</code>.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được thứ tự, nhầm lẫn `kubectl` tự chạy container.
-- **1đ:** Trình bày được một số thành phần (apiserver, scheduler, kubelet) nhưng thiếu các chặng AuthN/AuthZ/Admission và etcd.
-- **2đ:** Nêu đủ 7 chặng theo đúng thứ tự logic.
-- **3đ:** Nêu đủ 7 chặng, chỉ ra đúng điểm trả về `201 Created` ở Chặng 5 và phân biệt rõ 7a (Scheduler) vs 7b (Kubelet).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được thứ tự, nhầm lẫn <code>kubectl</code> tự chạy container.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trình bày được một số thành phần (apiserver, scheduler, kubelet) nhưng thiếu các chặng AuthN/AuthZ/Admission và etcd.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Nêu đủ 7 chặng theo đúng thứ tự logic.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Nêu đủ 7 chặng, chỉ ra đúng điểm trả về <code>201 Created</code> ở Chặng 5 và phân biệt rõ 7a (Scheduler) vs 7b (Kubelet).</div>
 
-**Câu hỏi đào sâu:** Dòng chữ `pod/web created` trả về ở chặng nào trong 7 chặng? *(Đáp án: Trả về ở Chặng 5 ngay sau khi ghi etcd thành công, trước khi Scheduler gán Node ở Chặng 7a).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Dòng chữ <code>pod/web created</code> trả về ở chặng nào trong 7 chặng? *(Đáp án: Trả về ở Chặng 5 ngay sau khi ghi etcd thành công, trước khi Scheduler gán Node ở Chặng 7a).*
 </div>
 </details>
 

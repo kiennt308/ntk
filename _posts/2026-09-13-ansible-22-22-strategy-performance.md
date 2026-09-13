@@ -834,32 +834,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tối ưu hóa Tiến trình Song song `forks` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Tham số `forks` trong `ansible.cfg` quy định điều gì? Mặc định `forks` bằng bao nhiêu? Tại sao điều chỉnh `forks` lại là bước đầu tiên khi tối ưu Playbook quy mô lớn? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Quy định: Tham số `forks` quy định số lượng kết nối SSH và tiến trình xử lý song song tối đa mà Control Node có thể mở đồng thời tới các máy chủ Managed Nodes.
-- Mặc định: `forks = 5`.
-- Lý do điều chỉnh: Với hạ tầng 100 máy chủ, nếu giữ mặc định 5, Ansible phải chia làm 20 đợt chạy nối tiếp. Tăng `forks = 10` hoặc `20` giúp Ansible tận dụng sức mạnh đa nhân CPU của Control Node, giảm 75% thời gian chờ đợi qua mạng SSH.
-**Tiêu chí chấm:**
-- 0: Không biết tham số `forks`.
-- 1: Biết `forks` quy định số máy nhưng không nhớ mặc định 5 và cách tính toán tối ưu theo RAM/CPU.
-- 2: Phân tích chính xác cơ chế mở tiến trình song song SSH của `forks`.
-- 3: Nêu đúng + viết đoạn cấu hình `ansible.cfg` cài đặt `forks = 10`.
-**Câu hỏi đào sâu:** Công thức ước tính số `forks` an toàn dựa trên dung lượng RAM của Control Node là gì? *(`forks = (RAM_GB - 2) * 20`, giả định mỗi fork tốn khoảng 50MB RAM.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Tham số <code>forks</code> trong <code>ansible.cfg</code> quy định điều gì? Mặc định <code>forks</code> bằng bao nhiêu? Tại sao điều chỉnh <code>forks</code> lại là bước đầu tiên khi tối ưu Playbook quy mô lớn? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Quy định: Tham số <code>forks</code> quy định số lượng kết nối SSH và tiến trình xử lý song song tối đa mà Control Node có thể mở đồng thời tới các máy chủ Managed Nodes.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mặc định: <code>forks = 5</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lý do điều chỉnh: Với hạ tầng 100 máy chủ, nếu giữ mặc định 5, Ansible phải chia làm 20 đợt chạy nối tiếp. Tăng <code>forks = 10</code> hoặc <code>20</code> giúp Ansible tận dụng sức mạnh đa nhân CPU của Control Node, giảm 75% thời gian chờ đợi qua mạng SSH.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tham số <code>forks</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>forks</code> quy định số máy nhưng không nhớ mặc định 5 và cách tính toán tối ưu theo RAM/CPU.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế mở tiến trình song song SSH của <code>forks</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn cấu hình <code>ansible.cfg</code> cài đặt <code>forks = 10</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Công thức ước tính số <code>forks</code> an toàn dựa trên dung lượng RAM của Control Node là gì? *(<code>forks = (RAM_GB - 2) * 20</code>, giả định mỗi fork tốn khoảng 50MB RAM.)*
 </div>
 </details>
 

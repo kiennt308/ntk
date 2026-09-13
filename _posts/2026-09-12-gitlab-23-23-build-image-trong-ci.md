@@ -1634,272 +1634,164 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Câu hỏi:** Tiêu chí hàng đầu để chọn lựa giữa `dind`, `Kaniko`, `Buildah`, và `BuildKit` trong CI/CD là gì và tại sao không nên chọn dựa trên tốc độ?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Tiêu chí hàng đầu duy nhất để chọn công cụ build Image chính là **Mức độ Đặc quyền An ninh (Security Privilege Level)** mà hạ tầng Runner cho phép, không phải tốc độ build.
-- Vì sự khác biệt tốc độ giữa các công cụ hiện nay chỉ chênh lệch vài giây nhờ Layer Caching. Tuy nhiên, nếu chọn `dind` hoặc mount Docker Socket trên Kubernetes Cluster, bạn đã mở rộng lỗ hổng an ninh nghiêm trọng (Container Escape) cho phép kẻ tấn công chiếm quyền `root` toàn bộ cụm máy chủ.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tiêu chí hàng đầu duy nhất để chọn công cụ build Image chính là <b style="color: var(--accent-primary);">Mức độ Đặc quyền An ninh (Security Privilege Level)</b> mà hạ tầng Runner cho phép, không phải tốc độ build.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì sự khác biệt tốc độ giữa các công cụ hiện nay chỉ chênh lệch vài giây nhờ Layer Caching. Tuy nhiên, nếu chọn <code>dind</code> hoặc mount Docker Socket trên Kubernetes Cluster, bạn đã mở rộng lỗ hổng an ninh nghiêm trọng (Container Escape) cho phép kẻ tấn công chiếm quyền <code>root</code> toàn bộ cụm máy chủ.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Câu hỏi:** Phân tích chi tiết rủi ro an ninh của việc mount Docker Socket (`/var/run/docker.sock`) vào Runner chung của công ty?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Khi mount `/var/run/docker.sock` vào trong Container Runner, Job CI được cấp quyền giao tiếp trực tiếp với Docker Daemon cấp hệ thống của máy Host.
-- Một script độc hại trong CI có thể thực thi lệnh:
-  `docker run -v /:/host_root alpine rm -rf /host_root`
-- Tiến trình này sẽ mount toàn bộ hệ thống tệp gốc của máy Host vào container ảo và xóa sạch dữ liệu, hoặc cài mã độc chiếm quyền kiểm soát máy chủ vật lý.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi mount <code>/var/run/docker.sock</code> vào trong Container Runner, Job CI được cấp quyền giao tiếp trực tiếp với Docker Daemon cấp hệ thống của máy Host.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Một script độc hại trong CI có thể thực thi lệnh:</div>
+  <code>docker run -v /:/host_root alpine rm -rf /host_root</code>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tiến trình này sẽ mount toàn bộ hệ thống tệp gốc của máy Host vào container ảo và xóa sạch dữ liệu, hoặc cài mã độc chiếm quyền kiểm soát máy chủ vật lý.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Câu hỏi:** Nguyên lý hoạt động ở chế độ Rootless (User space) của `Kaniko` trên Kubernetes Cluster diễn ra như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Kaniko hoạt động hoàn toàn bên trong 1 Container không cần đặc quyền `root` hay Docker Daemon.
-- Quy trình 4 bước: 1) Đọc tệp `Dockerfile`; 2) Trích xuất Base Image và giải nén vào hệ thống tệp riêng của container; 3) Thực thi các câu lệnh `RUN` hoàn toàn trong User Space; 4) Chụp snapshot sự thay đổi tệp, đóng gói thành các layer `.tar.gz` và đẩy trực tiếp lên Container Registry qua HTTPS API.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kaniko hoạt động hoàn toàn bên trong 1 Container không cần đặc quyền <code>root</code> hay Docker Daemon.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Quy trình 4 bước: 1) Đọc tệp <code>Dockerfile</code>; 2) Trích xuất Base Image và giải nén vào hệ thống tệp riêng của container; 3) Thực thi các câu lệnh <code>RUN</code> hoàn toàn trong User Space; 4) Chụp snapshot sự thay đổi tệp, đóng gói thành các layer <code>.tar.gz</code> và đẩy trực tiếp lên Container Registry qua HTTPS API.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Câu hỏi:** Phương pháp cấu hình tệp `auth.json` cho Kaniko tự động xác thực với GitLab Container Registry mà không dùng mật khẩu thô?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Trong `before_script`, sử dụng biến môi trường tự động `$CI_JOB_TOKEN` (mã hóa Base64 kết hợp với `$CI_REGISTRY_USER`) để tạo tệp `/kaniko/.docker/config.json`:
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong <code>before_script</code>, sử dụng biến môi trường tự động <code>$CI_JOB_TOKEN</code> (mã hóa Base64 kết hợp với <code>$CI_REGISTRY_USER</code>) để tạo tệp <code>/kaniko/.docker/config.json</code>:</div>
   ```bash
   mkdir -p /kaniko/.docker
   echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_JOB_TOKEN} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   ```
-- `$CI_JOB_TOKEN` tự động hết hạn sau khi Job kết thúc, đảm bảo an toàn tuyệt đối 100%.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>$CI_JOB_TOKEN</code> tự động hết hạn sau khi Job kết thúc, đảm bảo an toàn tuyệt đối 100%.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Câu hỏi:** Cơ chế Remote Layer Caching của Kaniko (`--cache=true` và `--cache-repo`) hoạt động như thế nào để giảm thời gian build từ 45s xuống 5s?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Khi bật `--cache=true` và chỉ định `--cache-repo=$CI_REGISTRY_IMAGE/cache`, Kaniko tính toán mã băm SHA-256 của từng câu lệnh `RUN` trong Dockerfile.
-- Trước khi thực thi lệnh, Kaniko gửi yêu cầu tới Registry kiểm tra xem layer cache tương ứng đã tồn tại hay chưa. Nếu đã có, Kaniko bỏ qua việc biên dịch và tải trực tiếp tệp layer nén từ Registry về, giúp giảm thời gian build lượt 2 từ 45s xuống còn 5 giây.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi bật <code>--cache=true</code> và chỉ định <code>--cache-repo=$CI_REGISTRY_IMAGE/cache</code>, Kaniko tính toán mã băm SHA-256 của từng câu lệnh <code>RUN</code> trong Dockerfile.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trước khi thực thi lệnh, Kaniko gửi yêu cầu tới Registry kiểm tra xem layer cache tương ứng đã tồn tại hay chưa. Nếu đã có, Kaniko bỏ qua việc biên dịch và tải trực tiếp tệp layer nén từ Registry về, giúp giảm thời gian build lượt 2 từ 45s xuống còn 5 giây.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Câu hỏi:** Sự khác biệt giữa `Buildah` và `Docker CLI` trong việc tạo Container Image không cần Docker Daemon?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `Docker CLI` là một client phụ thuộc hoàn toàn vào Docker Daemon (dockerd) để đóng gói Image.
-- `Buildah` là công cụ chuẩn OCI của RedHat, thi hành đóng gói dạng **Daemonless** (không cần bất kỳ daemon nào chạy ngầm). Buildah hỗ trợ tạo image từ Dockerfile (`buildah bud`) hoặc xây dựng image trực tiếp bằng các câu lệnh CLI trong bash script mà không cần tệp Dockerfile.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Docker CLI</code> là một client phụ thuộc hoàn toàn vào Docker Daemon (dockerd) để đóng gói Image.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Buildah</code> là công cụ chuẩn OCI của RedHat, thi hành đóng gói dạng <b style="color: var(--accent-primary);">Daemonless</b> (không cần bất kỳ daemon nào chạy ngầm). Buildah hỗ trợ tạo image từ Dockerfile (<code>buildah bud</code>) hoặc xây dựng image trực tiếp bằng các câu lệnh CLI trong bash script mà không cần tệp Dockerfile.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Câu hỏi:** Ưu điểm vượt trội của `Docker BuildKit` về khả năng build song song (Parallel Build Graph) và Remote Cache Backend?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Parallel Build Graph:** BuildKit tự động phân tích cây phụ thuộc của Dockerfile và thi hành song song các stage độc lập (ví dụ: build frontend và backend song song).
-- **Remote Cache Backend:** BuildKit cho phép đẩy toàn bộ đồ thị đệm đệm (`--cache-to type=registry,ref=...,mode=max`) lên Registry, giúp tất cả các Runner song song trong công ty có thể tái sử dụng bộ đệm đệm của nhau.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Parallel Build Graph:</b> BuildKit tự động phân tích cây phụ thuộc của Dockerfile và thi hành song song các stage độc lập (ví dụ: build frontend và backend song song).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Remote Cache Backend:</b> BuildKit cho phép đẩy toàn bộ đồ thị đệm đệm (<code>--cache-to type=registry,ref=...,mode=max</code>) lên Registry, giúp tất cả các Runner song song trong công ty có thể tái sử dụng bộ đệm đệm của nhau.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Câu hỏi:** Tại sao bắt buộc phải thực thi quy trình Đánh Tag Phiên Bản Kép (Dual Tagging Strategy) cho Container Image?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Tag Cố định (`$CI_COMMIT_SHORT_SHA`):** Bất biến (Immutable), không bao giờ bị ghi đè. Giúp truy vết 100% dòng code chính xác đã build ra Image và cho phép Rollback tức thì trên Production.
-- **Tag Động (`$CI_COMMIT_REF_SLUG` hoặc `latest`):** Cập nhật (Mutable), giúp các môi trường Staging/Dev tự động nạp bản build mới nhất mà không cần sửa tệp cấu hình Deployment.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tag Cố định (<code>$CI_COMMIT_SHORT_SHA</code>):</b> Bất biến (Immutable), không bao giờ bị ghi đè. Giúp truy vết 100% dòng code chính xác đã build ra Image và cho phép Rollback tức thì trên Production.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tag Động (<code>$CI_COMMIT_REF_SLUG</code> hoặc <code>latest</code>):</b> Cập nhật (Mutable), giúp các môi trường Staging/Dev tự động nạp bản build mới nhất mà không cần sửa tệp cấu hình Deployment.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Câu hỏi:** Tác dụng của cờ `--compressed-caching=false` trong Kaniko trên hạ tầng Runner có băng thông mạng tốc độ cao?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Mặc định Kaniko nén tất cả các layer cache trước khi đẩy lên Registry, gây tiêu tốn nhiều tài nguyên CPU của Runner.
-- Trên các cụm Runner nội bộ có băng thông mạng tốc độ cao (10 Gbps), việc nén layer là lãng phí CPU không cần thiết. Cờ `--compressed-caching=false` tắt tác vụ nén, giúp giảm 40% tải CPU cho Runner và tăng tốc độ đẩy đệm layer.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mặc định Kaniko nén tất cả các layer cache trước khi đẩy lên Registry, gây tiêu tốn nhiều tài nguyên CPU của Runner.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trên các cụm Runner nội bộ có băng thông mạng tốc độ cao (10 Gbps), việc nén layer là lãng phí CPU không cần thiết. Cờ <code>--compressed-caching=false</code> tắt tác vụ nén, giúp giảm 40% tải CPU cho Runner và tăng tốc độ đẩy đệm layer.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Câu hỏi:** Tại sao mã băm bất biến **Image Digest SHA-256** lại có giá trị an ninh cao hơn hẳn so với Image Tag?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Tag có thể bị ghi đè (Mutable):** Kẻ tấn công hoặc dev có thể đẩy 1 Image chứa mã độc đè lên tag `v1.0.0` hoặc `latest`.
-- **Digest SHA-256 là bất biến tuyệt đối (Immutable):** Mã Digest tính toán trực tiếp từ nội dung byte thực tế của Image. Nếu 1 byte bị sửa đổi, mã Digest sẽ thay đổi. Kubernetes Deployment dùng Digest (`image@sha256:...`) đảm bảo K8s Node kéo đúng 100% Image đã kiểm định.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tag có thể bị ghi đè (Mutable):</b> Kẻ tấn công hoặc dev có thể đẩy 1 Image chứa mã độc đè lên tag <code>v1.0.0</code> hoặc <code>latest</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Digest SHA-256 là bất biến tuyệt đối (Immutable):</b> Mã Digest tính toán trực tiếp từ nội dung byte thực tế của Image. Nếu 1 byte bị sửa đổi, mã Digest sẽ thay đổi. Kubernetes Deployment dùng Digest (<code>image@sha256:...</code>) đảm bảo K8s Node kéo đúng 100% Image đã kiểm định.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Câu hỏi:** So sánh về tốc độ thi hành và mức độ tiêu tốn bộ nhớ RAM giữa `dind` và `Kaniko` trong môi trường CI?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **`dind`:** Tốn nhiều RAM và đĩa cứng do phải khởi chạy 1 Docker Daemon phụ (`dockerd`) bên trong container. Tốc độ build lượt đầu nhanh nếu có local cache, nhưng trượt cache hoàn toàn nếu Runner bị reset.
-- **`Kaniko`:** Bộ nhớ RAM nhẹ hơn do chạy trực tiếp trong User Space. Nhờ tính năng Remote Registry Cache (`--cache=true`), Kaniko đạt tốc độ build lượt 2 siêu nhanh ($\le 5$s) trên mọi Pod Runner mới khởi tạo.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>dind</code>:</b> Tốn nhiều RAM và đĩa cứng do phải khởi chạy 1 Docker Daemon phụ (<code>dockerd</code>) bên trong container. Tốc độ build lượt đầu nhanh nếu có local cache, nhưng trượt cache hoàn toàn nếu Runner bị reset.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Kaniko</code>:</b> Bộ nhớ RAM nhẹ hơn do chạy trực tiếp trong User Space. Nhờ tính năng Remote Registry Cache (<code>--cache=true</code>), Kaniko đạt tốc độ build lượt 2 siêu nhanh ($\le 5$s) trên mọi Pod Runner mới khởi tạo.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Câu hỏi:** Tổng kết quy tắc chọn lựa công cụ build Image chuẩn doanh nghiệp dựa trên hạ tầng Runner hiện có?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. **Kubernetes Cluster Runner (Shared Runner):** Bắt buộc chọn **Kaniko** (Rootless 100%, an toàn tuyệt đối).
-2. **RedHat Enterprise Linux / OpenShift:** Bắt buộc chọn **Buildah** (Daemonless OCI chuẩn).
-3. **Docker Engine Dedicated Runner (Máy vật lý cách ly):** Chọn **Docker BuildKit** (buildx with registry cache) hoặc **dind**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Kubernetes Cluster Runner (Shared Runner):</b> Bắt buộc chọn <b style="color: var(--accent-primary);">Kaniko</b> (Rootless 100%, an toàn tuyệt đối).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">RedHat Enterprise Linux / OpenShift:</b> Bắt buộc chọn <b style="color: var(--accent-primary);">Buildah</b> (Daemonless OCI chuẩn).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Docker Engine Dedicated Runner (Máy vật lý cách ly):</b> Chọn <b style="color: var(--accent-primary);">Docker BuildKit</b> (buildx with registry cache) hoặc <b style="color: var(--accent-primary);">dind</b>.</div>
 
 ---
 </div>

@@ -386,193 +386,103 @@ cd /tmp && rm -rf /tmp/multi-env-lab
 ## 8. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao HashiCorp khuyến cáo KHÔNG DÙNG Terraform Workspaces cho môi trường Production?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì Workspaces dùng chung một Remote State Bucket, chung tài khoản Cloud Provider và không có cơ chế cô lập bán kính ảnh hưởng (Blast Radius). Kỹ sư rất dễ nhầm lẫn ngữ cảnh (Context Confusion) và gõ lệnh xóa nhầm hạ tầng Production khi tưởng mình đang ở Dev.
+  
+Vì Workspaces dùng chung một Remote State Bucket, chung tài khoản Cloud Provider và không có cơ chế cô lập bán kính ảnh hưởng (Blast Radius). Kỹ sư rất dễ nhầm lẫn ngữ cảnh (Context Confusion) và gõ lệnh xóa nhầm hạ tầng Production khi tưởng mình đang ở Dev.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Trong trường hợp nào thì Terraform Workspaces là giải pháp lý tưởng?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Workspaces cực kỳ lý tưởng cho các <b style="color: var(--accent-primary);">môi trường thử nghiệm tạm thời (Ephemeral / Preview Environments)</b> được tạo tự động cho từng Pull Request hoặc từng Developer, sau đó được hủy hoàn toàn khi kiểm thử xong.
+  
+Workspaces cực kỳ lý tưởng cho các <b style="color: var(--accent-primary);">môi trường thử nghiệm tạm thời (Ephemeral / Preview Environments)</b> được tạo tự động cho từng Pull Request hoặc từng Developer, sau đó được hủy hoàn toàn khi kiểm thử xong.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Ưu điểm lớn nhất của kiến trúc Directory-Based Layout là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cô lập hoàn toàn bán kính ảnh hưởng (Blast Radius Isolation) và hỗ trợ mô hình Multi-Account Security. Môi trường Dev và Prod có thể chạy trên 2 tài khoản AWS hoàn toàn tách biệt với các S3 State Bucket riêng, giúp phân quyền IAM Least-Privilege tuyệt đối.
+  
+Cô lập hoàn toàn bán kính ảnh hưởng (Blast Radius Isolation) và hỗ trợ mô hình Multi-Account Security. Môi trường Dev và Prod có thể chạy trên 2 tài khoản AWS hoàn toàn tách biệt với các S3 State Bucket riêng, giúp phân quyền IAM Least-Privilege tuyệt đối.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Biến nội suy `terraform.workspace` trả về giá trị gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trả về tên của Workspace hiện tại đang được kích hoạt (ví dụ: <code>"default"</code>, <code>"dev"</code>, <code>"prod"</code>).
+  
+Trả về tên của Workspace hiện tại đang được kích hoạt (ví dụ: <code>"default"</code>, <code>"dev"</code>, <code>"prod"</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Khi sử dụng S3 Remote Backend, các tệp State của các Workspace khác nhau được lưu ở đâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Được lưu trong cùng một S3 Bucket nhưng nằm dưới tiền tố đặc biệt <code>env:/<workspace_name>/<state_key></code>. Ví dụ: <code>s3://my-bucket/env:/dev/app.tfstate</code>.
+  
+Được lưu trong cùng một S3 Bucket nhưng nằm dưới tiền tố đặc biệt <code>env:/<workspace_name>/<state_key></code>. Ví dụ: <code>s3://my-bucket/env:/dev/app.tfstate</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Terragrunt giải quyết nhược điểm gì của kiến trúc Directory-Based Layout?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Terragrunt giúp loại bỏ 100% sự lặp lại mã nguồn (DRY Principle) của các khối cấu hình <code>backend "s3"</code> và <code>provider "aws"</code> ở từng thư mục môi trường thông qua cơ chế kế thừa <code>find_in_parent_folders()</code>.
+  
+Terragrunt giúp loại bỏ 100% sự lặp lại mã nguồn (DRY Principle) của các khối cấu hình <code>backend "s3"</code> và <code>provider "aws"</code> ở từng thư mục môi trường thông qua cơ chế kế thừa <code>find_in_parent_folders()</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Làm thế nào để kiểm tra bạn đang đứng ở Workspace nào trước khi chạy apply?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chạy lệnh <code>terraform workspace show</code> hoặc xem dấu sao <code>*</code> khi chạy lệnh <code>terraform workspace list</code>.
+  
+Chạy lệnh <code>terraform workspace show</code> hoặc xem dấu sao <code>*</code> khi chạy lệnh <code>terraform workspace list</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao việc lạm dụng toán tử điều kiện tam nguyên (`? :`) theo workspace lại là Anti-Pattern?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì nó làm ô nhiễm mã nguồn HCL, tạo ra các khối logic rẽ nhánh phức tạp khó đọc, khó kiểm thử đơn vị và dễ dẫn tới lỗi sai cấu hình ngầm giữa các môi trường.
+  
+Vì nó làm ô nhiễm mã nguồn HCL, tạo ra các khối logic rẽ nhánh phức tạp khó đọc, khó kiểm thử đơn vị và dễ dẫn tới lỗi sai cấu hình ngầm giữa các môi trường.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Trong mô hình Directory-Based, làm thế nào để đảm bảo mã nguồn giữa Dev và Prod không bị lệch pha?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cả hai môi trường Dev và Prod đều phải gọi chung các <b style="color: var(--accent-primary);">Reusable Modules</b> đã được kiểm thử và gắn thẻ phiên bản bất biến (Semantic Version Tags) từ Git hoặc Private Registry.
+  
+Cả hai môi trường Dev và Prod đều phải gọi chung các <b style="color: var(--accent-primary);">Reusable Modules</b> đã được kiểm thử và gắn thẻ phiên bản bất biến (Semantic Version Tags) từ Git hoặc Private Registry.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Quy trình thăng hạng hạ tầng (Promotion Pipeline) từ Dev lên Staging và Prod hoạt động như thế nào trong GitOps?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Kỹ sư cập nhật phiên bản Module trong thư mục <code>environments/dev/</code> $\rightarrow$ Test thành công $\rightarrow$ Mở Pull Request cập nhật phiên bản Module trong <code>environments/staging/</code> $\rightarrow$ Kiểm thử tích hợp $\rightarrow$ Mở Pull Request cập nhật sang <code>environments/prod/</code> với sự phê duyệt của Tech Lead.
+  
+Kỹ sư cập nhật phiên bản Module trong thư mục <code>environments/dev/</code> $\rightarrow$ Test thành công $\rightarrow$ Mở Pull Request cập nhật phiên bản Module trong <code>environments/staging/</code> $\rightarrow$ Kiểm thử tích hợp $\rightarrow$ Mở Pull Request cập nhật sang <code>environments/prod/</code> với sự phê duyệt của Tech Lead.
 </div>
 </details>
 

@@ -1506,276 +1506,168 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Muốn biết image có an toàn hay không, phải biết ai build, từ commit nào, bằng runner nào — provenance là chứng minh nhân dân của hiện vật và chữ ký số Cosign là niêm phong điện tử chống tráo đổi hiện vật"**?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Vì một Container Image vượt qua kiểm tra SAST/Trivy vẫn có thể bị kẻ tấn công tráo đổi nhị phân (Artifact Tampering) trên Registry hoặc được build từ một máy chủ Runner giả mạo bị chiếm quyền.
-- **SLSA Provenance** đóng vai trò chứng minh nhân dân xác nhận chính xác bản build được tạo ra từ Commit SHA nào và Runner ID nào; trong khi **Chữ ký số Cosign** đóng vai trò niêm phong điện tử mã hóa, đảm bảo hiện vật không bị sửa đổi dù chỉ 1 bit nhị phân khi lưu trữ trên Registry.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì một Container Image vượt qua kiểm tra SAST/Trivy vẫn có thể bị kẻ tấn công tráo đổi nhị phân (Artifact Tampering) trên Registry hoặc được build từ một máy chủ Runner giả mạo bị chiếm quyền.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SLSA Provenance</b> đóng vai trò chứng minh nhân dân xác nhận chính xác bản build được tạo ra từ Commit SHA nào và Runner ID nào; trong khi <b style="color: var(--accent-primary);">Chữ ký số Cosign</b> đóng vai trò niêm phong điện tử mã hóa, đảm bảo hiện vật không bị sửa đổi dù chỉ 1 bit nhị phân khi lưu trữ trên Registry.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa 3 khái niệm: SBOM (Bill of Materials), SLSA Provenance (Chứng nhận nguồn gốc), và Cosign Signature (Chữ ký số niêm phong)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **SBOM (Software Bill of Materials):** Kê khai *BÊN TRONG IMAGE CÓ CÁI GÌ* (Danh mục tất cả các gói phần mềm, APK/APT packages, thư viện).
-- **SLSA Provenance:** Chứng minh *AI BUILD RA IMAGE NÀY, TỪ COMMIT NÀO, BẰNG RUNNER NÀO* (Chứng nhận xuất xứ nguồn gốc bản build).
-- **Cosign Signature:** Niêm phong *HIỆN VẬT NÀY KHÔNG BỊ TRÁO ĐỔI VÀ KHỚP VỚI PUBLIC KEY CỦA CÔNG TY* (Chữ ký số Cryptographic niêm phong OCI Artifact).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SBOM (Software Bill of Materials):</b> Kê khai *BÊN TRONG IMAGE CÓ CÁI GÌ* (Danh mục tất cả các gói phần mềm, APK/APT packages, thư viện).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SLSA Provenance:</b> Chứng minh *AI BUILD RA IMAGE NÀY, TỪ COMMIT NÀO, BẰNG RUNNER NÀO* (Chứng nhận xuất xứ nguồn gốc bản build).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cosign Signature:</b> Niêm phong *HIỆN VẬT NÀY KHÔNG BỊ TRÁO ĐỔI VÀ KHỚP VỚI PUBLIC KEY CỦA CÔNG TY* (Chữ ký số Cryptographic niêm phong OCI Artifact).</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ Cosign (Sigstore) trong việc ký số và lưu trữ chữ ký số trực tiếp trên OCI Registry?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Cosign tính toán mã Hash **Immutable Digest SHA256** của Container Image, sử dụng Private Key (ECDSA P-256 / RSA-4096) để mã hóa tạo ra chuỗi chữ ký số Cryptographic Signature.
-- Cosign đóng gói chữ ký số này thành một OCI Artifact đặc biệt và đẩy trực tiếp lên OCI Registry với tên Tag dạng `sha256-<DIGEST>.sig` nằm song song bên cạnh Container Image, giúp các công cụ ở CD Pipeline dễ dàng kéo về xác thực.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cosign tính toán mã Hash <b style="color: var(--accent-primary);">Immutable Digest SHA256</b> của Container Image, sử dụng Private Key (ECDSA P-256 / RSA-4096) để mã hóa tạo ra chuỗi chữ ký số Cryptographic Signature.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cosign đóng gói chữ ký số này thành một OCI Artifact đặc biệt và đẩy trực tiếp lên OCI Registry với tên Tag dạng <code>sha256-<DIGEST>.sig</code> nằm song song bên cạnh Container Image, giúp các công cụ ở CD Pipeline dễ dàng kéo về xác thực.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Câu hỏi:** Khái niệm Keyless Signing qua OIDC Token trong Cosign (Sigstore Fulcio & Rekor) và lợi ích của việc không cần quản lý Private Key tĩnh?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Keyless Signing sử dụng OIDC JWT Token của GitLab CI để xác thực với Fulcio Certificate Authority, xin một Chứng chỉ số X.509 ngắn hạn (thời hạn sống 20 phút) để ký số lên Image.
-- Chữ ký số và chứng chỉ ngắn hạn được ghi vĩnh viễn vào nhật ký công khai **Rekor Transparency Log**. Lợi ích là loại bỏ hoàn toàn rủi ro bị lộ hay phải quản lý/xoay vòng Private Key tĩnh.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Keyless Signing sử dụng OIDC JWT Token của GitLab CI để xác thực với Fulcio Certificate Authority, xin một Chứng chỉ số X.509 ngắn hạn (thời hạn sống 20 phút) để ký số lên Image.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chữ ký số và chứng chỉ ngắn hạn được ghi vĩnh viễn vào nhật ký công khai <b style="color: var(--accent-primary);">Rekor Transparency Log</b>. Lợi ích là loại bỏ hoàn toàn rủi ro bị lộ hay phải quản lý/xoay vòng Private Key tĩnh.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Câu hỏi:** Các cấp độ an ninh chuỗi cung ứng trong khung tiêu chuẩn SLSA (Supply-chain Levels for Software Artifacts) từ Level 1 đến Level 3?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **SLSA Level 1:** Bản build được tự động hóa bằng CI Script và xuất tệp Provenance thô.
-- **SLSA Level 2:** Bản build chạy trên CI Runner độc lập và tệp Provenance được ký số bởi CI Server.
-- **SLSA Level 3:** Bản build thực thi trong môi trường isolated đệm vô trùng (Ephemeral Isolated Build), ngăn chặn tuyệt đối người dùng tự ý sửa bộ nhớ RAM hay can thiệp quá trình build.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SLSA Level 1:</b> Bản build được tự động hóa bằng CI Script và xuất tệp Provenance thô.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SLSA Level 2:</b> Bản build chạy trên CI Runner độc lập và tệp Provenance được ký số bởi CI Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">SLSA Level 3:</b> Bản build thực thi trong môi trường isolated đệm vô trùng (Ephemeral Isolated Build), ngăn chặn tuyệt đối người dùng tự ý sửa bộ nhớ RAM hay can thiệp quá trình build.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Câu hỏi:** Rủi ro bảo mật nghiêm trọng của tấn công tráo đổi hiện vật (Artifact Tampering / Man-in-the-Middle Attack) trong CI/CD Pipeline?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Kẻ tấn công có thể truy cập Docker Registry (hoặc chặn luồng mạng), thay thế Container Image gốc bằng một Image độc hại đã chèn mã độc/backdoor nhưng giữ nguyên Image Tag (`:v1.0.0`).
-- Nếu CD Pipeline chỉ kiểm tra tên Tag mà không đối soát chữ ký số `cosign verify` trên Digest SHA256, hệ thống Production sẽ kéo nhầm Image độc hại về khởi chạy, dẫn đến toàn bộ Kubernetes Cluster bị kiểm soát.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kẻ tấn công có thể truy cập Docker Registry (hoặc chặn luồng mạng), thay thế Container Image gốc bằng một Image độc hại đã chèn mã độc/backdoor nhưng giữ nguyên Image Tag (<code>:v1.0.0</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu CD Pipeline chỉ kiểm tra tên Tag mà không đối soát chữ ký số <code>cosign verify</code> trên Digest SHA256, hệ thống Production sẽ kéo nhầm Image độc hại về khởi chạy, dẫn đến toàn bộ Kubernetes Cluster bị kiểm soát.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Câu hỏi:** Nguyên lý xác thực chữ ký số bằng câu lệnh `cosign verify --key cosign.pub` ở môi trường Kubernetes Cluster (Kyverno / OPA Policy)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Khi K8s nhận lệnh deploy Pod, Admission Controller (Kyverno) bắt luồng webhook, trích xuất Digest SHA256 của Image và kéo OCI Signature `.sig` từ Registry về.
-- Kyverno dùng Public Key `cosign.pub` giải mã chữ ký số; nếu chữ ký hợp lệ và khớp Digest SHA256, K8s mới cho phép khởi tạo Pod; nếu không khớp, K8s trả về `ImagePolicyWebhook Rejected` chặn đứng deploy.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi K8s nhận lệnh deploy Pod, Admission Controller (Kyverno) bắt luồng webhook, trích xuất Digest SHA256 của Image và kéo OCI Signature <code>.sig</code> từ Registry về.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kyverno dùng Public Key <code>cosign.pub</code> giải mã chữ ký số; nếu chữ ký hợp lệ và khớp Digest SHA256, K8s mới cho phép khởi tạo Pod; nếu không khớp, K8s trả về <code>ImagePolicyWebhook Rejected</code> chặn đứng deploy.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Câu hỏi:** Cấu trúc và ý nghĩa các trường dữ liệu trong tệp SLSA Provenance Attestation (`provenance.json`)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `subject`: Định danh URL của Image và chuỗi băm `sha256` Digest.
-- `builder.id`: Đường dẫn định danh máy chủ CI Runner (`https://gitlab.com/runners/runner-01`).
-- `invocation.configSource`: Đường dẫn repository Git (`git+https://...`) và tệp cấu hình `.gitlab-ci.yml`.
-- `invocation.parameters`: Mã commit `CI_COMMIT_SHA` và định danh pipeline `CI_PIPELINE_ID`.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>subject</code>: Định danh URL của Image và chuỗi băm <code>sha256</code> Digest.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>builder.id</code>: Đường dẫn định danh máy chủ CI Runner (<code>https://gitlab.com/runners/runner-01</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>invocation.configSource</code>: Đường dẫn repository Git (<code>git+https://...</code>) và tệp cấu hình <code>.gitlab-ci.yml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>invocation.parameters</code>: Mã commit <code>CI_COMMIT_SHA</code> và định danh pipeline <code>CI_PIPELINE_ID</code>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Câu hỏi:** Cách bảo vệ an toàn cho Cosign Private Key bằng HashiCorp Vault Transit Engine hoặc AWS KMS trong CI Pipeline?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Không lưu `cosign.key` thô trong CI/CD Variables.
-- Lưu trữ cặp khóa trong **HashiCorp Vault Transit Secrets Engine** hoặc **AWS KMS**. Khi cần ký số, CI Job gửi hash SHA256 sang Vault/KMS API để thực thi ký số từ xa; Private Key không bao giờ bị xuất ra ngoài bộ nhớ RAM của KMS/Vault.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không lưu <code>cosign.key</code> thô trong CI/CD Variables.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lưu trữ cặp khóa trong <b style="color: var(--accent-primary);">HashiCorp Vault Transit Secrets Engine</b> hoặc <b style="color: var(--accent-primary);">AWS KMS</b>. Khi cần ký số, CI Job gửi hash SHA256 sang Vault/KMS API để thực thi ký số từ xa; Private Key không bao giờ bị xuất ra ngoài bộ nhớ RAM của KMS/Vault.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Câu hỏi:** Cách xử lý sự cố khi chữ ký số Cosign bị hết hạn hoặc khóa Public Key bị thu hồi (Key Revocation)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Nếu Public Key bị thu hồi do lộ nghi ngờ:
-  1. Tiến hành thu hồi (Revoke) khóa cũ trên KMS/Vault và khởi tạo cặp khóa mới.
-  2. Cập nhật keyring Public Key `cosign.pub` trên Kubernetes Cluster (Kyverno Policy).
-  3. Chạy lại CI Pipeline ký số lại toàn bộ các bản build Container Image chính thức bằng cặp khóa mới.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu Public Key bị thu hồi do lộ nghi ngờ:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Tiến hành thu hồi (Revoke) khóa cũ trên KMS/Vault và khởi tạo cặp khóa mới.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Cập nhật keyring Public Key <code>cosign.pub</code> trên Kubernetes Cluster (Kyverno Policy).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Chạy lại CI Pipeline ký số lại toàn bộ các bản build Container Image chính thức bằng cặp khóa mới.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Câu hỏi:** Phương pháp chống tấn công Man-in-the-Middle đối với OCI Registry bằng việc bắt buộc kiểm tra chữ ký Cosign trước khi kéo Image (`docker pull`)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Trước khi thực thi lệnh kéo Image hoặc deploy, CD Script luôn thực thi câu lệnh:
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trước khi thực thi lệnh kéo Image hoặc deploy, CD Script luôn thực thi câu lệnh:</div>
   ```bash
   cosign verify --key cosign.pub $REGISTRY_IMAGE@$IMAGE_DIGEST
   ```
-- Nếu lệnh verify trả về `exit code 0`, CD Script mới tiếp tục gọi `docker pull`. Nếu verify thất bại, script ngắt tức thì (`exit 1`), triệt tiêu 100% rủi ro kéo nhầm hiện vật bị tráo đổi trên đường truyền.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu lệnh verify trả về <code>exit code 0</code>, CD Script mới tiếp tục gọi <code>docker pull</code>. Nếu verify thất bại, script ngắt tức thì (<code>exit 1</code>), triệt tiêu 100% rủi ro kéo nhầm hiện vật bị tráo đổi trên đường truyền.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Câu hỏi:** Tổng kết quy trình 4 bước xây dựng Chuỗi Cung Ứng An Toàn chuẩn Enterprise trong CI/CD Pipeline?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. **Image Build (Stage build):** Thực thi `docker build` tạo Container Image với Digest SHA256 cố định.
-2. **Generate SBOM & Provenance:** Sinh tệp `sbom.json` CycloneDX và `provenance.json` chứng nhận nguồn gốc.
-3. **Cosign Sign & Attest:** Ký số Cryptographic Signature bằng Cosign và đẩy OCI Artifacts `.sig` / `.att` lên Registry.
-4. **Verify Quality Gate (Stage deploy):** Xác thực chữ ký bằng `cosign verify` trước khi triển khai xuống Production K8s.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Image Build (Stage build):</b> Thực thi <code>docker build</code> tạo Container Image với Digest SHA256 cố định.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Generate SBOM & Provenance:</b> Sinh tệp <code>sbom.json</code> CycloneDX và <code>provenance.json</code> chứng nhận nguồn gốc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Cosign Sign & Attest:</b> Ký số Cryptographic Signature bằng Cosign và đẩy OCI Artifacts <code>.sig</code> / <code>.att</code> lên Registry.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Verify Quality Gate (Stage deploy):</b> Xác thực chữ ký bằng <code>cosign verify</code> trước khi triển khai xuống Production K8s.</div>
 
 ---
 </div>

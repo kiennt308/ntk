@@ -381,197 +381,107 @@ argocd app get illegal-clusterrole-app
 ## 11. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao nên sử dụng Whitelist (Danh sách trắng) thay vì Blacklist (Danh sách đen) trong cấu hình tài nguyên của AppProject?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Theo nguyên lý **Zero Trust**, Whitelist an toàn hơn nhiều vì nó "Mặc định Từ chối Tất cả" (Default Deny All) và chỉ cho phép những tài nguyên được khai báo tường minh. Blacklist có nguy cơ bị bỏ sót khi Kubernetes ra mắt các loại tài nguyên hoặc API Groups mới.
+  
+Theo nguyên lý <b style="color: var(--accent-primary);">Zero Trust</b>, Whitelist an toàn hơn nhiều vì nó "Mặc định Từ chối Tất cả" (Default Deny All) và chỉ cho phép những tài nguyên được khai báo tường minh. Blacklist có nguy cơ bị bỏ sót khi Kubernetes ra mắt các loại tài nguyên hoặc API Groups mới.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Khi một khung giờ Sync Windows dạng `deny` đang có hiệu lực, nếu kỹ sư bấm nút "Sync" trên giao diện Web thì điều gì sẽ xảy ra?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nếu `manualSync: false`, giao diện Web sẽ chặn nút bấm và hiển thị thông báo lỗi `Sync is denied by window`. Nếu `manualSync: true`, kỹ sư được phép ghi đè để deploy thủ công (thường dùng cho các ca xử lý sự cố khẩn cấp).
+  
+Nếu <code>manualSync: false</code>, giao diện Web sẽ chặn nút bấm và hiển thị thông báo lỗi <code>Sync is denied by window</code>. Nếu <code>manualSync: true</code>, kỹ sư được phép ghi đè để deploy thủ công (thường dùng cho các ca xử lý sự cố khẩn cấp).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Điều gì xảy ra nếu cố tình xóa một AppProject mà bên trong vẫn còn các đối tượng Application đang liên kết?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nhờ có `finalizers: [resources-finalizer.argocd.argoproj.io]`, Kubernetes sẽ **chặn tiến trình xóa AppProject lại**, bảo vệ các Application bên trong không bị mất liên kết đột ngột.
+  
+Nhờ có <code>finalizers: [resources-finalizer.argocd.argoproj.io]</code>, Kubernetes sẽ <b style="color: var(--accent-primary);">chặn tiến trình xóa AppProject lại</b>, bảo vệ các Application bên trong không bị mất liên kết đột ngột.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Một Application có thể thuộc về nhiều hơn 1 AppProject cùng lúc không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Không!** Mỗi đối tượng `Application` chỉ có thể liên kết với **duy nhất 1 AppProject** thông qua trường `spec.project`.
+  
+<b style="color: var(--accent-primary);">Không!</b> Mỗi đối tượng <code>Application</code> chỉ có thể liên kết với <b style="color: var(--accent-primary);">duy nhất 1 AppProject</b> thông qua trường <code>spec.project</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Làm thế nào để cho phép một AppProject kéo manifests từ mọi kho Git của một Organization trên GitHub?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng ký tự đại diện Wildcard `*` trong `spec.sourceRepos`:
+  
+Sử dụng ký tự đại diện Wildcard <code>*</code> trong <code>spec.sourceRepos</code>:
   ```yaml
   sourceRepos:
-    - "https://github.com/company-org/*"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• "https://github.com/company-org/*"</div>
   ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>JWT Tokens được tạo trong `spec.roles` của AppProject có thể dùng cho mục đích gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dùng để xác thực các công cụ tự động hóa bên ngoài (như GitHub Actions, GitLab CI, Jenkins) thông qua biến môi trường `ARGOCD_AUTH_TOKEN`, cấp quyền hạn tối thiểu (chỉ get/sync các ứng dụng thuộc project đó) mà không cần cấp tài khoản người dùng thực.
+  
+Dùng để xác thực các công cụ tự động hóa bên ngoài (như GitHub Actions, GitLab CI, Jenkins) thông qua biến môi trường <code>ARGOCD_AUTH_TOKEN</code>, cấp quyền hạn tối thiểu (chỉ get/sync các ứng dụng thuộc project đó) mà không cần cấp tài khoản người dùng thực.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Nếu một AppProject không khai báo `clusterResourceWhitelist`, mặc định hành vi sẽ là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mặc định toàn bộ các tài nguyên cấp Cụm (Cluster-Scoped như `Namespace`, `ClusterRole`, `PV`, `CRD`) sẽ bị **từ chối 100%**, đảm bảo an toàn mặc định cho hệ thống.
+  
+Mặc định toàn bộ các tài nguyên cấp Cụm (Cluster-Scoped như <code>Namespace</code>, <code>ClusterRole</code>, <code>PV</code>, <code>CRD</code>) sẽ bị <b style="color: var(--accent-primary);">từ chối 100%</b>, đảm bảo an toàn mặc định cho hệ thống.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Thuộc tính `orphanedResources` trong AppProject giúp ích gì cho việc quản trị?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cho phép Argo CD cảnh báo hoặc gửi thông báo khi phát hiện trên namespace đích có những tài nguyên tồn tại nhưng không thuộc quyền quản lý của bất kỳ Application GitOps nào.
+  
+Cho phép Argo CD cảnh báo hoặc gửi thông báo khi phát hiện trên namespace đích có những tài nguyên tồn tại nhưng không thuộc quyền quản lý của bất kỳ Application GitOps nào.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Làm cách nào để cấu hình Sync Windows chỉ áp dụng cho một microservice cụ thể trong Project?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trong khối `syncWindows`, thay vì đặt `applications: ["*"]`, hãy chỉ định danh sách tên ứng dụng cụ thể: `applications: ["payment-api", "checkout-api"]`.
+  
+Trong khối <code>syncWindows</code>, thay vì đặt <code>applications: ["*"]</code>, hãy chỉ định danh sách tên ứng dụng cụ thể: <code>applications: ["payment-api", "checkout-api"]</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Sự khác biệt giữa `AppProject Roles` và `argocd-rbac-cm Global Roles` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `argocd-rbac-cm` cấu hình phân quyền tập trung cho toàn bộ hệ thống Argo CD. Trong khi đó, `AppProject Roles` cho phép chủ sở hữu của từng Project tự quản lý phân quyền nội bộ trong phạm vi các ứng dụng của dự án mình mà không cần quyền sửa ConfigMap hệ thống.
+  
+<code>argocd-rbac-cm</code> cấu hình phân quyền tập trung cho toàn bộ hệ thống Argo CD. Trong khi đó, <code>AppProject Roles</code> cho phép chủ sở hữu của từng Project tự quản lý phân quyền nội bộ trong phạm vi các ứng dụng của dự án mình mà không cần quyền sửa ConfigMap hệ thống.
 </div>
 </details>
 

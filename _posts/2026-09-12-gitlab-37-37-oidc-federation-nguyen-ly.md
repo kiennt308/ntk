@@ -1649,32 +1649,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Nguyên lý hoạt động cốt lõi của OIDC Federation khi kết nối GitLab CI/CD với Cloud Provider (AWS/GCP/Azure) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
 GitLab CI tự động phát hành một JWT Token ngắn hạn có ký số. Cloud Provider kiểm tra chữ ký token qua JWKS Endpoint của GitLab và cấp Temporary Credentials có thời hạn 15-60 phút nếu các điều kiện claim khớp.
 
-**Đáp án chuẩn:**
-- **Nguyên lý 4 Bước Tiêu chuẩn:**
-  1. *Pha Sinh Token:* Khi CI job bắt đầu, Runner dùng từ khóa `id_tokens` xin GitLab Instance một OIDC JWT Token ký bởi Private Key.
-  2. *Pha Truyền Token:* Runner gửi JWT Token sang Cloud Authentication API (AWS STS `assume-role-with-web-identity`, GCP WIF, hoặc Azure Federated Token).
-  3. *Pha Xác minh phím Đám mây:* Cloud IAM tự động kết nối HTTPS tới tệp JWKS công khai (`https://gitlab.com/-/jwks`) để verify chữ ký số của JWT. Tiếp theo, Cloud kiểm tra xem claim `aud` và `sub` có khớp với Trust Policy hay không.
-  4. *Pha Cấp Credentials:* Nếu khớp 100%, Cloud trả về Access Token ngắn hạn (TTL 15-60 phút). Runner dùng token này thực thi deploy rồi tự hủy.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên lý 4 Bước Tiêu chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Pha Sinh Token:* Khi CI job bắt đầu, Runner dùng từ khóa <code>id_tokens</code> xin GitLab Instance một OIDC JWT Token ký bởi Private Key.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Pha Truyền Token:* Runner gửi JWT Token sang Cloud Authentication API (AWS STS <code>assume-role-with-web-identity</code>, GCP WIF, hoặc Azure Federated Token).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> *Pha Xác minh phím Đám mây:* Cloud IAM tự động kết nối HTTPS tới tệp JWKS công khai (<code>https://gitlab.com/-/jwks</code>) để verify chữ ký số của JWT. Tiếp theo, Cloud kiểm tra xem claim <code>aud</code> và <code>sub</code> có khớp với Trust Policy hay không.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> *Pha Cấp Credentials:* Nếu khớp 100%, Cloud trả về Access Token ngắn hạn (TTL 15-60 phút). Runner dùng token này thực thi deploy rồi tự hủy.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Nhầm lẫn cho rằng "OIDC tự sinh ra quyền trên Cloud". Cần phân biệt rõ OIDC chỉ làm nhiệm vụ Xác thực (AuthN), còn Cloud IAM Policy làm nhiệm vụ Cấp quyền (AuthZ).
 </div>
 </details>

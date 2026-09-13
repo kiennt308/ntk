@@ -378,195 +378,105 @@ kubectl delete appset ecommerce-core-services -n argocd
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Sự khác biệt bản chất giữa App-of-Apps Pattern và ApplicationSet là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  App-of-Apps là mô hình quản trị cây thư mục tĩnh (mỗi ứng dụng con bắt buộc phải có 1 file YAML Application định nghĩa sẵn). `ApplicationSet` là một Controller động có khả năng sử dụng **Generators & Templates** để tự động sinh ra hàng trăm Application CRD dựa trên các điều kiện biến động (danh sách cụm, danh sách thư mục Git, Pull Requests).
+  
+App-of-Apps là mô hình quản trị cây thư mục tĩnh (mỗi ứng dụng con bắt buộc phải có 1 file YAML Application định nghĩa sẵn). <code>ApplicationSet</code> là một Controller động có khả năng sử dụng <b style="color: var(--accent-primary);">Generators & Templates</b> để tự động sinh ra hàng trăm Application CRD dựa trên các điều kiện biến động (danh sách cụm, danh sách thư mục Git, Pull Requests).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Trong Cluster Generator, làm thế nào để gán một nhãn (Label) cho một cụm Kubernetes từ xa?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ta chỉnh sửa trực tiếp tệp Secret của cụm đó trong namespace `argocd` bằng lệnh:
-  `kubectl label secret <cluster-secret-name> -n argocd environment=production region=us-east-1`
+  
+Ta chỉnh sửa trực tiếp tệp Secret của cụm đó trong namespace <code>argocd</code> bằng lệnh:
+  <code>kubectl label secret <cluster-secret-name> -n argocd environment=production region=us-east-1</code>
   Cluster Generator sẽ tự động phát hiện nhãn mới và kích hoạt tạo ứng dụng tương ứng.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Biến `{{path.basename}}` trong ApplicationSet Git Generator đại diện cho giá trị nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đại diện cho **tên của thư mục cuối cùng** trong đường dẫn Git. Ví dụ, với đường dẫn `services/payment-api`, thì `{{path.basename}}` sẽ trả về chuỗi `"payment-api"`.
+  
+Đại diện cho <b style="color: var(--accent-primary);">tên của thư mục cuối cùng</b> trong đường dẫn Git. Ví dụ, với đường dẫn <code>services/payment-api</code>, thì <code>{{path.basename}}</code> sẽ trả về chuỗi <code>"payment-api"</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Điều gì xảy ra khi xóa đối tượng ApplicationSet nếu `syncPolicy.preserveResourcesOnDeletion` là `false` (mặc định)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Toàn bộ các đối tượng `Application CRD` con do ApplicationSet đó sinh ra sẽ bị **xóa sạch ngay lập tức**. Nếu các Application con có gắn `resources-finalizer`, toàn bộ Pods, Services trên Kubernetes cũng sẽ bị xóa theo (Cascade Deletion).
+  
+Toàn bộ các đối tượng <code>Application CRD</code> con do ApplicationSet đó sinh ra sẽ bị <b style="color: var(--accent-primary);">xóa sạch ngay lập tức</b>. Nếu các Application con có gắn <code>resources-finalizer</code>, toàn bộ Pods, Services trên Kubernetes cũng sẽ bị xóa theo (Cascade Deletion).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Có thể sử dụng nhiều hơn 1 Generator bên trong một ApplicationSet không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hoàn toàn được!** Bạn có thể khai báo nhiều generators trong danh sách `spec.generators`, hoặc kết hợp chúng lại bằng **Matrix Generator** (nhân ma trận) hoặc **Merge Generator** (hợp nhất có điều kiện).
+  
+<b style="color: var(--accent-primary);">Hoàn toàn được!</b> Bạn có thể khai báo nhiều generators trong danh sách <code>spec.generators</code>, hoặc kết hợp chúng lại bằng <b style="color: var(--accent-primary);">Matrix Generator</b> (nhân ma trận) hoặc <b style="color: var(--accent-primary);">Merge Generator</b> (hợp nhất có điều kiện).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Tính năng `RollingSync` trong ApplicationSet giải quyết bài toán gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Giúp điều phối tiến trình nâng cấp ứng dụng theo từng bước phân kỳ (Staged Rollout) trên hàng loạt cụm, ví dụ cập nhật 100% cụm staging trước, sau đó mới nâng cấp từng đợt 20% số cụm production, ngăn chặn nguy cơ sự cố lan rộng ra toàn bộ hệ thống.
+  
+Giúp điều phối tiến trình nâng cấp ứng dụng theo từng bước phân kỳ (Staged Rollout) trên hàng loạt cụm, ví dụ cập nhật 100% cụm staging trước, sau đó mới nâng cấp từng đợt 20% số cụm production, ngăn chặn nguy cơ sự cố lan rộng ra toàn bộ hệ thống.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Làm cách nào để xử lý chuỗi ký tự không hợp lệ theo chuẩn RFC 1123 trong ApplicationSet template?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Bật tính năng `goTemplate: true` trong `spec` của ApplicationSet và sử dụng các Go template functions như `{{ .name | lower | replace "_" "-" }}` để chuẩn hóa chuỗi trước khi gán vào `metadata.name`.
+  
+Bật tính năng <code>goTemplate: true</code> trong <code>spec</code> của ApplicationSet và sử dụng các Go template functions như <code>{{ .name | lower | replace "_" "-" }}</code> để chuẩn hóa chuỗi trước khi gán vào <code>metadata.name</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>`applicationsSync: create-update` trong `syncPolicy` của ApplicationSet có tác dụng gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cấu hình này chỉ cho phép ApplicationSet tạo mới hoặc cập nhật Application CRD, nhưng **ngăn cấm tuyệt đối việc tự động xóa bỏ Application con** khi một phần tử bị gỡ khỏi Generator, giúp tăng tính an toàn cho môi trường Production.
+  
+Cấu hình này chỉ cho phép ApplicationSet tạo mới hoặc cập nhật Application CRD, nhưng <b style="color: var(--accent-primary);">ngăn cấm tuyệt đối việc tự động xóa bỏ Application con</b> khi một phần tử bị gỡ khỏi Generator, giúp tăng tính an toàn cho môi trường Production.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Trong Cluster Generator, cụm nội bộ (in-cluster nơi Argo CD đang chạy) có địa chỉ server là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `https://kubernetes.default.svc`.
+  
+<code>https://kubernetes.default.svc</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Nếu 2 generator trong cùng một ApplicationSet sinh ra 2 Application có trùng `metadata.name` thì điều gì sẽ xảy ra?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ApplicationSet Controller sẽ báo lỗi xung đột (Conflict) trong log và từ chối cập nhật Application bị trùng lặp, đảm bảo không có sự ghi đè cấu hình không kiểm soát.
+  
+ApplicationSet Controller sẽ báo lỗi xung đột (Conflict) trong log và từ chối cập nhật Application bị trùng lặp, đảm bảo không có sự ghi đè cấu hình không kiểm soát.
 </div>
 </details>
 

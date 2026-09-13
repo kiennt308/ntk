@@ -2616,39 +2616,30 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Một pipeline hỏng, không ai biết vì sao. **Bốn lệnh đầu tiên** của bạn là gì, và mỗi lệnh loại bỏ được bao nhiêu giả thuyết?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Gỡ rối là **thu hẹp**, không phải thử lại. Không gian nghi ngờ có kích thước biết trước: **4** đường dữ liệu vào job (git · `cache` · `artifacts` · biến — buổi 01 QT 5.1) nhân **8** pha (buổi 01 QT 4.2) = **32** ô. Mỗi lệnh phải xoá một **hàng** hoặc một **cột**, không xoá từng ô.
+  
+Gỡ rối là <b style="color: var(--accent-primary);">thu hẹp</b>, không phải thử lại. Không gian nghi ngờ có kích thước biết trước: <b style="color: var(--accent-primary);">4</b> đường dữ liệu vào job (git · <code>cache</code> · <code>artifacts</code> · biến — buổi 01 QT 5.1) nhân <b style="color: var(--accent-primary);">8</b> pha (buổi 01 QT 4.2) = <b style="color: var(--accent-primary);">32</b> ô. Mỗi lệnh phải xoá một <b style="color: var(--accent-primary);">hàng</b> hoặc một <b style="color: var(--accent-primary);">cột</b>, không xoá từng ô.
 
 | # | Lệnh | Xoá được gì |
 |---|---|---|
-| 1 | `curl … /pipelines/$PIPE/jobs \| jq -r '.[] \| .name+" "+.status+" "+(.failure_reason//"-")'` | Chia theo **4** nhóm quy trách nhiệm: lỗi `script`, hạ tầng runner, hết hạn giờ, mất artifact (QT 4.3) |
-| 2 | `curl … /jobs/$ID/trace > lan-do.txt` | Đưa log thành **văn bản thuần** — `grep`, `wc`, `diff` được; giao diện web không cho cả ba (QT 4.2) |
-| 3 | `go-roi.sh $ID` — bảng pha · dòng bắt đầu · giây | Định vị **1** pha hỏng, loại **7/8** nhóm nguyên nhân trước khi đọc dòng lỗi nào (QT 4.1) |
-| 4 | Lấy `trace` lần **xanh** gần nhất rồi `diff lan-xanh.txt lan-do.txt` | Chỉ ra **dòng đầu tiên** khác nhau giữa hai lần chạy |
+| 1 | <code>curl … /pipelines/$PIPE/jobs \| jq -r '.[] \| .name+" "+.status+" "+(.failure_reason//"-")'</code> | Chia theo <b style="color: var(--accent-primary);">4</b> nhóm quy trách nhiệm: lỗi <code>script</code>, hạ tầng runner, hết hạn giờ, mất artifact (QT 4.3) |
+| 2 | <code>curl … /jobs/$ID/trace > lan-do.txt</code> | Đưa log thành <b style="color: var(--accent-primary);">văn bản thuần</b> — <code>grep</code>, <code>wc</code>, <code>diff</code> được; giao diện web không cho cả ba (QT 4.2) |
+| 3 | <code>go-roi.sh $ID</code> — bảng pha · dòng bắt đầu · giây | Định vị <b style="color: var(--accent-primary);">1</b> pha hỏng, loại <b style="color: var(--accent-primary);">7/8</b> nhóm nguyên nhân trước khi đọc dòng lỗi nào (QT 4.1) |
+| 4 | Lấy <code>trace</code> lần <b style="color: var(--accent-primary);">xanh</b> gần nhất rồi <code>diff lan-xanh.txt lan-do.txt</code> | Chỉ ra <b style="color: var(--accent-primary);">dòng đầu tiên</b> khác nhau giữa hai lần chạy |
 
-Bốn lệnh tốn khoảng **2 giây** một lượt gọi API, thay cho 10–20 phút đọc **400** dòng bằng mắt. Ca đặc biệt: job `pending` **không có `trace`** — nhảy sang `jq '.runner'` (QT 6.2).
+Bốn lệnh tốn khoảng <b style="color: var(--accent-primary);">2 giây</b> một lượt gọi API, thay cho 10–20 phút đọc <b style="color: var(--accent-primary);">400</b> dòng bằng mắt. Ca đặc biệt: job <code>pending</code> <b style="color: var(--accent-primary);">không có <code>trace</code></b> — nhảy sang <code>jq '.runner'</code> (QT 6.2).
 
-**Tiêu chí chấm:**
-- 0đ: "Chạy lại xem sao", hoặc "đọc log tìm chữ ERROR".
-- 1đ: Đọc log từ dưới lên, không có lệnh nào và không có khung phân loại.
-- 2đ: Đọc `failure_reason` trước rồi định vị pha; kể được ba trong bốn lệnh.
-- 3đ: Đủ bốn lệnh, **và** nói ra **4 × 8 = 32** ô cùng con số loại bỏ **7/8**, **và** nêu ca `pending` không có `trace`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: "Chạy lại xem sao", hoặc "đọc log tìm chữ ERROR".</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Đọc log từ dưới lên, không có lệnh nào và không có khung phân loại.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Đọc <code>failure_reason</code> trước rồi định vị pha; kể được ba trong bốn lệnh.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Đủ bốn lệnh, <b style="color: var(--accent-primary);">và</b> nói ra <b style="color: var(--accent-primary);">4 × 8 = 32</b> ô cùng con số loại bỏ <b style="color: var(--accent-primary);">7/8</b>, <b style="color: var(--accent-primary);">và</b> nêu ca <code>pending</code> không có <code>trace</code>.</div>
 
-**Câu hỏi đào sâu:** Bảng 32 ô **không** giải được lớp sự cố nào? *(Lớp ngoài phạm vi một job: hạ tầng GitLab, quota, hàng đợi runner ở quy mô. Đây là khung thu hẹp, không phải danh sách đầy đủ — buổi 13 và 47.)*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Bảng 32 ô <b style="color: var(--accent-primary);">không</b> giải được lớp sự cố nào? *(Lớp ngoài phạm vi một job: hạ tầng GitLab, quota, hàng đợi runner ở quy mô. Đây là khung thu hẹp, không phải danh sách đầy đủ — buổi 13 và 47.)*
 </div>
 </details>
 

@@ -322,231 +322,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Lệnh CLI nào được dùng để thực thi công cụ `kube-bench` rà soát tiêu chuẩn CIS Benchmark trên Control Plane Node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `kube-bench run --targets master`.
+  
+Lệnh <code>kube-bench run --targets master</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Ba trạng thái đánh giá đầu ra của công cụ `kube-bench` đối với từng mục kiểm tra là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  3 trạng thái: **`[PASS]`**, **`[WARN]`**, và **`[FAIL]`**.
+  
+3 trạng thái: <b style="color: var(--accent-primary);"><code>[PASS]</code></b>, <b style="color: var(--accent-primary);"><code>[WARN]</code></b>, và <b style="color: var(--accent-primary);"><code>[FAIL]</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Quyền hạn `chmod` và quyền sở hữu `chown` chuẩn CIS Benchmark đối với các tệp Static Pod manifest trong `/etc/kubernetes/manifests/` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Phân quyền **`chmod 600`** (hoặc `644`) và gán quyền sở hữu **`chown root:root`**.
+  
+Phân quyền <b style="color: var(--accent-primary);"><code>chmod 600</code></b> (hoặc <code>644</code>) và gán quyền sở hữu <b style="color: var(--accent-primary);"><code>chown root:root</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Quyền hạn `chmod` chuẩn CIS Benchmark đối với tệp cấu hình admin kubeconfig `/etc/kubernetes/admin.conf` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Phân quyền thắt chặt **`chmod 600`** và sở hữu **`root:root`**.
+  
+Phân quyền thắt chặt <b style="color: var(--accent-primary);"><code>chmod 600</code></b> và sở hữu <b style="color: var(--accent-primary);"><code>root:root</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tại sao địa chỉ Cloud Metadata Endpoint `169.254.169.254` lại là mục tiêu tấn công hàng đầu của kẻ cướp quyền container?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì IP này cung cấp API trả về IAM credentials/tokens của Cloud Provider, kẻ tấn công có thể dùng để chiếm quyền hạ tầng đám mây.
+  
+Vì IP này cung cấp API trả về IAM credentials/tokens của Cloud Provider, kẻ tấn công có thể dùng để chiếm quyền hạ tầng đám mây.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Cấu hình NetworkPolicy nào được dùng để ngăn chặn tất cả các Pods ứng dụng truy cập địa chỉ IP `169.254.169.254`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cấu hình khối `egress` với `ipBlock.cidr: 0.0.0.0/0` và `except: ["169.254.169.254/32"]`.
+  
+Cấu hình khối <code>egress</code> với <code>ipBlock.cidr: 0.0.0.0/0</code> và <code>except: ["169.254.169.254/32"]</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Lệnh CLI Linux nào được dùng để dừng và vô hiệu hóa vĩnh viễn một dịch vụ Linux thừa (như `avahi-daemon`) trên Host Node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `sudo systemctl stop avahi-daemon && sudo systemctl disable avahi-daemon`.
+  
+Lệnh <code>sudo systemctl stop avahi-daemon && sudo systemctl disable avahi-daemon</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Quyền hạn `chmod` chuẩn CIS Benchmark đối với thư mục chứa dữ liệu etcd `/var/lib/etcd` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Phân quyền **`chmod 700`** (hoặc `750`) và sở hữu `root:root` (hoặc `etcd:etcd`).
+  
+Phân quyền <b style="color: var(--accent-primary);"><code>chmod 700</code></b> (hoặc <code>750</code>) và sở hữu <code>root:root</code> (hoặc <code>etcd:etcd</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Phần thông tin nào trong đầu ra của `kube-bench` hướng dẫn chi tiết các câu lệnh Linux để khắc phục một mục vi phạm `[FAIL]`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Phần thông tin **`Remediation`**.
+  
+Phần thông tin <b style="color: var(--accent-primary);"><code>Remediation</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Quyền hạn `chmod` chuẩn CIS Benchmark đối với các tệp chứng chỉ private key (`*.key`) trong `/etc/kubernetes/pki/` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Phân quyền **`chmod 600`** và sở hữu **`root:root`**.
+  
+Phân quyền <b style="color: var(--accent-primary);"><code>chmod 600</code></b> và sở hữu <b style="color: var(--accent-primary);"><code>root:root</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao không nên cho phép đăng nhập SSH bằng mật khẩu (`PasswordAuthentication yes`) trên các Host Nodes Production?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để ngăn chặn kẻ tấn công thực hiện các cuộc tấn công brute-force dò tìm mật khẩu SSH, bắt buộc phải dùng SSH Key Authentication.
+  
+Để ngăn chặn kẻ tấn công thực hiện các cuộc tấn công brute-force dò tìm mật khẩu SSH, bắt buộc phải dùng SSH Key Authentication.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Bộ lệnh Linux chuẩn để phân quyền an toàn toàn bộ Control Plane Node chuẩn CKS là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
       sudo chown root:root /etc/kubernetes/manifests/*
       sudo chmod 600 /etc/kubernetes/manifests/*
       sudo chown root:root /etc/kubernetes/admin.conf
@@ -883,29 +775,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Bộ tiêu chuẩn CIS Kubernetes Benchmark là gì và công cụ `kube-bench` giúp ích gì cho chuyên gia bảo mật CKS trong việc rà soát an ninh Node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  CIS Kubernetes Benchmark là bộ quy chuẩn bảo mật quốc tế đưa ra các quy tắc phân quyền, cấu hình cờ và an toàn hệ thống cho Kubernetes. `kube-bench` là công cụ CLI mã nguồn mở tự động quét toàn bộ cụm và xuất báo cáo `[PASS]`, `[WARN]`, `[FAIL]` kèm hướng dẫn sửa chữa `Remediation`.
+  
+CIS Kubernetes Benchmark là bộ quy chuẩn bảo mật quốc tế đưa ra các quy tắc phân quyền, cấu hình cờ và an toàn hệ thống cho Kubernetes. <code>kube-bench</code> là công cụ CLI mã nguồn mở tự động quét toàn bộ cụm và xuất báo cáo <code>[PASS]</code>, <code>[WARN]</code>, <code>[FAIL]</code> kèm hướng dẫn sửa chữa <code>Remediation</code>.
 
-**Tiêu chí chấm:**
-- 0đ: Không biết CIS Benchmark và công cụ kube-bench.
-- 1đ: Nêu được quét an ninh nhưng chưa rõ 3 mức PASS/WARN/FAIL và phần Remediation.
-- 3đ: Phân tích thấu đáo bộ tiêu chuẩn CIS Benchmark và vai trò tự động hóa rà soát an ninh của `kube-bench`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết CIS Benchmark và công cụ kube-bench.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được quét an ninh nhưng chưa rõ 3 mức PASS/WARN/FAIL và phần Remediation.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo bộ tiêu chuẩn CIS Benchmark và vai trò tự động hóa rà soát an ninh của <code>kube-bench</code>.</div>
 
-**Câu hỏi đào sâu:** (Cờ lệnh nào của `kube-bench` được dùng để chỉ định kiểm tra Node Control Plane? — Cờ `--targets master`).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Cờ lệnh nào của <code>kube-bench</code> được dùng để chỉ định kiểm tra Node Control Plane? — Cờ <code>--targets master</code>).
 </div>
 </details>
 
@@ -1154,43 +1037,25 @@ Chẩn đoán và khắc phục phân quyền tệp Kubelet Config chuẩn CIS B
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Chạy `kube-bench` và trích xuất dòng FAIL</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 sudo kube-bench run --targets master 2>/dev/null | grep "FAIL" > /tmp/kubebench-fails.txt || echo "[FAIL] 1.1.1 manifests permissions" > /tmp/kubebench-fails.txt
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Khắc phục phân quyền `/etc/kubernetes/manifests/` và `admin.conf</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 sudo chown -R root:root /etc/kubernetes/manifests/ 2>/dev/null || true
 sudo chmod 600 /etc/kubernetes/manifests/* 2>/dev/null || true
 
@@ -1200,22 +1065,13 @@ sudo chmod 600 /etc/kubernetes/admin.conf 2>/dev/null || true
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Tạo NetworkPolicy `deny-cloud-metadata</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1227,34 +1083,25 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-    - Egress
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Egress</div>
   egress:
-    - to:
-        - ipBlock:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• to:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ipBlock:</div>
             cidr: 0.0.0.0/0
             except:
-              - 169.254.169.254/32
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 169.254.169.254/32</div>
 EOF
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Khắc phục phân quyền Kubelet Config và Service drop-in</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 sudo chown root:root /var/lib/kubelet/config.yaml 2>/dev/null || true
 sudo chmod 600 /var/lib/kubelet/config.yaml 2>/dev/null || true
 

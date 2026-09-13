@@ -842,33 +842,24 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày 3 quy tắc bất biến trong Mô hình mạng phẳng (Flat Network Model) của Kubernetes.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **3 Quy tắc bất biến (Flat Network):**
-  1. **Pod-to-Pod no NAT:** Tất cả các Pods có thể giao tiếp với 100% tất cả các Pods khác trong cụm mà KHÔNG CẦN qua kỹ thuật biên dịch địa chỉ mạng (NAT).
-  2. **Node-to-Pod no NAT:** Tất cả các máy chủ Node (bao gồm cả Control Plane và Worker) có thể giao tiếp trực tiếp với 100% tất cả các Pods mà KHÔNG qua NAT.
-  3. **IP Consistency:** Địa chỉ IP mà một Pod tự nhìn thấy bên trong Network Namespace của chính nó phải ĐỒNG NHẤT 100% với địa chỉ IP mà các Pods khác nhìn thấy khi giao tiếp với nó.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3 Quy tắc bất biến (Flat Network):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Pod-to-Pod no NAT:</b> Tất cả các Pods có thể giao tiếp với 100% tất cả các Pods khác trong cụm mà KHÔNG CẦN qua kỹ thuật biên dịch địa chỉ mạng (NAT).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Node-to-Pod no NAT:</b> Tất cả các máy chủ Node (bao gồm cả Control Plane và Worker) có thể giao tiếp trực tiếp với 100% tất cả các Pods mà KHÔNG qua NAT.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">IP Consistency:</b> Địa chỉ IP mà một Pod tự nhìn thấy bên trong Network Namespace của chính nó phải ĐỒNG NHẤT 100% với địa chỉ IP mà các Pods khác nhìn thấy khi giao tiếp với nó.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được quy tắc nào.
-- **1đ:** Nêu được Pod giao tiếp không qua NAT nhưng thiếu quy tắc Node-to-Pod và tính đồng nhất IP (dính trần 1đ).
-- **2đ:** Phát biểu chuẩn xác đầy đủ 3 quy tắc bất biến của Mô hình mạng phẳng Kubernetes.
-- **3đ:** Trả lời xuất sắc, chỉ ra sự khác biệt với mô hình Docker port-mapping mặc định.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được quy tắc nào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được Pod giao tiếp không qua NAT nhưng thiếu quy tắc Node-to-Pod và tính đồng nhất IP (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phát biểu chuẩn xác đầy đủ 3 quy tắc bất biến của Mô hình mạng phẳng Kubernetes.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra sự khác biệt với mô hình Docker port-mapping mặc định.</div>
 
-**Câu hỏi đào sâu:** Tại sao mô hình Docker mặc định lại không phải là Flat Network? *(Đáp án: Vì Docker dùng bridge network nội bộ riêng trên mỗi host và bắt buộc dùng NAT / Port mapping `8080:80` để giao tiếp ra bên ngoài).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao mô hình Docker mặc định lại không phải là Flat Network? *(Đáp án: Vì Docker dùng bridge network nội bộ riêng trên mỗi host và bắt buộc dùng NAT / Port mapping <code>8080:80</code> để giao tiếp ra bên ngoài).*
 </div>
 </details>
 

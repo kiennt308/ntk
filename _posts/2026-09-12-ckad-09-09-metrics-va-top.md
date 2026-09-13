@@ -325,231 +325,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Metrics Server thu thập dữ liệu chỉ số tài nguyên CPU và RAM từ tiến trình nào trên các Node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thu thập từ tiến trình `cAdvisor` tích hợp trong Kubelet.
+  
+Thu thập từ tiến trình <code>cAdvisor</code> tích hợp trong Kubelet.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Đường dẫn API Server nào được Metrics Server đăng ký để cung cấp dữ liệu cho `kubectl top` và HPA?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đường dẫn Metrics API `metrics.k8s.io/v1beta1`.
+  
+Đường dẫn Metrics API <code>metrics.k8s.io/v1beta1</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Metrics Server lưu trữ dữ liệu chỉ số thu thập được ở đâu và trong thời gian bao lâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lưu tạm thời trong bộ nhớ RAM và bị ghi đè sau mỗi 15–60 giây (không lưu đĩa cứng).
+  
+Lưu tạm thời trong bộ nhớ RAM và bị ghi đè sau mỗi 15–60 giây (không lưu đĩa cứng).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Câu lệnh CLI nào dùng để kiểm tra mức tiêu thụ CPU và RAM của tất cả các Node trên cụm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `kubectl top nodes`.
+  
+Lệnh <code>kubectl top nodes</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Cờ lệnh nào được dùng để sắp xếp danh sách Pod theo mức tiêu thụ bộ nhớ RAM giảm dần?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `--sort-by=memory`.
+  
+Cờ <code>--sort-by=memory</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Cờ lệnh nào được dùng để xem chi tiết mức tiêu thụ tài nguyên của từng container trong Pod đa container?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `--containers`.
+  
+Cờ <code>--containers</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Ý nghĩa của đơn vị `100m` trong cột CPU khi chạy lệnh `kubectl top` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Là 100 millicores (tương đương 0.1 CPU core hay 10% của 1 CPU core).
+  
+Là 100 millicores (tương đương 0.1 CPU core hay 10% của 1 CPU core).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Khi chạy `kubectl top` báo lỗi `error: Metrics API not available`, nguyên nhân thường gặp là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Do Metrics Server chưa được cài đặt, hoặc bị crash, hoặc thiếu cờ `--kubelet-insecure-tls` trong môi trường lab.
+  
+Do Metrics Server chưa được cài đặt, hoặc bị crash, hoặc thiếu cờ <code>--kubelet-insecure-tls</code> trong môi trường lab.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tại sao Metrics Server KHÔNG thể thay thế cho hệ thống giám sát Prometheus và Grafana trên Production?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì Metrics Server không lưu lịch sử chuỗi thời gian (time-series), không hỗ trợ chỉ số ứng dụng tùy chỉnh và không hỗ trợ quy tắc cảnh báo (Alerting).
+  
+Vì Metrics Server không lưu lịch sử chuỗi thời gian (time-series), không hỗ trợ chỉ số ứng dụng tùy chỉnh và không hỗ trợ quy tắc cảnh báo (Alerting).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Cờ lệnh nào của `kubectl top pods` được dùng để xem tài nguyên của Pod trên TOÀN BỘ các Namespace?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `-A` (hoặc `--all-namespaces`).
+  
+Cờ <code>-A</code> (hoặc <code>--all-namespaces</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Cờ lệnh nào của `kubectl top pods` được dùng để chỉ lọc ra các Pod mang nhãn `app=web`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `-l app=web`.
+  
+Cờ <code>-l app=web</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Thành phần Controller tự động nào trong Kubernetes phụ thuộc trực tiếp vào Metrics Server để hoạt động?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Horizontal Pod Autoscaler (HPA) và Vertical Pod Autoscaler (VPA).
+  
+Horizontal Pod Autoscaler (HPA) và Vertical Pod Autoscaler (VPA).
 </div>
 </details>
 
@@ -937,29 +829,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Metrics Server thu thập dữ liệu tài nguyên từ đâu và cung cấp cho thành phần nào trong Kubernetes?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Metrics Server định kỳ thu thập (pull) chỉ số CPU/RAM từ tiến trình `cAdvisor` tích hợp trong Kubelet của các Node. Dữ liệu này được cung cấp cho Kubernetes API Server qua đường dẫn Metrics API (`metrics.k8s.io`) phục vụ cho lệnh `kubectl top` và bộ tự động co giãn HPA/VPA.
+  
+Metrics Server định kỳ thu thập (pull) chỉ số CPU/RAM từ tiến trình <code>cAdvisor</code> tích hợp trong Kubelet của các Node. Dữ liệu này được cung cấp cho Kubernetes API Server qua đường dẫn Metrics API (<code>metrics.k8s.io</code>) phục vụ cho lệnh <code>kubectl top</code> và bộ tự động co giãn HPA/VPA.
 
-**Tiêu chí chấm:**
-- 0đ: Cho rằng Metrics Server thu thập trực tiếp từ Docker/Containerd daemon.
-- 1đ: Nêu được thu thập từ Kubelet nhưng thiếu cAdvisor và đường dẫn Metrics API.
-- 3đ: Phân tích thấu đáo nguồn dữ liệu cAdvisor và vai trò cung cấp cho `kubectl top` & HPA.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng Metrics Server thu thập trực tiếp từ Docker/Containerd daemon.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thu thập từ Kubelet nhưng thiếu cAdvisor và đường dẫn Metrics API.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo nguồn dữ liệu cAdvisor và vai trò cung cấp cho <code>kubectl top</code> & HPA.</div>
 
-**Câu hỏi đào sâu:** (Nếu Metrics Server bị crash thì lệnh `kubectl top` và HPA sẽ bị ảnh hưởng thế nào? — Lệnh `kubectl top` báo lỗi `Metrics API not available` và HPA ngưng co giãn tự động).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu Metrics Server bị crash thì lệnh <code>kubectl top</code> và HPA sẽ bị ảnh hưởng thế nào? — Lệnh <code>kubectl top</code> báo lỗi <code>Metrics API not available</code> và HPA ngưng co giãn tự động).
 </div>
 </details>
 
@@ -1207,22 +1090,13 @@ Lọc Pod theo nhãn selector và sắp xếp theo CPU:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tìm Pod ngốn RAM nhất Namespace `prod</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 # Giả lập Pods nếu chưa có:
@@ -1235,43 +1109,25 @@ kubectl top pods -n prod --sort-by=memory --no-headers | head -n 1 | awk '{print
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Tìm Pod ngốn CPU nhất toàn cụm (`-A`)</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl top pods -A --sort-by=cpu --no-headers | head -n 1 | awk '{print $1 " " $2}' > /tmp/max-cpu-pod.txt
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Soi tài nguyên từng container bằng `--containers</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 # Giả lập Pod heavy-pod nếu chưa có:
 cat <<EOF | kubectl apply -f - 2>/dev/null || true
 apiVersion: v1
@@ -1281,10 +1137,10 @@ metadata:
   namespace: prod
 spec:
   containers:
-    - name: c1
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: c1</div>
       image: busybox:1.36
       command: ["sh", "-c", "sleep 3600"]
-    - name: c2
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: c2</div>
       image: busybox:1.36
       command: ["sh", "-c", "sha256sum /dev/zero"]
 EOF
@@ -1295,22 +1151,13 @@ kubectl top pod heavy-pod -n prod --containers > /tmp/containers-top.txt
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Lọc Pod theo nhãn `tier=backend` sắp xếp theo CPU</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl top pods -n prod -l tier=backend --sort-by=cpu > /tmp/backend-top.txt
 ```
 

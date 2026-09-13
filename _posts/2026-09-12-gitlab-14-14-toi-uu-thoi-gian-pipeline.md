@@ -2086,301 +2086,193 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. Danh sách 12 câu hỏi chiến trường
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Câu hỏi:** Tại sao lại chia thời gian Pipeline thành ba nhóm (Chờ, Chuẩn bị, Việc thật) và ba nhóm đó đo bằng những công cụ nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Chia thành ba nhóm vì:** Ba nhóm có ba nguyên nhân kỹ thuật hoàn toàn khác nhau và đòi hỏi ba phương án khắc phục hoàn toàn khác nhau. Phân tách định lượng giúp phát hiện chính xác nút cổ chai thực sự của hệ thống.
-  - **Nhóm CHỜ (Queued duration):** Do hệ thống vượt Mức no $\rho \ge 1.0$ hoặc thiếu Slot xử lý $c$. Cách sửa: Tăng Slot $c$ hoặc dùng `interruptible: true` để giảm tải $\lambda$ (Buổi 13).
-  - **Nhóm CHUẨN BỊ (Preparation phases):** Do kéo Docker Image cồng kềnh, clone Git sâu, hoặc nạp/giải nén Cache dư thừa. Cách sửa: Dùng Image mỏng, git fetch shallow, và `policy: pull` (Buổi 05).
-  - **Nhóm VIỆC THẬT (Script execution):** Do câu lệnh trong `script:` thực thi tuần tự hoặc code kiểm thử cồng kềnh. Cách sửa: Chia song song `parallel: matrix` hoặc tối ưu thuật toán.
-- **Công cụ đo đạc chuẩn mực:**
-  1. **Nhóm CHỜ (`queued_duration`):** Trích xuất qua REST API bằng script `do-hang-doi.sh` (Buổi 13).
-  2. **Nhóm CHUẨN BỊ (Preparation phases):** Trích xuất thời gian 5 pha từ trace log bằng `doc-pha.sh` (Buổi 05).
-  3. **Nhóm VIỆC THẬT (Script execution):** Tính bằng phép trừ $\text{Script} = \text{Total Duration} - \text{Prep} - \text{Queued}$.
-- **Quy tắc kỹ thuật:** **QT 4.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chia thành ba nhóm vì:</b> Ba nhóm có ba nguyên nhân kỹ thuật hoàn toàn khác nhau và đòi hỏi ba phương án khắc phục hoàn toàn khác nhau. Phân tách định lượng giúp phát hiện chính xác nút cổ chai thực sự của hệ thống.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nhóm CHỜ (Queued duration):</b> Do hệ thống vượt Mức no $\rho \ge 1.0$ hoặc thiếu Slot xử lý $c$. Cách sửa: Tăng Slot $c$ hoặc dùng <code>interruptible: true</code> để giảm tải $\lambda$ (Buổi 13).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nhóm CHUẨN BỊ (Preparation phases):</b> Do kéo Docker Image cồng kềnh, clone Git sâu, hoặc nạp/giải nén Cache dư thừa. Cách sửa: Dùng Image mỏng, git fetch shallow, và <code>policy: pull</code> (Buổi 05).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nhóm VIỆC THẬT (Script execution):</b> Do câu lệnh trong <code>script:</code> thực thi tuần tự hoặc code kiểm thử cồng kềnh. Cách sửa: Chia song song <code>parallel: matrix</code> hoặc tối ưu thuật toán.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Công cụ đo đạc chuẩn mực:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Nhóm CHỜ (<code>queued_duration</code>):</b> Trích xuất qua REST API bằng script <code>do-hang-doi.sh</code> (Buổi 13).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Nhóm CHUẨN BỊ (Preparation phases):</b> Trích xuất thời gian 5 pha từ trace log bằng <code>doc-pha.sh</code> (Buổi 05).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Nhóm VIỆC THẬT (Script execution):</b> Tính bằng phép trừ $\text{Script} = \text{Total Duration} - \text{Prep} - \text{Queued}$.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 4.1</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Câu hỏi:** Rút ngắn một Job không nằm trên đường găng đem lại hiệu quả gì cho tổng thời gian Pipeline? Tại sao?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Hiệu quả thu được:** Tiết kiệm đúng **0 giây** tổng thời gian cán đích của Pipeline.
-- **Giải thích nguyên nhân:**
-  - Thời lượng thực thi của một Pipeline có cấu trúc đồ thị DAG bằng đúng thời lượng của chuỗi Job dài nhất liên tục từ Start đến End (Đường găng).
-  - Mọi Job nằm ngoài đường găng này đều sở hữu một khoảng thời gian trống (Slack time); rút ngắn một Job nằm ngoài đường găng chỉ làm tăng khoảng thời gian rỗi của nó chứ không làm thay đổi mốc thời gian hoàn thành của Job cuối cùng trên đường găng.
-- **Ví dụ cụ thể:** Tối ưu Job `lint-code` từ 200 giây xuống 40 giây khi Job `unit-test` trên đường găng ngốn 600 giây $\to$ Tổng thời gian Pipeline vẫn giữ nguyên 22 phút.
-- **Quy tắc kỹ thuật:** **QT 4.2** & **QT 4.1 Buổi 08**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hiệu quả thu được:</b> Tiết kiệm đúng <b style="color: var(--accent-primary);">0 giây</b> tổng thời gian cán đích của Pipeline.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích nguyên nhân:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thời lượng thực thi của một Pipeline có cấu trúc đồ thị DAG bằng đúng thời lượng của chuỗi Job dài nhất liên tục từ Start đến End (Đường găng).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mọi Job nằm ngoài đường găng này đều sở hữu một khoảng thời gian trống (Slack time); rút ngắn một Job nằm ngoài đường găng chỉ làm tăng khoảng thời gian rỗi của nó chứ không làm thay đổi mốc thời gian hoàn thành của Job cuối cùng trên đường găng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ví dụ cụ thể:</b> Tối ưu Job <code>lint-code</code> từ 200 giây xuống 40 giây khi Job <code>unit-test</code> trên đường găng ngốn 600 giây $\to$ Tổng thời gian Pipeline vẫn giữ nguyên 22 phút.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 4.2</b> & <b style="color: var(--accent-primary);">QT 4.1 Buổi 08</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Câu hỏi:** Tại sao phải áp dụng từng kỹ thuật một và đo lại, thay vì áp dụng tất cả 5 kỹ thuật cùng lúc trong một Merge Request?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Lý do kỹ thuật tác động tương hỗ:** Các kỹ thuật tối ưu hóa có sự tương tác qua lại lẫn nhau: `parallel` chia nhỏ công việc làm thay đổi thời gian cố định, Cache làm thay đổi pha chuẩn bị, Image mỏng làm thay đổi cả thời gian nạp đĩa và nén. Tổng hiệu quả của 5 kỹ thuật không bao giờ bằng tổng đại số của từng hiệu ứng riêng lẻ.
-- **Tác hại khi gộp chung:** Nếu gộp 5 kỹ thuật vào 1 MR, kỹ sư không thể xác định kỹ thuật nào mang lại hiệu quả thực sự và kỹ thuật nào vô tình **làm Pipeline chạy chậm hơn** (ví dụ Cache sai vị trí làm tăng 15s).
-- **Quy trình chuẩn:** Tạo 5 Merge Request tuần tự, mỗi MR đính kèm bảng đo 3 lần lấy trung vị và so sánh với mã SHA256 Hash hiện vật sản phẩm.
-- **Quy tắc kỹ thuật:** **QT 4.3**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do kỹ thuật tác động tương hỗ:</b> Các kỹ thuật tối ưu hóa có sự tương tác qua lại lẫn nhau: <code>parallel</code> chia nhỏ công việc làm thay đổi thời gian cố định, Cache làm thay đổi pha chuẩn bị, Image mỏng làm thay đổi cả thời gian nạp đĩa và nén. Tổng hiệu quả của 5 kỹ thuật không bao giờ bằng tổng đại số của từng hiệu ứng riêng lẻ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác hại khi gộp chung:</b> Nếu gộp 5 kỹ thuật vào 1 MR, kỹ sư không thể xác định kỹ thuật nào mang lại hiệu quả thực sự và kỹ thuật nào vô tình <b style="color: var(--accent-primary);">làm Pipeline chạy chậm hơn</b> (ví dụ Cache sai vị trí làm tăng 15s).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy trình chuẩn:</b> Tạo 5 Merge Request tuần tự, mỗi MR đính kèm bảng đo 3 lần lấy trung vị và so sánh với mã SHA256 Hash hiện vật sản phẩm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 4.3</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Câu hỏi:** Tại sao một lần đo đơn lẻ không có giá trị kỹ thuật và cần xác định biên độ dao động hệ thống trước khi làm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Bản chất con số đo đơn lẻ:** Là một con số ngẫu nhiên do chịu ảnh hưởng bởi biến động tải rỗi CPU của máy chủ Runner, trạng thái I/O đĩa đệm, và độ trễ mạng HTTP giữa các lần thực thi.
-- **Phương pháp chuẩn:** Phải thực thi tối thiểu **3 lần** (hoặc 5 lần) và lấy **giá trị trung vị (Median)**.
-- **Biên độ dao động ($\pm 8\%$):** Nếu biên độ dao động của hệ thống là $\pm 8\%$ (ví dụ $1200\text{s} \pm 96\text{s}$), mọi kết quả cải thiện nhỏ hơn 96 giây đều bị coi là nhiễu hệ thống và chưa có kết luận kỹ thuật.
-- **Quy tắc kỹ thuật:** **QT 4.4**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bản chất con số đo đơn lẻ:</b> Là một con số ngẫu nhiên do chịu ảnh hưởng bởi biến động tải rỗi CPU của máy chủ Runner, trạng thái I/O đĩa đệm, và độ trễ mạng HTTP giữa các lần thực thi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Phương pháp chuẩn:</b> Phải thực thi tối thiểu <b style="color: var(--accent-primary);">3 lần</b> (hoặc 5 lần) và lấy <b style="color: var(--accent-primary);">giá trị trung vị (Median)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Biên độ dao động ($\pm 8\%$):</b> Nếu biên độ dao động của hệ thống là $\pm 8\%$ (ví dụ $1200\text{s} \pm 96\text{s}$), mọi kết quả cải thiện nhỏ hơn 96 giây đều bị coi là nhiễu hệ thống và chưa có kết luận kỹ thuật.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 4.4</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Câu hỏi:** Trình tự bắt buộc của 5 kỹ thuật tối ưu là gì và tại sao hai kỹ thuật đầu tiên lại được xếp trước?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Thứ tự 5 kỹ thuật tuân thủ:** (1) Bỏ hàng rào stage ($\to$ `needs`); (2) Song song hóa ($\to$ `parallel`); (3) Cache đúng chỗ ($\to$ `policy: pull`); (4) Docker Image mỏng; (5) Bỏ việc không cần thiết.
-- **Tại sao Kỹ thuật 1 & 2 xếp trước:** Vì `needs:` và `parallel:` làm **thay đổi cấu trúc luồng thực thi** của Pipeline. Nếu thực hiện Cache hoặc Image mỏng trước, các số đo thời gian của chúng sẽ bị thay đổi hoàn toàn sau khi tái cấu trúc Pipeline ở bước 1 và 2.
-- **Tác hại làm sai thứ tự:** Tối ưu Docker Image mỏng ở bước 1 rồi mới thêm `needs:` ở bước 2 làm con số tiết kiệm đo lại bị lệch 40% so với báo cáo ban đầu.
-- **Quy tắc kỹ thuật:** **QT 5.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thứ tự 5 kỹ thuật tuân thủ:</b> (1) Bỏ hàng rào stage ($\to$ <code>needs</code>); (2) Song song hóa ($\to$ <code>parallel</code>); (3) Cache đúng chỗ ($\to$ <code>policy: pull</code>); (4) Docker Image mỏng; (5) Bỏ việc không cần thiết.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tại sao Kỹ thuật 1 & 2 xếp trước:</b> Vì <code>needs:</code> và <code>parallel:</code> làm <b style="color: var(--accent-primary);">thay đổi cấu trúc luồng thực thi</b> của Pipeline. Nếu thực hiện Cache hoặc Image mỏng trước, các số đo thời gian của chúng sẽ bị thay đổi hoàn toàn sau khi tái cấu trúc Pipeline ở bước 1 và 2.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác hại làm sai thứ tự:</b> Tối ưu Docker Image mỏng ở bước 1 rồi mới thêm <code>needs:</code> ở bước 2 làm con số tiết kiệm đo lại bị lệch 40% so với báo cáo ban đầu.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 5.1</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Câu hỏi:** Trần lý thuyết là gì và công thức tính trần lý thuyết của 4 kỹ thuật đầu tiên được xác định như thế nào trước khi gõ code?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Trần lý thuyết:** Con số thời gian tiết kiệm tối đa có thể đạt được của một kỹ thuật, tính toán được từ số liệu đo thô trước khi can thiệp mã nguồn YAML.
-- **Công thức tính 4 trần:**
-  1. **Trần Needs:** Bằng tổng thời gian lãng phí ở các hàng rào stage chờ đợi.
-  2. **Trần Parallel:** Bằng $T_{\text{tuần tự}} - (T / K + \text{phần cố định})$ theo định luật Amdahl.
-  3. **Trần Cache:** Bằng $\text{Thời gian tái tạo} - \text{Thời gian giải nén Zip}$.
-  4. **Trần Image mỏng:** Bằng đúng thời gian kéo Docker Image cồng kềnh hiện tại trong pha chuẩn bị.
-- **Ý nghĩa quản trị:** Giúp loại bỏ sớm các kỹ thuật có trần lý thuyết quá nhỏ ($< 5\%$) trước khi tốn công sức cài đặt.
-- **Quy tắc kỹ thuật:** **QT 5.2**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Trần lý thuyết:</b> Con số thời gian tiết kiệm tối đa có thể đạt được của một kỹ thuật, tính toán được từ số liệu đo thô trước khi can thiệp mã nguồn YAML.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Công thức tính 4 trần:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Trần Needs:</b> Bằng tổng thời gian lãng phí ở các hàng rào stage chờ đợi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Trần Parallel:</b> Bằng $T_{\text{tuần tự}} - (T / K + \text{phần cố định})$ theo định luật Amdahl.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Trần Cache:</b> Bằng $\text{Thời gian tái tạo} - \text{Thời gian giải nén Zip}$.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Trần Image mỏng:</b> Bằng đúng thời gian kéo Docker Image cồng kềnh hiện tại trong pha chuẩn bị.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa quản trị:</b> Giúp loại bỏ sớm các kỹ thuật có trần lý thuyết quá nhỏ ($< 5\%$) trước khi tốn công sức cài đặt.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 5.2</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Câu hỏi:** Trình bày 3 trường hợp điển hình khiến việc bật Cache làm Pipeline chạy chậm hơn?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **3 ca Cache làm chậm hơn:**
-  1. **Ca 1:** Thư mục nhỏ có thời gian tái tạo nhanh hơn thời gian nén và giải nén Zip (ví dụ build 3s nhưng unzip mất 8s).
-  2. **Ca 2:** Để cờ `policy: pull-push` mặc định ở Job chỉ tiêu thụ Cache, bắt Job phải mất thêm thời gian nén và đẩy lại tệp Zip dư thừa lên S3 server (tiết kiệm 20–40s khi chuyển sang `policy: pull`).
-  3. **Ca 3:** Kích hoạt Distributed Cache S3 qua mạng MinIO khi hệ thống chỉ có **đúng 1 Runner**, làm phát sinh độ trễ HTTP không cần thiết so với đĩa local.
-- **Quy tắc kỹ thuật:** **QT 6.1** & **QT 6.2 Buổi 05**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3 ca Cache làm chậm hơn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Ca 1:</b> Thư mục nhỏ có thời gian tái tạo nhanh hơn thời gian nén và giải nén Zip (ví dụ build 3s nhưng unzip mất 8s).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Ca 2:</b> Để cờ <code>policy: pull-push</code> mặc định ở Job chỉ tiêu thụ Cache, bắt Job phải mất thêm thời gian nén và đẩy lại tệp Zip dư thừa lên S3 server (tiết kiệm 20–40s khi chuyển sang <code>policy: pull</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Ca 3:</b> Kích hoạt Distributed Cache S3 qua mạng MinIO khi hệ thống chỉ có <b style="color: var(--accent-primary);">đúng 1 Runner</b>, làm phát sinh độ trễ HTTP không cần thiết so với đĩa local.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 6.1</b> & <b style="color: var(--accent-primary);">QT 6.2 Buổi 05</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Câu hỏi:** Tại sao dùng Docker Image quá mỏng lại có nguy cơ làm chậm Pipeline thay vì làm nhanh hơn?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Hiện tượng dịch chuyển chi phí:** Docker Image quá mỏng (như Alpine nguyên bản) không có sẵn các công cụ như `git`, `curl`, `python3`. Khi Job chạy, câu lệnh `script:` phải thực thi `apk add --no-cache git curl` để cài bổ sung.
-- **Hậu quả:** Thời gian kéo Image ở pha chuẩn bị giảm 35 giây, nhưng thời gian chạy script tăng thêm 45 giây $\to$ Tổng thời lượng Job tăng thêm 10 giây và không tận dụng được Layer Cache của Runner.
-- **Giải pháp chuẩn:** Tự đóng gói Docker Image tùy chỉnh đã chứa sẵn đầy đủ công cụ cần thiết nhưng loại bỏ các tài nguyên thừa.
-- **Quy tắc kỹ thuật:** **QT 6.2**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hiện tượng dịch chuyển chi phí:</b> Docker Image quá mỏng (như Alpine nguyên bản) không có sẵn các công cụ như <code>git</code>, <code>curl</code>, <code>python3</code>. Khi Job chạy, câu lệnh <code>script:</code> phải thực thi <code>apk add --no-cache git curl</code> để cài bổ sung.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hậu quả:</b> Thời gian kéo Image ở pha chuẩn bị giảm 35 giây, nhưng thời gian chạy script tăng thêm 45 giây $\to$ Tổng thời lượng Job tăng thêm 10 giây và không tận dụng được Layer Cache của Runner.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải pháp chuẩn:</b> Tự đóng gói Docker Image tùy chỉnh đã chứa sẵn đầy đủ công cụ cần thiết nhưng loại bỏ các tài nguyên thừa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 6.2</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Câu hỏi:** Điều gì đảm bảo một Pipeline chạy nhanh hơn 40% thực sự là tối ưu hóa thành công chứ không phải do bỏ sót công việc?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Tiêu chuẩn cưỡng chế SHA256 Hash:** Mã SHA256 Hash của mọi hiện vật sản phẩm đầu ra (`dist/app.tar.gz` hoặc file binary) sau tối ưu phải **giống hệt 100%** so với phiên bản gốc trước khi tối ưu.
-- **Ý nghĩa:** Nếu mã Hash thay đổi hoặc tệp nén bị giảm dung lượng, điều đó chứng minh kỹ sư đã loại bỏ nhầm các tệp tài nguyên hoặc bỏ sót bước kiểm thử, không phải là tối ưu hóa kỹ thuật.
-- **Dấu hiệu làm sai:** Pipeline nhanh hơn 40% sau khi thêm `dependencies: []` nhưng bản build phát hành lên Production bị thiếu tài nguyên tĩnh gây sập hỏng ứng dụng.
-- **Quy tắc kỹ thuật:** **QT 6.3** & **QT 7.2 Buổi 01**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tiêu chuẩn cưỡng chế SHA256 Hash:</b> Mã SHA256 Hash của mọi hiện vật sản phẩm đầu ra (<code>dist/app.tar.gz</code> hoặc file binary) sau tối ưu phải <b style="color: var(--accent-primary);">giống hệt 100%</b> so với phiên bản gốc trước khi tối ưu.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa:</b> Nếu mã Hash thay đổi hoặc tệp nén bị giảm dung lượng, điều đó chứng minh kỹ sư đã loại bỏ nhầm các tệp tài nguyên hoặc bỏ sót bước kiểm thử, không phải là tối ưu hóa kỹ thuật.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Dấu hiệu làm sai:</b> Pipeline nhanh hơn 40% sau khi thêm <code>dependencies: []</code> nhưng bản build phát hành lên Production bị thiếu tài nguyên tĩnh gây sập hỏng ứng dụng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 6.3</b> & <b style="color: var(--accent-primary);">QT 7.2 Buổi 01</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Câu hỏi:** Kỹ thuật 5 (Bỏ việc không cần thiết) khác gì so với 4 kỹ thuật đầu tiên và ví dụ thực tế là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Điểm khác biệt cốt lõi:** 4 kỹ thuật đầu tiên tối ưu **cách máy tính thực hiện công việc**. Kỹ thuật 5 hỏi trực tiếp **bản chất công việc có thực sự cần thiết hay không** — đây là kỹ thuật duy nhất đòi hỏi **quyết định chuyên môn của con người**.
-- **Ví dụ thực tế:**
-  1. Hủy bỏ Job `generate-pdf-docs` ngốn 90s mà 6 tháng qua không ai đọc artifact.
-  2. Thu hẹp `rules:` của Job `heavy-security-scan` chỉ chạy trên Merge Request thay vì mọi Commit nhánh phụ.
-- **Quy tắc kỹ thuật:** **QT 5.3**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Điểm khác biệt cốt lõi:</b> 4 kỹ thuật đầu tiên tối ưu <b style="color: var(--accent-primary);">cách máy tính thực hiện công việc</b>. Kỹ thuật 5 hỏi trực tiếp <b style="color: var(--accent-primary);">bản chất công việc có thực sự cần thiết hay không</b> — đây là kỹ thuật duy nhất đòi hỏi <b style="color: var(--accent-primary);">quyết định chuyên môn của con người</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ví dụ thực tế:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Hủy bỏ Job <code>generate-pdf-docs</code> ngốn 90s mà 6 tháng qua không ai đọc artifact.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Thu hẹp <code>rules:</code> của Job <code>heavy-security-scan</code> chỉ chạy trên Merge Request thay vì mọi Commit nhánh phụ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 5.3</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Câu hỏi:** Ngân sách thời gian (Time Budget) chuẩn cho Merge Request Pipeline và Main Branch Pipeline là bao nhiêu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Merge Request Pipeline:** Ngân sách tối đa **$\le 10$ phút** (Buổi 12 QT 7.1) để đảm bảo lập trình viên nhận được phản hồi nhanh và không làm nghẽn Merge Train.
-- **Main Branch Pipeline:** Ngân sách tối đa **$\le 20$ phút** cho các bước đóng gói và phát hành chính thức.
-- **Cơ chế giám sát:** Khai báo Job giám sát ngân sách thời gian tự động ở stage `.post` để bắn cảnh báo khi thời gian vượt ngưỡng quy định.
-- **Quy tắc kỹ thuật:** **QT 7.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Merge Request Pipeline:</b> Ngân sách tối đa <b style="color: var(--accent-primary);">$\le 10$ phút</b> (Buổi 12 QT 7.1) để đảm bảo lập trình viên nhận được phản hồi nhanh và không làm nghẽn Merge Train.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Main Branch Pipeline:</b> Ngân sách tối đa <b style="color: var(--accent-primary);">$\le 20$ phút</b> cho các bước đóng gói và phát hành chính thức.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế giám sát:</b> Khai báo Job giám sát ngân sách thời gian tự động ở stage <code>.post</code> để bắn cảnh báo khi thời gian vượt ngưỡng quy định.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 7.1</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Câu hỏi:** Điểm dừng kỹ thuật trong tối ưu hóa Pipeline được xác định dựa trên nguyên lý nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Nguyên lý hiệu quả giảm dần (Diminishing Returns):** Càng tiến gần tới trần lý thuyết, chi phí công sức bỏ ra càng lớn nhưng lợi ích thu về càng nhỏ.
-- **Tiêu chuẩn dừng:** Khi việc rút ngắn thêm 30 giây yêu cầu hơn 2 ngày công đầu tư và làm tăng độ phức tạp bảo trì của file YAML (file dài rườm rà), kỹ sư phải dừng lại và ghi nhận lý do dừng vào tệp `bao-cao-toi-uu.tsv`.
-- **Quy tắc kỹ thuật:** **QT 6.4**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên lý hiệu quả giảm dần (Diminishing Returns):</b> Càng tiến gần tới trần lý thuyết, chi phí công sức bỏ ra càng lớn nhưng lợi ích thu về càng nhỏ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tiêu chuẩn dừng:</b> Khi việc rút ngắn thêm 30 giây yêu cầu hơn 2 ngày công đầu tư và làm tăng độ phức tạp bảo trì của file YAML (file dài rườm rà), kỹ sư phải dừng lại và ghi nhận lý do dừng vào tệp <code>bao-cao-toi-uu.tsv</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc kỹ thuật:</b> <b style="color: var(--accent-primary);">QT 6.4</b>.</div>
 
 ---
 </div>

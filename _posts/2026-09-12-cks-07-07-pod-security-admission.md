@@ -332,231 +332,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ba cấp độ bảo mật trong khung tiêu chuẩn Pod Security Standards (PSS) của Kubernetes là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  3 cấp độ: **`privileged`**, **`baseline`**, và **`restricted`**.
+  
+3 cấp độ: <b style="color: var(--accent-primary);"><code>privileged</code></b>, <b style="color: var(--accent-primary);"><code>baseline</code></b>, và <b style="color: var(--accent-primary);"><code>restricted</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Ba chế độ kiểm soát có thể khai báo trên Namespace trong Pod Security Admission (PSA) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  3 chế độ: **`enforce`**, **`warn`**, và **`audit`**.
+  
+3 chế độ: <b style="color: var(--accent-primary);"><code>enforce</code></b>, <b style="color: var(--accent-primary);"><code>warn</code></b>, và <b style="color: var(--accent-primary);"><code>audit</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Cú pháp nhãn Namespace chuẩn để bắt buộc tất cả các Pods trong Namespace `prod` phải tuân thủ cấp độ `restricted` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `pod-security.kubernetes.io/enforce: restricted`.
+  
+<code>pod-security.kubernetes.io/enforce: restricted</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Nhãn Namespace nào được dùng để cố định phiên bản tiêu chuẩn bảo mật PSS tránh bị thay đổi khi nâng cấp cụm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nhãn `pod-security.kubernetes.io/enforce-version: "latest"` (hoặc `"v1.30"`).
+  
+Nhãn <code>pod-security.kubernetes.io/enforce-version: "latest"</code> (hoặc <code>"v1.30"</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Điểm khác biệt chính giữa cấp độ `baseline` và cấp độ `restricted` trong PSS là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cấp độ `baseline` ngăn chặn các vi phạm nguy hiểm cao (như privileged, hostNetwork); Cấp độ `restricted` thắt chặt thêm bằng cách ép buộc chạy non-root, cấm leo thang đặc quyền và yêu cầu Seccomp.
+  
+Cấp độ <code>baseline</code> ngăn chặn các vi phạm nguy hiểm cao (như privileged, hostNetwork); Cấp độ <code>restricted</code> thắt chặt thêm bằng cách ép buộc chạy non-root, cấm leo thang đặc quyền và yêu cầu Seccomp.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Bốn thuộc tính `securityContext` bắt buộc phải có trong Pod manifest để vượt qua rào chắn `restricted` PSS là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  4 thuộc tính: `runAsNonRoot: true`, `seccompProfile.type: RuntimeDefault`, `allowPrivilegeEscalation: false`, và `capabilities.drop: ["ALL"]`.
+  
+4 thuộc tính: <code>runAsNonRoot: true</code>, <code>seccompProfile.type: RuntimeDefault</code>, <code>allowPrivilegeEscalation: false</code>, và <code>capabilities.drop: ["ALL"]</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Điều gì xảy ra khi bạn tạo một Pod vi phạm PSS trong một Namespace được gán nhãn `pod-security.kubernetes.io/warn: restricted`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Pod VẪN ĐƯỢC TẠO THÀNH CÔNG, nhưng API Server trả về một thông điệp CẢNH BÁO (warning) in trực tiếp trên terminal.
+  
+Pod VẪN ĐƯỢC TẠO THÀNH CÔNG, nhưng API Server trả về một thông điệp CẢNH BÁO (warning) in trực tiếp trên terminal.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Điều gì xảy ra khi bạn tạo một Pod vi phạm PSS trong một Namespace được gán nhãn `pod-security.kubernetes.io/enforce: restricted`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  API Server CHẶN THẲNG lệnh khởi tạo và trả về lỗi `403 Forbidden` kèm lý do vi phạm.
+  
+API Server CHẶN THẲNG lệnh khởi tạo và trả về lỗi <code>403 Forbidden</code> kèm lý do vi phạm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Lệnh CLI `kubectl` nào được dùng để nạp đè nhãn PSA `enforce=restricted` cho Namespace `staging`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `kubectl label --overwrite ns staging pod-security.kubernetes.io/enforce=restricted`.
+  
+<code>kubectl label --overwrite ns staging pod-security.kubernetes.io/enforce=restricted</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Quy trình 2 bước khuyến nghị để dịch chuyển chính sách PSA (Migration) cho Namespace Production là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Bước 1: Gán nhãn `warn: restricted` để cảnh báo -> Bước 2: Sửa các Pod manifest vi phạm rồi mới gán nhãn `enforce: restricted`.
+  
+Bước 1: Gán nhãn <code>warn: restricted</code> để cảnh báo -> Bước 2: Sửa các Pod manifest vi phạm rồi mới gán nhãn <code>enforce: restricted</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao không nên gán nhãn `enforce: restricted` cho Namespace `kube-system`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì Namespace `kube-system` chứa các Pods hạ tầng (như CNI, kube-proxy, storage) bắt buộc phải chạy với quyền `privileged` hoặc `hostNetwork`.
+  
+Vì Namespace <code>kube-system</code> chứa các Pods hạ tầng (như CNI, kube-proxy, storage) bắt buộc phải chạy với quyền <code>privileged</code> hoặc <code>hostNetwork</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn của một Pod hoàn chỉnh tuân thủ 100% tiêu chuẩn `restricted` PSS là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       apiVersion: v1
       kind: Pod
       metadata:
@@ -569,13 +461,13 @@ graph TD
           seccompProfile:
             type: RuntimeDefault
         containers:
-          - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
             image: nginx:alpine
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:
                 drop:
-                  - ALL
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
       ```
 </div>
 </details>
@@ -916,31 +808,22 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Sự khác biệt về mục tiêu kiểm soát giữa 3 cấp độ bảo mật trong khung Pod Security Standards (PSS): `privileged`, `baseline`, và `restricted` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `privileged`: Không giới hạn, cho phép Pod chạy với đặc quyền tối cao (CNI, Storage).
-- `baseline`: Ngăn chặn các lỗ hổng leo thang nguy hiểm cao (cấm privileged, hostNetwork, hostPID).
-- `restricted`: Thắt chặt bảo mật tối đa, ép buộc chạy non-root, cấm leo thang đặc quyền và yêu cầu Seccomp.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>privileged</code>: Không giới hạn, cho phép Pod chạy với đặc quyền tối cao (CNI, Storage).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>baseline</code>: Ngăn chặn các lỗ hổng leo thang nguy hiểm cao (cấm privileged, hostNetwork, hostPID).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>restricted</code>: Thắt chặt bảo mật tối đa, ép buộc chạy non-root, cấm leo thang đặc quyền và yêu cầu Seccomp.</div>
 
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được 3 cấp độ PSS.
-- 1đ: Nêu được privileged nới lỏng restricted thắt chặt nhưng chưa rõ mức baseline.
-- 3đ: Phân tích thấu đáo mục tiêu kiểm soát an ninh của cả 3 cấp độ PSS.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 3 cấp độ PSS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được privileged nới lỏng restricted thắt chặt nhưng chưa rõ mức baseline.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo mục tiêu kiểm soát an ninh của cả 3 cấp độ PSS.</div>
 
-**Câu hỏi đào sâu:** (Cấp độ PSS nào được khuyến nghị áp dụng cho các microservices ứng dụng Production? — Cấp độ `restricted`).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Cấp độ PSS nào được khuyến nghị áp dụng cho các microservices ứng dụng Production? — Cấp độ <code>restricted</code>).
 </div>
 </details>
 
@@ -1213,66 +1096,39 @@ Chẩn đoán và sửa Deployment `payment-dep` trong Namespace `staging` bị 
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Gán nhãn `enforce: restricted` cho Namespace `staging</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns staging --dry-run=client -o yaml | kubectl apply -f -
 kubectl label ns staging pod-security.kubernetes.io/enforce=restricted pod-security.kubernetes.io/enforce-version=latest --overwrite
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Gán nhãn `warn` và `audit` cho Namespace `finance</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns finance --dry-run=client -o yaml | kubectl apply -f -
 kubectl label ns finance pod-security.kubernetes.io/warn=restricted pod-security.kubernetes.io/audit=restricted --overwrite
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Chỉnh sửa và apply Pod `/tmp/unsafe-pod.yaml</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/unsafe-pod.yaml
 apiVersion: v1
 kind: Pod
@@ -1286,13 +1142,13 @@ spec:
     seccompProfile:
       type: RuntimeDefault
   containers:
-    - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
       securityContext:
         allowPrivilegeEscalation: false
         capabilities:
           drop:
-            - ALL
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
 EOF
 
 kubectl apply -f /tmp/unsafe-pod.yaml
@@ -1300,22 +1156,13 @@ kubectl apply -f /tmp/unsafe-pod.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Sửa Deployment `payment-dep` tuân thủ Restricted PSS</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -1338,13 +1185,13 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: payment
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: payment</div>
           image: nginx:alpine
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
-                - ALL
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
 EOF
 ```
 

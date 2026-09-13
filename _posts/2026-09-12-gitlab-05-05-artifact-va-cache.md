@@ -2822,36 +2822,27 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>artifacts` và `cache` khác nhau ở đâu? Trả lời bằng **cơ chế**, đừng trả lời bằng định nghĩa.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khác ở **ai giữ**; mọi khác biệt còn lại là hệ quả. Có **2** kho, chỉ **1** trong 2 có API đọc.
+  
+Khác ở <b style="color: var(--accent-primary);">ai giữ</b>; mọi khác biệt còn lại là hệ quả. Có <b style="color: var(--accent-primary);">2</b> kho, chỉ <b style="color: var(--accent-primary);">1</b> trong 2 có API đọc.
 
-`artifacts` đi **lên server GitLab**: cuối job runner nén và upload; GitLab ghi một bản ghi vào cơ sở dữ liệu, cấp URL tải, gắn `expire_in`, cộng số byte vào dung lượng project. Vì có bản ghi nên có API — `GET /projects/:id/jobs/:job_id/artifacts` trả `200` kèm nội dung hoặc `404`. Tức artifact **kiểm chứng được từ ngoài job**.
+<code>artifacts</code> đi <b style="color: var(--accent-primary);">lên server GitLab</b>: cuối job runner nén và upload; GitLab ghi một bản ghi vào cơ sở dữ liệu, cấp URL tải, gắn <code>expire_in</code>, cộng số byte vào dung lượng project. Vì có bản ghi nên có API — <code>GET /projects/:id/jobs/:job_id/artifacts</code> trả <code>200</code> kèm nội dung hoặc <code>404</code>. Tức artifact <b style="color: var(--accent-primary);">kiểm chứng được từ ngoài job</b>.
 
-`cache` **không đi đâu cả**: cuối job runner nén thư mục đã khai thành một tệp và để lại **trên đĩa của chính runner vừa chạy job** (hoặc object storage nếu người vận hành đã cấu hình distributed cache). Không ai ghi sổ, không endpoint nào để hỏi "cache của khoá X còn không", và khi thiếu thì runner ghi **một dòng thông báo** rồi chạy tiếp — **0** dòng lỗi.
+<code>cache</code> <b style="color: var(--accent-primary);">không đi đâu cả</b>: cuối job runner nén thư mục đã khai thành một tệp và để lại <b style="color: var(--accent-primary);">trên đĩa của chính runner vừa chạy job</b> (hoặc object storage nếu người vận hành đã cấu hình distributed cache). Không ai ghi sổ, không endpoint nào để hỏi "cache của khoá X còn không", và khi thiếu thì runner ghi <b style="color: var(--accent-primary);">một dòng thông báo</b> rồi chạy tiếp — <b style="color: var(--accent-primary);">0</b> dòng lỗi.
 
-Nói gọn để đạt 3 điểm: **`artifacts` là hợp đồng, `cache` là tối ưu.** Câu hỏi để chọn chỉ có một: *"job sau **sai** nếu thiếu nó, hay chỉ **chậm** hơn?"*
+Nói gọn để đạt 3 điểm: <b style="color: var(--accent-primary);"><code>artifacts</code> là hợp đồng, <code>cache</code> là tối ưu.</b> Câu hỏi để chọn chỉ có một: *"job sau <b style="color: var(--accent-primary);">sai</b> nếu thiếu nó, hay chỉ <b style="color: var(--accent-primary);">chậm</b> hơn?"*
 
-**Tiêu chí chấm:**
-- 0đ: "Giống nhau, chỉ khác cách dùng." Hoặc nói cache được đảm bảo. **Trần điểm cả buổi là 1.**
-- 1đ: Nói được cache để tăng tốc, artifact để truyền tệp, không nêu được ai giữ.
-- 2đ: Nêu đúng **hai chủ giữ** — server và runner — và suy ra khác biệt về đảm bảo.
-- 3đ: Như trên, **và** nêu chỉ artifact có API đọc nên chỉ nó kiểm chứng được từ ngoài, **và** đưa được câu hỏi chọn "sai hay chỉ chậm".
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: "Giống nhau, chỉ khác cách dùng." Hoặc nói cache được đảm bảo. <b style="color: var(--accent-primary);">Trần điểm cả buổi là 1.</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nói được cache để tăng tốc, artifact để truyền tệp, không nêu được ai giữ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng <b style="color: var(--accent-primary);">hai chủ giữ</b> — server và runner — và suy ra khác biệt về đảm bảo.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Như trên, <b style="color: var(--accent-primary);">và</b> nêu chỉ artifact có API đọc nên chỉ nó kiểm chứng được từ ngoài, <b style="color: var(--accent-primary);">và</b> đưa được câu hỏi chọn "sai hay chỉ chậm".</div>
 
-**Câu hỏi đào sâu:** Bật distributed cache thì cache có thành hợp đồng chưa? *(Chưa. Nó chỉ chuyển cache từ đĩa một runner sang kho dùng chung, tức tăng tỉ lệ trúng. Vẫn không có bản ghi trong cơ sở dữ liệu GitLab, không có API đọc, runner vẫn không báo lỗi khi thiếu. Đổi tỉ lệ trúng không đổi loại đảm bảo.)*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Bật distributed cache thì cache có thành hợp đồng chưa? *(Chưa. Nó chỉ chuyển cache từ đĩa một runner sang kho dùng chung, tức tăng tỉ lệ trúng. Vẫn không có bản ghi trong cơ sở dữ liệu GitLab, không có API đọc, runner vẫn không báo lỗi khi thiếu. Đổi tỉ lệ trúng không đổi loại đảm bảo.)*
 </div>
 </details>
 

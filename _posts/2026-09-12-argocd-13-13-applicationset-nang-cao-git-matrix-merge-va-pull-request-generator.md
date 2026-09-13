@@ -385,199 +385,109 @@ kubectl annotate applicationset frontend-pr-preview-environments -n argocd \
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Phép tính toán nào được thực hiện bên trong Matrix Generator?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Phép **nhân tích Descartes (Cartesian Product)**. Nếu Generator A sinh ra 4 phần tử và Generator B sinh ra 3 phần tử, Matrix Generator sẽ kết hợp từng phần tử của A với từng phần tử của B để tạo ra tổng cộng $4 \times 3 = 12$ bộ tham số cho Template.
+  
+Phép <b style="color: var(--accent-primary);">nhân tích Descartes (Cartesian Product)</b>. Nếu Generator A sinh ra 4 phần tử và Generator B sinh ra 3 phần tử, Matrix Generator sẽ kết hợp từng phần tử của A với từng phần tử của B để tạo ra tổng cộng $4 \times 3 = 12$ bộ tham số cho Template.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Biến `{{branch_slug}}` khác gì so với biến `{{branch}}` trong Pull Request Generator?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Biến `{{branch}}` giữ nguyên tên nhánh gốc (có thể chứa ký tự `/`, `_` hoặc chữ hoa, ví dụ `feat/Fix_Bug_#1`). Biến `{{branch_slug}}` tự động chuẩn hóa chuỗi này thành định dạng an toàn cho Kubernetes DNS (đổi chữ hoa thành chữ thường, đổi `/` và `_` thành dấu `-`, ví dụ `feat-fix-bug-1`).
+  
+Biến <code>{{branch}}</code> giữ nguyên tên nhánh gốc (có thể chứa ký tự <code>/</code>, <code>_</code> hoặc chữ hoa, ví dụ <code>feat/Fix_Bug_#1</code>). Biến <code>{{branch_slug}}</code> tự động chuẩn hóa chuỗi này thành định dạng an toàn cho Kubernetes DNS (đổi chữ hoa thành chữ thường, đổi <code>/</code> và <code>_</code> thành dấu <code>-</code>, ví dụ <code>feat-fix-bug-1</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Khi nào nên sử dụng Merge Generator thay vì Matrix Generator?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng **Merge Generator** khi bạn muốn gộp 2 generator lại với nhau và cho phép **ghi đè (Override) các tham số cấu hình cục bộ theo điều kiện**. Ví dụ: Áp dụng cấu hình chung cho 10 cụm, nhưng riêng cụm `prod-us` cần ghi đè số lượng `replicas: 10`.
+  
+Sử dụng <b style="color: var(--accent-primary);">Merge Generator</b> khi bạn muốn gộp 2 generator lại với nhau và cho phép <b style="color: var(--accent-primary);">ghi đè (Override) các tham số cấu hình cục bộ theo điều kiện</b>. Ví dụ: Áp dụng cấu hình chung cho 10 cụm, nhưng riêng cụm <code>prod-us</code> cần ghi đè số lượng <code>replicas: 10</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Làm thế nào để ngăn chặn Pull Request Generator tự động tạo môi trường cho các PR của người lạ (tránh bị đào Bitcoin trái phép)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng bộ lọc bảo mật trong `pullRequest.github.filters`:
-  - `labels`: Chỉ tạo môi trường khi PR được gắn nhãn `safe-to-test` bởi Maintainer.
-  - `forkMatch`: Cấm hoặc giới hạn các PR xuất phát từ các kho fork bên ngoài.
+  
+Sử dụng bộ lọc bảo mật trong <code>pullRequest.github.filters</code>:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>labels</code>: Chỉ tạo môi trường khi PR được gắn nhãn <code>safe-to-test</code> bởi Maintainer.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>forkMatch</code>: Cấm hoặc giới hạn các PR xuất phát từ các kho fork bên ngoài.</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Cần làm gì để đảm bảo toàn bộ tài nguyên của PR Preview bị xóa sạch khi PR đóng lại?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  (1) Đảm bảo `spec.syncPolicy.preserveResourcesOnDeletion` là `false`, (2) Gắn `finalizers: [resources-finalizer.argocd.argoproj.io]` vào `template.metadata.finalizers`, và (3) Khai báo `destination.namespace: "preview-pr-{{number}}"` kèm `syncPolicy.automated.prune: true`.
+  
+(1) Đảm bảo <code>spec.syncPolicy.preserveResourcesOnDeletion</code> là <code>false</code>, (2) Gắn <code>finalizers: [resources-finalizer.argocd.argoproj.io]</code> vào <code>template.metadata.finalizers</code>, và (3) Khai báo <code>destination.namespace: "preview-pr-{{number}}"</code> kèm <code>syncPolicy.automated.prune: true</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Làm thế nào để kết hợp Git File Generator với Matrix Generator?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đặt Git File Generator vào một nhánh của Matrix Generator để đọc cấu hình từ các tệp `config.json` nằm trong từng thư mục dịch vụ, sau đó nhân chéo với Cluster Generator để áp dụng các tham số riêng biệt cho từng cụm.
+  
+Đặt Git File Generator vào một nhánh của Matrix Generator để đọc cấu hình từ các tệp <code>config.json</code> nằm trong từng thư mục dịch vụ, sau đó nhân chéo với Cluster Generator để áp dụng các tham số riêng biệt cho từng cụm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>`requeueAfterSeconds` trong Pull Request Generator có tác dụng gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chỉ định chu kỳ thời gian (tính bằng giây) mà Controller sẽ chủ động gửi request lên GitHub API để kiểm tra danh sách PRs mới hoặc trạng thái đóng/mở PR (mặc định là 1800 giây - 30 phút).
+  
+Chỉ định chu kỳ thời gian (tính bằng giây) mà Controller sẽ chủ động gửi request lên GitHub API để kiểm tra danh sách PRs mới hoặc trạng thái đóng/mở PR (mặc định là 1800 giây - 30 phút).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao nên sử dụng GitHub App thay vì Personal Access Token (PAT) cho Pull Request Generator?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  GitHub App có cơ chế cấp quyền theo tổ chức và repo cụ thể (Least Privilege), hỗ trợ hạn mức API lớn hơn (lên tới 15,000 requests/giờ) và không bị phụ thuộc vào tài khoản cá nhân của kỹ sư (tránh lỗi khi nhân viên nghỉ việc).
+  
+GitHub App có cơ chế cấp quyền theo tổ chức và repo cụ thể (Least Privilege), hỗ trợ hạn mức API lớn hơn (lên tới 15,000 requests/giờ) và không bị phụ thuộc vào tài khoản cá nhân của kỹ sư (tránh lỗi khi nhân viên nghỉ việc).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Trong Git Directory Generator, cú pháp `path: "services/*"` khác gì với `path: "services/**"`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `services/*` chỉ quét các thư mục con cấp 1 trực tiếp bên trong `services/`. Cú pháp `services/**` quét đệ quy toàn bộ mọi cấp thư mục lồng nhau bên trong.
+  
+<code>services/*</code> chỉ quét các thư mục con cấp 1 trực tiếp bên trong <code>services/</code>. Cú pháp <code>services/**</code> quét đệ quy toàn bộ mọi cấp thư mục lồng nhau bên trong.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Làm thế nào để loại trừ một thư mục cụ thể (như thư mục `services/archive`) khỏi Git Directory Generator?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng trường `exclude: true` trong danh sách `directories`:
+  
+Sử dụng trường <code>exclude: true</code> trong danh sách <code>directories</code>:
   ```yaml
   directories:
-    - path: "services/*"
-    - path: "services/archive"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: "services/*"</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: "services/archive"</div>
       exclude: true
   ```
 </div>

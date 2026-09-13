@@ -1034,32 +1034,23 @@ Các câu hỏi gắn nhãn 🔥 là **câu hỏi tủ tốt nghiệp bắt bu�
 ## V2. Bộ câu hỏi — ĐÚNG 12 câu
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày mô hình kiến trúc Enterprise 3 tầng (Nginx LB -> Web Cluster -> PostgreSQL DB) trong Dự án Capstone. Tại sao việc chia 3 tầng độc lập lại vượt trội hơn cài gộp vào 1 server? *(Liên quan QT 4.1)</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Mô hình 3 tầng:
-  1. **Tầng 1 (Load Balancer Nginx):** Tiếp nhận lưu lượng HTTP/HTTPS cổng 80/443 từ công chúng và điều hướng round-robin tới cụm Web Nodes.
-  2. **Tầng 2 (Web Cluster Systemd Service):** Xử lý logic ứng dụng, chạy hạ đặc quyền under user `sysops` với `Restart=always`.
-  3. **Tầng 3 (Database Cluster PostgreSQL):** Lưu trữ dữ liệu hệ thống, bảo vệ tuyệt đối bằng Firewalld Rich Rules chỉ cho phép IP Web Nodes truy cập cổng 5432.
-- Ưu điểm vượt trội: Tăng khả năng mở rộng (Scalability - dễ dàng add thêm Web Node), tính sẵn sàng cao (High Availability), và bảo mật chuyên sâu (Defense in Depth - DB bị cô lập khỏi Internet).
-**Tiêu chí chấm:**
-- 0: Không nêu được 3 tầng kiến trúc.
-- 1: Biết 3 tầng nhưng không giải thích được vai trò mở rộng và bảo mật chuyên sâu Defense in Depth.
-- 2: Phân tích chính xác vai trò của 3 tầng Nginx LB, Systemd Web App và PostgreSQL DB.
-- 3: Nêu đúng + vẽ sơ đồ luồng dữ liệu 3 tầng xuất sắc.
-**Câu hỏi đào sâu:** Làm thế nào để thêm máy chủ Web Node thứ 3 vào cụm Web Cluster mà không phải sửa file Playbook? *(Chỉ cần khai báo thêm host `web3` vào nhóm `[web]` trong `inventory/capstone-hosts.ini`, Nginx Upstream Jinja2 Template sẽ tự động phát hiện và sinh cấu hình mới.)*
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mô hình 3 tầng:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Tầng 1 (Load Balancer Nginx):</b> Tiếp nhận lưu lượng HTTP/HTTPS cổng 80/443 từ công chúng và điều hướng round-robin tới cụm Web Nodes.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Tầng 2 (Web Cluster Systemd Service):</b> Xử lý logic ứng dụng, chạy hạ đặc quyền under user <code>sysops</code> với <code>Restart=always</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Tầng 3 (Database Cluster PostgreSQL):</b> Lưu trữ dữ liệu hệ thống, bảo vệ tuyệt đối bằng Firewalld Rich Rules chỉ cho phép IP Web Nodes truy cập cổng 5432.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ưu điểm vượt trội: Tăng khả năng mở rộng (Scalability - dễ dàng add thêm Web Node), tính sẵn sàng cao (High Availability), và bảo mật chuyên sâu (Defense in Depth - DB bị cô lập khỏi Internet).</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được 3 tầng kiến trúc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết 3 tầng nhưng không giải thích được vai trò mở rộng và bảo mật chuyên sâu Defense in Depth.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò của 3 tầng Nginx LB, Systemd Web App và PostgreSQL DB.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + vẽ sơ đồ luồng dữ liệu 3 tầng xuất sắc.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Làm thế nào để thêm máy chủ Web Node thứ 3 vào cụm Web Cluster mà không phải sửa file Playbook? *(Chỉ cần khai báo thêm host <code>web3</code> vào nhóm <code>[web]</code> trong <code>inventory/capstone-hosts.ini</code>, Nginx Upstream Jinja2 Template sẽ tự động phát hiện và sinh cấu hình mới.)*
 </div>
 </details>
 

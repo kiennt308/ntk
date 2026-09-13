@@ -754,29 +754,20 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Hai Nhóm mặc định trong Inventory 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Inventory trong Ansible có vai trò gì? Hai nhóm mặc định nào luôn tự động tồn tại trong mọi Inventory? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Inventory là nguồn chân lý chứa danh sách các máy chủ bị quản lý, thông tin phân nhóm và các biến kết nối tương ứng. Hai nhóm mặc định luôn tồn tại trong mọi Inventory là: (1) `all` (chứa tất cả các máy chủ có trong inventory) và (2) `ungrouped` (chứa các máy chủ không thuộc bất kỳ nhóm tùy chỉnh nào).
-**Tiêu chí chấm:**
-- 0: Không nêu được vai trò của Inventory.
-- 1: Nêu được vai trò nhưng chỉ nhớ nhóm `all`, quên nhóm `ungrouped`.
-- 2: Nêu chính xác vai trò và 2 nhóm mặc định `all` và `ungrouped`.
-- 3: Nêu chính xác + giải thích ý nghĩa của 2 nhóm mặc định trong việc nạp biến toàn cục (`group_vars/all.yml`).
-**Câu hỏi đào sâu:** Nếu một máy chủ nằm trong nhóm `web`, máy chủ đó có đồng thời thuộc nhóm `all` không? *(Có, 100% mọi host đều thuộc nhóm `all`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Inventory trong Ansible có vai trò gì? Hai nhóm mặc định nào luôn tự động tồn tại trong mọi Inventory? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Inventory là nguồn chân lý chứa danh sách các máy chủ bị quản lý, thông tin phân nhóm và các biến kết nối tương ứng. Hai nhóm mặc định luôn tồn tại trong mọi Inventory là: (1) <code>all</code> (chứa tất cả các máy chủ có trong inventory) và (2) <code>ungrouped</code> (chứa các máy chủ không thuộc bất kỳ nhóm tùy chỉnh nào).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được vai trò của Inventory.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nêu được vai trò nhưng chỉ nhớ nhóm <code>all</code>, quên nhóm <code>ungrouped</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu chính xác vai trò và 2 nhóm mặc định <code>all</code> và <code>ungrouped</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu chính xác + giải thích ý nghĩa của 2 nhóm mặc định trong việc nạp biến toàn cục (<code>group_vars/all.yml</code>).</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu một máy chủ nằm trong nhóm <code>web</code>, máy chủ đó có đồng thời thuộc nhóm <code>all</code> không? *(Có, 100% mọi host đều thuộc nhóm <code>all</code>.)*
 </div>
 </details>
 

@@ -381,198 +381,108 @@ kubectl get clustersecretstores
 ## 7. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao việc đẩy trực tiếp Kubernetes Secret chuẩn (`kind: Secret`) lên Git là một vi phạm an toàn thông tin nghiêm trọng?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì trường `data` trong Kubernetes Secret chỉ được mã hóa dạng **Base64** chứ không được mã hóa mật mã học (Not Encrypted). Bất kỳ ai có quyền đọc Git đều có thể giải mã lấy mật khẩu trong 1 dòng lệnh, dẫn tới nguy cơ lộ lọt toàn bộ cơ sở dữ liệu.
+  
+Vì trường <code>data</code> trong Kubernetes Secret chỉ được mã hóa dạng <b style="color: var(--accent-primary);">Base64</b> chứ không được mã hóa mật mã học (Not Encrypted). Bất kỳ ai có quyền đọc Git đều có thể giải mã lấy mật khẩu trong 1 dòng lệnh, dẫn tới nguy cơ lộ lọt toàn bộ cơ sở dữ liệu.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Trong Bitnami Sealed Secrets, nếu Private Key của Controller trên cụm bị mất (do xóa cụm mà không backup), điều gì sẽ xảy ra?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Toàn bộ các tệp `SealedSecret` đã mã hóa trước đó trên Git sẽ **không bao giờ có thể giải mã được nữa**. Do đó, việc sao lưu Secret chứa Private Key của Sealed Secrets Controller (`sealed-secrets-key*`) ra nơi an toàn là nhiệm vụ sống còn của SRE.
+  
+Toàn bộ các tệp <code>SealedSecret</code> đã mã hóa trước đó trên Git sẽ <b style="color: var(--accent-primary);">không bao giờ có thể giải mã được nữa</b>. Do đó, việc sao lưu Secret chứa Private Key của Sealed Secrets Controller (<code>sealed-secrets-key*</code>) ra nơi an toàn là nhiệm vụ sống còn của SRE.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Lợi thế lớn nhất của External Secrets Operator (ESO) so với Sealed Secrets là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ESO cho phép **tự động xoay vòng bí mật (Secret Auto-Rotation)** trực tiếp từ HashiCorp Vault / AWS Secrets Manager mà không cần lập trình viên phải chạy lại lệnh mã hóa và commit lại Git.
+  
+ESO cho phép <b style="color: var(--accent-primary);">tự động xoay vòng bí mật (Secret Auto-Rotation)</b> trực tiếp từ HashiCorp Vault / AWS Secrets Manager mà không cần lập trình viên phải chạy lại lệnh mã hóa và commit lại Git.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Ba chế độ Scope trong Bitnami Sealed Secrets là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. `strict` (Mặc định): Khóa chặt theo đúng Secret Name và Namespace.
-  2. `namespace-wide`: Có thể đổi tên Secret miễn là nằm trong cùng một Namespace.
-  3. `cluster-wide`: Có thể sử dụng trong bất kỳ Namespace nào trên toàn cụm.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>strict</code> (Mặc định): Khóa chặt theo đúng Secret Name và Namespace.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>namespace-wide</code>: Có thể đổi tên Secret miễn là nằm trong cùng một Namespace.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>cluster-wide</code>: Có thể sử dụng trong bất kỳ Namespace nào trên toàn cụm.</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Làm thế nào để Argo CD phát hiện nếu một `SealedSecret` bị lỗi giải mã trên cụm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cấu hình **Custom Lua Health Check** cho `bitnami.com_SealedSecret` trong `argocd-cm`. Khi `status.conditions` báo `Synced: False`, Argo CD sẽ lập tức đổi màu biểu tượng thành `Degraded` màu đỏ thay vì báo `Healthy` ảo.
+  
+Cấu hình <b style="color: var(--accent-primary);">Custom Lua Health Check</b> cho <code>bitnami.com_SealedSecret</code> trong <code>argocd-cm</code>. Khi <code>status.conditions</code> báo <code>Synced: False</code>, Argo CD sẽ lập tức đổi màu biểu tượng thành <code>Degraded</code> màu đỏ thay vì báo <code>Healthy</code> ảo.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>`ClusterSecretStore` trong ESO khác `SecretStore` thông thường ở điểm nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `SecretStore` là tài nguyên có phạm vi Namespace (Namespace-scoped), chỉ cấp Secret cho một namespace cụ thể. `ClusterSecretStore` là tài nguyên cấp Cụm (Cluster-scoped), cho phép nhiều namespace cùng tái sử dụng một cấu hình kết nối Vault chung.
+  
+<code>SecretStore</code> là tài nguyên có phạm vi Namespace (Namespace-scoped), chỉ cấp Secret cho một namespace cụ thể. <code>ClusterSecretStore</code> là tài nguyên cấp Cụm (Cluster-scoped), cho phép nhiều namespace cùng tái sử dụng một cấu hình kết nối Vault chung.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Mozilla SOPS mã hóa những phần nào của tệp YAML?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  SOPS chỉ mã hóa phần **giá trị (values)** của các trường được chỉ định (như `data` hoặc `stringData`), trong khi giữ nguyên các **khóa (keys)** và cấu trúc phân cấp YAML, giúp lập trình viên vẫn đọc hiểu cấu trúc và theo dõi `git diff` dễ dàng.
+  
+SOPS chỉ mã hóa phần <b style="color: var(--accent-primary);">giá trị (values)</b> của các trường được chỉ định (như <code>data</code> hoặc <code>stringData</code>), trong khi giữ nguyên các <b style="color: var(--accent-primary);">khóa (keys)</b> và cấu trúc phân cấp YAML, giúp lập trình viên vẫn đọc hiểu cấu trúc và theo dõi <code>git diff</code> dễ dàng.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Làm thế nào để tự động cập nhật Pod khi Secret được sinh ra bởi ESO thay đổi nội dung?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Kết hợp ESO với **Reloader** (Stakater Reloader) bằng cách gắn annotation `reloader.stakater.com/auto: "true"` trên Deployment, giúp tự động kích hoạt Rolling Restart khi Secret bị thay đổi.
+  
+Kết hợp ESO với <b style="color: var(--accent-primary);">Reloader</b> (Stakater Reloader) bằng cách gắn annotation <code>reloader.stakater.com/auto: "true"</code> trên Deployment, giúp tự động kích hoạt Rolling Restart khi Secret bị thay đổi.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Trong mô hình GitOps, tại sao không nên dùng HashiCorp Vault Agent Sidecar Injector thay cho ESO?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vault Agent Injector nạp secret trực tiếp vào bộ nhớ Pod hoặc file tạm trong container, bỏ qua đối tượng Kubernetes Secret chuẩn. Điều này khiến Argo CD không thể theo dõi trạng thái tài nguyên Secret và làm tăng tiêu thụ tài nguyên do mỗi Pod phải chạy thêm một Sidecar.
+  
+Vault Agent Injector nạp secret trực tiếp vào bộ nhớ Pod hoặc file tạm trong container, bỏ qua đối tượng Kubernetes Secret chuẩn. Điều này khiến Argo CD không thể theo dõi trạng thái tài nguyên Secret và làm tăng tiêu thụ tài nguyên do mỗi Pod phải chạy thêm một Sidecar.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Quy trình xử lý khẩn cấp khi một SealedSecret Private Key bị lộ lọt (Compromised) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. Tạo cặp khóa mới trên Sealed Secrets Controller.
-  2. Thu hồi và đổi toàn bộ mật khẩu trên cơ sở dữ liệu/dịch vụ ngoài.
-  3. Dùng Public Key mới để chạy lại `kubeseal` cho toàn bộ các repository Git.
-  4. Xóa Private Key cũ trên cụm và kích hoạt đồng bộ lại qua Argo CD.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Tạo cặp khóa mới trên Sealed Secrets Controller.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Thu hồi và đổi toàn bộ mật khẩu trên cơ sở dữ liệu/dịch vụ ngoài.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Dùng Public Key mới để chạy lại <code>kubeseal</code> cho toàn bộ các repository Git.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Xóa Private Key cũ trên cụm và kích hoạt đồng bộ lại qua Argo CD.</div>
 </div>
 </details>
 

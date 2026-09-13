@@ -342,231 +342,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Nguyên tắc tối thiểu quyền (Least Privilege RBAC) yêu cầu chuyên gia bảo mật CKS phải làm gì đối với cờ đại diện `verbs: ["*"]`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **TỪ CHỎI/TẤT CẢ** cờ đại diện `*`, chỉ cấp danh sách các verb cụ thể cần thiết (`get`, `list`, `watch`).
+  
+<b style="color: var(--accent-primary);">TỪ CHỎI/TẤT CẢ</b> cờ đại diện <code>*</code>, chỉ cấp danh sách các verb cụ thể cần thiết (<code>get</code>, <code>list</code>, <code>watch</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Ba cờ quyền leo thang đặc quyền nguy hiểm nhất trong RBAC bắt buộc phải cấm trao cho ServiceAccount ứng dụng là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  3 cờ: **`verbs: ["escalate"]`**, **`verbs: ["bind"]`**, và **`verbs: ["impersonate"]`**.
+  
+3 cờ: <b style="color: var(--accent-primary);"><code>verbs: ["escalate"]</code></b>, <b style="color: var(--accent-primary);"><code>verbs: ["bind"]</code></b>, và <b style="color: var(--accent-primary);"><code>verbs: ["impersonate"]</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Thuộc tính YAML nào được dùng để vô hiệu hóa tính năng tự động mount tệp token của ServiceAccount vào bên trong Pod?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thuộc tính **`automountServiceAccountToken: false`**.
+  
+Thuộc tính <b style="color: var(--accent-primary);"><code>automountServiceAccountToken: false</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Thuộc tính `automountServiceAccountToken: false` có thể được khai báo ở những cấp độ đối tượng nào trong Kubernetes?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Được khai báo ở cấp độ đối tượng **`ServiceAccount`** hoặc cấp độ **`Pod spec`**.
+  
+Được khai báo ở cấp độ đối tượng <b style="color: var(--accent-primary);"><code>ServiceAccount</code></b> hoặc cấp độ <b style="color: var(--accent-primary);"><code>Pod spec</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Sự khác biệt cơ bản giữa việc liên kết `Role` bằng `RoleBinding` vs `ClusterRoleBinding` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `RoleBinding` chỉ có hiệu lực phân quyền **bên trong 1 Namespace cụ thể**, còn `ClusterRoleBinding` có hiệu lực **trên 100% toàn cụm K8s**.
+  
+<code>RoleBinding</code> chỉ có hiệu lực phân quyền <b style="color: var(--accent-primary);">bên trong 1 Namespace cụ thể</b>, còn <code>ClusterRoleBinding</code> có hiệu lực <b style="color: var(--accent-primary);">trên 100% toàn cụm K8s</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Lệnh CLI `kubectl` chuẩn nào được dùng để kiểm tra xem ServiceAccount `app-sa` trong Namespace `prod` có quyền đọc Secret hay không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `kubectl auth can-i get secrets --as=system:serviceaccount:prod:app-sa -n prod`.
+  
+Lệnh <code>kubectl auth can-i get secrets --as=system:serviceaccount:prod:app-sa -n prod</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Thuộc tính YAML nào trong `Role` được dùng để giới hạn quyền đọc Secret chỉ trên đúng một tệp Secret có tên cụ thể?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thuộc tính **`resourceNames: ["tên-secret-cụ-thể"]`**.
+  
+Thuộc tính <b style="color: var(--accent-primary);"><code>resourceNames: ["tên-secret-cụ-thể"]</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tệp JWT Token của ServiceAccount mặc định được tự động mount vào thư mục nào bên trong container?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thư mục **`/var/run/secrets/kubernetes.io/serviceaccount/`**.
+  
+Thư mục <b style="color: var(--accent-primary);"><code>/var/run/secrets/kubernetes.io/serviceaccount/</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Nguy cơ lớn nhất khi trao quyền `verbs: ["impersonate"]` cho một ServiceAccount thông thường là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Kẻ tấn công có thể giả danh bất kỳ User hoặc ServiceAccount nào khác (kể cả `system:masters`) để chiếm toàn quyền cụm.
+  
+Kẻ tấn công có thể giả danh bất kỳ User hoặc ServiceAccount nào khác (kể cả <code>system:masters</code>) để chiếm toàn quyền cụm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Mã lỗi HTTP nào được Kube-APIServer trả về khi một Pod dùng ServiceAccount không có đủ quyền trong Role để truy vấn tài nguyên?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mã lỗi **`403 Forbidden`**.
+  
+Mã lỗi <b style="color: var(--accent-primary);"><code>403 Forbidden</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao KHÔNG nên đặt `automountServiceAccountToken: false` cho các Pods như CoreDNS hoặc Calico CNI?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì các Pods hạ tầng này bắt buộc phải gọi Kube-APIServer để cập nhật thông tin mạng và tên miền.
+  
+Vì các Pods hạ tầng này bắt buộc phải gọi Kube-APIServer để cập nhật thông tin mạng và tên miền.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn của tệp ServiceAccount kết hợp Role và RoleBinding bảo mật chuẩn CKS là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       apiVersion: v1
       kind: ServiceAccount
       metadata:
@@ -580,7 +472,7 @@ graph TD
         name: pod-reader
         namespace: prod
       rules:
-        - apiGroups: [""]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
           resources: ["pods"]
           verbs: ["get", "list"]
       ---
@@ -590,7 +482,7 @@ graph TD
         name: bind-pod-reader
         namespace: prod
       subjects:
-        - kind: ServiceAccount
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• kind: ServiceAccount</div>
           name: secure-sa
           namespace: prod
       roleRef:
@@ -959,29 +851,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Nguyên tắc tối thiểu quyền (Least Privilege RBAC) trong Kubernetes yêu cầu chuyên gia bảo mật CKS phải tuân thủ các quy định nào về phân quyền?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Không cấp cờ đại diện `verbs: ["*"]` hoặc `resources: ["*"]` cho các ServiceAccounts ứng dụng; chỉ liệt kê các `verbs` (`get`, `list`, `watch`) và `resources` cụ thể thực sự cần thiết; ưu tiên dùng `Role` và `RoleBinding` trong phạm vi 1 Namespace thay cho `ClusterRoleBinding`.
+  
+Không cấp cờ đại diện <code>verbs: ["*"]</code> hoặc <code>resources: ["*"]</code> cho các ServiceAccounts ứng dụng; chỉ liệt kê các <code>verbs</code> (<code>get</code>, <code>list</code>, <code>watch</code>) và <code>resources</code> cụ thể thực sự cần thiết; ưu tiên dùng <code>Role</code> và <code>RoleBinding</code> trong phạm vi 1 Namespace thay cho <code>ClusterRoleBinding</code>.
 
-**Tiêu chí chấm:**
-- 0đ: Không biết nguyên tắc Least Privilege RBAC.
-- 1đ: Nêu được cấm cấp cờ * nhưng nhầm lẫn giữa Role và ClusterRole.
-- 3đ: Phân tích thấu đáo nguyên tắc Least Privilege RBAC: không dùng cờ đại diện *, liệt kê verb cụ thể, giới hạn scope trong Namespace.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết nguyên tắc Least Privilege RBAC.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cấm cấp cờ * nhưng nhầm lẫn giữa Role và ClusterRole.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo nguyên tắc Least Privilege RBAC: không dùng cờ đại diện *, liệt kê verb cụ thể, giới hạn scope trong Namespace.</div>
 
-**Câu hỏi đào sâu:** (Nếu ứng dụng chỉ cần đọc đúng 1 tệp Secret thì dùng thuộc tính nào trong Role? — Thuộc tính `resourceNames: ["tên-secret"]`).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu ứng dụng chỉ cần đọc đúng 1 tệp Secret thì dùng thuộc tính nào trong Role? — Thuộc tính <code>resourceNames: ["tên-secret"]</code>).
 </div>
 </details>
 
@@ -1242,22 +1125,13 @@ Chẩn đoán và sửa lỗi Pod `backend-app` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tạo ServiceAccount `secure-sa` có `automount: false</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF > /tmp/sa-prod.yaml
@@ -1274,22 +1148,13 @@ kubectl apply -f /tmp/sa-prod.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Tạo Role `secret-reader` và RoleBinding `bind-secret-reader</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -1297,7 +1162,7 @@ metadata:
   name: secret-reader
   namespace: prod
 rules:
-  - apiGroups: [""]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
     resources: ["secrets"]
     resourceNames: ["db-credential"]
     verbs: ["get"]
@@ -1308,7 +1173,7 @@ metadata:
   name: bind-secret-reader
   namespace: prod
 subjects:
-  - kind: ServiceAccount
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• kind: ServiceAccount</div>
     name: secure-sa
     namespace: prod
 roleRef:
@@ -1320,43 +1185,25 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Rà soát và xóa ClusterRole `dangerous-role</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl delete clusterrole dangerous-role 2>/dev/null || true
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Sửa Pod `backend-app` dùng `secure-sa</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1366,7 +1213,7 @@ metadata:
 spec:
   serviceAccountName: secure-sa
   containers:
-    - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
 EOF
 ```

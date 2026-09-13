@@ -1621,32 +1621,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Rủi ro an ninh lớn nhất khi không áp dụng Protected Branch trên nhánh `main` hoặc `production` trong hệ thống Enterprise là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
-Lập trình viên có thể gõ lệnh `git push origin main` đẩy trực tiếp code lỗi chưa qua review/test hoặc gõ `git push --force` xóa sạch lịch sử commit của toàn bộ công ty.
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
+Lập trình viên có thể gõ lệnh <code>git push origin main</code> đẩy trực tiếp code lỗi chưa qua review/test hoặc gõ <code>git push --force</code> xóa sạch lịch sử commit của toàn bộ công ty.
 
-**Đáp án chuẩn:**
-- **Giải thích rủi ro an ninh:**
-  Khi nhánh `main` không được bảo vệ bằng Protected Branch:
-  1. *Direct Push:* Bất kỳ developer nào cũng có thể đẩy code lỗi, code chưa qua thử nghiệm hoặc thậm chí backdoor trực tiếp lên nhánh Production mà không đi qua quy trình Merge Request review.
-  2. *Force Push:* Developer vô tình hoặc cố ý gõ lệnh `git push --force origin main` làm đè nát toàn bộ lịch sử commit Git, xóa sạch mã nguồn công ty mà không thể khôi phục dễ dàng.
-- **Giải pháp:** Đặt Protected Branch `push_access_level = 0` (No one can push) và `allow_force_push = false`.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích rủi ro an ninh:</b></div>
+  Khi nhánh <code>main</code> không được bảo vệ bằng Protected Branch:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Direct Push:* Bất kỳ developer nào cũng có thể đẩy code lỗi, code chưa qua thử nghiệm hoặc thậm chí backdoor trực tiếp lên nhánh Production mà không đi qua quy trình Merge Request review.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Force Push:* Developer vô tình hoặc cố ý gõ lệnh <code>git push --force origin main</code> làm đè nát toàn bộ lịch sử commit Git, xóa sạch mã nguồn công ty mà không thể khôi phục dễ dàng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải pháp:</b> Đặt Protected Branch <code>push_access_level = 0</code> (No one can push) và <code>allow_force_push = false</code>.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Cho rằng "Chỉ cần dặn dò các developers trong nhóm không push trực tiếp lên main là đủ an toàn rồi".
 </div>
 </details>

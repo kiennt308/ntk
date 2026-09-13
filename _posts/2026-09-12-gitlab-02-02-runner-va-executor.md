@@ -1814,36 +1814,27 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Một job GitLab CI được cấu hình bởi những tệp nào? Mỗi tệp quyết định điều gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hai** tệp, do **hai** người thường thuộc hai đội khác nhau viết.
+  
+<b style="color: var(--accent-primary);">Hai</b> tệp, do <b style="color: var(--accent-primary);">hai</b> người thường thuộc hai đội khác nhau viết.
 
-`.gitlab-ci.yml` nói job **làm gì**: lệnh chạy, image mong muốn, artifact cần, khi nào chạy (`rules`), đòi runner có tag gì. Nó nằm trong repo, sửa bằng merge request, có tác giả và có lịch sử git, và chỉ ảnh hưởng một project.
+<code>.gitlab-ci.yml</code> nói job <b style="color: var(--accent-primary);">làm gì</b>: lệnh chạy, image mong muốn, artifact cần, khi nào chạy (<code>rules</code>), đòi runner có tag gì. Nó nằm trong repo, sửa bằng merge request, có tác giả và có lịch sử git, và chỉ ảnh hưởng một project.
 
-`config.toml` nói job **chạy ở đâu và với quyền gì**: executor nào, image mặc định, `concurrent` và `limit`, volume nào được mount, mạng nào, kho cache ở đâu. Nó nằm trên máy runner tại `/etc/gitlab-runner/config.toml`, sửa trực tiếp, không qua review, và ảnh hưởng **mọi** project dùng runner đó.
+<code>config.toml</code> nói job <b style="color: var(--accent-primary);">chạy ở đâu và với quyền gì</b>: executor nào, image mặc định, <code>concurrent</code> và <code>limit</code>, volume nào được mount, mạng nào, kho cache ở đâu. Nó nằm trên máy runner tại <code>/etc/gitlab-runner/config.toml</code>, sửa trực tiếp, không qua review, và ảnh hưởng <b style="color: var(--accent-primary);">mọi</b> project dùng runner đó.
 
-Ranh giới ấy chính là ranh giới giữa "lỗi của tôi" và "lỗi của hạ tầng". Con số để đạt 3 điểm: **3 trên 8 pha** của một job thuộc phía hạ tầng — `prepare_executor`, `prepare_script`, và phần lớn `get_sources`. Lỗi ở ba pha đó thì sửa YAML không giúp gì.
+Ranh giới ấy chính là ranh giới giữa "lỗi của tôi" và "lỗi của hạ tầng". Con số để đạt 3 điểm: <b style="color: var(--accent-primary);">3 trên 8 pha</b> của một job thuộc phía hạ tầng — <code>prepare_executor</code>, <code>prepare_script</code>, và phần lớn <code>get_sources</code>. Lỗi ở ba pha đó thì sửa YAML không giúp gì.
 
-**Tiêu chí chấm:**
-- 0đ: Chỉ biết `.gitlab-ci.yml`.
-- 1đ: Biết có `config.toml` nhưng không nói được nó quyết định gì.
-- 2đ: Nêu đúng phân công giữa hai tệp.
-- 3đ: Như trên, **và** nêu con số 3/8 pha, **và** nêu được khác biệt về **phạm vi ảnh hưởng** khi sửa hai tệp.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Chỉ biết <code>.gitlab-ci.yml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Biết có <code>config.toml</code> nhưng không nói được nó quyết định gì.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng phân công giữa hai tệp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Như trên, <b style="color: var(--accent-primary);">và</b> nêu con số 3/8 pha, <b style="color: var(--accent-primary);">và</b> nêu được khác biệt về <b style="color: var(--accent-primary);">phạm vi ảnh hưởng</b> khi sửa hai tệp.</div>
 
-**Câu hỏi đào sâu:** Có thứ nào cả hai tệp cùng nói tới không? *(Có — `image`. `config.toml` cho mặc định, `image:` trong job ghi đè. Đây cũng là câu BTVN 4 chuẩn bị cho buổi 03 về thứ tự ưu tiên.)*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Có thứ nào cả hai tệp cùng nói tới không? *(Có — <code>image</code>. <code>config.toml</code> cho mặc định, <code>image:</code> trong job ghi đè. Đây cũng là câu BTVN 4 chuẩn bị cho buổi 03 về thứ tự ưu tiên.)*
 </div>
 </details>
 

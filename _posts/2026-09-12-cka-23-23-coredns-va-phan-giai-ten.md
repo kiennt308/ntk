@@ -871,35 +871,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày cấu trúc tên miền tiêu chuẩn FQDN (Fully Qualified Domain Name) của một Service và một Pod trong Kubernetes.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **1. Cấu trúc FQDN chuẩn của Service:**
-  - Định dạng: **`<service-name>.<namespace>.svc.cluster.local`** (gồm **5** thành phần).
-  - *Ví dụ:* `web-svc.dev.svc.cluster.local`.
-- **2. Cấu trúc FQDN chuẩn của Pod:**
-  - Pod thông thường: **`<pod-ip-with-dashes>.<namespace>.pod.cluster.local`** (ví dụ IP `10.244.1.5` -> `10-244-1-5.dev.pod.cluster.local`).
-  - Pod thuộc StatefulSet (với Headless Service): **`<pod-name>.<service-name>.<namespace>.svc.cluster.local`** (ví dụ `web-0.nginx.dev.svc.cluster.local`).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Cấu trúc FQDN chuẩn của Service:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Định dạng: <b style="color: var(--accent-primary);"><code><service-name>.<namespace>.svc.cluster.local</code></b> (gồm <b style="color: var(--accent-primary);">5</b> thành phần).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ví dụ:* <code>web-svc.dev.svc.cluster.local</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Cấu trúc FQDN chuẩn của Pod:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod thông thường: <b style="color: var(--accent-primary);"><code><pod-ip-with-dashes>.<namespace>.pod.cluster.local</code></b> (ví dụ IP <code>10.244.1.5</code> -> <code>10-244-1-5.dev.pod.cluster.local</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod thuộc StatefulSet (với Headless Service): <b style="color: var(--accent-primary);"><code><pod-name>.<service-name>.<namespace>.svc.cluster.local</code></b> (ví dụ <code>web-0.nginx.dev.svc.cluster.local</code>).</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Không nhớ cấu trúc FQDN.
-- **1đ:** Nêu được tên service và namespace nhưng thiếu đuôi `.svc.cluster.local` hoặc không nêu được cấu trúc DNS của StatefulSet (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác cấu trúc FQDN của Service (`<svc>.<ns>.svc.cluster.local`) và Pod StatefulSet.
-- **3đ:** Trả lời xuất sắc, chỉ ra sự thay thế dấu chấm trong Pod IP thành dấu gạch ngang `-`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ cấu trúc FQDN.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được tên service và namespace nhưng thiếu đuôi <code>.svc.cluster.local</code> hoặc không nêu được cấu trúc DNS của StatefulSet (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác cấu trúc FQDN của Service (<code><svc>.<ns>.svc.cluster.local</code>) và Pod StatefulSet.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra sự thay thế dấu chấm trong Pod IP thành dấu gạch ngang <code>-</code>.</div>
 
-**Câu hỏi đào sâu:** Tại sao Pods trong cùng 1 Namespace lại có thể gọi nhau bằng tên ngắn `web-svc` mà không cần gõ đầy đủ FQDN? *(Đáp án: Vì tệp `/etc/resolv.conf` của Pod mặc định chứa dải search domain `dev.svc.cluster.local`).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao Pods trong cùng 1 Namespace lại có thể gọi nhau bằng tên ngắn <code>web-svc</code> mà không cần gõ đầy đủ FQDN? *(Đáp án: Vì tệp <code>/etc/resolv.conf</code> của Pod mặc định chứa dải search domain <code>dev.svc.cluster.local</code>).*
 </div>
 </details>
 

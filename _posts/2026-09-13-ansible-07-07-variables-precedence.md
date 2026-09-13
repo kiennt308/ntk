@@ -806,29 +806,20 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cú pháp Khai báo và Sử dụng Biến Jinja2 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày cú pháp chuẩn để khai báo và truy vấn một biến trong Ansible Playbook. Khi nào bắt buộc phải bọc ngoặc kép quanh cú pháp `{{ }}`? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Biến được truy vấn bằng cú pháp Jinja2 bọc trong cặp ngoặc nhọn đúp `{{ variable_name }}`. Bắt buộc phải bọc ngoặc kép `"{{ variable_name }}"` khi biểu thức Jinja2 nằm ở ĐẦU GIÁ TRỊ của một thuộc tính YAML (ví dụ `dest: "{{ my_path }}"`), để ngăn trình biên dịch YAML hiểu nhầm cặp ngoặc nhọn `{` là mở đầu của một Dictionary YAML.
-**Tiêu chí chấm:**
-- 0: Không biết cú pháp Jinja2 `{{ }}`.
-- 1: Biết `{{ }}` nhưng không giải thích được khi nào bắt buộc bọc ngoặc kép.
-- 2: Phân tích chính xác cú pháp Jinja2 + lý do bọc ngoặc kép do quy chuẩn parser YAML.
-- 3: Nêu đúng + viết đoạn mã YAML minh họa lỗi nếu thiếu ngoặc kép và cách khắc phục.
-**Câu hỏi đào sâu:** Nếu viết `dest: /etc/{{ app_name }}.conf` (không nằm ở đầu dòng giá trị), có bắt buộc phải bọc ngoặc kép không? *(Không bắt buộc, nhưng khuyến khích bọc toàn bộ chuỗi trong ngoặc kép để tạo thói quen an toàn.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cú pháp chuẩn để khai báo và truy vấn một biến trong Ansible Playbook. Khi nào bắt buộc phải bọc ngoặc kép quanh cú pháp <code>{{ }}</code>? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Biến được truy vấn bằng cú pháp Jinja2 bọc trong cặp ngoặc nhọn đúp <code>{{ variable_name }}</code>. Bắt buộc phải bọc ngoặc kép <code>"{{ variable_name }}"</code> khi biểu thức Jinja2 nằm ở ĐẦU GIÁ TRỊ của một thuộc tính YAML (ví dụ <code>dest: "{{ my_path }}"</code>), để ngăn trình biên dịch YAML hiểu nhầm cặp ngoặc nhọn <code>{</code> là mở đầu của một Dictionary YAML.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cú pháp Jinja2 <code>{{ }}</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>{{ }}</code> nhưng không giải thích được khi nào bắt buộc bọc ngoặc kép.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cú pháp Jinja2 + lý do bọc ngoặc kép do quy chuẩn parser YAML.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã YAML minh họa lỗi nếu thiếu ngoặc kép và cách khắc phục.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu viết <code>dest: /etc/{{ app_name }}.conf</code> (không nằm ở đầu dòng giá trị), có bắt buộc phải bọc ngoặc kép không? *(Không bắt buộc, nhưng khuyến khích bọc toàn bộ chuỗi trong ngoặc kép để tạo thói quen an toàn.)*
 </div>
 </details>
 

@@ -786,35 +786,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Cần cấu hình biến môi trường nào và truyền đủ 3 cờ mTLS nào khi sử dụng công cụ `etcdctl` để sao lưu etcd?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Biến môi trường:** `ETCDCTL_API=3` (chọn phiên bản API v3 cho `etcdctl`).
-- **3 cờ mTLS bắt buộc:**
-  1. `--cacert=/etc/kubernetes/pki/etcd/ca.crt` (Root CA chứng thực etcd).
-  2. `--cert=/etc/kubernetes/pki/etcd/server.crt` (Client Certificate xác thực etcdctl).
-  3. `--key=/etc/kubernetes/pki/etcd/server.key` (Client Private Key).
-- Cùng với cờ điểm cuối `--endpoints=https://127.0.0.1:2379`.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Biến môi trường:</b> <code>ETCDCTL_API=3</code> (chọn phiên bản API v3 cho <code>etcdctl</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3 cờ mTLS bắt buộc:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>--cacert=/etc/kubernetes/pki/etcd/ca.crt</code> (Root CA chứng thực etcd).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>--cert=/etc/kubernetes/pki/etcd/server.crt</code> (Client Certificate xác thực etcdctl).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>--key=/etc/kubernetes/pki/etcd/server.key</code> (Client Private Key).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cùng với cờ điểm cuối <code>--endpoints=https://127.0.0.1:2379</code>.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Không nêu được biến API hoặc cờ mTLS.
-- **1đ:** Trả lời dùng `etcdctl` nhưng thiếu `ETCDCTL_API=3` hoặc thiếu 1 trong 3 cờ mTLS (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác biến `ETCDCTL_API=3` và đường dẫn 3 cờ mTLS cert.
-- **3đ:** Trả lời xuất sắc, nêu vị trí trích xuất nhanh 3 tệp cert trong manifest `/etc/kubernetes/manifests/etcd.yaml`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được biến API hoặc cờ mTLS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời dùng <code>etcdctl</code> nhưng thiếu <code>ETCDCTL_API=3</code> hoặc thiếu 1 trong 3 cờ mTLS (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác biến <code>ETCDCTL_API=3</code> và đường dẫn 3 cờ mTLS cert.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu vị trí trích xuất nhanh 3 tệp cert trong manifest <code>/etc/kubernetes/manifests/etcd.yaml</code>.</div>
 
-**Câu hỏi đào sâu:** Nếu quên khai báo `ETCDCTL_API=3` thì điều gì xảy ra? *(Đáp án: etcdctl sẽ dùng API v2 mặc định và báo lỗi command snapshot save not found).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu quên khai báo <code>ETCDCTL_API=3</code> thì điều gì xảy ra? *(Đáp án: etcdctl sẽ dùng API v2 mặc định và báo lỗi command snapshot save not found).*
 </div>
 </details>
 

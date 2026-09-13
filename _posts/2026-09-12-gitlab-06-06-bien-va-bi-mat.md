@@ -2476,44 +2476,35 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Biến trong GitLab CI đến từ bao nhiêu nguồn? Kể theo thứ tự ưu tiên, cao trước.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **9** nguồn, thứ tự do **nền tảng** quyết định, không do tệp YAML.
+  
+<b style="color: var(--accent-primary);">9</b> nguồn, thứ tự do <b style="color: var(--accent-primary);">nền tảng</b> quyết định, không do tệp YAML.
 
 | Nấc | Nguồn |
 |---|---|
-| 1 | pipeline variable — trigger · schedule · bấm tay · API — **ngoài repo** |
-| 2 | project variable, Settings > CI/CD — **ngoài repo** |
-| 3 | group variable — **ngoài repo** |
-| 4 | instance variable — **ngoài repo** |
-| 5 | `dotenv` của job trước, cần `needs`/`dependencies` |
-| 6 | `variables` cấp **job** |
-| 7 | `variables` cấp **trên cùng** |
+| 1 | pipeline variable — trigger · schedule · bấm tay · API — <b style="color: var(--accent-primary);">ngoài repo</b> |
+| 2 | project variable, Settings > CI/CD — <b style="color: var(--accent-primary);">ngoài repo</b> |
+| 3 | group variable — <b style="color: var(--accent-primary);">ngoài repo</b> |
+| 4 | instance variable — <b style="color: var(--accent-primary);">ngoài repo</b> |
+| 5 | <code>dotenv</code> của job trước, cần <code>needs</code>/<code>dependencies</code> |
+| 6 | <code>variables</code> cấp <b style="color: var(--accent-primary);">job</b> |
+| 7 | <code>variables</code> cấp <b style="color: var(--accent-primary);">trên cùng</b> |
 | 8 | deployment variable |
-| 9 | predefined variable `CI_*` |
+| 9 | predefined variable <code>CI_*</code> |
 
-Con số phải nói ra: **4** nấc cao nhất nằm **ngoài** repo. Nghĩa là **giá trị thật của một biến không đọc được bằng cách đọc `.gitlab-ci.yml`**, chỉ đọc được bằng cách in nó trong job hoặc gọi API. Giới hạn: đây là thứ tự tham chiếu của **GitLab CE 17.7**, ranh giới vài nấc kề nhau đã đổi giữa các phiên bản nên nó **phải đo** — lab bước 1 dựng lại bằng **8** phép so cặp, **4 phút runner**.
+Con số phải nói ra: <b style="color: var(--accent-primary);">4</b> nấc cao nhất nằm <b style="color: var(--accent-primary);">ngoài</b> repo. Nghĩa là <b style="color: var(--accent-primary);">giá trị thật của một biến không đọc được bằng cách đọc <code>.gitlab-ci.yml</code></b>, chỉ đọc được bằng cách in nó trong job hoặc gọi API. Giới hạn: đây là thứ tự tham chiếu của <b style="color: var(--accent-primary);">GitLab CE 17.7</b>, ranh giới vài nấc kề nhau đã đổi giữa các phiên bản nên nó <b style="color: var(--accent-primary);">phải đo</b> — lab bước 1 dựng lại bằng <b style="color: var(--accent-primary);">8</b> phép so cặp, <b style="color: var(--accent-primary);">4 phút runner</b>.
 
-**Tiêu chí chấm:**
-- 0đ: "Biến khai trong `.gitlab-ci.yml`" rồi dừng.
-- 1đ: Kể được 3–4 nguồn, không có thứ tự.
-- 2đ: Kể đủ **9** nấc đúng thứ tự.
-- 3đ: Như trên, **và** nói rõ **4** nấc cao nhất ngoài repo nên không đọc được bằng YAML, **và** nêu bảng phải đo lại theo phiên bản.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: "Biến khai trong <code>.gitlab-ci.yml</code>" rồi dừng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Kể được 3–4 nguồn, không có thứ tự.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Kể đủ <b style="color: var(--accent-primary);">9</b> nấc đúng thứ tự.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Như trên, <b style="color: var(--accent-primary);">và</b> nói rõ <b style="color: var(--accent-primary);">4</b> nấc cao nhất ngoài repo nên không đọc được bằng YAML, <b style="color: var(--accent-primary);">và</b> nêu bảng phải đo lại theo phiên bản.</div>
 
-**Câu hỏi đào sâu:** Vì sao nền tảng xếp cấu hình ngoài repo **trên** cấu hình trong repo? *(Cố ý: để đội vận hành đổi giá trị mà không cần merge request.)*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Vì sao nền tảng xếp cấu hình ngoài repo <b style="color: var(--accent-primary);">trên</b> cấu hình trong repo? *(Cố ý: để đội vận hành đổi giá trị mà không cần merge request.)*
 </div>
 </details>
 

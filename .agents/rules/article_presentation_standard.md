@@ -184,10 +184,18 @@ Tất cả 10 câu hỏi trắc nghiệm / tự luận chuyên sâu ở cuối b
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lời giải thích chi tiết, ngắn gọn, có highlight các thuật ngữ chuyên môn trọng tâm bằng <b style="color: var(--accent-primary);">Màu Sắc Nhận Diện</b>.
+  Lời giải thích chi tiết, ngắn gọn, có highlight các thuật ngữ chuyên môn trọng tâm bằng <b style="color: var(--accent-primary);">Màu Sắc Nhận Diện</b> và mã nguồn trong thẻ <code>inline code</code>.
 </div>
 </details>
 ```
+
+- **Quy tắc chuyển đổi Markdown bên trong khối HTML (`<div class="qa-answer">`)**:
+  - Do Jekyll/Kramdown không tự động parse cú pháp Markdown bên trong các block thẻ HTML thuần (`<div>`, `<details>`), **tất cả nội dung bên trong `<div class="qa-answer">` và `<summary>` PHẢI được chuyển đổi hoàn toàn sang HTML chuẩn**:
+    - `**chữ in đậm**` $\rightarrow$ `<b style="color: var(--accent-primary);">chữ in đậm</b>` hoặc `<strong>chữ in đậm</strong>`.
+    - `` `mã nguồn inline` `` $\rightarrow$ `<code>mã nguồn inline</code>`.
+    - `- Danh sách bullet` hoặc `1. Thứ tự` $\rightarrow$ chuyển đổi thành các khối `<div style="margin-bottom: 8px; padding-left: 12px; border-left: 2px solid var(--accent-primary);">...</div>` hoặc thẻ `<ul>`/`<ol>` chuẩn HTML.
+  - **Tuyệt đối KHÔNG để sót cú pháp Markdown thô** (như `**...**`, `` `...` ``, `- `) vì sẽ hiển thị nguyên văn chuỗi thô ra ngoài trang web gây mất thẩm mỹ.
+  - **Làm sạch ký tự**: Loại bỏ dấu hai chấm dính liền thừa (`: `) ngay sau thẻ đóng `</span>` hoặc `</div>` trong tiêu đề / tóm tắt câu hỏi.
 
 ---
 

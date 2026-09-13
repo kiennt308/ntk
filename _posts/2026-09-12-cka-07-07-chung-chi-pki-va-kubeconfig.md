@@ -903,33 +903,24 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Thư mục `/etc/kubernetes/pki/` chứa mấy cây CA độc lập? Nêu vai trò của từng cây CA.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Chứa **3 cây CA độc lập**:
-  1. `Root CA` (`ca.crt`, `ca.key`): CA tối cao ký duyệt chứng chỉ cho API Server, Kubelet client/server và admin Kubeconfig.
-  2. `Front Proxy CA` (`front-proxy-ca.crt`, `front-proxy-ca.key`): CA riêng phục vụ xác thực người dùng khi truy cập qua Aggregated API Server (như metrics-server).
-  3. `etcd CA` (`etcd/ca.crt`, `etcd/ca.key`): CA riêng bảo vệ giao tiếp TLS giữa các node etcd và giữa etcd với API Server.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chứa <b style="color: var(--accent-primary);">3 cây CA độc lập</b>:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>Root CA</code> (<code>ca.crt</code>, <code>ca.key</code>): CA tối cao ký duyệt chứng chỉ cho API Server, Kubelet client/server và admin Kubeconfig.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>Front Proxy CA</code> (<code>front-proxy-ca.crt</code>, <code>front-proxy-ca.key</code>): CA riêng phục vụ xác thực người dùng khi truy cập qua Aggregated API Server (như metrics-server).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>etcd CA</code> (<code>etcd/ca.crt</code>, <code>etcd/ca.key</code>): CA riêng bảo vệ giao tiếp TLS giữa các node etcd và giữa etcd với API Server.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo chỉ có 1 CA duy nhất cho toàn bộ cụm.
-- **1đ:** Nêu được có nhiều CA nhưng không chỉ ra đủ 3 cây CA (Root CA, Front Proxy CA, etcd CA) (dính trần 1đ).
-- **2đ:** Giải thích chính xác 3 cây CA độc lập và vai trò cô lập bề mặt tấn công.
-- **3đ:** Trả lời xuất sắc, nêu đường dẫn các file `.crt` và cảnh báo nguy cơ nếu lộ tệp `ca.key`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo chỉ có 1 CA duy nhất cho toàn bộ cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được có nhiều CA nhưng không chỉ ra đủ 3 cây CA (Root CA, Front Proxy CA, etcd CA) (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chính xác 3 cây CA độc lập và vai trò cô lập bề mặt tấn công.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu đường dẫn các file <code>.crt</code> và cảnh báo nguy cơ nếu lộ tệp <code>ca.key</code>.</div>
 
-**Câu hỏi đào sâu:** Tại sao không nên dùng chung Root CA cho etcd? *(Đáp án: Để cô lập etcd; nếu API Server bị tấn công lộ CA thì hacker vẫn không thể truy cập thẳng etcd database).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao không nên dùng chung Root CA cho etcd? *(Đáp án: Để cô lập etcd; nếu API Server bị tấn công lộ CA thì hacker vẫn không thể truy cập thẳng etcd database).*
 </div>
 </details>
 

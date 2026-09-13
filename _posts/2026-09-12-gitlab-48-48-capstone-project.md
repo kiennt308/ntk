@@ -1820,35 +1820,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi (12 câu phỏng vấn nâng cao)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Anh/chị thiết kế kiến trúc CI/CD như thế nào cho một tập đoàn sở hữu hơn 100 microservices độc lập nhưng phải tuân thủ nghiêm ngặt chuẩn an ninh ISO27001 và SOC2?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Tôi thiết kế kiến trúc theo 5 tầng phân tách minh bạch:
-1. **Tầng Governance:** Cưỡng chế Group Compliance Pipeline Framework ở cấp Group cao nhất. Mọi repository con tự động nhận các Security Gates bắt buộc mà không thể xóa hay bypass (`QT 48.1`).
-2. **Tầng Security Shift-Left:** Chạy song song SAST (Semgrep), Secret Detection (Gitleaks), SCA (Grype) và Container Scan (Trivy) trực tiếp trên Merge Request (`QT 48.6`).
-3. **Tầng Infrastructure & OIDC:** Xác thực secretless qua OIDC JWT Token với Cloud AWS/GCP/Azure, tách biệt `terraform plan` trên MR và `terraform apply` manual trên nhánh chính (`QT 48.2`, `QT 48.4`).
-4. **Tầng Build & Progressive Release:** Biên dịch rootless Kaniko, ký số Cosign provenance và deploy Canary 10% đi kèm Prometheus Auto-Rollback (`QT 48.5`, `QT 48.7`).
-5. **Tầng Observability:** Tự động thu thập 4 chỉ số DORA Metrics và đẩy immutable audit logs về hệ thống SIEM tập trung (`QT 48.11`, `QT 48.12`).
+  
+Tôi thiết kế kiến trúc theo 5 tầng phân tách minh bạch:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Tầng Governance:</b> Cưỡng chế Group Compliance Pipeline Framework ở cấp Group cao nhất. Mọi repository con tự động nhận các Security Gates bắt buộc mà không thể xóa hay bypass (<code>QT 48.1</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Tầng Security Shift-Left:</b> Chạy song song SAST (Semgrep), Secret Detection (Gitleaks), SCA (Grype) và Container Scan (Trivy) trực tiếp trên Merge Request (<code>QT 48.6</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Tầng Infrastructure & OIDC:</b> Xác thực secretless qua OIDC JWT Token với Cloud AWS/GCP/Azure, tách biệt <code>terraform plan</code> trên MR và <code>terraform apply</code> manual trên nhánh chính (<code>QT 48.2</code>, <code>QT 48.4</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Tầng Build & Progressive Release:</b> Biên dịch rootless Kaniko, ký số Cosign provenance và deploy Canary 10% đi kèm Prometheus Auto-Rollback (<code>QT 48.5</code>, <code>QT 48.7</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> <b style="color: var(--accent-primary);">Tầng Observability:</b> Tự động thu thập 4 chỉ số DORA Metrics và đẩy immutable audit logs về hệ thống SIEM tập trung (<code>QT 48.11</code>, <code>QT 48.12</code>).</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Chỉ nói về việc viết file `.gitlab-ci.yml` đơn lẻ cho từng dự án.
-- **1đ:** Nêu được việc quét an ninh và deploy lên Kubernetes nhưng thiếu Compliance Framework và OIDC.
-- **2đ:** Trình bày được sơ đồ các tầng CI/CD và công cụ Security nhưng chưa nhấn mạnh cơ chế cưỡng chế cấp Group và DORA Metrics.
-- **3đ:** Trình bày hoàn hảo kiến trúc 5 tầng, nêu rõ cơ chế cưỡng chế Compliance Pipeline ở cấp Group, OIDC Secretless Auth, Cosign Signing, Canary Auto-Rollback và DORA Observability.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Chỉ nói về việc viết file <code>.gitlab-ci.yml</code> đơn lẻ cho từng dự án.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được việc quét an ninh và deploy lên Kubernetes nhưng thiếu Compliance Framework và OIDC.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Trình bày được sơ đồ các tầng CI/CD và công cụ Security nhưng chưa nhấn mạnh cơ chế cưỡng chế cấp Group và DORA Metrics.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trình bày hoàn hảo kiến trúc 5 tầng, nêu rõ cơ chế cưỡng chế Compliance Pipeline ở cấp Group, OIDC Secretless Auth, Cosign Signing, Canary Auto-Rollback và DORA Observability.</div>
 
-**Câu hỏi đào sâu:** (Nếu dự án con cố tình gỡ bỏ file `.gitlab-ci.yml` thì Group Compliance Pipeline xử lý ra sao? *Đáp án: GitLab Compliance Framework tự động inject file cấu hình cha vào trước khi job chạy, khiến pipeline vẫn thực thi đầy đủ các bước security bất chấp nội dung file repo con.*)
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Nếu dự án con cố tình gỡ bỏ file <code>.gitlab-ci.yml</code> thì Group Compliance Pipeline xử lý ra sao? *Đáp án: GitLab Compliance Framework tự động inject file cấu hình cha vào trước khi job chạy, khiến pipeline vẫn thực thi đầy đủ các bước security bất chấp nội dung file repo con.*)
 </div>
 </details>
 

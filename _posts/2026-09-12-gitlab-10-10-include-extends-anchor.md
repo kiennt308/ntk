@@ -2016,28 +2016,19 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. Danh mục 12 câu hỏi Vấn đáp Kỹ thuật
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>(🔥 Câu tủ): Hãy trình bày bốn cơ chế tái sử dụng cấu hình và ba thời điểm hợp nhất trong GitLab CI/CD.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Trong GitLab CI/CD có 4 cơ chế tái sử dụng cấu hình (`include`, `extends`, YAML Anchor `&`/`*`, `!reference`) và chúng trải qua 3 thời điểm hợp nhất cố định theo thứ tự:
-  1. **Thời điểm 1 (t0 - YAML Parser Phase):** YAML Parser phân giải cú pháp cơ bản nội trong tệp đơn độc. YAML Anchor `&` và Alias `*` được hợp nhất ở thời điểm này.
-  2. **Thời điểm 2 (t1 - GitLab Includer Phase):** GitLab nạp toàn bộ các tệp từ danh sách `include` (`local`, `project`, `remote`, `template`) để tạo thành một tệp YAML phân giải phẳng duy nhất (`merged_yaml`).
-  3. **Thời điểm 3 (t2 - GitLab Resolver Phase):** Engine xử lý các từ khoá nâng cao của GitLab như `extends` và thẻ custom `!reference` trên cây YAML đã phẳng.
-- **Giải thích kỹ thuật:** Sự phân tách 3 thời điểm này giải thích tại sao YAML Anchor không bao giờ hoạt động xuyên qua các tệp `include` (vì Anchor chết ở t0 trước khi `include` được nạp ở t1), và tại sao `!reference` cùng `extends` lại hoạt động tốt xuyên qua tệp (vì chúng được xử lý ở t2 sau khi tất cả các tệp đã hợp nhất).
-- **Thực tế DevOps:** Nhầm lẫn thứ tự xử lý dẫn đến các lỗi cấu hình tai hại. Kỹ sư DevOps phải thuộc lòng sơ đồ 3 thời điểm hợp nhất để chẩn đoán chính xác lý do tại sao một thuộc tính bị ghi đè hoặc bị từ chối cú pháp.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 4.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Trong GitLab CI/CD có 4 cơ chế tái sử dụng cấu hình (<code>include</code>, <code>extends</code>, YAML Anchor <code>&</code>/<code>*</code>, <code>!reference</code>) và chúng trải qua 3 thời điểm hợp nhất cố định theo thứ tự:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Thời điểm 1 (t0 - YAML Parser Phase):</b> YAML Parser phân giải cú pháp cơ bản nội trong tệp đơn độc. YAML Anchor <code>&</code> và Alias <code>*</code> được hợp nhất ở thời điểm này.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Thời điểm 2 (t1 - GitLab Includer Phase):</b> GitLab nạp toàn bộ các tệp từ danh sách <code>include</code> (<code>local</code>, <code>project</code>, <code>remote</code>, <code>template</code>) để tạo thành một tệp YAML phân giải phẳng duy nhất (<code>merged_yaml</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Thời điểm 3 (t2 - GitLab Resolver Phase):</b> Engine xử lý các từ khoá nâng cao của GitLab như <code>extends</code> và thẻ custom <code>!reference</code> trên cây YAML đã phẳng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Sự phân tách 3 thời điểm này giải thích tại sao YAML Anchor không bao giờ hoạt động xuyên qua các tệp <code>include</code> (vì Anchor chết ở t0 trước khi <code>include</code> được nạp ở t1), và tại sao <code>!reference</code> cùng <code>extends</code> lại hoạt động tốt xuyên qua tệp (vì chúng được xử lý ở t2 sau khi tất cả các tệp đã hợp nhất).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Nhầm lẫn thứ tự xử lý dẫn đến các lỗi cấu hình tai hại. Kỹ sư DevOps phải thuộc lòng sơ đồ 3 thời điểm hợp nhất để chẩn đoán chính xác lý do tại sao một thuộc tính bị ghi đè hoặc bị từ chối cú pháp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 4.1</b>.</div>
 
 ```yaml
 # Sơ đồ minh hoạ 3 thời điểm phân giải hợp nhất
@@ -2047,40 +2038,31 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 # t1 (GitLab Includer): Tải tệp include và ghép thành 1 file phẳng
 include:
-  - local: '/ci/templates/base.yml'
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/ci/templates/base.yml'</div>
 
 # t2 (GitLab Resolver): Phân giải extends và !reference trên file phẳng
 my-job:
   extends: .remote_base
   script:
-    - !reference [.setup-script, script]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• !reference [.setup-script, script]</div>
 ```
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>(🔥 Câu tủ): Khi một Job dùng `extends` kế thừa từ một Job ẩn và khai báo lại khoá `script`, điều gì sẽ xảy ra với mảng `script` của Job ẩn? Vì sao?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Mảng `script` của Job ẩn (Job cha) sẽ bị **XOÁ SẠCH VÀ THAY THẾ HOÀN TOÀN** bởi mảng `script` mới khai báo ở Job con, chứ **KHÔNG PHẢI ĐƯỢC NỐI (APPEND)**.
-- **Giải thích kỹ thuật:** Quy tắc hợp nhất thuộc tính của `extends` quy định:
-  - Tất cả các thuộc tính dạng **từ điển (Dictionary/Hash)** như `variables`, `services`, `cache` sẽ được thực hiện **Trộn sâu (Deep Merge)**.
-  - Tất cả các thuộc tính dạng **mảng (Array/Sequence)** như `script`, `before_script`, `after_script`, `tags`, `image` (nếu là list) sẽ bị **Thay thế toàn bộ (Array Replacement)** bởi đối tượng kế thừa.
-- **Thực tế DevOps:** Đây là bẫy hỏng ngầm im lặng nguy hiểm nhất trong GitLab CI. Một Job cha định nghĩa bước kiểm tra bảo mật `script: [audit_scan, SAST]`; một Job con kế thừa nhưng chỉ viết `script: [npm run build]`. Hệ thống sẽ im lặng xoá bỏ 2 bước bảo mật mà không phát ra bất kỳ cảnh báo hay lỗi cú pháp nào!
-- **Tham chiếu quy tắc:** Đối chiếu **QT 6.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Mảng <code>script</code> của Job ẩn (Job cha) sẽ bị <b style="color: var(--accent-primary);">XOÁ SẠCH VÀ THAY THẾ HOÀN TOÀN</b> bởi mảng <code>script</code> mới khai báo ở Job con, chứ <b style="color: var(--accent-primary);">KHÔNG PHẢI ĐƯỢC NỐI (APPEND)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Quy tắc hợp nhất thuộc tính của <code>extends</code> quy định:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tất cả các thuộc tính dạng <b style="color: var(--accent-primary);">từ điển (Dictionary/Hash)</b> như <code>variables</code>, <code>services</code>, <code>cache</code> sẽ được thực hiện <b style="color: var(--accent-primary);">Trộn sâu (Deep Merge)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tất cả các thuộc tính dạng <b style="color: var(--accent-primary);">mảng (Array/Sequence)</b> như <code>script</code>, <code>before_script</code>, <code>after_script</code>, <code>tags</code>, <code>image</code> (nếu là list) sẽ bị <b style="color: var(--accent-primary);">Thay thế toàn bộ (Array Replacement)</b> bởi đối tượng kế thừa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Đây là bẫy hỏng ngầm im lặng nguy hiểm nhất trong GitLab CI. Một Job cha định nghĩa bước kiểm tra bảo mật <code>script: [audit_scan, SAST]</code>; một Job con kế thừa nhưng chỉ viết <code>script: [npm run build]</code>. Hệ thống sẽ im lặng xoá bỏ 2 bước bảo mật mà không phát ra bất kỳ cảnh báo hay lỗi cú pháp nào!</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 6.1</b>.</div>
 
 ```yaml
 # Minh hoạ cơ chế Array Replacement của extends
@@ -2088,183 +2070,138 @@ my-job:
   variables:
     ENV: "prod"               # Từ điển -> Được giữ lại (Deep Merge)
   script:
-    - echo "Critical Audit 1" # Mảng -> BỊ XOÁ BỎ HOÀN TOÀN
-    - echo "Critical Audit 2" # Mảng -> BỊ XOÁ BỎ HOÀN TOÀN
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Critical Audit 1" # Mảng -> BỊ XOÁ BỎ HOÀN TOÀN</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Critical Audit 2" # Mảng -> BỊ XOÁ BỎ HOÀN TOÀN</div>
 
 app-build:
   extends: .base-audit
   script:
-    - echo "Build app only"   # Mảng mới này thay thế toàn bộ script của cha!
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Build app only"   # Mảng mới này thay thế toàn bộ script của cha!</div>
 ```
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>(★★★): YAML Anchor (`&anchor` và `*alias`) có sử dụng được xuyên qua biên giới tệp `include` không? Vì sao?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** **KHÔNG THỂ**. YAML Anchor chỉ có phạm vi hoạt động trong **duy nhất 1 tệp văn bản YAML đơn độc** và hoàn toàn bất lực khi gọi xuyên tệp `include`.
-- **Giải thích kỹ thuật:** Cú pháp Anchor `&` và Alias `*` là tiêu chuẩn của trình biên dịch YAML gốc (YAML Spec Level), được xử lý tại **Thời điểm 1 (t0 - YAML Parser Phase)**. Lúc này, GitLab Engine chưa hề kích hoạt module `include` (chạy ở t1). Do đó khi Parser đọc tới Alias `*anchor` ở tệp chính, nó không thể tìm thấy định nghĩa `&anchor` nằm ở tệp phụ và sẽ ném lỗi Parser Error: `Unknown alias`.
-- **Thực tế DevOps:** Để tái sử dụng các đoạn mã `script` hoặc cấu hình xuyên tệp `include`, giải pháp thay thế chuẩn xác 100% là chuyển sang dùng thẻ `!reference [.job_an, script]`.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 4.2**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> <b style="color: var(--accent-primary);">KHÔNG THỂ</b>. YAML Anchor chỉ có phạm vi hoạt động trong <b style="color: var(--accent-primary);">duy nhất 1 tệp văn bản YAML đơn độc</b> và hoàn toàn bất lực khi gọi xuyên tệp <code>include</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Cú pháp Anchor <code>&</code> và Alias <code>*</code> là tiêu chuẩn của trình biên dịch YAML gốc (YAML Spec Level), được xử lý tại <b style="color: var(--accent-primary);">Thời điểm 1 (t0 - YAML Parser Phase)</b>. Lúc này, GitLab Engine chưa hề kích hoạt module <code>include</code> (chạy ở t1). Do đó khi Parser đọc tới Alias <code>*anchor</code> ở tệp chính, nó không thể tìm thấy định nghĩa <code>&anchor</code> nằm ở tệp phụ và sẽ ném lỗi Parser Error: <code>Unknown alias</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Để tái sử dụng các đoạn mã <code>script</code> hoặc cấu hình xuyên tệp <code>include</code>, giải pháp thay thế chuẩn xác 100% là chuyển sang dùng thẻ <code>!reference [.job_an, script]</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 4.2</b>.</div>
 
 ```yaml
 # File /templates/anchor.yml:
 .base-script: &my_anchor
   before_script:
-    - echo "Setup env"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Setup env"</div>
 
 # File .gitlab-ci.yml main:
 include:
-  - local: '/templates/anchor.yml'
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/templates/anchor.yml'</div>
 
 my-job:
   <<: *my_anchor # LỖI BÁO NGAY: jobs:my-job config key may not be used with undefined anchor 'my_anchor'
   script:
-    - echo "Run job"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Run job"</div>
 ```
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>(★★★): Một kỹ sư trong team phàn nàn: "Tôi đã khai báo ghi đè biến ở job con nhưng pipeline chạy vẫn dùng giá trị cũ, ghi đè không ăn". Lệnh terminal đầu tiên bạn chạy để chẩn đoán là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Lệnh terminal đầu tiên cần chạy là trích xuất tệp sau phân giải `merged_yaml` qua API REST `/ci/lint` bằng cờ `include_merged_yaml: true`.
-- **Giải thích kỹ thuật:**
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Lệnh terminal đầu tiên cần chạy là trích xuất tệp sau phân giải <code>merged_yaml</code> qua API REST <code>/ci/lint</code> bằng cờ <code>include_merged_yaml: true</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b></div>
   ```bash
   curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
        --header "Content-Type: application/json" \
        --data '{"include_merged_yaml": true}' \
        "https://gitlab.example.com/api/v4/projects/:id/ci/lint" | jq -r .merged_yaml
   ```
-  Tệp `merged_yaml` là bức tranh sự thật duy nhất phản ánh chính xác cấu hình cuối cùng mà GitLab Engine nạp vào Pipeline. Đọc tệp `.gitlab-ci.yml` thô sẽ không bao giờ phát hiện được các thuộc tính bị ghi đè ngầm từ các tệp `include` đằng sau.
-- **Thực tế DevOps:** Dừng ngay lập tức mọi cuộc tranh luận tính phỏng đoán. 100% nguyên nhân ghi đè "không ăn" sẽ lộ diện trong 3 giây khi kiểm tra tệp `merged_yaml`.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 4.3**.
+  Tệp <code>merged_yaml</code> là bức tranh sự thật duy nhất phản ánh chính xác cấu hình cuối cùng mà GitLab Engine nạp vào Pipeline. Đọc tệp <code>.gitlab-ci.yml</code> thô sẽ không bao giờ phát hiện được các thuộc tính bị ghi đè ngầm từ các tệp <code>include</code> đằng sau.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Dừng ngay lập tức mọi cuộc tranh luận tính phỏng đoán. 100% nguyên nhân ghi đè "không ăn" sẽ lộ diện trong 3 giây khi kiểm tra tệp <code>merged_yaml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 4.3</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>(★★★): Giả sử tệp `.gitlab-ci.yml` gốc và một tệp được `include` cùng khai báo một Job có trùng tên `app-build`. GitLab sẽ trộn hai Job này theo cơ chế nào và tệp nào thắng?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Trộn ở **mức khoá (Key-level merge)** và **tệp gốc (tệp chứa câu lệnh include) BẮT BUỘC THẮNG** ở tất cả các khoá trùng lặp.
-- **Giải thích kỹ thuật:**
-  - Nếu tệp `include` khai báo `app-build` có: `image: node:16`, `tags: [runner-1]`, `script: [build.sh]`.
-  - Tệp gốc khai báo `app-build` có: `image: node:18`, `script: [new_build.sh]`.
-  - Kết quả hợp nhất: `image` nhận `node:18` (gốc thắng), `script` nhận `[new_build.sh]` (gốc thắng), nhưng khoá `tags: [runner-1]` ở tệp include không bị khai báo lại ở tệp gốc nên **VẪN ÂM THẦM TỒN TẠI** trong Job cuối cùng.
-- **Thực tế DevOps:** Đây là nguyên nhân khiến Job bị dính các thuộc tính thù hình (như `tags`, `retry`, `timeout`) từ tệp template dùng chung mà người viết tệp gốc không hề hay biết.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 5.2**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Trộn ở <b style="color: var(--accent-primary);">mức khoá (Key-level merge)</b> và <b style="color: var(--accent-primary);">tệp gốc (tệp chứa câu lệnh include) BẮT BUỘC THẮNG</b> ở tất cả các khoá trùng lặp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu tệp <code>include</code> khai báo <code>app-build</code> có: <code>image: node:16</code>, <code>tags: [runner-1]</code>, <code>script: [build.sh]</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tệp gốc khai báo <code>app-build</code> có: <code>image: node:18</code>, <code>script: [new_build.sh]</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kết quả hợp nhất: <code>image</code> nhận <code>node:18</code> (gốc thắng), <code>script</code> nhận <code>[new_build.sh]</code> (gốc thắng), nhưng khoá <code>tags: [runner-1]</code> ở tệp include không bị khai báo lại ở tệp gốc nên <b style="color: var(--accent-primary);">VẪN ÂM THẦM TỒN TẠI</b> trong Job cuối cùng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Đây là nguyên nhân khiến Job bị dính các thuộc tính thù hình (như <code>tags</code>, <code>retry</code>, <code>timeout</code>) từ tệp template dùng chung mà người viết tệp gốc không hề hay biết.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 5.2</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>(★★★): Kịch bản yêu cầu nối 3 khối lệnh `script` từ 3 tệp mẫu khác nhau vào làm 1 `script` duy nhất cho Job chính. Bạn sẽ chọn cơ chế nào? Viết minh hoạ cú pháp.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Bắt buộc sử dụng thẻ **`!reference`**. Cả `extends` và YAML Anchor đều không thể nối ghép các phần tử mảng từ 3 nguồn khác nhau vào 1 mảng duy nhất.
-- **Giải thích kỹ thuật:** Cú pháp khai báo:
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Bắt buộc sử dụng thẻ <b style="color: var(--accent-primary);"><code>!reference</code></b>. Cả <code>extends</code> và YAML Anchor đều không thể nối ghép các phần tử mảng từ 3 nguồn khác nhau vào 1 mảng duy nhất.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Cú pháp khai báo:</div>
   ```yaml
   include:
-    - local: '/templates/step1.yml'
-    - local: '/templates/step2.yml'
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/templates/step1.yml'</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/templates/step2.yml'</div>
 
   main-build-job:
     stage: build
     script:
-      - !reference [.setup-step, script]
-      - !reference [.compile-step, script]
-      - echo "Step 3: Finalizing Package"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• !reference [.setup-step, script]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• !reference [.compile-step, script]</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Step 3: Finalizing Package"</div>
   ```
-- **Thực tế DevOps:** Thẻ `!reference` giải quyết triệt để hạn chế của `extends`, cho phép ghép nối linh hoạt các đoạn mã script nhỏ thành một chuỗi thực thi hoàn chỉnh theo đúng thứ tự mong muốn mà không lo bị xoá đè mảng.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 6.2** và **QT 7.1**.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Thẻ <code>!reference</code> giải quyết triệt để hạn chế của <code>extends</code>, cho phép ghép nối linh hoạt các đoạn mã script nhỏ thành một chuỗi thực thi hoàn chỉnh theo đúng thứ tự mong muốn mà không lo bị xoá đè mảng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 6.2</b> và <b style="color: var(--accent-primary);">QT 7.1</b>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>(★★★): Hai lần chạy pipeline cho cùng một Git Commit SHA chính xác nhưng lại ra hai kết quả thực thi hoàn toàn khác nhau. Nguyên nhân từ đâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Do tệp cấu hình có sử dụng đường dẫn `include:project` hoặc `include:remote` mà **KHÔNG GHIM PHIÊN BẢN (Unpinned Reference)**, ví dụ trỏ vào branch `ref: main` hoặc `ref: HEAD`.
-- **Giải thích kỹ thuật:** Khi `ref` trỏ vào `main`, nội dung tệp ở repo nguồn có thể bị chỉnh sửa bởi team khác bất kỳ lúc nào. Khi Pipeline ở repo chính kích hoạt, GitLab sẽ tải phiên bản mới nhất ở thời điểm `t1`. Do đó, mặc dù Commit SHA ở repo chính không hề thay đổi, nội dung cấu hình bị `include` đã bị biến đổi hoàn toàn.
-- **Thực tế DevOps:** Đây là vi phạm nghiêm trọng tính tái lập (Reproducibility) trong CI/CD. Quy định bắt buộc: Mọi câu lệnh `include:project` hoặc `remote` phải ghim `ref` bằng **Git Tag (ví dụ `ref: 'v1.2.0'`)** hoặc **Commit SHA ngắn**.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 7.2** và **QT 5.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Do tệp cấu hình có sử dụng đường dẫn <code>include:project</code> hoặc <code>include:remote</code> mà <b style="color: var(--accent-primary);">KHÔNG GHIM PHIÊN BẢN (Unpinned Reference)</b>, ví dụ trỏ vào branch <code>ref: main</code> hoặc <code>ref: HEAD</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Khi <code>ref</code> trỏ vào <code>main</code>, nội dung tệp ở repo nguồn có thể bị chỉnh sửa bởi team khác bất kỳ lúc nào. Khi Pipeline ở repo chính kích hoạt, GitLab sẽ tải phiên bản mới nhất ở thời điểm <code>t1</code>. Do đó, mặc dù Commit SHA ở repo chính không hề thay đổi, nội dung cấu hình bị <code>include</code> đã bị biến đổi hoàn toàn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Đây là vi phạm nghiêm trọng tính tái lập (Reproducibility) trong CI/CD. Quy định bắt buộc: Mọi câu lệnh <code>include:project</code> hoặc <code>remote</code> phải ghim <code>ref</code> bằng <b style="color: var(--accent-primary);">Git Tag (ví dụ <code>ref: 'v1.2.0'</code>)</b> hoặc <b style="color: var(--accent-primary);">Commit SHA ngắn</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 7.2</b> và <b style="color: var(--accent-primary);">QT 5.1</b>.</div>
 
 ```yaml
 # NGUY HIỂM: Không ghim phiên bản ref cố định
 include:
-  - project: 'shared/ci-templates'
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• project: 'shared/ci-templates'</div>
     ref: 'main' # CẤM: Nội dung có thể đổi bất cứ lúc nào!
     file: '/build.yml'
 
 # CHUẨN AN TOÀN: Ghim phiên bản ref bằng Git Tag cố định
 include:
-  - project: 'shared/ci-templates'
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• project: 'shared/ci-templates'</div>
     ref: 'v1.2.0' # CHUẨN: Đảm bảo 100% tính tái lập!
     file: '/build.yml'
 ```
@@ -2273,101 +2210,74 @@ include:
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>(★★): Hãy phân biệt 4 loại `include` (`local`, `project`, `remote`, `template`) dựa trên góc độ QUYỀN SỞ HỮU và TÍNH BẢO MẬT.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:**
-  1. `include: local`: Quyền sở hữu 100% nội bộ repo. An toàn tuyệt đối, có đầy đủ vết Git log.
-  2. `include: project`: Quyền sở hữu thuộc về team khác trong cùng GitLab Instance. An toàn cao, kiểm soát được qua phân quyền dự án.
-  3. `include: template`: Quyền sở hữu thuộc về nhà phát triển GitLab CE/EE. An toàn, tuân theo phiên bản nâng cấp của hệ thống GitLab.
-  4. `include: remote`: Quyền sở hữu thuộc về bên thứ ba trên Internet/mạng ngoài. **Rủi ro bảo mật lớn nhất** vì không có vết commit trong Git history và phụ thuộc vào hạ tầng mạng bên ngoài.
-- **Giải thích kỹ thuật:** `include:remote` thực hiện một HTTP GET request tự do. Nếu server ngoài bị tấn công chiếm quyền (Supply Chain Attack) hoặc bị gián đoạn mạng, toàn bộ pipeline doanh nghiệp sẽ bị độc hại hoặc ngưng trệ.
-- **Thực tế DevOps:** Trong môi trường ngân hàng/bảo mật cao, cờ cấu hình `remote_includes_allowed` bị cấm hẳn. 100% tệp cấu hình dùng chung phải đưa về `include:project` hoặc `local`.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 5.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>include: local</code>: Quyền sở hữu 100% nội bộ repo. An toàn tuyệt đối, có đầy đủ vết Git log.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>include: project</code>: Quyền sở hữu thuộc về team khác trong cùng GitLab Instance. An toàn cao, kiểm soát được qua phân quyền dự án.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>include: template</code>: Quyền sở hữu thuộc về nhà phát triển GitLab CE/EE. An toàn, tuân theo phiên bản nâng cấp của hệ thống GitLab.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <code>include: remote</code>: Quyền sở hữu thuộc về bên thứ ba trên Internet/mạng ngoài. <b style="color: var(--accent-primary);">Rủi ro bảo mật lớn nhất</b> vì không có vết commit trong Git history và phụ thuộc vào hạ tầng mạng bên ngoài.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> <code>include:remote</code> thực hiện một HTTP GET request tự do. Nếu server ngoài bị tấn công chiếm quyền (Supply Chain Attack) hoặc bị gián đoạn mạng, toàn bộ pipeline doanh nghiệp sẽ bị độc hại hoặc ngưng trệ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Trong môi trường ngân hàng/bảo mật cao, cờ cấu hình <code>remote_includes_allowed</code> bị cấm hẳn. 100% tệp cấu hình dùng chung phải đưa về <code>include:project</code> hoặc <code>local</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 5.1</b>.</div>
 
 ```yaml
 # 4 loại include và mức độ tin cậy bảo mật
 include:
-  - local: '/ci/templates/build.yml'               # High Security (In-repo)
-  - project: 'devops/shared-templates'            # High Security (Internal Instance)
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/ci/templates/build.yml'               # High Security (In-repo)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• project: 'devops/shared-templates'            # High Security (Internal Instance)</div>
     ref: 'v1.0.0'
     file: '/templates/node.yml'
-  - template: 'Jobs/Build.gitlab-ci.yml'           # Trusted (Vendor Provided)
-  - remote: 'https://cdn.company.com/ci/base.yml'   # LOW SECURITY (External Network)
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• template: 'Jobs/Build.gitlab-ci.yml'           # Trusted (Vendor Provided)</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• remote: 'https://cdn.company.com/ci/base.yml'   # LOW SECURITY (External Network)</div>
 ```
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>(★★★): Tất cả các Job thuộc một tệp `include: local` bất ngờ biến mất khỏi Pipeline mà không hề có bất kỳ câu lệnh `rules` nào ở cấp độ Job khai báo ngắt. Hãy chẩn đoán nguyên nhân.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Do thuộc tính **`include:rules`** được khai báo tại đường dẫn `include` tệp đó ở tệp chính bị đánh giá kết quả là `false`.
-- **Giải thích kỹ thuật:** `include:rules` đóng vai trò là **tầng lọc thứ 3** trong hệ thống GitLab CI. Thứ tự lọc 3 tầng như sau:
-  1. Tầng 1: `include:rules` (nếu trả về `false`, tệp YAML đó bị bỏ qua hoàn toàn ở thời điểm t1, tất cả job trong tệp bị xoá sạch).
-  2. Tầng 2: `workflow:rules` (lọc cấp độ Pipeline ở thời điểm t2).
-  3. Tầng 3: `job:rules` (lọc cấp độ từng Job riêng lẻ).
-- **Thực tế DevOps:** Khi chẩn đoán lý do một loạt job không xuất hiện, luôn kiểm tra điều kiện `include:rules` tại tệp chính trước khi lật tìm `rules` bên trong từng job.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 5.4**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Do thuộc tính <b style="color: var(--accent-primary);"><code>include:rules</code></b> được khai báo tại đường dẫn <code>include</code> tệp đó ở tệp chính bị đánh giá kết quả là <code>false</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> <code>include:rules</code> đóng vai trò là <b style="color: var(--accent-primary);">tầng lọc thứ 3</b> trong hệ thống GitLab CI. Thứ tự lọc 3 tầng như sau:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Tầng 1: <code>include:rules</code> (nếu trả về <code>false</code>, tệp YAML đó bị bỏ qua hoàn toàn ở thời điểm t1, tất cả job trong tệp bị xoá sạch).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Tầng 2: <code>workflow:rules</code> (lọc cấp độ Pipeline ở thời điểm t2).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Tầng 3: <code>job:rules</code> (lọc cấp độ từng Job riêng lẻ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Khi chẩn đoán lý do một loạt job không xuất hiện, luôn kiểm tra điều kiện <code>include:rules</code> tại tệp chính trước khi lật tìm <code>rules</code> bên trong từng job.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 5.4</b>.</div>
 
 ```yaml
 # Ví dụ include:rules loại bỏ toàn bộ file cấu hình
 include:
-  - local: '/ci/templates/deploy-prod.yml'
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/ci/templates/deploy-prod.yml'</div>
     rules:
-      - if: '$CI_COMMIT_BRANCH == "main"' # Nếu push branch develop, file này BỊ BỎ QUA HOÀN TOÀN
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• if: '$CI_COMMIT_BRANCH == "main"' # Nếu push branch develop, file này BỊ BỎ QUA HOÀN TOÀN</div>
 ```
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>(★★): Những loại biến môi trường nào ĐƯỢC PHÉP và KHÔNG ĐƯỢC PHÉP sử dụng trong đường dẫn `include`? Vì sao có sự hạn chế này?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:**
-  - **ĐƯỢC PHÉP:** Chỉ có các biến hệ thống định trước của GitLab (như `$CI_COMMIT_REF_NAME`, `$CI_PROJECT_PATH`, `$CI_COMMIT_SHA`) và các biến khai báo ở cấp độ Instance/Group/Project CI/CD Variables.
-  - **KHÔNG ĐƯỢC PHÉP:** Tất cả các biến môi trường được khai báo trong khối `variables:` của tệp `.gitlab-ci.yml` hoặc các biến sinh ra từ job runtime.
-- **Giải thích kỹ thuật:** Do `include` được phân giải tại **Thời điểm 2 (t1 - GitLab Includer Phase)**. Lúc này GitLab Engine chưa hề nạp hay phân giải khối `variables:` của tệp `.gitlab-ci.yml` (vốn được xử lý ở t2).
-- **Thực tế DevOps:** Không bao giờ cố gắng dùng một biến tự định nghĩa ở đầu tệp `.gitlab-ci.yml` để truyền vào đường dẫn `include: local: "/ci/$MY_CUSTOM_PATH/build.yml"`. Đường dẫn sẽ bị ngắt do biến rỗng.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 5.3**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">ĐƯỢC PHÉP:</b> Chỉ có các biến hệ thống định trước của GitLab (như <code>$CI_COMMIT_REF_NAME</code>, <code>$CI_PROJECT_PATH</code>, <code>$CI_COMMIT_SHA</code>) và các biến khai báo ở cấp độ Instance/Group/Project CI/CD Variables.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">KHÔNG ĐƯỢC PHÉP:</b> Tất cả các biến môi trường được khai báo trong khối <code>variables:</code> của tệp <code>.gitlab-ci.yml</code> hoặc các biến sinh ra từ job runtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Do <code>include</code> được phân giải tại <b style="color: var(--accent-primary);">Thời điểm 2 (t1 - GitLab Includer Phase)</b>. Lúc này GitLab Engine chưa hề nạp hay phân giải khối <code>variables:</code> của tệp <code>.gitlab-ci.yml</code> (vốn được xử lý ở t2).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Không bao giờ cố gắng dùng một biến tự định nghĩa ở đầu tệp <code>.gitlab-ci.yml</code> để truyền vào đường dẫn <code>include: local: "/ci/$MY_CUSTOM_PATH/build.yml"</code>. Đường dẫn sẽ bị ngắt do biến rỗng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 5.3</b>.</div>
 
 ```yaml
 # LỖI THƯỜNG GẶP:
@@ -2375,36 +2285,27 @@ variables:
   MY_TEMPLATE_DIR: "node-v18"
 
 include:
-  - local: '/ci/templates/$MY_TEMPLATE_DIR/build.yml' # KHÔNG CHẠY ĐƯỢC! $MY_TEMPLATE_DIR bị rỗng ở t1.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/ci/templates/$MY_TEMPLATE_DIR/build.yml' # KHÔNG CHẠY ĐƯỢC! $MY_TEMPLATE_DIR bị rỗng ở t1.</div>
 ```
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>(★★★): Khi review một repository, bạn phát hiện một chuỗi `extends` lồng nhau tới 4 tầng (`job-d` extends `job-c`, `job-c` extends `job-b`, `job-b` extends `job-a`). Bạn sẽ đánh giá và xử lý thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Đánh giá đây là **MÃ NGUỒN XẤU (Code Smell)** cần phải refactor rút gọn về **tối đa 2 tầng**.
-- **Giải thích kỹ thuật:** Mặc dù trần kỹ thuật của GitLab cho phép `extends` lồng nhau tới 11 tầng, nhưng trần nhận thức của con người bị quá tải sau 2 tầng. Với chuỗi 4 tầng, việc theo dõi thuộc tính nào bị ghi đè hay biến nào bị thay thế là cực kỳ phức tạp và dễ gây ra sai sót im lặng.
-- **Quy trình xử lý:**
-  1. Trích xuất `merged_yaml` hiện tại để làm mốc đối chứng chuẩn.
-  2. Gộp các thuộc tính dùng chung từ `job-a`, `job-b`, `job-c` vào 1-2 Job ẩn chuẩn duy nhất (ví dụ `.base-runner-config` và `.base-script-setup`).
-  3. Cho `job-d` `extends` trực tiếp danh sách mảng 2 job ẩn đó: `extends: [.base-runner-config, .base-script-setup]`.
-  4. Trích xuất lại `merged_yaml` và đảm bảo kết quả 100% khớp với mốc ban đầu.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 6.3** và **QT 7.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Đánh giá đây là <b style="color: var(--accent-primary);">MÃ NGUỒN XẤU (Code Smell)</b> cần phải refactor rút gọn về <b style="color: var(--accent-primary);">tối đa 2 tầng</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Mặc dù trần kỹ thuật của GitLab cho phép <code>extends</code> lồng nhau tới 11 tầng, nhưng trần nhận thức của con người bị quá tải sau 2 tầng. Với chuỗi 4 tầng, việc theo dõi thuộc tính nào bị ghi đè hay biến nào bị thay thế là cực kỳ phức tạp và dễ gây ra sai sót im lặng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy trình xử lý:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Trích xuất <code>merged_yaml</code> hiện tại để làm mốc đối chứng chuẩn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Gộp các thuộc tính dùng chung từ <code>job-a</code>, <code>job-b</code>, <code>job-c</code> vào 1-2 Job ẩn chuẩn duy nhất (ví dụ <code>.base-runner-config</code> và <code>.base-script-setup</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Cho <code>job-d</code> <code>extends</code> trực tiếp danh sách mảng 2 job ẩn đó: <code>extends: [.base-runner-config, .base-script-setup]</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Trích xuất lại <code>merged_yaml</code> và đảm bảo kết quả 100% khớp với mốc ban đầu.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 6.3</b> và <b style="color: var(--accent-primary);">QT 7.1</b>.</div>
 
 ```yaml
 # TRƯỚC REFACTOR (4 TẦNG - SAI PHONG CÁCH):
@@ -2423,35 +2324,26 @@ my-job:   { extends: .level-3, script: ["echo test"] }
 my-job:
   extends: .base-config
   script:
-    - echo "Clean and maintainable"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Clean and maintainable"</div>
 ```
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>(🔥 Câu tủ - Tổng hợp): Bạn được giao tiếp quản một Repository microservice với hàng chục tệp `include` phức tạp. Hãy dựng Quy trình 4 bước tiêu chuẩn để trả lời chính xác câu hỏi: "Job này thật sự chạy những câu lệnh gì khi kích hoạt Pipeline?"</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Ý cốt lõi:** Quy trình 4 bước chuyên nghiệp gồm: Trích xuất `merged_yaml` -> Quét ghim phiên bản -> Kiểm tra mảng bị thay thế -> Xác minh biến môi trường hợp nhất.
-- **Quy trình 4 bước chi tiết:**
-  1. **Bước 1 (Trích xuất Bức tranh Sự thật):** Chạy `xem-phan-giai.sh --job <tên_job>` gọi API `POST /ci/lint` với param `include_merged_yaml: true`. Đọc trực tiếp cấu hình Job từ tệp `/tmp/current_merged.yml` thu được.
-  2. **Bước 2 (Audit Ghim phiên bản):** Chạy lệnh quét `dem-include.sh` hoặc `grep -nE 'ref: *(main|master|HEAD)' .gitlab-ci.yml` để phát hiện các tệp `include` chưa ghim tag, đảm bảo cấu hình không bị biến đổi ngầm ngoài ý muốn.
-  3. **Bước 3 (Kiểm tra Bẫy mảng bị thay):** Kiểm tra xem Job có sử dụng `extends` hay không. Nếu có, so sánh đối chiếu mảng `script` của Job cha và Job con trong `merged_yaml` để xác nhận không có bước lệnh quan trọng nào bị xoá đè ngầm.
-  4. **Bước 4 (Xác minh thẻ `!reference` và Biến hợp nhất):** Đọc danh sách biến `variables:` đã qua deep merge trong `merged_yaml` và kiểm tra các chuỗi script được chèn vào qua `!reference` để chốt danh sách câu lệnh bash chính xác 100% sẽ thực thi trên Runner.
-- **Tham chiếu quy tắc:** Đối chiếu **QT 4.3**, **QT 4.1**, **QT 5.2**, **QT 6.1**.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Quy trình 4 bước chuyên nghiệp gồm: Trích xuất <code>merged_yaml</code> -> Quét ghim phiên bản -> Kiểm tra mảng bị thay thế -> Xác minh biến môi trường hợp nhất.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy trình 4 bước chi tiết:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Bước 1 (Trích xuất Bức tranh Sự thật):</b> Chạy <code>xem-phan-giai.sh --job <tên_job></code> gọi API <code>POST /ci/lint</code> với param <code>include_merged_yaml: true</code>. Đọc trực tiếp cấu hình Job từ tệp <code>/tmp/current_merged.yml</code> thu được.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Bước 2 (Audit Ghim phiên bản):</b> Chạy lệnh quét <code>dem-include.sh</code> hoặc <code>grep -nE 'ref: *(main|master|HEAD)' .gitlab-ci.yml</code> để phát hiện các tệp <code>include</code> chưa ghim tag, đảm bảo cấu hình không bị biến đổi ngầm ngoài ý muốn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Bước 3 (Kiểm tra Bẫy mảng bị thay):</b> Kiểm tra xem Job có sử dụng <code>extends</code> hay không. Nếu có, so sánh đối chiếu mảng <code>script</code> của Job cha và Job con trong <code>merged_yaml</code> để xác nhận không có bước lệnh quan trọng nào bị xoá đè ngầm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Bước 4 (Xác minh thẻ <code>!reference</code> và Biến hợp nhất):</b> Đọc danh sách biến <code>variables:</code> đã qua deep merge trong <code>merged_yaml</code> và kiểm tra các chuỗi script được chèn vào qua <code>!reference</code> để chốt danh sách câu lệnh bash chính xác 100% sẽ thực thi trên Runner.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 4.3</b>, <b style="color: var(--accent-primary);">QT 4.1</b>, <b style="color: var(--accent-primary);">QT 5.2</b>, <b style="color: var(--accent-primary);">QT 6.1</b>.</div>
 
 ---
 </div>
@@ -2489,80 +2381,53 @@ my-job:
 
 ## §V4. BTVN 4 — Ba câu hỏi chuẩn bị cho Buổi 11
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>(Dựa trên QT 5.1):</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `include` hiện tại **không** hỗ trợ truyền tham số trực tiếp, mọi giá trị tuỳ biến đều phải đi qua biến môi trường. Hãy phân tích **ba** điểm yếu lớn nhất của việc dùng biến môi trường làm giao diện truyền dữ liệu (ví dụ: gõ sai tên biến, thiếu giá trị mặc định, không kiểm tra được kiểu dữ liệu). Từ đó dự đoán cơ chế nào ở Buổi 11 sẽ giải quyết triệt để vấn đề này.
+  
+<code>include</code> hiện tại <b style="color: var(--accent-primary);">không</b> hỗ trợ truyền tham số trực tiếp, mọi giá trị tuỳ biến đều phải đi qua biến môi trường. Hãy phân tích <b style="color: var(--accent-primary);">ba</b> điểm yếu lớn nhất của việc dùng biến môi trường làm giao diện truyền dữ liệu (ví dụ: gõ sai tên biến, thiếu giá trị mặc định, không kiểm tra được kiểu dữ liệu). Từ đó dự đoán cơ chế nào ở Buổi 11 sẽ giải quyết triệt để vấn đề này.
 
-**Gợi ý phân tích chi tiết:**
-1. **Gõ sai tên biến (Typo risk):** Không có linter nào cảnh báo nếu người dùng truyền `VAR_DEPLOY_ENV` thay vì `DEPLOY_ENV`.
-2. **Thiếu giá trị mặc định (Missing Defaults):** Người dùng quên truyền biến sẽ khiến job bị sập ở runtime do biến rỗng.
-3. **Không kiểm tra được kiểu (No Type Checking):** Không thể bắt buộc một biến phải là `boolean`, `number` hay thuộc danh sách `enum` cho phép.
-4. **Cơ chế Buổi 11:** Khái niệm **`spec:inputs`** trong **CI/CD Components** sẽ giải quyết triệt để cả 3 điểm yếu này nhờ giao diện tham số khai báo kiểu cứng.
+<b style="color: var(--accent-primary);">Gợi ý phân tích chi tiết:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Gõ sai tên biến (Typo risk):</b> Không có linter nào cảnh báo nếu người dùng truyền <code>VAR_DEPLOY_ENV</code> thay vì <code>DEPLOY_ENV</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Thiếu giá trị mặc định (Missing Defaults):</b> Người dùng quên truyền biến sẽ khiến job bị sập ở runtime do biến rỗng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Không kiểm tra được kiểu (No Type Checking):</b> Không thể bắt buộc một biến phải là <code>boolean</code>, <code>number</code> hay thuộc danh sách <code>enum</code> cho phép.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Cơ chế Buổi 11:</b> Khái niệm <b style="color: var(--accent-primary);"><code>spec:inputs</code></b> trong <b style="color: var(--accent-primary);">CI/CD Components</b> sẽ giải quyết triệt để cả 3 điểm yếu này nhờ giao diện tham số khai báo kiểu cứng.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>(Dựa trên QT 7.2):</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Việc ghim `ref` bằng Git Tag đòi hỏi phải có quy trình phát hành và nâng cấp phiên bản rõ ràng. Hãy xây dựng một quy tắc đánh số phiên bản Semantic Versioning (`vX.Y.Z`) áp dụng cho tệp cấu hình CI/CD dùng chung, và định nghĩa rõ ràng thế nào là một **Thay thế phá vỡ (Breaking Change)** đối với tệp cấu hình CI/CD.
+  
+Việc ghim <code>ref</code> bằng Git Tag đòi hỏi phải có quy trình phát hành và nâng cấp phiên bản rõ ràng. Hãy xây dựng một quy tắc đánh số phiên bản Semantic Versioning (<code>vX.Y.Z</code>) áp dụng cho tệp cấu hình CI/CD dùng chung, và định nghĩa rõ ràng thế nào là một <b style="color: var(--accent-primary);">Thay thế phá vỡ (Breaking Change)</b> đối với tệp cấu hình CI/CD.
 
-**Gợi ý phân tích chi tiết:**
-1. **MAJOR (X):** Khi có Breaking Change — xoá tên job, đổi tên biến bắt buộc, thay đổi hành vi mặc định của pipeline khiến các repo đằng sau bị ngắt ngầm.
-2. **MINOR (Y):** Khi bổ sung tính năng mới không phá vỡ — thêm job ẩn mới, hỗ trợ thêm tùy chọn biến mới với giá trị mặc định tương thích ngược.
-3. **PATCH (Z):** Khi sửa lỗi nhỏ (bug fixes) — tối ưu câu lệnh bash, sửa hình ảnh docker image tag nhỏ không ảnh hưởng cú pháp.
+<b style="color: var(--accent-primary);">Gợi ý phân tích chi tiết:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">MAJOR (X):</b> Khi có Breaking Change — xoá tên job, đổi tên biến bắt buộc, thay đổi hành vi mặc định của pipeline khiến các repo đằng sau bị ngắt ngầm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">MINOR (Y):</b> Khi bổ sung tính năng mới không phá vỡ — thêm job ẩn mới, hỗ trợ thêm tùy chọn biến mới với giá trị mặc định tương thích ngược.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">PATCH (Z):</b> Khi sửa lỗi nhỏ (bug fixes) — tối ưu câu lệnh bash, sửa hình ảnh docker image tag nhỏ không ảnh hưởng cú pháp.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>(Dựa trên QT 6.1):</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nếu bạn cung cấp cho các team phát triển một Job mẫu qua `extends`, họ chỉ cần khai báo lại thuộc tính `script` là toàn bộ các bước kiểm tra bảo mật ở Job cha bị xoá sạch. Làm thế nào để thiết kế một cấu hình CI/CD dùng chung mà người dùng **KHÔNG THỂ XOÁ HOẶC PHÁ BỎ** các bước kiểm tra lõi của bạn? Hãy ghi lại dự đoán của bạn trước khi bước vào Buổi 11.
+  
+Nếu bạn cung cấp cho các team phát triển một Job mẫu qua <code>extends</code>, họ chỉ cần khai báo lại thuộc tính <code>script</code> là toàn bộ các bước kiểm tra bảo mật ở Job cha bị xoá sạch. Làm thế nào để thiết kế một cấu hình CI/CD dùng chung mà người dùng <b style="color: var(--accent-primary);">KHÔNG THỂ XOÁ HOẶC PHÁ BỎ</b> các bước kiểm tra lõi của bạn? Hãy ghi lại dự đoán của bạn trước khi bước vào Buổi 11.
 
-**Gợi ý phân tích chi tiết:**
-1. Không cho phép kế thừa tự do bằng `extends` đối với các job bảo mật.
-2. Ép buộc các job bảo mật chạy ở một **Stage cố định** độc lập (ví dụ `.pre` hoặc `security-audit`).
-3. Sử dụng **CI/CD Components** kết hợp với **Required Pipeline Configurations** ở cấp độ Group/Instance của GitLab để đóng đóng băng hoàn toàn luồng kiểm soát.
+<b style="color: var(--accent-primary);">Gợi ý phân tích chi tiết:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Không cho phép kế thừa tự do bằng <code>extends</code> đối với các job bảo mật.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Ép buộc các job bảo mật chạy ở một <b style="color: var(--accent-primary);">Stage cố định</b> độc lập (ví dụ <code>.pre</code> hoặc <code>security-audit</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Sử dụng <b style="color: var(--accent-primary);">CI/CD Components</b> kết hợp với <b style="color: var(--accent-primary);">Required Pipeline Configurations</b> ở cấp độ Group/Instance của GitLab để đóng đóng băng hoàn toàn luồng kiểm soát.</div>
 {% endraw %}
 </div>
 </details>

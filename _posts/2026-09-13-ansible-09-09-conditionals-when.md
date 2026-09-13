@@ -880,29 +880,20 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Vai trò và Cơ chế Mệnh đề `when` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Mệnh đề `when` trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Mệnh đề `when` cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau `when:` đánh giá kết quả là `TRUE`. Mệnh đề `when` được Ansible Engine đánh giá ngay tại thời điểm runtime TRƯỚC KHU TASK ĐƯỢC GỬI THI HÀNH trên máy đích. Nếu điều kiện đánh giá `FALSE`, Task lập tức bị bỏ qua với trạng thái `skipped`.
-**Tiêu chí chấm:**
-- 0: Không biết tác dụng của `when`.
-- 1: Biết `when` rẽ nhánh nhưng không giải thích được mốc thời gian đánh giá runtime trước khi chạy task.
-- 2: Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.
-- 3: Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo `ansible_facts.os_family`.
-**Câu hỏi đào sâu:** Mệnh đề `when` được đánh giá trên Control Node hay trên Managed Node? *(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Mệnh đề <code>when</code> trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Mệnh đề <code>when</code> cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau <code>when:</code> đánh giá kết quả là <code>TRUE</code>. Mệnh đề <code>when</code> được Ansible Engine đánh giá ngay tại thời điểm runtime TRƯỚC KHU TASK ĐƯỢC GỬI THI HÀNH trên máy đích. Nếu điều kiện đánh giá <code>FALSE</code>, Task lập tức bị bỏ qua với trạng thái <code>skipped</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tác dụng của <code>when</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>when</code> rẽ nhánh nhưng không giải thích được mốc thời gian đánh giá runtime trước khi chạy task.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo <code>ansible_facts.os_family</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Mệnh đề <code>when</code> được đánh giá trên Control Node hay trên Managed Node? *(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)*
 </div>
 </details>
 

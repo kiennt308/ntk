@@ -2110,47 +2110,37 @@ nhân theo thứ tự nghĩ ra.
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ba kỳ thi CKA, CKAD, CKS chấm cái gì? Nếu tôi viết một tệp YAML rất đẹp, có comment giải thích
-từng trường, đặt tên biến rõ ràng — tôi được thêm điểm nào không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Không được thêm điểm nào cả. Cả ba kỳ chấm **trạng thái cuối của cụm sau khi hết giờ**,
+  
+Không được thêm điểm nào cả. Cả ba kỳ chấm <b style="color: var(--accent-primary);">trạng thái cuối của cụm sau khi hết giờ</b>,
 không chấm quá trình đi tới đó. Đây là thi thực hành trên dòng lệnh — nguyên văn trang chứng chỉ gọi nó là
 "performance-based test that requires solving multiple tasks from a command line" — và trang FAQ nói bài
 được chấm tự động sau khi kết thúc: "Upon completion, exams are scored automatically".
 
-Cơ chế: đoạn mã chấm chạy **sau** khi hết giờ và chỉ đọc được thứ nó truy vấn được từ API server — không có
+Cơ chế: đoạn mã chấm chạy <b style="color: var(--accent-primary);">sau</b> khi hết giờ và chỉ đọc được thứ nó truy vấn được từ API server — không có
 bản ghi thao tác, không thấy tệp YAML, không thấy comment. Hệ quả: mọi đường gõ để lại đúng trạng thái đó đều
-được điểm như nhau, nên **đường ngắn nhất luôn thắng**.
+được điểm như nhau, nên <b style="color: var(--accent-primary);">đường ngắn nhất luôn thắng</b>.
 
-Con số cho thấy chuyện này đắt cỡ nào: cùng yêu cầu "Pod tên `web`, ảnh `nginx`, namespace `lab-01`, nhãn
-`tier=fe`" thì `kubectl run` một dòng cộng một lệnh đọc lại tốn khoảng **40 giây**, còn mở `vim` viết YAML tay
-tốn khoảng **4 phút** — **gấp 6 lần**, trên tổng **120 phút**.
+Con số cho thấy chuyện này đắt cỡ nào: cùng yêu cầu "Pod tên <code>web</code>, ảnh <code>nginx</code>, namespace <code>lab-01</code>, nhãn
+<code>tier=fe</code>" thì <code>kubectl run</code> một dòng cộng một lệnh đọc lại tốn khoảng <b style="color: var(--accent-primary);">40 giây</b>, còn mở <code>vim</code> viết YAML tay
+tốn khoảng <b style="color: var(--accent-primary);">4 phút</b> — <b style="color: var(--accent-primary);">gấp 6 lần</b>, trên tổng <b style="color: var(--accent-primary);">120 phút</b>.
 
-**Tiêu chí chấm:**
-- **0đ:** "Chấm xem mình làm đúng cách hay không", hoặc cho rằng YAML đẹp có điểm, hoặc tin là có người đọc bài.
-- **1đ:** Nói "chấm kết quả, không chấm cách làm" nhưng không biết bài chấm tự động bằng cách đọc cụm.
-- **2đ:** Nêu đúng cơ chế: chấm tự động sau khi hết giờ, đọc trạng thái cụm qua API server, không có bản ghi
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> "Chấm xem mình làm đúng cách hay không", hoặc cho rằng YAML đẹp có điểm, hoặc tin là có người đọc bài.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói "chấm kết quả, không chấm cách làm" nhưng không biết bài chấm tự động bằng cách đọc cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Nêu đúng cơ chế: chấm tự động sau khi hết giờ, đọc trạng thái cụm qua API server, không có bản ghi</div>
   thao tác — nên đường ngắn nhất bằng điểm đường dài nhất.
-- **3đ:** Như trên, **và** con số 40 giây so 4 phút trên tổng 120 phút, **và** chiều ngược lại: đường ngắn nhất
-  chỉ thắng khi nó vẫn để lại **đúng** trạng thái, nên luôn phải kèm một lệnh đọc.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Như trên, <b style="color: var(--accent-primary);">và</b> con số 40 giây so 4 phút trên tổng 120 phút, <b style="color: var(--accent-primary);">và</b> chiều ngược lại: đường ngắn nhất</div>
+  chỉ thắng khi nó vẫn để lại <b style="color: var(--accent-primary);">đúng</b> trạng thái, nên luôn phải kèm một lệnh đọc.
 
-**Câu hỏi đào sâu:** Nếu chấm chỉ đọc trạng thái cuối thì xoá đối tượng đi tạo lại cho nhanh có được không?
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu chấm chỉ đọc trạng thái cuối thì xoá đối tượng đi tạo lại cho nhanh có được không?
 *(Thường được, và đó chính là bẫy: xoá rồi tạo lại cho ra trạng thái cuối đúng — trừ khi đề yêu cầu **giữ
-nguyên** đối tượng đang chạy, và khi đó `kubectl label --overwrite` hoặc `kubectl set` là đường duy nhất.
-Đó là bẫy của câu ô thi `T2.2` buổi này.)*
+nguyên** đối tượng đang chạy, và khi đó <code>kubectl label --overwrite</code> hoặc <code>kubectl set</code> là đường duy nhất.
+Đó là bẫy của câu ô thi <code>T2.2</code> buổi này.)*
 </div>
 </details>
 

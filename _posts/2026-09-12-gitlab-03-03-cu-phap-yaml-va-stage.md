@@ -1907,36 +1907,27 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>stage` trong GitLab CI cho ta cái gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cho **một ràng buộc thứ tự**, và **chỉ có thế**. `stage` nói "mọi job của stage này chạy sau khi mọi job của stage trước kết thúc". Nó là một **hàng rào thời gian**.
+  
+Cho <b style="color: var(--accent-primary);">một ràng buộc thứ tự</b>, và <b style="color: var(--accent-primary);">chỉ có thế</b>. <code>stage</code> nói "mọi job của stage này chạy sau khi mọi job của stage trước kết thúc". Nó là một <b style="color: var(--accent-primary);">hàng rào thời gian</b>.
 
-Hai thứ nó **không** cho:
+Hai thứ nó <b style="color: var(--accent-primary);">không</b> cho:
 
-1. **Không chuyển dữ liệu.** Buổi 01 đã liệt kê đủ bốn đường vào một job — git, cache, artifact, biến — và `stage` không nằm trong đó. `stage` chuyển **0 byte**. Cái chuyển dữ liệu là `artifacts`. Chỗ gây hiểu nhầm là mặc định của GitLab: job tải artifact của mọi job ở các stage trước — nhưng cái chuyển là `artifacts`, còn `stage` chỉ quyết định **tập nào được tải mặc định**.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Không chuyển dữ liệu.</b> Buổi 01 đã liệt kê đủ bốn đường vào một job — git, cache, artifact, biến — và <code>stage</code> không nằm trong đó. <code>stage</code> chuyển <b style="color: var(--accent-primary);">0 byte</b>. Cái chuyển dữ liệu là <code>artifacts</code>. Chỗ gây hiểu nhầm là mặc định của GitLab: job tải artifact của mọi job ở các stage trước — nhưng cái chuyển là <code>artifacts</code>, còn <code>stage</code> chỉ quyết định <b style="color: var(--accent-primary);">tập nào được tải mặc định</b>.</div>
 
-2. **Không đảm bảo song song.** `stage` chỉ **cho phép** các job trong nó chạy đồng thời. Việc chúng có chạy đồng thời hay không do `concurrent` và số slot runner quyết định — tức do `config.toml`, tệp thứ hai của buổi 02.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Không đảm bảo song song.</b> <code>stage</code> chỉ <b style="color: var(--accent-primary);">cho phép</b> các job trong nó chạy đồng thời. Việc chúng có chạy đồng thời hay không do <code>concurrent</code> và số slot runner quyết định — tức do <code>config.toml</code>, tệp thứ hai của buổi 02.</div>
 
-**Tiêu chí chấm:**
-- 0đ: "`stage` chuyển kết quả từ job này sang job kia." **Trần điểm cả buổi là 1.**
-- 1đ: Nói được nó quyết định thứ tự.
-- 2đ: Nêu đúng cả hai thứ nó **không** cho.
-- 3đ: Như trên, **và** nêu con số 0 byte, **và** giải thích được vì sao mặc định tải artifact stage trước gây hiểu nhầm.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: "<code>stage</code> chuyển kết quả từ job này sang job kia." <b style="color: var(--accent-primary);">Trần điểm cả buổi là 1.</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nói được nó quyết định thứ tự.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng cả hai thứ nó <b style="color: var(--accent-primary);">không</b> cho.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Như trên, <b style="color: var(--accent-primary);">và</b> nêu con số 0 byte, <b style="color: var(--accent-primary);">và</b> giải thích được vì sao mặc định tải artifact stage trước gây hiểu nhầm.</div>
 
-**Câu hỏi đào sâu:** Vậy cái gì bỏ được hàng rào? *(`needs` — buổi 08. Nó biến pipeline từ chuỗi stage thành một đồ thị phụ thuộc, và thời gian pipeline chuyển từ "tổng các stage" sang "đường găng dài nhất".)*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Vậy cái gì bỏ được hàng rào? *(<code>needs</code> — buổi 08. Nó biến pipeline từ chuỗi stage thành một đồ thị phụ thuộc, và thời gian pipeline chuyển từ "tổng các stage" sang "đường găng dài nhất".)*
 </div>
 </details>
 

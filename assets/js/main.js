@@ -1111,6 +1111,16 @@ document.addEventListener('DOMContentLoaded', () => {
         bq.parentNode.replaceChild(callout, bq);
       }
     });
+
+    // 3. Progressive render for raw markdown within Q&A cards if unparsed
+    articleBody.querySelectorAll('.qa-answer, .qa-summary-left span').forEach((el) => {
+      if (el.innerHTML.includes('**') || el.innerHTML.includes('`')) {
+        let html = el.innerHTML;
+        html = html.replace(/\*\*([^*]+)\*\*/g, '<b style="color: var(--accent-primary);">$1</b>');
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        el.innerHTML = html;
+      }
+    });
   }
 
   // Initial enhancements & render

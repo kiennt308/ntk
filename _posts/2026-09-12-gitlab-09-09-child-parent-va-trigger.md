@@ -2139,32 +2139,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Pipeline con có `t0` **riêng**. Điều đó cho bạn làm được **một** việc mà YAML tĩnh không làm được — việc đó là gì, và bạn trả giá bằng cái gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Việc đó là **quyết định muộn hơn**. YAML tĩnh được đọc ở `t0`, trước khi bất kỳ tiến trình nào của ta chạy, nên nó không thể chứa **kết quả của một phép tính về repo** (QT 4.1). Pipeline con là lần tạo pipeline **thứ hai**, xảy ra lúc job `trigger` chạy — sau khi job cha đã chạy — nên nó thấy được kết quả của chúng (QT 4.2). Có **2** thời điểm `t0` trong một lần push; khoảng cách giữa chúng bằng thời lượng các job cha chạy trước `trigger`. Con số của ví dụ chuẩn: **12** module × **3** job cho **36** khối, ~**540** dòng ở YAML tĩnh, so với **1** khối `trigger` + **1** script ~**40** dòng.
+  
+Việc đó là <b style="color: var(--accent-primary);">quyết định muộn hơn</b>. YAML tĩnh được đọc ở <code>t0</code>, trước khi bất kỳ tiến trình nào của ta chạy, nên nó không thể chứa <b style="color: var(--accent-primary);">kết quả của một phép tính về repo</b> (QT 4.1). Pipeline con là lần tạo pipeline <b style="color: var(--accent-primary);">thứ hai</b>, xảy ra lúc job <code>trigger</code> chạy — sau khi job cha đã chạy — nên nó thấy được kết quả của chúng (QT 4.2). Có <b style="color: var(--accent-primary);">2</b> thời điểm <code>t0</code> trong một lần push; khoảng cách giữa chúng bằng thời lượng các job cha chạy trước <code>trigger</code>. Con số của ví dụ chuẩn: <b style="color: var(--accent-primary);">12</b> module × <b style="color: var(--accent-primary);">3</b> job cho <b style="color: var(--accent-primary);">36</b> khối, ~<b style="color: var(--accent-primary);">540</b> dòng ở YAML tĩnh, so với <b style="color: var(--accent-primary);">1</b> khối <code>trigger</code> + <b style="color: var(--accent-primary);">1</b> script ~<b style="color: var(--accent-primary);">40</b> dòng.
 
-Ba khoản phải trả: **8–15** giây job `sinh-cau-hinh` **mỗi** pipeline; lỗi có thể nằm trong tệp YAML mà `git show` không tìm thấy (QT 7.2); `CODEOWNERS` trên `.gitlab-ci.yml` không còn che được tập job thật.
+Ba khoản phải trả: <b style="color: var(--accent-primary);">8–15</b> giây job <code>sinh-cau-hinh</code> <b style="color: var(--accent-primary);">mỗi</b> pipeline; lỗi có thể nằm trong tệp YAML mà <code>git show</code> không tìm thấy (QT 7.2); <code>CODEOWNERS</code> trên <code>.gitlab-ci.yml</code> không còn che được tập job thật.
 
-**Tiêu chí chấm:**
-- 0đ: "Pipeline con cho pipeline gọn hơn", hoặc chỉ nói chia nhỏ cho dễ đọc.
-- 1đ: Biết pipeline con sinh lúc chạy, không nêu được `t0` thứ hai là gì.
-- 2đ: Nêu đúng cơ chế **2** thời điểm `t0` và việc quyết định muộn hơn.
-- 3đ: Như trên, **và** phép tính **12 × 3 = 36** khối so với **1** khối + **40** dòng, **và** ≥ hai trong ba khoản phải trả, có con số **8–15** giây.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: "Pipeline con cho pipeline gọn hơn", hoặc chỉ nói chia nhỏ cho dễ đọc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Biết pipeline con sinh lúc chạy, không nêu được <code>t0</code> thứ hai là gì.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng cơ chế <b style="color: var(--accent-primary);">2</b> thời điểm <code>t0</code> và việc quyết định muộn hơn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Như trên, <b style="color: var(--accent-primary);">và</b> phép tính <b style="color: var(--accent-primary);">12 × 3 = 36</b> khối so với <b style="color: var(--accent-primary);">1</b> khối + <b style="color: var(--accent-primary);">40</b> dòng, <b style="color: var(--accent-primary);">và</b> ≥ hai trong ba khoản phải trả, có con số <b style="color: var(--accent-primary);">8–15</b> giây.</div>
 
-**Câu hỏi đào sâu:** Repo của bạn có **3** module. Có nên dùng pipeline động? *(Không — 9 khối thì YAML tĩnh **đơn giản hơn**. Ngưỡng: dưới **10** khối chép lại thì đừng dùng, vì 8–15 giây phải trả mọi lần chạy còn lợi ích chỉ tới khi phép nhân đủ lớn.)*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Repo của bạn có <b style="color: var(--accent-primary);">3</b> module. Có nên dùng pipeline động? *(Không — 9 khối thì YAML tĩnh <b style="color: var(--accent-primary);">đơn giản hơn</b>. Ngưỡng: dưới <b style="color: var(--accent-primary);">10</b> khối chép lại thì đừng dùng, vì 8–15 giây phải trả mọi lần chạy còn lợi ích chỉ tới khi phép nhân đủ lớn.)*
 </div>
 </details>
 

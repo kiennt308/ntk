@@ -871,32 +871,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Bỏ qua Lỗi Task với `ignore_errors` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Thuộc tính `ignore_errors: true` trong Ansible Task có tác dụng gì? Khi nào NÊN và KHÔNG NÊN sử dụng `ignore_errors: true`? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Tác dụng: Cho phép Ansible tiếp tục thi hành các Task phía sau trong Playbook ngay cả khi Task hiện tại bị trả về trạng thái lỗi (`failed`).
-- khi NÊN dùng: Cho các task kiểm tra thông tin không quan trọng (như dọn dẹp file tạm `/tmp`, xóa cache cũ) mà sự thất bại của nó không ảnh hưởng đến kịch bản chính.
-- Khi KHÔNG NÊN dùng: Tuyệt đối KHÔNG dùng cho các task nạp biến mật khẩu, cài đặt package phần mềm cốt lõi, hoặc định hình cấu hình hệ thống.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `ignore_errors`.
-- 1: Biết `ignore_errors` để cho qua lỗi nhưng không phân biệt được trường hợp NÊN và KHÔNG NÊN dùng.
-- 2: Phân tích chính xác tác dụng và cảnh báo nguy cơ che đậy lỗi nghiêm trọng của `ignore_errors`.
-- 3: Nêu đúng + viết đoạn Task YAML minh họa dọn dẹp cache dùng `ignore_errors: true`.
-**Câu hỏi đào sâu:** Thuộc tính `ignore_unreachable: true` khác `ignore_errors: true` như thế nào? *(`ignore_errors` bỏ qua lỗi execution của module; `ignore_unreachable` bỏ qua lỗi mất kết nối SSH tới máy đích.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Thuộc tính <code>ignore_errors: true</code> trong Ansible Task có tác dụng gì? Khi nào NÊN và KHÔNG NÊN sử dụng <code>ignore_errors: true</code>? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tác dụng: Cho phép Ansible tiếp tục thi hành các Task phía sau trong Playbook ngay cả khi Task hiện tại bị trả về trạng thái lỗi (<code>failed</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• khi NÊN dùng: Cho các task kiểm tra thông tin không quan trọng (như dọn dẹp file tạm <code>/tmp</code>, xóa cache cũ) mà sự thất bại của nó không ảnh hưởng đến kịch bản chính.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi KHÔNG NÊN dùng: Tuyệt đối KHÔNG dùng cho các task nạp biến mật khẩu, cài đặt package phần mềm cốt lõi, hoặc định hình cấu hình hệ thống.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>ignore_errors</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>ignore_errors</code> để cho qua lỗi nhưng không phân biệt được trường hợp NÊN và KHÔNG NÊN dùng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác tác dụng và cảnh báo nguy cơ che đậy lỗi nghiêm trọng của <code>ignore_errors</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn Task YAML minh họa dọn dẹp cache dùng <code>ignore_errors: true</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Thuộc tính <code>ignore_unreachable: true</code> khác <code>ignore_errors: true</code> như thế nào? *(<code>ignore_errors</code> bỏ qua lỗi execution của module; <code>ignore_unreachable</code> bỏ qua lỗi mất kết nối SSH tới máy đích.)*
 </div>
 </details>
 

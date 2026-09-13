@@ -702,29 +702,20 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Quản lý Gói đa nền tảng với `ansible.builtin.package` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Module `ansible.builtin.package` có ưu điểm gì vượt trội so với các module quản lý gói riêng biệt như `apt` hay `dnf`? Phân biệt `state=present` và `state=latest`. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Module `package` là module trừu tượng hóa (generic package manager), tự động nhận diện hệ điều hành của máy đích (RHEL dùng `dnf`, Ubuntu dùng `apt`, Alpine dùng `apk`), giúp viết kịch bản dùng chung cho hạ tầng đa OS. `state=present` đảm bảo gói đã cài đặt (nếu đã có gói thì bỏ qua không làm gì), còn `state=latest` kiểm tra và nâng cấp gói lên phiên bản mới nhất nếu kho phần mềm có bản mới.
-**Tiêu chí chấm:**
-- 0: Không biết tác dụng của module `package`.
-- 1: Biết tự đổi trình quản lý gói nhưng không phân biệt được `present` và `latest`.
-- 2: Phân biệt chính xác cơ chế đa nền tảng + khác biệt `present` vs `latest`.
-- 3: Nêu đúng + minh họa câu lệnh ad-hoc cài gói và chỉ ra tính Idempotency lần 2.
-**Câu hỏi đào sâu:** Khi nào nên dùng module chuyên biệt `ansible.builtin.apt` thay vì `package`? *(Khi cần các tính năng đặc thụ riêng của Debian/Ubuntu như `update_cache=yes` hay `autoremove=yes`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Module <code>ansible.builtin.package</code> có ưu điểm gì vượt trội so với các module quản lý gói riêng biệt như <code>apt</code> hay <code>dnf</code>? Phân biệt <code>state=present</code> và <code>state=latest</code>. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Module <code>package</code> là module trừu tượng hóa (generic package manager), tự động nhận diện hệ điều hành của máy đích (RHEL dùng <code>dnf</code>, Ubuntu dùng <code>apt</code>, Alpine dùng <code>apk</code>), giúp viết kịch bản dùng chung cho hạ tầng đa OS. <code>state=present</code> đảm bảo gói đã cài đặt (nếu đã có gói thì bỏ qua không làm gì), còn <code>state=latest</code> kiểm tra và nâng cấp gói lên phiên bản mới nhất nếu kho phần mềm có bản mới.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tác dụng của module <code>package</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết tự đổi trình quản lý gói nhưng không phân biệt được <code>present</code> và <code>latest</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân biệt chính xác cơ chế đa nền tảng + khác biệt <code>present</code> vs <code>latest</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa câu lệnh ad-hoc cài gói và chỉ ra tính Idempotency lần 2.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi nào nên dùng module chuyên biệt <code>ansible.builtin.apt</code> thay vì <code>package</code>? *(Khi cần các tính năng đặc thụ riêng của Debian/Ubuntu như <code>update_cache=yes</code> hay <code>autoremove=yes</code>.)*
 </div>
 </details>
 

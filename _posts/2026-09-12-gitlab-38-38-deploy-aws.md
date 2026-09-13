@@ -1783,36 +1783,27 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Giá trị chuẩn của cờ `aud` (Audience) khi sinh OIDC JWT Token dành riêng cho AWS IAM OIDC Provider là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
-Giá trị chuẩn duy nhất bắt buộc là `https://aws.amazon.com`, trùng khớp với Client ID đã đăng ký trên AWS IAM OIDC Provider settings.
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
+Giá trị chuẩn duy nhất bắt buộc là <code>https://aws.amazon.com</code>, trùng khớp với Client ID đã đăng ký trên AWS IAM OIDC Provider settings.
 
-**Đáp án chuẩn:**
-- **Quy định của AWS STS:** AWS STS Engine yêu cầu trường `aud` trong OIDC JWT Token phải khớp chính xác 100% với Client ID của IAM OIDC Identity Provider đã đăng ký trên tài khoản AWS.
-- **Cấu hình chuẩn trong `.gitlab-ci.yml`:**
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy định của AWS STS:</b> AWS STS Engine yêu cầu trường <code>aud</code> trong OIDC JWT Token phải khớp chính xác 100% với Client ID của IAM OIDC Identity Provider đã đăng ký trên tài khoản AWS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu hình chuẩn trong <code>.gitlab-ci.yml</code>:</b></div>
   ```yaml
   id_tokens:
     AWS_OIDC_TOKEN:
       aud: https://aws.amazon.com
   ```
-- **Hệ quả nếu cấu hình sai:** AWS STS sẽ từ chối cấp temporary credentials và trả về lỗi `InvalidIdentityToken: Incorrect token audience`. Việc cấu hình đúng Audience đảm bảo token chỉ được chấp nhận tại AWS, ngăn ngừa rủi ro rò rỉ token sang các hệ thống IdP khác.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hệ quả nếu cấu hình sai:</b> AWS STS sẽ từ chối cấp temporary credentials và trả về lỗi <code>InvalidIdentityToken: Incorrect token audience</code>. Việc cấu hình đúng Audience đảm bảo token chỉ được chấp nhận tại AWS, ngăn ngừa rủi ro rò rỉ token sang các hệ thống IdP khác.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
-Tự điền `aud: aws` hoặc `aud: https://gitlab.com` do tưởng nhầm rằng `aud` là tên của công nghệ hoặc tên miền của nơi sinh token.
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
+Tự điền <code>aud: aws</code> hoặc <code>aud: https://gitlab.com</code> do tưởng nhầm rằng <code>aud</code> là tên của công nghệ hoặc tên miền của nơi sinh token.
 </div>
 </details>
 

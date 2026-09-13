@@ -818,34 +818,25 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Vì sao cụm HA Control Plane bắt buộc phải sử dụng số lượng node Control Plane là số lẻ (3, 5 node) mà không dùng số chẵn (2, 4 node)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Thuật toán đồng thuận Raft của etcd yêu cầu đạt được **đa số tối thiểu (Quorum)** để ghi dữ liệu: `Quorum = (N / 2) + 1` (lấy phần nguyên).
-- **So sánh chịu lỗi:**
-  - Cụm 3 node: Quorum = 2 -> Chịu lỗi sập 1 node.
-  - Cụm 4 node: Quorum = 3 -> Chịu lỗi sập 1 node.
-- **Hệ quả:** Cụm 4 node không tăng thêm khả năng chịu lỗi so với cụm 3 node (đều chỉ chịu được 1 node sập), nhưng tốn thêm chi phí phần cứng và làm tăng nguy cơ đứt Quorum khi xảy ra sự cố chia đôi mạng (Network Partition). Do đó luôn chọn số lẻ (3, 5 node).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thuật toán đồng thuận Raft của etcd yêu cầu đạt được <b style="color: var(--accent-primary);">đa số tối thiểu (Quorum)</b> để ghi dữ liệu: <code>Quorum = (N / 2) + 1</code> (lấy phần nguyên).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">So sánh chịu lỗi:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cụm 3 node: Quorum = 2 -> Chịu lỗi sập 1 node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cụm 4 node: Quorum = 3 -> Chịu lỗi sập 1 node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hệ quả:</b> Cụm 4 node không tăng thêm khả năng chịu lỗi so với cụm 3 node (đều chỉ chịu được 1 node sập), nhưng tốn thêm chi phí phần cứng và làm tăng nguy cơ đứt Quorum khi xảy ra sự cố chia đôi mạng (Network Partition). Do đó luôn chọn số lẻ (3, 5 node).</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo dùng 2 hoặc 4 node cho tiết kiệm.
-- **1đ:** Trả lời số lẻ nhưng không phân tích được công thức Quorum `(N/2)+1` và việc 4 node chỉ chịu lỗi 1 node giống 3 node (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác công thức Quorum, so sánh khả năng chịu lỗi của 3 vs 4 node và rủi ro Network Partition.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng kịch bản đứt cáp chia đôi mạng (Split-Brain).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo dùng 2 hoặc 4 node cho tiết kiệm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời số lẻ nhưng không phân tích được công thức Quorum <code>(N/2)+1</code> và việc 4 node chỉ chịu lỗi 1 node giống 3 node (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác công thức Quorum, so sánh khả năng chịu lỗi của 3 vs 4 node và rủi ro Network Partition.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kịch bản đứt cáp chia đôi mạng (Split-Brain).</div>
 
-**Câu hỏi đào sâu:** Cụm etcd 5 node có Quorum bằng bao nhiêu và chịu được tối đa bao nhiêu node sập cùng lúc? *(Đáp án: Quorum = 3, chịu lỗi sập tối đa 2 node cùng lúc).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Cụm etcd 5 node có Quorum bằng bao nhiêu và chịu được tối đa bao nhiêu node sập cùng lúc? *(Đáp án: Quorum = 3, chịu lỗi sập tối đa 2 node cùng lúc).*
 </div>
 </details>
 

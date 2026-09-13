@@ -1673,33 +1673,24 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Bốn chỉ số DORA Metrics tiêu chuẩn quốc tế là gì và ý nghĩa của từng chỉ số trong đánh giá nền tảng CI/CD?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
 Bao gồm Deployment Frequency (Tần suất deploy), Lead Time for Changes (Thời gian từ commit đến prod), Change Failure Rate (Tỉ lệ lỗi deploy), và Time to Restore Service (MTTR - Thời gian khôi phục sự cố).
 
-**Đáp án chuẩn:**
-- **Chi tiết 4 chỉ số DORA Metrics:**
-  1. *Deployment Frequency (DF):* Đo tần suất phát hành mã nguồn thành công lên Production (Lần/Ngày). Thể hiện tốc độ đưa giá trị đến người dùng.
-  2. *Lead Time for Changes (LTC):* Đo thời gian từ commit đầu tiên đến khi code thực sự chạy trên Production (Giờ). Thể hiện sự mượt mà của quy trình delivery.
-  3. *Change Failure Rate (CFR):* Đo tỉ lệ % số lần deploy Production gặp sự cố phải rollback (%). Thể hiện chất lượng kiểm thử an toàn.
-  4. *Time to Restore Service (MTTR):* Đo thời gian trung bình để khôi phục dịch vụ khi có sự cố Production (Phút). Thể hiện năng lực phục hồi hệ thống.
-- **Tích hợp GitLab Enterprise:** Cả 4 chỉ số này đều được GitLab tự động tính toán và cung cấp qua REST API `/api/v4/projects/:id/dora/metrics` hoặc giao diện Analytics Dashboard cấp Group.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chi tiết 4 chỉ số DORA Metrics:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Deployment Frequency (DF):* Đo tần suất phát hành mã nguồn thành công lên Production (Lần/Ngày). Thể hiện tốc độ đưa giá trị đến người dùng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Lead Time for Changes (LTC):* Đo thời gian từ commit đầu tiên đến khi code thực sự chạy trên Production (Giờ). Thể hiện sự mượt mà của quy trình delivery.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> *Change Failure Rate (CFR):* Đo tỉ lệ % số lần deploy Production gặp sự cố phải rollback (%). Thể hiện chất lượng kiểm thử an toàn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> *Time to Restore Service (MTTR):* Đo thời gian trung bình để khôi phục dịch vụ khi có sự cố Production (Phút). Thể hiện năng lực phục hồi hệ thống.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tích hợp GitLab Enterprise:</b> Cả 4 chỉ số này đều được GitLab tự động tính toán và cung cấp qua REST API <code>/api/v4/projects/:id/dora/metrics</code> hoặc giao diện Analytics Dashboard cấp Group.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Nhầm lẫn DORA Metrics với các chỉ số hạ tầng cơ bản như CPU Usage, RAM Usage hay số lượng dòng code (Lines of Code).
 </div>
 </details>

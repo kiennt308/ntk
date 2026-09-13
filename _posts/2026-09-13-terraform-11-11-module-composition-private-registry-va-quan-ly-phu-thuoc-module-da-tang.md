@@ -390,196 +390,106 @@ cd .. && rm -rf /tmp/composition-lab
 ## 8. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao mô hình Flat Module Composition lại được khuyến nghị hơn mô hình Nested Modules?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì Flat Composition tuân thủ nguyên lý <b style="color: var(--accent-primary);">Single Responsibility</b> và <b style="color: var(--accent-primary);">Loose Coupling</b>. Mỗi module hoàn toàn độc lập, không bị phụ thuộc lồng nhau, loại bỏ hiện tượng bùng nổ biến trung gian (Pass-through variables), giúp dễ dàng kiểm thử đơn vị và tái sử dụng trên nhiều dự án khác nhau.
+  
+Vì Flat Composition tuân thủ nguyên lý <b style="color: var(--accent-primary);">Single Responsibility</b> và <b style="color: var(--accent-primary);">Loose Coupling</b>. Mỗi module hoàn toàn độc lập, không bị phụ thuộc lồng nhau, loại bỏ hiện tượng bùng nổ biến trung gian (Pass-through variables), giúp dễ dàng kiểm thử đơn vị và tái sử dụng trên nhiều dự án khác nhau.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Cú pháp hai dấu gạch chéo (`//`) trong Module Source có ý nghĩa gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Được dùng cho <b style="color: var(--accent-primary);">Git Subpath</b>. Nó giúp Terraform Core phân biệt: Phần trước <code>//</code> là địa chỉ Git Repository cần clone, và phần sau <code>//</code> là đường dẫn tới thư mục con cụ thể bên trong kho chứa mã nguồn đó.
+  
+Được dùng cho <b style="color: var(--accent-primary);">Git Subpath</b>. Nó giúp Terraform Core phân biệt: Phần trước <code>//</code> là địa chỉ Git Repository cần clone, và phần sau <code>//</code> là đường dẫn tới thư mục con cụ thể bên trong kho chứa mã nguồn đó.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Tệp `.terraform/modules/modules.json` có vai trò gì trong quá trình chạy Terraform?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Là tệp kê khai siêu dữ liệu (Manifest) do <code>terraform init</code> tự động sinh ra, lưu trữ ánh xạ giữa tên logic của Module (Key), nguồn tải về (Source) và thư mục vật lý cục bộ (Dir) trên ổ đĩa để Terraform Core nạp mã nguồn khi chạy Plan/Apply.
+  
+Là tệp kê khai siêu dữ liệu (Manifest) do <code>terraform init</code> tự động sinh ra, lưu trữ ánh xạ giữa tên logic của Module (Key), nguồn tải về (Source) và thư mục vật lý cục bộ (Dir) trên ổ đĩa để Terraform Core nạp mã nguồn khi chạy Plan/Apply.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Làm thế nào để giải quyết lỗi Cycle Dependency giữa 2 module độc lập?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Bắt buộc phải tái cấu trúc để đảm bảo <b style="color: var(--accent-primary);">Luồng dữ liệu 1 chiều (Unidirectional Data Flow)</b>. Tách các tài nguyên phụ thuộc chéo (ví dụ VPC Flow Logs hoặc Security Group Rules) ra thành một module thứ ba độc lập hoặc khai báo trực tiếp tại Root Module.
+  
+Bắt buộc phải tái cấu trúc để đảm bảo <b style="color: var(--accent-primary);">Luồng dữ liệu 1 chiều (Unidirectional Data Flow)</b>. Tách các tài nguyên phụ thuộc chéo (ví dụ VPC Flow Logs hoặc Security Group Rules) ra thành một module thứ ba độc lập hoặc khai báo trực tiếp tại Root Module.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Điều gì xảy ra nếu bạn thay đổi mã nguồn trong Child Module nhưng không chạy lại `terraform init`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Nếu là <b style="color: var(--accent-primary);">Local Module Path (./modules/...)</b>: Thay đổi có hiệu lực ngay lập tức khi chạy Plan/Apply.<br/>
-- Nếu là <b style="color: var(--accent-primary);">Remote Git Module</b>: Terraform sẽ tiếp tục dùng bản code cũ trong <code>.terraform/modules/</code> cho đến khi bạn chạy <code>terraform init -upgrade</code> để tải lại bản mới.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu là <b style="color: var(--accent-primary);">Local Module Path (./modules/...)</b>: Thay đổi có hiệu lực ngay lập tức khi chạy Plan/Apply.<br/></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu là <b style="color: var(--accent-primary);">Remote Git Module</b>: Terraform sẽ tiếp tục dùng bản code cũ trong <code>.terraform/modules/</code> cho đến khi bạn chạy <code>terraform init -upgrade</code> để tải lại bản mới.</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Làm thế nào để truyền một biến nhạy cảm từ Module A sang Module B qua Root Module một cách an toàn?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. Đánh dấu <code>sensitive = true</code> trên output của Module A.<br/>
-2. Đánh dấu <code>sensitive = true</code> trên input variable của Module B.<br/>
-3. Tại Root Module, truyền trực tiếp: <code>secret_var = module.mod_a.secret_output</code>.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Đánh dấu <code>sensitive = true</code> trên output của Module A.<br/></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Đánh dấu <code>sensitive = true</code> trên input variable của Module B.<br/></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Tại Root Module, truyền trực tiếp: <code>secret_var = module.mod_a.secret_output</code>.</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Khi nào nên sử dụng Private Terraform Registry thay vì gọi trực tiếp Git HTTPS?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi doanh nghiệp cần: (1) Quản lý phiên bản Semantic Versioning chuyên nghiệp; (2) Tự động hóa kiểm tra bảo mật và tài liệu; (3) Phân quyền RBAC kiểm soát nhóm nào được phép sử dụng module nào; (4) Tối ưu hóa tốc độ tải module trong CI/CD.
+  
+Khi doanh nghiệp cần: (1) Quản lý phiên bản Semantic Versioning chuyên nghiệp; (2) Tự động hóa kiểm tra bảo mật và tài liệu; (3) Phân quyền RBAC kiểm soát nhóm nào được phép sử dụng module nào; (4) Tối ưu hóa tốc độ tải module trong CI/CD.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Root Module đóng vai trò gì trong mô hình Flat Composition?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Root Module đóng vai trò là <b style="color: var(--accent-primary);">"Nhạc trưởng điều phối" (Orchestrator / Glue Code)</b>: Khởi tạo các provider, kết nối Remote Backend, nhận output của module này truyền vào input của module kia và xuất ra các output tổng hợp của toàn hệ thống.
+  
+Root Module đóng vai trò là <b style="color: var(--accent-primary);">"Nhạc trưởng điều phối" (Orchestrator / Glue Code)</b>: Khởi tạo các provider, kết nối Remote Backend, nhận output của module này truyền vào input của module kia và xuất ra các output tổng hợp của toàn hệ thống.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Làm thế nào để chạy kiểm thử độc lập (Unit Test) cho một Single-Purpose Module?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Tạo một thư mục <code>examples/basic</code> bên trong chính module đó, sử dụng framework <code>terraform test</code> (Terraform 1.6+) để tạo tài nguyên thử nghiệm ngắn hạn (Ephemeral Infrastructure) và kiểm tra các điều kiện assertion.
+  
+Tạo một thư mục <code>examples/basic</code> bên trong chính module đó, sử dụng framework <code>terraform test</code> (Terraform 1.6+) để tạo tài nguyên thử nghiệm ngắn hạn (Ephemeral Infrastructure) và kiểm tra các điều kiện assertion.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Có nên đưa tệp `.terraform/modules/` vào Git Version Control không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  <b style="color: var(--accent-primary);">TUYỆT ĐỐI KHÔNG</b>. Toàn bộ thư mục <code>.terraform/</code> phải luôn nằm trong tệp <code>.gitignore</code> vì nó chứa các tệp nhị phân và mã nguồn tải tạm thời, sẽ được tự động sinh ra khi chạy <code>terraform init</code>.
+  
+<b style="color: var(--accent-primary);">TUYỆT ĐỐI KHÔNG</b>. Toàn bộ thư mục <code>.terraform/</code> phải luôn nằm trong tệp <code>.gitignore</code> vì nó chứa các tệp nhị phân và mã nguồn tải tạm thời, sẽ được tự động sinh ra khi chạy <code>terraform init</code>.
 </div>
 </details>
 

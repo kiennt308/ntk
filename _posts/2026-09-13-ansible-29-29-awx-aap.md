@@ -861,35 +861,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Kiến trúc AWX / AAP và Chuyển đổi từ CLI sang Web UI 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** AWX và Red Hat Ansible Automation Platform (AAP) là gì? Trình bày 4 lý do lớn tại sao Doanh nghiệp phải chuyển đổi từ chạy Ansible CLI cá nhân sang nền tảng tập trung AWX / AAP. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Định nghĩa: AWX (Open Source) và AAP (Enterprise) là nền tảng quản trị tập trung kịch bản tự động hóa Ansible qua giao diện Web UI, REST API và mô hình phân quyền RBAC.
-- 4 Lý do chuyển đổi:
-  1. **Phân quyền RBAC:** Phân chia chi tiết quyền hạn ai được gạt nút chạy kịch bản nào, trên môi trường nào.
-  2. **Bảo mật Credentials tập trung:** Mã hóa AES-256 SSH Keys và Vault Passwords, không cho phép xem hay lộ plaintext.
-  3. **Nhật ký Audit tập trung:** Lưu trữ lịch sử toàn bộ các lần chạy kịch bản (ai chạy, khi nào, log chi tiết).
-  4. **REST API & Webhooks:** Tích hợp tự động hóa với hệ thống CI/CD, ServiceNow, Jira và event push code.
-**Tiêu chí chấm:**
-- 0: Không biết AWX / AAP.
-- 1: Biết AWX để chạy giao diện Web nhưng không liệt kê được 4 bài toán lớn về RBAC, Audit, Credentials và API.
-- 2: Phân tích chính xác vai trò chuyển đổi quy mô Enterprise từ CLI cá nhân lên nền tảng tập trung AWX.
-- 3: Nêu đúng + minh họa ví dụ tệp định nghĩa AWX Project & Job Template.
-**Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa AWX và Red Hat Ansible Automation Platform (AAP). *(AWX là dự án mã nguồn mở upstream của cộng đồng; AAP là sản phẩm thương mại được Red Hat hỗ trợ chính thức có thêm tính năng Enterprise Automation Controller, Private Automation Hub và Event-Driven Ansible.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> AWX và Red Hat Ansible Automation Platform (AAP) là gì? Trình bày 4 lý do lớn tại sao Doanh nghiệp phải chuyển đổi từ chạy Ansible CLI cá nhân sang nền tảng tập trung AWX / AAP. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Định nghĩa: AWX (Open Source) và AAP (Enterprise) là nền tảng quản trị tập trung kịch bản tự động hóa Ansible qua giao diện Web UI, REST API và mô hình phân quyền RBAC.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 4 Lý do chuyển đổi:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Phân quyền RBAC:</b> Phân chia chi tiết quyền hạn ai được gạt nút chạy kịch bản nào, trên môi trường nào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Bảo mật Credentials tập trung:</b> Mã hóa AES-256 SSH Keys và Vault Passwords, không cho phép xem hay lộ plaintext.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Nhật ký Audit tập trung:</b> Lưu trữ lịch sử toàn bộ các lần chạy kịch bản (ai chạy, khi nào, log chi tiết).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">REST API & Webhooks:</b> Tích hợp tự động hóa với hệ thống CI/CD, ServiceNow, Jira và event push code.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết AWX / AAP.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết AWX để chạy giao diện Web nhưng không liệt kê được 4 bài toán lớn về RBAC, Audit, Credentials và API.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò chuyển đổi quy mô Enterprise từ CLI cá nhân lên nền tảng tập trung AWX.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ tệp định nghĩa AWX Project & Job Template.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Phân biệt sự khác nhau giữa AWX và Red Hat Ansible Automation Platform (AAP). *(AWX là dự án mã nguồn mở upstream của cộng đồng; AAP là sản phẩm thương mại được Red Hat hỗ trợ chính thức có thêm tính năng Enterprise Automation Controller, Private Automation Hub và Event-Driven Ansible.)*
 </div>
 </details>
 

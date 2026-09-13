@@ -694,29 +694,20 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Thứ tự ưu tiên cấu hình `ansible.cfg` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình `ansible.cfg`. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Ansible tìm kiếm theo thứ tự ưu tiên giảm dần: (1) Biến môi trường `ANSIBLE_CONFIG`, (2) File `./ansible.cfg` tại thư mục hiện tại, (3) File ẩn `~/.ansible.cfg` tại thư mục cá nhân người dùng, (4) File cấu hình mặc định hệ thống `/etc/ansible/ansible.cfg`. Để biết chính xác file đang được áp dụng, chạy lệnh `ansible --version` và quan sát dòng `config file = ...`.
-**Tiêu chí chấm:** 
-- 0: Không nêu được các tầng cấu hình.
-- 1: Liệt kê được 2-3 tầng nhưng sai thứ tự ưu tiên.
-- 2: Nêu đúng 4 tầng theo thứ tự chính xác.
-- 3: Nêu đúng 4 tầng + chỉ ra lệnh `ansible --version` và bẫy file `./ansible.cfg` bị bỏ qua nếu lỡ gán quyền `world-writable` (`chmod 777`).
-**Câu hỏi đào sâu:** Nếu file `./ansible.cfg` bị gán quyền `chmod 777`, Ansible sẽ xử lý thế nào? *(Bỏ qua file đó vì lý do an toàn bảo mật và tự động lùi về dùng file tầng thấp hơn.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình <code>ansible.cfg</code>. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Ansible tìm kiếm theo thứ tự ưu tiên giảm dần: (1) Biến môi trường <code>ANSIBLE_CONFIG</code>, (2) File <code>./ansible.cfg</code> tại thư mục hiện tại, (3) File ẩn <code>~/.ansible.cfg</code> tại thư mục cá nhân người dùng, (4) File cấu hình mặc định hệ thống <code>/etc/ansible/ansible.cfg</code>. Để biết chính xác file đang được áp dụng, chạy lệnh <code>ansible --version</code> và quan sát dòng <code>config file = ...</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được các tầng cấu hình.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 tầng nhưng sai thứ tự ưu tiên.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đúng 4 tầng theo thứ tự chính xác.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng 4 tầng + chỉ ra lệnh <code>ansible --version</code> và bẫy file <code>./ansible.cfg</code> bị bỏ qua nếu lỡ gán quyền <code>world-writable</code> (<code>chmod 777</code>).</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu file <code>./ansible.cfg</code> bị gán quyền <code>chmod 777</code>, Ansible sẽ xử lý thế nào? *(Bỏ qua file đó vì lý do an toàn bảo mật và tự động lùi về dùng file tầng thấp hơn.)*
 </div>
 </details>
 

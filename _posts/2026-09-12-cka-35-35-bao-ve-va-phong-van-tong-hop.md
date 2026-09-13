@@ -308,233 +308,125 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ba bước tiêu chuẩn trong quy trình 40 phút Bảo vệ Dự án Capstone Tốt nghiệp là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1) **Thuyết minh bản vẽ kiến trúc (10m)**, 2) **Live Terminal Demo (15m)**, 3) **Trả lời phản biện kỹ thuật (15m)**.
+  
+1) <b style="color: var(--accent-primary);">Thuyết minh bản vẽ kiến trúc (10m)</b>, 2) <b style="color: var(--accent-primary);">Live Terminal Demo (15m)</b>, 3) <b style="color: var(--accent-primary);">Trả lời phản biện kỹ thuật (15m)</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Ngưỡng điểm phần trăm tối thiểu để đỗ từng chứng chỉ quốc tế chính thức của CNCF (CKA, CKAD, CKS) là bao nhiêu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **CKA (66 %)**, **CKAD (66 %)**, và **CKS (67 %)**.
+  
+<b style="color: var(--accent-primary);">CKA (66 %)</b>, <b style="color: var(--accent-primary);">CKAD (66 %)</b>, và <b style="color: var(--accent-primary);">CKS (67 %)</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Ba câu hỏi phản biện cốt lõi mà hội đồng chuyên môn LUÔN LUÔN đặt ra trong buổi bảo vệ Capstone là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1) Vì sao chọn mô hình phân chia này? 2) Điểm sập đơn lẻ (SPOF) ở đâu? 3) Cơ chế khôi phục sau sự cố (DR) ra sao?
+  
+1) Vì sao chọn mô hình phân chia này? 2) Điểm sập đơn lẻ (SPOF) ở đâu? 3) Cơ chế khôi phục sau sự cố (DR) ra sao?
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Lệnh CLI nào được dùng để kiểm tra tính toàn vẹn và không lỗi của toàn bộ 72 buổi học trong giáo trình?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `bash ntkk8s/buoi/kiem-tra.sh all` và `bash ntkk8s/buoi/kiem-tra-cheo.sh all`.
+  
+Lệnh <code>bash ntkk8s/buoi/kiem-tra.sh all</code> và <code>bash ntkk8s/buoi/kiem-tra-cheo.sh all</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tệp báo cáo tổng kết năng lực kỹ sư chuyên gia sau khi hoàn thành khóa học được lưu tại đường dẫn nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đường dẫn **/tmp/graduation/competency.md**.
+  
+Đường dẫn <b style="color: var(--accent-primary);">/tmp/graduation/competency.md</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Ba miền trọng số điểm cao nhất (mỗi miền 20%) trong kỳ thi CKS cần ghi nhớ khi phỏng vấn là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Minimize Microservice Vulnerabilities**, **Supply Chain Security**, và **Monitoring, Logging and Runtime Security**.
+  
+<b style="color: var(--accent-primary);">Minimize Microservice Vulnerabilities</b>, <b style="color: var(--accent-primary);">Supply Chain Security</b>, và <b style="color: var(--accent-primary);">Monitoring, Logging and Runtime Security</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Lệnh CLI imperatively nào sinh nhanh manifest CronJob chạy 5 phút/lần trong thi CKAD?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" --dry-run=client -o yaml -- date`.
+  
+Lệnh <code>kubectl create cronjob my-cron --image=busybox --schedule="*/5 * * * *" --dry-run=client -o yaml -- date</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Ba cờ câu lệnh chứng thực TLS etcd snapshot save bắt buộc phải nhớ khi phỏng vấn CKA là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `--cacert`, `--cert`, và `--key`.
+  
+Cờ <code>--cacert</code>, <code>--cert</code>, và <code>--key</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tại sao kỹ năng trình diễn Live Demo terminal trực tiếp lại quan trọng hơn slide thuyết trình trong bảo vệ Capstone?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì chứng minh được **nền tảng hạ tầng thực tế hoạt động 100% ổn định**, không phải mô hình trên giấy.
+  
+Vì chứng minh được <b style="color: var(--accent-primary);">nền tảng hạ tầng thực tế hoạt động 100% ổn định</b>, không phải mô hình trên giấy.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Vai trò tiếp theo của học viên sau khi hoàn thành xuất sắc 72 buổi học Kubernetes này là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trở thành **Chuyên gia Hạ tầng Đám mây (Senior Cloud-Native Platform Engineer / Lead SRE)**.
+  
+Trở thành <b style="color: var(--accent-primary);">Chuyên gia Hạ tầng Đám mây (Senior Cloud-Native Platform Engineer / Lead SRE)</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Cú pháp bash script chuẩn kiểm tra kết quả Bài thi Tốt nghiệp 72 buổi là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
       test -f /tmp/graduation/results.log && grep -q "PASS" /tmp/graduation/results.log
       ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cụm từ chốt ấn tượng nhất để khẳng định năng lực trước hội đồng tốt nghiệp là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **"Tôi đã làm chủ 100% kỹ năng Kiến trúc CKA, Vận hành CKAD và Bảo mật CKS trên nền tảng Kubernetes Doanh nghiệp!"**
+  
+<b style="color: var(--accent-primary);">"Tôi đã làm chủ 100% kỹ năng Kiến trúc CKA, Vận hành CKAD và Bảo mật CKS trên nền tảng Kubernetes Doanh nghiệp!"</b>
 </div>
 </details>
 
@@ -919,31 +811,22 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tỉ lệ điểm đỗ và ma trận trọng số của 3 kỳ thi chứng chỉ quốc tế CKA, CKAD, CKS do CNCF quy định được phân bổ như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **CKA**: Điểm đỗ **`66%`** (Troubleshooting 30%, Cluster Arch 25%, Services 20%, Workloads 15%, Storage 10%).
-- **CKAD**: Điểm đỗ **`66%`** (Config & Security 25%, Design 20%, Deployment 20%, Observability 20%, Services 15%).
-- **CKS**: Điểm đỗ **`67%`** (Microservice Vuln 20%, Supply Chain 20%, Monitoring & Runtime 20%, Cluster Hardening 15%, System Hardening 15%, Cluster Setup 10%).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CKA</b>: Điểm đỗ <b style="color: var(--accent-primary);"><code>66%</code></b> (Troubleshooting 30%, Cluster Arch 25%, Services 20%, Workloads 15%, Storage 10%).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CKAD</b>: Điểm đỗ <b style="color: var(--accent-primary);"><code>66%</code></b> (Config & Security 25%, Design 20%, Deployment 20%, Observability 20%, Services 15%).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">CKS</b>: Điểm đỗ <b style="color: var(--accent-primary);"><code>67%</code></b> (Microservice Vuln 20%, Supply Chain 20%, Monitoring & Runtime 20%, Cluster Hardening 15%, System Hardening 15%, Cluster Setup 10%).</div>
 
-**Tiêu chí chấm:**
-- 0đ: Không nhớ điểm đỗ và trọng số 3 chứng chỉ.
-- 1đ: Nêu đúng điểm đỗ nhưng sai trọng số các miền.
-- 3đ: Trình bày chuẩn xác 100% điểm đỗ và ma trận trọng số cả 3 chứng chỉ CKA, CKAD, CKS.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ điểm đỗ và trọng số 3 chứng chỉ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu đúng điểm đỗ nhưng sai trọng số các miền.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chuẩn xác 100% điểm đỗ và ma trận trọng số cả 3 chứng chỉ CKA, CKAD, CKS.</div>
 
-**Câu hỏi đào sâu:** (Thời gian thi thực hành của cả 3 bài thi CKA, CKAD, CKS do CNCF tổ chức là bao nhiêu phút? — Thời gian thi do CNCF quy định cho cả 3 bài thi là **`120 phút`**).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Thời gian thi thực hành của cả 3 bài thi CKA, CKAD, CKS do CNCF tổ chức là bao nhiêu phút? — Thời gian thi do CNCF quy định cho cả 3 bài thi là <b style="color: var(--accent-primary);"><code>120 phút</code></b>).
 </div>
 </details>
 
@@ -1219,43 +1102,25 @@ Biên soạn tệp Bảng Năng lực Chuyên gia tại `/tmp/graduation/compete
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Thực hiện bài thi CKA Tốc độ</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 echo "CKA Task Passed: Pod IPs extracted & etcd snapshot saved to /tmp/etcd-backup.db" > /tmp/grad-cka.txt
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Biên soạn tệp CKAD Manifest</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/grad-ckad.yaml
 apiVersion: batch/v1
 kind: CronJob
@@ -1268,10 +1133,10 @@ spec:
       template:
         spec:
           containers:
-            - name: job
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: job</div>
               image: busybox
               envFrom:
-                - configMapRef:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• configMapRef:</div>
                     name: grad-cm
               command: [/bin/sh, -c, date]
           restartPolicy: OnFailure
@@ -1280,22 +1145,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Biên soạn tệp CKS Security Policy</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/grad-cks.yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -1304,7 +1160,7 @@ metadata:
 spec:
   validationFailureAction: Enforce
   rules:
-    - name: check-harbor
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: check-harbor</div>
       match:
         resources:
           kinds: [Pod]
@@ -1312,36 +1168,27 @@ spec:
         pattern:
           spec:
             containers:
-              - image: "harbor.internal/*"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• image: "harbor.internal/*"</div>
 ---
 apiVersion: audit.k8s.io/v1
 kind: Policy
 rules:
-  - level: RequestResponse
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• level: RequestResponse</div>
     resources:
-      - group: ""
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• group: ""</div>
         resources: ["secrets"]
 EOF
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Biên soạn Bảng Năng lực Chuyên gia</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 mkdir -p /tmp/graduation
 cat <<EOF > /tmp/graduation/competency.md
 # BẢNG TỔNG KẾT NĂNG LỰC KỸ SƯ CHUYÊN GIA (SENIOR PLATFORM ARCHITECT MATRIX)

@@ -336,231 +336,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Annotation nào trong Nginx Ingress được dùng để tự động chuyển hướng 100% traffic HTTP (port 80) sang HTTPS (port 443)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Annotation `nginx.ingress.kubernetes.io/ssl-redirect: "true"`.
+  
+Annotation <code>nginx.ingress.kubernetes.io/ssl-redirect: "true"</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Để bảo mật đường truyền mạng nội bộ từ Ingress Controller tới Pod backend chạy HTTPS (mTLS end-to-end), cần áp dụng annotation nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Annotation `nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"`.
+  
+Annotation <code>nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Bộ đôi annotation nào được sử dụng để chống tấn công DDoS L7 bằng cách giới hạn số lượng request và số kết nối đồng thời từ 1 địa chỉ IP?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `nginx.ingress.kubernetes.io/limit-rps` và `nginx.ingress.kubernetes.io/limit-connections`.
+  
+<code>nginx.ingress.kubernetes.io/limit-rps</code> và <code>nginx.ingress.kubernetes.io/limit-connections</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Mã lỗi HTTP status code nào được Nginx Ingress trả về khi một địa chỉ IP vượt quá giới hạn Rate Limit (`limit-rps`)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mã lỗi `HTTP 503 Service Temporarily Unavailable`.
+  
+Mã lỗi <code>HTTP 503 Service Temporarily Unavailable</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Annotation nào dùng để chỉ cho phép các máy tính có địa chỉ IP thuộc dải `192.168.1.0/24` truy cập vào Ingress?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Annotation `nginx.ingress.kubernetes.io/whitelist-source-range: "192.168.1.0/24"`.
+  
+Annotation <code>nginx.ingress.kubernetes.io/whitelist-source-range: "192.168.1.0/24"</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Mã lỗi HTTP status code nào được trả về khi một client nằm ngoài dải IP Whitelist cố tình truy cập vào Ingress?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mã lỗi `HTTP 403 Forbidden`.
+  
+Mã lỗi <code>HTTP 403 Forbidden</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Bộ đôi cờ annotation nào dùng để kích hoạt tường lửa ModSecurity WAF và bộ luật OWASP CRS trên Ingress?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `nginx.ingress.kubernetes.io/enable-modsecurity: "true"` và `enable-owasp-modsecurity-crs: "true"`.
+  
+<code>nginx.ingress.kubernetes.io/enable-modsecurity: "true"</code> và <code>enable-owasp-modsecurity-crs: "true"</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Nếu bật ModSecurity WAF nhưng không khai báo `SecRuleEngine On` trong `modsecurity-snippet` thì WAF sẽ hoạt động ở chế độ nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Hoạt động ở chế độ `DetectionOnly` (chỉ ghi log cảnh báo chứ không chặn gói tin độc hại).
+  
+Hoạt động ở chế độ <code>DetectionOnly</code> (chỉ ghi log cảnh báo chứ không chặn gói tin độc hại).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tường lửa ModSecurity WAF giúp bảo vệ ứng dụng Kubernetes khỏi các dạng tấn công nguy hiểm nào ở tầng L7?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ngăn chặn các đòn tấn công SQL Injection (SQLi), Cross-Site Scripting (XSS), Remote Code Execution (RCE).
+  
+Ngăn chặn các đòn tấn công SQL Injection (SQLi), Cross-Site Scripting (XSS), Remote Code Execution (RCE).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Khi người dùng bị Ingress từ chối truy cập, bạn cần kiểm tra nhật ký log của Pod nào để xem lý do chính xác?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Kiểm tra log của Pod **Nginx Ingress Controller** (`kubectl logs -n ingress-nginx <pod-name>`).
+  
+Kiểm tra log của Pod <b style="color: var(--accent-primary);">Nginx Ingress Controller</b> (<code>kubectl logs -n ingress-nginx <pod-name></code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao không nên đặt Rate Limit quá nghiêm ngặt (như 1 request/giây) cho toàn bộ các trang web công cộng?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Tránh việc chặn nhầm (False Positive) các thao tác duy trì kết nối bình thường của người dùng hợp lệ.
+  
+Tránh việc chặn nhầm (False Positive) các thao tác duy trì kết nối bình thường của người dùng hợp lệ.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn để đính kèm đoạn mã `SecRuleEngine On` vào Ingress spec qua `modsecurity-snippet` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       metadata:
         annotations:
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
@@ -927,29 +819,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Sự khác biệt về tiêu chuẩn cấu hình Ingress giữa chứng chỉ CKAD và chứng chỉ CKS là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trong CKAD, Ingress dừng ở mức định tuyến L7 và TLS Termination căn bản. Trong CKS, Ingress bắt buộc phải được gia cố bảo mật chuyên sâu (Securing Ingress): ép HTTPS (`ssl-redirect`), cấu hình TLS 1.2/1.3, Rate Limit chống DDoS (`limit-rps`), IP Whitelisting (`whitelist-source-range`) và tích hợp ModSecurity WAF L7.
+  
+Trong CKAD, Ingress dừng ở mức định tuyến L7 và TLS Termination căn bản. Trong CKS, Ingress bắt buộc phải được gia cố bảo mật chuyên sâu (Securing Ingress): ép HTTPS (<code>ssl-redirect</code>), cấu hình TLS 1.2/1.3, Rate Limit chống DDoS (<code>limit-rps</code>), IP Whitelisting (<code>whitelist-source-range</code>) và tích hợp ModSecurity WAF L7.
 
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được yêu cầu Ingress CKS vs CKAD.
-- 1đ: Nêu được có WAF nhưng thiếu các annotations gia cố.
-- 3đ: Phân tích thấu đáo sự nâng cấp từ Ingress căn bản CKAD lên Securing Ingress chuyên sâu CKS.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được yêu cầu Ingress CKS vs CKAD.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được có WAF nhưng thiếu các annotations gia cố.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo sự nâng cấp từ Ingress căn bản CKAD lên Securing Ingress chuyên sâu CKS.</div>
 
-**Câu hỏi đào sâu:** (Annotation nào dùng để tự động chuyển hướng 100% traffic HTTP 80 sang HTTPS 443? — Annotation `nginx.ingress.kubernetes.io/ssl-redirect: "true"`).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Annotation nào dùng để tự động chuyển hướng 100% traffic HTTP 80 sang HTTPS 443? — Annotation <code>nginx.ingress.kubernetes.io/ssl-redirect: "true"</code>).
 </div>
 </details>
 
@@ -1200,22 +1083,13 @@ Tích hợp ModSecurity WAF cho Ingress `api-ingress` trong Namespace `prod`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tạo Ingress `hardened-ingress` SSL Redirect</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1229,14 +1103,14 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-    - hosts:
-        - app.secure.com
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• hosts:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• app.secure.com</div>
       secretName: app-tls-secret
   rules:
-    - host: app.secure.com
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• host: app.secure.com</div>
       http:
         paths:
-          - path: /
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: /</div>
             pathType: Prefix
             backend:
               service:
@@ -1248,22 +1122,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Bổ sung Rate Limit DDoS protection</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl annotate ingress hardened-ingress -n prod \
   nginx.ingress.kubernetes.io/limit-rps="5" \
   nginx.ingress.kubernetes.io/limit-connections="10" --overwrite
@@ -1271,22 +1136,13 @@ kubectl annotate ingress hardened-ingress -n prod \
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Tạo Ingress `admin-ingress` IP Whitelisting</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -1298,10 +1154,10 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: admin.secure.com
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• host: admin.secure.com</div>
       http:
         paths:
-          - path: /admin
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: /admin</div>
             pathType: Prefix
             backend:
               service:
@@ -1313,22 +1169,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Tích hợp ModSecurity WAF `SecRuleEngine On</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -1343,10 +1190,10 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: api.secure.com
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• host: api.secure.com</div>
       http:
         paths:
-          - path: /api
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• path: /api</div>
             pathType: Prefix
             backend:
               service:

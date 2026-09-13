@@ -384,193 +384,103 @@ argocd app get encrypted-payment-service --hard-refresh
 ## 11. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao CMP v2 lại sử dụng Unix Domain Socket thay vì cổng mạng TCP để giao tiếp giữa `repo-server` và Sidecar?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Unix Domain Socket hoạt động trong không gian bộ nhớ chia sẻ cục bộ (Shared Memory) giữa các container trong cùng một Pod, mang lại: (1) **Tốc độ truyền tải siêu tốc** (không tốn chi phí đóng gói TCP/IP stack), và (2) **Bảo mật tuyệt đối** (không mở cổng mạng ra bên ngoài, không lo bị quét cổng nội bộ).
+  
+Unix Domain Socket hoạt động trong không gian bộ nhớ chia sẻ cục bộ (Shared Memory) giữa các container trong cùng một Pod, mang lại: (1) <b style="color: var(--accent-primary);">Tốc độ truyền tải siêu tốc</b> (không tốn chi phí đóng gói TCP/IP stack), và (2) <b style="color: var(--accent-primary);">Bảo mật tuyệt đối</b> (không mở cổng mạng ra bên ngoài, không lo bị quét cổng nội bộ).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Lệnh `init` trong `plugin.yaml` khác lệnh `generate` ở điểm nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `init` chạy trước để chuẩn bị môi trường (tải thư viện phụ thuộc, kiểm tra kết nối); kết quả của `init` không được dùng làm manifest. Lệnh `generate` là lệnh bắt buộc và **phải in ra toàn bộ nội dung Kubernetes YAML manifests cuối cùng ra luồng STDOUT**.
+  
+Lệnh <code>init</code> chạy trước để chuẩn bị môi trường (tải thư viện phụ thuộc, kiểm tra kết nối); kết quả của <code>init</code> không được dùng làm manifest. Lệnh <code>generate</code> là lệnh bắt buộc và <b style="color: var(--accent-primary);">phải in ra toàn bộ nội dung Kubernetes YAML manifests cuối cùng ra luồng STDOUT</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Làm thế nào để truyền một thông tin nhạy cảm (như AWS Access Key) vào Sidecar Container của CMP Plugin?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khai báo biến môi trường trong khối `env` của Sidecar Container bên trong Deployment `argocd-repo-server` đọc từ một Kubernetes `Secret` (`secretKeyRef`), hoặc sử dụng IAM Roles for Service Accounts (**IRSA / Workload Identity**).
+  
+Khai báo biến môi trường trong khối <code>env</code> của Sidecar Container bên trong Deployment <code>argocd-repo-server</code> đọc từ một Kubernetes <code>Secret</code> (<code>secretKeyRef</code>), hoặc sử dụng IAM Roles for Service Accounts (<b style="color: var(--accent-primary);">IRSA / Workload Identity</b>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Nếu trong cùng một thư mục Git vừa có tệp `kustomization.yaml` vừa có điều kiện khớp với `discover` của CMP Plugin, Argo CD sẽ ưu tiên cái nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mặc định các công cụ Built-in (Kustomize/Helm) có độ ưu tiên cao. Nếu muốn ép buộc sử dụng CMP Plugin, bạn bắt buộc phải khai báo tường minh trường `spec.source.plugin.name` trong đối tượng `Application CRD`.
+  
+Mặc định các công cụ Built-in (Kustomize/Helm) có độ ưu tiên cao. Nếu muốn ép buộc sử dụng CMP Plugin, bạn bắt buộc phải khai báo tường minh trường <code>spec.source.plugin.name</code> trong đối tượng <code>Application CRD</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Điều gì xảy ra nếu lệnh `generate` của Plugin chạy vượt quá thời gian quy định?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Tiến trình sẽ bị ngắt (Timeout) bởi `ARGOCD_EXEC_TIMEOUT` (mặc định là 90 giây). Ứng dụng sẽ chuyển sang trạng thái `ComparisonError`.
+  
+Tiến trình sẽ bị ngắt (Timeout) bởi <code>ARGOCD_EXEC_TIMEOUT</code> (mặc định là 90 giây). Ứng dụng sẽ chuyển sang trạng thái <code>ComparisonError</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Tại sao nên đặt `readOnlyRootFilesystem: true` cho Sidecar Container của CMP Plugin?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để ngăn chặn các script hoặc tool bên trong plugin vô tình hoặc cố ý ghi file đè vào hệ điều hành container, đảm bảo tính bất biến (Immutability) và an toàn bảo mật, chỉ cho phép ghi dữ liệu tạm vào thư mục `/tmp` đã được mount qua `emptyDir`.
+  
+Để ngăn chặn các script hoặc tool bên trong plugin vô tình hoặc cố ý ghi file đè vào hệ điều hành container, đảm bảo tính bất biến (Immutability) và an toàn bảo mật, chỉ cho phép ghi dữ liệu tạm vào thư mục <code>/tmp</code> đã được mount qua <code>emptyDir</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Biến môi trường `$ARGOCD_APP_NAME` và `$ARGOCD_APP_NAMESPACE` có sẵn trong lệnh `generate` không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Có!** Argo CD tự động truyền các biến môi trường chuẩn của Application vào tiến trình thực thi lệnh của Plugin để script có thể tùy biến cấu hình theo tên và namespace ứng dụng.
+  
+<b style="color: var(--accent-primary);">Có!</b> Argo CD tự động truyền các biến môi trường chuẩn của Application vào tiến trình thực thi lệnh của Plugin để script có thể tùy biến cấu hình theo tên và namespace ứng dụng.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>`discover.find.glob` trong `plugin.yaml` hỗ trợ những biểu thức so khớp nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Hỗ trợ cú pháp Glob tiêu chuẩn, ví dụ `**/values-*.yaml` hoặc `*.jsonnet`, giúp quét các file định dạng đặc thù trong cây thư mục để kích hoạt plugin tự động.
+  
+Hỗ trợ cú pháp Glob tiêu chuẩn, ví dụ <code>**/values-*.yaml</code> hoặc <code>*.jsonnet</code>, giúp quét các file định dạng đặc thù trong cây thư mục để kích hoạt plugin tự động.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Làm thế nào để kiểm tra danh sách tất cả các CMP Plugins đang hoạt động trên Repo Server?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Kiểm tra danh sách các file `.sock` nằm trong thư mục `/var/run/argocd/plugins` của container `argocd-repo-server`. Mỗi file socket đại diện cho một CMP server đang hoạt động.
+  
+Kiểm tra danh sách các file <code>.sock</code> nằm trong thư mục <code>/var/run/argocd/plugins</code> của container <code>argocd-repo-server</code>. Mỗi file socket đại diện cho một CMP server đang hoạt động.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Có thể kết hợp CMP Plugin với tính năng Multiple Sources của Argo CD không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hoàn toàn được!** Bạn có thể khai báo một nguồn Git sử dụng CMP Plugin để giải mã secrets và một nguồn khác chứa Helm Chart công khai.
+  
+<b style="color: var(--accent-primary);">Hoàn toàn được!</b> Bạn có thể khai báo một nguồn Git sử dụng CMP Plugin để giải mã secrets và một nguồn khác chứa Helm Chart công khai.
 </div>
 </details>
 

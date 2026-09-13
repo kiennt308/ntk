@@ -1738,32 +1738,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Sự khác biệt bản chất nhất giữa mô hình Push-based CD (`helm upgrade` trực tiếp) và Pull-based CD (GitOps ArgoCD) trong Kubernetes là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
 Khác nhau ở vị trí lưu trữ Kubeconfig credentials và thực thể chủ động kích hoạt đồng bộ hạ tầng (CI Runner đẩy từ ngoài vào vs Controller kéo từ trong cụm).
 
-**Đáp án chuẩn:**
-- **So sánh Kiến trúc:**
-  1. *Push-based CD:* Trình biên dịch CI Runner (ở ngoài cụm) giữ file Kubeconfig admin và trực tiếp thực thi câu lệnh `helm upgrade` đẩy manifests vào Kubernetes API Server.
-  2. *Pull-based GitOps CD:* Một Controller (như ArgoCD) cài sẵn bên trong cụm Kubernetes tự động theo dõi kho mã nguồn GitOps Repository, liên tục so sánh và kéo (Pull) trạng thái mong muốn về cụm.
-- **Lợi ích an ninh:** GitOps đóng toàn bộ chiều kết nối Inbound, không để lộ Kubeconfig Admin ra máy chủ CI Runner bên ngoài, giúp bảo vệ tối đa ranh giới an toàn cho cụm Kubernetes Production.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">So sánh Kiến trúc:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Push-based CD:* Trình biên dịch CI Runner (ở ngoài cụm) giữ file Kubeconfig admin và trực tiếp thực thi câu lệnh <code>helm upgrade</code> đẩy manifests vào Kubernetes API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Pull-based GitOps CD:* Một Controller (như ArgoCD) cài sẵn bên trong cụm Kubernetes tự động theo dõi kho mã nguồn GitOps Repository, liên tục so sánh và kéo (Pull) trạng thái mong muốn về cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích an ninh:</b> GitOps đóng toàn bộ chiều kết nối Inbound, không để lộ Kubeconfig Admin ra máy chủ CI Runner bên ngoài, giúp bảo vệ tối đa ranh giới an toàn cho cụm Kubernetes Production.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
-Cho rằng "GitOps chỉ là việc lưu file YAML trên Git rồi cho CI Runner chạy lệnh `kubectl apply`".
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
+Cho rằng "GitOps chỉ là việc lưu file YAML trên Git rồi cho CI Runner chạy lệnh <code>kubectl apply</code>".
 </div>
 </details>
 

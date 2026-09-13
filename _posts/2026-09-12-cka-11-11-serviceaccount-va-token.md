@@ -819,36 +819,27 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Phân biệt sự khác nhau cơ bản giữa đối tượng `ServiceAccount` và đối tượng `User` trong Kubernetes.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `ServiceAccount` (Tài khoản dịch vụ dành cho Máy/Pod):
-  - Đại diện cho các tiến trình/ứng dụng chạy bên trong Pod.
-  - **LÀ một đối tượng API Kubernetes chính thức** lưu trong etcd (`kind: ServiceAccount`), gắn liền với 1 Namespace cụ thể.
-  - Được Kubelet tự động nạp JWT Token vào Pod để ứng dụng gọi API Server.
-- `User` (Tài khoản người dùng dành cho Con người):
-  - Đại diện cho kỹ sư DevOps, quản trị viên.
-  - **KHÔNG có đối tượng API trong etcd**; xác thực qua X.509 Certificate (`CN`/`O`) hoặc OIDC/Token ngoài.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ServiceAccount</code> (Tài khoản dịch vụ dành cho Máy/Pod):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đại diện cho các tiến trình/ứng dụng chạy bên trong Pod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">LÀ một đối tượng API Kubernetes chính thức</b> lưu trong etcd (<code>kind: ServiceAccount</code>), gắn liền với 1 Namespace cụ thể.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Được Kubelet tự động nạp JWT Token vào Pod để ứng dụng gọi API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>User</code> (Tài khoản người dùng dành cho Con người):</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đại diện cho kỹ sư DevOps, quản trị viên.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">KHÔNG có đối tượng API trong etcd</b>; xác thực qua X.509 Certificate (<code>CN</code>/<code>O</code>) hoặc OIDC/Token ngoài.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo ServiceAccount và User hoàn toàn giống nhau.
-- **1đ:** Nói được ServiceAccount cho Pod còn User cho người nhưng không chỉ ra việc ServiceAccount là API object lưu trong etcd (dính trần 1đ).
-- **2đ:** Phân biệt chuẩn xác API object lưu trong etcd (ServiceAccount) vs danh tính ngoài không có API object (User).
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng định dạng RBAC `system:serviceaccount:<ns>:<name>`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo ServiceAccount và User hoàn toàn giống nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được ServiceAccount cho Pod còn User cho người nhưng không chỉ ra việc ServiceAccount là API object lưu trong etcd (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân biệt chuẩn xác API object lưu trong etcd (ServiceAccount) vs danh tính ngoài không có API object (User).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng định dạng RBAC <code>system:serviceaccount:<ns>:<name></code>.</div>
 
-**Câu hỏi đào sâu:** Ta có thể tạo ServiceAccount bằng lệnh `kubectl create` được không, và có tạo được User bằng lệnh đó không? *(Đáp án: Tạo được ServiceAccount bằng kubectl create serviceaccount; KHÔNG tạo được User bằng kubectl).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Ta có thể tạo ServiceAccount bằng lệnh <code>kubectl create</code> được không, và có tạo được User bằng lệnh đó không? *(Đáp án: Tạo được ServiceAccount bằng kubectl create serviceaccount; KHÔNG tạo được User bằng kubectl).*
 </div>
 </details>
 

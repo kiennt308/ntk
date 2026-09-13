@@ -1807,30 +1807,21 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Sự khác biệt cốt lõi nhất về nguyên lý hoạt động và tài nguyên hạ tầng giữa Blue-Green Deployment và Canary Deployment là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
 Blue-Green tráo đổi 100% traffic giữa 2 môi trường song song (đòi hỏi 200% tài nguyên); Canary mở dần % traffic nhỏ (10% -> 50% -> 100%) nghiệm thu dần trên Production (chỉ tốn +10-20% tài nguyên).
 
-**Đáp án chuẩn:**
-- **So sánh Nguyên lý & Hạ tầng:**
-  1. *Blue-Green Deployment:* Duy trì 2 môi trường độc lập hoàn toàn (Blue đang active, Green standby). Khi nâng cấp, kiểm thử Green rồi tráo đổi 100% Ingress Routing sang Green trong 1 giây. Đòi hỏi gấp đôi tài nguyên hạ tầng (200% Capacity).
-  2. *Canary Deployment:* Chạy ứng dụng mới song song trên cùng hạ tầng, điều tiết phần trăm traffic nhỏ (dạng 10% Canary, 90% Stable) bằng Ingress Controller. Thu hẹp tối đa bán kính ảnh hưởng sự cố và chỉ tốn thêm một vài Pods thử nghiệm (+10-20% Capacity).
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">So sánh Nguyên lý & Hạ tầng:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Blue-Green Deployment:* Duy trì 2 môi trường độc lập hoàn toàn (Blue đang active, Green standby). Khi nâng cấp, kiểm thử Green rồi tráo đổi 100% Ingress Routing sang Green trong 1 giây. Đòi hỏi gấp đôi tài nguyên hạ tầng (200% Capacity).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Canary Deployment:* Chạy ứng dụng mới song song trên cùng hạ tầng, điều tiết phần trăm traffic nhỏ (dạng 10% Canary, 90% Stable) bằng Ingress Controller. Thu hẹp tối đa bán kính ảnh hưởng sự cố và chỉ tốn thêm một vài Pods thử nghiệm (+10-20% Capacity).</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Cho rằng "Canary Deployment cũng bắt buộc phải dựng lại toàn bộ hạ tầng mới gấp 2 lần như Blue-Green".
 </div>
 </details>

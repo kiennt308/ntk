@@ -1667,33 +1667,24 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Sự khác biệt cốt lõi giữa cơ chế gán OIDC Subject Matching của Azure Federated Identity Credentials với AWS IAM Role Trust Policy và GCP WIF Provider là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
-Azure Entra ID yêu cầu tạo từng đối tượng Federated Credential riêng biệt khớp 100% từng ký tự Subject Identifier, trong khi AWS dùng `StringLike` wildcard và GCP dùng biểu thức CEL trên WIF Provider.
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
+Azure Entra ID yêu cầu tạo từng đối tượng Federated Credential riêng biệt khớp 100% từng ký tự Subject Identifier, trong khi AWS dùng <code>StringLike</code> wildcard và GCP dùng biểu thức CEL trên WIF Provider.
 
-**Đáp án chuẩn:**
-- **So sánh 3 Cloud Đám mây lớn nhất thế giới:**
-  1. *AWS IAM Role:* Dùng Trust Policy với `Condition: StringLike: sub: project_path:group/repo:*` (rất linh hoạt, cho phép dùng ký tự đại diện wildcard `*`).
-  2. *GCP WIF Pool:* Dùng Attribute Condition CEL Expression trên WIF Provider (`assertion.project_path == '...'`) để lọc dữ liệu ngay từ cửa ngõ Provider.
-  3. *Azure Entra ID:* Yêu cầu mỗi Subject Claim (ví dụ `project_path:group/repo:ref_type:branch:ref:main`) phải được tạo thành 1 đối tượng **Federated Identity Credential riêng biệt**. So khớp chính xác 100% (Exact String Match), không cho phép dùng wildcard lỏng lẻo.
-- **Ý nghĩa bảo mật:** Azure thiết lập ranh giới bảo mật chặt chẽ nhất nhưng đòi hỏi quy trình tự động hóa đăng ký bằng mã nguồn (IaC/CLI) công phu hơn để quản lý các chi nhánh môi trường.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">So sánh 3 Cloud Đám mây lớn nhất thế giới:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *AWS IAM Role:* Dùng Trust Policy với <code>Condition: StringLike: sub: project_path:group/repo:*</code> (rất linh hoạt, cho phép dùng ký tự đại diện wildcard <code>*</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *GCP WIF Pool:* Dùng Attribute Condition CEL Expression trên WIF Provider (<code>assertion.project_path == '...'</code>) để lọc dữ liệu ngay từ cửa ngõ Provider.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> *Azure Entra ID:* Yêu cầu mỗi Subject Claim (ví dụ <code>project_path:group/repo:ref_type:branch:ref:main</code>) phải được tạo thành 1 đối tượng <b style="color: var(--accent-primary);">Federated Identity Credential riêng biệt</b>. So khớp chính xác 100% (Exact String Match), không cho phép dùng wildcard lỏng lẻo.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa bảo mật:</b> Azure thiết lập ranh giới bảo mật chặt chẽ nhất nhưng đòi hỏi quy trình tự động hóa đăng ký bằng mã nguồn (IaC/CLI) công phu hơn để quản lý các chi nhánh môi trường.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
-Cho rằng "Azure cho phép dùng wildcard `*` trong Subject Identifier giống như AWS".
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
+Cho rằng "Azure cho phép dùng wildcard <code>*</code> trong Subject Identifier giống như AWS".
 </div>
 </details>
 

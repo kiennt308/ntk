@@ -1529,33 +1529,24 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Từ khóa `environment` trong GitLab CI/CD mang lại giá trị cốt lõi gì so với một CI job chạy câu lệnh deployment thông thường?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
-Từ khóa `environment` định danh một job CI thành một sự kiện deployment có lịch sử, lưu giữ commit SHA đang chạy trên từng server, hỗ trợ nút bấm Rollback 1-click và tích hợp hiển thị URL trên Merge Request.
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
+Từ khóa <code>environment</code> định danh một job CI thành một sự kiện deployment có lịch sử, lưu giữ commit SHA đang chạy trên từng server, hỗ trợ nút bấm Rollback 1-click và tích hợp hiển thị URL trên Merge Request.
 
-**Đáp án chuẩn:**
-- **Không có `environment`:** Job CI chỉ thực thi tập lệnh CLI (`kubectl apply` hay `docker run`) rồi kết thúc. GitLab hoàn toàn không biết mã nguồn được deploy đi đâu, không có bộ nhớ theo dõi trạng thái server, và không thể tính toán các chỉ số DORA Metrics.
-- **Có `environment`:**
-  1. *Deployment History:* GitLab lưu vết toàn bộ nhật ký các bản build đã được đẩy lên server (ai deploy, lúc nào, từ commit SHA nào).
-  2. *Rollback 1-Click:* Khi Prod bị lỗi, chỉ cần mở Environment UI và bấm nút **Re-deploy** bản xanh cũ.
-  3. *Review Apps Integration:* Hiển thị nút "View Deployment" trực tiếp trên Merge Request Widget.
-  4. *Protected Environments & Scoped Variables:* Cho phép phân quyền IAM cứng và tách biệt biến cấu hình DB theo từng môi trường.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Không có <code>environment</code>:</b> Job CI chỉ thực thi tập lệnh CLI (<code>kubectl apply</code> hay <code>docker run</code>) rồi kết thúc. GitLab hoàn toàn không biết mã nguồn được deploy đi đâu, không có bộ nhớ theo dõi trạng thái server, và không thể tính toán các chỉ số DORA Metrics.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Có <code>environment</code>:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Deployment History:* GitLab lưu vết toàn bộ nhật ký các bản build đã được đẩy lên server (ai deploy, lúc nào, từ commit SHA nào).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Rollback 1-Click:* Khi Prod bị lỗi, chỉ cần mở Environment UI và bấm nút <b style="color: var(--accent-primary);">Re-deploy</b> bản xanh cũ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> *Review Apps Integration:* Hiển thị nút "View Deployment" trực tiếp trên Merge Request Widget.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> *Protected Environments & Scoped Variables:* Cho phép phân quyền IAM cứng và tách biệt biến cấu hình DB theo từng môi trường.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Nói rằng "environment chỉ là chỗ đặt tên cho vui". Cần phân tích sâu tính chất State Management và Observability củađối tượng Environment.
 </div>
 </details>

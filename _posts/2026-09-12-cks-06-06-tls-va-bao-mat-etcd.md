@@ -333,242 +333,134 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tệp cấu hình nào được sử dụng để khai báo các thuật toán và khóa mã hóa dữ liệu tại chỗ (Encryption at Rest) cho API Server?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Tệp `EncryptionConfiguration` (khai báo cờ `--encryption-provider-config`).
+  
+Tệp <code>EncryptionConfiguration</code> (khai báo cờ <code>--encryption-provider-config</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Tại sao provider `aescbc` phải được đặt ở vị trí đầu tiên (Index 0) trong mảng `providers` của tệp `EncryptionConfiguration`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì API Server sử dụng provider đứng ở vị trí đầu tiên để thực hiện MÃ HÓA dữ liệu mới khi GHI (Write).
+  
+Vì API Server sử dụng provider đứng ở vị trí đầu tiên để thực hiện MÃ HÓA dữ liệu mới khi GHI (Write).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Lệnh CLI Linux nào được dùng để tạo một chuỗi khóa Base64 đại diện cho đúng 32 bytes dữ liệu ngẫu nhiên?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `head -c 32 /dev/urandom | base64`.
+  
+Lệnh <code>head -c 32 /dev/urandom | base64</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Cờ thuộc tính nào trong tệp manifest Static Pod `kube-apiserver.yaml` được dùng để chỉ định đường dẫn tệp mã hóa etcd?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `--encryption-provider-config=/path/to/encryption-config.yaml`.
+  
+Cờ <code>--encryption-provider-config=/path/to/encryption-config.yaml</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tại sao sau khi bật cấu hình mã hóa etcd, các Secret đã tồn tại từ trước chưa tự động được mã hóa?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì cấu hình mới chỉ có hiệu lực với các thao tác GHI; Secret cũ vẫn nằm ở dạng unencrypted cho tới khi được ghi đè.
+  
+Vì cấu hình mới chỉ có hiệu lực với các thao tác GHI; Secret cũ vẫn nằm ở dạng unencrypted cho tới khi được ghi đè.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Lệnh CLI Kubernetes nào được dùng để thực thi mã hóa lại toàn bộ các Secret đang tồn tại trong tất cả các Namespace?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `kubectl get secrets --all-namespaces -o json | kubectl replace -f -`.
+  
+Lệnh <code>kubectl get secrets --all-namespaces -o json | kubectl replace -f -</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Ba cờ TLS bắt buộc phải truyền khi sử dụng `etcdctl` kết nối tới etcd cluster trong `kubeadm` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ `--cacert`, `--cert`, và `--key` (kèm `ETCDCTL_API=3`).
+  
+Cờ <code>--cacert</code>, <code>--cert</code>, và <code>--key</code> (kèm <code>ETCDCTL_API=3</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Chuỗi tiền tố mã hóa (Prefix Header) nào xuất hiện ở đầu dữ liệu Secret trong etcd khi được mã hóa thành công bằng `aescbc`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chuỗi tiền tố `k8s:enc:aescbc:v1:key1:...`.
+  
+Chuỗi tiền tố <code>k8s:enc:aescbc:v1:key1:...</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tại sao provider `identity` nên được giữ lại ở vị trí thứ hai trong mảng `providers` khi mới bật mã hóa?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để API Server có thể GIẢI MÃ và ĐỌC các Secret chưa mã hóa cũ trong quá trình chạy lệnh `kubectl replace`.
+  
+Để API Server có thể GIẢI MÃ và ĐỌC các Secret chưa mã hóa cũ trong quá trình chạy lệnh <code>kubectl replace</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Quy trình xoay vòng (Rotate) khóa mã hóa etcd diễn ra theo các bước nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thêm khóa mới vào vị trí 1 -> Giữ khóa cũ ở vị trí 2 -> Chạy `kubectl replace` -> Xóa khóa cũ khỏi tệp cấu hình.
+  
+Thêm khóa mới vào vị trí 1 -> Giữ khóa cũ ở vị trí 2 -> Chạy <code>kubectl replace</code> -> Xóa khóa cũ khỏi tệp cấu hình.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Điều gì xảy ra với `kube-apiserver` nếu tệp `EncryptionConfiguration` bị lỗi cú pháp YAML hoặc chuỗi khóa base64 không đúng 32 bytes?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `kube-apiserver` bị crash ngầm (`CrashLoopBackOff`), làm tê liệt toàn bộ cụm Control Plane.
+  
+<code>kube-apiserver</code> bị crash ngầm (<code>CrashLoopBackOff</code>), làm tê liệt toàn bộ cụm Control Plane.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn của một tệp `EncryptionConfiguration` hoàn chỉnh dùng `aescbc` và `identity` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       apiVersion: apiserver.config.k8s.io/v1
       kind: EncryptionConfiguration
       resources:
-        - resources:
-            - secrets
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• secrets</div>
           providers:
-            - aescbc:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• aescbc:</div>
                 keys:
-                  - name: key1
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: key1</div>
                     secret: <32-byte-base64-key>
-            - identity: {}
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• identity: {}</div>
       ```
 </div>
 </details>
@@ -883,29 +775,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Rủi ro an ninh khi KHÔNG bật mã hóa dữ liệu tại chỗ (Encryption at Rest) cho etcd trong cụm Kubernetes Production là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mặc định dữ liệu Secret lưu trong etcd chỉ được mã hóa Base64 ở tầng API Server nhưng nằm ở dạng văn bản thuần (plaintext) trên đĩa cứng etcd. Kẻ tấn công chiếm quyền root trên Node Control Plane có thể đọc trực tiếp đĩa etcd lấy toàn bộ mật khẩu, chứng chỉ và API tokens.
+  
+Mặc định dữ liệu Secret lưu trong etcd chỉ được mã hóa Base64 ở tầng API Server nhưng nằm ở dạng văn bản thuần (plaintext) trên đĩa cứng etcd. Kẻ tấn công chiếm quyền root trên Node Control Plane có thể đọc trực tiếp đĩa etcd lấy toàn bộ mật khẩu, chứng chỉ và API tokens.
 
-**Tiêu chí chấm:**
-- 0đ: Không hiểu rủi ro lưu etcd unencrypted.
-- 1đ: Nêu được lộ Secret nhưng chưa rõ việc kẻ tấn công đọc đĩa etcd bỏ qua API Server.
-- 3đ: Phân tích thấu đáo rủi ro lộ Secret dạng plaintext trên đĩa etcd và giải pháp Encryption at Rest.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu rủi ro lưu etcd unencrypted.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lộ Secret nhưng chưa rõ việc kẻ tấn công đọc đĩa etcd bỏ qua API Server.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro lộ Secret dạng plaintext trên đĩa etcd và giải pháp Encryption at Rest.</div>
 
-**Câu hỏi đào sâu:** (Khóa mã hóa chuẩn khuyến nghị dùng trong tệp `EncryptionConfiguration` CKS là gì? — Thuật toán mã hóa đối xứng `aescbc` dùng khóa 32-byte Base64).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Khóa mã hóa chuẩn khuyến nghị dùng trong tệp <code>EncryptionConfiguration</code> CKS là gì? — Thuật toán mã hóa đối xứng <code>aescbc</code> dùng khóa 32-byte Base64).
 </div>
 </details>
 
@@ -1183,99 +1066,63 @@ Kiểm toán etcd qua CLI `etcdctl`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tạo tệp `/etc/kubernetes/enc/enc.yaml</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 sudo mkdir -p /etc/kubernetes/enc
 cat <<EOF | sudo tee /etc/kubernetes/enc/enc.yaml
 apiVersion: apiserver.config.k8s.io/v1
 kind: EncryptionConfiguration
 resources:
-  - resources:
-      - secrets
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• resources:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• secrets</div>
     providers:
-      - aescbc:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• aescbc:</div>
           keys:
-            - name: key1
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: key1</div>
               secret: c2VjcmV0IGlzIGEgc2VjcmV0IGlzIGEgc2VjcmV0IGlzIGE=
-      - identity: {}
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• identity: {}</div>
 EOF
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Cấu hình cờ và Volume Mount cho `kube-apiserver.yaml</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 # Thêm cờ --encryption-provider-config và volumeMounts vào /etc/kubernetes/manifests/kube-apiserver.yaml
 # (Học viên chỉnh sửa trực tiếp qua vim hoặc yq/sed)
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Mã hóa lại toàn bộ Secret bằng `kubectl replace</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl get secrets --all-namespaces -o json | kubectl replace -f -
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Tạo Secret và kiểm toán bằng `etcdctl</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 kubectl create secret generic db-pass --from-literal=pass=123456 -n prod
 

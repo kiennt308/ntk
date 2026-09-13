@@ -1893,40 +1893,31 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>rules` được đánh giá lúc nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Đúng một lần, lúc pipeline được tạo** — gọi thời điểm ấy là `t0`. Danh sách job của pipeline chốt tại đó và **không gì đổi được nó sau đó**.
+  
+<b style="color: var(--accent-primary);">Đúng một lần, lúc pipeline được tạo</b> — gọi thời điểm ấy là <code>t0</code>. Danh sách job của pipeline chốt tại đó và <b style="color: var(--accent-primary);">không gì đổi được nó sau đó</b>.
 
-Cơ chế: GitLab dựng pipeline như một **đối tượng tĩnh**. Nó phân giải tệp, đánh giá `workflow`, đánh giá `rules` của từng job, rồi ghi vào cơ sở dữ liệu một danh sách job cố định cùng quan hệ giữa chúng. Runner sau đó chỉ **lấy job từ danh sách ấy**. Không có bước nào đánh giá lại `rules`.
+Cơ chế: GitLab dựng pipeline như một <b style="color: var(--accent-primary);">đối tượng tĩnh</b>. Nó phân giải tệp, đánh giá <code>workflow</code>, đánh giá <code>rules</code> của từng job, rồi ghi vào cơ sở dữ liệu một danh sách job cố định cùng quan hệ giữa chúng. Runner sau đó chỉ <b style="color: var(--accent-primary);">lấy job từ danh sách ấy</b>. Không có bước nào đánh giá lại <code>rules</code>.
 
 Ba hệ quả kiểm chứng được:
 
-1. Sửa một biến ở giao diện rồi bấm **retry** một job — `rules` **không** được đánh giá lại, job vẫn như cũ.
-2. Retry cả pipeline cũng không làm job đã biến mất xuất hiện lại; phải tạo **pipeline mới**.
-3. Sửa `.gitlab-ci.yml` rồi retry pipeline cũ — nó vẫn dùng tệp của commit cũ.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Sửa một biến ở giao diện rồi bấm <b style="color: var(--accent-primary);">retry</b> một job — <code>rules</code> <b style="color: var(--accent-primary);">không</b> được đánh giá lại, job vẫn như cũ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Retry cả pipeline cũng không làm job đã biến mất xuất hiện lại; phải tạo <b style="color: var(--accent-primary);">pipeline mới</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Sửa <code>.gitlab-ci.yml</code> rồi retry pipeline cũ — nó vẫn dùng tệp của commit cũ.</div>
 
-Ở lab tôi đo bằng ba giá trị: job vắng mặt trước khi đổi biến, vắng mặt **sau retry**, và **có mặt** ở pipeline mới tạo với cùng biến ấy.
+Ở lab tôi đo bằng ba giá trị: job vắng mặt trước khi đổi biến, vắng mặt <b style="color: var(--accent-primary);">sau retry</b>, và <b style="color: var(--accent-primary);">có mặt</b> ở pipeline mới tạo với cùng biến ấy.
 
-**Tiêu chí chấm:**
-- 0đ: "Mỗi lần job sắp chạy." **Trần điểm cả buổi là 1.**
-- 1đ: Biết là lúc tạo pipeline, không nêu hệ quả.
-- 2đ: Nêu đúng `t0` và ít nhất một hệ quả.
-- 3đ: Như trên, **và** nêu được phép đo ba giá trị (trước / sau retry / pipeline mới).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: "Mỗi lần job sắp chạy." <b style="color: var(--accent-primary);">Trần điểm cả buổi là 1.</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Biết là lúc tạo pipeline, không nêu hệ quả.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng <code>t0</code> và ít nhất một hệ quả.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Như trên, <b style="color: var(--accent-primary);">và</b> nêu được phép đo ba giá trị (trước / sau retry / pipeline mới).</div>
 
-**Câu hỏi đào sâu:** Vậy muốn đổi danh sách job thì làm gì? *(Tạo pipeline mới — push commit mới, hoặc gọi API `POST /projects/:id/pipeline`. Retry không đủ.)*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Vậy muốn đổi danh sách job thì làm gì? *(Tạo pipeline mới — push commit mới, hoặc gọi API <code>POST /projects/:id/pipeline</code>. Retry không đủ.)*
 </div>
 </details>
 

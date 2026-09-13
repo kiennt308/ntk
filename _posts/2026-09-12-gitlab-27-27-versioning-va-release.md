@@ -1568,271 +1568,163 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Một hiện vật một phiên bản một lần build — vi phạm điều này là gốc của prod chạy cái gì không ai biết"**?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Vì việc biên dịch lại mã nguồn ở môi trường Production (thay vì dùng lại đúng Container Image / tệp nhị phân đã build ở môi trường Staging) có thể nạp các thư viện phụ thuộc mới hơn do tệp lockfile bị trôi hoặc môi trường Runner khác nhau.
-- Điều này khiến bản build Prod trở thành một tệp nhị phân hoàn toàn khác với bản đã Test, triệt tiêu tính bất biến (Artifact Immutability) và chính là gốc rễ của sự cố "Prod chạy cái gì không ai biết".
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì việc biên dịch lại mã nguồn ở môi trường Production (thay vì dùng lại đúng Container Image / tệp nhị phân đã build ở môi trường Staging) có thể nạp các thư viện phụ thuộc mới hơn do tệp lockfile bị trôi hoặc môi trường Runner khác nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Điều này khiến bản build Prod trở thành một tệp nhị phân hoàn toàn khác với bản đã Test, triệt tiêu tính bất biến (Artifact Immutability) và chính là gốc rễ của sự cố "Prod chạy cái gì không ai biết".</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Câu hỏi:** Phân tích quy chuẩn Git Commit Message dạng `Conventional Commits` (`feat`, `fix`, `chore`, `BREAKING CHANGE`) và vai trò của nó trong CI Pipeline?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `Conventional Commits` định nghĩa cú pháp chuẩn: `<type>(<scope>): <description>`.
-  - **`fix:`** Thể hiện việc sửa lỗi (tương ứng với tăng con số **`PATCH`** trong SemVer).
-  - **`feat:`** Thể hiện việc thêm tính năng mới (tương ứng với tăng con số **`MINOR`**).
-  - **`BREAKING CHANGE:`** Thể hiện thay đổi phá vỡ tính tương thích ngược (tương ứng với tăng con số **`MAJOR`**).
-- Vai trò: Biến Git commit log từ chuỗi văn bản thuần túy cho con người đọc thành **dữ liệu cấu hình đầu vào** cho CI Pipeline tự động tính toán con số phiên bản mà không cần con người can thiệp thủ công.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Conventional Commits</code> định nghĩa cú pháp chuẩn: <code><type>(<scope>): <description></code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>fix:</code></b> Thể hiện việc sửa lỗi (tương ứng với tăng con số <b style="color: var(--accent-primary);"><code>PATCH</code></b> trong SemVer).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>feat:</code></b> Thể hiện việc thêm tính năng mới (tương ứng với tăng con số <b style="color: var(--accent-primary);"><code>MINOR</code></b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>BREAKING CHANGE:</code></b> Thể hiện thay đổi phá vỡ tính tương thích ngược (tương ứng với tăng con số <b style="color: var(--accent-primary);"><code>MAJOR</code></b>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vai trò: Biến Git commit log từ chuỗi văn bản thuần túy cho con người đọc thành <b style="color: var(--accent-primary);">dữ liệu cấu hình đầu vào</b> cho CI Pipeline tự động tính toán con số phiên bản mà không cần con người can thiệp thủ công.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Câu hỏi:** Cách thức công cụ `semantic-release` tự động phân tích Git commit log để quyết định tăng `MAJOR`, `MINOR`, hay `PATCH`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `semantic-release` sử dụng plugin `@semantic-release/commit-analyzer` để quét toàn bộ các commit log từ Git Tag release gần nhất đến commit mới nhất trên nhánh `main`.
-- Nếu phát hiện bất kỳ commit nào chứa `BREAKING CHANGE:`, nó chọn tăng **MAJOR**. Nếu không có MAJOR nhưng có commit `feat:`, nó chọn tăng **MINOR**. Nếu không có MINOR nhưng có commit `fix:`, nó chọn tăng **PATCH**. Nếu chỉ có `chore:` hoặc `docs:`, nó bỏ qua không phát hành phiên bản mới.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>semantic-release</code> sử dụng plugin <code>@semantic-release/commit-analyzer</code> để quét toàn bộ các commit log từ Git Tag release gần nhất đến commit mới nhất trên nhánh <code>main</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu phát hiện bất kỳ commit nào chứa <code>BREAKING CHANGE:</code>, nó chọn tăng <b style="color: var(--accent-primary);">MAJOR</b>. Nếu không có MAJOR nhưng có commit <code>feat:</code>, nó chọn tăng <b style="color: var(--accent-primary);">MINOR</b>. Nếu không có MINOR nhưng có commit <code>fix:</code>, nó chọn tăng <b style="color: var(--accent-primary);">PATCH</b>. Nếu chỉ có <code>chore:</code> hoặc <code>docs:</code>, nó bỏ qua không phát hành phiên bản mới.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Câu hỏi:** Tại sao tuyệt đối không được phép xóa hoặc push đè một Git Tag đã được phát hành Release trên Production?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Git Tag trên Production đại diện cho nhãn định danh bất biến (Immutable Version Identifier) của một hiện vật hạ tầng và mã nguồn.
-- Nếu xóa hoặc push đè Git Tag `v1.0.0`, toàn bộ lịch sử vết audit, khả năng `helm rollback` và tính toàn vẹn của tệp nhị phân đính kèm sẽ bị phá hỏng hoàn toàn, khiến hệ thống quản trị hạ tầng rơi vào trạng thái bất ổn định nghiêm trọng.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Git Tag trên Production đại diện cho nhãn định danh bất biến (Immutable Version Identifier) của một hiện vật hạ tầng và mã nguồn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu xóa hoặc push đè Git Tag <code>v1.0.0</code>, toàn bộ lịch sử vết audit, khả năng <code>helm rollback</code> và tính toàn vẹn của tệp nhị phân đính kèm sẽ bị phá hỏng hoàn toàn, khiến hệ thống quản trị hạ tầng rơi vào trạng thái bất ổn định nghiêm trọng.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa phiên bản Pre-release (`1.0.0-rc.1`) và phiên bản chính thức Production Release (`1.0.0`)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Pre-release (`1.0.0-rc.1`):** Là bản phát hành thử nghiệm Release Candidate (RC) sinh ra từ các nhánh tính năng hoặc nhánh testing. Bản này dành riêng cho đội QA/QC kiểm thử trên môi trường Staging và có thể bị thay thế bởi `rc.2` nếu phát hiện lỗi.
-- **Production Release (`1.0.0`):** Là bản phát hành chính thức đã vượt qua 100% bài kiểm thử. Bản này có tính bất biến tuyệt đối và sẵn sàng cho việc triển khai lên môi trường Production.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Pre-release (<code>1.0.0-rc.1</code>):</b> Là bản phát hành thử nghiệm Release Candidate (RC) sinh ra từ các nhánh tính năng hoặc nhánh testing. Bản này dành riêng cho đội QA/QC kiểm thử trên môi trường Staging và có thể bị thay thế bởi <code>rc.2</code> nếu phát hiện lỗi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Production Release (<code>1.0.0</code>):</b> Là bản phát hành chính thức đã vượt qua 100% bài kiểm thử. Bản này có tính bất biến tuyệt đối và sẵn sàng cho việc triển khai lên môi trường Production.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `gitlab-release-cli` và cách tạo GitLab Release Event tự động trong `.gitlab-ci.yml`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `gitlab-release-cli` là công cụ chính thức do GitLab phát triển giúp gọi REST API của GitLab Server để tạo trang điểm mốc Release Event trên giao diện UI.
-- Trong `.gitlab-ci.yml`, ta khai báo thuộc tính `release:` với các tham số: `name`, `tag_name: "$CI_COMMIT_TAG"`, `description: "./release-notes.md"`, và `assets:links` để đính kèm các đường dẫn tải tệp nhị phân release.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>gitlab-release-cli</code> là công cụ chính thức do GitLab phát triển giúp gọi REST API của GitLab Server để tạo trang điểm mốc Release Event trên giao diện UI.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong <code>.gitlab-ci.yml</code>, ta khai báo thuộc tính <code>release:</code> với các tham số: <code>name</code>, <code>tag_name: "$CI_COMMIT_TAG"</code>, <code>description: "./release-notes.md"</code>, và <code>assets:links</code> để đính kèm các đường dẫn tải tệp nhị phân release.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Câu hỏi:** Cách đồng bộ 1 con số phiên bản duy nhất giữa Git Tag, Container Image Tag, Helm Chart Version, và App Version?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Khi `semantic-release` tính toán ra con số phiên bản mới (ví dụ `1.2.3`), nó xuất biến ra tệp `version.env` (`RELEASE_VERSION=1.2.3`).
-- Ở Stage build, ta nạp biến này để đính tag cho Container Image (`my-app:1.2.3`), cập nhật tệp `Chart.yaml` (`version: 1.2.3`, `appVersion: 1.2.3`), và gắn Git Tag `v1.2.3`. Cả 4 thành phần sử dụng chung 1 con số SemVer duy nhất.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi <code>semantic-release</code> tính toán ra con số phiên bản mới (ví dụ <code>1.2.3</code>), nó xuất biến ra tệp <code>version.env</code> (<code>RELEASE_VERSION=1.2.3</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ở Stage build, ta nạp biến này để đính tag cho Container Image (<code>my-app:1.2.3</code>), cập nhật tệp <code>Chart.yaml</code> (<code>version: 1.2.3</code>, <code>appVersion: 1.2.3</code>), và gắn Git Tag <code>v1.2.3</code>. Cả 4 thành phần sử dụng chung 1 con số SemVer duy nhất.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Câu hỏi:** Tại sao tệp `CHANGELOG.md` tự động sinh ra lại quan trọng đối với các kỹ sư Ops, Security và khách hàng sử dụng sản phẩm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Giúp các kỹ sư Ops nắm bắt nhanh 100% các tính năng mới và bug fix được triển khai trong bản release.
-- Giúp các kỹ sư Security kiểm soát vết xem bản release này có khắc phục các lỗ hổng bảo mật đã cảnh báo hay không.
-- Giúp khách hàng và lập trình viên integration biết chính xác các API endpoints nào bị thay đổi hoặc deprecated để điều chỉnh code.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp các kỹ sư Ops nắm bắt nhanh 100% các tính năng mới và bug fix được triển khai trong bản release.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp các kỹ sư Security kiểm soát vết xem bản release này có khắc phục các lỗ hổng bảo mật đã cảnh báo hay không.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp khách hàng và lập trình viên integration biết chính xác các API endpoints nào bị thay đổi hoặc deprecated để điều chỉnh code.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Câu hỏi:** Ý nghĩa của cờ bảo mật `Protected Tags` trong GitLab CI/CD và cách ngăn chặn rủi ro rò rỉ quyền release?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `Protected Tags` cho phép thiết lập quy tắc bảo vệ nhãn Git Tag (ví dụ pattern `v*.*.*`) trên GitLab Repository Settings.
-- Ta phân quyền `Allowed to create: No one`, chỉ cho phép duy nhất CI/CD Pipeline Service Account (thông qua `$GITLAB_TOKEN`) được phép tạo Git Tag. Điều này triệt tiêu rủi ro lập trình viên cá nhân tự ý đẩy đè Tag thủ công từ máy local.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Protected Tags</code> cho phép thiết lập quy tắc bảo vệ nhãn Git Tag (ví dụ pattern <code>v*.*.*</code>) trên GitLab Repository Settings.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ta phân quyền <code>Allowed to create: No one</code>, chỉ cho phép duy nhất CI/CD Pipeline Service Account (thông qua <code>$GITLAB_TOKEN</code>) được phép tạo Git Tag. Điều này triệt tiêu rủi ro lập trình viên cá nhân tự ý đẩy đè Tag thủ công từ máy local.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Câu hỏi:** Phương pháp đính kèm tệp nhị phân Release Assets và mã băm Checksum SHA-256 vào GitLab Release Event?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Đóng gói tệp thực thi thành tệp nén (`tar -czvf my-app-v1.0.0.tar.gz bin/`) và tạo tệp băm (`sha256sum my-app-v1.0.0.tar.gz > my-app-v1.0.0.tar.gz.sha256`).
-- Upload các tệp này lên Package Registry, sau đó truyền thông tin URL và mã Checksum SHA-256 vào thuộc tính `assets:links` của `release-cli` để hiển thị công khai trên giao diện Release Event.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đóng gói tệp thực thi thành tệp nén (<code>tar -czvf my-app-v1.0.0.tar.gz bin/</code>) và tạo tệp băm (<code>sha256sum my-app-v1.0.0.tar.gz > my-app-v1.0.0.tar.gz.sha256</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Upload các tệp này lên Package Registry, sau đó truyền thông tin URL và mã Checksum SHA-256 vào thuộc tính <code>assets:links</code> của <code>release-cli</code> để hiển thị công khai trên giao diện Release Event.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Câu hỏi:** Cách xử lý sự cố khi một developer lỡ gõ sai cú pháp commit message không theo chuẩn Conventional Commits?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Nếu commit chưa được merge vào `main`: Yêu cầu dev chạy lệnh `git commit --amend` hoặc `git rebase -i` sửa lại thông điệp commit trên nhánh feature branch.
-- Nếu commit đã merge vào `main`: Công cụ `semantic-release` sẽ tự động bỏ qua commit sai cú pháp đó và không phát hành phiên bản mới. Dev cần tạo 1 commit mới chuẩn hóa (ví dụ `fix(core): ...`) để trigger lại tiến trình release.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu commit chưa được merge vào <code>main</code>: Yêu cầu dev chạy lệnh <code>git commit --amend</code> hoặc <code>git rebase -i</code> sửa lại thông điệp commit trên nhánh feature branch.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu commit đã merge vào <code>main</code>: Công cụ <code>semantic-release</code> sẽ tự động bỏ qua commit sai cú pháp đó và không phát hành phiên bản mới. Dev cần tạo 1 commit mới chuẩn hóa (ví dụ <code>fix(core): ...</code>) để trigger lại tiến trình release.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Câu hỏi:** Tổng kết quy trình 4 bước quản lý Release chuẩn Enterprise trong CI/CD Pipeline?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. **Conventional Commit:** Lập trình viên commit mã nguồn theo chuẩn `feat:`, `fix:`, `BREAKING CHANGE:`.
-2. **Semantic Release:** CI Pipeline tự động phân tích commit log, tính con số SemVer 2.0 mới, và sinh `CHANGELOG.md`.
-3. **Artifact Sync:** Đồng bộ 1 con số phiên bản mới sang Git Tag, Container Image Tag, và Helm Chart Version.
-4. **Release Event:** Sử dụng `release-cli` tạo Release Event trên UI đính kèm Release Assets và Checksum SHA-256.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Conventional Commit:</b> Lập trình viên commit mã nguồn theo chuẩn <code>feat:</code>, <code>fix:</code>, <code>BREAKING CHANGE:</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Semantic Release:</b> CI Pipeline tự động phân tích commit log, tính con số SemVer 2.0 mới, và sinh <code>CHANGELOG.md</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Artifact Sync:</b> Đồng bộ 1 con số phiên bản mới sang Git Tag, Container Image Tag, và Helm Chart Version.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Release Event:</b> Sử dụng <code>release-cli</code> tạo Release Event trên UI đính kèm Release Assets và Checksum SHA-256.</div>
 
 ---
 </div>

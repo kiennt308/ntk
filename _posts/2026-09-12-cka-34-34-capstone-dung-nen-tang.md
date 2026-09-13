@@ -323,117 +323,63 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ba lớp kiểm soát cấu thành nên dự án Capstone Hạ tầng Kubernetes Doanh nghiệp là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Lớp 1 - Kiến trúc cụm CKA**, **Lớp 2 - Vận hành ứng dụng CKAD**, và **Lớp 3 - Bảo mật nâng cao CKS**.
+  
+<b style="color: var(--accent-primary);">Lớp 1 - Kiến trúc cụm CKA</b>, <b style="color: var(--accent-primary);">Lớp 2 - Vận hành ứng dụng CKAD</b>, và <b style="color: var(--accent-primary);">Lớp 3 - Bảo mật nâng cao CKS</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Tệp tài liệu giải trình bản vẽ kiến trúc Capstone phải được lưu tại đường dẫn tuyệt đối nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đường dẫn **/tmp/capstone-defense.md**.
+  
+Đường dẫn <b style="color: var(--accent-primary);">/tmp/capstone-defense.md</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Ba cờ chứng thực TLS bắt buộc khi chạy lệnh sao lưu etcd snapshot cho Lớp Kiểm soát 1 Capstone là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ **`--cacert`**, **`--cert`**, và **`--key`**.
+  
+Cờ <b style="color: var(--accent-primary);"><code>--cacert</code></b>, <b style="color: var(--accent-primary);"><code>--cert</code></b>, và <b style="color: var(--accent-primary);"><code>--key</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Hai thông số cấu hình probe bắt buộc phải khai báo dưới khối `containers` trong Lớp Kiểm soát 2 Capstone là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khối **`livenessProbe`** và **`readinessProbe`**.
+  
+Khối <b style="color: var(--accent-primary);"><code>livenessProbe</code></b> và <b style="color: var(--accent-primary);"><code>readinessProbe</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Cờ từ khóa nào trong Kyverno Allowed Registries policy được dùng để cưỡng chế chặn các ảnh không thuộc `harbor.internal/*`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ **`validationFailureAction: Enforce`**.
+  
+Cờ <b style="color: var(--accent-primary);"><code>validationFailureAction: Enforce</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Cú pháp YAML chuẩn để khai báo Seccomp `RuntimeDefault` cho Pod trong Lớp Kiểm soát 3 Capstone là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
      spec:
        securityContext:
          seccompProfile:
@@ -442,117 +388,63 @@ graph TD
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Cấp độ ghi nhật ký kiểm toán nào được khuyến nghị áp dụng cho tài nguyên `secrets` trong Audit Policy Capstone?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cấp độ **`RequestResponse`**.
+  
+Cấp độ <b style="color: var(--accent-primary);"><code>RequestResponse</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Năm thành tố bắt buộc phải có trong tệp quy tắc Falco Custom Rule Capstone là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  5 thành tố: **`rule`**, **`desc`**, **`condition`**, **`output`**, và **`priority`**.
+  
+5 thành tố: <b style="color: var(--accent-primary);"><code>rule</code></b>, <b style="color: var(--accent-primary);"><code>desc</code></b>, <b style="color: var(--accent-primary);"><code>condition</code></b>, <b style="color: var(--accent-primary);"><code>output</code></b>, và <b style="color: var(--accent-primary);"><code>priority</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Thao tác CLI nào dùng để tạo nhanh tệp Secret chứa chứng chỉ TLS cho Ingress Capstone?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key -n capstone-prod`.
+  
+Lệnh <code>kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key -n capstone-prod</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Ba câu hỏi cốt lõi mà học viên BẮT BUỘC phải giải trình được trong phần bảo vệ thiết kế kiến trúc Capstone là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1) Vì sao chọn mô hình phân chia này? 2) Điểm sập đơn lẻ (SPOF) ở đâu? 3) Cơ chế khôi phục sau sự cố (DR) ra sao?
+  
+1) Vì sao chọn mô hình phân chia này? 2) Điểm sập đơn lẻ (SPOF) ở đâu? 3) Cơ chế khôi phục sau sự cố (DR) ra sao?
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao toàn bộ các tệp manifest Capstone phải được đóng gói gọn gàng trong thư mục `/tmp/capstone/`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để đảm bảo tính **tái tạo lại được (reproducible)** của hạ tầng dạng mã (IaC) chỉ bằng 1 câu lệnh deploy.
+  
+Để đảm bảo tính <b style="color: var(--accent-primary);">tái tạo lại được (reproducible)</b> của hạ tầng dạng mã (IaC) chỉ bằng 1 câu lệnh deploy.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp bash script chuẩn kiểm tra xem dự án Capstone đã đạt điểm PASS hay chưa là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
       test -f /tmp/capstone/results.log && grep -q "PASS" /tmp/capstone/results.log
       ```
 </div>
@@ -1088,29 +980,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ý nghĩa và vai trò của dự án Capstone Hạ tầng Kubernetes Doanh nghiệp trong toàn bộ chương trình học?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Là **dự án hợp nhất 100% tri thức và kỹ năng thực hành của 3 chứng chỉ CKA, CKAD, CKS** thành một nền tảng sản xuất hoàn chỉnh tích hợp đủ 3 lớp kiểm soát (Kiến trúc hạ tầng, Vận hành ứng dụng, và Gia cố an ninh), khẳng định năng lực thực chiến cấp Chuyên gia (Master Architect).
+  
+Là <b style="color: var(--accent-primary);">dự án hợp nhất 100% tri thức và kỹ năng thực hành của 3 chứng chỉ CKA, CKAD, CKS</b> thành một nền tảng sản xuất hoàn chỉnh tích hợp đủ 3 lớp kiểm soát (Kiến trúc hạ tầng, Vận hành ứng dụng, và Gia cố an ninh), khẳng định năng lực thực chiến cấp Chuyên gia (Master Architect).
 
-**Tiêu chí chấm:**
-- 0đ: Không hiểu vai trò của Capstone.
-- 1đ: Nêu được tổng hợp bài học nhưng thiếu 3 lớp kiểm soát CKA/CKAD/CKS.
-- 3đ: Phân tích chuẩn xác 100% vai trò và tầm vóc của dự án Capstone.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu vai trò của Capstone.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được tổng hợp bài học nhưng thiếu 3 lớp kiểm soát CKA/CKAD/CKS.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác 100% vai trò và tầm vóc của dự án Capstone.</div>
 
-**Câu hỏi đào sâu:** (Tỷ lệ phân bổ điểm số giữa 3 Lớp Kiểm soát Capstone được quy định thế nào? — Lớp 1 CKA **25%**, Lớp 2 CKAD **35%**, và Lớp 3 CKS **40%**).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tỷ lệ phân bổ điểm số giữa 3 Lớp Kiểm soát Capstone được quy định thế nào? — Lớp 1 CKA <b style="color: var(--accent-primary);">25%</b>, Lớp 2 CKAD <b style="color: var(--accent-primary);">35%</b>, và Lớp 3 CKS <b style="color: var(--accent-primary);">40%</b>).
 </div>
 </details>
 
@@ -1370,22 +1253,13 @@ Biên soạn tệp giải trình kiến trúc Capstone tại `/tmp/capstone-defe
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Biên soạn RBAC Role Lớp 1 CKA</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/cap-l1.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -1393,7 +1267,7 @@ metadata:
   name: cap-role
   namespace: capstone-prod
 rules:
-  - apiGroups: [""]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
 EOF
@@ -1401,22 +1275,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Biên soạn Deployment Probes Lớp 2 CKAD</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/cap-l2.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -1434,10 +1299,10 @@ spec:
         app: web
     spec:
       containers:
-        - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
           image: nginx
           envFrom:
-            - configMapRef:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• configMapRef:</div>
                 name: cap-cm
           livenessProbe:
             httpGet:
@@ -1449,22 +1314,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Biên soạn Kyverno Allowed Registries Lớp 3 CKS</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/cap-l3.yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -1473,7 +1329,7 @@ metadata:
 spec:
   validationFailureAction: Enforce
   rules:
-    - name: check-harbor
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: check-harbor</div>
       match:
         resources:
           kinds: [Pod]
@@ -1482,28 +1338,19 @@ spec:
         pattern:
           spec:
             containers:
-              - image: "harbor.internal/*"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• image: "harbor.internal/*"</div>
 EOF
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Biên soạn Architecture Defense Document</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/capstone-defense.md
 # HỒ SƠ GIẢI TRÌNH KIẾN TRÚC CAPSTONE (ARCHITECTURE DEFENSE DOCUMENT)
 </div>

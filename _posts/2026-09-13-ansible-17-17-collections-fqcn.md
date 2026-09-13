@@ -793,35 +793,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc 3 Thành phần của FQCN 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
 FQCN là chuẩn đặt tên định danh đầy đủ giúp Ansible Engine xác định chính xác tuyệt đối vị trí mã nguồn của module/plugin.
-Cấu trúc 3 thành phần: `<namespace>.<collection_name>.<plugin_name>`
-- `<namespace>`: Không gian tên của nhà phát triển (ví dụ: `ansible`, `community`, `amazon`).
-- `<collection_name>`: Tên bộ sưu tập (ví dụ: `builtin`, `general`, `aws`).
-- `<plugin_name>`: Tên module/plugin thi hành (ví dụ: `copy`, `ini_file`, `ec2_instance`).
-Ví dụ: `ansible.builtin.copy` hoặc `community.general.ini_file`.
-**Tiêu chí chấm:**
-- 0: Không hiểu khái niệm FQCN.
-- 1: Biết FQCN nhưng không phân tích được 3 thành phần `namespace.collection.plugin`.
-- 2: Phân tích chính xác cấu trúc 3 thành phần và nêu lý do chống xung đột module.
-- 3: Nêu đúng + viết ví dụ 3 tên FQCN thực tế cho module Core, Community và Cloud.
-**Câu hỏi đào sâu:** Từ phiên bản Ansible nào trở đi Red Hat khuyến nghị bắt buộc phải dùng FQCN? *(Từ Ansible 2.9 và Ansible Core 2.10 trở đi.)*
+Cấu trúc 3 thành phần: <code><namespace>.<collection_name>.<plugin_name></code>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><namespace></code>: Không gian tên của nhà phát triển (ví dụ: <code>ansible</code>, <code>community</code>, <code>amazon</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><collection_name></code>: Tên bộ sưu tập (ví dụ: <code>builtin</code>, <code>general</code>, <code>aws</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><plugin_name></code>: Tên module/plugin thi hành (ví dụ: <code>copy</code>, <code>ini_file</code>, <code>ec2_instance</code>).</div>
+Ví dụ: <code>ansible.builtin.copy</code> hoặc <code>community.general.ini_file</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm FQCN.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết FQCN nhưng không phân tích được 3 thành phần <code>namespace.collection.plugin</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cấu trúc 3 thành phần và nêu lý do chống xung đột module.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ 3 tên FQCN thực tế cho module Core, Community và Cloud.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Từ phiên bản Ansible nào trở đi Red Hat khuyến nghị bắt buộc phải dùng FQCN? *(Từ Ansible 2.9 và Ansible Core 2.10 trở đi.)*
 </div>
 </details>
 

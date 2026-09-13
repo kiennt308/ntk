@@ -830,34 +830,25 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Lợi ích của Ansible Role 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
 Ansible Role là chuẩn tổ chức mã nguồn tự động hóa dưới dạng mô-đun độc lập, gom toàn bộ Tasks, Handlers, Variables, Templates và Files vào một cấu trúc thư mục quy chuẩn.
 Lợi ích chuẩn mực Enterprise:
-- Tách biệt rõ ràng các mối quan tâm (Separation of Concerns).
-- Tái sử dụng mã nguồn 100% trên nhiều Playbook và dự án khác nhau.
-- Dễ dàng quản lý phiên bản, kiểm thử độc lập và chia sẻ cho cộng đồng qua Ansible Galaxy.
-**Tiêu chí chấm:**
-- 0: Không hiểu khái niệm Ansible Role.
-- 1: Biết Role để chia nhỏ file nhưng không giải thích được các lợi ích chuẩn mực Enterprise.
-- 2: Phân tích chính xác khái niệm Role và nguyên lý đóng gói mô-đun hóa.
-- 3: Nêu đúng + minh họa kiến trúc tổ chức Role cho hệ thống Web/DB Enterprise.
-**Câu hỏi đào sâu:** Nếu không dùng Role, một file Playbook triển khai cụm ứng dụng lớn sẽ gặp khó khăn gì? *(Mã nguồn rườm rà hàng nghìn dòng, trùng lặp code, cực kỳ khó bảo trì và không thể tái sử dụng.)*
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tách biệt rõ ràng các mối quan tâm (Separation of Concerns).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tái sử dụng mã nguồn 100% trên nhiều Playbook và dự án khác nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dễ dàng quản lý phiên bản, kiểm thử độc lập và chia sẻ cho cộng đồng qua Ansible Galaxy.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Ansible Role.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Role để chia nhỏ file nhưng không giải thích được các lợi ích chuẩn mực Enterprise.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác khái niệm Role và nguyên lý đóng gói mô-đun hóa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa kiến trúc tổ chức Role cho hệ thống Web/DB Enterprise.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu không dùng Role, một file Playbook triển khai cụm ứng dụng lớn sẽ gặp khó khăn gì? *(Mã nguồn rườm rà hàng nghìn dòng, trùng lặp code, cực kỳ khó bảo trì và không thể tái sử dụng.)*
 </div>
 </details>
 

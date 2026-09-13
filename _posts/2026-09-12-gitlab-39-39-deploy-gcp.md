@@ -1678,31 +1678,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Sự khác biệt cốt lõi giữa kiến trúc OIDC Federation của GCP Workload Identity Federation (WIF) và AWS IAM OIDC Role là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
 GCP WIF chia làm 2 bước (Pool Provider Exchange $\to$ Service Account Impersonation) và đặt điều kiện kiểm soát CEL Expression ngay ở cấp WIF Provider, trong khi AWS đặt điều kiện ở Trust Policy của từng Role.
 
-**Đáp án chuẩn:**
-- **Kiến trúc 2 Bước của GCP WIF:**
-  1. *Bước 1 (Identity Exchange):* Đổi OIDC JWT lấy Federated Token thông qua WIF Pool Provider. Tại đây, cờ `--attribute-condition` sử dụng ngôn ngữ mã CEL Expression kiểm soát quyền truy cập ngay từ cửa ngõ Provider.
-  2. *Bước 2 (Service Account Impersonation):* Dùng Federated Token đổi lấy Short-lived Access Token của GCP Service Account thông qua vai trò `roles/iam.workloadIdentityUser`.
-- **So sánh với AWS:** AWS đổi trực tiếp JWT lấy IAM Role credentials. Nếu lơ đễnh không khóa cờ Condition ở WIF Provider của GCP, toàn bộ các Service Accounts cấp quyền cho Pool đó đều có nguy cơ bị đe dọa. Sự phân tách 2 bước giúp GCP kiểm soát danh tính tập trung hơn.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kiến trúc 2 Bước của GCP WIF:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> *Bước 1 (Identity Exchange):* Đổi OIDC JWT lấy Federated Token thông qua WIF Pool Provider. Tại đây, cờ <code>--attribute-condition</code> sử dụng ngôn ngữ mã CEL Expression kiểm soát quyền truy cập ngay từ cửa ngõ Provider.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> *Bước 2 (Service Account Impersonation):* Dùng Federated Token đổi lấy Short-lived Access Token của GCP Service Account thông qua vai trò <code>roles/iam.workloadIdentityUser</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">So sánh với AWS:</b> AWS đổi trực tiếp JWT lấy IAM Role credentials. Nếu lơ đễnh không khóa cờ Condition ở WIF Provider của GCP, toàn bộ các Service Accounts cấp quyền cho Pool đó đều có nguy cơ bị đe dọa. Sự phân tách 2 bước giúp GCP kiểm soát danh tính tập trung hơn.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Cho rằng "GCP WIF và AWS IAM Role giống hệt nhau về cấu trúc". Cần chỉ rõ sự khác biệt giữa Provider CEL Condition và Service Account Impersonation.
 </div>
 </details>

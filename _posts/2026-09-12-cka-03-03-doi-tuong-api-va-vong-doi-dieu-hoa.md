@@ -953,32 +953,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày 3 khối cấu trúc cốt lõi (`metadata`, `spec`, `status`) của một Đối tượng API Kubernetes. Khối nào do người dùng khai báo và khối nào do máy tự động ghi nhận?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `metadata`: Chứa dữ liệu định danh (name, namespace, uid, labels, annotations) và mối quan hệ sở hữu (`ownerReferences`).
-- `spec` (Specification): Chứa trạng thái mong muốn (Desired State) do **người dùng khai báo** (ví dụ: số bản sao replicas, tên ảnh container, port).
-- `status`: Chứa trạng thái quan sát thực tế (Actual State) do **các Controller và Kubelet tự động ghi nhận** từ hạ tầng (ví dụ: số readyReplicas, podIP, phase). Người dùng KHÔNG được tự gõ khối status.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>metadata</code>: Chứa dữ liệu định danh (name, namespace, uid, labels, annotations) và mối quan hệ sở hữu (<code>ownerReferences</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>spec</code> (Specification): Chứa trạng thái mong muốn (Desired State) do <b style="color: var(--accent-primary);">người dùng khai báo</b> (ví dụ: số bản sao replicas, tên ảnh container, port).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>status</code>: Chứa trạng thái quan sát thực tế (Actual State) do <b style="color: var(--accent-primary);">các Controller và Kubelet tự động ghi nhận</b> từ hạ tầng (ví dụ: số readyReplicas, podIP, phase). Người dùng KHÔNG được tự gõ khối status.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Nhầm lẫn giữa spec và status hoặc bảo hai khối là một.
-- **1đ:** Nêu được 3 khối nhưng không phân định được ai ghi spec, ai ghi status (dính trần 1đ).
-- **2đ:** Phân định chính xác người dùng khai báo spec, controller ghi status.
-- **3đ:** Trả lời xuất sắc, nêu ví dụ cụ thể trường trong từng khối và giải thích điều gì xảy ra khi gõ status bằng tay.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Nhầm lẫn giữa spec và status hoặc bảo hai khối là một.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 3 khối nhưng không phân định được ai ghi spec, ai ghi status (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân định chính xác người dùng khai báo spec, controller ghi status.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu ví dụ cụ thể trường trong từng khối và giải thích điều gì xảy ra khi gõ status bằng tay.</div>
 
-**Câu hỏi đào sâu:** Nếu gõ thủ công status trong file YAML rồi apply thì API Server xử lý thế nào? *(Đáp án: API Server/Controller tự động bỏ qua hoặc ghi đè ngay lập tức bằng dữ liệu quan sát thực tế).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu gõ thủ công status trong file YAML rồi apply thì API Server xử lý thế nào? *(Đáp án: API Server/Controller tự động bỏ qua hoặc ghi đè ngay lập tức bằng dữ liệu quan sát thực tế).*
 </div>
 </details>
 

@@ -2031,26 +2031,17 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. Chi tiết 12 Câu hỏi Vấn đáp Kỹ thuật
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Sự khác biệt cốt lõi giữa GitLab CI/CD Component và tệp YAML include truyền thống là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  CI/CD Component là bước tiến hóa kiến trúc vượt trội so với các tệp YAML include truyền thống (vốn chỉ là hành vi chèn văn bản thô). Sự khác biệt thể hiện qua 3 khía cạnh nền tảng:
+  
+CI/CD Component là bước tiến hóa kiến trúc vượt trội so với các tệp YAML include truyền thống (vốn chỉ là hành vi chèn văn bản thô). Sự khác biệt thể hiện qua 3 khía cạnh nền tảng:
 
-1. **Giao diện tham số hóa tường minh (`spec:inputs`):** Tệp YAML include truyền thống phụ thuộc hoàn toàn vào các biến môi trường toàn cục (Environment Variables). Nếu người dùng quên khai báo biến, job sẽ im lặng chạy sai hoặc nhận giá trị rỗng. Trong khi đó, Component bắt buộc khai báo khối `spec:inputs` ở đầu tệp, định nghĩa rõ tên tham số, giá trị mặc định (`default`), mô tả (`description`), và kiểu dữ liệu/danh sách chấp nhận (`options`).
-2. **Khả năng đăng ký và hiển thị trên CI/CD Catalog UI:** Các tệp YAML include nằm rải rác trong các repository phụ thuộc, không thể tìm kiếm tập trung. Component được đăng ký thành Catalog Resource, cho phép toàn bộ kỹ sư trong tập đoàn tìm kiếm, xem tài liệu, giao diện inputs và ví dụ sử dụng trực quan trên giao diện Web của GitLab.
-3. **Quản lý phiên bản chặt chẽ theo Semantic Versioning (SemVer):** Tệp include truyền thống thường trỏ vào branch (`ref: main` hoặc `ref: master`), dẫn tới rủi ro pipeline bị đứt gãy bất ngờ khi tệp nguồn thay đổi. Component bắt buộc xuất bản qua Git Tag và Release Tag (`@1.0.0`, `@2.1.0`), đảm bảo tính bất biến (immutability) cho hạ tầng CI/CD.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Giao diện tham số hóa tường minh (<code>spec:inputs</code>):</b> Tệp YAML include truyền thống phụ thuộc hoàn toàn vào các biến môi trường toàn cục (Environment Variables). Nếu người dùng quên khai báo biến, job sẽ im lặng chạy sai hoặc nhận giá trị rỗng. Trong khi đó, Component bắt buộc khai báo khối <code>spec:inputs</code> ở đầu tệp, định nghĩa rõ tên tham số, giá trị mặc định (<code>default</code>), mô tả (<code>description</code>), và kiểu dữ liệu/danh sách chấp nhận (<code>options</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Khả năng đăng ký và hiển thị trên CI/CD Catalog UI:</b> Các tệp YAML include nằm rải rác trong các repository phụ thuộc, không thể tìm kiếm tập trung. Component được đăng ký thành Catalog Resource, cho phép toàn bộ kỹ sư trong tập đoàn tìm kiếm, xem tài liệu, giao diện inputs và ví dụ sử dụng trực quan trên giao diện Web của GitLab.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Quản lý phiên bản chặt chẽ theo Semantic Versioning (SemVer):</b> Tệp include truyền thống thường trỏ vào branch (<code>ref: main</code> hoặc <code>ref: master</code>), dẫn tới rủi ro pipeline bị đứt gãy bất ngờ khi tệp nguồn thay đổi. Component bắt buộc xuất bản qua Git Tag và Release Tag (<code>@1.0.0</code>, <code>@2.1.0</code>), đảm bảo tính bất biến (immutability) cho hạ tầng CI/CD.</div>
 
 ```
 Include truyền thống:  [User .gitlab-ci.yml] ---> (Chèn văn bản thô t0) ---> [Local/Remote YAML]
@@ -2061,249 +2052,168 @@ CI/CD Component:       [User .gitlab-ci.yml] ---> (Truyền inputs t1)     ---> 
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Tại sao biểu thức $[[ inputs.x ]] lại được phân giải ở thời điểm t1 (Server merge) trong khi biến $MY_VAR chỉ được phân giải ở thời điểm runtime (Runner)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sự khác biệt này xuất phát từ kiến trúc hai giai đoạn của GitLab CI Engine:
+  
+Sự khác biệt này xuất phát từ kiến trúc hai giai đoạn của GitLab CI Engine:
 
-- **Giai đoạn t1 (Server-side Merging & Interpolation):** Khi lập trình viên push code hoặc kích hoạt Pipeline, GitLab Server nạp tất cả các tệp include/component, đọc khối `spec:inputs`, và thực hiện **thay thế chuỗi trực tiếp** (String Interpolation) cho mọi biểu thức dạng `$[[ inputs.x ]]`. Việc này diễn ra trên GitLab Server **trước khi** tệp YAML hợp nhất (`merged_yaml`) được lưu vào Cơ sở dữ liệu và chuyển thành danh sách Job. Do đó, `$[[ inputs.x ]]` có thể được dùng ở mọi vị trí cấu hình YAML, bao gồm cả tên Job, tên Stage, thuộc tính `image:`, `services:`, hay điều kiện `rules:`.
-- **Giai đoạn runtime / t3 (Runner Execution):** Biến môi trường dạng `$MY_VAR` hoặc `$CI_COMMIT_SHA` được giữ nguyên dưới dạng chuỗi thô trong suốt quá trình GitLab Server xử lý YAML. Chỉ khi Job được giao cho GitLab Runner thực thi trên máy ảo/container, Runner mới nạp bảng biến (từ CI/CD Variables, Masked Variables, Group Variables) và phân giải giá trị `$MY_VAR` trong môi trường Shell của Container.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giai đoạn t1 (Server-side Merging & Interpolation):</b> Khi lập trình viên push code hoặc kích hoạt Pipeline, GitLab Server nạp tất cả các tệp include/component, đọc khối <code>spec:inputs</code>, và thực hiện <b style="color: var(--accent-primary);">thay thế chuỗi trực tiếp</b> (String Interpolation) cho mọi biểu thức dạng <code>$[[ inputs.x ]]</code>. Việc này diễn ra trên GitLab Server <b style="color: var(--accent-primary);">trước khi</b> tệp YAML hợp nhất (<code>merged_yaml</code>) được lưu vào Cơ sở dữ liệu và chuyển thành danh sách Job. Do đó, <code>$[[ inputs.x ]]</code> có thể được dùng ở mọi vị trí cấu hình YAML, bao gồm cả tên Job, tên Stage, thuộc tính <code>image:</code>, <code>services:</code>, hay điều kiện <code>rules:</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giai đoạn runtime / t3 (Runner Execution):</b> Biến môi trường dạng <code>$MY_VAR</code> hoặc <code>$CI_COMMIT_SHA</code> được giữ nguyên dưới dạng chuỗi thô trong suốt quá trình GitLab Server xử lý YAML. Chỉ khi Job được giao cho GitLab Runner thực thi trên máy ảo/container, Runner mới nạp bảng biến (từ CI/CD Variables, Masked Variables, Group Variables) và phân giải giá trị <code>$MY_VAR</code> trong môi trường Shell của Container.</div>
 
-**Dấu hiệu nhận biết rủi ro:** Cố gắng truyền một biến môi trường runtime (như `$CI_COMMIT_REF_NAME`) vào một input của Component dạng `$[[ inputs.my_ref ]]` sẽ khiến GitLab Server coi đó là một chuỗi văn bản thô `"$CI_COMMIT_REF_NAME"`, không thể phân giải động ở t1!
+<b style="color: var(--accent-primary);">Dấu hiệu nhận biết rủi ro:</b> Cố gắng truyền một biến môi trường runtime (như <code>$CI_COMMIT_REF_NAME</code>) vào một input của Component dạng <code>$[[ inputs.my_ref ]]</code> sẽ khiến GitLab Server coi đó là một chuỗi văn bản thô <code>"$CI_COMMIT_REF_NAME"</code>, không thể phân giải động ở t1!
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Khối spec:inputs mang lại lợi ích gì cho việc kiểm soát lỗi (Fail-fast validation) so with việc dùng biến môi trường?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khối `spec:inputs` mang lại cơ chế **Fail-fast Validation (Phát hiện lỗi sớm và ngắt lạch cạch ngay lập tức)** tại thời điểm t1 phía Server, giải quyết triệt me nhược điểm "Chết im lặng" của biến môi trường:
+  
+Khối <code>spec:inputs</code> mang lại cơ chế <b style="color: var(--accent-primary);">Fail-fast Validation (Phát hiện lỗi sớm và ngắt lạch cạch ngay lập tức)</b> tại thời điểm t1 phía Server, giải quyết triệt me nhược điểm "Chết im lặng" của biến môi trường:
 
-1. **Kiểm tra sự tồn tại của Input:** Nếu tệp `.gitlab-ci.yml` truyền một input không được khai báo trong `spec:inputs` (ví dụ gõ sai tên `environmentt` thay vì `environment`), GitLab Engine sẽ từ chối tạo Pipeline ngay lập tức, trả về lỗi `valid: false` kèm thông báo chi tiết: `unknown input 'environmentt'`.
-2. **Giới hạn phạm vi giá trị hợp lệ (`options`):** Khai báo `options: [dev, staging, production]` đảm bảo nếu người dùng truyền `environment: "staging_test"`, hệ thống sẽ chặn đứng ngay tại thời điểm push code.
-3. **Cung cấp giá trị mặc định an toàn (`default`):** Giúp rút gọn cấu hình cho người dùng nhưng vẫn đảm bảo tính xác định (determinism). Nếu người dùng không truyền input, giá trị mặc định được áp dụng tự động mà không sợ biến rỗng.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Kiểm tra sự tồn tại của Input:</b> Nếu tệp <code>.gitlab-ci.yml</code> truyền một input không được khai báo trong <code>spec:inputs</code> (ví dụ gõ sai tên <code>environmentt</code> thay vì <code>environment</code>), GitLab Engine sẽ từ chối tạo Pipeline ngay lập tức, trả về lỗi <code>valid: false</code> kèm thông báo chi tiết: <code>unknown input 'environmentt'</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Giới hạn phạm vi giá trị hợp lệ (<code>options</code>):</b> Khai báo <code>options: [dev, staging, production]</code> đảm bảo nếu người dùng truyền <code>environment: "staging_test"</code>, hệ thống sẽ chặn đứng ngay tại thời điểm push code.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Cung cấp giá trị mặc định an toàn (<code>default</code>):</b> Giúp rút gọn cấu hình cho người dùng nhưng vẫn đảm bảo tính xác định (determinism). Nếu người dùng không truyền input, giá trị mặc định được áp dụng tự động mà không sợ biến rỗng.</div>
 
-Trong khi đó, nếu dùng biến môi trường `$ENV`, nếu người dùng quên truyền biến, script trong Runner vẫn chạy nhưng biến nhận giá trị rỗng `""`, dẫn tới các câu lệnh nguy hiểm như `rm -rf /app/$ENV/*` biến thành `rm -rf /app//*` gây sập hệ thống sản xuất!
+Trong khi đó, nếu dùng biến môi trường <code>$ENV</code>, nếu người dùng quên truyền biến, script trong Runner vẫn chạy nhưng biến nhận giá trị rỗng <code>""</code>, dẫn tới các câu lệnh nguy hiểm như <code>rm -rf /app/$ENV/*</code> biến thành <code>rm -rf /app//*</code> gây sập hệ thống sản xuất!
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Liệt kê 3 điều kiện bắt buộc để một Repository Component hiển thị trên giao diện CI/CD Catalog UI của GitLab?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để một dự án Component xuất hiện chính thức trên giao diện CI/CD Catalog của tập đoàn, phải đáp ứng đủ 3 điều kiện bắt buộc sau (Áp dụng Quy tắc **QT 5.1**):
+  
+Để một dự án Component xuất hiện chính thức trên giao diện CI/CD Catalog của tập đoàn, phải đáp ứng đủ 3 điều kiện bắt buộc sau (Áp dụng Quy tắc <b style="color: var(--accent-primary);">QT 5.1</b>):
 
-1. **Thuộc tính Project Catalog được bật (`is_catalog_resource`):** Trong giao diện Settings -> General -> Visibility, project features, phải bật cờ **CI/CD Catalog Resource** (hoặc gọi REST API `PUT /projects/:id` với tham số `is_catalog_resource=true`).
-2. **Có tệp tài liệu README.md ở thư mục gốc:** GitLab Catalog Engine sử dụng tệp `README.md` để tự động trích xuất nội dung hiển thị trang tổng quan, hướng dẫn sử dụng và bảng tra cứu `spec:inputs` cho người dùng. Thư mục `templates/` phải chứa ít nhất 1 tệp `.yml` (ví dụ `templates/build.yml`).
-3. **Đã phát hành ít nhất một Release Tag (Phát hành chính thức):** Lập trình viên phải đẩy một Git Tag (ví dụ `1.0.0`) và tạo một đối tượng **Release** tương ứng gắn liền với Tag đó trên GitLab. Nhánh `main` chưa có Release Tag sẽ không hiển thị trên Catalog UI để tránh người dùng dùng nhầm mã nguồn chưa kiểm thử.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Thuộc tính Project Catalog được bật (<code>is_catalog_resource</code>):</b> Trong giao diện Settings -> General -> Visibility, project features, phải bật cờ <b style="color: var(--accent-primary);">CI/CD Catalog Resource</b> (hoặc gọi REST API <code>PUT /projects/:id</code> với tham số <code>is_catalog_resource=true</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Có tệp tài liệu README.md ở thư mục gốc:</b> GitLab Catalog Engine sử dụng tệp <code>README.md</code> để tự động trích xuất nội dung hiển thị trang tổng quan, hướng dẫn sử dụng và bảng tra cứu <code>spec:inputs</code> cho người dùng. Thư mục <code>templates/</code> phải chứa ít nhất 1 tệp <code>.yml</code> (ví dụ <code>templates/build.yml</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Đã phát hành ít nhất một Release Tag (Phát hành chính thức):</b> Lập trình viên phải đẩy một Git Tag (ví dụ <code>1.0.0</code>) và tạo một đối tượng <b style="color: var(--accent-primary);">Release</b> tương ứng gắn liền với Tag đó trên GitLab. Nhánh <code>main</code> chưa có Release Tag sẽ không hiển thị trên Catalog UI để tránh người dùng dùng nhầm mã nguồn chưa kiểm thử.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tại sao trong môi trường doanh nghiệp, quy tắc bất biến bắt buộc lập trình viên phải ghim cố định phiên bản Component (@1.0.0) thay vì trỏ bản mới nhất (@~latest)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Việc trỏ Component bằng cú pháp `@~latest` hoặc trỏ vào branch `@main` vi phạm nghiêm trọng **Nguyên tắc Bất biến của Hạ tầng CI/CD (Infrastructure Invariance Principle)** vì 3 lý do chiến lược:
+  
+Việc trỏ Component bằng cú pháp <code>@~latest</code> hoặc trỏ vào branch <code>@main</code> vi phạm nghiêm trọng <b style="color: var(--accent-primary);">Nguyên tắc Bất biến của Hạ tầng CI/CD (Infrastructure Invariance Principle)</b> vì 3 lý do chiến lược:
 
-1. **Rủi ro đứt gãy tự động (Unpredictable Pipeline Breakage):** Khi đội ngũ quản trị Component phát hành một bản cập nhật mới (dù là Minor hay Major), tất cả 500 repository trong tập đoàn đang dùng `@~latest` sẽ tự động nạp mã nguồn mới ở lần push tiếp theo. Nếu bản mới chứa lỗi hoặc thay đổi hành vi, toàn bộ 500 pipeline sẽ đồng loạt chuyển sang màu đỏ, làm tê liệt hoạt động phát triển của toàn tập đoàn.
-2. **Mất khả năng tái hiện lỗi (Non-reproducible Builds):** Một commit được build thành công tuần trước với `@~latest` có thể thất bại hoàn toàn vào tuần này khi chạy lại (Retry) chỉ vì Component nguồn bên dưới đã bị chỉnh sửa. Kỹ sư không thể điều tra nguyên nhân vì mã nguồn ứng dụng không hề thay đổi.
-3. **Tuân thủ chuẩn mực Semantic Versioning (@1.0.0):** Ghim phiên bản cố định `@1.0.0` đảm bảo pipeline của dự án người dùng hoạt động hoàn toàn độc lập, ổn định 100%. Việc nâng cấp phiên bản Component phải là một quyết định chủ động thông qua việc tạo Merge Request kiểm thử, không phải hành vi nạp tự động rủi ro.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Rủi ro đứt gãy tự động (Unpredictable Pipeline Breakage):</b> Khi đội ngũ quản trị Component phát hành một bản cập nhật mới (dù là Minor hay Major), tất cả 500 repository trong tập đoàn đang dùng <code>@~latest</code> sẽ tự động nạp mã nguồn mới ở lần push tiếp theo. Nếu bản mới chứa lỗi hoặc thay đổi hành vi, toàn bộ 500 pipeline sẽ đồng loạt chuyển sang màu đỏ, làm tê liệt hoạt động phát triển của toàn tập đoàn.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Mất khả năng tái hiện lỗi (Non-reproducible Builds):</b> Một commit được build thành công tuần trước với <code>@~latest</code> có thể thất bại hoàn toàn vào tuần này khi chạy lại (Retry) chỉ vì Component nguồn bên dưới đã bị chỉnh sửa. Kỹ sư không thể điều tra nguyên nhân vì mã nguồn ứng dụng không hề thay đổi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Tuân thủ chuẩn mực Semantic Versioning (@1.0.0):</b> Ghim phiên bản cố định <code>@1.0.0</code> đảm bảo pipeline của dự án người dùng hoạt động hoàn toàn độc lập, ổn định 100%. Việc nâng cấp phiên bản Component phải là một quyết định chủ động thông qua việc tạo Merge Request kiểm thử, không phải hành vi nạp tự động rủi ro.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Nêu 4 dạng phá vỡ hợp đồng (Breaking Changes) thường gặp khi vận hành CI/CD Component?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi phát triển và bảo trì Component, kỹ sư DevOps phải ghi nhớ 4 dạng thay đổi làm đứt gãy hợp đồng (Breaking Changes) quy định tại **QT 5.3**:
+  
+Khi phát triển và bảo trì Component, kỹ sư DevOps phải ghi nhớ 4 dạng thay đổi làm đứt gãy hợp đồng (Breaking Changes) quy định tại <b style="color: var(--accent-primary);">QT 5.3</b>:
 
-1. **Xoá bỏ một Input hiện có hoặc Xoá bỏ giá trị mặc định (`default`):** Nếu một input đang có `default: "dev"` bị xoá bỏ thuộc tính `default`, tất cả các dự án người dùng trước đó không truyền input này sẽ bị sập ngay lập tức ở t1 do thiếu tham số bắt buộc.
-2. **Thay đổi tên Job nội bộ của Component (Job Name Change):** Nếu Component đổi tên job từ `docker-build:` thành `container-build:`, các dự án người dùng đang sử dụng từ khoá `extends:` hoặc ghi đè thuộc tính của `docker-build:` sẽ bị sập do không tìm thấy Job gốc.
-3. **Thay đổi định dạng hoặc đường dẫn hiện vật đầu ra (Artifact Contract Breakage):** Nếu Component thay đổi tệp hiện vật sinh ra từ `output/build.env` thành `dist/env.txt`, các Job ở stage sau của người dùng (như `deploy`) đang phụ thuộc vào tệp `output/build.env` sẽ bị lỗi thiếu tệp.
-4. **Thay đổi danh sách giá trị hợp lệ (`options`):** Loại bỏ một giá trị khỏi mảng `options` (ví dụ xoá `dev` chỉ giữ `[staging, production]`) khiến tất cả dự án đang truyền `environment: "dev"` bị chặn đứng ở t1.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Xoá bỏ một Input hiện có hoặc Xoá bỏ giá trị mặc định (<code>default</code>):</b> Nếu một input đang có <code>default: "dev"</code> bị xoá bỏ thuộc tính <code>default</code>, tất cả các dự án người dùng trước đó không truyền input này sẽ bị sập ngay lập tức ở t1 do thiếu tham số bắt buộc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Thay đổi tên Job nội bộ của Component (Job Name Change):</b> Nếu Component đổi tên job từ <code>docker-build:</code> thành <code>container-build:</code>, các dự án người dùng đang sử dụng từ khoá <code>extends:</code> hoặc ghi đè thuộc tính của <code>docker-build:</code> sẽ bị sập do không tìm thấy Job gốc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Thay đổi định dạng hoặc đường dẫn hiện vật đầu ra (Artifact Contract Breakage):</b> Nếu Component thay đổi tệp hiện vật sinh ra từ <code>output/build.env</code> thành <code>dist/env.txt</code>, các Job ở stage sau của người dùng (như <code>deploy</code>) đang phụ thuộc vào tệp <code>output/build.env</code> sẽ bị lỗi thiếu tệp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Thay đổi danh sách giá trị hợp lệ (<code>options</code>):</b> Loại bỏ một giá trị khỏi mảng <code>options</code> (ví dụ xoá <code>dev</code> chỉ giữ <code>[staging, production]</code>) khiến tất cả dự án đang truyền <code>environment: "dev"</code> bị chặn đứng ở t1.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Một Component có thể ngăn chặn triệt để việc người dùng xoá đè mảng script nội bộ bằng extends không? Nếu không, làm sao để bảo vệ lõi logic?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **KHÔNG THỂ.** Theo cơ chế hợp nhất tệp YAML của GitLab CI (xảy ra ở mốc t2), không gian tên Job trong Pipeline là một phẳng (Flat Namespace). Nếu người dùng trong tệp `.gitlab-ci.yml` khai báo một Job có tên trùng khớp với tên Job do Component sinh ra và định nghĩa mảng `script:`, mảng `script:` của người dùng sẽ **xoá đè hoàn toàn** mảng `script:` nội bộ của Component (Áp dụng **QT 6.1**).
+  
+<b style="color: var(--accent-primary);">KHÔNG THỂ.</b> Theo cơ chế hợp nhất tệp YAML của GitLab CI (xảy ra ở mốc t2), không gian tên Job trong Pipeline là một phẳng (Flat Namespace). Nếu người dùng trong tệp <code>.gitlab-ci.yml</code> khai báo một Job có tên trùng khớp với tên Job do Component sinh ra và định nghĩa mảng <code>script:</code>, mảng <code>script:</code> của người dùng sẽ <b style="color: var(--accent-primary);">xoá đè hoàn toàn</b> mảng <code>script:</code> nội bộ của Component (Áp dụng <b style="color: var(--accent-primary);">QT 6.1</b>).
 
-**Giải pháp bảo vệ lõi logic (Assertion Job Pattern):**
-Vì không thể ngăn người dùng xoá đè về mặt cú pháp YAML, đội ngũ thiết kế Component áp dụng kỹ thuật **Khẳng định Hiện vật (Artifact Contract Assertion)**:
+<b style="color: var(--accent-primary);">Giải pháp bảo vệ lõi logic (Assertion Job Pattern):</b>
+Vì không thể ngăn người dùng xoá đè về mặt cú pháp YAML, đội ngũ thiết kế Component áp dụng kỹ thuật <b style="color: var(--accent-primary);">Khẳng định Hiện vật (Artifact Contract Assertion)</b>:
 
-1. Trong Component, mảng `script:` bắt buộc phải sinh ra một tệp hiện vật chứa chữ ký hoặc dữ liệu kết quả (ví dụ `output/build.env`).
-2. Định nghĩa một Job khẳng định đi kèm (ví dụ `verify-component-execution`) chạy ở stage kế tiếp với câu lệnh ngắt cứng:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Trong Component, mảng <code>script:</code> bắt buộc phải sinh ra một tệp hiện vật chứa chữ ký hoặc dữ liệu kết quả (ví dụ <code>output/build.env</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Định nghĩa một Job khẳng định đi kèm (ví dụ <code>verify-component-execution</code>) chạy ở stage kế tiếp với câu lệnh ngắt cứng:</div>
    ```yaml
    verify-build-execution:
      stage: .post
      script:
-       - test -s output/build.env || (echo "[FATAL ERROR] Ruột Component đã bị người dùng xoá đè hoặc bypass!" && exit 1)
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• test -s output/build.env || (echo "[FATAL ERROR] Ruột Component đã bị người dùng xoá đè hoặc bypass!" && exit 1)</div>
    ```
-Nếu người dùng cố tình xoá đè `script:`, tệp hiện vật `output/build.env` không được tạo ra, Job khẳng định sẽ ngắt đỏ toàn bộ Pipeline!
+Nếu người dùng cố tình xoá đè <code>script:</code>, tệp hiện vật <code>output/build.env</code> không được tạo ra, Job khẳng định sẽ ngắt đỏ toàn bộ Pipeline!
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao mọi Job trong tệp cấu hình Component bắt buộc phải sử dụng tham số tiền tố job_prefix?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mọi Job trong Component bắt buộc phải dùng tiền tố động `$[[ inputs.job_prefix ]]` (Áp dụng **QT 6.2**) để giải quyết bài toán **Xung đột tên Job (Job Name Collision)** trong không gian tên phẳng của Pipeline:
+  
+Mọi Job trong Component bắt buộc phải dùng tiền tố động <code>$[[ inputs.job_prefix ]]</code> (Áp dụng <b style="color: var(--accent-primary);">QT 6.2</b>) để giải quyết bài toán <b style="color: var(--accent-primary);">Xung đột tên Job (Job Name Collision)</b> trong không gian tên phẳng của Pipeline:
 
-1. **Kịch bản Nạp nhiều Component trong cùng Pipeline:** Giả sử một dự án người dùng nạp 2 Component: Component `build-docker` và Component `build-helm`. Nếu cả 2 Component đều gõ cứng tên Job là `build-job:`, khi GitLab Resolver hợp nhất YAML ở t2, Job của Component nạp sau sẽ ghi đè âm thầm Job của Component nạp trước, khiến 1 bước build bị biến mất không vết tích!
-2. **Giải pháp tiền tố hoá động:** Bằng cách khai báo tên Job dạng:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Kịch bản Nạp nhiều Component trong cùng Pipeline:</b> Giả sử một dự án người dùng nạp 2 Component: Component <code>build-docker</code> và Component <code>build-helm</code>. Nếu cả 2 Component đều gõ cứng tên Job là <code>build-job:</code>, khi GitLab Resolver hợp nhất YAML ở t2, Job của Component nạp sau sẽ ghi đè âm thầm Job của Component nạp trước, khiến 1 bước build bị biến mất không vết tích!</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Giải pháp tiền tố hoá động:</b> Bằng cách khai báo tên Job dạng:</div>
    ```yaml
    "$[[ inputs.job_prefix ]]-docker-build":
      stage: build
    ```
-   Người dùng có thể truyền `job_prefix: "auth-service"` cho Component 1 và `job_prefix: "payment-service"` cho Component 2. Kết quả hợp nhất t2 sẽ tạo ra 2 Job riêng biệt: `auth-service-docker-build` và `payment-service-docker-build`, loại bỏ hoàn toàn xung đột tên.
+   Người dùng có thể truyền <code>job_prefix: "auth-service"</code> cho Component 1 và <code>job_prefix: "payment-service"</code> cho Component 2. Kết quả hợp nhất t2 sẽ tạo ra 2 Job riêng biệt: <code>auth-service-docker-build</code> và <code>payment-service-docker-build</code>, loại bỏ hoàn toàn xung đột tên.
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Hợp đồng Hiện vật (Artifact Contract) đóng vai trò gì trong việc chuẩn hoá giao tiếp giữa Component và Pipeline người dùng?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Hợp đồng Hiện vật (Artifact Contract) là **giao diện đầu ra chính thức** của Component, đóng vai trò cầu nối dữ liệu giữa mã nguồn đóng gói của Component và các bước xử lý tiếp theo của người dùng (Áp dụng **QT 6.3**):
+  
+Hợp đồng Hiện vật (Artifact Contract) là <b style="color: var(--accent-primary);">giao diện đầu ra chính thức</b> của Component, đóng vai trò cầu nối dữ liệu giữa mã nguồn đóng gói của Component và các bước xử lý tiếp theo của người dùng (Áp dụng <b style="color: var(--accent-primary);">QT 6.3</b>):
 
-1. **Chuẩn hoá biến môi trường truyền ngang (`artifacts:reports:dotenv`):** Component sinh ra tệp cấu hình chứa các biến kết quả (như `IMAGE_TAG=sha-12345`, `BUILD_TIMESTAMP=2026-08-21`). GitLab Runner tự động nạp tệp dotenv này và truyền các biến vào môi trường thực thi của tất cả các Job ở các stage phía sau (`test`, `deploy`).
-2. **Độc lập hoá công nghệ đóng gói:** Dự án người dùng ở stage `deploy` không cần quan tâm Component build bằng Docker, Podman hay Kaniko. Dự án chỉ cần đọc biến `$IMAGE_TAG` từ hợp đồng dotenv được cấp.
-3. **Phân tách trách nhiệm (Separation of Concerns):** Component chịu trách nhiệm build và phát hành hiện vật; Pipeline người dùng chịu trách nhiệm kiểm thử và triển khai dựa trên hiện vật đó.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Chuẩn hoá biến môi trường truyền ngang (<code>artifacts:reports:dotenv</code>):</b> Component sinh ra tệp cấu hình chứa các biến kết quả (như <code>IMAGE_TAG=sha-12345</code>, <code>BUILD_TIMESTAMP=2026-08-21</code>). GitLab Runner tự động nạp tệp dotenv này và truyền các biến vào môi trường thực thi của tất cả các Job ở các stage phía sau (<code>test</code>, <code>deploy</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Độc lập hoá công nghệ đóng gói:</b> Dự án người dùng ở stage <code>deploy</code> không cần quan tâm Component build bằng Docker, Podman hay Kaniko. Dự án chỉ cần đọc biến <code>$IMAGE_TAG</code> từ hợp đồng dotenv được cấp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Phân tách trách nhiệm (Separation of Concerns):</b> Component chịu trách nhiệm build và phát hành hiện vật; Pipeline người dùng chịu trách nhiệm kiểm thử và triển khai dựa trên hiện vật đó.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Làm thế nào để thiết lập một Pipeline tự kiểm tra chính nó (Self-testing Pipeline) ngay trong Repository phát triển Component?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để đảm bảo mã nguồn Component không bị lỗi cú pháp hoặc hỏng logic trước khi tạo Release Tag xuất bản lên Catalog, repository Component phải thiết lập Pipeline tự kiểm tra chính nó (Self-testing Pipeline) theo chuẩn **QT 7.1**:
+  
+Để đảm bảo mã nguồn Component không bị lỗi cú pháp hoặc hỏng logic trước khi tạo Release Tag xuất bản lên Catalog, repository Component phải thiết lập Pipeline tự kiểm tra chính nó (Self-testing Pipeline) theo chuẩn <b style="color: var(--accent-primary);">QT 7.1</b>:
 
-Trong tệp `.gitlab-ci.yml` của chính dự án Component, sử dụng biến hệ thống `$CI_PROJECT_PATH` và `$CI_COMMIT_SHA` để tự include chính tệp template đang được chỉnh sửa:
+Trong tệp <code>.gitlab-ci.yml</code> của chính dự án Component, sử dụng biến hệ thống <code>$CI_PROJECT_PATH</code> và <code>$CI_COMMIT_SHA</code> để tự include chính tệp template đang được chỉnh sửa:
 
 ```yaml
 stages:
-  - test
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• test</div>
 
 # 1. Tự nạp chính Component ở commit SHA vừa push
 include:
-  - component: '$CI_SERVER_FQDN/$CI_PROJECT_PATH/build-docker@$CI_COMMIT_SHA'
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• component: '$CI_SERVER_FQDN/$CI_PROJECT_PATH/build-docker@$CI_COMMIT_SHA'</div>
     inputs:
       job_prefix: "self-test"
       environment: "dev"
@@ -2313,36 +2223,27 @@ verify-self-test-output:
   stage: test
   image: alpine:3.20
   script:
-    - echo "Validating self-test component output..."
-    - test -s output/build.env
-    - grep -q "BUILD_ENV=dev" output/build.env
-    - echo "SELF-TEST PASSED 100%!"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Validating self-test component output..."</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• test -s output/build.env</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• grep -q "BUILD_ENV=dev" output/build.env</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "SELF-TEST PASSED 100%!"</div>
 ```
 
-Cấu hình này đảm bảo mỗi Merge Request thay đổi mã nguồn Component sẽ chạy tự kiểm tra thực tế trước khi Merge vào nhánh `main`.
+Cấu hình này đảm bảo mỗi Merge Request thay đổi mã nguồn Component sẽ chạy tự kiểm tra thực tế trước khi Merge vào nhánh <code>main</code>.
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Làm sao để kiểm tra chính xác số lượng và danh sách các Repository đang tiêu thụ từng phiên bản Component qua REST API?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để thực hiện Audit danh sách dự án phụ thuộc (Áp dụng **QT 7.2**), kỹ sư DevOps khai thác REST API Search của GitLab để tìm kiếm xâu định danh Component kèm phiên bản trong mã nguồn `.gitlab-ci.yml`:
+  
+Để thực hiện Audit danh sách dự án phụ thuộc (Áp dụng <b style="color: var(--accent-primary);">QT 7.2</b>), kỹ sư DevOps khai thác REST API Search của GitLab để tìm kiếm xâu định danh Component kèm phiên bản trong mã nguồn <code>.gitlab-ci.yml</code>:
 
-Exec script Bash `dem-nguoi-dung.sh`:
+Exec script Bash <code>dem-nguoi-dung.sh</code>:
 ```bash
 #!/usr/bin/env bash
 set -uo pipefail
@@ -2367,29 +2268,20 @@ Kịch bản này giúp đội ngũ hạ tầng đo đạc tỉ lệ phủ (adop
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Trình bày quy trình 3 bước chuẩn mực khi phát hành một phiên bản Component mới chứa Breaking Change?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp đồng (Breaking Change), đội ngũ quản trị bắt buộc tuân thủ quy trình 3 bước chuẩn mực (Áp dụng **QT 5.3** & **QT 7.2**):
+  
+Khi phát hành phiên bản Component chứa thay đổi làm đứt gãy hợp đồng (Breaking Change), đội ngũ quản trị bắt buộc tuân thủ quy trình 3 bước chuẩn mực (Áp dụng <b style="color: var(--accent-primary);">QT 5.3</b> & <b style="color: var(--accent-primary);">QT 7.2</b>):
 
-1. **Bước 1 — Phát hành Phiên bản Major mới, KHÔNG BAO GIỜ di chuyển hoặc xoá Tag cũ:**
-   Tạo Git Tag mới tuân thủ Semantic Versioning (ví dụ bump từ `1.2.0` lên `2.0.0`) và xuất bản Release Tag `2.0.0` lên Catalog. Tuyệt đối giữ nguyên Tag `1.0.0` và `1.2.0` trên Git để không làm sập các pipeline cũ đang chạy.
-2. **Bước 2 — Cập nhật Tài liệu README.md và Ghi rõ Migration Guide:**
-   Trong tệp `README.md` và `CHANGELOG.md` của Component, bổ sung phần hướng dẫn chuyển đổi từ `v1.x` sang `v2.0` (ví dụ: thay đổi tên input `env` thành `environment`).
-3. **Bước 3 — Quét Audit API và Tự động hoá gửi Merge Request nâng cấp:**
-   Thực thi script audit trích xuất danh sách 100 dự án đang dùng `v1.x`, sử dụng kịch bản tự động hoá để gửi Merge Request đề xuất nâng cấp đường dẫn include lên `@2.0.0` cho từng nhóm dự án, cho phép các đội ứng dụng chủ động test và merge.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Bước 1 — Phát hành Phiên bản Major mới, KHÔNG BAO GIỜ di chuyển hoặc xoá Tag cũ:</b></div>
+   Tạo Git Tag mới tuân thủ Semantic Versioning (ví dụ bump từ <code>1.2.0</code> lên <code>2.0.0</code>) và xuất bản Release Tag <code>2.0.0</code> lên Catalog. Tuyệt đối giữ nguyên Tag <code>1.0.0</code> và <code>1.2.0</code> trên Git để không làm sập các pipeline cũ đang chạy.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Bước 2 — Cập nhật Tài liệu README.md và Ghi rõ Migration Guide:</b></div>
+   Trong tệp <code>README.md</code> và <code>CHANGELOG.md</code> của Component, bổ sung phần hướng dẫn chuyển đổi từ <code>v1.x</code> sang <code>v2.0</code> (ví dụ: thay đổi tên input <code>env</code> thành <code>environment</code>).
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Bước 3 — Quét Audit API và Tự động hoá gửi Merge Request nâng cấp:</b></div>
+   Thực thi script audit trích xuất danh sách 100 dự án đang dùng <code>v1.x</code>, sử dụng kịch bản tự động hoá để gửi Merge Request đề xuất nâng cấp đường dẫn include lên <code>@2.0.0</code> cho từng nhóm dự án, cho phép các đội ứng dụng chủ động test và merge.
 
 ---
 </div>

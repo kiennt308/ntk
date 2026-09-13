@@ -983,35 +983,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Phân biệt sự khác nhau giữa co giãn hàng ngang (HorizontalPodAutoscaler - HPA) và co giãn hàng dọc (VerticalPodAutoscaler - VPA) trong Kubernetes.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **`HorizontalPodAutoscaler` (HPA - Co giãn hàng ngang):**
-  - *Cơ chế:* Tự động tăng hoặc giảm **số lượng bản sao Pods (Replicas)** (scale out / scale in).
-  - *Ứng dụng:* Phù hợp tuyệt đối cho các ứng dụng Stateless Web / Microservices có khả năng chia tải.
-- **`VerticalPodAutoscaler` (VPA - Co giãn hàng dọc):**
-  - *Cơ chế:* Tự động thay đổi **mức dung lượng tài nguyên `requests` và `limits` (CPU/RAM)** của từng Pod (scale up / scale down).
-  - *Ứng dụng:* Dùng cho các ứng dụng Stateful / Database khó chia bản sao nhưng cần thêm RAM/CPU khi tải cao.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>HorizontalPodAutoscaler</code> (HPA - Co giãn hàng ngang):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Tự động tăng hoặc giảm <b style="color: var(--accent-primary);">số lượng bản sao Pods (Replicas)</b> (scale out / scale in).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Phù hợp tuyệt đối cho các ứng dụng Stateless Web / Microservices có khả năng chia tải.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>VerticalPodAutoscaler</code> (VPA - Co giãn hàng dọc):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Tự động thay đổi <b style="color: var(--accent-primary);">mức dung lượng tài nguyên <code>requests</code> và <code>limits</code> (CPU/RAM)</b> của từng Pod (scale up / scale down).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Dùng cho các ứng dụng Stateful / Database khó chia bản sao nhưng cần thêm RAM/CPU khi tải cao.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo HPA và VPA là hai tên gọi khác nhau của 1 đối tượng.
-- **1đ:** Trả lời HPA là số Pods còn VPA là CPU/RAM nhưng không nêu được ứng dụng Stateless vs Stateful (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác HPA (tăng/giảm số bản sao Pods scale out/in) vs VPA (tăng/giảm CPU/RAM requests scale up/down).
-- **3đ:** Trả lời xuất sắc, chỉ ra lý do không nên vừa bật HPA vừa bật VPA trên cùng 1 chỉ số CPU.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo HPA và VPA là hai tên gọi khác nhau của 1 đối tượng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời HPA là số Pods còn VPA là CPU/RAM nhưng không nêu được ứng dụng Stateless vs Stateful (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác HPA (tăng/giảm số bản sao Pods scale out/in) vs VPA (tăng/giảm CPU/RAM requests scale up/down).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lý do không nên vừa bật HPA vừa bật VPA trên cùng 1 chỉ số CPU.</div>
 
-**Câu hỏi đào sâu:** Tại sao không nên cấu hình cả HPA và VPA cùng co giãn dựa trên 1 chỉ số CPU của 1 Deployment? *(Đáp án: Vì 2 bộ controller sẽ xung đột lẫn nhau: HPA đòi tăng bản sao trong khi VPA đòi tăng CPU request).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao không nên cấu hình cả HPA và VPA cùng co giãn dựa trên 1 chỉ số CPU của 1 Deployment? *(Đáp án: Vì 2 bộ controller sẽ xung đột lẫn nhau: HPA đòi tăng bản sao trong khi VPA đòi tăng CPU request).*
 </div>
 </details>
 

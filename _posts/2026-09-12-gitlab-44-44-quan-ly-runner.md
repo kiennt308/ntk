@@ -1694,30 +1694,21 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Rủi ro an ninh nghiêm trọng nhất khi sử dụng Shell Executor cho các dự án Shared Runner dùng chung cho nhiều đội ngũ trong Enterprise là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
 Shell Executor chạy trực tiếp trên OS host của máy chủ Runner, không có tính cô lập nên các dự án dùng chung có thể đọc trộm mã nguồn, biến môi trường và secret keys của nhau.
 
-**Đáp án chuẩn:**
-- **Giải thích nguy cơ rò rỉ:**
-  Shell Executor chạy các câu lệnh bash trực tiếp trên hệ điều hành vật lý/ảo của máy chủ Runner Host dưới cùng một tài khoản user `gitlab-runner`. Nếu một script CI độc hại (hoặc thư viện npm/maven dính mã độc) chạy trong Dự án A, nó có thể mở thư mục `/home/gitlab-runner/builds/` để đọc trộm mã nguồn, file `.env`, tệp Kubeconfig hay AWS Keys của Dự án B đang nằm trên cùng ổ đĩa!
-- **Giải pháp:** Chuyển 100% sang **Docker Executor** hoặc **Kubernetes Executor** để cô lập mỗi job trong một Container/Pod riêng biệt.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích nguy cơ rò rỉ:</b></div>
+  Shell Executor chạy các câu lệnh bash trực tiếp trên hệ điều hành vật lý/ảo của máy chủ Runner Host dưới cùng một tài khoản user <code>gitlab-runner</code>. Nếu một script CI độc hại (hoặc thư viện npm/maven dính mã độc) chạy trong Dự án A, nó có thể mở thư mục <code>/home/gitlab-runner/builds/</code> để đọc trộm mã nguồn, file <code>.env</code>, tệp Kubeconfig hay AWS Keys của Dự án B đang nằm trên cùng ổ đĩa!
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải pháp:</b> Chuyển 100% sang <b style="color: var(--accent-primary);">Docker Executor</b> hoặc <b style="color: var(--accent-primary);">Kubernetes Executor</b> để cô lập mỗi job trong một Container/Pod riêng biệt.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
 Cho rằng "Shell Executor nhanh hơn nên dùng cho tất cả các dự án trong công ty để tiết kiệm thời gian".
 </div>
 </details>

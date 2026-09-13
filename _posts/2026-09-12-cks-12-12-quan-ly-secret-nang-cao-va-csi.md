@@ -345,231 +345,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao mã hóa Base64 mặc định của Kubernetes Secret lại không được xem là một giải pháp an toàn bảo vệ dữ liệu nhạy cảm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì Base64 chỉ là một thuật toán nén/chuyển đổi định dạng chuỗi (**encoding**), bất kỳ ai có quyền đọc etcd đều giải mã lại thành chuỗi thô dễ dàng.
+  
+Vì Base64 chỉ là một thuật toán nén/chuyển đổi định dạng chuỗi (<b style="color: var(--accent-primary);">encoding</b>), bất kỳ ai có quyền đọc etcd đều giải mã lại thành chuỗi thô dễ dàng.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Công cụ Secrets Store CSI Driver giúp nâng cao mức độ bảo mật cho Pods như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lấy mật khẩu trực tiếp từ kho bí mật bên ngoài (Vault/AWS/Azure) và mount thẳng vào bộ nhớ tạm RAM (**`tmpfs`**) của Pod mà không lưu vết bản rõ xuống etcd.
+  
+Lấy mật khẩu trực tiếp từ kho bí mật bên ngoài (Vault/AWS/Azure) và mount thẳng vào bộ nhớ tạm RAM (<b style="color: var(--accent-primary);"><code>tmpfs</code></b>) của Pod mà không lưu vết bản rõ xuống etcd.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Tên đối tượng Custom Resource Definition (CRD) được sử dụng để định nghĩa thông số kết nối tới kho Secret bên ngoài là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đối tượng **`SecretProviderClass`** (`secrets-store.csi.k8s.io/v1`).
+  
+Đối tượng <b style="color: var(--accent-primary);"><code>SecretProviderClass</code></b> (<code>secrets-store.csi.k8s.io/v1</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Tên driver CSI bắt buộc phải khai báo dưới khối `spec.volumes[x].csi.driver` của Pod manifest là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chuỗi driver **`secrets-store.csi.k8s.io`**.
+  
+Chuỗi driver <b style="color: var(--accent-primary);"><code>secrets-store.csi.k8s.io</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tại sao cờ `readOnly: true` bắt buộc phải được khai báo khi mount volume Secret vào container?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để đảm bảo tệp tin bí mật được mount dưới dạng chỉ đọc, ngăn chặn tiến trình trong container vô tình hoặc cố ý sửa đổi tệp Secret.
+  
+Để đảm bảo tệp tin bí mật được mount dưới dạng chỉ đọc, ngăn chặn tiến trình trong container vô tình hoặc cố ý sửa đổi tệp Secret.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Tại sao việc truyền Secret qua tệp tin mount (`tmpfs`) lại an toàn hơn so với truyền qua biến môi trường (`env`)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì biến môi trường (`env`) dễ bị rò rỉ công khai qua lệnh `kubectl describe pod` hoặc nhật ký tiến trình (`process environment logs`).
+  
+Vì biến môi trường (<code>env</code>) dễ bị rò rỉ công khai qua lệnh <code>kubectl describe pod</code> hoặc nhật ký tiến trình (<code>process environment logs</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Cờ cấu hình nào của Secrets Store CSI Driver giúp tự động đồng bộ mật khẩu mới vào Pod khi kho Vault bên ngoài thực hiện xoay vòng bí mật?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Cờ **`enable-secret-rotation: "true"`**.
+  
+Cờ <b style="color: var(--accent-primary);"><code>enable-secret-rotation: "true"</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao việc xóa một tệp chứa Secret bằng lệnh `RUN rm secret.txt` ở dòng cuối Dockerfile vẫn không bảo đảm an toàn cho Container Image?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì tệp Secret vẫn bị lưu vết vĩnh viễn ở các lớp (**layers**) hình ảnh phía trước của Dockerfile.
+  
+Vì tệp Secret vẫn bị lưu vết vĩnh viễn ở các lớp (<b style="color: var(--accent-primary);">layers</b>) hình ảnh phía trước của Dockerfile.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Công cụ CLI nào được sử dụng để rà soát và phát hiện các API Keys hoặc mật khẩu bị nhúng cứng trong Container Image?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Công cụ **`trivy`** (với cờ `--scanners secret`) hoặc **`SecretLint`**.
+  
+Công cụ <b style="color: var(--accent-primary);"><code>trivy</code></b> (với cờ <code>--scanners secret</code>) hoặc <b style="color: var(--accent-primary);"><code>SecretLint</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Khối thuộc tính nào trong `SecretProviderClass` được dùng để tự động tạo một K8s Secret chuẩn từ tệp mount CSI?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khối **`spec.secretObjects`**.
+  
+Khối <b style="color: var(--accent-primary);"><code>spec.secretObjects</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Mã lỗi hoặc thông điệp sự kiện nào thường xuất hiện khi Pod bị kẹt không mount được tệp Secret do gõ sai phím key trong `SecretProviderClass`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thông điệp lỗi **`MountVolume.SetUp failed`** (provider error: key not found).
+  
+Thông điệp lỗi <b style="color: var(--accent-primary);"><code>MountVolume.SetUp failed</code></b> (provider error: key not found).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn của một tệp `SecretProviderClass` và Pod mount CSI Secret là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       apiVersion: secrets-store.csi.k8s.io/v1
       kind: SecretProviderClass
       metadata:
@@ -580,7 +472,7 @@ graph TD
         parameters:
           vaultAddress: "https://vault.internal:8200"
           objects: |
-            - objectName: "dbpass"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• objectName: "dbpass"</div>
               secretPath: "secret/data/db"
               secretKey: "password"
       ---
@@ -591,14 +483,14 @@ graph TD
         namespace: prod
       spec:
         containers:
-          - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
             image: nginx:alpine
             volumeMounts:
-              - name: secrets-store-inline
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: secrets-store-inline</div>
                 mountPath: "/mnt/secrets-store"
                 readOnly: true
         volumes:
-          - name: secrets-store-inline
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: secrets-store-inline</div>
             csi:
               driver: secrets-store.csi.k8s.io
               readOnly: true
@@ -943,29 +835,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao mã hóa Base64 mặc định của Kubernetes Secret lại không được xem là một giải pháp bảo mật an toàn cho dữ liệu nhạy cảm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì Base64 chỉ là một giải pháp nén/chuyển đổi định dạng chuỗi (**encoding**), hoàn toàn không phải là mã hóa (**encryption**). Bất kỳ ai đọc được cơ sở dữ liệu etcd hoặc có quyền xem Secret đều có thể giải mã ngược lại thành mật khẩu thô trong vài miliseconds.
+  
+Vì Base64 chỉ là một giải pháp nén/chuyển đổi định dạng chuỗi (<b style="color: var(--accent-primary);">encoding</b>), hoàn toàn không phải là mã hóa (<b style="color: var(--accent-primary);">encryption</b>). Bất kỳ ai đọc được cơ sở dữ liệu etcd hoặc có quyền xem Secret đều có thể giải mã ngược lại thành mật khẩu thô trong vài miliseconds.
 
-**Tiêu chí chấm:**
-- 0đ: Không biết hạn chế của Base64 encoding.
-- 1đ: Nêu được Base64 dễ giải mã nhưng chưa phân biệt encoding vs encryption.
-- 3đ: Phân tích thấu đáo rủi ro của mã hóa Base64 và lý do cần dùng etcd Encryption at Rest hoặc Secrets Store CSI Driver.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết hạn chế của Base64 encoding.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Base64 dễ giải mã nhưng chưa phân biệt encoding vs encryption.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro của mã hóa Base64 và lý do cần dùng etcd Encryption at Rest hoặc Secrets Store CSI Driver.</div>
 
-**Câu hỏi đào sâu:** (Giải pháp để bảo vệ Secret không bị lưu vết bản rõ trên đĩa etcd là gì? — Sử dụng Secrets Store CSI Driver để mount trực tiếp từ kho bên ngoài vào bộ nhớ RAM `tmpfs` của Pod).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Giải pháp để bảo vệ Secret không bị lưu vết bản rõ trên đĩa etcd là gì? — Sử dụng Secrets Store CSI Driver để mount trực tiếp từ kho bên ngoài vào bộ nhớ RAM <code>tmpfs</code> của Pod).
 </div>
 </details>
 
@@ -1226,22 +1109,13 @@ Chỉnh sửa tệp `/tmp/Dockerfile.bad` bị dính lỗ hổng lộ hardcoded 
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tạo `SecretProviderClass` `app-spc</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF > /tmp/app-spc.yaml
@@ -1255,7 +1129,7 @@ spec:
   parameters:
     vaultAddress: "https://vault.internal:8200"
     objects: |
-      - objectName: "db-pass"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• objectName: "db-pass"</div>
         secretPath: "secret/data/db"
         secretKey: "password"
 EOF
@@ -1265,22 +1139,13 @@ kubectl apply -f /tmp/app-spc.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Triển khai Pod `secret-pod` mount CSI Volume</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1289,14 +1154,14 @@ metadata:
   namespace: prod
 spec:
   containers:
-    - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
       volumeMounts:
-        - name: secrets-store-inline
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: secrets-store-inline</div>
           mountPath: "/var/secrets"
           readOnly: true
   volumes:
-    - name: secrets-store-inline
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: secrets-store-inline</div>
       csi:
         driver: secrets-store.csi.k8s.io
         readOnly: true
@@ -1307,22 +1172,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Sửa tệp Pod `/tmp/broken-spc-pod.yaml</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/broken-spc-pod.yaml
 apiVersion: v1
 kind: Pod
@@ -1331,14 +1187,14 @@ metadata:
   namespace: prod
 spec:
   containers:
-    - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
       volumeMounts:
-        - name: secrets-store-inline
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: secrets-store-inline</div>
           mountPath: "/var/secrets"
           readOnly: true
   volumes:
-    - name: secrets-store-inline
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: secrets-store-inline</div>
       csi:
         driver: secrets-store.csi.k8s.io
         readOnly: true
@@ -1351,22 +1207,13 @@ kubectl apply -f /tmp/broken-spc-pod.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Sửa Dockerfile không chứa hardcoded secrets</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/Dockerfile.clean
 FROM alpine:3.19
 RUN apk add --no-cache curl

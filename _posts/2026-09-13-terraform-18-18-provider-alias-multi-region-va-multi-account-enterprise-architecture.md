@@ -480,197 +480,105 @@ rm -rf terraform-lab18-multiregion
 
 ## 6. 10 Câu Hỏi Trắc Nghiệm & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Điều gì xảy ra nếu một resource trong file `.tf` không khai báo thuộc tính `provider = ...`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Terraform sẽ tự động liên kết resource đó với **Default Provider Instance** của loại provider tương ứng (tức là khối `provider` không có meta-argument `alias`).
+  
+Terraform sẽ tự động liên kết resource đó với <b style="color: var(--accent-primary);">Default Provider Instance</b> của loại provider tương ứng (tức là khối <code>provider</code> không có meta-argument <code>alias</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Tại sao Child Module không được phép chứa khối cấu hình `provider` có thông tin xác thực (Credentials)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Vì Child Module được thiết kế để tái sử dụng nhiều lần ở nhiều môi trường và ngữ cảnh khác nhau. Nếu hardcode cấu hình provider bên trong Child Module, module sẽ mất đi tính linh hoạt, gây xung đột định danh provider khi gọi nhiều lần trong cùng một Root Module, và làm lộ thông tin nhạy cảm.
+  
+Vì Child Module được thiết kế để tái sử dụng nhiều lần ở nhiều môi trường và ngữ cảnh khác nhau. Nếu hardcode cấu hình provider bên trong Child Module, module sẽ mất đi tính linh hoạt, gây xung đột định danh provider khi gọi nhiều lần trong cùng một Root Module, và làm lộ thông tin nhạy cảm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>configuration_aliases` trong khối `required_providers` của Child Module có mục đích gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Nó đóng vai trò như một **Interface Contract** (Hợp đồng giao diện), thông báo cho Root Module biết rằng Child Module này yêu cầu nhận vào bao nhiêu Provider Instances với những tên bí danh cụ thể nào (ví dụ: `aws.source`, `aws.destination`).
+  
+Nó đóng vai trò như một <b style="color: var(--accent-primary);">Interface Contract</b> (Hợp đồng giao diện), thông báo cho Root Module biết rằng Child Module này yêu cầu nhận vào bao nhiêu Provider Instances với những tên bí danh cụ thể nào (ví dụ: <code>aws.source</code>, <code>aws.destination</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Khi nào bắt buộc phải dùng Provider với Region `us-east-1` ngay cả khi toàn bộ hệ thống của bạn nằm ở Singapore (`ap-southeast-1`)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Khi tạo các tài nguyên toàn cầu của AWS như **AWS WAFv2 (Global Scope)** hoặc chứng chỉ SSL/TLS bằng **AWS Certificate Manager (ACM)** để gắn vào **Amazon CloudFront Distribution**. AWS quy định các chứng chỉ và WAF dành cho CloudFront bắt buộc phải được tạo tại region `us-east-1`.
+  
+Khi tạo các tài nguyên toàn cầu của AWS như <b style="color: var(--accent-primary);">AWS WAFv2 (Global Scope)</b> hoặc chứng chỉ SSL/TLS bằng <b style="color: var(--accent-primary);">AWS Certificate Manager (ACM)</b> để gắn vào <b style="color: var(--accent-primary);">Amazon CloudFront Distribution</b>. AWS quy định các chứng chỉ và WAF dành cho CloudFront bắt buộc phải được tạo tại region <code>us-east-1</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Khi dùng `assume_role` trong Provider, cơ chế xác thực diễn ra như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Máy chạy Terraform dùng danh tính ban đầu (như IAM User, IAM Instance Profile, OIDC Token) để gọi API `sts:AssumeRole` tới AWS STS. STS kiểm tra chính sách tin cậy (Trust Policy) của IAM Role đích và cấp ngược lại một bộ thông tin xác thực tạm thời (AccessKey, SecretKey, SessionToken có hạn sử dụng 1 giờ). Terraform sau đó dùng bộ khóa tạm thời này để tương tác với tài khoản đích.
+  
+Máy chạy Terraform dùng danh tính ban đầu (như IAM User, IAM Instance Profile, OIDC Token) để gọi API <code>sts:AssumeRole</code> tới AWS STS. STS kiểm tra chính sách tin cậy (Trust Policy) của IAM Role đích và cấp ngược lại một bộ thông tin xác thực tạm thời (AccessKey, SecretKey, SessionToken có hạn sử dụng 1 giờ). Terraform sau đó dùng bộ khóa tạm thời này để tương tác với tài khoản đích.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Làm thế nào để truyền một Provider Alias từ Root Module vào một Module con lồng nhau 2 cấp (Nested Child Module)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Cần phải truyền liên tục qua thuộc tính `providers` ở từng cấp độ gọi module. Root Module truyền vào Module Cấp 1, và Module Cấp 1 tiếp tục định nghĩa `configuration_aliases` và truyền tiếp vào Module Cấp 2.
+  
+Cần phải truyền liên tục qua thuộc tính <code>providers</code> ở từng cấp độ gọi module. Root Module truyền vào Module Cấp 1, và Module Cấp 1 tiếp tục định nghĩa <code>configuration_aliases</code> và truyền tiếp vào Module Cấp 2.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Tại sao việc gom quá nhiều Provider Alias vào một State file duy nhất lại được coi là nguy cơ tiềm ẩn (Operational Risk)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - **Tăng Blast Radius**: Nếu State file bị lỗi hoặc bị lock trong lúc apply, toàn bộ hạ tầng trên tất cả các Region/Account liên quan đều bị đình trệ.
-  - **Giảm Tốc Độ (Performance Degrade)**: Mỗi lần `terraform plan`, Terraform phải gửi hàng trăm API calls đồng thời đến nhiều Region trên toàn cầu, làm tăng thời gian thực thi lên gấp nhiều lần và dễ bị dính lỗi Cloud API Rate Limit (Throttling).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tăng Blast Radius</b>: Nếu State file bị lỗi hoặc bị lock trong lúc apply, toàn bộ hạ tầng trên tất cả các Region/Account liên quan đều bị đình trệ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giảm Tốc Độ (Performance Degrade)</b>: Mỗi lần <code>terraform plan</code>, Terraform phải gửi hàng trăm API calls đồng thời đến nhiều Region trên toàn cầu, làm tăng thời gian thực thi lên gấp nhiều lần và dễ bị dính lỗi Cloud API Rate Limit (Throttling).</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Sự khác biệt giữa `alias` trong Provider và `alias` trong Module call là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : 
-  - `alias` trong Provider: Đặt bí danh để phân biệt các phiên bản thực thi khác nhau của cùng một Cloud Provider (ví dụ: `aws.tokyo`, `aws.singapore`).
-  - `alias` không tồn tại trong Module call (Module chỉ có tên gọi định danh instance như `module "web_sg"` hoặc `module "web_jp"`).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>alias</code> trong Provider: Đặt bí danh để phân biệt các phiên bản thực thi khác nhau của cùng một Cloud Provider (ví dụ: <code>aws.tokyo</code>, <code>aws.singapore</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>alias</code> không tồn tại trong Module call (Module chỉ có tên gọi định danh instance như <code>module "web_sg"</code> hoặc <code>module "web_jp"</code>).</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tham số `external_id` trong khối `assume_role` có vai trò quan trọng gì về mặt bảo mật?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : Ngăn chặn tấn công **Confused Deputy Problem** trong mô hình Multi-Tenant (nhiều khách hàng/bên thứ ba cùng truy cập vào một tài khoản AWS). `external_id` đóng vai trò như một mật khẩu bí mật bổ sung mà bên mượn quyền bắt buộc phải cung cấp khi gọi AssumeRole.
+  
+Ngăn chặn tấn công <b style="color: var(--accent-primary);">Confused Deputy Problem</b> trong mô hình Multi-Tenant (nhiều khách hàng/bên thứ ba cùng truy cập vào một tài khoản AWS). <code>external_id</code> đóng vai trò như một mật khẩu bí mật bổ sung mà bên mượn quyền bắt buộc phải cung cấp khi gọi AssumeRole.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Có thể sử dụng `count` hoặc `for_each` trực tiếp trên khối `provider` để tự động tạo 20 Providers cho 20 Regions không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  : **KHÔNG**. Terraform HCL không hỗ trợ `count` hoặc `for_each` trên khối `provider`. Mỗi khối `provider` bắt buộc phải được khai báo tĩnh (static declaration) tại thời điểm viết code vì Terraform Core cần dựng Provider Plugins trước khi parse biến số và vòng lặp. Để tự động hóa nhiều Regions, người ta dùng các công cụ wrapper như **Terragrunt** hoặc module layout.
+  
+<b style="color: var(--accent-primary);">KHÔNG</b>. Terraform HCL không hỗ trợ <code>count</code> hoặc <code>for_each</code> trên khối <code>provider</code>. Mỗi khối <code>provider</code> bắt buộc phải được khai báo tĩnh (static declaration) tại thời điểm viết code vì Terraform Core cần dựng Provider Plugins trước khi parse biến số và vòng lặp. Để tự động hóa nhiều Regions, người ta dùng các công cụ wrapper như <b style="color: var(--accent-primary);">Terragrunt</b> hoặc module layout.
 </div>
 </details>
 

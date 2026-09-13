@@ -938,41 +938,32 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Phân biệt sự khác nhau kĩ thuật và kịch bản ứng dụng của 4 kiểu Service chuẩn trong Kubernetes: `ClusterIP`, `NodePort`, `LoadBalancer`, và `ExternalName`.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **1. `ClusterIP` (Mặc định - Nội bộ cụm):**
-  - *Cơ chế:* Cấp địa chỉ IP ảo (VIP) cố định chỉ truy cập được từ bên trong cụm.
-  - *Ứng dụng:* Dành cho giao tiếp giữa các microservices nội bộ (như Backend gọi sang Database).
-- **2. `NodePort` (Mở cổng máy chủ):**
-  - *Cơ chế:* Mở một cổng tĩnh công cộng trên tất cả các máy chủ Worker Nodes trong dải **`30000-32767`**.
-  - *Ứng dụng:* Phù hợp cho môi trường thử nghiệm/dev hoặc khi không có Cloud LoadBalancer.
-- **3. `LoadBalancer` (Tích hợp Đám mây / MetalLB):**
-  - *Cơ chế:* Tự động gọi Cloud Controller Manager xin địa chỉ IP công cộng (External IP) và provisioning một Load Balancer đám mây trỏ vào các NodePorts.
-  - *Ứng dụng:* Dành cho ứng dụng Production phơi ra Internet trên AWS/GCP/Azure hoặc Bare-metal dán MetalLB.
-- **4. `ExternalName` (Tên miền CNAME ngoài):**
-  - *Cơ chế:* Trỏ tên miền Kubernetes nội bộ sang một CNAME bên ngoài mà KHÔNG tạo VIP hay proxy.
-  - *Ứng dụng:* Dành cho ứng dụng trong cụm gọi ra dịch vụ Database bên ngoài (như AWS RDS).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. <code>ClusterIP</code> (Mặc định - Nội bộ cụm):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Cấp địa chỉ IP ảo (VIP) cố định chỉ truy cập được từ bên trong cụm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Dành cho giao tiếp giữa các microservices nội bộ (như Backend gọi sang Database).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. <code>NodePort</code> (Mở cổng máy chủ):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Mở một cổng tĩnh công cộng trên tất cả các máy chủ Worker Nodes trong dải <b style="color: var(--accent-primary);"><code>30000-32767</code></b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Phù hợp cho môi trường thử nghiệm/dev hoặc khi không có Cloud LoadBalancer.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3. <code>LoadBalancer</code> (Tích hợp Đám mây / MetalLB):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Tự động gọi Cloud Controller Manager xin địa chỉ IP công cộng (External IP) và provisioning một Load Balancer đám mây trỏ vào các NodePorts.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Dành cho ứng dụng Production phơi ra Internet trên AWS/GCP/Azure hoặc Bare-metal dán MetalLB.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">4. <code>ExternalName</code> (Tên miền CNAME ngoài):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Cơ chế:* Trỏ tên miền Kubernetes nội bộ sang một CNAME bên ngoài mà KHÔNG tạo VIP hay proxy.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ứng dụng:* Dành cho ứng dụng trong cụm gọi ra dịch vụ Database bên ngoài (như AWS RDS).</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo 4 loại này như nhau.
-- **1đ:** Trả lời tên 4 loại nhưng không nêu được dải cổng NodePort `30000-32767` và cơ chế CNAME của ExternalName (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác 4 kiểu Service chuẩn, dải cổng `30000-32767` và kịch bản ứng dụng tương ứng.
-- **3đ:** Trả lời xuất sắc, chỉ ra mối liên hệ cấp tiến `ClusterIP -> NodePort -> LoadBalancer`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 4 loại này như nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời tên 4 loại nhưng không nêu được dải cổng NodePort <code>30000-32767</code> và cơ chế CNAME của ExternalName (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác 4 kiểu Service chuẩn, dải cổng <code>30000-32767</code> và kịch bản ứng dụng tương ứng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra mối liên hệ cấp tiến <code>ClusterIP -> NodePort -> LoadBalancer</code>.</div>
 
-**Câu hỏi đào sâu:** Tại sao Service `LoadBalancer` lại luôn tự động tạo một Service `NodePort` ẩn đằng sau nó? *(Đáp án: Vì Cloud LoadBalancer cần gọi vào các cổng NodePort của các Worker Nodes để chuyển tiếp traffic vào Pods).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao Service <code>LoadBalancer</code> lại luôn tự động tạo một Service <code>NodePort</code> ẩn đằng sau nó? *(Đáp án: Vì Cloud LoadBalancer cần gọi vào các cổng NodePort của các Worker Nodes để chuyển tiếp traffic vào Pods).*
 </div>
 </details>
 

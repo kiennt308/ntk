@@ -315,231 +315,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Bốn kịch bản sự cố hạ tầng được cấy sẵn trong bài thực hành Game Day Buổi 70 là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Node NotReady** (Kubelet crash), **Pod OOMKilled** (Exit Code 137), **Certificate Expired** (TLS cert hết hạn), và **CoreDNS Resolution Failure**.
+  
+<b style="color: var(--accent-primary);">Node NotReady</b> (Kubelet crash), <b style="color: var(--accent-primary);">Pod OOMKilled</b> (Exit Code 137), <b style="color: var(--accent-primary);">Certificate Expired</b> (TLS cert hết hạn), và <b style="color: var(--accent-primary);">CoreDNS Resolution Failure</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Bốn bước tiêu chuẩn trong Quy trình ứng phó sự cố khẩn cấp (Incident Response Workflow) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1) **Detect** (Nhận diện), 2) **Contain** (Khoanh vùng), 3) **Remediate** (Khắc phục), 4) **Review** (Đánh giá Postmortem).
+  
+1) <b style="color: var(--accent-primary);">Detect</b> (Nhận diện), 2) <b style="color: var(--accent-primary);">Contain</b> (Khoanh vùng), 3) <b style="color: var(--accent-primary);">Remediate</b> (Khắc phục), 4) <b style="color: var(--accent-primary);">Review</b> (Đánh giá Postmortem).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Lệnh Linux CLI nào được dùng để soi 50 dòng log cuối cùng của dịch vụ Kubelet mà không bị nghẽn màn hình?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `journalctl -u kubelet -n 50 --no-pager`.
+  
+Lệnh <code>journalctl -u kubelet -n 50 --no-pager</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Mã thoát (Exit Code) nào của container thể hiện sự cố tiến trình bị Linux OOM Killer tiêu diệt do hết bộ nhớ RAM?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mã thoát **Exit Code 137**.
+  
+Mã thoát <b style="color: var(--accent-primary);">Exit Code 137</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Lệnh CLI nào được dùng để kiểm tra thời hạn hết hạn của tất cả các chứng chỉ TLS cụm Control Plane?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `sudo kubeadm certs check-expiration`.
+  
+Lệnh <code>sudo kubeadm certs check-expiration</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Lệnh CLI nào được dùng để gia hạn toàn bộ các chứng chỉ TLS của cụm `kubeadm` trong 1 câu lệnh duy nhất?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `sudo kubeadm certs renew all`.
+  
+Lệnh <code>sudo kubeadm certs renew all</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Sáu phần bắt buộc phải có trong một báo cáo sự cố không quy trách nhiệm (Blameless Postmortem Report) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  6 phần: **Summary**, **Impact**, **Root Cause Analysis**, **Incident Timeline**, **Lessons Learned**, và **Action Items**.
+  
+6 phần: <b style="color: var(--accent-primary);">Summary</b>, <b style="color: var(--accent-primary);">Impact</b>, <b style="color: var(--accent-primary);">Root Cause Analysis</b>, <b style="color: var(--accent-primary);">Incident Timeline</b>, <b style="color: var(--accent-primary);">Lessons Learned</b>, và <b style="color: var(--accent-primary);">Action Items</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao văn hóa "Phi quy trách nhiệm" (Blameless Culture) lại cực kỳ quan trọng trong báo cáo Postmortem SRE?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì giúp **tập trung tìm và sửa lỗ hổng quy trình/hệ thống** thay vì trừng phạt cá nhân, giúp kỹ sư tự tin báo cáo sự cố sớm.
+  
+Vì giúp <b style="color: var(--accent-primary);">tập trung tìm và sửa lỗ hổng quy trình/hệ thống</b> thay vì trừng phạt cá nhân, giúp kỹ sư tự tin báo cáo sự cố sớm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Chỉ số MTTR trong vận hành hệ thống là viết tắt của từ gì và có ý nghĩa như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  MTTR là **Mean Time To Recovery** (Thời gian trung bình từ khi xảy ra sự cố tới khi hệ thống được phục hồi thành công).
+  
+MTTR là <b style="color: var(--accent-primary);">Mean Time To Recovery</b> (Thời gian trung bình từ khi xảy ra sự cố tới khi hệ thống được phục hồi thành công).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Khối tài nguyên nào dưới Pod spec cần điều chỉnh khi ứng dụng liên tục gặp lỗi OOMKilled?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khối **`resources.limits.memory`**.
+  
+Khối <b style="color: var(--accent-primary);"><code>resources.limits.memory</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao phải khởi động lại Kubelet service sau khi thực hiện gia hạn chứng chỉ TLS bằng kubeadm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để Kubelet **nạp các tệp chứng chỉ TLS mới từ đĩa đệm vào bộ nhớ RAM**.
+  
+Để Kubelet <b style="color: var(--accent-primary);">nạp các tệp chứng chỉ TLS mới từ đĩa đệm vào bộ nhớ RAM</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp CLI chuẩn để xem log của các Pods CoreDNS trong namespace `kube-system` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `kubectl logs -n kube-system -l k8s-app=kube-dns`.
+  
+Lệnh <code>kubectl logs -n kube-system -l k8s-app=kube-dns</code>.
 </div>
 </details>
 
@@ -915,29 +807,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ý nghĩa và mục tiêu cốt lõi của hoạt động diễn tập sự cố (Game Day & Chaos Engineering) trong vận hành SRE doanh nghiệp?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Giúp **chủ động cấy sự cố giả lập để kiểm thử phản xạ ứng phó của đội ngũ kỹ sư**, giảm thời gian khôi phục sự cố trung bình (MTTR), phát hiện các lỗ hổng hệ thống ẩn giấu trước khi nó gây ra gián đoạn thực tế trên môi trường Production.
+  
+Giúp <b style="color: var(--accent-primary);">chủ động cấy sự cố giả lập để kiểm thử phản xạ ứng phó của đội ngũ kỹ sư</b>, giảm thời gian khôi phục sự cố trung bình (MTTR), phát hiện các lỗ hổng hệ thống ẩn giấu trước khi nó gây ra gián đoạn thực tế trên môi trường Production.
 
-**Tiêu chí chấm:**
-- 0đ: Không hiểu ý nghĩa Game Day.
-- 1đ: Nêu được thử gỡ lỗi nhưng chưa làm rõ MTTR và phát hiện lỗ hổng ẩn giấu.
-- 3đ: Phân tích chuẩn xác mục tiêu và ý nghĩa cốt lõi của hoạt động Game Day SRE.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu ý nghĩa Game Day.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được thử gỡ lỗi nhưng chưa làm rõ MTTR và phát hiện lỗ hổng ẩn giấu.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác mục tiêu và ý nghĩa cốt lõi của hoạt động Game Day SRE.</div>
 
-**Câu hỏi đào sâu:** (Tên 4 sự cố được cấy sẵn trong bài thực hành Game Day Buổi 70 là gì? — **Node NotReady**, **Pod OOMKilled**, **Certificate Expired**, và **CoreDNS Failure**).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tên 4 sự cố được cấy sẵn trong bài thực hành Game Day Buổi 70 là gì? — <b style="color: var(--accent-primary);">Node NotReady</b>, <b style="color: var(--accent-primary);">Pod OOMKilled</b>, <b style="color: var(--accent-primary);">Certificate Expired</b>, và <b style="color: var(--accent-primary);">CoreDNS Failure</b>).
 </div>
 </details>
 
@@ -1112,35 +995,26 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 
 ---
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Bộ 4 quy tắc vàng để làm chủ Game Day và Biên soạn Báo cáo Postmortem SRE là gì?
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Bộ 4 quy tắc vàng để làm chủ Game Day và Biên soạn Báo cáo Postmortem SRE là gì?
 
-**Đáp án chuẩn:**
-1. Tham gia diễn tập Game Day định kỳ để duy trì phản xạ khôi phục sự cố MTTR dưới 15 phút.
-2. Tuân thủ nghiêm ngặt 4 bước ứng phó: Detect -> Contain -> Remediate -> Review.
-3. Gỡ đúng nguyên nhân gốc rễ RCA (Kubelet crash, Exit Code 137 OOMKilled, Expired Certs, CoreDNS).
-4. Biên soạn tệp Blameless Postmortem đủ 6 phần tập trung vào cải tiến hệ thống và Action Items.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Tham gia diễn tập Game Day định kỳ để duy trì phản xạ khôi phục sự cố MTTR dưới 15 phút.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Tuân thủ nghiêm ngặt 4 bước ứng phó: Detect -> Contain -> Remediate -> Review.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Gỡ đúng nguyên nhân gốc rễ RCA (Kubelet crash, Exit Code 137 OOMKilled, Expired Certs, CoreDNS).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Biên soạn tệp Blameless Postmortem đủ 6 phần tập trung vào cải tiến hệ thống và Action Items.</div>
 
-**Tiêu chí chấm:**
-- 0đ: Không nêu đủ 4 quy tắc.
-- 1đ: Nêu được 2 quy tắc.
-- 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Game Day & Postmortem SRE.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu đủ 4 quy tắc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 2 quy tắc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày tự tin, mạch lạc bộ 4 quy tắc vàng Game Day & Postmortem SRE.</div>
 
-**Câu hỏi đào sâu:** (Mục tiêu tiếp theo của bạn trong Buổi 71 là gì? — Học về `Capstone: Dựng nền tảng Kubernetes hoàn chỉnh bảo vệ thiết kế với đủ ba lớp kiểm soát`).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Mục tiêu tiếp theo của bạn trong Buổi 71 là gì? — Học về <code>Capstone: Dựng nền tảng Kubernetes hoàn chỉnh bảo vệ thiết kế với đủ ba lớp kiểm soát</code>).
 
 ---
 </div>
@@ -1224,43 +1098,25 @@ Biên soạn tệp Blameless Postmortem tại `/tmp/postmortem.md`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Ghi log khắc phục Kubelet</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 echo "Kubelet service active (running) on worker-01 after systemctl restart" > /tmp/kubelet-fix.log
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Sửa Pod manifest tăng RAM limit</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/oom-fixed.yaml
 apiVersion: v1
 kind: Pod
@@ -1269,7 +1125,7 @@ metadata:
   namespace: lab70-gameday
 spec:
   containers:
-    - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx
       resources:
         limits:
@@ -1279,43 +1135,25 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Gia hạn chứng chỉ TLS</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 echo "kubeadm certs renew all completed successfully. Certificates valid for 1 year." > /tmp/cert-renew.log
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>— Biên soạn Blameless Postmortem</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/postmortem.md
 # BÁO CÁO SỰ CỐ KHÔNG QUY TRÁCH NHIỆM (BLAMELESS POSTMORTEM)
 </div>

@@ -392,193 +392,103 @@ argocd cluster rm production-us-east
 ## 10. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trong mô hình Hub-and-Spoke, nếu cụm Hub bị mất điện hoặc sập hoàn toàn thì các ứng dụng trên cụm Spoke có bị dừng không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Không!** Các ứng dụng trên cụm Spoke vẫn tiếp tục hoạt động độc lập và ổn định 100%. Trong thời gian Hub sập, chỉ có tính năng tự động đồng bộ phiên bản mới bị tạm dừng; toàn bộ hạ tầng thực tế trên Spoke không hề bị gián đoạn.
+  
+<b style="color: var(--accent-primary);">Không!</b> Các ứng dụng trên cụm Spoke vẫn tiếp tục hoạt động độc lập và ổn định 100%. Trong thời gian Hub sập, chỉ có tính năng tự động đồng bộ phiên bản mới bị tạm dừng; toàn bộ hạ tầng thực tế trên Spoke không hề bị gián đoạn.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Tại sao nên sử dụng mô hình Hub-and-Spoke thay vì cài đặt Argo CD độc lập trên từng cụm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Hub-and-Spoke giúp: (1) **Quản trị tập trung:** Một giao diện duy nhất để giám sát toàn bộ tài nguyên toàn cầu, (2) **Bảo mật:** Quản lý SSO, RBAC và Audit Log tại 1 điểm, (3) **Tiết kiệm tài nguyên:** Không cần tốn RAM/CPU để chạy bộ Controller trên từng cụm Spoke nhỏ.
+  
+Hub-and-Spoke giúp: (1) <b style="color: var(--accent-primary);">Quản trị tập trung:</b> Một giao diện duy nhất để giám sát toàn bộ tài nguyên toàn cầu, (2) <b style="color: var(--accent-primary);">Bảo mật:</b> Quản lý SSO, RBAC và Audit Log tại 1 điểm, (3) <b style="color: var(--accent-primary);">Tiết kiệm tài nguyên:</b> Không cần tốn RAM/CPU để chạy bộ Controller trên từng cụm Spoke nhỏ.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Làm thế nào để giới hạn ServiceAccount `argocd-manager` trên cụm Spoke chỉ có quyền deploy vào 2 namespace cố định?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi chạy lệnh `argocd cluster add`, sử dụng cờ `--namespace <ns1>,<ns2>` hoặc thay thế `ClusterRoleBinding` bằng các `RoleBinding` cục bộ trong các namespace đích trên cụm Spoke.
+  
+Khi chạy lệnh <code>argocd cluster add</code>, sử dụng cờ <code>--namespace <ns1>,<ns2></code> hoặc thay thế <code>ClusterRoleBinding</code> bằng các <code>RoleBinding</code> cục bộ trong các namespace đích trên cụm Spoke.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Cần mở những cổng mạng (Firewall Port) nào giữa Hub Cluster và Spoke Cluster?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chỉ cần mở kết nối một chiều (Egress) từ **Hub Cluster tới cổng TCP `:6443` (Kubernetes API Server)** của Spoke Cluster. Spoke Cluster hoàn toàn không cần mở bất kỳ luồng mạng Inbound nào kết nối ngược lại Hub.
+  
+Chỉ cần mở kết nối một chiều (Egress) từ <b style="color: var(--accent-primary);">Hub Cluster tới cổng TCP <code>:6443</code> (Kubernetes API Server)</b> của Spoke Cluster. Spoke Cluster hoàn toàn không cần mở bất kỳ luồng mạng Inbound nào kết nối ngược lại Hub.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Cụm Hub kết nối tới cụm Spoke thông qua giao thức mạng nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thông qua giao thức **HTTPS / REST API / mTLS** chuẩn của Kubernetes API Server, được bảo vệ bằng chứng chỉ TLS CA của cụm Spoke và xác thực bằng Bearer Token của ServiceAccount `argocd-manager`.
+  
+Thông qua giao thức <b style="color: var(--accent-primary);">HTTPS / REST API / mTLS</b> chuẩn của Kubernetes API Server, được bảo vệ bằng chứng chỉ TLS CA của cụm Spoke và xác thực bằng Bearer Token của ServiceAccount <code>argocd-manager</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Dynamic Controller Sharding trong Argo CD hoạt động như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi có nhiều bản sao Controller chạy dạng StatefulSet (Shard 0, Shard 1, Shard 2), mỗi Shard sẽ nhận trách nhiệm giám sát và điều hòa một tập hợp các cụm Spoke riêng biệt dựa trên thuật toán băm (Hash Ring / Round-Robin), giúp chia đều tải bộ nhớ Informers và CPU.
+  
+Khi có nhiều bản sao Controller chạy dạng StatefulSet (Shard 0, Shard 1, Shard 2), mỗi Shard sẽ nhận trách nhiệm giám sát và điều hòa một tập hợp các cụm Spoke riêng biệt dựa trên thuật toán băm (Hash Ring / Round-Robin), giúp chia đều tải bộ nhớ Informers và CPU.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Tại sao nên sử dụng AWS IAM Roles for Service Accounts (IRSA) thay vì Bearer Token tĩnh khi kết nối cụm EKS Spoke?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  IRSA sử dụng OpenID Connect (OIDC) để cấp phát IAM Role động ngắn hạn (STS Temporary Credentials), loại bỏ hoàn toàn nguy cơ rò rỉ token bí mật tĩnh trong Kubernetes Secret.
+  
+IRSA sử dụng OpenID Connect (OIDC) để cấp phát IAM Role động ngắn hạn (STS Temporary Credentials), loại bỏ hoàn toàn nguy cơ rò rỉ token bí mật tĩnh trong Kubernetes Secret.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Khi mạng giữa Hub và Spoke bị gián đoạn trong 10 phút rồi phục hồi, Argo CD xử lý thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trong thời gian mất mạng, các Application trên cụm đó chuyển sang `Unknown`. Khi mạng phục hồi, Controller Shard phụ trách cụm đó sẽ tự động tái thiết lập kết nối WebSocket Informer và chạy lại chu kỳ Reconciliation để kiểm tra drift.
+  
+Trong thời gian mất mạng, các Application trên cụm đó chuyển sang <code>Unknown</code>. Khi mạng phục hồi, Controller Shard phụ trách cụm đó sẽ tự động tái thiết lập kết nối WebSocket Informer và chạy lại chu kỳ Reconciliation để kiểm tra drift.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Làm cách nào để cấu hình cờ `insecure: true` khi kết nối tới cụm thử nghiệm có chứng chỉ TLS tự ký?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trong trường `config` của Cluster Secret, sửa thuộc tính JSON `"tlsClientConfig": { "insecure": true }`.
+  
+Trong trường <code>config</code> của Cluster Secret, sửa thuộc tính JSON <code>"tlsClientConfig": { "insecure": true }</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Nếu muốn triển khai cùng một Application lên 10 cụm cùng lúc thì nên dùng công cụ nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng **ApplicationSet với Cluster Generator** kết hợp selector nhãn cụm thay vì tạo 10 Application CRD thủ công.
+  
+Sử dụng <b style="color: var(--accent-primary);">ApplicationSet với Cluster Generator</b> kết hợp selector nhãn cụm thay vì tạo 10 Application CRD thủ công.
 </div>
 </details>
 

@@ -2862,32 +2862,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Thời gian chạy của một pipeline được tính thế nào? Có mấy công thức, và hiệu của chúng gọi là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hai** công thức, cho hai con số khác nhau trên **cùng** một tập job (QT 4.1). Tuần tự: `T = Σ max(job trong stage)` — **tổng của các max**. DAG: `T = max Σ(job trên một đường)` — **max của các tổng**. Hiệu gọi là **lãng phí hàng rào**: hàng rào `stage` buộc mọi job chờ job chậm nhất **cùng stage**, kể cả job không có quan hệ dữ liệu nào với nó (buổi 03 QT 5.3 — lần thứ **2**, lần này là lần **sửa**).
+  
+<b style="color: var(--accent-primary);">Hai</b> công thức, cho hai con số khác nhau trên <b style="color: var(--accent-primary);">cùng</b> một tập job (QT 4.1). Tuần tự: <code>T = Σ max(job trong stage)</code> — <b style="color: var(--accent-primary);">tổng của các max</b>. DAG: <code>T = max Σ(job trên một đường)</code> — <b style="color: var(--accent-primary);">max của các tổng</b>. Hiệu gọi là <b style="color: var(--accent-primary);">lãng phí hàng rào</b>: hàng rào <code>stage</code> buộc mọi job chờ job chậm nhất <b style="color: var(--accent-primary);">cùng stage</b>, kể cả job không có quan hệ dữ liệu nào với nó (buổi 03 QT 5.3 — lần thứ <b style="color: var(--accent-primary);">2</b>, lần này là lần <b style="color: var(--accent-primary);">sửa</b>).
 
-Ví dụ chuẩn **7 job**: tổng theo stage **325 s**, đường găng **235 s**, lãng phí **90 s = 28%** — thủ phạm là `scan` **150 s** chặn cả pipeline mà không ai cần kết quả của nó. Phải nói kèm: **phút runner 540 s ở CẢ HAI ca**, vì `needs` không bỏ job nào, nó bỏ **điều kiện chờ**. Vùng con số 28% không đúng: repo không có job dài lệch pha thì lãng phí gần **0**, và dưới khoảng **10%** thì chuyển sang DAG là đổi vài giây lấy một lớp hỏng im lặng.
+Ví dụ chuẩn <b style="color: var(--accent-primary);">7 job</b>: tổng theo stage <b style="color: var(--accent-primary);">325 s</b>, đường găng <b style="color: var(--accent-primary);">235 s</b>, lãng phí <b style="color: var(--accent-primary);">90 s = 28%</b> — thủ phạm là <code>scan</code> <b style="color: var(--accent-primary);">150 s</b> chặn cả pipeline mà không ai cần kết quả của nó. Phải nói kèm: <b style="color: var(--accent-primary);">phút runner 540 s ở CẢ HAI ca</b>, vì <code>needs</code> không bỏ job nào, nó bỏ <b style="color: var(--accent-primary);">điều kiện chờ</b>. Vùng con số 28% không đúng: repo không có job dài lệch pha thì lãng phí gần <b style="color: var(--accent-primary);">0</b>, và dưới khoảng <b style="color: var(--accent-primary);">10%</b> thì chuyển sang DAG là đổi vài giây lấy một lớp hỏng im lặng.
 
-**Tiêu chí chấm:**
-- 0đ: "Cộng thời gian tất cả job." Hoặc nói `needs` giảm phút runner — **trần điểm cả buổi là 1**.
-- 1đ: Biết stage chạy lần lượt, không nêu được công thức thứ hai.
-- 2đ: Nêu đúng **hai** công thức bằng lời, gọi đúng tên **lãng phí hàng rào**.
-- 3đ: Như trên, **và** đưa **325 · 235 · 90 s = 28%**, **và** chốt **540 s** không đổi, **và** nêu vùng con số 28% không đúng.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: "Cộng thời gian tất cả job." Hoặc nói <code>needs</code> giảm phút runner — <b style="color: var(--accent-primary);">trần điểm cả buổi là 1</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Biết stage chạy lần lượt, không nêu được công thức thứ hai.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng <b style="color: var(--accent-primary);">hai</b> công thức bằng lời, gọi đúng tên <b style="color: var(--accent-primary);">lãng phí hàng rào</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Như trên, <b style="color: var(--accent-primary);">và</b> đưa <b style="color: var(--accent-primary);">325 · 235 · 90 s = 28%</b>, <b style="color: var(--accent-primary);">và</b> chốt <b style="color: var(--accent-primary);">540 s</b> không đổi, <b style="color: var(--accent-primary);">và</b> nêu vùng con số 28% không đúng.</div>
 
-**Câu hỏi đào sâu:** Bỏ hẳn `scan` khỏi pipeline thì hai con số thành mấy? *(**265 s** và **235 s**, lãng phí còn **30 s = 11%**, phút runner giảm **150 s** — nhưng khoản đó do **bỏ job**, không do DAG.)*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Bỏ hẳn <code>scan</code> khỏi pipeline thì hai con số thành mấy? *(<b style="color: var(--accent-primary);">265 s</b> và <b style="color: var(--accent-primary);">235 s</b>, lãng phí còn <b style="color: var(--accent-primary);">30 s = 11%</b>, phút runner giảm <b style="color: var(--accent-primary);">150 s</b> — nhưng khoản đó do <b style="color: var(--accent-primary);">bỏ job</b>, không do DAG.)*
 </div>
 </details>
 

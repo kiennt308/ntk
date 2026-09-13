@@ -326,117 +326,63 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Rủi ro bảo mật lớn nhất của giao tiếp Pod-to-Pod mặc định trong mạng nội bộ Kubernetes là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lưu lượng truyền dưới dạng văn bản thô (**Plaintext**), dễ bị tấn công nghe lén (**Packet Sniffing**) và đứng giữa (**MitM**).
+  
+Lưu lượng truyền dưới dạng văn bản thô (<b style="color: var(--accent-primary);">Plaintext</b>), dễ bị tấn công nghe lén (<b style="color: var(--accent-primary);">Packet Sniffing</b>) và đứng giữa (<b style="color: var(--accent-primary);">MitM</b>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Sự khác biệt cơ bản nhất giữa TLS thông thường (1 chiều) và Mutual TLS (mTLS 2 chiều) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  TLS 1 chiều chỉ xác thực Server, còn mTLS **xác thực danh tính của CẢ CLIENT VÀ SERVER** qua chứng chỉ X.509.
+  
+TLS 1 chiều chỉ xác thực Server, còn mTLS <b style="color: var(--accent-primary);">xác thực danh tính của CẢ CLIENT VÀ SERVER</b> qua chứng chỉ X.509.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Tên đối tượng Custom Resource Definition (CRD) trong Service Mesh được dùng để định nghĩa chính sách mTLS cho Pods/Namespaces là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đối tượng **`PeerAuthentication`** (`security.istio.io/v1beta1`).
+  
+Đối tượng <b style="color: var(--accent-primary);"><code>PeerAuthentication</code></b> (<code>security.istio.io/v1beta1</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Sự khác nhau giữa chế độ `STRICT` và `PERMISSIVE` trong đối tượng `PeerAuthentication` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `STRICT` **bắt buộc 100% mTLS** (chặn Plaintext), còn `PERMISSIVE` **cho phép cả mTLS và Plaintext** song song.
+  
+<code>STRICT</code> <b style="color: var(--accent-primary);">bắt buộc 100% mTLS</b> (chặn Plaintext), còn <code>PERMISSIVE</code> <b style="color: var(--accent-primary);">cho phép cả mTLS và Plaintext</b> song song.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tại sao nên sử dụng chế độ `PERMISSIVE` trước khi chuyển sang `STRICT` khi dịch chuyển một hệ thống cũ sang mTLS?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để thử nghiệm không làm ngắt kết nối các dịch vụ cũ chưa có chứng chỉ mTLS.
+  
+Để thử nghiệm không làm ngắt kết nối các dịch vụ cũ chưa có chứng chỉ mTLS.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Cú pháp YAML `spec` chuẩn để áp đặt chế độ mTLS cưỡng chế 100% trong `PeerAuthentication` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
      spec:
        mtls:
          mode: STRICT
@@ -444,117 +390,63 @@ graph TD
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Công cụ CLI Linux nào có thể chạy trên Node để kiểm chứng lưu lượng giữa 2 Pods đã được mã hóa mTLS hay chưa?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Công cụ **`tcpdump`** (hoặc `tshark`).
+  
+Công cụ <b style="color: var(--accent-primary);"><code>tcpdump</code></b> (hoặc <code>tshark</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Ưu điểm lớn nhất của việc dùng CNI mTLS (như Cilium WireGuard) so với Istio Envoy Sidecar Mesh là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mã hóa trực tiếp ở tầng Linux Kernel nên **tiết kiệm tài nguyên RAM/CPU** và **độ trễ latency cực thấp** (không cần Sidecar container).
+  
+Mã hóa trực tiếp ở tầng Linux Kernel nên <b style="color: var(--accent-primary);">tiết kiệm tài nguyên RAM/CPU</b> và <b style="color: var(--accent-primary);">độ trễ latency cực thấp</b> (không cần Sidecar container).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Mã lỗi HTTP hoặc phản hồi nào thường xuất hiện từ Sidecar Proxy khi một Client không có chứng chỉ mTLS gọi tới Server mTLS `STRICT`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mã lỗi **`503 Service Unavailable`** hoặc **`Connection Refused / TLS Handshake Failure`**.
+  
+Mã lỗi <b style="color: var(--accent-primary);"><code>503 Service Unavailable</code></b> hoặc <b style="color: var(--accent-primary);"><code>Connection Refused / TLS Handshake Failure</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Để áp dụng đối tượng `PeerAuthentication` làm chính sách mặc định cho 100% các Pods trong Namespace `prod`, thuộc tính `metadata.name` nên đặt là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đặt `metadata.name: default`.
+  
+Đặt <code>metadata.name: default</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao mã hóa mTLS Pod-to-Pod không thể thay thế hoàn toàn cho `NetworkPolicy`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì mTLS chỉ mã hóa và xác thực căn cước đường truyền, còn `NetworkPolicy` đảm nhận lọc tường lửa IP/Port chỉ định ai được phép kết nối tới ai.
+  
+Vì mTLS chỉ mã hóa và xác thực căn cước đường truyền, còn <code>NetworkPolicy</code> đảm nhận lọc tường lửa IP/Port chỉ định ai được phép kết nối tới ai.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn của tệp `PeerAuthentication` áp đặt mTLS `STRICT` cho Namespace `prod` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       apiVersion: security.istio.io/v1beta1
       kind: PeerAuthentication
       metadata:
@@ -914,29 +806,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Rủi ro an ninh lớn nhất của lưu lượng mạng nội bộ Pod-to-Pod mặc định trong cụm Kubernetes là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lưu lượng mạng nội bộ truyền dạng văn bản thô (**Plaintext**). Nếu một container trong cụm bị chiếm quyền, kẻ tấn công có thể chạy công cụ `tcpdump` trên giao diện mạng để nghe lén (**Packet Sniffing**) và lấy cắp toàn bộ token, mật khẩu, thông tin thanh toán truyền giữa các Pods.
+  
+Lưu lượng mạng nội bộ truyền dạng văn bản thô (<b style="color: var(--accent-primary);">Plaintext</b>). Nếu một container trong cụm bị chiếm quyền, kẻ tấn công có thể chạy công cụ <code>tcpdump</code> trên giao diện mạng để nghe lén (<b style="color: var(--accent-primary);">Packet Sniffing</b>) và lấy cắp toàn bộ token, mật khẩu, thông tin thanh toán truyền giữa các Pods.
 
-**Tiêu chí chấm:**
-- 0đ: Không biết rủi ro Plaintext network.
-- 1đ: Nêu được lộ mật khẩu nhưng chưa giải thích tấn công Packet Sniffing qua giao diện mạng veth.
-- 3đ: Phân tích thấu đáo rủi ro của Plaintext traffic và lý do bắt buộc áp dụng mTLS mã hóa Pod-to-Pod.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết rủi ro Plaintext network.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lộ mật khẩu nhưng chưa giải thích tấn công Packet Sniffing qua giao diện mạng veth.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo rủi ro của Plaintext traffic và lý do bắt buộc áp dụng mTLS mã hóa Pod-to-Pod.</div>
 
-**Câu hỏi đào sâu:** (Giải pháp để triệt tiêu nguy cơ Packet Sniffing trong mạng phẳng K8s là gì? — Sử dụng Mutual TLS (mTLS) mã hóa đường truyền Pod-to-Pod).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Giải pháp để triệt tiêu nguy cơ Packet Sniffing trong mạng phẳng K8s là gì? — Sử dụng Mutual TLS (mTLS) mã hóa đường truyền Pod-to-Pod).
 </div>
 </details>
 
@@ -1207,22 +1090,13 @@ Biên soạn `PeerAuthentication` thắt chặt cấp độ Pod tại `/tmp/pa-p
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tạo `PeerAuthentication` STRICT cho Namespace `prod</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF > /tmp/pa-strict.yaml
@@ -1241,22 +1115,13 @@ kubectl apply -f /tmp/pa-strict.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Tạo `PeerAuthentication` PERMISSIVE cho Namespace `staging</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns staging --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF > /tmp/pa-permissive.yaml
@@ -1275,22 +1140,13 @@ kubectl apply -f /tmp/pa-permissive.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Sửa tệp `/tmp/broken-pa.yaml</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/broken-pa.yaml
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
@@ -1307,22 +1163,13 @@ kubectl apply -f /tmp/broken-pa.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Tạo `PeerAuthentication` Pod selector cấp độ `payment</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/pa-payment.yaml
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication

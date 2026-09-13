@@ -862,33 +862,24 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc Xử lý Lỗi Bộ ba `block`, `rescue`, `always` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày cơ chế hoạt động của bộ ba khối `block:`, `rescue:`, và `always:` trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- `block:` Nơi chứa các Task thực thi chính.
-- `rescue:` Nơi chứa các Task cứu hộ/phục hồi CHỈ CHẠY khi có Task trong `block` bị văng lỗi.
-- `always:` Nơi chứa các Task dọn dẹp BẮT BUỘC THỰC THI trong mọi tình huống (dù block thành công hay rescue thất bại).
-Cấu trúc này tương đương 100% với mô hình `try...catch...finally` trong các ngôn ngữ lập trình hiện đại (Java, Python, C#).
-**Tiêu chí chấm:**
-- 0: Không biết cấu trúc `block-rescue-always`.
-- 1: Biết 3 khối nhưng không so sánh được với mô hình `try-catch-finally`.
-- 2: Phân tích chính xác vai trò và điều kiện thi hành của từng khối `block`, `rescue`, `always`.
-- 3: Nêu đúng + minh họa ví dụ cập nhật Database có Rollback trong `rescue` và xóa file tạm trong `always`.
-**Câu hỏi đào sâu:** Khối `rescue:` và `always:` được đặt cùng cấp thụt lề với từ khóa nào trong YAML? *(Được đặt cùng cấp thụt lề với từ khóa `block:`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cơ chế hoạt động của bộ ba khối <code>block:</code>, <code>rescue:</code>, và <code>always:</code> trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>block:</code> Nơi chứa các Task thực thi chính.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>rescue:</code> Nơi chứa các Task cứu hộ/phục hồi CHỈ CHẠY khi có Task trong <code>block</code> bị văng lỗi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>always:</code> Nơi chứa các Task dọn dẹp BẮT BUỘC THỰC THI trong mọi tình huống (dù block thành công hay rescue thất bại).</div>
+Cấu trúc này tương đương 100% với mô hình <code>try...catch...finally</code> trong các ngôn ngữ lập trình hiện đại (Java, Python, C#).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc <code>block-rescue-always</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết 3 khối nhưng không so sánh được với mô hình <code>try-catch-finally</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò và điều kiện thi hành của từng khối <code>block</code>, <code>rescue</code>, <code>always</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ cập nhật Database có Rollback trong <code>rescue</code> và xóa file tạm trong <code>always</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khối <code>rescue:</code> và <code>always:</code> được đặt cùng cấp thụt lề với từ khóa nào trong YAML? *(Được đặt cùng cấp thụt lề với từ khóa <code>block:</code>.)*
 </div>
 </details>
 

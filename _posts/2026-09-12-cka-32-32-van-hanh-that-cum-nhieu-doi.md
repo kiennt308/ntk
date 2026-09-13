@@ -352,238 +352,130 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ba Namespace được khởi tạo để phân chia môi trường vận hành 3 đội trong bài học là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **`team-alpha`**, **`team-beta`**, và **`team-secops`**.
+  
+<b style="color: var(--accent-primary);"><code>team-alpha</code></b>, <b style="color: var(--accent-primary);"><code>team-beta</code></b>, và <b style="color: var(--accent-primary);"><code>team-secops</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Sự khác biệt cơ bản giữa `ResourceQuota` và `LimitRange` trong quản lý tài nguyên Namespace là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `ResourceQuota` kiểm soát **tổng định ngạch tài nguyên tối đa của cả Namespace**, còn `LimitRange` quy định **thông số requests/limits mặc định cho từng Pod đơn lẻ**.
+  
+<code>ResourceQuota</code> kiểm soát <b style="color: var(--accent-primary);">tổng định ngạch tài nguyên tối đa của cả Namespace</b>, còn <code>LimitRange</code> quy định <b style="color: var(--accent-primary);">thông số requests/limits mặc định cho từng Pod đơn lẻ</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Tại sao không nên gán đối tượng `ClusterRoleBinding` cho tài khoản của lập trình viên ứng dụng?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì `ClusterRoleBinding` sẽ **cho phép truy cập tài nguyên toàn cụm**, làm mất tính cách ly giữa các Namespace của các đội.
+  
+Vì <code>ClusterRoleBinding</code> sẽ <b style="color: var(--accent-primary);">cho phép truy cập tài nguyên toàn cụm</b>, làm mất tính cách ly giữa các Namespace của các đội.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Bốn thuộc tính tài nguyên bắt buộc phải khai báo dưới khối `hard` của `ResourceQuota` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `requests.cpu`, `requests.memory`, `limits.cpu`, và `limits.memory`.
+  
+<code>requests.cpu</code>, <code>requests.memory</code>, <code>limits.cpu</code>, và <code>limits.memory</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Nhãn mặc định nào của Kubernetes được dùng trong `namespaceSelector` để lọc chính xác tên Namespace?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nhãn **`kubernetes.io/metadata.name`**.
+  
+Nhãn <b style="color: var(--accent-primary);"><code>kubernetes.io/metadata.name</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Ba bước tiêu chuẩn trong quy trình quản lý thay đổi (Change Management Workflow) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1) Tạo Pull Request (PR), 2) Chạy quét tự động CI (Trivy/Checkov), 3) Xét duyệt bởi đại diện SecOps.
+  
+1) Tạo Pull Request (PR), 2) Chạy quét tự động CI (Trivy/Checkov), 3) Xét duyệt bởi đại diện SecOps.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Câu lệnh CLI `kubectl` nào được dùng để kiểm tra xem một user có quyền thực thi thao tác trên Namespace hay không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh `kubectl auth can-i <verb> <resource> -n <namespace> --as=<username>`.
+  
+Lệnh <code>kubectl auth can-i <verb> <resource> -n <namespace> --as=<username></code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Công cụ chính sách nào được dùng để tự động chèn nhãn `owner: team-alpha` vào Pod khi khởi tạo?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Công cụ **Kyverno Mutation Policy**.
+  
+Công cụ <b style="color: var(--accent-primary);">Kyverno Mutation Policy</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Hiện tượng một Pod chiếm dụng sạch dung lượng CPU/RAM của Node làm ảnh hưởng các Pod khác gọi là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Hiện tượng **Resource Starvation (Lấn chiếm tài nguyên)**.
+  
+Hiện tượng <b style="color: var(--accent-primary);">Resource Starvation (Lấn chiếm tài nguyên)</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Thao tác nào giúp ngắt 100% lưu lượng Ingress không phép từ các đội khác vào Namespace `team-alpha`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Biên soạn `NetworkPolicy` có `podSelector: {}` và `namespaceSelector` chỉ cho phép `team-secops`.
+  
+Biên soạn <code>NetworkPolicy</code> có <code>podSelector: {}</code> và <code>namespaceSelector</code> chỉ cho phép <code>team-secops</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao quy trình GitOps PR Approval lại giúp ngăn chặn các lỗi vận hành trên môi trường Production?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì giúp **kiểm duyệt kỹ các tệp manifest và chạy scan an ninh tự động** trước khi cấu hình được áp dụng vào cụm.
+  
+Vì giúp <b style="color: var(--accent-primary);">kiểm duyệt kỹ các tệp manifest và chạy scan an ninh tự động</b> trước khi cấu hình được áp dụng vào cụm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn của một `RoleBinding` gán `developer-role` cho `user-alpha` trong `team-alpha` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       apiVersion: rbac.authorization.k8s.io/v1
       kind: RoleBinding
       metadata:
         name: dev-alpha-binding
         namespace: team-alpha
       subjects:
-        - kind: User
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• kind: User</div>
           name: dev-alpha
           apiGroup: rbac.authorization.k8s.io
       roleRef:
@@ -1008,29 +900,20 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao chiến lược phân chia Namespace cho từng đội lại là bước bắt buộc đầu tiên trong vận hành cụm Kubernetes doanh nghiệp?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Giúp **phân vùng tài nguyên riêng biệt**, **thiết lập rào chắn RBAC thu hẹp theo đội**, **áp đặt định ngạch ResourceQuota/LimitRange**, và **phong tỏa giao tiếp mạng bằng NetworkPolicy**, ngăn chặn hoàn toàn nguy cơ can thiệp tài nguyên trái phép giữa các đội.
+  
+Giúp <b style="color: var(--accent-primary);">phân vùng tài nguyên riêng biệt</b>, <b style="color: var(--accent-primary);">thiết lập rào chắn RBAC thu hẹp theo đội</b>, <b style="color: var(--accent-primary);">áp đặt định ngạch ResourceQuota/LimitRange</b>, và <b style="color: var(--accent-primary);">phong tỏa giao tiếp mạng bằng NetworkPolicy</b>, ngăn chặn hoàn toàn nguy cơ can thiệp tài nguyên trái phép giữa các đội.
 
-**Tiêu chí chấm:**
-- 0đ: Không hiểu lý do phân chia Namespace.
-- 1đ: Nêu được dễ quản lý nhưng chưa rõ RBAC, Quotas, NetworkPolicy isolation.
-- 3đ: Phân tích chuẩn xác 4 lý do cốt lõi của việc phân chia Namespace doanh nghiệp.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không hiểu lý do phân chia Namespace.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được dễ quản lý nhưng chưa rõ RBAC, Quotas, NetworkPolicy isolation.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chuẩn xác 4 lý do cốt lõi của việc phân chia Namespace doanh nghiệp.</div>
 
-**Câu hỏi đào sâu:** (Tên 3 Namespace được khởi tạo để mô phỏng môi trường 3 đội trong buổi học là gì? — **`team-alpha`**, **`team-beta`**, và **`team-secops`**).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tên 3 Namespace được khởi tạo để mô phỏng môi trường 3 đội trong buổi học là gì? — <b style="color: var(--accent-primary);"><code>team-alpha</code></b>, <b style="color: var(--accent-primary);"><code>team-beta</code></b>, và <b style="color: var(--accent-primary);"><code>team-secops</code></b>).
 </div>
 </details>
 
@@ -1305,22 +1188,13 @@ Biên soạn Kyverno Mutation Policy tại `/tmp/mutate.yaml`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Biên soạn ResourceQuota</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/quota.yaml
 apiVersion: v1
 kind: ResourceQuota
@@ -1337,22 +1211,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Tạo Role và RoleBinding RBAC</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -1360,7 +1225,7 @@ metadata:
   name: pod-reader
   namespace: team-beta
 rules:
-  - apiGroups: [""]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
 ---
@@ -1370,7 +1235,7 @@ metadata:
   name: read-pods
   namespace: team-beta
 subjects:
-  - kind: User
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• kind: User</div>
     name: user-beta
     apiGroup: rbac.authorization.k8s.io
 roleRef:
@@ -1382,22 +1247,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Biên soạn NetworkPolicy phong tỏa mạng</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/netpol.yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -1408,8 +1264,8 @@ spec:
   podSelector: {}
   policyTypes: [Ingress]
   ingress:
-    - from:
-        - namespaceSelector:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• from:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• namespaceSelector:</div>
             matchLabels:
               kubernetes.io/metadata.name: team-secops
 EOF
@@ -1417,22 +1273,13 @@ EOF
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Biên soạn Kyverno Mutation Policy</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/mutate.yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -1440,7 +1287,7 @@ metadata:
   name: mutate-team-label
 spec:
   rules:
-    - name: insert-team-label
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: insert-team-label</div>
       match:
         resources:
           kinds: [Pod]

@@ -881,35 +881,26 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao Kubelet mặc định từ chối khởi động trên hệ thống Linux chưa tắt SWAP hoàn toàn?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Kubernetes được thiết kế dựa trên giả định Kubelet quản lý tài nguyên bộ nhớ RAM tuyệt đối để phân loại các **QoS Classes (Guaranteed, Burstable, BestEffort)**.
-- Nếu đĩa SWAP được bật, Linux kernel sẽ tự ý chuyển các trang nhớ RAM xuống đĩa cứng khi cạn RAM.
-- **Hậu quả:**
-  1. Độ trễ ứng dụng tăng hàng ngàn lần (Disk IOPS chậm hơn RAM rất nhiều).
-  2. Thuật toán phát hiện OOM (Out Of Memory) của Kubelet tính toán sai lệch, không thể tiêu huỷ Pod đúng lúc.
-  3. Kubelet mặc định chặn preflight check và từ chối khởi chạy trừ khi tắt hẳn SWAP (`swapoff -a`).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubernetes được thiết kế dựa trên giả định Kubelet quản lý tài nguyên bộ nhớ RAM tuyệt đối để phân loại các <b style="color: var(--accent-primary);">QoS Classes (Guaranteed, Burstable, BestEffort)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu đĩa SWAP được bật, Linux kernel sẽ tự ý chuyển các trang nhớ RAM xuống đĩa cứng khi cạn RAM.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hậu quả:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Độ trễ ứng dụng tăng hàng ngàn lần (Disk IOPS chậm hơn RAM rất nhiều).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Thuật toán phát hiện OOM (Out Of Memory) của Kubelet tính toán sai lệch, không thể tiêu huỷ Pod đúng lúc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Kubelet mặc định chặn preflight check và từ chối khởi chạy trừ khi tắt hẳn SWAP (<code>swapoff -a</code>).</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo SWAP làm Kubernetes bị tràn ổ đĩa.
-- **1đ:** Nêu được do Kubelet bắt tắt swap nhưng không giải thích được cơ chế quản lý RAM QoS (dính trần 1đ).
-- **2đ:** Phân tích chính xác giả định RAM tuyệt đối, QoS classes và lý do thuật toán OOM bị sai lệch.
-- **3đ:** Trả lời xuất sắc, nêu câu lệnh `swapoff -a` và chỉnh sửa tệp `/etc/fstab`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo SWAP làm Kubernetes bị tràn ổ đĩa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được do Kubelet bắt tắt swap nhưng không giải thích được cơ chế quản lý RAM QoS (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác giả định RAM tuyệt đối, QoS classes và lý do thuật toán OOM bị sai lệch.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu câu lệnh <code>swapoff -a</code> và chỉnh sửa tệp <code>/etc/fstab</code>.</div>
 
-**Câu hỏi đào sâu:** Nếu bắt buộc phải bật SWAP trên node (ví dụ môi trường dev máy yếu), Kubelet cho phép cờ cấu hình nào để bỏ qua lỗi swap? *(Đáp án: Cờ --fail-swap-on=false trong KubeletConfiguration).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu bắt buộc phải bật SWAP trên node (ví dụ môi trường dev máy yếu), Kubelet cho phép cờ cấu hình nào để bỏ qua lỗi swap? *(Đáp án: Cờ --fail-swap-on=false trong KubeletConfiguration).*
 </div>
 </details>
 

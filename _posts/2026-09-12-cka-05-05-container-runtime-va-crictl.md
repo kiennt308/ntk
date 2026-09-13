@@ -895,32 +895,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Kubelet có trực tiếp chạy hay quản lý container không? Kubelet giao tiếp với Container Runtime (containerd) qua giao thức và tệp socket nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Kubelet **KHÔNG trực tiếp tạo hay chạy container**.
-- Kubelet đóng vai trò là tác nhân điều phối, gửi các câu lệnh yêu cầu tới Container Runtime (containerd) thông qua chuẩn giao diện **CRI (Container Runtime Interface)**.
-- Giao thức giao tiếp là **gRPC Protocol** thông qua tệp socket Unix domain: `/run/containerd/containerd.sock`.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet <b style="color: var(--accent-primary);">KHÔNG trực tiếp tạo hay chạy container</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet đóng vai trò là tác nhân điều phối, gửi các câu lệnh yêu cầu tới Container Runtime (containerd) thông qua chuẩn giao diện <b style="color: var(--accent-primary);">CRI (Container Runtime Interface)</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giao thức giao tiếp là <b style="color: var(--accent-primary);">gRPC Protocol</b> thông qua tệp socket Unix domain: <code>/run/containerd/containerd.sock</code>.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Cho rằng Kubelet tự gọi trực tiếp `docker run` hoặc `runc`.
-- **1đ:** Trả lời Kubelet gọi containerd nhưng không nêu được giao thức gRPC và đường dẫn socket `/run/containerd/containerd.sock` (dính trần 1đ).
-- **2đ:** Phân tích chính xác vai trò điều phối của Kubelet, giao diện CRI và tệp socket containerd.
-- **3đ:** Trả lời xuất sắc, giải thích kiến trúc pluggable của CRI cho phép thay thế containerd bằng CRI-O hoặc gVisor.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Cho rằng Kubelet tự gọi trực tiếp <code>docker run</code> hoặc <code>runc</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Kubelet gọi containerd nhưng không nêu được giao thức gRPC và đường dẫn socket <code>/run/containerd/containerd.sock</code> (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác vai trò điều phối của Kubelet, giao diện CRI và tệp socket containerd.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, giải thích kiến trúc pluggable của CRI cho phép thay thế containerd bằng CRI-O hoặc gVisor.</div>
 
-**Câu hỏi đào sâu:** Nếu tệp socket `/run/containerd/containerd.sock` bị xoá hoặc mất quyền truy cập thì Kubelet báo lỗi gì? *(Đáp án: Kubelet không thể kết nối tới CRI runtime và Node sẽ chuyển sang trạng thái NotReady).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu tệp socket <code>/run/containerd/containerd.sock</code> bị xoá hoặc mất quyền truy cập thì Kubelet báo lỗi gì? *(Đáp án: Kubelet không thể kết nối tới CRI runtime và Node sẽ chuyển sang trạng thái NotReady).*
 </div>
 </details>
 

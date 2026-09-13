@@ -925,29 +925,20 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Vai trò của `handlers` và `notify` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Cơ chế `handlers` và từ khóa `notify:` trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới `tasks:`? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Khối `handlers:` chứa các Task đặc biệt chỉ được kích hoạt thi hành khi nhận được thông báo từ thuộc tính `notify:` của các Task chính. Không nên restart dịch vụ trực tiếp dưới `tasks:` vì nó sẽ khiến dịch vụ bị restart vô điều kiện ở mọi lượt chạy kịch bản ngay cả khi tệp cấu hình KHÔNG đổi, gây gián đoạn dịch vụ lãng phí. Dùng `notify/handlers` đảm bảo dịch vụ CHỈ RESTART khi file cấu hình thực sự có sự thay đổi (`changed: true`).
-**Tiêu chí chấm:**
-- 0: Không biết vai trò của `handlers` và `notify`.
-- 1: Biết `handlers` để restart dịch vụ nhưng không giải thích được rủi ro gián đoạn khi đặt restart trong `tasks`.
-- 2: Phân tích chính xác vai trò phản ứng sự kiện và điều kiện kích hoạt `changed: true`.
-- 3: Nêu đúng + minh họa ví dụ chép file cấu hình Nginx phát `notify: Restart Nginx`.
-**Câu hỏi đào sâu:** Khối `handlers:` nằm cùng cấp thụt lề với từ khóa nào trong file Playbook? *(Nằm ở cấp độ Play, cùng cấp thụt lề với từ khóa `tasks:`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Cơ chế <code>handlers</code> và từ khóa <code>notify:</code> trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới <code>tasks:</code>? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Khối <code>handlers:</code> chứa các Task đặc biệt chỉ được kích hoạt thi hành khi nhận được thông báo từ thuộc tính <code>notify:</code> của các Task chính. Không nên restart dịch vụ trực tiếp dưới <code>tasks:</code> vì nó sẽ khiến dịch vụ bị restart vô điều kiện ở mọi lượt chạy kịch bản ngay cả khi tệp cấu hình KHÔNG đổi, gây gián đoạn dịch vụ lãng phí. Dùng <code>notify/handlers</code> đảm bảo dịch vụ CHỈ RESTART khi file cấu hình thực sự có sự thay đổi (<code>changed: true</code>).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết vai trò của <code>handlers</code> và <code>notify</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>handlers</code> để restart dịch vụ nhưng không giải thích được rủi ro gián đoạn khi đặt restart trong <code>tasks</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò phản ứng sự kiện và điều kiện kích hoạt <code>changed: true</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ chép file cấu hình Nginx phát <code>notify: Restart Nginx</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khối <code>handlers:</code> nằm cùng cấp thụt lề với từ khóa nào trong file Playbook? *(Nằm ở cấp độ Play, cùng cấp thụt lề với từ khóa <code>tasks:</code>.)*
 </div>
 </details>
 

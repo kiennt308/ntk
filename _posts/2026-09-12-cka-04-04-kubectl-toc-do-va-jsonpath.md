@@ -936,32 +936,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao trong các kỳ thi CKA/CKAD, kỹ năng gõ imperative với biến môi trường `$do` lại quan trọng hơn việc tự viết tay tệp YAML từ đầu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Áp lực thời gian trong phòng thi CKA/CKAD rất lớn (120 phút cho 15–20 câu hỏi, trung bình 6–8 phút/câu).
-- Gõ tay file YAML từ đầu tốn từ 2–4 phút và rất dễ dính lỗi chính tả/lệch lề (indentation).
-- Dùng `export do='--dry-run=client -o yaml'` kết hợp `kubectl run/create` sinh ra khung YAML chuẩn 100% cú pháp chỉ trong **< 3 giây**, giúp thí sinh dành 95% thời gian tập trung vào logic bài toán.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Áp lực thời gian trong phòng thi CKA/CKAD rất lớn (120 phút cho 15–20 câu hỏi, trung bình 6–8 phút/câu).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gõ tay file YAML từ đầu tốn từ 2–4 phút và rất dễ dính lỗi chính tả/lệch lề (indentation).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dùng <code>export do='--dry-run=client -o yaml'</code> kết hợp <code>kubectl run/create</code> sinh ra khung YAML chuẩn 100% cú pháp chỉ trong <b style="color: var(--accent-primary);">< 3 giây</b>, giúp thí sinh dành 95% thời gian tập trung vào logic bài toán.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo gõ tay tốt hơn hoặc không biết cờ `$do`.
-- **1đ:** Trả lời cho nhanh nhưng không nêu được con số < 3 giây và nguy cơ lỗi indent khi gõ tay (dính trần 1đ).
-- **2đ:** Phân tích chính xác áp lực thời gian và tốc độ sinh khung chuẩn 100% của cờ `$do`.
-- **3đ:** Trả lời xuất sắc, minh hoạ cú pháp `k run web --image=nginx $do > pod.yaml` và con số tiết kiệm 80% phím gõ.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo gõ tay tốt hơn hoặc không biết cờ <code>$do</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời cho nhanh nhưng không nêu được con số < 3 giây và nguy cơ lỗi indent khi gõ tay (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác áp lực thời gian và tốc độ sinh khung chuẩn 100% của cờ <code>$do</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ cú pháp <code>k run web --image=nginx $do > pod.yaml</code> và con số tiết kiệm 80% phím gõ.</div>
 
-**Câu hỏi đào sâu:** Nếu lệnh create không có cờ cho một trường đặc thù (ví dụ `securityContext`), ta làm thế nào? *(Đáp án: Sinh khung YAML bằng `$do` rồi mở `vim` bổ sung trường đó vào).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu lệnh create không có cờ cho một trường đặc thù (ví dụ <code>securityContext</code>), ta làm thế nào? *(Đáp án: Sinh khung YAML bằng <code>$do</code> rồi mở <code>vim</code> bổ sung trường đó vào).*
 </div>
 </details>
 

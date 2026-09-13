@@ -328,231 +328,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Rủi ro bảo mật lớn nhất của Container truyền thống (`runc`) khi chạy trên Kubernetes cluster là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dùng chung Linux Kernel với Host Node, nếu Kernel có lỗ hổng 0-day kẻ tấn công có thể thực hiện **Container Escape** chiếm Host OS.
+  
+Dùng chung Linux Kernel với Host Node, nếu Kernel có lỗ hổng 0-day kẻ tấn công có thể thực hiện <b style="color: var(--accent-primary);">Container Escape</b> chiếm Host OS.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>gVisor (`runsc`) thực hiện cách ly container bằng cơ chế kỹ thuật cốt lõi nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đánh chặn 100% các lời gọi hệ thống (**syscalls interception**) trong **user-space** thông qua **Sentry Kernel** ảo.
+  
+Đánh chặn 100% các lời gọi hệ thống (<b style="color: var(--accent-primary);">syscalls interception</b>) trong <b style="color: var(--accent-primary);">user-space</b> thông qua <b style="color: var(--accent-primary);">Sentry Kernel</b> ảo.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Điểm khác biệt lớn nhất giữa gVisor và Kata Containers về mặt kiến trúc ảo hóa là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  gVisor giả lập kernel trong user-space (không cần VM), còn Kata Containers khởi tạo một **Micro-VM** độc lập chạy nhân Linux riêng qua KVM/QEMU.
+  
+gVisor giả lập kernel trong user-space (không cần VM), còn Kata Containers khởi tạo một <b style="color: var(--accent-primary);">Micro-VM</b> độc lập chạy nhân Linux riêng qua KVM/QEMU.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Cú pháp YAML `apiVersion` và `kind` chuẩn để tạo một đối tượng `RuntimeClass` trong Kubernetes v1.28+ là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `apiVersion: node.k8s.io/v1` và `kind: RuntimeClass`.
+  
+<code>apiVersion: node.k8s.io/v1</code> và <code>kind: RuntimeClass</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Thuộc tính nào trong đối tượng `RuntimeClass` liên kết trực tiếp với cờ cấu hình container runtime engine trên Host Node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thuộc tính **`handler`** (ví dụ `handler: gvisor` hoặc `handler: runsc`).
+  
+Thuộc tính <b style="color: var(--accent-primary);"><code>handler</code></b> (ví dụ <code>handler: gvisor</code> hoặc <code>handler: runsc</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Vị trí khai báo thuộc tính `runtimeClassName` trong bản kê khai ứng dụng Kubernetes là ở đâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khai báo trực tiếp dưới thuộc tính **`spec`** của **Pod manifest** (`spec.runtimeClassName`).
+  
+Khai báo trực tiếp dưới thuộc tính <b style="color: var(--accent-primary);"><code>spec</code></b> của <b style="color: var(--accent-primary);">Pod manifest</b> (<code>spec.runtimeClassName</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Lệnh CLI Linux nào có thể chạy bên trong container để kiểm tra và xác minh Pod có đang thực sự chạy dưới gVisor Sandbox hay không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Lệnh **`dmesg`** hoặc **`uname -a`** (trả về thông tin gVisor Kernel).
+  
+Lệnh <b style="color: var(--accent-primary);"><code>dmesg</code></b> hoặc <b style="color: var(--accent-primary);"><code>uname -a</code></b> (trả về thông tin gVisor Kernel).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Khối thuộc tính nào trong `RuntimeClass` được dùng để khai báo dung lượng RAM/CPU tiêu tốn ngầm của Sandbox Runtime Daemon cho Scheduler?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khối **`spec.overhead.podFixed`**.
+  
+Khối <b style="color: var(--accent-primary);"><code>spec.overhead.podFixed</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Mã lỗi hoặc trạng thái Pod nào thường xuất hiện khi gán một `runtimeClassName` mà cờ `handler` không tồn tại trên Node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Trạng thái lỗi **`CreateContainerError`** hoặc **`ContainerCreating`** bị kẹt.
+  
+Trạng thái lỗi <b style="color: var(--accent-primary);"><code>CreateContainerError</code></b> hoặc <b style="color: var(--accent-primary);"><code>ContainerCreating</code></b> bị kẹt.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Đối tượng `RuntimeClass` trong Kubernetes thuộc phạm vi Namespace (Namespace-scoped) hay toàn cụm (Cluster-scoped)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thuộc phạm vi **Toàn cụm (Cluster-scoped)**.
+  
+Thuộc phạm vi <b style="color: var(--accent-primary);">Toàn cụm (Cluster-scoped)</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Tại sao không nên áp dụng gVisor Sandbox cho các ứng dụng đòi hỏi hiệu năng I/O đĩa cứng cực cao?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì việc đánh chặn syscalls qua Sentry trong user-space làm tăng độ trễ (latency overhead) đối với các thao tác I/O đĩa cứng.
+  
+Vì việc đánh chặn syscalls qua Sentry trong user-space làm tăng độ trễ (latency overhead) đối với các thao tác I/O đĩa cứng.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn của một tệp `RuntimeClass` và Pod sử dụng gVisor Sandbox là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       apiVersion: node.k8s.io/v1
       kind: RuntimeClass
       metadata:
@@ -567,7 +459,7 @@ graph TD
       spec:
         runtimeClassName: gvisor
         containers:
-          - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
             image: nginx:alpine
       ```
 </div>
@@ -899,31 +791,22 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Sự khác biệt cốt lõi về mặt kiến trúc ảo hóa giữa Container truyền thống (`runc`), gVisor (`runsc`), và Kata Containers là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `runc`: Chia sẻ dùng chung 100% nhân Linux Kernel với Host Node (chỉ cách ly bằng cgroups & namespaces).
-- `gVisor` (`runsc`): Giả lập nhân Linux ảo bằng Sentry Kernel viết bằng Go trong user-space, đánh chặn 100% syscalls.
-- `Kata Containers`: Khởi tạo một Micro-VM độc lập chạy nhân Linux Kernel riêng biệt thông qua KVM/QEMU.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>runc</code>: Chia sẻ dùng chung 100% nhân Linux Kernel với Host Node (chỉ cách ly bằng cgroups & namespaces).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>gVisor</code> (<code>runsc</code>): Giả lập nhân Linux ảo bằng Sentry Kernel viết bằng Go trong user-space, đánh chặn 100% syscalls.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Kata Containers</code>: Khởi tạo một Micro-VM độc lập chạy nhân Linux Kernel riêng biệt thông qua KVM/QEMU.</div>
 
-**Tiêu chí chấm:**
-- 0đ: Không phân biệt được 3 loại runtime.
-- 1đ: Nêu được runc dùng chung kernel nhưng nhầm lẫn giữa gVisor và Kata.
-- 3đ: Phân tích thấu đáo kiến trúc dùng chung kernel (`runc`), user-space Sentry (`gVisor`), và Micro-VM (`Kata`).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không phân biệt được 3 loại runtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được runc dùng chung kernel nhưng nhầm lẫn giữa gVisor và Kata.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo kiến trúc dùng chung kernel (<code>runc</code>), user-space Sentry (<code>gVisor</code>), và Micro-VM (<code>Kata</code>).</div>
 
-**Câu hỏi đào sâu:** (Tại sao gVisor lại an toàn hơn `runc` trước nguy cơ Container Escape? — Vì tiến trình trong gVisor không thể gọi trực tiếp Host Kernel mà bị Sentry đánh chặn hoàn toàn).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tại sao gVisor lại an toàn hơn <code>runc</code> trước nguy cơ Container Escape? — Vì tiến trình trong gVisor không thể gọi trực tiếp Host Kernel mà bị Sentry đánh chặn hoàn toàn).
 </div>
 </details>
 
@@ -1174,22 +1057,13 @@ Tạo đối tượng `RuntimeClass` tên `kata` có khai báo `overhead`:
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tạo `RuntimeClass` gvisor</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/gvisor-rc.yaml
 apiVersion: node.k8s.io/v1
 kind: RuntimeClass
@@ -1203,22 +1077,13 @@ kubectl apply -f /tmp/gvisor-rc.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Triển khai Pod `isolate-pod` gán `runtimeClassName: gvisor</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
 
 cat <<EOF | kubectl apply -f -
@@ -1230,29 +1095,20 @@ metadata:
 spec:
   runtimeClassName: gvisor
   containers:
-    - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
 EOF
 ```
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Sửa tệp Pod `/tmp/failed-sandbox.yaml</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/failed-sandbox.yaml
 apiVersion: v1
 kind: Pod
@@ -1262,7 +1118,7 @@ metadata:
 spec:
   runtimeClassName: gvisor
   containers:
-    - name: app
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
       image: nginx:alpine
 EOF
 
@@ -1271,22 +1127,13 @@ kubectl apply -f /tmp/failed-sandbox.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Tạo `RuntimeClass` kata có `overhead</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: node.k8s.io/v1
 kind: RuntimeClass

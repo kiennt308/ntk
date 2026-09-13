@@ -1600,110 +1600,65 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V2. 12 câu vấn đáp chuyên sâu (Level 3 - Kiến trúc sư CI/CD)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Câu hỏi:** Tại sao các Kiến trúc sư CI/CD luôn khẳng định **"Quy định bảo mật viết bằng chữ là giấy lộn nếu không tự động hoá thành luật chạy trong pipeline; Conftest và ngôn ngữ Rego biến mọi chính sách tuân thủ an ninh thành mã kiểm thử tự động ngắt pipeline khi vi phạm"**?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Vì các văn bản quy định bảo mật lưu trên PDF/Word thường không được lập trình viên đọc tới hoặc vô tình bị bỏ qua trong quá trình vội vã release.
-- **Compliance as Code (Conftest + Rego)** mã hóa 100% các quy chuẩn an ninh văn bản thành mã phần mềm tự động kiểm thử ở Stage test, tự động đánh rớt pipeline (`exit 1`) khi có bất kỳ dòng cấu hình nào vi phạm mà không cần sự can thiệp thủ công của con người.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì các văn bản quy định bảo mật lưu trên PDF/Word thường không được lập trình viên đọc tới hoặc vô tình bị bỏ qua trong quá trình vội vã release.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Compliance as Code (Conftest + Rego)</b> mã hóa 100% các quy chuẩn an ninh văn bản thành mã phần mềm tự động kiểm thử ở Stage test, tự động đánh rớt pipeline (<code>exit 1</code>) khi có bất kỳ dòng cấu hình nào vi phạm mà không cần sự can thiệp thủ công của con người.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Câu hỏi:** Phân biệt sự khác biệt cốt lõi giữa Security Quality Gate (Trivy/Gitleaks) và Compliance Enforcement (OPA/Conftest)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Security Quality Gate (Trivy/Gitleaks):** Tìm kiếm các lỗ hổng phần mềm CVEs quốc tế hoặc rò rỉ secret key tĩnh do lỗi viết code thô.
-- **Compliance Enforcement (OPA/Conftest):** Kiểm tra xem các tệp cấu hình (`.gitlab-ci.yml`, `Dockerfile`, `deployment.yaml`) có tuân thủ đúng các quy chuẩn kiến trúc và vận hành nội bộ của công ty hay không (như bắt buộc chứa Job `secret-detection`, bắt buộc cờ `runAsNonRoot: true`, cờ `Protected Environment`).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Security Quality Gate (Trivy/Gitleaks):</b> Tìm kiếm các lỗ hổng phần mềm CVEs quốc tế hoặc rò rỉ secret key tĩnh do lỗi viết code thô.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Compliance Enforcement (OPA/Conftest):</b> Kiểm tra xem các tệp cấu hình (<code>.gitlab-ci.yml</code>, <code>Dockerfile</code>, <code>deployment.yaml</code>) có tuân thủ đúng các quy chuẩn kiến trúc và vận hành nội bộ của công ty hay không (như bắt buộc chứa Job <code>secret-detection</code>, bắt buộc cờ <code>runAsNonRoot: true</code>, cờ <code>Protected Environment</code>).</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Câu hỏi:** Nguyên lý hoạt động của Open Policy Agent (OPA) và ngôn ngữ khai báo chính sách `Rego`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - OPA nạp dữ liệu đầu vào (tệp JSON/YAML đã parse) và thực thi truy vấn toán học tập hợp (Set Intersections) trên tập các mệnh đề trong tệp chính sách `.rego`.
-- Ngôn ngữ `Rego` là ngôn ngữ khai báo (Declarative Language). Nếu tất cả các mệnh đề điều kiện trong khối `deny[msg]` đều thỏa mãn, khối `deny` sẽ trả về thông điệp lỗi `msg`, làm OPA thông báo trạng thái FAILED.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• OPA nạp dữ liệu đầu vào (tệp JSON/YAML đã parse) và thực thi truy vấn toán học tập hợp (Set Intersections) trên tập các mệnh đề trong tệp chính sách <code>.rego</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ngôn ngữ <code>Rego</code> là ngôn ngữ khai báo (Declarative Language). Nếu tất cả các mệnh đề điều kiện trong khối <code>deny[msg]</code> đều thỏa mãn, khối <code>deny</code> sẽ trả về thông điệp lỗi <code>msg</code>, làm OPA thông báo trạng thái FAILED.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Câu hỏi:** Nguyên lý hoạt động của công cụ `Conftest` trong việc kiểm thử các tệp cấu hình JSON/YAML/Dockerfile/HCL?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `Conftest` đóng vai trò là một lớp vỏ Wrapper tích hợp bộ công cụ OPA vào quy trình CI/CD.
-- Conftest tự động nhận diện cú pháp tệp đầu vào (`.gitlab-ci.yml`, `Dockerfile`, `deployment.yaml`, `main.tf`), chuyển đổi toàn bộ thành cấu trúc JSON Data trừu tượng AST, nạp các tệp chính sách `policy/*.rego` để OPA đánh giá và trả về kết quả lỗi kèm exit code 0 (Pass) hoặc exit code 1 (Fail).
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Conftest</code> đóng vai trò là một lớp vỏ Wrapper tích hợp bộ công cụ OPA vào quy trình CI/CD.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Conftest tự động nhận diện cú pháp tệp đầu vào (<code>.gitlab-ci.yml</code>, <code>Dockerfile</code>, <code>deployment.yaml</code>, <code>main.tf</code>), chuyển đổi toàn bộ thành cấu trúc JSON Data trừu tượng AST, nạp các tệp chính sách <code>policy/*.rego</code> để OPA đánh giá và trả về kết quả lỗi kèm exit code 0 (Pass) hoặc exit code 1 (Fail).</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Câu hỏi:** Cách viết luật chính sách Rego `deny[msg]` kiểm tra cấu hình bắt buộc trong tệp `.gitlab-ci.yml`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Ta viết luật Rego truy vấn các khối job trong `input`:
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ta viết luật Rego truy vấn các khối job trong <code>input</code>:</div>
   ```rego
   package main
   deny[msg] {
@@ -1717,22 +1672,13 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Câu hỏi:** Cách viết luật chính sách Rego kiểm tra thuộc tính Pod Security Context trong Kubernetes Manifests?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Ta viết luật Rego truy vấn mảng `containers`:
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ta viết luật Rego truy vấn mảng <code>containers</code>:</div>
   ```rego
   package main
   deny[msg] {
@@ -1747,93 +1693,57 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Câu hỏi:** Cấu trúc tệp báo cáo kiểm toán tuân thủ an ninh `gl-compliance-report.json`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Tệp chứa thuộc tính `version: "1.0.0"`, `status: "FAILED"`, `summary` (tổng số luật đánh giá, số luật pass, số luật vi phạm), và mảng `violations` chi tiết mã điều khoản `policy_id`, tệp vi phạm `target_file`, mức độ `severity`, thông điệp `message` và số dòng code `line_number`.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tệp chứa thuộc tính <code>version: "1.0.0"</code>, <code>status: "FAILED"</code>, <code>summary</code> (tổng số luật đánh giá, số luật pass, số luật vi phạm), và mảng <code>violations</code> chi tiết mã điều khoản <code>policy_id</code>, tệp vi phạm <code>target_file</code>, mức độ <code>severity</code>, thông điệp <code>message</code> và số dòng code <code>line_number</code>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Câu hỏi:** Phương pháp quản lý tập trung bộ quy tắc Rego Policies bằng cờ `conftest pull` từ OCI Registry?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Nhóm Security quản lý một Git Repository chứa toàn bộ chính sách Rego của công ty, thực thi `conftest push` đóng gói thành OCI Policy Bundle trên Private Docker Registry.
-- Trong CI Job của 100 dự án con, ta khai báo câu lệnh:
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nhóm Security quản lý một Git Repository chứa toàn bộ chính sách Rego của công ty, thực thi <code>conftest push</code> đóng gói thành OCI Policy Bundle trên Private Docker Registry.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong CI Job của 100 dự án con, ta khai báo câu lệnh:</div>
   ```bash
   conftest pull $CI_REGISTRY/security/compliance-policy:latest
   conftest test --policy policy/ .
   ```
-- Giúp áp dụng tức thì các chính sách an ninh mới nhất cho toàn hệ thống mà không cần chỉnh sửa code từng repo.
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp áp dụng tức thì các chính sách an ninh mới nhất cho toàn hệ thống mà không cần chỉnh sửa code từng repo.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Câu hỏi:** Cách thiết lập Compliance Quality Gate tự động ngắt pipeline (`exit 1`) khi có bất kỳ luật vi phạm nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Trong câu lệnh `conftest test`, không truyền cờ `--warn-only`.
-- Đặt thuộc tính `allow_failure: false` trong CI Job `compliance-test-conftest`. Khi có ít nhất 1 luật `deny[msg]` bị thỏa mãn, Conftest sẽ trả về `exit code 1` đánh rớt pipeline lập tức.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trong câu lệnh <code>conftest test</code>, không truyền cờ <code>--warn-only</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đặt thuộc tính <code>allow_failure: false</code> trong CI Job <code>compliance-test-conftest</code>. Khi có ít nhất 1 luật <code>deny[msg]</code> bị thỏa mãn, Conftest sẽ trả về <code>exit code 1</code> đánh rớt pipeline lập tức.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Câu hỏi:** Phương pháp quản lý trường hợp ngoại lệ chính sách (Policy Exceptions) có vết audit giải trình an toàn trong Rego?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Tạo tệp `policy/exceptions.rego` do nhóm Security quản lý qua `CODEOWNERS`.
-- Định nghĩa luật `exception[msg]` kiểm tra tên dự án và mã Issue phê duyệt:
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tạo tệp <code>policy/exceptions.rego</code> do nhóm Security quản lý qua <code>CODEOWNERS</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Định nghĩa luật <code>exception[msg]</code> kiểm tra tên dự án và mã Issue phê duyệt:</div>
   ```rego
   exception[msg] {
       input.project_name == "legacy-app"
@@ -1846,47 +1756,29 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Câu hỏi:** Cách xử lý sự cố khi lập trình viên tìm cách bypass bước kiểm thử Compliance bằng cách xóa Job Conftest?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Áp dụng cơ chế **GitLab Compliance Pipeline Parent-Child Template** ở tầng Admin / Group Level.
-- Bắt buộc mọi dự án con đều phải thực thi một Parent Pipeline chứa sẵn Job `compliance-test-conftest` do Security Team quản lý; lập trình viên ở dự án con không có quyền chỉnh sửa hay ghi đè Job này trong `.gitlab-ci.yml`.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Áp dụng cơ chế <b style="color: var(--accent-primary);">GitLab Compliance Pipeline Parent-Child Template</b> ở tầng Admin / Group Level.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bắt buộc mọi dự án con đều phải thực thi một Parent Pipeline chứa sẵn Job <code>compliance-test-conftest</code> do Security Team quản lý; lập trình viên ở dự án con không có quyền chỉnh sửa hay ghi đè Job này trong <code>.gitlab-ci.yml</code>.</div>
 
 ---
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Câu hỏi:** Tổng kết quy trình 4 bước triển khai Compliance as Code chuẩn Enterprise trong CI/CD Pipeline?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  1. **Define Rego Policy:** Định nghĩa các bộ luật chính sách `policy/*.rego` kiểm tra `.gitlab-ci.yml`, Dockerfile, K8s.
-2. **Central Repository:** Đóng gói và lưu trữ bộ chính sách tập trung trên OCI Registry.
-3. **Conftest Test Stage:** Thực thi `conftest test` ở Stage test trước khi khởi chạy các bước build.
-4. **Quality Gate Enforcement:** Tự động ngắt pipeline (`exit 1`) nếu phát hiện vi phạm và xuất báo cáo `gl-compliance-report.json`.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Define Rego Policy:</b> Định nghĩa các bộ luật chính sách <code>policy/*.rego</code> kiểm tra <code>.gitlab-ci.yml</code>, Dockerfile, K8s.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Central Repository:</b> Đóng gói và lưu trữ bộ chính sách tập trung trên OCI Registry.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Conftest Test Stage:</b> Thực thi <code>conftest test</code> ở Stage test trước khi khởi chạy các bước build.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Quality Gate Enforcement:</b> Tự động ngắt pipeline (<code>exit 1</code>) nếu phát hiện vi phạm và xuất báo cáo <code>gl-compliance-report.json</code>.</div>
 
 ---
 </div>

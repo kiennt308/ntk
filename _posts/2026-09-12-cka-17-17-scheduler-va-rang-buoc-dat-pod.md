@@ -963,36 +963,27 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày quy trình 2 giai đoạn lập lịch (Filtering và Scoring) của Kube-Scheduler khi gán một Pod mới vào Node trong cụm.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Giai đoạn 1 — Filtering (Lọc điều kiện / Predicates):**
-  - Kube-Scheduler kiểm tra tất cả các Node trong cụm để **loại bỏ 100% các Node không đủ điều kiện**.
-  - Các tiêu chí lọc bao gồm: Đủ CPU/RAM request không (`NodeResourcesFit`), Node có dính Taint không (`NodeLifecycle`), nhãn `nodeSelector` / `nodeAffinity` có khớp không (`NodeName` / `NodePorts`).
-- **Giai đoạn 2 — Scoring (Chấm điểm / Priorities):**
-  - Scheduler tính toán điểm số từ **0 đến 10** cho các Node còn sót lại sau vòng Lọc.
-  - Các tiêu chí chấm điểm bao gồm: Trọng số `weight` của `nodeAffinity` / `podAffinity`, mức độ cân bằng tài nguyên RAM/CPU.
-- **Kết quả:** Node đạt tổng điểm số cao nhất sẽ được chọn làm nơi gán Pod. Nếu có nhiều Node bằng điểm, chọn ngẫu nhiên 1 Node.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giai đoạn 1 — Filtering (Lọc điều kiện / Predicates):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kube-Scheduler kiểm tra tất cả các Node trong cụm để <b style="color: var(--accent-primary);">loại bỏ 100% các Node không đủ điều kiện</b>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Các tiêu chí lọc bao gồm: Đủ CPU/RAM request không (<code>NodeResourcesFit</code>), Node có dính Taint không (<code>NodeLifecycle</code>), nhãn <code>nodeSelector</code> / <code>nodeAffinity</code> có khớp không (<code>NodeName</code> / <code>NodePorts</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giai đoạn 2 — Scoring (Chấm điểm / Priorities):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Scheduler tính toán điểm số từ <b style="color: var(--accent-primary);">0 đến 10</b> cho các Node còn sót lại sau vòng Lọc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Các tiêu chí chấm điểm bao gồm: Trọng số <code>weight</code> của <code>nodeAffinity</code> / <code>podAffinity</code>, mức độ cân bằng tài nguyên RAM/CPU.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kết quả:</b> Node đạt tổng điểm số cao nhất sẽ được chọn làm nơi gán Pod. Nếu có nhiều Node bằng điểm, chọn ngẫu nhiên 1 Node.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo Scheduler gán Pod ngẫu nhiên không qua giai đoạn nào.
-- **1đ:** Nói được Lọc và Chấm điểm nhưng không phân biệt được vai trò loại bỏ Node không đủ điều kiện vs chấm điểm từ 0-10 (dính trần 1đ).
-- **2đ:** Giải thích chuẩn xác quy trình 2 bước Filtering (Lọc) và Scoring (Chấm điểm 0-10) kèm các tiêu chí chính.
-- **3đ:** Trả lời xuất sắc, minh hoạ bằng thông báo `FailedScheduling` trong `kubectl describe`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Scheduler gán Pod ngẫu nhiên không qua giai đoạn nào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được Lọc và Chấm điểm nhưng không phân biệt được vai trò loại bỏ Node không đủ điều kiện vs chấm điểm từ 0-10 (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác quy trình 2 bước Filtering (Lọc) và Scoring (Chấm điểm 0-10) kèm các tiêu chí chính.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng thông báo <code>FailedScheduling</code> trong <code>kubectl describe</code>.</div>
 
-**Câu hỏi đào sâu:** Nếu ở vòng Filtering mà tất cả các Node đều bị loại bỏ thì Pod sẽ ở trạng thái nào? *(Đáp án: Pod bị kẹt ở trạng thái `Pending` với sự cố `FailedScheduling`).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu ở vòng Filtering mà tất cả các Node đều bị loại bỏ thì Pod sẽ ở trạng thái nào? *(Đáp án: Pod bị kẹt ở trạng thái <code>Pending</code> với sự cố <code>FailedScheduling</code>).*
 </div>
 </details>
 

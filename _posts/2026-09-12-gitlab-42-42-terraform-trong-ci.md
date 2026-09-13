@@ -1804,31 +1804,22 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## §V1. 12 Câu hỏi vấn đáp kiểm tra phản xạ
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>** Sự khác biệt nguy hiểm nhất giữa việc chạy câu lệnh `terraform apply tfplan` (dùng tệp artifact plan binary) và chạy `terraform apply -auto-approve` (không dùng tệp artifact plan) trong CI Pipeline là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Gợi ý trả lời ngắn:**
-Chạy không dùng artifact sẽ tự tính toán lại plan mới tại thời điểm apply, có thể xóa nhầm tài nguyên Production do sai lệch state; dùng `tfplan` artifact đảm bảo thực thi ĐÚNG các hành động đã được review trên MR.
+  
+<b style="color: var(--accent-primary);">Gợi ý trả lời ngắn:</b>
+Chạy không dùng artifact sẽ tự tính toán lại plan mới tại thời điểm apply, có thể xóa nhầm tài nguyên Production do sai lệch state; dùng <code>tfplan</code> artifact đảm bảo thực thi ĐÚNG các hành động đã được review trên MR.
 
-**Đáp án chuẩn:**
-- **Giải thích nguy cơ:**
-  Nếu không truyền file binary plan artifact (`tfplan`), Terraform sẽ tự động đọc lại trạng thái Cloud API và tạo lại một plan mới tại thời điểm chạy stage `apply`. Nếu trong khoảng thời gian chờ phê duyệt manual gate có một Merge Request khác được merge hoặc ai đó sửa Cloud Console, plan mới này có thể chứa hành động nguy hiểm (như xóa VPC hay Database) mà chưa từng được bất kỳ ai review trên Merge Request!
-- **Cơ chế an toàn:** Lệnh `terraform apply tfplan` bắt buộc thực thi chính xác 100% các hành động đã được đóng gói trong tệp artifact binary. Nếu State File bị thay đổi, lệnh apply sẽ nổ lỗi ngắt lập tức.
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích nguy cơ:</b></div>
+  Nếu không truyền file binary plan artifact (<code>tfplan</code>), Terraform sẽ tự động đọc lại trạng thái Cloud API và tạo lại một plan mới tại thời điểm chạy stage <code>apply</code>. Nếu trong khoảng thời gian chờ phê duyệt manual gate có một Merge Request khác được merge hoặc ai đó sửa Cloud Console, plan mới này có thể chứa hành động nguy hiểm (như xóa VPC hay Database) mà chưa từng được bất kỳ ai review trên Merge Request!
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế an toàn:</b> Lệnh <code>terraform apply tfplan</code> bắt buộc thực thi chính xác 100% các hành động đã được đóng gói trong tệp artifact binary. Nếu State File bị thay đổi, lệnh apply sẽ nổ lỗi ngắt lập tức.</div>
 
-**Bẫy tuyển dụng / Trả lời sai hay gặp:**
-Cho rằng "chạy `terraform apply -auto-approve` ở stage apply giúp tiết kiệm thời gian CI mà không có rủi ro nào".
+<b style="color: var(--accent-primary);">Bẫy tuyển dụng / Trả lời sai hay gặp:</b>
+Cho rằng "chạy <code>terraform apply -auto-approve</code> ở stage apply giúp tiết kiệm thời gian CI mà không có rủi ro nào".
 </div>
 </details>
 

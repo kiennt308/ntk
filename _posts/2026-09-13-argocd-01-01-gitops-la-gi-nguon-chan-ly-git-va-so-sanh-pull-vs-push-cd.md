@@ -388,193 +388,103 @@ kubectl logs -n argocd -l app.kubernetes.io/name=argocd-application-controller -
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao GitOps yêu cầu hệ thống phải được mô tả bằng Declarative thay vì Imperative?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì mô hình Declarative mô tả "kết quả mong muốn cuối cùng" (What you want) độc lập với trạng thái hiện tại. Điều này cho phép hệ thống tự động tính toán khoảng cách (Diff) và hội tụ trạng thái mà không gây ra lỗi trùng lặp khi chạy lại nhiều lần (Idempotency).
+  
+Vì mô hình Declarative mô tả "kết quả mong muốn cuối cùng" (What you want) độc lập với trạng thái hiện tại. Điều này cho phép hệ thống tự động tính toán khoảng cách (Diff) và hội tụ trạng thái mà không gây ra lỗi trùng lặp khi chạy lại nhiều lần (Idempotency).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Trong mô hình Pull-based GitOps, nếu Git Server (GitHub/GitLab) bị sập trong 1 giờ thì ứng dụng trên Kubernetes có bị dừng không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Không!** Các Pods và dịch vụ trên Kubernetes vẫn tiếp tục hoạt động bình thường. Trong thời gian Git sập, chỉ có tính năng đồng bộ phiên bản mới bị tạm ngưng; hệ thống hiện tại hoàn toàn không bị ảnh hưởng.
+  
+<b style="color: var(--accent-primary);">Không!</b> Các Pods và dịch vụ trên Kubernetes vẫn tiếp tục hoạt động bình thường. Trong thời gian Git sập, chỉ có tính năng đồng bộ phiên bản mới bị tạm ngưng; hệ thống hiện tại hoàn toàn không bị ảnh hưởng.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Làm thế nào để xử lý sự cố khẩn cấp (Hotfix) trên Production theo đúng chuẩn GitOps?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Kỹ sư tạo một nhánh hotfix trên Git, commit thay đổi $\rightarrow$ Tạo Pull Request $\rightarrow$ Duyệt khẩn cấp (Emergency Approval) $\rightarrow$ Merge vào nhánh chính $\rightarrow$ Argo CD tự động kéo mã nguồn mới về triển khai trong vài giây. Lịch sử sửa lỗi được lưu vết 100% trên Git.
+  
+Kỹ sư tạo một nhánh hotfix trên Git, commit thay đổi $\rightarrow$ Tạo Pull Request $\rightarrow$ Duyệt khẩn cấp (Emergency Approval) $\rightarrow$ Merge vào nhánh chính $\rightarrow$ Argo CD tự động kéo mã nguồn mới về triển khai trong vài giây. Lịch sử sửa lỗi được lưu vết 100% trên Git.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Sự khác nhau cơ bản giữa GitOps và Infrastructure as Code (IaC như Terraform) là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  IaC (Terraform) thường chạy theo mô hình Push (khi kỹ sư chạy `terraform apply`). Nếu ai đó sửa thủ công trên Cloud Console sau đó, Terraform không tự sửa lại nếu không có ai chạy lại lệnh. GitOps bổ sung thêm **Reconciliation Loop chạy liên tục 24/7** để tự động phát hiện và triệt tiêu sai lệch mà không cần sự can thiệp của con người.
+  
+IaC (Terraform) thường chạy theo mô hình Push (khi kỹ sư chạy <code>terraform apply</code>). Nếu ai đó sửa thủ công trên Cloud Console sau đó, Terraform không tự sửa lại nếu không có ai chạy lại lệnh. GitOps bổ sung thêm <b style="color: var(--accent-primary);">Reconciliation Loop chạy liên tục 24/7</b> để tự động phát hiện và triệt tiêu sai lệch mà không cần sự can thiệp của con người.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Cần lưu ý gì khi lưu trữ Secrets (Mật khẩu DB, API Keys) trong kho GitOps?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Tuyệt đối không lưu Plaintext Secret lên Git. Bắt buộc phải sử dụng các giải pháp mã hóa an toàn như **Bitnami Sealed Secrets**, **External Secrets Operator (kết nối HashiCorp Vault / AWS Secrets Manager)**, hoặc **SOPS**.
+  
+Tuyệt đối không lưu Plaintext Secret lên Git. Bắt buộc phải sử dụng các giải pháp mã hóa an toàn như <b style="color: var(--accent-primary);">Bitnami Sealed Secrets</b>, <b style="color: var(--accent-primary);">External Secrets Operator (kết nối HashiCorp Vault / AWS Secrets Manager)</b>, hoặc <b style="color: var(--accent-primary);">SOPS</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Thuật ngữ "Single Source of Truth" trong GitOps có ý nghĩa gì đối với việc kiểm toán (Audit)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nghĩa là mọi cấu hình đang chạy trên thực tế đều bắt buộc phải có nguồn gốc từ một commit cụ thể trên Git. Kiểm toán viên chỉ cần kiểm tra lịch sử Git Commit và Pull Request là có thể xác minh 100% ai đã thay đổi gì, vào thời điểm nào và đã qua những bước phê duyệt nào.
+  
+Nghĩa là mọi cấu hình đang chạy trên thực tế đều bắt buộc phải có nguồn gốc từ một commit cụ thể trên Git. Kiểm toán viên chỉ cần kiểm tra lịch sử Git Commit và Pull Request là có thể xác minh 100% ai đã thay đổi gì, vào thời điểm nào và đã qua những bước phê duyệt nào.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Điều gì xảy ra nếu hai người cùng sửa một cấu hình ứng dụng trên Git cùng lúc?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Git sẽ sử dụng cơ chế xử lý xung đột phân nhánh (Merge Conflict Resolution). Người thứ hai bắt buộc phải rebase hoặc merge nhánh mới nhất trước khi Pull Request được chấp thuận, đảm bảo tính nhất quán tuyệt đối trước khi đưa xuống cụm.
+  
+Git sẽ sử dụng cơ chế xử lý xung đột phân nhánh (Merge Conflict Resolution). Người thứ hai bắt buộc phải rebase hoặc merge nhánh mới nhất trước khi Pull Request được chấp thuận, đảm bảo tính nhất quán tuyệt đối trước khi đưa xuống cụm.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao việc tách biệt App Code Repo và Config GitOps Repo là một kiến trúc chuẩn mực?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  (1) Giúp giảm thiểu số lần kích hoạt CI không cần thiết khi chỉ sửa config, (2) Cho phép phân quyền RBAC khác nhau (Developer có quyền push App Code nhưng chỉ có quyền tạo PR trên Config Repo), và (3) Ngăn chặn vòng lặp CI/CD vô tận khi CI commit image tag mới vào chính repo của nó.
+  
+(1) Giúp giảm thiểu số lần kích hoạt CI không cần thiết khi chỉ sửa config, (2) Cho phép phân quyền RBAC khác nhau (Developer có quyền push App Code nhưng chỉ có quyền tạo PR trên Config Repo), và (3) Ngăn chặn vòng lặp CI/CD vô tận khi CI commit image tag mới vào chính repo của nó.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tại sao mô hình Branch-per-Environment lại dễ dẫn đến tình trạng "Git Merge Hell"?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi mỗi môi trường là một nhánh riêng (`dev`, `staging`, `prod`), các nhánh này theo thời gian sẽ có sự phân kỳ cấu hình (ví dụ nhánh dev thêm các biến debug nhưng không bao giờ đưa lên prod). Khi chạy `git merge` từ dev sang staging sang prod, các xung đột merge conflict sẽ xảy ra liên tục và làm tăng nguy cơ vô tình đưa cấu hình thử nghiệm lên Production.
+  
+Khi mỗi môi trường là một nhánh riêng (<code>dev</code>, <code>staging</code>, <code>prod</code>), các nhánh này theo thời gian sẽ có sự phân kỳ cấu hình (ví dụ nhánh dev thêm các biến debug nhưng không bao giờ đưa lên prod). Khi chạy <code>git merge</code> từ dev sang staging sang prod, các xung đột merge conflict sẽ xảy ra liên tục và làm tăng nguy cơ vô tình đưa cấu hình thử nghiệm lên Production.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Cơ chế nào đảm bảo tính toàn vẹn của mã nguồn trên Git để tránh kẻ xấu chèn commit giả danh?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Sử dụng **Chữ ký số GPG (GPG Commit Signing)** kết hợp với cơ chế **Signed Commits Enforcement** trên GitHub/GitLab. Argo CD có thể cấu hình tính năng `gpg.verification` để từ chối đồng bộ bất kỳ commit nào không có chữ ký GPG hợp lệ của các kỹ sư được ủy quyền.
+  
+Sử dụng <b style="color: var(--accent-primary);">Chữ ký số GPG (GPG Commit Signing)</b> kết hợp với cơ chế <b style="color: var(--accent-primary);">Signed Commits Enforcement</b> trên GitHub/GitLab. Argo CD có thể cấu hình tính năng <code>gpg.verification</code> để từ chối đồng bộ bất kỳ commit nào không có chữ ký GPG hợp lệ của các kỹ sư được ủy quyền.
 </div>
 </details>
 

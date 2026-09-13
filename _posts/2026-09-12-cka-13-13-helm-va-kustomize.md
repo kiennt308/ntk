@@ -894,36 +894,27 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Phân biệt sự khác nhau về triết lý giữa Helm (Templating engine) và Kustomize (Declarative Overlay Patches).</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - **Helm (Triết lý Templating):**
-  - Sử dụng mẫu Go template (`{{ .Values.<key> }}`) để đè các tham số đầu vào từ `values.yaml` vào bản kê khai.
-  - Phù hợp cho đóng gói, chia sẻ và phân phối ứng dụng phức tạp cho cộng đồng (như Nginx Ingress, Prometheus, Cert-Manager).
-- **Kustomize (Triết lý Declarative Overlay Patches):**
-  - Không sử dụng bất kỳ cú pháp template nào; giữ nguyên bản kê khai YAML thuần chuẩn Kubernetes.
-  - Phân tách cấu hình theo mô hình `base/` (dùng chung) và `overlays/<env>/` (vá cấu hình đè cho từng môi trường).
-  - Phù hợp quản lý mã nguồn ứng dụng nội bộ công ty (In-house microservices) để tránh "rừng template" rối rắm.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Helm (Triết lý Templating):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sử dụng mẫu Go template (<code>{{ .Values.<key> }}</code>) để đè các tham số đầu vào từ <code>values.yaml</code> vào bản kê khai.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phù hợp cho đóng gói, chia sẻ và phân phối ứng dụng phức tạp cho cộng đồng (như Nginx Ingress, Prometheus, Cert-Manager).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kustomize (Triết lý Declarative Overlay Patches):</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không sử dụng bất kỳ cú pháp template nào; giữ nguyên bản kê khai YAML thuần chuẩn Kubernetes.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phân tách cấu hình theo mô hình <code>base/</code> (dùng chung) và <code>overlays/<env>/</code> (vá cấu hình đè cho từng môi trường).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phù hợp quản lý mã nguồn ứng dụng nội bộ công ty (In-house microservices) để tránh "rừng template" rối rắm.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo Helm và Kustomize giống hệt nhau.
-- **1đ:** Trả lời Helm dùng template còn Kustomize dùng file nhưng không phân biệt được phạm vi ứng dụng công đồng vs microservice nội bộ (dính trần 1đ).
-- **2đ:** Phân tích chuẩn xác triết lý Go Templating của Helm vs Overlay Patches của Kustomize và trường hợp sử dụng phù hợp.
-- **3đ:** Trả lời xuất sắc, chỉ ra Kustomize được tích hợp sẵn trong `kubectl -k`.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Helm và Kustomize giống hệt nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Helm dùng template còn Kustomize dùng file nhưng không phân biệt được phạm vi ứng dụng công đồng vs microservice nội bộ (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác triết lý Go Templating của Helm vs Overlay Patches của Kustomize và trường hợp sử dụng phù hợp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra Kustomize được tích hợp sẵn trong <code>kubectl -k</code>.</div>
 
-**Câu hỏi đào sâu:** Khi nào nên kết hợp cả Helm và Kustomize trong cùng một dự án? *(Đáp án: Dùng Helm render tệp YAML trước, sau đó dùng Kustomize đè patch nhỏ cho môi trường đặc thù).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi nào nên kết hợp cả Helm và Kustomize trong cùng một dự án? *(Đáp án: Dùng Helm render tệp YAML trước, sau đó dùng Kustomize đè patch nhỏ cho môi trường đặc thù).*
 </div>
 </details>
 

@@ -838,34 +838,25 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Collection FQCN `ansible.posix.firewalld` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Ansible Collection FQCN nào là công cụ tiêu chuẩn để quản lý dịch vụ tường lửa Firewalld trên Enterprise Linux? Nêu 3 tham số cơ bản của module này. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Collection FQCN: `ansible.posix.firewalld`
-- 3 Tham số cơ bản:
-  1. `zone:` Chỉ định phân vùng bảo mật (ví dụ `zone: public` hoặc `zone: internal`).
-  2. `service:` / `port:` Chỉ định tên dịch vụ mở (như `service: http`) hoặc số cổng kèm giao thức (như `port: 8080/tcp`).
-  3. `state:` Trạng thái áp dụng (`state: enabled` mở quy tắc, `state: disabled` đóng quy tắc).
-**Tiêu chí chấm:**
-- 0: Không nhớ Collection `ansible.posix.firewalld`.
-- 1: Biết tên Collection nhưng không liệt kê được các tham số `zone`, `service`, `port`, `state`.
-- 2: Phân tích chính xác vai trò Collection FQCN chính chủ của Red Hat trong quản lý Firewalld.
-- 3: Nêu đúng + viết đoạn Task Ansible `ansible.posix.firewalld` hoàn chỉnh.
-**Câu hỏi đào sâu:** Làm thế nào để cài đặt Collection `ansible.posix` nếu môi trường Control Node bị thiếu? *(Chạy lệnh `ansible-galaxy collection install ansible.posix`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Collection FQCN nào là công cụ tiêu chuẩn để quản lý dịch vụ tường lửa Firewalld trên Enterprise Linux? Nêu 3 tham số cơ bản của module này. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Collection FQCN: <code>ansible.posix.firewalld</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3 Tham số cơ bản:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>zone:</code> Chỉ định phân vùng bảo mật (ví dụ <code>zone: public</code> hoặc <code>zone: internal</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>service:</code> / <code>port:</code> Chỉ định tên dịch vụ mở (như <code>service: http</code>) hoặc số cổng kèm giao thức (như <code>port: 8080/tcp</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>state:</code> Trạng thái áp dụng (<code>state: enabled</code> mở quy tắc, <code>state: disabled</code> đóng quy tắc).</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nhớ Collection <code>ansible.posix.firewalld</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết tên Collection nhưng không liệt kê được các tham số <code>zone</code>, <code>service</code>, <code>port</code>, <code>state</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò Collection FQCN chính chủ của Red Hat trong quản lý Firewalld.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn Task Ansible <code>ansible.posix.firewalld</code> hoàn chỉnh.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Làm thế nào để cài đặt Collection <code>ansible.posix</code> nếu môi trường Control Node bị thiếu? *(Chạy lệnh <code>ansible-galaxy collection install ansible.posix</code>.)*
 </div>
 </details>
 

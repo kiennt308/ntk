@@ -843,32 +843,23 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao Kubernetes cấm nâng cấp nhảy cách 2 minor version (ví dụ từ v1.33 thẳng lên v1.35)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - Mỗi minor version mới (ví dụ v1.34) có thể chính thức gỡ bỏ hoàn toàn các trường API đã bị đánh dấu **deprecated** ở các phiên bản cũ.
-- Nâng cấp nhảy cách 2 minor version (v1.33 -> v1.35) sẽ khiến các bản kê khai trong etcd bị gãy do thiếu tầng dịch chuyển tiếp (conversion webhooks).
-- Đồng thời, Kubelet và các controller sẽ bị vỡ tương thích gRPC API. Quy tắc chuẩn bắt buộc phải nâng cấp từng nấc một: `v1.33 -> v1.34 -> v1.35`.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mỗi minor version mới (ví dụ v1.34) có thể chính thức gỡ bỏ hoàn toàn các trường API đã bị đánh dấu <b style="color: var(--accent-primary);">deprecated</b> ở các phiên bản cũ.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nâng cấp nhảy cách 2 minor version (v1.33 -> v1.35) sẽ khiến các bản kê khai trong etcd bị gãy do thiếu tầng dịch chuyển tiếp (conversion webhooks).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Đồng thời, Kubelet và các controller sẽ bị vỡ tương thích gRPC API. Quy tắc chuẩn bắt buộc phải nâng cấp từng nấc một: <code>v1.33 -> v1.34 -> v1.35</code>.</div>
 
-**Tiêu chí chấm:**
-- **0đ:** Bảo do hệ thống không cho phép tải file.
-- **1đ:** Trả lời do quy định của Kubernetes nhưng không giải thích được sự gỡ bỏ API deprecated và tầng chuyển tiếp etcd (dính trần 1đ).
-- **2đ:** Phân tích chính xác rủi ro gỡ bỏ API deprecated và yêu cầu nâng cấp từng minor version.
-- **3đ:** Trả lời xuất sắc, nêu quy tắc Version Skew Policy của CNCF.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo do hệ thống không cho phép tải file.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do quy định của Kubernetes nhưng không giải thích được sự gỡ bỏ API deprecated và tầng chuyển tiếp etcd (dính trần 1đ).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chính xác rủi ro gỡ bỏ API deprecated và yêu cầu nâng cấp từng minor version.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu quy tắc Version Skew Policy của CNCF.</div>
 
-**Câu hỏi đào sâu:** Đối với Patch Version (ví dụ v1.35.0 lên v1.35.3) thì có được nhảy cách không? *(Đáp án: Được phép nhảy cách trực tiếp từ v1.35.0 lên v1.35.3).*
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Đối với Patch Version (ví dụ v1.35.0 lên v1.35.3) thì có được nhảy cách không? *(Đáp án: Được phép nhảy cách trực tiếp từ v1.35.0 lên v1.35.3).*
 </div>
 </details>
 

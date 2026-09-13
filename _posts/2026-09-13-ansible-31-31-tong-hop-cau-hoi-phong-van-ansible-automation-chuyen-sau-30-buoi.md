@@ -41,272 +41,164 @@ cơ chế · `2` đúng cơ chế · `3` đúng cơ chế **và** nêu lệnh/co
 ## V2. Bộ câu hỏi — ĐÚNG 12 câu
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ansible push-based và agentless nghĩa là gì? Máy đích cần cài gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Push: control node chủ động đẩy module qua SSH khi ta chạy. Agentless: máy đích **không**
-cần agent Ansible, chỉ cần **Python + sshd**. Kết nối do control node khởi tạo, chạy xong đóng.
-**Tiêu chí chấm:** 0 sai · 1 nói "không cần agent" mà không rõ · 2 đúng push+agentless · 3 kèm "máy đích chỉ cần Python+sshd" và ví dụ `ping`.
-**Câu hỏi đào sâu:** So với Puppet cổ điển? *(Puppet pull+agent, tự kéo theo chu kỳ.)*
+  
+Push: control node chủ động đẩy module qua SSH khi ta chạy. Agentless: máy đích <b style="color: var(--accent-primary);">không</b>
+cần agent Ansible, chỉ cần <b style="color: var(--accent-primary);">Python + sshd</b>. Kết nối do control node khởi tạo, chạy xong đóng.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 sai · 1 nói "không cần agent" mà không rõ · 2 đúng push+agentless · 3 kèm "máy đích chỉ cần Python+sshd" và ví dụ <code>ping</code>.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> So với Puppet cổ điển? *(Puppet pull+agent, tự kéo theo chu kỳ.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Idempotency là gì? Bằng chứng cụ thể là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chạy playbook lần hai trên máy đã đúng trạng thái **không đổi gì**. Bằng chứng:
-`changed=0` ở PLAY RECAP lần hai. Mô tả *trạng thái muốn*, không phải *lệnh cần chạy*.
-**Tiêu chí chấm:** 0 không biết · 1 "chạy lại vẫn được" · 2 nêu `changed=0` · 3 kèm cách chứng minh (chạy hai lần) và vì sao nó là linh hồn CM.
-**Câu hỏi đào sâu:** Lần hai vẫn `changed` mà không ai đổi máy — nghi gì? *(Task `command`/`shell` không idempotent.)*
+  
+Chạy playbook lần hai trên máy đã đúng trạng thái <b style="color: var(--accent-primary);">không đổi gì</b>. Bằng chứng:
+<code>changed=0</code> ở PLAY RECAP lần hai. Mô tả *trạng thái muốn*, không phải *lệnh cần chạy*.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 "chạy lại vẫn được" · 2 nêu <code>changed=0</code> · 3 kèm cách chứng minh (chạy hai lần) và vì sao nó là linh hồn CM.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Lần hai vẫn <code>changed</code> mà không ai đổi máy — nghi gì? *(Task <code>command</code>/<code>shell</code> không idempotent.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Vì sao `command`/`shell` không idempotent? Sửa thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chúng không có khái niệm trạng thái, chỉ chạy lệnh → luôn `changed`. Sửa: dùng module
-chuyên (idempotent), hoặc thêm `creates`/`removes`/`changed_when` để chặn chạy lại/định nghĩa "đổi".
-**Tiêu chí chấm:** 0 không biết · 1 "shell xấu" chung chung · 2 đúng lý do · 3 kèm `creates`/`changed_when` và ví dụ module chuyên thay thế.
-**Câu hỏi đào sâu:** Khi nào buộc phải dùng `shell`? *(Khi không có module chuyên; khi đó thêm creates/changed_when.)*
+  
+Chúng không có khái niệm trạng thái, chỉ chạy lệnh → luôn <code>changed</code>. Sửa: dùng module
+chuyên (idempotent), hoặc thêm <code>creates</code>/<code>removes</code>/<code>changed_when</code> để chặn chạy lại/định nghĩa "đổi".
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 "shell xấu" chung chung · 2 đúng lý do · 3 kèm <code>creates</code>/<code>changed_when</code> và ví dụ module chuyên thay thế.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi nào buộc phải dùng <code>shell</code>? *(Khi không có module chuyên; khi đó thêm creates/changed_when.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>PLAY RECAP` xanh có đảm bảo máy đúng trạng thái không? Vì sao?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Không. Recap chỉ tổng hợp cái **module báo cáo** cho controller. `ignore_errors` giấu
-lỗi, `changed_when: false` che thay đổi, nhầm inventory chạy sai host — recap vẫn xanh. Kiểm máy đích:
-`docker exec ... systemctl is-active`.
-**Tiêu chí chấm:** 0 "recap xanh là xong" (trần 1) · 1 mơ hồ · 2 nói recap không đủ · 3 kèm ≥2 ca xanh-mà-sai và lệnh kiểm máy đích.
-**Câu hỏi đào sâu:** Kiểm dịch vụ chạy thật bằng lệnh gì? *(`docker exec <target> systemctl is-active <svc>`.)*
+  
+Không. Recap chỉ tổng hợp cái <b style="color: var(--accent-primary);">module báo cáo</b> cho controller. <code>ignore_errors</code> giấu
+lỗi, <code>changed_when: false</code> che thay đổi, nhầm inventory chạy sai host — recap vẫn xanh. Kiểm máy đích:
+<code>docker exec ... systemctl is-active</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 "recap xanh là xong" (trần 1) · 1 mơ hồ · 2 nói recap không đủ · 3 kèm ≥2 ca xanh-mà-sai và lệnh kiểm máy đích.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Kiểm dịch vụ chạy thật bằng lệnh gì? *(<code>docker exec <target> systemctl is-active <svc></code>.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Nêu ba cách làm recap "xanh mà sai".</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `ignore_errors: true` (biến task đỏ thành tiếp tục), `changed_when: false` (ép luôn `ok`),
+  
+<code>ignore_errors: true</code> (biến task đỏ thành tiếp tục), <code>changed_when: false</code> (ép luôn <code>ok</code>),
 nhầm inventory pattern (chạy đúng nhưng trên host khác cái ta tưởng).
-**Tiêu chí chấm:** 0 không biết · 1 một cách · 2 hai cách · 3 ba cách + hệ quả từng cái.
-**Câu hỏi đào sâu:** `ignore_errors` có bao giờ hợp lý không? *(Có — khi lỗi dự kiến và xử ở task sau; phải có chủ đích.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 một cách · 2 hai cách · 3 ba cách + hệ quả từng cái.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> <code>ignore_errors</code> có bao giờ hợp lý không? *(Có — khi lỗi dự kiến và xử ở task sau; phải có chủ đích.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Inventory là gì? Kiểm pattern trước khi chạy bằng lệnh nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Danh sách máy bị quản + nhóm + biến kết nối (host, user). Pattern (`all`, tên nhóm,
-`web:!db`) chọn tập host mỗi lần chạy. Kiểm: `ansible-inventory --graph`, `ansible <pattern> --list-hosts`.
-**Tiêu chí chấm:** 0 không biết · 1 "danh sách máy" · 2 đủ + pattern · 3 kèm lệnh kiểm và vì sao kiểm trước khi chạy task đổi trạng thái.
-**Câu hỏi đào sâu:** Vì sao kiểm `--list-hosts` trước? *(Tránh chạy nhầm máy — recap xanh trên sai host.)*
+  
+Danh sách máy bị quản + nhóm + biến kết nối (host, user). Pattern (<code>all</code>, tên nhóm,
+<code>web:!db</code>) chọn tập host mỗi lần chạy. Kiểm: <code>ansible-inventory --graph</code>, <code>ansible <pattern> --list-hosts</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 "danh sách máy" · 2 đủ + pattern · 3 kèm lệnh kiểm và vì sao kiểm trước khi chạy task đổi trạng thái.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Vì sao kiểm <code>--list-hosts</code> trước? *(Tránh chạy nhầm máy — recap xanh trên sai host.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Ad-hoc khác playbook ở đâu? Khi nào dùng cái nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ad-hoc: một module một lần (`ansible <pat> -m <mod> -a "..."`), nhanh, không lưu, không
+  
+Ad-hoc: một module một lần (<code>ansible <pat> -m <mod> -a "..."</code>), nhanh, không lưu, không
 version. Playbook: nhiều task, lặp lại được, đưa vào git. Việc >1 lần hoặc cần review → playbook.
-**Tiêu chí chấm:** 0 không biết · 1 nêu tên · 2 đúng khác biệt · 3 kèm tiêu chí chọn và "mất vết" khi ad-hoc prod.
-**Câu hỏi đào sâu:** Ad-hoc có idempotent không? *(Có nếu dùng module idempotent — cùng module với playbook.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 nêu tên · 2 đúng khác biệt · 3 kèm tiêu chí chọn và "mất vết" khi ad-hoc prod.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Ad-hoc có idempotent không? *(Có nếu dùng module idempotent — cùng module với playbook.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Ansible khác Puppet/Chef ở mô hình nào? Đánh đổi là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ansible push + agentless (chạy khi gọi, không agent); Puppet/Chef cổ điển pull + agent
+  
+Ansible push + agentless (chạy khi gọi, không agent); Puppet/Chef cổ điển pull + agent
 (tự kéo theo chu kỳ). Push: đơn giản, nhanh triển khai, kiểm soát thời điểm. Pull: hội tụ liên tục, tự
 sửa drift, mở rộng hạm đội lớn tốt hơn.
-**Tiêu chí chấm:** 0 "giống nhau" · 1 nói khác mà không rõ · 2 đúng push/pull · 3 kèm đánh đổi hai chiều.
-**Câu hỏi đào sâu:** Muốn Ansible hội tụ định kỳ thì sao? *(Lên lịch cron/AWX — Ansible không tự chạy nền.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 "giống nhau" · 1 nói khác mà không rõ · 2 đúng push/pull · 3 kèm đánh đổi hai chiều.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Muốn Ansible hội tụ định kỳ thì sao? *(Lên lịch cron/AWX — Ansible không tự chạy nền.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Ansible khác Terraform ở mục đích nào? Ghép thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Ansible = configuration management (cấu hình bên trong máy đã có, không state tập trung);
+  
+Ansible = configuration management (cấu hình bên trong máy đã có, không state tập trung);
 Terraform = provisioning (tạo/huỷ hạ tầng, có state, plan/diff). Ghép: Terraform dựng VM → xuất IP →
 Ansible dùng IP làm inventory cài phần mềm.
-**Tiêu chí chấm:** 0 "giống nhau" · 1 khác mà không rõ · 2 đúng phân vai · 3 kèm mẫu ghép cụ thể.
-**Câu hỏi đào sâu:** Dùng Terraform `provisioner` cài phần mềm có nên không? *(Không — chống thiết kế, không idempotent; dùng Ansible.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 "giống nhau" · 1 khác mà không rõ · 2 đúng phân vai · 3 kèm mẫu ghép cụ thể.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Dùng Terraform <code>provisioner</code> cài phần mềm có nên không? *(Không — chống thiết kế, không idempotent; dùng Ansible.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>UNREACHABLE` thường do đâu, KHÔNG phải do đâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Do **SSH/inventory**: chưa trao key, sai `ansible_host`/user, host không tới được. KHÔNG
-phải do module hay logic playbook — module còn chưa chạy được vì chưa kết nối. Kiểm `ssh ansible@<ip> true`.
-**Tiêu chí chấm:** 0 đổ lỗi module · 1 "lỗi kết nối" · 2 chỉ ra SSH/inventory · 3 kèm bước chẩn đoán (`ssh ... true`, `--list-hosts`).
-**Câu hỏi đào sâu:** Khác `FAILED` chỗ nào? *(UNREACHABLE = không kết nối được; FAILED = kết nối được nhưng task lỗi.)*
+  
+Do <b style="color: var(--accent-primary);">SSH/inventory</b>: chưa trao key, sai <code>ansible_host</code>/user, host không tới được. KHÔNG
+phải do module hay logic playbook — module còn chưa chạy được vì chưa kết nối. Kiểm <code>ssh ansible@<ip> true</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 đổ lỗi module · 1 "lỗi kết nối" · 2 chỉ ra SSH/inventory · 3 kèm bước chẩn đoán (<code>ssh ... true</code>, <code>--list-hosts</code>).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khác <code>FAILED</code> chỗ nào? *(UNREACHABLE = không kết nối được; FAILED = kết nối được nhưng task lỗi.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Vì sao nên dùng FQCN như `ansible.builtin.copy`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Nêu rõ module thuộc collection nào, tránh nhầm khi tên trùng giữa các collection, và ổn
-định khi bản đổi (nhiều module đã rời `ansible.builtin` sang collection riêng). Rõ ràng, dễ bảo trì.
-**Tiêu chí chấm:** 0 không biết · 1 "tên đầy đủ" · 2 đúng lý do · 3 kèm ví dụ nhầm tên và bối cảnh module rời collection.
-**Câu hỏi đào sâu:** `ansible-doc -l` dùng làm gì? *(Liệt kê module có sẵn để tra FQCN đúng.)*
+  
+Nêu rõ module thuộc collection nào, tránh nhầm khi tên trùng giữa các collection, và ổn
+định khi bản đổi (nhiều module đã rời <code>ansible.builtin</code> sang collection riêng). Rõ ràng, dễ bảo trì.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 không biết · 1 "tên đầy đủ" · 2 đúng lý do · 3 kèm ví dụ nhầm tên và bối cảnh module rời collection.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> <code>ansible-doc -l</code> dùng làm gì? *(Liệt kê module có sẵn để tra FQCN đúng.)*
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Kể lại vòng đời từ inventory tới chứng minh idempotent, và ba chỗ bạn kiểm "thật".</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Dựng inventory → `ping` (SUCCESS) → viết `site.yml` module chuyên → chạy (recap
-`failed=0`) → **kiểm thật** `docker exec systemctl is-active` → chạy **lần hai** (`changed=0`, idempotent)
-→ (bẫy) thấy `shell` không idempotent → sửa bằng `creates` → thấy `ignore_errors` giấu lỗi. Ba chỗ kiểm
+  
+Dựng inventory → <code>ping</code> (SUCCESS) → viết <code>site.yml</code> module chuyên → chạy (recap
+<code>failed=0</code>) → <b style="color: var(--accent-primary);">kiểm thật</b> <code>docker exec systemctl is-active</code> → chạy <b style="color: var(--accent-primary);">lần hai</b> (<code>changed=0</code>, idempotent)
+→ (bẫy) thấy <code>shell</code> không idempotent → sửa bằng <code>creates</code> → thấy <code>ignore_errors</code> giấu lỗi. Ba chỗ kiểm
 thật: sau chạy lần một, sau lần hai, và sau khi sửa task shell.
-**Tiêu chí chấm:** 0 kể thiếu · 1 chỉ chạy một lần · 2 đủ vòng đời · 3 đủ + ba điểm kiểm thật + bài học ignore_errors.
-**Câu hỏi đào sâu:** Nếu recap `failed=0` mà dịch vụ inactive thì kết luận gì? *(Không tin recap; có thể `ignore_errors`/nhầm host — kiểm máy đích.)*
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 0 kể thiếu · 1 chỉ chạy một lần · 2 đủ vòng đời · 3 đủ + ba điểm kiểm thật + bài học ignore_errors.
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu recap <code>failed=0</code> mà dịch vụ inactive thì kết luận gì? *(Không tin recap; có thể <code>ignore_errors</code>/nhầm host — kiểm máy đích.)*
 </div>
 </details>
 
@@ -367,29 +259,20 @@ module setup/facts, và các module ad-hoc thường dùng.
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Thứ tự ưu tiên cấu hình `ansible.cfg` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình `ansible.cfg`. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Ansible tìm kiếm theo thứ tự ưu tiên giảm dần: (1) Biến môi trường `ANSIBLE_CONFIG`, (2) File `./ansible.cfg` tại thư mục hiện tại, (3) File ẩn `~/.ansible.cfg` tại thư mục cá nhân người dùng, (4) File cấu hình mặc định hệ thống `/etc/ansible/ansible.cfg`. Để biết chính xác file đang được áp dụng, chạy lệnh `ansible --version` và quan sát dòng `config file = ...`.
-**Tiêu chí chấm:** 
-- 0: Không nêu được các tầng cấu hình.
-- 1: Liệt kê được 2-3 tầng nhưng sai thứ tự ưu tiên.
-- 2: Nêu đúng 4 tầng theo thứ tự chính xác.
-- 3: Nêu đúng 4 tầng + chỉ ra lệnh `ansible --version` và bẫy file `./ansible.cfg` bị bỏ qua nếu lỡ gán quyền `world-writable` (`chmod 777`).
-**Câu hỏi đào sâu:** Nếu file `./ansible.cfg` bị gán quyền `chmod 777`, Ansible sẽ xử lý thế nào? *(Bỏ qua file đó vì lý do an toàn bảo mật và tự động lùi về dùng file tầng thấp hơn.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình <code>ansible.cfg</code>. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Ansible tìm kiếm theo thứ tự ưu tiên giảm dần: (1) Biến môi trường <code>ANSIBLE_CONFIG</code>, (2) File <code>./ansible.cfg</code> tại thư mục hiện tại, (3) File ẩn <code>~/.ansible.cfg</code> tại thư mục cá nhân người dùng, (4) File cấu hình mặc định hệ thống <code>/etc/ansible/ansible.cfg</code>. Để biết chính xác file đang được áp dụng, chạy lệnh <code>ansible --version</code> và quan sát dòng <code>config file = ...</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được các tầng cấu hình.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 tầng nhưng sai thứ tự ưu tiên.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đúng 4 tầng theo thứ tự chính xác.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng 4 tầng + chỉ ra lệnh <code>ansible --version</code> và bẫy file <code>./ansible.cfg</code> bị bỏ qua nếu lỡ gán quyền <code>world-writable</code> (<code>chmod 777</code>).</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu file <code>./ansible.cfg</code> bị gán quyền <code>chmod 777</code>, Ansible sẽ xử lý thế nào? *(Bỏ qua file đó vì lý do an toàn bảo mật và tự động lùi về dùng file tầng thấp hơn.)*
 </div>
 </details>
 
@@ -563,29 +446,20 @@ Khi nhà tuyển dụng phỏng vấn về năng lực vận hành Ansible và l
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Hai Nhóm mặc định trong Inventory 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Inventory trong Ansible có vai trò gì? Hai nhóm mặc định nào luôn tự động tồn tại trong mọi Inventory? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Inventory là nguồn chân lý chứa danh sách các máy chủ bị quản lý, thông tin phân nhóm và các biến kết nối tương ứng. Hai nhóm mặc định luôn tồn tại trong mọi Inventory là: (1) `all` (chứa tất cả các máy chủ có trong inventory) và (2) `ungrouped` (chứa các máy chủ không thuộc bất kỳ nhóm tùy chỉnh nào).
-**Tiêu chí chấm:**
-- 0: Không nêu được vai trò của Inventory.
-- 1: Nêu được vai trò nhưng chỉ nhớ nhóm `all`, quên nhóm `ungrouped`.
-- 2: Nêu chính xác vai trò và 2 nhóm mặc định `all` và `ungrouped`.
-- 3: Nêu chính xác + giải thích ý nghĩa của 2 nhóm mặc định trong việc nạp biến toàn cục (`group_vars/all.yml`).
-**Câu hỏi đào sâu:** Nếu một máy chủ nằm trong nhóm `web`, máy chủ đó có đồng thời thuộc nhóm `all` không? *(Có, 100% mọi host đều thuộc nhóm `all`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Inventory trong Ansible có vai trò gì? Hai nhóm mặc định nào luôn tự động tồn tại trong mọi Inventory? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Inventory là nguồn chân lý chứa danh sách các máy chủ bị quản lý, thông tin phân nhóm và các biến kết nối tương ứng. Hai nhóm mặc định luôn tồn tại trong mọi Inventory là: (1) <code>all</code> (chứa tất cả các máy chủ có trong inventory) và (2) <code>ungrouped</code> (chứa các máy chủ không thuộc bất kỳ nhóm tùy chỉnh nào).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được vai trò của Inventory.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nêu được vai trò nhưng chỉ nhớ nhóm <code>all</code>, quên nhóm <code>ungrouped</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu chính xác vai trò và 2 nhóm mặc định <code>all</code> và <code>ungrouped</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu chính xác + giải thích ý nghĩa của 2 nhóm mặc định trong việc nạp biến toàn cục (<code>group_vars/all.yml</code>).</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu một máy chủ nằm trong nhóm <code>web</code>, máy chủ đó có đồng thời thuộc nhóm <code>all</code> không? *(Có, 100% mọi host đều thuộc nhóm <code>all</code>.)*
 </div>
 </details>
 
@@ -769,29 +643,20 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý Inventory v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Quản lý Gói đa nền tảng với `ansible.builtin.package` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Module `ansible.builtin.package` có ưu điểm gì vượt trội so với các module quản lý gói riêng biệt như `apt` hay `dnf`? Phân biệt `state=present` và `state=latest`. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Module `package` là module trừu tượng hóa (generic package manager), tự động nhận diện hệ điều hành của máy đích (RHEL dùng `dnf`, Ubuntu dùng `apt`, Alpine dùng `apk`), giúp viết kịch bản dùng chung cho hạ tầng đa OS. `state=present` đảm bảo gói đã cài đặt (nếu đã có gói thì bỏ qua không làm gì), còn `state=latest` kiểm tra và nâng cấp gói lên phiên bản mới nhất nếu kho phần mềm có bản mới.
-**Tiêu chí chấm:**
-- 0: Không biết tác dụng của module `package`.
-- 1: Biết tự đổi trình quản lý gói nhưng không phân biệt được `present` và `latest`.
-- 2: Phân biệt chính xác cơ chế đa nền tảng + khác biệt `present` vs `latest`.
-- 3: Nêu đúng + minh họa câu lệnh ad-hoc cài gói và chỉ ra tính Idempotency lần 2.
-**Câu hỏi đào sâu:** Khi nào nên dùng module chuyên biệt `ansible.builtin.apt` thay vì `package`? *(Khi cần các tính năng đặc thụ riêng của Debian/Ubuntu như `update_cache=yes` hay `autoremove=yes`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Module <code>ansible.builtin.package</code> có ưu điểm gì vượt trội so với các module quản lý gói riêng biệt như <code>apt</code> hay <code>dnf</code>? Phân biệt <code>state=present</code> và <code>state=latest</code>. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Module <code>package</code> là module trừu tượng hóa (generic package manager), tự động nhận diện hệ điều hành của máy đích (RHEL dùng <code>dnf</code>, Ubuntu dùng <code>apt</code>, Alpine dùng <code>apk</code>), giúp viết kịch bản dùng chung cho hạ tầng đa OS. <code>state=present</code> đảm bảo gói đã cài đặt (nếu đã có gói thì bỏ qua không làm gì), còn <code>state=latest</code> kiểm tra và nâng cấp gói lên phiên bản mới nhất nếu kho phần mềm có bản mới.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tác dụng của module <code>package</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết tự đổi trình quản lý gói nhưng không phân biệt được <code>present</code> và <code>latest</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân biệt chính xác cơ chế đa nền tảng + khác biệt <code>present</code> vs <code>latest</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa câu lệnh ad-hoc cài gói và chỉ ra tính Idempotency lần 2.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi nào nên dùng module chuyên biệt <code>ansible.builtin.apt</code> thay vì <code>package</code>? *(Khi cần các tính năng đặc thụ riêng của Debian/Ubuntu như <code>update_cache=yes</code> hay <code>autoremove=yes</code>.)*
 </div>
 </details>
 
@@ -970,29 +835,20 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng sử dụng các module An
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc tiêu chuẩn của một Playbook YAML 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày cấu trúc cú pháp tiêu chuẩn của một file Playbook Ansible YAML. Ký tự nào bắt buộc nằm ở đầu file? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Một file Playbook bắt đầu bằng dòng đánh dấu tài liệu `---` (ba dấu gạch ngang). File chứa một danh sách các Play (bắt đầu bằng dấu gạch ngang `-`). Trong mỗi Play khai báo các phần tử cốt lõi: `name:` (tên Play), `hosts:` (nhóm máy đích), `become: true` (quyền root), `vars:` (biến Play) và `tasks:` (danh sách các nhiệm vụ đơn lẻ bên dưới).
-**Tiêu chí chấm:**
-- 0: Không nêu được cấu trúc Playbook.
-- 1: Liệt kê được các phần tử nhưng quên ký tự `---` hoặc nhầm lẫn cú pháp YAML.
-- 2: Nêu đầy đủ các phần tử cốt lõi của Playbook YAML.
-- 3: Nêu đúng + giải thích quy tắc dùng 2 dấu cách thay cho phím Tab trong định dạng YAML.
-**Câu hỏi đào sâu:** Tại sao phím Tab bị cấm tuyệt đối khi viết Playbook YAML? *(Vì trình biên dịch YAML dùng số lượng dấu cách để phân định cấp độ cấu trúc dữ liệu; dùng Tab sẽ gây lỗi parse syntax ngay lập tức.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cấu trúc cú pháp tiêu chuẩn của một file Playbook Ansible YAML. Ký tự nào bắt buộc nằm ở đầu file? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Một file Playbook bắt đầu bằng dòng đánh dấu tài liệu <code>---</code> (ba dấu gạch ngang). File chứa một danh sách các Play (bắt đầu bằng dấu gạch ngang <code>-</code>). Trong mỗi Play khai báo các phần tử cốt lõi: <code>name:</code> (tên Play), <code>hosts:</code> (nhóm máy đích), <code>become: true</code> (quyền root), <code>vars:</code> (biến Play) và <code>tasks:</code> (danh sách các nhiệm vụ đơn lẻ bên dưới).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được cấu trúc Playbook.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được các phần tử nhưng quên ký tự <code>---</code> hoặc nhầm lẫn cú pháp YAML.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ các phần tử cốt lõi của Playbook YAML.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + giải thích quy tắc dùng 2 dấu cách thay cho phím Tab trong định dạng YAML.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao phím Tab bị cấm tuyệt đối khi viết Playbook YAML? *(Vì trình biên dịch YAML dùng số lượng dấu cách để phân định cấp độ cấu trúc dữ liệu; dùng Tab sẽ gây lỗi parse syntax ngay lập tức.)*
 </div>
 </details>
 
@@ -1179,29 +1035,20 @@ Khi nhà tuyển dụng phỏng vấn về năng lực viết và vận hành An
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Triết lý Idempotency trong Quản trị Cấu hình 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Tại sao tính Idempotency (tính bất biến) lại được coi là tiêu chuẩn vàng định nghĩa một công cụ Quản trị Cấu hình (Configuration Management)? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Idempotency đảm bảo rằng việc thực thi một kịch bản cấu hình một lần hay nhiều lần trên cùng một hệ thống đều mang lại KẾT QUẢ TRẠNG THÁI CUỐI CÙNG GIỐNG NHAU, mà không gây ra tác dụng phụ (như đè đúp dữ liệu, tạo file rác trùng lặp, làm sập dịch vụ). Nó chuyển đổi tư duy từ "gõ chuỗi lệnh thủ công" (Imperative) sang "khai báo trạng thái muốn có" (Declarative), giúp kịch bản chạy an toàn định kỳ trên hạ tầng quy mô lớn.
-**Tiêu chí chấm:**
-- 0: Không biết định nghĩa Idempotency.
-- 1: Nói "chạy lại không bị lỗi" nhưng không giải thích được Declarative State Model.
-- 2: Giải thích đúng cơ chế Declarative và tính an toàn khi chạy lại nhiều lần.
-- 3: Phân tích xuất sắc sự khác biệt giữa Script Bash (Imperative) và Ansible Playbook (Declarative) kèm ví dụ thực tế.
-**Câu hỏi đào sâu:** Nếu một script Bash gõ lệnh `echo "export PATH=$PATH:/opt/bin" >> /etc/profile` được chạy 10 lần, điều gì sẽ xảy ra? *(Dòng cấu hình bị nối thêm 10 lần vào file profile làm hỏng file, thể hiện sự thiếu Idempotency.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Tại sao tính Idempotency (tính bất biến) lại được coi là tiêu chuẩn vàng định nghĩa một công cụ Quản trị Cấu hình (Configuration Management)? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Idempotency đảm bảo rằng việc thực thi một kịch bản cấu hình một lần hay nhiều lần trên cùng một hệ thống đều mang lại KẾT QUẢ TRẠNG THÁI CUỐI CÙNG GIỐNG NHAU, mà không gây ra tác dụng phụ (như đè đúp dữ liệu, tạo file rác trùng lặp, làm sập dịch vụ). Nó chuyển đổi tư duy từ "gõ chuỗi lệnh thủ công" (Imperative) sang "khai báo trạng thái muốn có" (Declarative), giúp kịch bản chạy an toàn định kỳ trên hạ tầng quy mô lớn.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết định nghĩa Idempotency.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nói "chạy lại không bị lỗi" nhưng không giải thích được Declarative State Model.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Giải thích đúng cơ chế Declarative và tính an toàn khi chạy lại nhiều lần.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc sự khác biệt giữa Script Bash (Imperative) và Ansible Playbook (Declarative) kèm ví dụ thực tế.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu một script Bash gõ lệnh <code>echo "export PATH=$PATH:/opt/bin" >> /etc/profile</code> được chạy 10 lần, điều gì sẽ xảy ra? *(Dòng cấu hình bị nối thêm 10 lần vào file profile làm hỏng file, thể hiện sự thiếu Idempotency.)*
 </div>
 </details>
 
@@ -1389,29 +1236,20 @@ Khi nhà tuyển dụng phỏng vấn về tư duy kiểm soát Idempotency tron
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cú pháp Khai báo và Sử dụng Biến Jinja2 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày cú pháp chuẩn để khai báo và truy vấn một biến trong Ansible Playbook. Khi nào bắt buộc phải bọc ngoặc kép quanh cú pháp `{{ }}`? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Biến được truy vấn bằng cú pháp Jinja2 bọc trong cặp ngoặc nhọn đúp `{{ variable_name }}`. Bắt buộc phải bọc ngoặc kép `"{{ variable_name }}"` khi biểu thức Jinja2 nằm ở ĐẦU GIÁ TRỊ của một thuộc tính YAML (ví dụ `dest: "{{ my_path }}"`), để ngăn trình biên dịch YAML hiểu nhầm cặp ngoặc nhọn `{` là mở đầu của một Dictionary YAML.
-**Tiêu chí chấm:**
-- 0: Không biết cú pháp Jinja2 `{{ }}`.
-- 1: Biết `{{ }}` nhưng không giải thích được khi nào bắt buộc bọc ngoặc kép.
-- 2: Phân tích chính xác cú pháp Jinja2 + lý do bọc ngoặc kép do quy chuẩn parser YAML.
-- 3: Nêu đúng + viết đoạn mã YAML minh họa lỗi nếu thiếu ngoặc kép và cách khắc phục.
-**Câu hỏi đào sâu:** Nếu viết `dest: /etc/{{ app_name }}.conf` (không nằm ở đầu dòng giá trị), có bắt buộc phải bọc ngoặc kép không? *(Không bắt buộc, nhưng khuyến khích bọc toàn bộ chuỗi trong ngoặc kép để tạo thói quen an toàn.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cú pháp chuẩn để khai báo và truy vấn một biến trong Ansible Playbook. Khi nào bắt buộc phải bọc ngoặc kép quanh cú pháp <code>{{ }}</code>? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Biến được truy vấn bằng cú pháp Jinja2 bọc trong cặp ngoặc nhọn đúp <code>{{ variable_name }}</code>. Bắt buộc phải bọc ngoặc kép <code>"{{ variable_name }}"</code> khi biểu thức Jinja2 nằm ở ĐẦU GIÁ TRỊ của một thuộc tính YAML (ví dụ <code>dest: "{{ my_path }}"</code>), để ngăn trình biên dịch YAML hiểu nhầm cặp ngoặc nhọn <code>{</code> là mở đầu của một Dictionary YAML.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cú pháp Jinja2 <code>{{ }}</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>{{ }}</code> nhưng không giải thích được khi nào bắt buộc bọc ngoặc kép.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cú pháp Jinja2 + lý do bọc ngoặc kép do quy chuẩn parser YAML.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã YAML minh họa lỗi nếu thiếu ngoặc kép và cách khắc phục.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu viết <code>dest: /etc/{{ app_name }}.conf</code> (không nằm ở đầu dòng giá trị), có bắt buộc phải bọc ngoặc kép không? *(Không bắt buộc, nhưng khuyến khích bọc toàn bộ chuỗi trong ngoặc kép để tạo thói quen an toàn.)*
 </div>
 </details>
 
@@ -1601,29 +1439,20 @@ Khi nhà tuyển dụng phỏng vấn về năng lực quản lý biến và x�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Bản chất của Ansible Facts và Module Setup 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Ansible Facts là gì? Module nào chịu trách nhiệm tự động thu thập Facts ở đầu mỗi Play? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Ansible Facts là tập hợp toàn bộ dữ liệu cấu hình thực tế về phần cứng (CPU, RAM, đĩa cứng), mạng (IP, MAC, hostname), và hệ điều hành của máy đích tại thời điểm chạy. Module `ansible.builtin.setup` được Ansible Engine tự động gọi ở đầu mỗi Play (nếu `gather_facts: true`) để thực hiện công việc tự khám phá (Auto-discovery) và đóng gói dữ liệu thành biến `ansible_facts`.
-**Tiêu chí chấm:**
-- 0: Không biết định nghĩa Ansible Facts.
-- 1: Biết Facts là thông tin máy nhưng không nhớ tên module `ansible.builtin.setup`.
-- 2: Phân tích chính xác khái niệm Facts + cơ chế tự động gọi module `setup` ở đầu Play.
-- 3: Nêu đúng + minh họa câu lệnh CLI Ad-hoc `ansible target1 -m setup` để soi facts.
-**Câu hỏi đào sâu:** Bước `Gathering Facts` diễn ra trước hay sau các Task khai báo trong Playbook? *(Diễn ra đầu tiên trước tất cả các Task khai báo trong Play.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Facts là gì? Module nào chịu trách nhiệm tự động thu thập Facts ở đầu mỗi Play? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Ansible Facts là tập hợp toàn bộ dữ liệu cấu hình thực tế về phần cứng (CPU, RAM, đĩa cứng), mạng (IP, MAC, hostname), và hệ điều hành của máy đích tại thời điểm chạy. Module <code>ansible.builtin.setup</code> được Ansible Engine tự động gọi ở đầu mỗi Play (nếu <code>gather_facts: true</code>) để thực hiện công việc tự khám phá (Auto-discovery) và đóng gói dữ liệu thành biến <code>ansible_facts</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết định nghĩa Ansible Facts.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Facts là thông tin máy nhưng không nhớ tên module <code>ansible.builtin.setup</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác khái niệm Facts + cơ chế tự động gọi module <code>setup</code> ở đầu Play.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa câu lệnh CLI Ad-hoc <code>ansible target1 -m setup</code> để soi facts.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Bước <code>Gathering Facts</code> diễn ra trước hay sau các Task khai báo trong Playbook? *(Diễn ra đầu tiên trước tất cả các Task khai báo trong Play.)*
 </div>
 </details>
 
@@ -1835,29 +1664,20 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm khai thác Ansible Fact
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Vai trò và Cơ chế Mệnh đề `when` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Mệnh đề `when` trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Mệnh đề `when` cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau `when:` đánh giá kết quả là `TRUE`. Mệnh đề `when` được Ansible Engine đánh giá ngay tại thời điểm runtime TRƯỚC KHU TASK ĐƯỢC GỬI THI HÀNH trên máy đích. Nếu điều kiện đánh giá `FALSE`, Task lập tức bị bỏ qua với trạng thái `skipped`.
-**Tiêu chí chấm:**
-- 0: Không biết tác dụng của `when`.
-- 1: Biết `when` rẽ nhánh nhưng không giải thích được mốc thời gian đánh giá runtime trước khi chạy task.
-- 2: Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.
-- 3: Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo `ansible_facts.os_family`.
-**Câu hỏi đào sâu:** Mệnh đề `when` được đánh giá trên Control Node hay trên Managed Node? *(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Mệnh đề <code>when</code> trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Mệnh đề <code>when</code> cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau <code>when:</code> đánh giá kết quả là <code>TRUE</code>. Mệnh đề <code>when</code> được Ansible Engine đánh giá ngay tại thời điểm runtime TRƯỚC KHU TASK ĐƯỢC GỬI THI HÀNH trên máy đích. Nếu điều kiện đánh giá <code>FALSE</code>, Task lập tức bị bỏ qua với trạng thái <code>skipped</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tác dụng của <code>when</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>when</code> rẽ nhánh nhưng không giải thích được mốc thời gian đánh giá runtime trước khi chạy task.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo <code>ansible_facts.os_family</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Mệnh đề <code>when</code> được đánh giá trên Control Node hay trên Managed Node? *(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)*
 </div>
 </details>
 
@@ -2073,29 +1893,20 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng thiết kế kịch bản 
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Vai trò và Cơ chế Từ khóa Vòng lặp `loop:` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Từ khóa `loop:` trong Ansible Playbook dùng để làm gì? Phân biệt sự khác nhau giữa `loop:` hiện đại và `with_items:` legacy. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Từ khóa `loop:` dùng để lặp qua một danh sách các phần tử (List hoặc List of Dictionaries) nhằm thực thi cùng 1 Task nhiều lần với dữ liệu khác nhau, giúp rút gọn mã nguồn. Phân biệt: `loop:` là cú pháp chuẩn hiện đại (từ bản 2.5+) duyệt danh sách trực tiếp và ít bị lỗi xung đột; `with_items:` là cú pháp legacy cũ tự động phẳng hóa (flatten) mảng 2 chiều và sắp bị loại bỏ ở các bản mới.
-**Tiêu chí chấm:**
-- 0: Không biết từ khóa `loop:`.
-- 1: Biết `loop:` để lặp nhưng không phân biệt được với `with_items:`.
-- 2: Phân tích chính xác vai trò rút gọn mã của `loop:` và sự khác biệt về phẳng hóa mảng với `with_items:`.
-- 3: Nêu đúng + minh họa ví dụ cài đặt 4 gói phần mềm bằng 1 Task `loop:`.
-**Câu hỏi đào sâu:** Nếu truyền một mảng 2 chiều `[[a, b], [c, d]]` vào `loop:`, Ansible sẽ lặp thế nào? *(Ansible lặp 2 lượt: lượt 1 item=[a, b], lượt 2 item=[c, d]; muốn phẳng hóa phải dùng filter `loop: "{{ list | flatten }}"`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Từ khóa <code>loop:</code> trong Ansible Playbook dùng để làm gì? Phân biệt sự khác nhau giữa <code>loop:</code> hiện đại và <code>with_items:</code> legacy. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Từ khóa <code>loop:</code> dùng để lặp qua một danh sách các phần tử (List hoặc List of Dictionaries) nhằm thực thi cùng 1 Task nhiều lần với dữ liệu khác nhau, giúp rút gọn mã nguồn. Phân biệt: <code>loop:</code> là cú pháp chuẩn hiện đại (từ bản 2.5+) duyệt danh sách trực tiếp và ít bị lỗi xung đột; <code>with_items:</code> là cú pháp legacy cũ tự động phẳng hóa (flatten) mảng 2 chiều và sắp bị loại bỏ ở các bản mới.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết từ khóa <code>loop:</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>loop:</code> để lặp nhưng không phân biệt được với <code>with_items:</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò rút gọn mã của <code>loop:</code> và sự khác biệt về phẳng hóa mảng với <code>with_items:</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ cài đặt 4 gói phần mềm bằng 1 Task <code>loop:</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu truyền một mảng 2 chiều <code>[[a, b], [c, d]]</code> vào <code>loop:</code>, Ansible sẽ lặp thế nào? *(Ansible lặp 2 lượt: lượt 1 item=[a, b], lượt 2 item=[c, d]; muốn phẳng hóa phải dùng filter <code>loop: "{{ list | flatten }}"</code>.)*
 </div>
 </details>
 
@@ -2295,29 +2106,20 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm xử lý vòng lặp v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Vai trò của `handlers` và `notify` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Cơ chế `handlers` và từ khóa `notify:` trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới `tasks:`? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:** Khối `handlers:` chứa các Task đặc biệt chỉ được kích hoạt thi hành khi nhận được thông báo từ thuộc tính `notify:` của các Task chính. Không nên restart dịch vụ trực tiếp dưới `tasks:` vì nó sẽ khiến dịch vụ bị restart vô điều kiện ở mọi lượt chạy kịch bản ngay cả khi tệp cấu hình KHÔNG đổi, gây gián đoạn dịch vụ lãng phí. Dùng `notify/handlers` đảm bảo dịch vụ CHỈ RESTART khi file cấu hình thực sự có sự thay đổi (`changed: true`).
-**Tiêu chí chấm:**
-- 0: Không biết vai trò của `handlers` và `notify`.
-- 1: Biết `handlers` để restart dịch vụ nhưng không giải thích được rủi ro gián đoạn khi đặt restart trong `tasks`.
-- 2: Phân tích chính xác vai trò phản ứng sự kiện và điều kiện kích hoạt `changed: true`.
-- 3: Nêu đúng + minh họa ví dụ chép file cấu hình Nginx phát `notify: Restart Nginx`.
-**Câu hỏi đào sâu:** Khối `handlers:` nằm cùng cấp thụt lề với từ khóa nào trong file Playbook? *(Nằm ở cấp độ Play, cùng cấp thụt lề với từ khóa `tasks:`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Cơ chế <code>handlers</code> và từ khóa <code>notify:</code> trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới <code>tasks:</code>? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Khối <code>handlers:</code> chứa các Task đặc biệt chỉ được kích hoạt thi hành khi nhận được thông báo từ thuộc tính <code>notify:</code> của các Task chính. Không nên restart dịch vụ trực tiếp dưới <code>tasks:</code> vì nó sẽ khiến dịch vụ bị restart vô điều kiện ở mọi lượt chạy kịch bản ngay cả khi tệp cấu hình KHÔNG đổi, gây gián đoạn dịch vụ lãng phí. Dùng <code>notify/handlers</code> đảm bảo dịch vụ CHỈ RESTART khi file cấu hình thực sự có sự thay đổi (<code>changed: true</code>).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết vai trò của <code>handlers</code> và <code>notify</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>handlers</code> để restart dịch vụ nhưng không giải thích được rủi ro gián đoạn khi đặt restart trong <code>tasks</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò phản ứng sự kiện và điều kiện kích hoạt <code>changed: true</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ chép file cấu hình Nginx phát <code>notify: Restart Nginx</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khối <code>handlers:</code> nằm cùng cấp thụt lề với từ khóa nào trong file Playbook? *(Nằm ở cấp độ Play, cùng cấp thụt lề với từ khóa <code>tasks:</code>.)*
 </div>
 </details>
 
@@ -2501,32 +2303,23 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm thiết kế kịch b�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Phân biệt Module `template` và Module `copy` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Module `ansible.builtin.template` khác module `ansible.builtin.copy` ở điểm cốt lõi nào? Khi nào thì bắt buộc phải dùng `template`? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Module `copy`: Chỉ chép nguyên vẹn dữ liệu thô (raw content) của tệp nguồn sang máy đích, KHÔNG HỀ tính toán hay giải mã các biểu thức Jinja2 bên trong tệp.
-- Module `template`: Khởi chạy bộ máy Jinja2 Engine trên Control Node để thế giá trị các biến `{{ var }}`, thực thi các vòng lặp `{% for %}` và rẽ nhánh `{% if %}` để sinh ra tệp cấu hình động hoàn chỉnh trước khi gửi tới máy đích.
-Bắt buộc dùng `template` khi tệp nguồn là tệp mẫu thiết kế `.j2` cần sinh cấu hình linh hoạt theo từng máy đích.
-**Tiêu chí chấm:**
-- 0: Không phân biệt được `copy` và `template`.
-- 1: Biết `template` dùng cho `.j2` nhưng không giải thích được cơ chế render của Jinja2 Engine.
-- 2: Phân tích chính xác sự khác biệt giữa chép thô và rendering động trên Control Node.
-- 3: Nêu đúng + minh họa ví dụ tệp `nginx.conf.j2` sinh `worker_processes` theo CPU.
-**Câu hỏi đào sâu:** Nếu dùng module `copy` chép file `app.conf.j2`, nội dung file trên máy đích sẽ ra sao? *(Nó sẽ chứa nguyên văn chuỗi thô `{{ ansible_facts.memtotal_mb }}` chưa được giải mã.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Module <code>ansible.builtin.template</code> khác module <code>ansible.builtin.copy</code> ở điểm cốt lõi nào? Khi nào thì bắt buộc phải dùng <code>template</code>? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Module <code>copy</code>: Chỉ chép nguyên vẹn dữ liệu thô (raw content) của tệp nguồn sang máy đích, KHÔNG HỀ tính toán hay giải mã các biểu thức Jinja2 bên trong tệp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Module <code>template</code>: Khởi chạy bộ máy Jinja2 Engine trên Control Node để thế giá trị các biến <code>{{ var }}</code>, thực thi các vòng lặp <code>{% for %}</code> và rẽ nhánh <code>{% if %}</code> để sinh ra tệp cấu hình động hoàn chỉnh trước khi gửi tới máy đích.</div>
+Bắt buộc dùng <code>template</code> khi tệp nguồn là tệp mẫu thiết kế <code>.j2</code> cần sinh cấu hình linh hoạt theo từng máy đích.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được <code>copy</code> và <code>template</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>template</code> dùng cho <code>.j2</code> nhưng không giải thích được cơ chế render của Jinja2 Engine.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt giữa chép thô và rendering động trên Control Node.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ tệp <code>nginx.conf.j2</code> sinh <code>worker_processes</code> theo CPU.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu dùng module <code>copy</code> chép file <code>app.conf.j2</code>, nội dung file trên máy đích sẽ ra sao? *(Nó sẽ chứa nguyên văn chuỗi thô <code>{{ ansible_facts.memtotal_mb }}</code> chưa được giải mã.)*
 </div>
 </details>
 
@@ -2718,33 +2511,24 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng tự động hóa sinh fil
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc Xử lý Lỗi Bộ ba `block`, `rescue`, `always` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày cơ chế hoạt động của bộ ba khối `block:`, `rescue:`, và `always:` trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- `block:` Nơi chứa các Task thực thi chính.
-- `rescue:` Nơi chứa các Task cứu hộ/phục hồi CHỈ CHẠY khi có Task trong `block` bị văng lỗi.
-- `always:` Nơi chứa các Task dọn dẹp BẮT BUỘC THỰC THI trong mọi tình huống (dù block thành công hay rescue thất bại).
-Cấu trúc này tương đương 100% với mô hình `try...catch...finally` trong các ngôn ngữ lập trình hiện đại (Java, Python, C#).
-**Tiêu chí chấm:**
-- 0: Không biết cấu trúc `block-rescue-always`.
-- 1: Biết 3 khối nhưng không so sánh được với mô hình `try-catch-finally`.
-- 2: Phân tích chính xác vai trò và điều kiện thi hành của từng khối `block`, `rescue`, `always`.
-- 3: Nêu đúng + minh họa ví dụ cập nhật Database có Rollback trong `rescue` và xóa file tạm trong `always`.
-**Câu hỏi đào sâu:** Khối `rescue:` và `always:` được đặt cùng cấp thụt lề với từ khóa nào trong YAML? *(Được đặt cùng cấp thụt lề với từ khóa `block:`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cơ chế hoạt động của bộ ba khối <code>block:</code>, <code>rescue:</code>, và <code>always:</code> trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>block:</code> Nơi chứa các Task thực thi chính.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>rescue:</code> Nơi chứa các Task cứu hộ/phục hồi CHỈ CHẠY khi có Task trong <code>block</code> bị văng lỗi.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>always:</code> Nơi chứa các Task dọn dẹp BẮT BUỘC THỰC THI trong mọi tình huống (dù block thành công hay rescue thất bại).</div>
+Cấu trúc này tương đương 100% với mô hình <code>try...catch...finally</code> trong các ngôn ngữ lập trình hiện đại (Java, Python, C#).
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc <code>block-rescue-always</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết 3 khối nhưng không so sánh được với mô hình <code>try-catch-finally</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò và điều kiện thi hành của từng khối <code>block</code>, <code>rescue</code>, <code>always</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ cập nhật Database có Rollback trong <code>rescue</code> và xóa file tạm trong <code>always</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khối <code>rescue:</code> và <code>always:</code> được đặt cùng cấp thụt lề với từ khóa nào trong YAML? *(Được đặt cùng cấp thụt lề với từ khóa <code>block:</code>.)*
 </div>
 </details>
 
@@ -2937,34 +2721,25 @@ Chúc mừng học viên đã **HOÀN THÀNH 100% GIAI ĐOẠN 2 (Buổi 07–13
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Lợi ích của Ansible Role 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
 Ansible Role là chuẩn tổ chức mã nguồn tự động hóa dưới dạng mô-đun độc lập, gom toàn bộ Tasks, Handlers, Variables, Templates và Files vào một cấu trúc thư mục quy chuẩn.
 Lợi ích chuẩn mực Enterprise:
-- Tách biệt rõ ràng các mối quan tâm (Separation of Concerns).
-- Tái sử dụng mã nguồn 100% trên nhiều Playbook và dự án khác nhau.
-- Dễ dàng quản lý phiên bản, kiểm thử độc lập và chia sẻ cho cộng đồng qua Ansible Galaxy.
-**Tiêu chí chấm:**
-- 0: Không hiểu khái niệm Ansible Role.
-- 1: Biết Role để chia nhỏ file nhưng không giải thích được các lợi ích chuẩn mực Enterprise.
-- 2: Phân tích chính xác khái niệm Role và nguyên lý đóng gói mô-đun hóa.
-- 3: Nêu đúng + minh họa kiến trúc tổ chức Role cho hệ thống Web/DB Enterprise.
-**Câu hỏi đào sâu:** Nếu không dùng Role, một file Playbook triển khai cụm ứng dụng lớn sẽ gặp khó khăn gì? *(Mã nguồn rườm rà hàng nghìn dòng, trùng lặp code, cực kỳ khó bảo trì và không thể tái sử dụng.)*
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tách biệt rõ ràng các mối quan tâm (Separation of Concerns).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tái sử dụng mã nguồn 100% trên nhiều Playbook và dự án khác nhau.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dễ dàng quản lý phiên bản, kiểm thử độc lập và chia sẻ cho cộng đồng qua Ansible Galaxy.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Ansible Role.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Role để chia nhỏ file nhưng không giải thích được các lợi ích chuẩn mực Enterprise.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác khái niệm Role và nguyên lý đóng gói mô-đun hóa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa kiến trúc tổ chức Role cho hệ thống Web/DB Enterprise.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu không dùng Role, một file Playbook triển khai cụm ứng dụng lớn sẽ gặp khó khăn gì? *(Mã nguồn rườm rà hàng nghìn dòng, trùng lặp code, cực kỳ khó bảo trì và không thể tái sử dụng.)*
 </div>
 </details>
 
@@ -3177,31 +2952,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm cấu trúc mã nguồn
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Phân biệt `import_role` và `include_role` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa `ansible.builtin.import_role` và `ansible.builtin.include_role`. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- `import_role` (Static Import): Nạp tĩnh tại thời điểm **Parse Playbook** (Pre-parse). Toàn bộ các Task của Role được chèn trực tiếp vào cây Playbook trước khi chạy. Hỗ trợ đầy đủ cờ `tags` và `handlers` toàn cục.
-- `include_role` (Dynamic Include): Nạp động tại thời điểm **Runtime** khi tiến trình chạy đến đúng Task đó. Cho phép kết hợp linh hoạt với vòng lặp `loop:` và điều kiện `when:`.
-**Tiêu chí chấm:**
-- 0: Không phân biệt được `import_role` và `include_role`.
-- 1: Biết một cái tĩnh một cái động nhưng giải thích sai về thời điểm parse time vs runtime.
-- 2: Phân tích chính xác sự khác biệt về Parse time vs Runtime và khả năng dùng với `loop:`.
-- 3: Nêu đúng + minh họa ví dụ kịch bản thực tế khi nào dùng `import_role` vs `include_role`.
-**Câu hỏi đào sâu:** Nếu muốn gọi 1 Role lặp qua một mảng danh sách IP, bắt buộc phải dùng module nào? *(Bắt buộc dùng `ansible.builtin.include_role`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa <code>ansible.builtin.import_role</code> và <code>ansible.builtin.include_role</code>. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>import_role</code> (Static Import): Nạp tĩnh tại thời điểm <b style="color: var(--accent-primary);">Parse Playbook</b> (Pre-parse). Toàn bộ các Task của Role được chèn trực tiếp vào cây Playbook trước khi chạy. Hỗ trợ đầy đủ cờ <code>tags</code> và <code>handlers</code> toàn cục.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>include_role</code> (Dynamic Include): Nạp động tại thời điểm <b style="color: var(--accent-primary);">Runtime</b> khi tiến trình chạy đến đúng Task đó. Cho phép kết hợp linh hoạt với vòng lặp <code>loop:</code> và điều kiện <code>when:</code>.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được <code>import_role</code> và <code>include_role</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết một cái tĩnh một cái động nhưng giải thích sai về thời điểm parse time vs runtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt về Parse time vs Runtime và khả năng dùng với <code>loop:</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ kịch bản thực tế khi nào dùng <code>import_role</code> vs <code>include_role</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu muốn gọi 1 Role lặp qua một mảng danh sách IP, bắt buộc phải dùng module nào? *(Bắt buộc dùng <code>ansible.builtin.include_role</code>.)*
 </div>
 </details>
 
@@ -3425,34 +3191,25 @@ Chúc mừng học viên đã **ĐẠT MỐC 50% KHÓA HỌC (Buổi 01–15)**!
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Lợi ích của Ansible Galaxy 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Ansible Galaxy (galaxy.ansible.com) là gì? Việc khai thác kho tài nguyên công cộng Galaxy mang lại lợi ích gì cho các dự án tự động hóa Doanh nghiệp? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Galaxy (galaxy.ansible.com) là gì? Việc khai thác kho tài nguyên công cộng Galaxy mang lại lợi ích gì cho các dự án tự động hóa Doanh nghiệp? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
 Ansible Galaxy là kho tài nguyên công cộng chính thức lưu trữ hàng vạn Roles và Collections tự động hóa được đóng gói sẵn bởi Red Hat và cộng đồng kỹ sư toàn cầu.
 Lợi ích Doanh nghiệp:
-- Tiết kiệm 90% thời gian phát triển: Tái sử dụng kịch bản đã được kiểm thử chuẩn hóa cho các dịch vụ phổ biến (Nginx, PostgreSQL, Kubernetes).
-- Chuẩn hóa chất lượng mã nguồn theo Best Practices của Red Hat.
-- Thúc đẩy khả năng chia sẻ và đóng góp mã nguồn mô-đun hóa trong cộng đồng.
-**Tiêu chí chấm:**
-- 0: Không hiểu khái niệm Ansible Galaxy.
-- 1: Biết Galaxy là nơi tải code nhưng không giải thích được các lợi ích quy mô Doanh nghiệp.
-- 2: Phân tích chính xác vai trò kho tài nguyên công cộng và lợi ích tiết kiệm thời gian triển khai.
-- 3: Nêu đúng + minh họa ví dụ lệnh CLI `ansible-galaxy search nginx` tìm kiếm tài nguyên.
-**Câu hỏi đào sâu:** Có thể xem thông tin tác giả và điểm đánh giá chất lượng của một Role trên Galaxy bằng lệnh CLI nào? *(Lệnh `ansible-galaxy role info <author.role_name>`.)*
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tiết kiệm 90% thời gian phát triển: Tái sử dụng kịch bản đã được kiểm thử chuẩn hóa cho các dịch vụ phổ biến (Nginx, PostgreSQL, Kubernetes).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chuẩn hóa chất lượng mã nguồn theo Best Practices của Red Hat.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thúc đẩy khả năng chia sẻ và đóng góp mã nguồn mô-đun hóa trong cộng đồng.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Ansible Galaxy.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Galaxy là nơi tải code nhưng không giải thích được các lợi ích quy mô Doanh nghiệp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò kho tài nguyên công cộng và lợi ích tiết kiệm thời gian triển khai.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ lệnh CLI <code>ansible-galaxy search nginx</code> tìm kiếm tài nguyên.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Có thể xem thông tin tác giả và điểm đánh giá chất lượng của một Role trên Galaxy bằng lệnh CLI nào? *(Lệnh <code>ansible-galaxy role info <author.role_name></code>.)*
 </div>
 </details>
 
@@ -3672,35 +3429,26 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm khai thác kho tài ngu
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc 3 Thành phần của FQCN 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
 FQCN là chuẩn đặt tên định danh đầy đủ giúp Ansible Engine xác định chính xác tuyệt đối vị trí mã nguồn của module/plugin.
-Cấu trúc 3 thành phần: `<namespace>.<collection_name>.<plugin_name>`
-- `<namespace>`: Không gian tên của nhà phát triển (ví dụ: `ansible`, `community`, `amazon`).
-- `<collection_name>`: Tên bộ sưu tập (ví dụ: `builtin`, `general`, `aws`).
-- `<plugin_name>`: Tên module/plugin thi hành (ví dụ: `copy`, `ini_file`, `ec2_instance`).
-Ví dụ: `ansible.builtin.copy` hoặc `community.general.ini_file`.
-**Tiêu chí chấm:**
-- 0: Không hiểu khái niệm FQCN.
-- 1: Biết FQCN nhưng không phân tích được 3 thành phần `namespace.collection.plugin`.
-- 2: Phân tích chính xác cấu trúc 3 thành phần và nêu lý do chống xung đột module.
-- 3: Nêu đúng + viết ví dụ 3 tên FQCN thực tế cho module Core, Community và Cloud.
-**Câu hỏi đào sâu:** Từ phiên bản Ansible nào trở đi Red Hat khuyến nghị bắt buộc phải dùng FQCN? *(Từ Ansible 2.9 và Ansible Core 2.10 trở đi.)*
+Cấu trúc 3 thành phần: <code><namespace>.<collection_name>.<plugin_name></code>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><namespace></code>: Không gian tên của nhà phát triển (ví dụ: <code>ansible</code>, <code>community</code>, <code>amazon</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><collection_name></code>: Tên bộ sưu tập (ví dụ: <code>builtin</code>, <code>general</code>, <code>aws</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><plugin_name></code>: Tên module/plugin thi hành (ví dụ: <code>copy</code>, <code>ini_file</code>, <code>ec2_instance</code>).</div>
+Ví dụ: <code>ansible.builtin.copy</code> hoặc <code>community.general.ini_file</code>.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm FQCN.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết FQCN nhưng không phân tích được 3 thành phần <code>namespace.collection.plugin</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cấu trúc 3 thành phần và nêu lý do chống xung đột module.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ 3 tên FQCN thực tế cho module Core, Community và Cloud.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Từ phiên bản Ansible nào trở đi Red Hat khuyến nghị bắt buộc phải dùng FQCN? *(Từ Ansible 2.9 và Ansible Core 2.10 trở đi.)*
 </div>
 </details>
 
@@ -3917,31 +3665,22 @@ Khi nhà tuyển dụng phỏng vấn về tiêu chuẩn viết mã Ansible hi�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Phân biệt `import_tasks` vs `include_tasks` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa `ansible.builtin.import_tasks` (Static Import) và `ansible.builtin.include_tasks` (Dynamic Include)? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- `import_tasks` (Static Import): Nạp tĩnh tại thời điểm **Parse-time** (trước khi Playbook chạy). Toàn bộ nội dung tệp task con được hòa trộn phẳng vào cây Playbook chính ngay ở bước đọc file.
-- `include_tasks` (Dynamic Include): Nạp động tại thời điểm **Runtime** (khi tiến trình chạy tới đúng Task đó). Tệp task con chỉ được đọc và phân tích khi execution engine chạy tới task include.
-**Tiêu chí chấm:**
-- 0: Không phân biệt được Static vs Dynamic.
-- 1: Biết `import` là tĩnh `include` là động nhưng không giải thích được khái niệm Parse-time vs Runtime.
-- 2: Phân tích chính xác bản chất Parse-time hòa trộn phẳng vs Runtime nạp tại thời điểm chạy.
-- 3: Nêu đúng + minh họa ví dụ sử dụng thực tế của 2 module trong Playbook.
-**Câu hỏi đào sâu:** Module nào chạy nhanh hơn về mặt hiệu năng thi hành? *(`import_tasks` chạy nhanh hơn vì không mất overhead phân tích file ở runtime.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa <code>ansible.builtin.import_tasks</code> (Static Import) và <code>ansible.builtin.include_tasks</code> (Dynamic Include)? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>import_tasks</code> (Static Import): Nạp tĩnh tại thời điểm <b style="color: var(--accent-primary);">Parse-time</b> (trước khi Playbook chạy). Toàn bộ nội dung tệp task con được hòa trộn phẳng vào cây Playbook chính ngay ở bước đọc file.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>include_tasks</code> (Dynamic Include): Nạp động tại thời điểm <b style="color: var(--accent-primary);">Runtime</b> (khi tiến trình chạy tới đúng Task đó). Tệp task con chỉ được đọc và phân tích khi execution engine chạy tới task include.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được Static vs Dynamic.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>import</code> là tĩnh <code>include</code> là động nhưng không giải thích được khái niệm Parse-time vs Runtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác bản chất Parse-time hòa trộn phẳng vs Runtime nạp tại thời điểm chạy.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ sử dụng thực tế của 2 module trong Playbook.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Module nào chạy nhanh hơn về mặt hiệu năng thi hành? *(<code>import_tasks</code> chạy nhanh hơn vì không mất overhead phân tích file ở runtime.)*
 </div>
 </details>
 
@@ -4157,32 +3896,23 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tổ chức mã nguồn
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tổ chức Thư mục Inventory Đa Môi trường 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Tại sao Red Hat khuyến nghị tổ chức đa môi trường qua cấu trúc thư mục `inventory/staging/` và `inventory/production/` riêng biệt thay vì gom chung vào 1 file inventory? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Tại sao Red Hat khuyến nghị tổ chức đa môi trường qua cấu trúc thư mục <code>inventory/staging/</code> và <code>inventory/production/</code> riêng biệt thay vì gom chung vào 1 file inventory? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
 Lý do cô lập:
-1. **Cô lập 100% dữ liệu:** Tách biệt hoàn toàn danh sách IP máy chủ và các biến cấu hình giữa Staging và Production, triệt tiêu nguy cơ biến Staging bị rò rỉ đè hỏng cấu hình Production.
-2. **Quản lý biến tự động:** Khi thi hành với cờ `-i inventory/staging`, Ansible Engine chỉ tự động nạp các biến trong `inventory/staging/group_vars/`, ngăn ngừa đọc nhầm biến của Production.
-**Tiêu chí chấm:**
-- 0: Không biết cấu trúc thư mục inventory đa môi trường.
-- 1: Biết tách thư mục nhưng không giải thích được cơ chế tự động nạp biến theo cờ `-i`.
-- 2: Phân tích chính xác vai trò cô lập biến và triệt tiêu nguy cơ rò rỉ cấu hình Production.
-- 3: Nêu đúng + vẽ sơ đồ cây thư mục chuẩn `inventory/staging/` và `inventory/production/`.
-**Câu hỏi đào sâu:** Nếu dự án có thêm môi trường UAT, ta tạo thư mục nào? *(Tạo thư mục `inventory/uat/` chứa `hosts.ini` và `group_vars/` tương tự.)*
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Cô lập 100% dữ liệu:</b> Tách biệt hoàn toàn danh sách IP máy chủ và các biến cấu hình giữa Staging và Production, triệt tiêu nguy cơ biến Staging bị rò rỉ đè hỏng cấu hình Production.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Quản lý biến tự động:</b> Khi thi hành với cờ <code>-i inventory/staging</code>, Ansible Engine chỉ tự động nạp các biến trong <code>inventory/staging/group_vars/</code>, ngăn ngừa đọc nhầm biến của Production.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc thư mục inventory đa môi trường.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết tách thư mục nhưng không giải thích được cơ chế tự động nạp biến theo cờ <code>-i</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò cô lập biến và triệt tiêu nguy cơ rò rỉ cấu hình Production.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + vẽ sơ đồ cây thư mục chuẩn <code>inventory/staging/</code> và <code>inventory/production/</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu dự án có thêm môi trường UAT, ta tạo thư mục nào? *(Tạo thư mục <code>inventory/uat/</code> chứa <code>hosts.ini</code> và <code>group_vars/</code> tương tự.)*
 </div>
 </details>
 
@@ -4395,31 +4125,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý đa môi tr�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Vai trò của Ansible Vault 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Ansible Vault là tính năng bảo mật tích hợp sẵn trong Ansible Core, sử dụng thuật toán mã hóa đối xứng AES-256 để bảo vệ thông tin nhạy cảm.
-- Yêu cầu sinh tử: Trong dự án IaC, Playbook chứa rất nhiều thông tin bí mật (mật khẩu DB, SSH keys, API tokens). Nếu không dùng Vault mã hóa, lưu plaintext rồi push lên Git public sẽ dẫn tới nguy cơ lộ bí mật Doanh nghiệp, bị tin tặc tấn công chiếm đoạt hệ thống.
-**Tiêu chí chấm:**
-- 0: Không biết Ansible Vault.
-- 1: Biết Vault để giấu mật khẩu nhưng không nêu được thuật toán AES-256 và nguy cơ rò rỉ secret trên Git.
-- 2: Phân tích chính xác cơ chế mã hóa AES-256 tích hợp giúp bảo vệ thông tin nhạy cảm trên Git repository.
-- 3: Nêu đúng + minh họa đoạn header mã hóa `$ANSIBLE_VAULT;1.1;AES256` trên terminal.
-**Câu hỏi đào sâu:** Thuật toán mã hóa đối xứng AES-256 sử dụng mấy khóa để mã hóa và giải mã? *(Sử dụng đúng 1 khóa bí mật chung - Secret Key / Passphrase.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ansible Vault là tính năng bảo mật tích hợp sẵn trong Ansible Core, sử dụng thuật toán mã hóa đối xứng AES-256 để bảo vệ thông tin nhạy cảm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Yêu cầu sinh tử: Trong dự án IaC, Playbook chứa rất nhiều thông tin bí mật (mật khẩu DB, SSH keys, API tokens). Nếu không dùng Vault mã hóa, lưu plaintext rồi push lên Git public sẽ dẫn tới nguy cơ lộ bí mật Doanh nghiệp, bị tin tặc tấn công chiếm đoạt hệ thống.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết Ansible Vault.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Vault để giấu mật khẩu nhưng không nêu được thuật toán AES-256 và nguy cơ rò rỉ secret trên Git.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế mã hóa AES-256 tích hợp giúp bảo vệ thông tin nhạy cảm trên Git repository.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa đoạn header mã hóa <code>$ANSIBLE_VAULT;1.1;AES256</code> trên terminal.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Thuật toán mã hóa đối xứng AES-256 sử dụng mấy khóa để mã hóa và giải mã? *(Sử dụng đúng 1 khóa bí mật chung - Secret Key / Passphrase.)*
 </div>
 </details>
 
@@ -4629,34 +4350,25 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm bảo mật dữ liệu
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Lợi ích của RHEL System Roles 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** RHEL System Roles (`redhat.rhel_system_roles`) là gì? Tại sao Red Hat lại khuyến nghị áp dụng bộ System Roles này trong các dự án tự động hóa Enterprise? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- RHEL System Roles là bộ sưu tập các Roles được Red Hat kiểm thử, bảo trì và phát hành chính thức để tự động hóa các dịch vụ hệ thống cốt lõi của RHEL (như SELinux, Firewall, Timesync, Network, Storage).
-- Lợi ích Enterprise:
-  1. Tự động hóa chuẩn hóa theo Best Practices của Red Hat.
-  2. Đảm bảo tính tương thích và ổn định 100% qua tất cả các phiên bản RHEL 8/9.
-  3. Tiết kiệm 90% thời gian phát triển kịch bản tự động hóa hệ điều hành.
-**Tiêu chí chấm:**
-- 0: Không biết RHEL System Roles.
-- 1: Biết System Role để cấu hình RHEL nhưng không nêu được các lợi ích tuân thủ Best Practices của Red Hat.
-- 2: Phân tích chính xác khái niệm và vai trò chuẩn hóa hệ thống RHEL.
-- 3: Nêu đúng + minh họa ví dụ nạp collection `redhat.rhel_system_roles` trong `requirements.yml`.
-**Câu hỏi đào sâu:** Kể tên 3 System Role phổ biến nhất trong bộ sưu tập RHEL System Roles. *(`redhat.rhel_system_roles.selinux`, `timesync`, `firewall`, `network`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> RHEL System Roles (<code>redhat.rhel_system_roles</code>) là gì? Tại sao Red Hat lại khuyến nghị áp dụng bộ System Roles này trong các dự án tự động hóa Enterprise? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• RHEL System Roles là bộ sưu tập các Roles được Red Hat kiểm thử, bảo trì và phát hành chính thức để tự động hóa các dịch vụ hệ thống cốt lõi của RHEL (như SELinux, Firewall, Timesync, Network, Storage).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lợi ích Enterprise:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Tự động hóa chuẩn hóa theo Best Practices của Red Hat.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Đảm bảo tính tương thích và ổn định 100% qua tất cả các phiên bản RHEL 8/9.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Tiết kiệm 90% thời gian phát triển kịch bản tự động hóa hệ điều hành.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết RHEL System Roles.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết System Role để cấu hình RHEL nhưng không nêu được các lợi ích tuân thủ Best Practices của Red Hat.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác khái niệm và vai trò chuẩn hóa hệ thống RHEL.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ nạp collection <code>redhat.rhel_system_roles</code> trong <code>requirements.yml</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Kể tên 3 System Role phổ biến nhất trong bộ sưu tập RHEL System Roles. *(<code>redhat.rhel_system_roles.selinux</code>, <code>timesync</code>, <code>firewall</code>, <code>network</code>.)*
 </div>
 </details>
 
@@ -4895,32 +4607,23 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản trị bảo mậ
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tối ưu hóa Tiến trình Song song `forks` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Tham số `forks` trong `ansible.cfg` quy định điều gì? Mặc định `forks` bằng bao nhiêu? Tại sao điều chỉnh `forks` lại là bước đầu tiên khi tối ưu Playbook quy mô lớn? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Quy định: Tham số `forks` quy định số lượng kết nối SSH và tiến trình xử lý song song tối đa mà Control Node có thể mở đồng thời tới các máy chủ Managed Nodes.
-- Mặc định: `forks = 5`.
-- Lý do điều chỉnh: Với hạ tầng 100 máy chủ, nếu giữ mặc định 5, Ansible phải chia làm 20 đợt chạy nối tiếp. Tăng `forks = 10` hoặc `20` giúp Ansible tận dụng sức mạnh đa nhân CPU của Control Node, giảm 75% thời gian chờ đợi qua mạng SSH.
-**Tiêu chí chấm:**
-- 0: Không biết tham số `forks`.
-- 1: Biết `forks` quy định số máy nhưng không nhớ mặc định 5 và cách tính toán tối ưu theo RAM/CPU.
-- 2: Phân tích chính xác cơ chế mở tiến trình song song SSH của `forks`.
-- 3: Nêu đúng + viết đoạn cấu hình `ansible.cfg` cài đặt `forks = 10`.
-**Câu hỏi đào sâu:** Công thức ước tính số `forks` an toàn dựa trên dung lượng RAM của Control Node là gì? *(`forks = (RAM_GB - 2) * 20`, giả định mỗi fork tốn khoảng 50MB RAM.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Tham số <code>forks</code> trong <code>ansible.cfg</code> quy định điều gì? Mặc định <code>forks</code> bằng bao nhiêu? Tại sao điều chỉnh <code>forks</code> lại là bước đầu tiên khi tối ưu Playbook quy mô lớn? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Quy định: Tham số <code>forks</code> quy định số lượng kết nối SSH và tiến trình xử lý song song tối đa mà Control Node có thể mở đồng thời tới các máy chủ Managed Nodes.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mặc định: <code>forks = 5</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lý do điều chỉnh: Với hạ tầng 100 máy chủ, nếu giữ mặc định 5, Ansible phải chia làm 20 đợt chạy nối tiếp. Tăng <code>forks = 10</code> hoặc <code>20</code> giúp Ansible tận dụng sức mạnh đa nhân CPU của Control Node, giảm 75% thời gian chờ đợi qua mạng SSH.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tham số <code>forks</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>forks</code> quy định số máy nhưng không nhớ mặc định 5 và cách tính toán tối ưu theo RAM/CPU.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế mở tiến trình song song SSH của <code>forks</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn cấu hình <code>ansible.cfg</code> cài đặt <code>forks = 10</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Công thức ước tính số <code>forks</code> an toàn dựa trên dung lượng RAM của Control Node là gì? *(<code>forks = (RAM_GB - 2) * 20</code>, giả định mỗi fork tốn khoảng 50MB RAM.)*
 </div>
 </details>
 
@@ -5155,32 +4858,23 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tối ưu hóa hiệu n
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Bỏ qua Lỗi Task với `ignore_errors` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Thuộc tính `ignore_errors: true` trong Ansible Task có tác dụng gì? Khi nào NÊN và KHÔNG NÊN sử dụng `ignore_errors: true`? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Tác dụng: Cho phép Ansible tiếp tục thi hành các Task phía sau trong Playbook ngay cả khi Task hiện tại bị trả về trạng thái lỗi (`failed`).
-- khi NÊN dùng: Cho các task kiểm tra thông tin không quan trọng (như dọn dẹp file tạm `/tmp`, xóa cache cũ) mà sự thất bại của nó không ảnh hưởng đến kịch bản chính.
-- Khi KHÔNG NÊN dùng: Tuyệt đối KHÔNG dùng cho các task nạp biến mật khẩu, cài đặt package phần mềm cốt lõi, hoặc định hình cấu hình hệ thống.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `ignore_errors`.
-- 1: Biết `ignore_errors` để cho qua lỗi nhưng không phân biệt được trường hợp NÊN và KHÔNG NÊN dùng.
-- 2: Phân tích chính xác tác dụng và cảnh báo nguy cơ che đậy lỗi nghiêm trọng của `ignore_errors`.
-- 3: Nêu đúng + viết đoạn Task YAML minh họa dọn dẹp cache dùng `ignore_errors: true`.
-**Câu hỏi đào sâu:** Thuộc tính `ignore_unreachable: true` khác `ignore_errors: true` như thế nào? *(`ignore_errors` bỏ qua lỗi execution của module; `ignore_unreachable` bỏ qua lỗi mất kết nối SSH tới máy đích.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Thuộc tính <code>ignore_errors: true</code> trong Ansible Task có tác dụng gì? Khi nào NÊN và KHÔNG NÊN sử dụng <code>ignore_errors: true</code>? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tác dụng: Cho phép Ansible tiếp tục thi hành các Task phía sau trong Playbook ngay cả khi Task hiện tại bị trả về trạng thái lỗi (<code>failed</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• khi NÊN dùng: Cho các task kiểm tra thông tin không quan trọng (như dọn dẹp file tạm <code>/tmp</code>, xóa cache cũ) mà sự thất bại của nó không ảnh hưởng đến kịch bản chính.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi KHÔNG NÊN dùng: Tuyệt đối KHÔNG dùng cho các task nạp biến mật khẩu, cài đặt package phần mềm cốt lõi, hoặc định hình cấu hình hệ thống.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>ignore_errors</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>ignore_errors</code> để cho qua lỗi nhưng không phân biệt được trường hợp NÊN và KHÔNG NÊN dùng.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác tác dụng và cảnh báo nguy cơ che đậy lỗi nghiêm trọng của <code>ignore_errors</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn Task YAML minh họa dọn dẹp cache dùng <code>ignore_errors: true</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Thuộc tính <code>ignore_unreachable: true</code> khác <code>ignore_errors: true</code> như thế nào? *(<code>ignore_errors</code> bỏ qua lỗi execution của module; <code>ignore_unreachable</code> bỏ qua lỗi mất kết nối SSH tới máy đích.)*
 </div>
 </details>
 
@@ -5392,31 +5086,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm xử lý lỗi nâng ca
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Khái niệm và Vai trò của Dynamic Inventory Plugin 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Dynamic Inventory Plugin là gì? Tại sao trong môi trường Đám mây (Cloud Auto-scaling) việc sử dụng Static Inventory lại trở nên bất khả thi? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Dynamic Inventory Plugin: Là cơ chế tự động kết nối API của Cloud Provider (AWS, Azure, GCP) hoặc Facts hệ thống để tự động phát hiện danh sách máy chủ, địa chỉ IP và trạng thái realtime.
-- Tại sao Static Inventory bất khả thi: Trên môi trường Cloud, các VM/Container liên tục được tạo mới, thay đổi địa chỉ IP hoặc tự động co giãn (Auto-scaling). Việc duy trì tệp `inventory.ini` tĩnh sửa tay thủ công sẽ gây tốn thời gian, chậm trễ và nguy cơ cao bỏ sót máy chủ chưa được cấu hình.
-**Tiêu chí chấm:**
-- 0: Không biết Dynamic Inventory Plugin.
-- 1: Biết Dynamic Inventory để phát hiện IP nhưng không giải thích được lý do Static Inventory bị phá phá vỡ trên môi trường Cloud Auto-scaling.
-- 2: Phân tích chính xác cơ chế tự động kết nối API Cloud để phát hiện danh sách máy chủ realtime.
-- 3: Nêu đúng + minh họa ví dụ tệp Dynamic Inventory Plugin `inventory/02-cloud.aws_ec2.yml`.
-**Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa Dynamic Inventory Script (kiểu cũ) và Dynamic Inventory Plugin (kiểu mới). *(Script cũ dùng file thực thi Python/Bash trả về JSON; Plugin mới dùng tệp cấu hình YAML tích hợp sẵn trong Ansible Core/Collections với khả năng caching và keyed_groups.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Dynamic Inventory Plugin là gì? Tại sao trong môi trường Đám mây (Cloud Auto-scaling) việc sử dụng Static Inventory lại trở nên bất khả thi? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dynamic Inventory Plugin: Là cơ chế tự động kết nối API của Cloud Provider (AWS, Azure, GCP) hoặc Facts hệ thống để tự động phát hiện danh sách máy chủ, địa chỉ IP và trạng thái realtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tại sao Static Inventory bất khả thi: Trên môi trường Cloud, các VM/Container liên tục được tạo mới, thay đổi địa chỉ IP hoặc tự động co giãn (Auto-scaling). Việc duy trì tệp <code>inventory.ini</code> tĩnh sửa tay thủ công sẽ gây tốn thời gian, chậm trễ và nguy cơ cao bỏ sót máy chủ chưa được cấu hình.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết Dynamic Inventory Plugin.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Dynamic Inventory để phát hiện IP nhưng không giải thích được lý do Static Inventory bị phá phá vỡ trên môi trường Cloud Auto-scaling.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế tự động kết nối API Cloud để phát hiện danh sách máy chủ realtime.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ tệp Dynamic Inventory Plugin <code>inventory/02-cloud.aws_ec2.yml</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Phân biệt sự khác nhau giữa Dynamic Inventory Script (kiểu cũ) và Dynamic Inventory Plugin (kiểu mới). *(Script cũ dùng file thực thi Python/Bash trả về JSON; Plugin mới dùng tệp cấu hình YAML tích hợp sẵn trong Ansible Core/Collections với khả năng caching và keyed_groups.)*
 </div>
 </details>
 
@@ -5666,31 +5351,22 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý hạ tầng 
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Kiểm tra Cú pháp Static với `--syntax-check` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Cờ `--syntax-check` trong câu lệnh `ansible-playbook` dùng để làm gì? Tại sao việc chạy `--syntax-check` lại là bước đầu tiên trong quy trình CI/CD? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Tác dụng: Dùng để kiểm tra cú pháp tĩnh (Static Syntax Check) của tệp Playbook mà không thực hiện kết nối SSH tới các máy chủ Managed Nodes.
-- Tại sao là bước đầu tiên trong CI/CD: Giúp phát hiện ngay lập tức các lỗi cú pháp cơ bản (như sai khoảng trắng indent YAML, thiếu dấu hai chấm, thiếu từ khóa `hosts:`) chỉ trong 1 giây. Chặn không cho các commit lỗi cú pháp đi tiếp vào các bước build tốn nhiều tài nguyên hơn.
-**Tiêu chí chấm:**
-- 0: Không biết cờ `--syntax-check`.
-- 1: Biết `--syntax-check` để soi lỗi nhưng không giải thích được lý do chặn sớm (Fail-Fast) trong pipeline CI/CD.
-- 2: Phân tích chính xác cơ chế Static Syntax Check và vai trò Fail-Fast trong CI/CD.
-- 3: Nêu đúng + viết câu lệnh CLI thực thi `ansible-playbook --syntax-check site-testing.yml`.
-**Câu hỏi đào sâu:** Cờ `--syntax-check` có kiểm tra được biến rỗng hay lỗi SSH connection không? *(Không, nó chỉ kiểm tra cấu trúc cú pháp tĩnh của file YAML.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Cờ <code>--syntax-check</code> trong câu lệnh <code>ansible-playbook</code> dùng để làm gì? Tại sao việc chạy <code>--syntax-check</code> lại là bước đầu tiên trong quy trình CI/CD? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tác dụng: Dùng để kiểm tra cú pháp tĩnh (Static Syntax Check) của tệp Playbook mà không thực hiện kết nối SSH tới các máy chủ Managed Nodes.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tại sao là bước đầu tiên trong CI/CD: Giúp phát hiện ngay lập tức các lỗi cú pháp cơ bản (như sai khoảng trắng indent YAML, thiếu dấu hai chấm, thiếu từ khóa <code>hosts:</code>) chỉ trong 1 giây. Chặn không cho các commit lỗi cú pháp đi tiếp vào các bước build tốn nhiều tài nguyên hơn.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cờ <code>--syntax-check</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>--syntax-check</code> để soi lỗi nhưng không giải thích được lý do chặn sớm (Fail-Fast) trong pipeline CI/CD.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế Static Syntax Check và vai trò Fail-Fast trong CI/CD.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết câu lệnh CLI thực thi <code>ansible-playbook --syntax-check site-testing.yml</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Cờ <code>--syntax-check</code> có kiểm tra được biến rỗng hay lỗi SSH connection không? *(Không, nó chỉ kiểm tra cấu trúc cú pháp tĩnh của file YAML.)*
 </div>
 </details>
 
@@ -5927,35 +5603,26 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm kiểm thử kịch b�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc Pipeline CI/CD 4 Giai đoạn 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày 4 giai đoạn (Stages) tiêu chuẩn trong một pipeline CI/CD tự động hóa Ansible cấp Enterprise. Tại sao việc chia 4 stage này lại là bắt buộc? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- 4 Giai đoạn:
-  1. `lint`: Kiểm tra cú pháp tĩnh (`--syntax-check`) và linter (`ansible-lint`).
-  2. `test`: Kiểm thử Role trên container Docker cách ly bằng `molecule test`.
-  3. `staging`: Triển khai tự động lên môi trường Staging (`-i inventory/staging`).
-  4. `production`: Triển khai cuốn chiếu Zero Downtime lên Production sau khi có phê duyệt thủ công (`when: manual`).
-- Tại sao bắt buộc: Tạo lá chắn kiểm thử Fail-Fast đa tầng, phát hiện lỗi sớm từ bước 1, ngăn ngừa 100% rủi ro lọt code lỗi gây ngưng trệ máy chủ Production.
-**Tiêu chí chấm:**
-- 0: Không biết cấu trúc pipeline CI/CD.
-- 1: Biết các stage nhưng không liệt kê đủ 4 stage `lint` -> `test` -> `staging` -> `production`.
-- 2: Phân tích chính xác vai trò lá chắn Fail-Fast đa tầng của 4 stages trong pipeline CI/CD.
-- 3: Nêu đúng + viết đoạn YAML `stages:` trong tệp `.gitlab-ci.yml`.
-**Câu hỏi đào sâu:** Nếu Stage 1 (`lint`) bị lỗi, runner sẽ xử lý các Stage tiếp theo như thế nào? *(Runner sẽ ngắt pipeline ngay lập tức, không chạy các Stage `test`, `staging`, `production` phía sau.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày 4 giai đoạn (Stages) tiêu chuẩn trong một pipeline CI/CD tự động hóa Ansible cấp Enterprise. Tại sao việc chia 4 stage này lại là bắt buộc? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 4 Giai đoạn:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>lint</code>: Kiểm tra cú pháp tĩnh (<code>--syntax-check</code>) và linter (<code>ansible-lint</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>test</code>: Kiểm thử Role trên container Docker cách ly bằng <code>molecule test</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>staging</code>: Triển khai tự động lên môi trường Staging (<code>-i inventory/staging</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <code>production</code>: Triển khai cuốn chiếu Zero Downtime lên Production sau khi có phê duyệt thủ công (<code>when: manual</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tại sao bắt buộc: Tạo lá chắn kiểm thử Fail-Fast đa tầng, phát hiện lỗi sớm từ bước 1, ngăn ngừa 100% rủi ro lọt code lỗi gây ngưng trệ máy chủ Production.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc pipeline CI/CD.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết các stage nhưng không liệt kê đủ 4 stage <code>lint</code> -> <code>test</code> -> <code>staging</code> -> <code>production</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò lá chắn Fail-Fast đa tầng của 4 stages trong pipeline CI/CD.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML <code>stages:</code> trong tệp <code>.gitlab-ci.yml</code>.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu Stage 1 (<code>lint</code>) bị lỗi, runner sẽ xử lý các Stage tiếp theo như thế nào? *(Runner sẽ ngắt pipeline ngay lập tức, không chạy các Stage <code>test</code>, <code>staging</code>, <code>production</code> phía sau.)*
 </div>
 </details>
 
@@ -6210,33 +5877,24 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tích hợp Ansible và
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Cấu trúc 3 Phần của Systemd Unit File 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày cấu trúc 3 phần bắt buộc trong một tệp Systemd Unit File (`.service`). Mỗi phần chứa các chỉ thị quan trọng nào? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- 3 Phần cấu trúc:
-  1. `[Unit]`: Chứa mô tả dịch vụ (`Description=`) và sự phụ thuộc khởi động (`After=network.target`).
-  2. `[Service]`: Chứa loại dịch vụ (`Type=simple`), tài khoản thực thi (`User=sysops`), lệnh khởi chạy (`ExecStart=`), và cơ chế tự khôi phục (`Restart=always`).
-  3. `[Install]`: Chứa điểm gắn kết khởi động cùng hệ thống khi boot (`WantedBy=multi-user.target`).
-**Tiêu chí chấm:**
-- 0: Không biết cấu trúc Unit File.
-- 1: Biết các phần nhưng không giải thích được vai trò chỉ thị `WantedBy=` hay `ExecStart=`.
-- 2: Phân tích chính xác vai trò 3 phần `[Unit]`, `[Service]`, `[Install]`.
-- 3: Nêu đúng + viết đoạn Unit File mẫu `my-app.service.j2` hoàn chỉnh.
-**Câu hỏi đào sâu:** Điều gì xảy ra nếu một tệp `.service` bị thiếu phần `[Install]`? *(Lệnh `systemctl enable` sẽ báo lỗi từ chối tạo symbolic link tự khởi động cùng boot.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cấu trúc 3 phần bắt buộc trong một tệp Systemd Unit File (<code>.service</code>). Mỗi phần chứa các chỉ thị quan trọng nào? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3 Phần cấu trúc:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>[Unit]</code>: Chứa mô tả dịch vụ (<code>Description=</code>) và sự phụ thuộc khởi động (<code>After=network.target</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>[Service]</code>: Chứa loại dịch vụ (<code>Type=simple</code>), tài khoản thực thi (<code>User=sysops</code>), lệnh khởi chạy (<code>ExecStart=</code>), và cơ chế tự khôi phục (<code>Restart=always</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>[Install]</code>: Chứa điểm gắn kết khởi động cùng hệ thống khi boot (<code>WantedBy=multi-user.target</code>).</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc Unit File.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết các phần nhưng không giải thích được vai trò chỉ thị <code>WantedBy=</code> hay <code>ExecStart=</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò 3 phần <code>[Unit]</code>, <code>[Service]</code>, <code>[Install]</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn Unit File mẫu <code>my-app.service.j2</code> hoàn chỉnh.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Điều gì xảy ra nếu một tệp <code>.service</code> bị thiếu phần <code>[Install]</code>? *(Lệnh <code>systemctl enable</code> sẽ báo lỗi từ chối tạo symbolic link tự khởi động cùng boot.)*
 </div>
 </details>
 
@@ -6454,34 +6112,25 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm đóng gói ứng dụn
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Collection FQCN `ansible.posix.firewalld` 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Ansible Collection FQCN nào là công cụ tiêu chuẩn để quản lý dịch vụ tường lửa Firewalld trên Enterprise Linux? Nêu 3 tham số cơ bản của module này. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Collection FQCN: `ansible.posix.firewalld`
-- 3 Tham số cơ bản:
-  1. `zone:` Chỉ định phân vùng bảo mật (ví dụ `zone: public` hoặc `zone: internal`).
-  2. `service:` / `port:` Chỉ định tên dịch vụ mở (như `service: http`) hoặc số cổng kèm giao thức (như `port: 8080/tcp`).
-  3. `state:` Trạng thái áp dụng (`state: enabled` mở quy tắc, `state: disabled` đóng quy tắc).
-**Tiêu chí chấm:**
-- 0: Không nhớ Collection `ansible.posix.firewalld`.
-- 1: Biết tên Collection nhưng không liệt kê được các tham số `zone`, `service`, `port`, `state`.
-- 2: Phân tích chính xác vai trò Collection FQCN chính chủ của Red Hat trong quản lý Firewalld.
-- 3: Nêu đúng + viết đoạn Task Ansible `ansible.posix.firewalld` hoàn chỉnh.
-**Câu hỏi đào sâu:** Làm thế nào để cài đặt Collection `ansible.posix` nếu môi trường Control Node bị thiếu? *(Chạy lệnh `ansible-galaxy collection install ansible.posix`.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Collection FQCN nào là công cụ tiêu chuẩn để quản lý dịch vụ tường lửa Firewalld trên Enterprise Linux? Nêu 3 tham số cơ bản của module này. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Collection FQCN: <code>ansible.posix.firewalld</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3 Tham số cơ bản:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>zone:</code> Chỉ định phân vùng bảo mật (ví dụ <code>zone: public</code> hoặc <code>zone: internal</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>service:</code> / <code>port:</code> Chỉ định tên dịch vụ mở (như <code>service: http</code>) hoặc số cổng kèm giao thức (như <code>port: 8080/tcp</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>state:</code> Trạng thái áp dụng (<code>state: enabled</code> mở quy tắc, <code>state: disabled</code> đóng quy tắc).</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nhớ Collection <code>ansible.posix.firewalld</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết tên Collection nhưng không liệt kê được các tham số <code>zone</code>, <code>service</code>, <code>port</code>, <code>state</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò Collection FQCN chính chủ của Red Hat trong quản lý Firewalld.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn Task Ansible <code>ansible.posix.firewalld</code> hoàn chỉnh.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Làm thế nào để cài đặt Collection <code>ansible.posix</code> nếu môi trường Control Node bị thiếu? *(Chạy lệnh <code>ansible-galaxy collection install ansible.posix</code>.)*
 </div>
 </details>
 
@@ -6727,35 +6376,26 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý tường l�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Kiến trúc AWX / AAP và Chuyển đổi từ CLI sang Web UI 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** AWX và Red Hat Ansible Automation Platform (AAP) là gì? Trình bày 4 lý do lớn tại sao Doanh nghiệp phải chuyển đổi từ chạy Ansible CLI cá nhân sang nền tảng tập trung AWX / AAP. *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Định nghĩa: AWX (Open Source) và AAP (Enterprise) là nền tảng quản trị tập trung kịch bản tự động hóa Ansible qua giao diện Web UI, REST API và mô hình phân quyền RBAC.
-- 4 Lý do chuyển đổi:
-  1. **Phân quyền RBAC:** Phân chia chi tiết quyền hạn ai được gạt nút chạy kịch bản nào, trên môi trường nào.
-  2. **Bảo mật Credentials tập trung:** Mã hóa AES-256 SSH Keys và Vault Passwords, không cho phép xem hay lộ plaintext.
-  3. **Nhật ký Audit tập trung:** Lưu trữ lịch sử toàn bộ các lần chạy kịch bản (ai chạy, khi nào, log chi tiết).
-  4. **REST API & Webhooks:** Tích hợp tự động hóa với hệ thống CI/CD, ServiceNow, Jira và event push code.
-**Tiêu chí chấm:**
-- 0: Không biết AWX / AAP.
-- 1: Biết AWX để chạy giao diện Web nhưng không liệt kê được 4 bài toán lớn về RBAC, Audit, Credentials và API.
-- 2: Phân tích chính xác vai trò chuyển đổi quy mô Enterprise từ CLI cá nhân lên nền tảng tập trung AWX.
-- 3: Nêu đúng + minh họa ví dụ tệp định nghĩa AWX Project & Job Template.
-**Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa AWX và Red Hat Ansible Automation Platform (AAP). *(AWX là dự án mã nguồn mở upstream của cộng đồng; AAP là sản phẩm thương mại được Red Hat hỗ trợ chính thức có thêm tính năng Enterprise Automation Controller, Private Automation Hub và Event-Driven Ansible.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> AWX và Red Hat Ansible Automation Platform (AAP) là gì? Trình bày 4 lý do lớn tại sao Doanh nghiệp phải chuyển đổi từ chạy Ansible CLI cá nhân sang nền tảng tập trung AWX / AAP. *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Định nghĩa: AWX (Open Source) và AAP (Enterprise) là nền tảng quản trị tập trung kịch bản tự động hóa Ansible qua giao diện Web UI, REST API và mô hình phân quyền RBAC.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 4 Lý do chuyển đổi:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Phân quyền RBAC:</b> Phân chia chi tiết quyền hạn ai được gạt nút chạy kịch bản nào, trên môi trường nào.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Bảo mật Credentials tập trung:</b> Mã hóa AES-256 SSH Keys và Vault Passwords, không cho phép xem hay lộ plaintext.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Nhật ký Audit tập trung:</b> Lưu trữ lịch sử toàn bộ các lần chạy kịch bản (ai chạy, khi nào, log chi tiết).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">REST API & Webhooks:</b> Tích hợp tự động hóa với hệ thống CI/CD, ServiceNow, Jira và event push code.</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết AWX / AAP.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết AWX để chạy giao diện Web nhưng không liệt kê được 4 bài toán lớn về RBAC, Audit, Credentials và API.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò chuyển đổi quy mô Enterprise từ CLI cá nhân lên nền tảng tập trung AWX.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ tệp định nghĩa AWX Project & Job Template.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Phân biệt sự khác nhau giữa AWX và Red Hat Ansible Automation Platform (AAP). *(AWX là dự án mã nguồn mở upstream của cộng đồng; AAP là sản phẩm thương mại được Red Hat hỗ trợ chính thức có thêm tính năng Enterprise Automation Controller, Private Automation Hub và Event-Driven Ansible.)*
 </div>
 </details>
 
@@ -6995,34 +6635,25 @@ Các câu hỏi gắn nhãn 🔥 là **câu hỏi tủ tốt nghiệp bắt bu�
 
 ## V2. Bộ câu hỏi — ĐÚNG 12 câu
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Kiến trúc Hạ tầng Enterprise 3 Tầng trong Capstone 🔥</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  **Hỏi:** Trình bày mô hình kiến trúc Enterprise 3 tầng (Nginx LB -> Web Cluster -> PostgreSQL DB) trong Dự án Capstone. Tại sao việc chia 3 tầng độc lập lại vượt trội hơn cài gộp vào 1 server? *(Liên quan QT 4.1)*
-**Đáp án chuẩn:**
-- Mô hình 3 tầng:
-  1. **Tầng 1 (Load Balancer Nginx):** Tiếp nhận lưu lượng HTTP/HTTPS cổng 80/443 từ công chúng và điều hướng round-robin tới cụm Web Nodes.
-  2. **Tầng 2 (Web Cluster Systemd Service):** Xử lý logic ứng dụng, chạy hạ đặc quyền under user `sysops` với `Restart=always`.
-  3. **Tầng 3 (Database Cluster PostgreSQL):** Lưu trữ dữ liệu hệ thống, bảo vệ tuyệt đối bằng Firewalld Rich Rules chỉ cho phép IP Web Nodes truy cập cổng 5432.
-- Ưu điểm vượt trội: Tăng khả năng mở rộng (Scalability - dễ dàng add thêm Web Node), tính sẵn sàng cao (High Availability), và bảo mật chuyên sâu (Defense in Depth - DB bị cô lập khỏi Internet).
-**Tiêu chí chấm:**
-- 0: Không nêu được 3 tầng kiến trúc.
-- 1: Biết 3 tầng nhưng không giải thích được vai trò mở rộng và bảo mật chuyên sâu Defense in Depth.
-- 2: Phân tích chính xác vai trò của 3 tầng Nginx LB, Systemd Web App và PostgreSQL DB.
-- 3: Nêu đúng + vẽ sơ đồ luồng dữ liệu 3 tầng xuất sắc.
-**Câu hỏi đào sâu:** Làm thế nào để thêm máy chủ Web Node thứ 3 vào cụm Web Cluster mà không phải sửa file Playbook? *(Chỉ cần khai báo thêm host `web3` vào nhóm `[web]` trong `inventory/capstone-hosts.ini`, Nginx Upstream Jinja2 Template sẽ tự động phát hiện và sinh cấu hình mới.)*
+  
+<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày mô hình kiến trúc Enterprise 3 tầng (Nginx LB -> Web Cluster -> PostgreSQL DB) trong Dự án Capstone. Tại sao việc chia 3 tầng độc lập lại vượt trội hơn cài gộp vào 1 server? *(Liên quan QT 4.1)*
+<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mô hình 3 tầng:</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Tầng 1 (Load Balancer Nginx):</b> Tiếp nhận lưu lượng HTTP/HTTPS cổng 80/443 từ công chúng và điều hướng round-robin tới cụm Web Nodes.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Tầng 2 (Web Cluster Systemd Service):</b> Xử lý logic ứng dụng, chạy hạ đặc quyền under user <code>sysops</code> với <code>Restart=always</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Tầng 3 (Database Cluster PostgreSQL):</b> Lưu trữ dữ liệu hệ thống, bảo vệ tuyệt đối bằng Firewalld Rich Rules chỉ cho phép IP Web Nodes truy cập cổng 5432.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ưu điểm vượt trội: Tăng khả năng mở rộng (Scalability - dễ dàng add thêm Web Node), tính sẵn sàng cao (High Availability), và bảo mật chuyên sâu (Defense in Depth - DB bị cô lập khỏi Internet).</div>
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được 3 tầng kiến trúc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết 3 tầng nhưng không giải thích được vai trò mở rộng và bảo mật chuyên sâu Defense in Depth.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò của 3 tầng Nginx LB, Systemd Web App và PostgreSQL DB.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + vẽ sơ đồ luồng dữ liệu 3 tầng xuất sắc.</div>
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Làm thế nào để thêm máy chủ Web Node thứ 3 vào cụm Web Cluster mà không phải sửa file Playbook? *(Chỉ cần khai báo thêm host <code>web3</code> vào nhóm <code>[web]</code> trong <code>inventory/capstone-hosts.ini</code>, Nginx Upstream Jinja2 Template sẽ tự động phát hiện và sinh cấu hình mới.)*
 </div>
 </details>
 

@@ -386,195 +386,105 @@ argocd app get ecommerce-payment-api --output json | jq '.status.resources[] | {
 ## 9. Bộ Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tại sao trạng thái `Sync Status: Synced` không đồng nghĩa với việc ứng dụng đã chạy ổn định?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì `Sync Status: Synced` chỉ chứng minh rằng Kubernetes API Server đã tiếp nhận và ghi nhận khai báo manifest từ Git vào etcd. Ứng dụng sau đó có thể bị sập do sai cấu hình, không kéo được image (`ImagePullBackOff`), hoặc lỗi kết nối mạng nội bộ — những yếu tố này chỉ được phản ánh qua **`Health Status`**.
+  
+Vì <code>Sync Status: Synced</code> chỉ chứng minh rằng Kubernetes API Server đã tiếp nhận và ghi nhận khai báo manifest từ Git vào etcd. Ứng dụng sau đó có thể bị sập do sai cấu hình, không kéo được image (<code>ImagePullBackOff</code>), hoặc lỗi kết nối mạng nội bộ — những yếu tố này chỉ được phản ánh qua <b style="color: var(--accent-primary);"><code>Health Status</code></b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Biến `obj` trong script Lua của Argo CD đại diện cho đối tượng nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Biến `obj` là một Lua Table đại diện cho toàn bộ đối tượng tài nguyên Kubernetes thực tế đang chạy trên Live Cluster (chứa đầy đủ các trường `metadata`, `spec`, và quan trọng nhất là `status`).
+  
+Biến <code>obj</code> là một Lua Table đại diện cho toàn bộ đối tượng tài nguyên Kubernetes thực tế đang chạy trên Live Cluster (chứa đầy đủ các trường <code>metadata</code>, <code>spec</code>, và quan trọng nhất là <code>status</code>).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Một script Lua Custom Health Check bắt buộc phải trả về bảng dữ liệu (Table) có các trường nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Bắt buộc phải trả về một Table chứa 2 trường:
-  1. `status`: Chuỗi ký tự nhận một trong các giá trị `"Healthy"`, `"Progressing"`, `"Degraded"`, hoặc `"Suspended"`.
-  2. `message`: Chuỗi thông báo giải thích lý do cụ thể hiển thị trên giao diện người dùng.
+  
+Bắt buộc phải trả về một Table chứa 2 trường:
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>status</code>: Chuỗi ký tự nhận một trong các giá trị <code>"Healthy"</code>, <code>"Progressing"</code>, <code>"Degraded"</code>, hoặc <code>"Suspended"</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>message</code>: Chuỗi thông báo giải thích lý do cụ thể hiển thị trên giao diện người dùng.</div>
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Khi nào một tài nguyên có trạng thái Health là `Suspended`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Khi tài nguyên đang trong trạng thái tạm dừng có chủ đích theo logic nghiệp vụ, ví dụ: CronJob đang bị suspend (`spec.suspend: true`), hoặc một đợt triển khai **Argo Rollouts Canary** đang dừng ở bước `pause: {}` để theo dõi số liệu hoặc chờ kỹ sư phê duyệt thủ công.
+  
+Khi tài nguyên đang trong trạng thái tạm dừng có chủ đích theo logic nghiệp vụ, ví dụ: CronJob đang bị suspend (<code>spec.suspend: true</code>), hoặc một đợt triển khai <b style="color: var(--accent-primary);">Argo Rollouts Canary</b> đang dừng ở bước <code>pause: {}</code> để theo dõi số liệu hoặc chờ kỹ sư phê duyệt thủ công.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Cần lưu ý gì về hiệu năng khi viết các đoạn mã Lua trong `argocd-cm`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đoạn mã Lua được thực thi liên tục bên trong vòng lặp Reconcile của Controller cho hàng ngàn tài nguyên. Do đó, mã Lua phải cực kỳ ngắn gọn, không dùng vòng lặp vô hạn, không gọi các hàm tính toán phức tạp và luôn kiểm tra điều kiện `nil` an toàn (`if obj.status ~= nil`) để tránh làm sập tiến trình Controller.
+  
+Đoạn mã Lua được thực thi liên tục bên trong vòng lặp Reconcile của Controller cho hàng ngàn tài nguyên. Do đó, mã Lua phải cực kỳ ngắn gọn, không dùng vòng lặp vô hạn, không gọi các hàm tính toán phức tạp và luôn kiểm tra điều kiện <code>nil</code> an toàn (<code>if obj.status ~= nil</code>) để tránh làm sập tiến trình Controller.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Điều gì sẽ xảy ra nếu một script Lua bị lỗi cú pháp hoặc ném lỗi runtime (như truy cập nil table)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Argo CD Controller sẽ bắt ngoại lệ, ghi log lỗi error vào controller log và gán nhãn trạng thái Health của tài nguyên đó là **`Unknown`** kèm thông báo lỗi Lua script, tránh việc làm sập tiến trình Controller.
+  
+Argo CD Controller sẽ bắt ngoại lệ, ghi log lỗi error vào controller log và gán nhãn trạng thái Health của tài nguyên đó là <b style="color: var(--accent-primary);"><code>Unknown</code></b> kèm thông báo lỗi Lua script, tránh việc làm sập tiến trình Controller.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Làm thế nào để phân biệt giữa ExternalSecret bị lỗi sai mật khẩu Vault và lỗi mất kết nối mạng?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Kiểm tra trường `condition.reason` trong `status.conditions`. Nếu `reason == "SecretSyncedError"`, script Lua có thể trích xuất `condition.message` để hiển thị rõ nguyên nhân lỗi (như "permission denied" hoặc "vault server unreachable") trực tiếp trên UI của Argo CD.
+  
+Kiểm tra trường <code>condition.reason</code> trong <code>status.conditions</code>. Nếu <code>reason == "SecretSyncedError"</code>, script Lua có thể trích xuất <code>condition.message</code> để hiển thị rõ nguyên nhân lỗi (như "permission denied" hoặc "vault server unreachable") trực tiếp trên UI của Argo CD.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao việc đánh giá đúng trạng thái `Progressing` lại quan trọng đối với cơ chế Sync Waves?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Vì nếu script Lua trả về `Progressing`, Argo CD sẽ hiểu rằng tài nguyên đang trong tiến trình khởi tạo và kiên nhẫn chờ đợi tại rào chắn Wave hiện tại. Nếu script vội vã trả về `Healthy`, Argo CD sẽ kích hoạt Wave sau khi tài nguyên trước chưa thực sự sẵn sàng.
+  
+Vì nếu script Lua trả về <code>Progressing</code>, Argo CD sẽ hiểu rằng tài nguyên đang trong tiến trình khởi tạo và kiên nhẫn chờ đợi tại rào chắn Wave hiện tại. Nếu script vội vã trả về <code>Healthy</code>, Argo CD sẽ kích hoạt Wave sau khi tài nguyên trước chưa thực sự sẵn sàng.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Có thể chia sẻ các Custom Health Scripts cho cộng đồng như thế nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đóng góp Pull Request trực tiếp vào thư mục `resource_customizations` trong kho mã nguồn chính thức `argoproj/argo-cd` trên GitHub. Khi được merge, script sẽ trở thành built-in trong các phiên bản phát hành tiếp theo.
+  
+Đóng góp Pull Request trực tiếp vào thư mục <code>resource_customizations</code> trong kho mã nguồn chính thức <code>argoproj/argo-cd</code> trên GitHub. Khi được merge, script sẽ trở thành built-in trong các phiên bản phát hành tiếp theo.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Nút bấm Custom Actions viết bằng Lua có thể thực hiện những tác vụ gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Có thể thực hiện các thao tác mutate (chỉnh sửa) trực tiếp lên manifest Live State của tài nguyên, ví dụ: trigger restart deployment, re-issue certificate, resume rollout canary, trigger backup job mà không cần người dùng phải mở terminal chạy `kubectl`.
+  
+Có thể thực hiện các thao tác mutate (chỉnh sửa) trực tiếp lên manifest Live State của tài nguyên, ví dụ: trigger restart deployment, re-issue certificate, resume rollout canary, trigger backup job mà không cần người dùng phải mở terminal chạy <code>kubectl</code>.
 </div>
 </details>
 

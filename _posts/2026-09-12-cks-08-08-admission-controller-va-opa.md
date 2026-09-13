@@ -332,231 +332,123 @@ graph TD
 ## §10. Câu hỏi tự kiểm tra (5 phút)
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Thứ tự thực thi giữa `MutatingAdmissionWebhook` và `ValidatingAdmissionWebhook` trong luồng xử lý request của Kube-APIServer là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `MutatingAdmissionWebhook` **LUÔN CHẠY TRƯỚC**, `ValidatingAdmissionWebhook` **CHẠY SAU**.
+  
+<code>MutatingAdmissionWebhook</code> <b style="color: var(--accent-primary);">LUÔN CHẠY TRƯỚC</b>, <code>ValidatingAdmissionWebhook</code> <b style="color: var(--accent-primary);">CHẠY SAU</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Ưu điểm lớn nhất của việc sử dụng `ValidatingAdmissionPolicy` (CEL) so với External Validating Webhook là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chạy trực tiếp trong tiến trình API Server nên tốc độ siêu nhanh (vài ms), không bị trễ mạng và không cần duy trì service webhook bên ngoài.
+  
+Chạy trực tiếp trong tiến trình API Server nên tốc độ siêu nhanh (vài ms), không bị trễ mạng và không cần duy trì service webhook bên ngoài.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Biểu thức CEL trong `spec.validations[x].expression` bắt buộc phải trả về kết quả thuộc kiểu dữ liệu nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thuộc kiểu dữ liệu **Boolean** (`true` cho phép, `false` chặn).
+  
+Thuộc kiểu dữ liệu <b style="color: var(--accent-primary);">Boolean</b> (<code>true</code> cho phép, <code>false</code> chặn).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Tại sao nên dùng hàm `has(object.metadata.labels)` trước khi kiểm tra một nhãn cụ thể trong biểu thức CEL?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Để tránh lỗi Null Pointer Exception khi đối tượng Pod không khai báo khối metadata labels.
+  
+Để tránh lỗi Null Pointer Exception khi đối tượng Pod không khai báo khối metadata labels.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Cú pháp biểu thức CEL chuẩn để kiểm tra 100% các container trong Pod phải có ảnh lấy từ `myregistry.io/` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  `object.spec.containers.all(c, c.image.startsWith('myregistry.io/'))`.
+  
+<code>object.spec.containers.all(c, c.image.startsWith('myregistry.io/'))</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Đối tượng Kubernetes nào được sử dụng để liên kết một `ValidatingAdmissionPolicy` với một Namespace hoặc tài nguyên mục tiêu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Đối tượng `ValidatingAdmissionPolicyBinding`.
+  
+Đối tượng <code>ValidatingAdmissionPolicyBinding</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Hai thành phần CRD cốt lõi bắt buộc phải có trong OPA Gatekeeper để định nghĩa và áp đặt chính sách an ninh là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thành phần `ConstraintTemplate` (định nghĩa luật Rego) và `Constraint` (áp đặt vào đối tượng).
+  
+Thành phần <code>ConstraintTemplate</code> (định nghĩa luật Rego) và <code>Constraint</code> (áp đặt vào đối tượng).
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Cờ thuộc tính nào trong `ValidatingAdmissionPolicyBinding` được dùng để chỉ định hành động CHẶN request khi vi phạm chính sách?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Thuộc tính `validationActions: [Deny]`.
+  
+Thuộc tính <code>validationActions: [Deny]</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Mã lỗi HTTP nào được Kube-APIServer trả về khi một request tạo Pod bị `ValidatingAdmissionPolicy` từ chối?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Mã lỗi `403 Forbidden`.
+  
+Mã lỗi <code>403 Forbidden</code>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Công cụ chính sách 3rd party nào sử dụng trực tiếp cú pháp YAML thuần (không cần Rego hay CEL) để quản lý chính sách Kubernetes?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Công cụ **Kyverno Policy Engine**.
+  
+Công cụ <b style="color: var(--accent-primary);">Kyverno Policy Engine</b>.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Điều gì xảy ra nếu bạn tạo một `ValidatingAdmissionPolicy` nhưng không tạo `ValidatingAdmissionPolicyBinding`?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  Chính sách đó KHÔNG CÓ HIỆU LỰC, API Server sẽ không kiểm duyệt bất kỳ request nào.
+  
+Chính sách đó KHÔNG CÓ HIỆU LỰC, API Server sẽ không kiểm duyệt bất kỳ request nào.
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q12</span>
-    <span>Cú pháp YAML chuẩn của một tệp `ValidatingAdmissionPolicy` hoàn chỉnh kiểm tra nhãn `owner` là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```yaml
+  
+```yaml
       apiVersion: admissionregistration.k8s.io/v1
       kind: ValidatingAdmissionPolicy
       metadata:
@@ -564,12 +456,12 @@ graph TD
       spec:
         matchConstraints:
           resourceRules:
-            - apiGroups: [""]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
               apiVersions: ["v1"]
               operations: ["CREATE", "UPDATE"]
               resources: ["pods"]
         validations:
-          - expression: "has(object.metadata.labels) && 'owner' in object.metadata.labels"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• expression: "has(object.metadata.labels) && 'owner' in object.metadata.labels"</div>
             message: "Pod bắt buộc phải có nhãn 'owner'!"
       ```
 </div>
@@ -944,30 +836,21 @@ Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ
 ## V2. Bộ câu hỏi
 
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Thứ tự và sự khác biệt về vai trò giữa `MutatingAdmissionWebhook` và `ValidatingAdmissionWebhook` trong luồng xử lý request của Kube-APIServer là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  - `MutatingAdmissionWebhook` **CHẠY TRƯỚC**: Cho phép sửa đổi, bổ sung các thuộc tính mặc định vào đối tượng (như chèn sidecar container hay gán nhãn tự động).
-- `ValidatingAdmissionWebhook` **CHẠY SAU**: Soi chiếu bản kê khai hoàn chỉnh cuối cùng và CHẶN request (trả về lỗi `403 Forbidden`) nếu vi phạm chính sách an ninh.
+  
+<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>MutatingAdmissionWebhook</code> <b style="color: var(--accent-primary);">CHẠY TRƯỚC</b>: Cho phép sửa đổi, bổ sung các thuộc tính mặc định vào đối tượng (như chèn sidecar container hay gán nhãn tự động).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ValidatingAdmissionWebhook</code> <b style="color: var(--accent-primary);">CHẠY SAU</b>: Soi chiếu bản kê khai hoàn chỉnh cuối cùng và CHẶN request (trả về lỗi <code>403 Forbidden</code>) nếu vi phạm chính sách an ninh.</div>
 
-**Tiêu chí chấm:**
-- 0đ: Không biết thứ tự Mutating vs Validating.
-- 1đ: Nêu được 1 cái sửa 1 cái kiểm tra nhưng nhầm lẫn thứ tự chạy.
-- 3đ: Phân tích thấu đáo luồng xử lý của API Server: Mutating chạy trước, Validating chạy sau.
+<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết thứ tự Mutating vs Validating.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được 1 cái sửa 1 cái kiểm tra nhưng nhầm lẫn thứ tự chạy.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích thấu đáo luồng xử lý của API Server: Mutating chạy trước, Validating chạy sau.</div>
 
-**Câu hỏi đào sâu:** (Tại sao Mutating phải chạy trước Validating? — Để giai đoạn Validating kiểm duyệt bản kê khai cuối cùng hoàn chỉnh nhất sau khi đã được chèn/sửa thuộc tính mặc định).
+<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> (Tại sao Mutating phải chạy trước Validating? — Để giai đoạn Validating kiểm duyệt bản kê khai cuối cùng hoàn chỉnh nhất sau khi đã được chèn/sửa thuộc tính mặc định).
 </div>
 </details>
 
@@ -1233,22 +1116,13 @@ Chẩn đoán và sửa lỗi tệp `/tmp/policy-broken.yaml` bị gõ sai cú p
 
 ## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>— Tạo tệp `/tmp/policy-team.yaml</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/policy-team.yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
@@ -1257,12 +1131,12 @@ metadata:
 spec:
   matchConstraints:
     resourceRules:
-      - apiGroups: [""]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods"]
   validations:
-    - expression: "has(object.metadata.labels) && 'team' in object.metadata.labels"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• expression: "has(object.metadata.labels) && 'team' in object.metadata.labels"</div>
       message: "Pod must contain 'team' label!"
 EOF
 
@@ -1271,22 +1145,13 @@ kubectl apply -f /tmp/policy-team.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>— Tạo tệp `/tmp/binding-team.yaml</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/binding-team.yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
@@ -1306,22 +1171,13 @@ kubectl apply -f /tmp/binding-team.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>— Tạo policy cấm tag `:latest` và binding</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/policy-no-latest.yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
@@ -1330,12 +1186,12 @@ metadata:
 spec:
   matchConstraints:
     resourceRules:
-      - apiGroups: [""]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods"]
   validations:
-    - expression: "object.spec.containers.all(c, !c.image.endsWith(':latest'))"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• expression: "object.spec.containers.all(c, !c.image.endsWith(':latest'))"</div>
       message: "Tag :latest is forbidden!"
 ---
 apiVersion: admissionregistration.k8s.io/v1
@@ -1356,22 +1212,13 @@ kubectl apply -f /tmp/policy-no-latest.yaml
 </div>
 </details>
 
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>— Sửa tệp policy bị lỗi CEL</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  ```bash
+  
+```bash
 cat <<EOF > /tmp/policy-fixed.yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
@@ -1380,12 +1227,12 @@ metadata:
 spec:
   matchConstraints:
     resourceRules:
-      - apiGroups: [""]
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• apiGroups: [""]</div>
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods"]
   validations:
-    - expression: "has(object.metadata.labels) && 'app' in object.metadata.labels"
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• expression: "has(object.metadata.labels) && 'app' in object.metadata.labels"</div>
       message: "Pod must have app label!"
 EOF
 

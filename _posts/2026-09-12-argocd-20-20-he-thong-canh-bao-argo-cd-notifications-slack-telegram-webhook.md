@@ -327,7 +327,7 @@ spec:
 
 ```mermaid
 flowchart TD
-    POD_FLAP["Pod Flapping liên tục (Crash -&gt; Restart -&gt; Crash)"] --> ARGO_STATE["Trạng thái Health đổi liên tục: Progressing [-] Degraded"]
+    POD_FLAP["Pod Flapping liên tục (Crash -&gt; Restart -&gt; Crash)"] --> ARGO_STATE["Trạng thái Health đổi liên tục: Progressing -> Degraded"]
     ARGO_STATE --> TRIGGER["Trigger: on-degraded (Không có oncePer)"]
     TRIGGER -->|"Gửi 50 tin nhắn/phút"| CHAT_SPAM["KÊNH TELEGRAM BỊ SPAM NGẬP TRÀN!"]
     CHAT_SPAM --> TELEGRAM_BLOCK["Telegram API chặn IP: HTTP 429 Rate Limit!"]

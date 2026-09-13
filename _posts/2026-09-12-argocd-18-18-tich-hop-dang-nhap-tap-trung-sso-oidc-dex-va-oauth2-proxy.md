@@ -39,14 +39,14 @@ Argo CD cung cấp hai phương án tích hợp hệ thống định danh:
 ```mermaid
 flowchart TD
     subgraph OPTION1["PHƯƠNG ÁN 1: DIRECT OIDC (Trực Tiếp với IdP Chuẩn OIDC)"]
-        ARGO_1["Argo CD Server Core"] [--]|Chuẩn OIDC Discovery / Token Endpoint| IDP_OIDC["Enterprise IdP (Okta, Azure AD, Keycloak, Ping)"]
+        ARGO_1["Argo CD Server Core"] -->|"Chuẩn OIDC Discovery / Token Endpoint"| IDP_OIDC["Enterprise IdP (Okta, Azure AD, Keycloak, Ping)"]
     end
 
     subgraph OPTION2["PHƯƠNG ÁN 2: EMBEDDED DEX BROKER (Cầu Nối Đa Giao Thức)"]
-        ARGO_2["Argo CD Server"] [--]|gRPC Nội Bộ| DEX["Embedded Dex IdP Broker"]
-        DEX [--]|OAuth2| GITHUB["GitHub / GitLab Organizations"]
-        DEX [--]|LDAP / AD| LDAP["Active Directory / OpenLDAP"]
-        DEX [--]|SAML 2.0| SAML["Legacy Enterprise SAML"]
+        ARGO_2["Argo CD Server"] -->|"gRPC Nội Bộ"| DEX["Embedded Dex IdP Broker"]
+        DEX -->|"OAuth2"| GITHUB["GitHub / GitLab Organizations"]
+        DEX -->|"LDAP / AD"| LDAP["Active Directory / OpenLDAP"]
+        DEX -->|"SAML 2.0"| SAML["Legacy Enterprise SAML"]
     end
 
 

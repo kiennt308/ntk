@@ -50,7 +50,7 @@ flowchart TD
         ESO_CTRL["ESO Controller trong cụm"]
         
         EXT_CRD -->|"Argo CD Deploy"| ESO_CTRL
-        ESO_CTRL [--]|Kéo Secret qua IAM Role / Token| VAULT
+        ESO_CTRL -->|"Kéo Secret qua IAM Role / Token"| VAULT
         ESO_CTRL -->|"Sinh ra"| NATIVE_SEC2["Native Kubernetes Secret"]
     end
 
@@ -145,7 +145,7 @@ flowchart LR
 
     ES --> SS
     SS --> CTRL
-    CTRL [--]|Đồng bộ mỗi 1 giờ| VAULT_STORE
+    CTRL -->|"Đồng bộ mỗi 1 giờ"| VAULT_STORE
     CTRL -->|"Tự động sinh ra"| KUBE_SEC
 
 

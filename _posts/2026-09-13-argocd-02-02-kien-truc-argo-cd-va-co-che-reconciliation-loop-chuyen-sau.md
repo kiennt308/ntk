@@ -65,10 +65,10 @@ flowchart TD
     WEB -->|"HTTPS / REST"| API_SERVER
     HOOK -->|"HTTP POST /api/webhook"| API_SERVER
     
-    API_SERVER [--]|Session / Cache| REDIS
+    API_SERVER -->|"Session / Cache"| REDIS
     API_SERVER -->|"gRPC Request"| CONTROLLER
     
-    CONTROLLER [--]|Manifest Cache| REDIS
+    CONTROLLER -->|"Manifest Cache"| REDIS
     CONTROLLER -->|"1. Request Render Manifests (gRPC :8081)"| REPO_SERVER
     REPO_SERVER -->|"Git Clone / Pull (Port 443)"| GIT
     

@@ -66,11 +66,11 @@ flowchart TD
         end
     end
 
-    REPO_MAIN [--]|gRPC qua Socket nội bộ| SOCK_1
-    SOCK_1 [--]|Xử lý render an toàn| SOPS_ENGINE
+    REPO_MAIN -->|"gRPC qua Socket nội bộ"| SOCK_1
+    SOCK_1 -->|"Xử lý render an toàn"| SOPS_ENGINE
 
-    REPO_MAIN [--]|gRPC qua Socket nội bộ| SOCK_2
-    SOCK_2 [--]|Xử lý render an toàn| HELMFILE_ENGINE
+    REPO_MAIN -->|"gRPC qua Socket nội bộ"| SOCK_2
+    SOCK_2 -->|"Xử lý render an toàn"| HELMFILE_ENGINE
 
 
 ```

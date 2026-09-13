@@ -46,9 +46,9 @@ flowchart TD
         HEAL["3. selfHeal: true<br/>Tự động ĐÈ LẠI cấu hình từ Git<br/>khi có ai đó sửa trực tiếp bằng kubectl"]
     end
 
-    SYNC [--] PRUNE
-    PRUNE [--] HEAL
-    HEAL [--] SYNC
+    SYNC --- PRUNE
+    PRUNE --- HEAL
+    HEAL --- SYNC
 
     subgraph SAFETY_NET["LƯỚI AN TOÀN BẮT BUỘC"]
         ALLOW_EMPTY["allowEmpty: false<br/>Chặn đứng thảm họa xóa trắng cụm<br/>khi thư mục Git bị rỗng ngoài ý muốn"]

@@ -45,9 +45,9 @@ graph TD
     B["TERRAFORM STATE (Recorded State)<br/>• Ghi nhận lần apply gần nhất"]
     C["HẠ TẦNG THỰC TẾ (Actual State)<br/>• Dữ liệu đang chạy trên AWS / GCP / Azure"]
 
-    A [--]|"Apply chu kỳ trước"| B
-    B <-.->|"Drift xuất hiện do ClickOps / Webhook / Auto-Scaling"| C
-    A [--]|"Khoảng cách sai lệch cần Reconcile"| C
+    A -->|"Apply chu kỳ trước"| B
+    B <-->|"Drift xuất hiện do ClickOps / Webhook / Auto-Scaling"| C
+    A -.->|"Khoảng cách sai lệch cần Reconcile"| C
 
     style A fill:none,stroke:#3b82f6,stroke-width:2px
     style C fill:none,stroke:#0ea5e9,stroke-width:2px

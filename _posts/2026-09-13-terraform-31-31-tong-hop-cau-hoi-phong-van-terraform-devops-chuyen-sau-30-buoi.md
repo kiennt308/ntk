@@ -1265,5 +1265,7 @@ mindmap
 
 ```
 
-- **Lời kết**: Chúc mừng bạn đã hoàn thành trọn vẹn khóa huấn luyện chuyên sâu 31 bài về Terraform và Infrastructure as Code! Với khối lượng tri thức, kinh nghiệm thực chiến và tư duy kiến trúc đã tích lũy, bạn đã sẵn sàng tự tin dẫn dắt các dự án hạ tầng đám mây quy mô lớn và chinh phục những đỉnh cao mới trong sự nghiệp DevOps / Cloud Architect!
+> [!IMPORTANT]
+> **Lời kết Series:**
+> Chúc mừng bạn đã hoàn thành trọn vẹn khóa huấn luyện chuyên sâu 31 bài về **Terraform và Infrastructure as Code Enterprise Architecture**! Với khối lượng tri thức, kinh nghiệm thực chiến và tư duy kiến trúc đã tích lũy, bạn đã sẵn sàng tự tin dẫn dắt các dự án hạ tầng đám mây quy mô lớn và chinh phục những đỉnh cao mới trong sự nghiệp Cloud / DevOps / SRE Architect!
 {% endraw %}

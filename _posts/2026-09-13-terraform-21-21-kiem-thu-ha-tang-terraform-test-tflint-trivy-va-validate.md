@@ -290,6 +290,15 @@ trivy config ./environments/production --exit-code 1 --severity HIGH,CRITICAL
 
 Trong bài lab này, chúng ta sẽ xây dựng một S3 Secure Bucket Module và viết kịch bản `.tftest.hcl` để kiểm thử toàn diện 3 tầng logic: Mã hóa KMS, Block Public Access và Ngăn chặn việc truyền tên bucket sai quy cách.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo cấu trúc thư mục` | Chuẩn bị module workspace và thư mục tests/ |
+| **Bước 2** | `Viết mã nguồn main.tf` | Định nghĩa S3 bucket với validation, encryption & public block |
+| **Bước 3** | `Tạo kịch bản tests/*.tftest.hcl` | Viết unit test case plan và negative test case cho bucket name |
+| **Bước 4** | `terraform init & terraform test` | Thực thi kiểm thử tự động toàn bộ assertion logic |
+| **Bước 5** | `Thử nghiệm Breaking Test` | Cố tình đổi assertion để quan sát cơ chế bắt lỗi chi tiết |
+| **Bước 6** | `Khôi phục & Dọn dẹp` | Hoàn nguyên cấu hình đúng và xóa workspace an toàn |
+
 ```mermaid
 graph TD
     M["Module: Secure S3 Bucket"] --> T1["Test 1: verify_encryption - Kiểm tra SSE-KMS"]
@@ -645,7 +654,7 @@ rm -rf terraform-lab21-testing
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span><code>assert</code> block <code>trong</code>terraform <code>test</code> có thể chứa tối đa bao nhiêu điều kiện?</span>
+    <span>Khối <code>assert</code> trong <code>terraform test</code> có thể chứa tối đa bao nhiêu điều kiện?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -703,5 +712,7 @@ mindmap
 
 - **Quy tắc phát triển Module**: 100% Terraform Shared Modules dùng chung trong doanh nghiệp bắt buộc phải có thư mục `tests/` chứa ít nhất 2 kịch bản kiểm thử `.tftest.hcl` (1 Unit Test logic và 1 Negative Test kiểm tra Validation).
 - **Tiêu chuẩn CI Pipeline**: Tích hợp chuỗi kiểm tra Shift-Left: `fmt` -> `validate` -> `tflint` -> `trivy` -> `terraform test`.
-- **Bước tiếp theo**: Trong [[Bài 22] Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest & Checkov Chuẩn DevSecOps](terraform-22-22-quan-tri-chinh-sach-policy-as-code-opa-rego-conftest-va-checkov.html), chúng ta sẽ bước lên đỉnh cao của quản trị hạ tầng với ngôn ngữ Rego và Open Policy Agent để xây dựng các rào chắn Guardrails bất khả xâm phạm!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 22] Quản Trị Chính Sách Policy as Code: OPA/Rego, Conftest & Checkov Chuẩn DevSecOps](terraform-22-22-quan-tri-chinh-sach-policy-as-code-opa-rego-conftest-va-checkov.html), chúng ta sẽ bước lên đỉnh cao của quản trị hạ tầng với ngôn ngữ Rego và Open Policy Agent để xây dựng các rào chắn Guardrails bất khả xâm phạm!
 {% endraw %}

@@ -630,5 +630,5 @@ Làm chủ **Dependency Graph (DAG)**, phân biệt rõ ràng **Implicit vs Expl
 
 > [!TIP]
 > **BÀI HỌC TIẾP THEO:**
-> Trong **[[Bài 05] Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation,](terraform-05-05-thiet-ke-variables-locals-outputs-chuan-enterprise.html)**, chúng ta sẽ hoàn thiện chặng 1 với nghệ thuật thiết kế giao diện hạ tầng: Tùy biến biến đầu vào với các quy tắc kiểm tra biểu thức chính quy (Regex Validation), quản lý biến nội bộ bất biến `locals` và che giấu dữ liệu nhạy cảm với cờ `sensitive = true`.
+> Trong **[[Bài 05] Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation, Sensitive Data & Precedence Rules](terraform-05-05-thiet-ke-variables-locals-outputs-chuan-enterprise.html)**, chúng ta sẽ hoàn thiện chặng 1 với nghệ thuật thiết kế giao diện hạ tầng: Tùy biến biến đầu vào với các quy tắc kiểm tra biểu thức chính quy (Regex Validation), quản lý biến nội bộ bất biến `locals` và che giấu dữ liệu nhạy cảm với cờ `sensitive = true`.
 {% endraw %}

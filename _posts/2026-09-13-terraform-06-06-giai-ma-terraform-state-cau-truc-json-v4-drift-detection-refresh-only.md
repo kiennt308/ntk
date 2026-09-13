@@ -294,14 +294,14 @@ and ownership of existing resources in the target environment.
 
 | Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
 | :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành thử nghiệm |
-| <span class="badge badge--cyan">02</span> | `local_file` | Tạo một tài nguyên mẫu cục bộ bằng |
-| <span class="badge badge--indigo">03</span> | `Thao tác 3` | Áp dụng triển khai để sinh ra file State ban đầu |
-| <span class="badge badge--amber">04</span> | `jq` | Sử dụng  để mổ xẻ cấu trúc JSON Schema v4 của State |
-| <span class="badge badge--emerald">05</span> | `Thao tác 5` | Cố tình tạo ra hiện tượng Drift bằng cách sửa file thủ công ngoài luồng |
-| <span class="badge badge--primary">06</span> | `-refresh-only` | Chạy kiểm tra Drift bằng |
-| <span class="badge badge--rose">07</span> | `Thao tác 7` | Đồng bộ trạng thái thực tế vào State mà không ghi đè file |
-| <span class="badge badge--emerald">08</span> | `serial` | Xác minh  của State đã tự động tăng (+1) |
+| <span class="badge badge--primary">01</span> | `mkdir & terraform init` | Khởi tạo thư mục thực hành và provider plugin |
+| <span class="badge badge--cyan">02</span> | `local_file resource` | Khởi tạo cấu hình tài nguyên mẫu `local_file` |
+| <span class="badge badge--indigo">03</span> | `terraform apply` | Áp dụng triển khai để sinh ra file State ban đầu |
+| <span class="badge badge--amber">04</span> | `jq inspection` | Sử dụng `jq` để mổ xẻ cấu trúc JSON Schema v4 của State |
+| <span class="badge badge--emerald">05</span> | `manual drift edit` | Cố tình tạo ra hiện tượng Drift bằng cách sửa file thủ công ngoài luồng |
+| <span class="badge badge--primary">06</span> | `plan -refresh-only` | Chạy kiểm tra và phát hiện Drift an toàn |
+| <span class="badge badge--rose">07</span> | `apply -refresh-only` | Đồng bộ trạng thái thực tế vào State mà không ghi đè file code |
+| <span class="badge badge--emerald">08</span> | `jq verify serial` | Xác minh `serial` của State đã tự động tăng (+1) |
 
 ### Bước 1: Khởi tạo thư mục thực hành thử nghiệm
 ```bash
@@ -583,5 +583,6 @@ cd .. && rm -rf /tmp/terraform-state-lab
 
 Làm chủ cấu trúc nội tại của **Terraform State JSON Schema v4**, cơ chế **Drift Detection** và quy trình đối soát an toàn với **`-refresh-only`** là hành trang bắt buộc để bạn bảo vệ và duy trì tính toàn vẹn của hạ tầng đám mây.
 
-Trong **[[Bài 07] Remote State Architecture: S3 Backend, DynamoDB State Locking & Di Trú Backend An Toàn](terraform-07-07-remote-state-s3-backend-dynamodb-state-locking-di-tru-backend.html)**, chúng ta sẽ bước vào thiết lập hạ tầng lưu trữ State chuẩn Enterprise: Cấu hình mã hóa đa tầng KMS, cơ chế phân xử tương tranh bằng DynamoDB Lock Table và quy trình di trú State không downtime (`terraform init -migrate-state`).
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 07] Remote State Architecture: S3 Backend, DynamoDB State Locking & Di Trú Backend An Toàn](terraform-07-07-remote-state-s3-backend-dynamodb-state-locking-di-tru-backend.html)** để thiết lập hạ tầng lưu trữ State chuẩn Enterprise: Cấu hình mã hóa đa tầng KMS, cơ chế phân xử tương tranh bằng DynamoDB Lock Table và quy trình di trú State không downtime (`terraform init -migrate-state`).
 {% endraw %}

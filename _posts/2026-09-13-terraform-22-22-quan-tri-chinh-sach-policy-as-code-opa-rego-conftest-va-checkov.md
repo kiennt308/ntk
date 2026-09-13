@@ -261,6 +261,16 @@ checkov -f tfplan.json --framework terraform_plan --compact --quiet
 
 Trong bài lab này, chúng ta sẽ viết mã nguồn Terraform tạo hạ tầng AWS, xuất file kế hoạch ra JSON và sử dụng Conftest để kiểm tra 2 chính sách: **Bắt buộc gắn thẻ CostCenter** và **Chặn EC2 loại lớn `p3.2xlarge`**.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo cấu trúc thư mục` | Chuẩn bị không gian làm việc và thư mục chứa rules policy/ |
+| **Bước 2** | `Tạo file policy/guardrails.rego` | Định nghĩa luật Rego kiểm tra tag CostCenter và loại instance |
+| **Bước 3** | `Tạo file main.tf vi phạm` | Cố tình tạo cấu hình chứa lỗi để thử nghiệm bộ lọc guardrails |
+| **Bước 4** | `terraform plan & show json` | Biên dịch execution plan sang định dạng tfplan.json |
+| **Bước 5** | `conftest test tfplan.json` | Thẩm định kế hoạch bằng Conftest và bắt 2 lỗi vi phạm |
+| **Bước 6** | `Sửa mã nguồn & Re-test` | Điều chỉnh cấu hình đúng chuẩn và xác minh trạng thái PASS |
+| **Bước 7** | `Dọn dẹp môi trường lab` | Dọn dẹp tài nguyên và xóa thư mục lab |
+
 ```mermaid
 graph TD
     A["Mã Nguồn Terraform: ec2.tf"] --> B["Lệnh: terraform plan & show JSON"]
@@ -646,5 +656,7 @@ mindmap
 
 - **Nguyên tắc bảo vệ Enterprise**: "Trust, but Verify" — Không một đoạn mã Terraform nào được phép chạy `terraform apply` trên Production nếu chưa vượt qua cổng kiểm thử tự động của **Conftest / OPA Policy Engine**.
 - **Quy tắc viết Rego**: Luôn viết thông điệp `msg` trong `deny` thật rõ ràng, chứa mã định danh lỗi (ví dụ: `[TAG-01]`, `[COST-02]`) để lập trình viên biết chính xác vị trí và cách khắc phục.
-- **Bước tiếp theo**: Trong [[Bài 23] DRY Terraform Với Terragrunt: Remote State, Inputs & Dependencies Đa Tầng](terraform-23-23-dry-terraform-voi-terragrunt-remote-state-inputs-va-dependencies.html), chúng ta sẽ làm chủ công cụ Terragrunt để xóa bỏ 100% mã nguồn lặp lại (Don't Repeat Yourself) khi quản trị hàng trăm môi trường đa tài khoản!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 23] DRY Terraform Với Terragrunt: Remote State, Inputs & Dependencies Đa Tầng](terraform-23-23-dry-terraform-voi-terragrunt-remote-state-inputs-va-dependencies.html), chúng ta sẽ làm chủ công cụ Terragrunt để xóa bỏ 100% mã nguồn lặp lại (Don't Repeat Yourself) khi quản trị hàng trăm môi trường đa tài khoản!
 {% endraw %}

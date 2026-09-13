@@ -337,6 +337,17 @@ graph TD
 
 ```
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `mkdir lab directory` | Khởi tạo thư mục làm việc thử nghiệm |
+| <span class="badge badge--cyan">02</span> | `main.tf lifecycle` | Tạo file `main.tf` với cấu hình Zero-Downtime chuẩn |
+| <span class="badge badge--indigo">03</span> | `init & apply v1` | Khởi tạo và Apply phiên bản ứng dụng 1.0.0 |
+| <span class="badge badge--amber">04</span> | `apply v2 rollout` | Nâng cấp ứng dụng lên phiên bản 2.0.0 (Zero-Downtime Rollout) |
+| <span class="badge badge--emerald">05</span> | `test prevent_destroy` | Kiểm tra cơ chế `prevent_destroy` bảo vệ Database |
+| <span class="badge badge--primary">06</span> | `test ignore_changes` | Thử nghiệm bỏ qua thay đổi thuộc tính với `ignore_changes` |
+| <span class="badge badge--rose">07</span> | `decommission test` | Thử nghiệm gỡ bỏ an toàn khi muốn Decommission |
+| <span class="badge badge--emerald">08</span> | `cleanup lab` | Dọn dẹp môi trường lab |
+
 ### Bước 1: Khởi tạo thư mục làm việc
 ```bash
 mkdir -p terraform-lab16-lifecycle
@@ -569,7 +580,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q04</span>
-    <span>replace_triggered_by khác gì so withdepends_on?</span>
+    <span><code>replace_triggered_by</code> khác gì so với <code>depends_on</code>?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -580,7 +591,6 @@ rm -rf terraform-lab16-lifecycle
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  <p style="margin: 0.4rem 0;"></p>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>depends_on</code> chỉ định <b style="color: var(--accent-primary);">thứ tự tạo/cập nhật</b> tài nguyên (tài nguyên A phải được tạo xong trước tài nguyên B).</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>replace_triggered_by</code> định nghĩa <b style="color: var(--accent-primary);">quan hệ kích hoạt tái tạo</b> (khi tài nguyên A bị thay đổi hoặc recreate, tài nguyên B bắt buộc phải bị Destroy & Recreate theo).</div>
 </div>
@@ -666,7 +676,7 @@ rm -rf terraform-lab16-lifecycle
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span><code>precondition</code> bên <code>trong</code>lifecycle<code> của một </code>data <code>source</code> có tác dụng gì?</span>
+    <span><code>precondition</code> bên trong <code>lifecycle</code> của một <code>data source</code> có tác dụng gì?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -731,5 +741,7 @@ mindmap
 
 - **Quy tắc an toàn Production**: Mọi cơ sở dữ liệu (RDS, Mongo, Redis, ElasticSearch) và S3 Data Lake bắt buộc phải có `prevent_destroy = true`.
 - **Quy tắc Zero-Downtime**: Mọi Web Server, ASG, Launch Template, Target Group bắt buộc phải có `create_before_destroy = true` kết hợp với `name_prefix`.
-- **Bước tiếp theo**: Trong [[Bài 17] Provisioners, terraform_data & Chuyển Đổi State Không Phá Hủy Hạ Tầng](terraform-17-17-provisioners-terraform-data-va-chuyen-doi-state-khong-pha-huy-ha-tang.html), chúng ta sẽ phân tích lý do HashiCorp khuyến cáo hạn chế `local-exec`/`remote-exec`, cách thay thế hoàn hảo bằng `terraform_data`, và các kỹ thuật chạy script an toàn chuẩn Cloud-init.
+
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 17] Provisioners, terraform_data & Chuyển Đổi State Không Phá Hủy Hạ Tầng](terraform-17-17-provisioners-terraform-data-va-chuyen-doi-state-khong-pha-huy-ha-tang.html)** để phân tích lý do HashiCorp khuyến cáo hạn chế `local-exec`/`remote-exec`, cách thay thế hoàn hảo bằng `terraform_data`, và các kỹ thuật chạy script an toàn chuẩn Cloud-init!
 {% endraw %}

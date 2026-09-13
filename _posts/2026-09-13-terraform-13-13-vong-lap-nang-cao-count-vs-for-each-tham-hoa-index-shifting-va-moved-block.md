@@ -265,7 +265,7 @@ Plan: 2 to add, 0 to change, 3 to destroy.
 1. <span class="badge badge--primary">Why 1</span> **Tại sao ổ đĩa EBS bị xóa và tạo lại?** $\rightarrow$ Vì `availability_zone` của Subnet `[0]` bị đổi từ `1a` sang `1b`.
 2. <span class="badge badge--primary">Why 2</span> **Tại sao `availability_zone` lại bị đổi?** $\rightarrow$ Do hiện tượng Index Shifting: Vùng `1b` nhảy lên chiếm vị trí index `[0]`.
 3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại dùng `count` cho tài nguyên có trạng thái?** $\rightarrow$ Do thiếu hiểu biết về sự khác biệt giữa `count` và `for_each`.
-4. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
+4. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
    - **Chuyển đổi 100% tài nguyên mạng và lưu trữ sang `for_each = toset(var.subnet_zones)`.**
    - **Sử dụng khối `moved {}` để di trú an toàn không downtime.**
 
@@ -275,14 +275,14 @@ Plan: 2 to add, 0 to change, 3 to destroy.
 
 | Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
 | :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành |
-| <span class="badge badge--cyan">02</span> | `count` | Tạo tài nguyên bằng  ban đầu |
-| <span class="badge badge--indigo">03</span> | `Thao tác 3` | Xem địa chỉ State hiện tại dạng Integer Index |
-| <span class="badge badge--amber">04</span> | `Thao tác 4` | Tái hiện thảm họa Index Shifting (Xóa "auth" ở đầu danh sách) |
-| <span class="badge badge--emerald">05</span> | `for_each` | Khôi phục lại danh sách và chuyển đổi code sang |
-| <span class="badge badge--primary">06</span> | `moved {}` | Khai báo khối  để di trú State an toàn |
-| <span class="badge badge--rose">07</span> | `terraform plan` | Chạy  để kiểm chứng Zero-Downtime |
-| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Áp dụng và dọn dẹp môi trường |
+| <span class="badge badge--primary">01</span> | `mkdir & terraform init` | Khởi tạo thư mục thực hành thử nghiệm |
+| <span class="badge badge--cyan">02</span> | `count loop code` | Tạo tài nguyên bằng `count` ban đầu |
+| <span class="badge badge--indigo">03</span> | `terraform state list` | Xem địa chỉ State hiện tại dạng Integer Index |
+| <span class="badge badge--amber">04</span> | `sed delete first item` | Tái hiện thảm họa Index Shifting (Xóa "auth" ở đầu danh sách) |
+| <span class="badge badge--emerald">05</span> | `for_each refactor` | Khôi phục lại danh sách và chuyển đổi code sang `for_each` |
+| <span class="badge badge--primary">06</span> | `moved block config` | Khai báo khối `moved {}` để di trú State an toàn |
+| <span class="badge badge--rose">07</span> | `terraform plan` | Chạy `plan` để kiểm chứng Zero-Downtime |
+| <span class="badge badge--emerald">08</span> | `apply & verify` | Áp dụng di trú State và dọn dẹp môi trường |
 
 ### Bước 1: Khởi tạo thư mục thực hành
 ```bash
@@ -564,10 +564,10 @@ cd .. && rm -rf /tmp/count-foreach-lab
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   <p style="margin: 0.4rem 0;">Sử dụng <b style="color: var(--accent-primary);">For Expressions</b> kết hợp mệnh đề <code>if</code>:</p>
-  <p style="margin: 0.4rem 0;"><pre><code>for_each = {</p>
-  <p style="margin: 0.4rem 0;">for k, v in var.apps : k => v</p>
-  <p style="margin: 0.4rem 0;">if v.enabled == true</p>
-  <p style="margin: 0.4rem 0;">}</code></pre></p>
+  <pre style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 6px; overflow-x: auto; color: #e2e8f0; font-family: monospace;"><code>for_each = {
+  for k, v in var.apps : k => v
+  if v.enabled == true
+}</code></pre>
 </div>
 </details>
 
@@ -596,5 +596,6 @@ cd .. && rm -rf /tmp/count-foreach-lab
 
 Hiểu rõ sự khác biệt bản chất giữa **`count`** và **`for_each`**, đồng thời làm chủ kỹ thuật di trú bằng **`moved {}`** giúp bạn loại bỏ vĩnh viễn nỗi sợ hãi "Index Shifting" và tự tin thiết kế những hệ thống co giãn quy mô lớn.
 
-Trong **[[Bài 14] Dynamic Blocks & For Expressions: Lập Trình HCL Meta-Programming Chuyên Sâu](terraform-14-14-dynamic-blocks-va-for-expressions-lap-trinh-hcl-meta-programming.html)**, chúng ta sẽ bước vào thế giới của siêu lập trình HCL: Cách sinh động các khối lồng nhau `dynamic "ingress"` cho Security Groups, làm phẳng mảng đa cấp với `flatten()`, và xử lý danh sách lồng nhau chuẩn Enterprise!
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 14] Dynamic Blocks & For Expressions: Lập Trình HCL Meta-Programming Chuyên Sâu](terraform-14-14-dynamic-blocks-va-for-expressions-lap-trinh-hcl-meta-programming.html)** để bước vào thế giới siêu lập trình HCL: Cách sinh động các khối lồng nhau `dynamic "ingress"` cho Security Groups, làm phẳng mảng đa cấp với `flatten()`, và xử lý danh sách lồng nhau chuẩn Enterprise!
 {% endraw %}

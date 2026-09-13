@@ -254,6 +254,17 @@ infrastructure-live/
 
 Trong bài lab này, chúng ta sẽ xây dựng 2 tầng hạ tầng liên kết nhau: **Module VPC** (Tầng 1) và **Module App Security Group** (Tầng 2) sử dụng Terragrunt với đầy đủ cơ chế kế thừa, dependency và mock outputs.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo cấu trúc thư mục` | Chuẩn bị cây thư mục phân tầng modules/ và live/ |
+| **Bước 2** | `Tạo module VPC` | Viết module tầng 1 xuất vpc_id giả lập qua terraform_data |
+| **Bước 3** | `Tạo module Security Group` | Viết module tầng 2 phụ thuộc vào input vpc_id |
+| **Bước 4** | `Tạo root terragrunt.hcl` | Cấu hình generate versions.tf và common tags dùng chung |
+| **Bước 5** | `Cấu hình live/vpc` | Khai báo leaf terragrunt.hcl cho tầng mạng |
+| **Bước 6** | `Cấu hình live/app-sg` | Khai báo dependency vpc kèm mock_outputs khi plan |
+| **Bước 7** | `terragrunt run-all apply` | Thực thi đồng loạt theo thứ tự đồ thị DAG tự động |
+| **Bước 8** | `terragrunt run-all destroy` | Xóa sạch toàn bộ tài nguyên đa tầng và dọn dẹp lab |
+
 ```mermaid
 graph LR
     subgraph Terragrunt_Lab_Execution
@@ -632,5 +643,7 @@ mindmap
 
 - **Quy tắc vàng của Terragrunt**: File `terragrunt.hcl` ở các thư mục lá (Leaf Directories) chỉ được phép chứa: `include`, `terraform.source`, `dependency`, và `inputs`. Tuyệt đối không viết logic phức tạp ở tầng lá.
 - **Tiêu chuẩn vận hành**: Luôn khai báo `mock_outputs` cho mọi `dependency` để đảm bảo hệ thống CI/CD có thể chạy `terragrunt run-all plan` trơn tru trên mọi nhánh Pull Request.
-- **Bước tiếp theo**: Trong [[Bài 24] Tái Cấu Trúc Quy Mô Lớn: Khối moved & Import Declarative Không Gây Downtime](terraform-24-24-tai-cau-truc-quy-mo-lon-khoi-moved-va-import-declarative.html), chúng ta sẽ làm chủ khối `moved` (Terraform 1.1+) và khối `import` khai báo (Terraform 1.5+) để thực hiện các cuộc đại phẫu thuật tái cấu trúc hạ tầng mà không gây phá hủy tài nguyên!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 24] Tái Cấu Trúc Quy Mô Lớn: Khối moved & Import Declarative Không Gây Downtime](terraform-24-24-tai-cau-truc-quy-mo-lon-khoi-moved-va-import-declarative.html), chúng ta sẽ làm chủ khối `moved` (Terraform 1.1+) và khối `import` khai báo (Terraform 1.5+) để thực hiện các cuộc đại phẫu thuật tái cấu trúc hạ tầng mà không gây phá hủy tài nguyên!
 {% endraw %}

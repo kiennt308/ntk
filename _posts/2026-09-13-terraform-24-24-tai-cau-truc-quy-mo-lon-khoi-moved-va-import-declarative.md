@@ -233,6 +233,17 @@ Trong bài lab này, chúng ta sẽ thực hiện 2 nhiệm vụ:
 1. Đổi tên và chuyển một tài nguyên từ Flat Layout vào Module bằng khối `moved`.
 2. Nạp một tài nguyên giả lập kế thừa vào State bằng khối `import` khai báo.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo thư mục thực hành` | Chuẩn bị workspace và thư mục modules/compute/ |
+| **Bước 2** | `Tạo trạng thái ban đầu` | Khởi tạo tài nguyên phẳng terraform_data.old_server |
+| **Bước 3** | `Xây dựng Module mới` | Tạo child module compute chuẩn bị tiếp nhận state |
+| **Bước 4** | `Thêm moved & import blocks` | Tái cấu trúc main.tf với moved block và import block |
+| **Bước 5** | `terraform plan` | Xác nhận plan hiển thị 0 destroy và 1 imported |
+| **Bước 6** | `terraform apply` | Áp dụng thay đổi an toàn không gây gián đoạn dịch vụ |
+| **Bước 7** | `terraform state list` | Kiểm tra cây địa chỉ state mới sau khi refactor |
+| **Bước 8** | `terraform destroy` | Hủy tài nguyên lab và dọn dẹp thư mục |
+
 ```mermaid
 graph TD
     subgraph Step1_Moved ["Nhiệm Vụ 1: Refactor với moved"]
@@ -621,5 +632,7 @@ mindmap
 
 - **Tiêu chuẩn Refactoring**: Tuyệt đối không chạy lệnh `terraform state mv` thủ công trên môi trường Production. 100% việc đổi tên và chuyển module phải được định nghĩa bằng **khối `moved`**.
 - **Tiêu chuẩn di trú hạ tầng cũ**: Khai thác sức mạnh của **khối `import`** kết hợp với cờ `-generate-config-out` để chuẩn hóa các tài nguyên legacy vào Terraform.
-- **Bước tiếp theo**: Trong [[Bài 25] Quản Trị Blast Radius & Tổ Chức Codebase Hạ Tầng Enterprise](terraform-25-25-quan-tri-blast-radius-va-to-chuc-codebase-ha-tang-enterprise.html), chúng ta sẽ phân tích chiến lược phân rã Monolith State thành Micro-States để cô lập hoàn toàn phạm vi rủi ro khi có sự cố!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 25] Quản Trị Blast Radius & Tổ Chức Codebase Hạ Tầng Enterprise](terraform-25-25-quan-tri-blast-radius-va-to-chuc-codebase-ha-tang-enterprise.html), chúng ta sẽ phân tích chiến lược phân rã Monolith State thành Micro-States để cô lập hoàn toàn phạm vi rủi ro khi có sự cố!
 {% endraw %}

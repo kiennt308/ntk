@@ -295,6 +295,17 @@ graph LR
 
 ```
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `mkdir lab structure` | Khởi tạo cấu trúc thư mục thực hành |
+| <span class="badge badge--cyan">02</span> | `providers.tf` | Tạo file `providers.tf` với Primary & Aliased Provider |
+| <span class="badge badge--indigo">03</span> | `main.tf crr` | Tạo file `main.tf` triển khai S3 Replication đa vùng |
+| <span class="badge badge--amber">04</span> | `init & plan` | Chạy `terraform init` và `terraform plan` |
+| <span class="badge badge--emerald">05</span> | `terraform apply` | Apply hạ tầng và kiểm tra State đa vùng |
+| <span class="badge badge--primary">06</span> | `state list verify` | Kiểm tra tài nguyên tạo ở 2 vùng địa lý độc lập |
+| <span class="badge badge--rose">07</span> | `state show crr` | Thử nghiệm kiểm tra độ trễ và ràng buộc replication |
+| <span class="badge badge--emerald">08</span> | `cleanup lab` | Dọn dẹp môi trường lab |
+
 ### Bước 1: Khởi tạo cấu trúc thư mục
 ```bash
 mkdir -p terraform-lab18-multiregion
@@ -702,5 +713,7 @@ mindmap
 
 - **Quy tắc thiết kế Child Module**: Luôn giữ Child Module "vô tính" (Provider-agnostic), chỉ khai báo `configuration_aliases` và nhận provider instance từ Root Module.
 - **Tiêu chuẩn bảo mật Multi-Account**: 100% kết nối xuyên tài khoản phải thông qua **IAM AssumeRole** và có chính sách Session Name tường minh để phục vụ kiểm toán CloudTrail.
-- **Bước tiếp theo**: Trong [[Bài 19] Terraform Trong CI/CD: Tự Động Hóa Pipeline Với GitLab CI, GitHub Actions & OIDC](terraform-19-19-terraform-trong-cicd-gitlab-ci-github-actions-va-oidc.html), chúng ta sẽ tự động hóa hoàn toàn quy trình Plan/Apply và loại bỏ vĩnh viễn Long-lived Cloud Credentials bằng OpenID Connect (OIDC)!
+
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 19] Terraform Trong CI/CD: Tự Động Hóa Pipeline Với GitLab CI, GitHub Actions & OIDC](terraform-19-19-terraform-trong-cicd-gitlab-ci-github-actions-va-oidc.html)** để tự động hóa hoàn toàn quy trình Plan/Apply và loại bỏ vĩnh viễn Long-lived Cloud Credentials bằng OpenID Connect (OIDC)!
 {% endraw %}

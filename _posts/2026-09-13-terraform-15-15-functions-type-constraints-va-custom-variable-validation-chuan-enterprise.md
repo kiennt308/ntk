@@ -442,6 +442,17 @@ graph TD
     style F fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `mkdir lab directory` | Khởi tạo thư mục thực hành thử nghiệm |
+| <span class="badge badge--cyan">02</span> | `variables.tf spec` | Định nghĩa `variables.tf` với Custom Validation đa tầng |
+| <span class="badge badge--indigo">03</span> | `main.tf functions` | Định nghĩa `main.tf` tận dụng Built-in Functions |
+| <span class="badge badge--amber">04</span> | `terraform.tfvars` | Tạo file cấu hình hợp lệ `terraform.tfvars` |
+| <span class="badge badge--emerald">05</span> | `terraform plan` | Chạy `init` và `plan` kiểm tra kết quả |
+| <span class="badge badge--primary">06</span> | `chaos testing 1` | Kiểm thử phá hủy: Sai Scaling Logic (chặn đứng plan) |
+| <span class="badge badge--rose">07</span> | `chaos testing 2` | Kiểm thử phá hủy: Taint Effect sai quy định |
+| <span class="badge badge--emerald">08</span> | `cleanup lab` | Dọn dẹp môi trường lab |
+
 ### Bước 1: Khởi tạo thư mục và cấu trúc file
 ```bash
 mkdir -p terraform-lab15-validation
@@ -890,5 +901,7 @@ mindmap
 
 - **Nguyên tắc vàng**: "Fail Fast, Fail Loudly" — Mọi biến số của Shared Module phải có Type Constraint chi tiết và ít nhất một Custom Validation Rule để bắt lỗi ngay tại máy trạm của Developer trước khi kích hoạt CI/CD Pipeline.
 - **Tiêu chuẩn Error Message**: Luôn viết thông báo lỗi theo công thức: **[Lý do vi phạm] + [Quy định chuẩn] + [Ví dụ giá trị đúng]**.
-- **Bước tiếp theo**: Trong [[Bài 16] Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy & ignore_changes Thực Chiến](terraform-16-16-lifecycle-meta-arguments-create-before-destroy-prevent-destroy-ignore-changes.html), chúng ta sẽ khám phá cách can thiệp trực tiếp vào chu kỳ sống của tài nguyên để thực hiện Zero-Downtime Deployment và bảo vệ tài nguyên trọng yếu khỏi nguy cơ vô tình bị xóa sổ!
+
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiến vào **Giai Đoạn 4 (Quản Trị Vòng Đời, Bảo Mật & CI/CD Nâng Cao)** với **[[Bài 16] Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy & ignore_changes Thực Chiến](terraform-16-16-lifecycle-meta-arguments-create-before-destroy-prevent-destroy-ignore-changes.html)** để khám phá cách can thiệp trực tiếp vào chu kỳ sống của tài nguyên nhằm thực hiện Zero-Downtime Deployment và bảo vệ tài nguyên trọng yếu khỏi nguy cơ vô tình bị xóa sổ!
 {% endraw %}

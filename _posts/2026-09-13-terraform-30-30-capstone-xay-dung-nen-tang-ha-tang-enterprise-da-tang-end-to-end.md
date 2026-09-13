@@ -142,6 +142,12 @@ terraform-enterprise-capstone/
 
 ## 4. Hiện Thực Hóa Mã Nguồn Từng Tầng (Line-by-Line Implementation)
 
+| Bước | Lớp Kiến Trúc | File Mã Nguồn Thực Hiện | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- | :--- |
+| **Bước 1** | **Network Layer** | `environments/production/01-network/main.tf` | Khởi tạo VPC đa vùng (3 AZs), chia subnet 3 tầng (Public, App, DB) & xuất SSM Parameter |
+| **Bước 2** | **Data Layer** | `environments/production/02-data/main.tf` | Thiết lập RDS Aurora PostgreSQL Multi-AZ, mã hóa KMS, tự sinh mật khẩu & khóa `prevent_destroy` |
+| **Bước 3** | **Compute Layer** | `environments/production/03-compute/main.tf` | Dựng EKS Cluster v1.30 Private Endpoint, IAM Role EKS, Managed Node Group `m6i.xlarge` |
+
 ### 4.1. Tầng 1: Network Layer (`environments/production/01-network/main.tf`)
 
 ```hcl
@@ -540,5 +546,7 @@ mindmap
 
 ```
 
-- **Bước tiếp theo**: Trong [[Bài 31] Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu (30 Buổi)](terraform-31-31-tong-hop-cau-hoi-phong-van-terraform-devops-chuyen-sau-30-buoi.html), chúng ta sẽ tổng hợp trọn bộ các câu hỏi phỏng vấn hóc búa nhất từ các tập đoàn công nghệ hàng đầu (FAANG/Big Tech) để giúp bạn tự tin chinh phục mọi buổi phỏng vấn vị trí Senior Cloud / DevOps / SRE Architect!
+> [!TIP]
+> **Bước tiếp theo:**
+> Chuyển sang **[[Bài 31] Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu (30 Buổi)](terraform-31-31-tong-hop-cau-hoi-phong-van-terraform-devops-chuyen-sau-30-buoi.html)** — tổng hợp trọn bộ các câu hỏi phỏng vấn hóc búa nhất từ các tập đoàn công nghệ hàng đầu (FAANG/Big Tech) để giúp bạn tự tin chinh phục mọi buổi phỏng vấn vị trí Senior Cloud / DevOps / SRE Architect!
 {% endraw %}

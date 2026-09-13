@@ -253,7 +253,7 @@ flowchart TD
 2. <span class="badge badge--primary">Why 2</span> **Tại sao kỹ sư lại chạy trên workspace prod?** $\rightarrow$ Vì kỹ sư ngộ nhận rằng Terminal đang ở workspace `dev` (Context Confusion).
 3. <span class="badge badge--primary">Why 3</span> **Tại sao hệ thống cho phép xóa hạ tầng Production dễ dàng như vậy?** $\rightarrow$ Vì sử dụng chung một mã nguồn HCL, chung tài khoản AWS và không có rào chắn phân lập môi trường.
 4. <span class="badge badge--primary">Why 4</span> **Tại sao không có bước cảnh báo?** $\rightarrow$ Do kỹ sư sử dụng cờ nguy hiểm `-auto-approve` trên môi trường dùng chung.
-5. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
    - **Xóa bỏ hoàn toàn mô hình Workspaces cho Production.**
    - **Chuyển đổi 100% sang kiến trúc Directory-Based Layout với tài khoản AWS riêng biệt.**
    - **Thêm rào chắn `prevent_destroy = true` và khóa quyền xóa State Backend của Production.**
@@ -264,14 +264,14 @@ flowchart TD
 
 | Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
 | :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | `Thao tác 1` | Tạo cấu trúc thư mục phân lập |
-| <span class="badge badge--cyan">02</span> | `Thao tác 2` | Viết Reusable Module Storage |
-| <span class="badge badge--indigo">03</span> | `Thao tác 3` | Cấu hình môi trường Development |
-| <span class="badge badge--amber">04</span> | `Thao tác 4` | Cấu hình môi trường Production (Độc lập hoàn toàn) |
-| <span class="badge badge--emerald">05</span> | `Thao tác 5` | Khởi tạo và Apply môi trường Dev |
-| <span class="badge badge--primary">06</span> | `Thao tác 6` | Khởi tạo và Apply môi trường Prod |
-| <span class="badge badge--rose">07</span> | `Thao tác 7` | Kiểm tra tính phân lập của 2 State File |
-| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Thử nghiệm xóa môi trường Dev mà Prod vẫn nguyên vẹn |
+| <span class="badge badge--primary">01</span> | `mkdir tree layout` | Tạo cấu trúc thư mục phân lập `dev/`, `prod/`, `modules/` |
+| <span class="badge badge--cyan">02</span> | `modules/storage` | Viết Reusable Module Storage dùng chung |
+| <span class="badge badge--indigo">03</span> | `environments/dev` | Cấu hình môi trường Development với dung lượng 20GB |
+| <span class="badge badge--amber">04</span> | `environments/prod` | Cấu hình môi trường Production với dung lượng 500GB |
+| <span class="badge badge--emerald">05</span> | `dev init & apply` | Khởi tạo và Apply môi trường Dev độc lập |
+| <span class="badge badge--primary">06</span> | `prod init & apply` | Khởi tạo và Apply môi trường Prod độc lập |
+| <span class="badge badge--rose">07</span> | `verify state isolation` | Kiểm tra tính phân lập của 2 State File riêng biệt |
+| <span class="badge badge--emerald">08</span> | `dev destroy & verify` | Thử nghiệm xóa môi trường Dev mà Prod vẫn nguyên vẹn |
 
 ### Bước 1: Tạo cấu trúc thư mục phân lập
 ```bash
@@ -582,5 +582,6 @@ cd /tmp && rm -rf /tmp/multi-env-lab
 
 Lựa chọn đúng chiến lược quản trị đa môi trường bằng **Directory-Based Layout** kết hợp **Reusable Modules** là tấm khiên an ninh vững chắc bảo vệ hạ tầng Production của doanh nghiệp khỏi mọi nguy cơ nhầm lẫn thao tác.
 
-Trong **[[Bài 13] Vòng Lặp Nâng Cao: count vs for_each, Thảm Họa Index Shifting & Khối moved Cứu Hộ](terraform-13-13-vong-lap-nang-cao-count-vs-for-each-tham-hoa-index-shifting-va-moved-block.html)**, chúng ta sẽ đi sâu vào các cơ chế lặp nâng cao: Phân tích thảm họa Index Shifting khi xóa phần tử mảng trong `count`, làm chủ `for_each` với cấu trúc Map/Set và kỹ thuật tái cấu trúc an toàn với khối `moved {}`!
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 13] Vòng Lặp Nâng Cao: count vs for_each, Thảm Họa Index Shifting & Khối moved Cứu Hộ](terraform-13-13-vong-lap-nang-cao-count-vs-for-each-tham-hoa-index-shifting-va-moved-block.html)** để đi sâu vào các cơ chế lặp nâng cao: Phân tích thảm họa Index Shifting khi xóa phần tử mảng trong `count`, làm chủ `for_each` với cấu trúc Map/Set và kỹ thuật tái cấu trúc an toàn với khối `moved {}`!
 {% endraw %}

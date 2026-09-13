@@ -271,6 +271,16 @@ Trong bài lab này, chúng ta sẽ xây dựng 2 tầng hạ tầng hoàn toàn
 - **Tầng 1 (Network Layer)**: Tạo VPC giả lập và ghi `vpc_id` vào SSM Parameter Store.
 - **Tầng 2 (App Layer)**: Đọc `vpc_id` từ SSM Parameter Store và khởi tạo Security Group mà không hề phụ thuộc vào State của Tầng 1.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo cấu trúc thư mục` | Chuẩn bị 2 workspace độc lập 01-network và 02-app |
+| **Bước 2** | `Viết mã nguồn Tầng 1` | Định nghĩa VPC và tài nguyên ghi vpc_id vào SSM Parameter |
+| **Bước 3** | `Apply Tầng 1 Network` | Triển khai tầng mạng và lưu state riêng biệt |
+| **Bước 4** | `Viết mã nguồn Tầng 2` | Định nghĩa App Security Group đọc vpc_id từ SSM |
+| **Bước 5** | `Apply Tầng 2 App` | Triển khai tầng ứng dụng hoàn toàn độc lập |
+| **Bước 6** | `Kiểm tra Blast Radius` | Xóa State Tầng 2 và kiểm chứng Tầng 1 không bị ảnh hưởng |
+| **Bước 7** | `Dọn dẹp môi trường lab` | Destroy tài nguyên và xóa thư mục lab |
+
 ```mermaid
 graph TD
     subgraph Layer1 ["Thư Mục: 01-network"]
@@ -626,5 +636,7 @@ mindmap
 
 - **Quy tắc bất biến**: Không bao giờ để tài nguyên Mạng (Network), Lưu trữ (Data) và Ứng dụng (App) sống chung trong một tệp State duy nhất.
 - **Tiêu chuẩn hiệu năng**: Tối ưu hóa kích thước State file sao cho lệnh `terraform plan` luôn hoàn tất dưới 90 giây trong Pipeline CI/CD.
-- **Bước tiếp theo**: Trong [[Bài 26] Gỡ Rối State Lock, Apply Nửa Chừng & Cứu Hộ State Corruption Thực Chiến](terraform-26-26-go-roi-state-lock-apply-nua-chung-va-cuu-ho-state-corruption.html), chúng ta sẽ bước vào khóa huấn luyện SRE Cứu hộ thảm họa: giải cứu State bị khóa chết, khôi phục apply dở dang và phục hồi State file bị hỏng!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 26] Gỡ Rối State Lock, Apply Nửa Chừng & Cứu Hộ State Corruption Thực Chiến](terraform-26-26-go-roi-state-lock-apply-nua-chung-va-cuu-ho-state-corruption.html), chúng ta sẽ bước vào khóa huấn luyện SRE Cứu hộ thảm họa: giải cứu State bị khóa chết, khôi phục apply dở dang và phục hồi State file bị hỏng!
 {% endraw %}

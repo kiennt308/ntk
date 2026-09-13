@@ -311,6 +311,15 @@ variable "api_secret_token" {
 
 Trong bài lab này, chúng ta sẽ xây dựng một quy trình chuẩn doanh nghiệp: Khởi tạo một Secret được mã hóa bằng AWS KMS Customer Managed Key (CMK), tự động sinh mật khẩu ngẫu nhiên bảo mật cao và truyền vào tài nguyên hạ tầng.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo thư mục thực hành` | Chuẩn bị không gian làm việc cho module KMS & Secrets Manager |
+| **Bước 2** | `Tạo file main.tf` | Định nghĩa KMS Key, random_password và AWS Secrets Manager |
+| **Bước 3** | `terraform init & apply` | Triển khai mã hóa secret lên AWS và sinh mật khẩu ngẫu nhiên |
+| **Bước 4** | `aws secretsmanager get-secret-value` | Kiểm tra chuỗi JSON secret qua kênh TLS mã hóa |
+| **Bước 5** | `Kiểm tra Local State File` | Mở tfstate chứng minh secret vẫn lưu plaintext trong state |
+| **Bước 6** | `terraform destroy` | Thu hồi secret và dọn dẹp tài nguyên lab an toàn |
+
 ```mermaid
 graph TD
     KMS["AWS KMS Customer Managed Key"] -->|Mã hóa dữ liệu tại chỗ| SM["AWS Secrets Manager Secret"]
@@ -662,5 +671,7 @@ mindmap
 
 - **Quy tắc sinh tồn**: Coi `terraform.tfstate` là một tài liệu mật cấp độ tối cao. Bất kỳ ai kiểm soát State đều kiểm soát toàn bộ hạ tầng doanh nghiệp của bạn.
 - **Tiêu chuẩn thiết kế**: Không bao giờ hardcode mật khẩu, luôn sử dụng **AWS Secrets Manager / Vault** và chuyển dịch dần sang **Ephemeral Values** của Terraform 1.10+.
-- **Bước tiếp theo**: Trong [[Bài 21] Kiểm Thử Hạ Tầng: Làm Chủ terraform test, TFLint, Trivy & Static Code Analysis](terraform-21-21-kiem-thu-ha-tang-terraform-test-tflint-trivy-va-validate.html), chúng ta sẽ khám phá framework kiểm thử hạ tầng tích hợp sẵn `terraform test` và bộ công cụ Static Analysis đa tầng!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 21] Kiểm Thử Hạ Tầng: Làm Chủ terraform test, TFLint, Trivy & Static Code Analysis](terraform-21-21-kiem-thu-ha-tang-terraform-test-tflint-trivy-va-validate.html), chúng ta sẽ khám phá framework kiểm thử hạ tầng tích hợp sẵn `terraform test` và bộ công cụ Static Analysis đa tầng!
 {% endraw %}

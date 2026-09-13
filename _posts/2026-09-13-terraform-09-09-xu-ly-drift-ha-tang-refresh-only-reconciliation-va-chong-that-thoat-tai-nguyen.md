@@ -285,14 +285,14 @@ flowchart TD
 
 | Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
 | :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành |
-| <span class="badge badge--cyan">02</span> | `local_file` | Tạo một tài nguyên mẫu ban đầu bằng |
-| <span class="badge badge--indigo">03</span> | `Thao tác 3` | Kiểm tra Exit Code khi không có Drift |
-| <span class="badge badge--amber">04</span> | `Thao tác 4` | Giả lập hành vi ClickOps sửa đổi file ngoài luồng |
-| <span class="badge badge--emerald">05</span> | `-detailed-exitcode` | Chạy quét Drift với cờ |
-| <span class="badge badge--primary">06</span> | `Thao tác 6` | Hòa giải theo hướng Enforce Code (Đè bẹp Drift) |
-| <span class="badge badge--rose">07</span> | `ignore_changes` | Cấu hình  để bỏ qua sự thay đổi |
-| <span class="badge badge--emerald">08</span> | `ignore_changes` | Kiểm tra lại Exit Code sau khi đã gắn |
+| <span class="badge badge--primary">01</span> | `mkdir & terraform init` | Khởi tạo thư mục thực hành thử nghiệm |
+| <span class="badge badge--cyan">02</span> | `local_file resource` | Tạo một tài nguyên mẫu ban đầu bằng `local_file` |
+| <span class="badge badge--indigo">03</span> | `plan -detailed-exitcode` | Kiểm tra Exit Code khi không có Drift (Code 0) |
+| <span class="badge badge--amber">04</span> | `manual file edit` | Giả lập hành vi ClickOps sửa đổi file ngoài luồng |
+| <span class="badge badge--emerald">05</span> | `plan -refresh-only` | Chạy quét Drift với cờ `-detailed-exitcode` (Code 2) |
+| <span class="badge badge--primary">06</span> | `terraform apply` | Hòa giải theo hướng Enforce Code (Đè bẹp Drift) |
+| <span class="badge badge--rose">07</span> | `ignore_changes config` | Cấu hình `ignore_changes` để bỏ qua sự thay đổi |
+| <span class="badge badge--emerald">08</span> | `verify exit code 0` | Kiểm tra lại Exit Code sau khi đã gắn `ignore_changes` |
 
 ### Bước 1: Khởi tạo thư mục thực hành
 ```bash
@@ -600,5 +600,6 @@ cd .. && rm -rf /tmp/drift-lab
 
 Kiểm soát và chế ngự **Configuration Drift** thông qua **`-refresh-only`**, **`ignore_changes`** và **CI/CD Scheduled Scan** giúp bạn duy trì trạng thái hạ tầng luôn trong tầm kiểm soát 100%, ngăn ngừa các sự cố gián đoạn dịch vụ thảm khốc.
 
-Trong **[[Bài 10] Thiết Kế Module Chuẩn Enterprise: Đóng Gói, Tái Sử Dụng & Chuẩn Hóa Biến Số Hóa](terraform-10-10-thiet-ke-module-chuan-enterprise-dong-goi-tai-su-dung-va-bien-so-hoa.html)**, chúng ta sẽ khép lại Giai đoạn 2 với nghệ thuật đóng gói kiến trúc hạ tầng: Cấu trúc thư mục Module chuẩn HashiCorp, xây dựng hợp đồng giao tiếp (Module Contracts), và kỹ thuật kiểm soát phiên bản Semantic Versioning!
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 10] Thiết Kế Module Chuẩn Enterprise: Đóng Gói, Tái Sử Dụng & Chuẩn Hóa Biến Số Hóa](terraform-10-10-thiet-ke-module-chuan-enterprise-dong-goi-tai-su-dung-va-bien-so-hoa.html)** để khép lại Giai đoạn 2 với nghệ thuật đóng gói kiến trúc hạ tầng: Cấu trúc thư mục Module chuẩn HashiCorp, xây dựng hợp đồng giao tiếp (Module Contracts), và kỹ thuật kiểm soát phiên bản Semantic Versioning!
 {% endraw %}

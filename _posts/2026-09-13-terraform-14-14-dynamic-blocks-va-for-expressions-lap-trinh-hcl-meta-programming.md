@@ -288,7 +288,7 @@ resource "aws_security_group" "bad_sg" {
 1. <span class="badge badge--primary">Why 1</span> **Tại sao máy chủ không thể kết nối ra ngoài Internet?** $\rightarrow$ Vì Security Group không có bất kỳ Egress Rule nào cho phép lưu lượng đi ra.
 2. <span class="badge badge--primary">Why 2</span> **Tại sao lại không có Egress Rule?** $\rightarrow$ Vì trên AWS, khi bạn khai báo thủ công khối `egress` (dù là dynamic rỗng `for_each = []`), AWS sẽ xóa bỏ luật mặc định `0.0.0.0/0` (Allow All Egress).
 3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại truyền mảng rỗng?** $\rightarrow$ Kỹ sư ngộ nhận rằng nếu không có rule nào trong mảng, AWS sẽ tự giữ lại luật mặc định.
-4. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
+4. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
    - **Thêm luật mặc định nếu mảng rỗng:**
      ```hcl
      for_each = length(var.egress_rules) > 0 ? var.egress_rules : local.default_allow_all_egress
@@ -300,14 +300,14 @@ resource "aws_security_group" "bad_sg" {
 
 | Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
 | :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành thử nghiệm |
-| <span class="badge badge--cyan">02</span> | `Thao tác 2` | Viết mã nguồn thử nghiệm For Expressions và Ellipsis |
-| <span class="badge badge--indigo">03</span> | `terraform apply` | Chạy  để kiểm tra kết quả |
-| <span class="badge badge--amber">04</span> | `terraform console` | Khởi động  để thử nghiệm trực tiếp |
-| <span class="badge badge--emerald">05</span> | `flatten` | Thử nghiệm hàm  trong console |
-| <span class="badge badge--primary">06</span> | `Thao tác 6` | Thử nghiệm biến đổi Map-to-List trong console |
-| <span class="badge badge--rose">07</span> | `Thao tác 7` | Thoát khỏi console |
-| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Dọn dẹp môi trường thử nghiệm |
+| <span class="badge badge--primary">01</span> | `mkdir & terraform init` | Khởi tạo thư mục thực hành thử nghiệm |
+| <span class="badge badge--cyan">02</span> | `for expression code` | Viết mã nguồn thử nghiệm For Expressions và Ellipsis |
+| <span class="badge badge--indigo">03</span> | `terraform apply` | Chạy `apply` để kiểm tra kết quả |
+| <span class="badge badge--amber">04</span> | `terraform console` | Khởi động REPL Console để thử nghiệm trực tiếp |
+| <span class="badge badge--emerald">05</span> | `flatten(...) test` | Thử nghiệm hàm `flatten()` trong console |
+| <span class="badge badge--primary">06</span> | `map-to-list test` | Thử nghiệm biến đổi Map-to-List trong console |
+| <span class="badge badge--rose">07</span> | `exit console` | Thoát khỏi console |
+| <span class="badge badge--emerald">08</span> | `terraform destroy` | Dọn dẹp môi trường thử nghiệm |
 
 ### Bước 1: Khởi tạo thư mục thực hành thử nghiệm
 ```bash
@@ -597,5 +597,6 @@ cd .. && rm -rf /tmp/meta-programming-lab
 
 Làm chủ **`dynamic` blocks**, **For Expressions**, **toán tử Ellipsis (`...`)** và **`flatten()`** giúp bạn tự tin xử lý mọi cấu trúc dữ liệu phức tạp nhất, đưa mã nguồn IaC lên tầm cao của sự tinh gọn và linh hoạt.
 
-Trong **[[Bài 15] Built-in Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise](terraform-15-15-functions-type-constraints-va-custom-variable-validation-chuan-enterprise.html)**, chúng ta sẽ khép lại Giai đoạn 3 với những kỹ thuật phòng thủ vững chắc: Xử lý an toàn các giá trị không tồn tại với `try()`, kiểm soát lỗi ngoại lệ với `can()`, và xây dựng bộ quy tắc kiểm định toàn diện chuẩn Enterprise!
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 15] Built-in Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise](terraform-15-15-functions-type-constraints-va-custom-variable-validation-chuan-enterprise.html)** để khép lại Giai đoạn 3 với những kỹ thuật phòng thủ vững chắc: Xử lý an toàn các giá trị không tồn tại với `try()`, kiểm soát lỗi ngoại lệ với `can()`, và xây dựng bộ quy tắc kiểm định toàn diện chuẩn Enterprise!
 {% endraw %}

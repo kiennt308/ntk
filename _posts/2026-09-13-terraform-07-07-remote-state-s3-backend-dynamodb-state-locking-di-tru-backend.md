@@ -267,14 +267,14 @@ by multiple users at the same time. Please resolve the issue above and try again
 
 | Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
 | :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | `Thao tác 1` | Tạo tài nguyên cục bộ với Local State ban đầu |
-| <span class="badge badge--cyan">02</span> | `main.tf` | Bổ sung cấu hình Remote Backend S3 vào file |
-| <span class="badge badge--indigo">03</span> | `-migrate-state` | Thực hiện lệnh di trú State tự động () |
-| <span class="badge badge--amber">04</span> | `Thao tác 4` | Kiểm tra State File cục bộ đã được dọn dẹp |
-| <span class="badge badge--emerald">05</span> | `Thao tác 5` | Mô phỏng hành vi chiếm giữ khóa (State Lock Test) |
-| <span class="badge badge--primary">06</span> | `Thao tác 6` | Kiểm tra tệp Lock trực tiếp trên AWS DynamoDB bằng AWS CLI |
-| <span class="badge badge--rose">07</span> | `Thao tác 7` | Thực hiện khôi phục phiên bản State cũ từ S3 Versioning |
-| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Dọn dẹp tài nguyên thử nghiệm |
+| <span class="badge badge--primary">01</span> | `mkdir & local_file` | Tạo tài nguyên cục bộ với Local State ban đầu |
+| <span class="badge badge--cyan">02</span> | `backend "s3"` | Bổ sung cấu hình Remote Backend S3 vào file cấu hình |
+| <span class="badge badge--indigo">03</span> | `init -migrate-state` | Thực hiện lệnh di trú State tự động từ Local lên S3 |
+| <span class="badge badge--amber">04</span> | `jq .serial backup` | Kiểm tra State File cục bộ đã được dọn dẹp và sao lưu |
+| <span class="badge badge--emerald">05</span> | `concurrent apply` | Mô phỏng hành vi chiếm giữ khóa (State Lock Test) |
+| <span class="badge badge--primary">06</span> | `aws dynamodb scan` | Kiểm tra tệp Lock trực tiếp trên AWS DynamoDB bằng AWS CLI |
+| <span class="badge badge--rose">07</span> | `list-object-versions` | Thực hiện khôi phục phiên bản State cũ từ S3 Versioning |
+| <span class="badge badge--emerald">08</span> | `terraform destroy` | Dọn dẹp tài nguyên thử nghiệm |
 
 ### Bước 1: Tạo tài nguyên cục bộ với Local State ban đầu
 ```bash
@@ -559,5 +559,6 @@ cd .. && rm -rf /tmp/backend-lab
 
 Thiết lập một hệ thống **Remote State Backend** vững chắc với S3, DynamoDB State Locking và chiến lược nạp cấu hình động `-backend-config` là bước bảo vệ tối quan trọng giúp đội ngũ kỹ thuật tự tin mở rộng quy mô mà không bao giờ lo lắng về Race Condition hay mất mát dữ liệu State.
 
-Trong **[[Bài 08] Phẫu Thuật State: Làm Chủ terraform state mv, rm, replace & Declarative Import Cứu Hộ Hạ Tầng](terraform-08-08-phau-thuat-state-state-mv-rm-replace-declarative-import-giai-cuu-ha-tang.html)**, chúng ta sẽ bước vào thế giới của những kỹ thuật giải cứu hạ tầng đỉnh cao: Đổi tên tài nguyên không gây recreate với `state mv`, tách tài nguyên ra khỏi quản lý với `state rm`, và làm chủ khối `import` khai báo mới nhất trong Terraform 1.5+!
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hoàn thiện kỹ năng cứu hộ hạ tầng với **[[Bài 08] Phẫu Thuật State: Làm Chủ terraform state mv, rm, replace & Declarative Import Cứu Hộ Hạ Tầng](terraform-08-08-phau-thuat-state-state-mv-rm-replace-declarative-import-giai-cuu-ha-tang.html)** để làm chủ các kỹ thuật: Đổi tên tài nguyên không gây recreate với `state mv`, tách tài nguyên ra khỏi quản lý với `state rm`, và làm chủ khối `import` khai báo mới nhất trong Terraform 1.5+!
 {% endraw %}

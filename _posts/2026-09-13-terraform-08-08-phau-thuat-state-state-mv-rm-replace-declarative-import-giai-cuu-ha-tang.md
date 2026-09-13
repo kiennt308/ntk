@@ -304,14 +304,14 @@ flowchart TD
 
 | Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
 | :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | `Thao tác 1` | Khởi tạo thư mục thực hành thử nghiệm |
-| <span class="badge badge--cyan">02</span> | `local_file` | Tạo một tài nguyên mẫu ban đầu bằng |
-| <span class="badge badge--indigo">03</span> | `state mv` | Đổi tên tài nguyên trong State bằng |
-| <span class="badge badge--amber">04</span> | `Thao tác 4` | Sửa code HCL để đồng bộ với tên mới trong State |
-| <span class="badge badge--emerald">05</span> | `terraform plan` | Chạy  để kiểm chứng Zero-Downtime |
-| <span class="badge badge--primary">06</span> | `state rm` | Hủy quyền quản lý bằng |
-| <span class="badge badge--rose">07</span> | `import {}` | Tiếp nhận lại tài nguyên bằng Declarative  Block |
-| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Xác minh tài nguyên đã quay trở lại quyền kiểm soát của State |
+| <span class="badge badge--primary">01</span> | `mkdir & terraform init` | Khởi tạo thư mục thực hành thử nghiệm |
+| <span class="badge badge--cyan">02</span> | `local_file resource` | Tạo một tài nguyên mẫu ban đầu bằng `local_file` |
+| <span class="badge badge--indigo">03</span> | `terraform state mv` | Đổi tên tài nguyên trong State bằng `state mv` |
+| <span class="badge badge--amber">04</span> | `sed refactor code` | Sửa code HCL để đồng bộ với tên mới trong State |
+| <span class="badge badge--emerald">05</span> | `terraform plan` | Chạy `plan` để kiểm chứng Zero-Downtime |
+| <span class="badge badge--primary">06</span> | `terraform state rm` | Hủy quyền quản lý bằng `state rm` |
+| <span class="badge badge--rose">07</span> | `import block` | Tiếp nhận lại tài nguyên bằng Declarative `import {}` Block |
+| <span class="badge badge--emerald">08</span> | `state list & verify` | Xác minh tài nguyên đã quay trở lại quyền kiểm soát của State |
 
 ### Bước 1: Khởi tạo thư mục thực hành thử nghiệm
 ```bash
@@ -594,5 +594,6 @@ cd .. && rm -rf /tmp/state-surgery-lab
 
 Làm chủ bộ công cụ **State Subcommands (`mv`, `rm`, `replace`)** và tính năng **Declarative `import {}` Block** biến bạn thành một "bác sĩ phẫu thuật hạ tầng" thực thụ, có khả năng tái cấu trúc và giải cứu mọi hệ sinh thái IaC mà không gây ra bất kỳ giây phút gián đoạn dịch vụ nào.
 
-Trong **[[Bài 09] Xử Lý Drift Hạ Tầng: Refresh-Only, Reconciliation & Chiến Lược Phòng Chống Thất Thoát Tài Nguyên](terraform-09-09-xu-ly-drift-ha-tang-refresh-only-reconciliation-va-chong-that-thoat-tai-nguyen.html)**, chúng ta sẽ đi sâu vào nghệ thuật chế ngự Drift: Phân loại Drift ác tính vs lành tính, sử dụng `ignore_changes` chuẩn mực cho Auto-Scaling / Mutating Webhooks và dọn dẹp các tài nguyên mồ côi (Orphaned Resources).
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 09] Xử Lý Drift Hạ Tầng: Refresh-Only, Reconciliation & Chiến Lược Phòng Chống Thất Thoát Tài Nguyên](terraform-09-09-xu-ly-drift-ha-tang-refresh-only-reconciliation-va-chong-that-thoat-tai-nguyen.html)** để đi sâu vào nghệ thuật chế ngự Drift: Phân loại Drift ác tính vs lành tính, sử dụng `ignore_changes` chuẩn mực cho Auto-Scaling / Mutating Webhooks và dọn dẹp các tài nguyên mồ côi (Orphaned Resources).
 {% endraw %}

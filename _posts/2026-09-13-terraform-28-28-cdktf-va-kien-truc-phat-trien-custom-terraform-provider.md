@@ -359,6 +359,16 @@ func (r *ServerResource) Delete(ctx context.Context, req resource.DeleteRequest,
 
 Trong bài lab này, chúng ta sẽ cài đặt CDKTF CLI, khởi tạo một dự án TypeScript và tiến hành biên dịch (Synth) mã nguồn hướng đối tượng thành tệp khai báo `cdk.tf.json`.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Cài đặt cdktf-cli` | Cài đặt công cụ CLI của CDKTF qua npm |
+| **Bước 2** | `cdktf init` | Khởi tạo cấu trúc dự án CDKTF TypeScript |
+| **Bước 3** | `cdktf get` | Tải type bindings cho Provider local |
+| **Bước 4** | `Viết mã main.ts` | Lập trình stack OOP tạo file cấu hình môi trường |
+| **Bước 5** | `cdktf synth` | Biên dịch mã TypeScript thành định dạng cdk.tf.json |
+| **Bước 6** | `Kiểm tra JSON Schema` | Xác minh file JSON sinh ra tương thích với Terraform Core |
+| **Bước 7** | `Dọn dẹp môi trường lab` | Xóa thư mục dự án lab an toàn |
+
 ```mermaid
 graph LR
     A["cdktf init --template=typescript"] --> B["Viết Mã main.ts Với Lớp Hạ Tầng"]
@@ -689,5 +699,7 @@ mindmap
 
 - **Quy tắc lựa chọn công cụ**: Sử dụng **HCL thuần** cho 90% các nhu cầu hạ tầng tiêu chuẩn; chỉ chuyển sang **CDKTF** khi cần giải quyết các bài toán logic phức tạp hoặc tích hợp sâu vào quy trình của Software Engineering.
 - **Tiêu chuẩn phát triển Provider**: Luôn sử dụng **Terraform Plugin Framework** thế hệ mới bằng ngôn ngữ Golang để đảm bảo hiệu năng và tính an toàn kiểu dữ liệu.
-- **Bước tiếp theo**: Trong [[Bài 29] Tổng Ôn & Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)](terraform-29-29-tong-on-va-bi-kip-chinh-phuc-chung-chi-terraform-associate-003.html), chúng ta sẽ hệ thống hóa toàn bộ 9 chuyên đề thi, mổ xẻ các câu hỏi bẫy kinh điển và trang bị chiến lược đạt điểm tuyệt đối trong kỳ thi HashiCorp Certified: Terraform Associate!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 29] Tổng Ôn & Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)](terraform-29-29-tong-on-va-bi-kip-chinh-phuc-chung-chi-terraform-associate-003.html), chúng ta sẽ hệ thống hóa toàn bộ 9 chuyên đề thi, mổ xẻ các câu hỏi bẫy kinh điển và trang bị chiến lược đạt điểm tuyệt đối trong kỳ thi HashiCorp Certified: Terraform Associate!
 {% endraw %}

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 05] Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation,"
+title: "[Bài 05] Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation, Precedence & Sensitive Masking"
 date: 2026-09-13 11:20:00 +0700
 categories: [Terraform]
 tags:
@@ -13,7 +13,7 @@ series: "Terraform Enterprise Architecture"
 series_order: 5
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
-summary: "Quy chuẩn thiết kế Input Variables có Custom Validation Rules bằng Regex,"
+summary: "Quy chuẩn thiết kế Input Variables có Custom Validation Rules bằng Regex, quy tắc phân tầng ưu tiên Variable Precedence 5 cấp độ, tối ưu hóa Locals theo nguyên tắc DRY và che giấu bí mật với sensitive masking."
 tldr:
   - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Validation,."
   - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
@@ -283,6 +283,17 @@ connection_string = "postgresql://dbadmin:P%40ssw0rd99Enterprise%21@showtech-pay
 ---
 
 ## 8. Hands-on Lab: Thử Nghiệm Precedence, Validation & Sensitive Masking (8 Bước)
+
+| Bước | Lệnh CLI | Mục Đích Thực Thi |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `mkdir -p /tmp/terraform-vars-lab && cd ...` | Khởi tạo thư mục thực hành thử nghiệm môi trường cô lập |
+| <span class="badge badge--cyan">02</span> | `cat << 'EOF' > variables.tf ...` | Tạo tệp biến đầu vào có chứa Custom Validation Rules |
+| <span class="badge badge--indigo">03</span> | `cat << 'EOF' > main.tf ...` | Khởi tạo mã nguồn và cấu hình biến nhạy cảm Sensitive |
+| <span class="badge badge--amber">04</span> | `terraform plan -var="environment=testing" ...` | Thử nghiệm cơ chế Validation Failure bắt lỗi nhập sai |
+| <span class="badge badge--emerald">05</span> | `export TF_VAR_environment="staging" && ...` | Thử nghiệm nạp biến môi trường hệ điều hành TF_VAR_ |
+| <span class="badge badge--primary">06</span> | `terraform plan -var="environment=production"` | Thử nghiệm ghi đè giá trị cấp cao nhất bằng CLI flag |
+| <span class="badge badge--rose">07</span> | `terraform apply -auto-approve` | Quan sát cơ chế che giấu dữ liệu nhạy cảm trên màn hình |
+| <span class="badge badge--emerald">08</span> | `terraform output -raw masked_secret` | Truy xuất an toàn giá trị nhạy cảm phục vụ CI/CD script |
 
 ### Bước 1: Khởi tạo thư mục thực hành
 ```bash
@@ -574,5 +585,7 @@ cd .. && rm -rf /tmp/terraform-vars-lab
 
 Khép lại **Giai Đoạn 1: Nền Tảng Cốt Lõi**, bạn đã hoàn toàn làm chủ tư duy Declarative IaC, cơ chế Two-Phase DAG Engine, hệ thống kiểu dữ liệu HCL, nghệ thuật quản trị Dependency và thiết kế Variables/Outputs chuẩn Enterprise.
 
-Trong **Giai Đoạn 2 (Quản Trị State & Modules)** mở đầu với **[[Bài 06] Giải Mã Terraform State: Cấu Trúc JSON v4, Drift Detection & Refresh-Only Workflow](terraform-06-06-giai-ma-terraform-state-cau-truc-json-v4-drift-detection-refresh-only.html)**, chúng ta sẽ bước vào "trái tim" của mọi hệ thống Terraform: Phẫu thuật từng trường dữ liệu trong tệp State JSON v4, giải mã các tham số bí mật `serial`, `lineage`, và cách giải cứu hạ tầng khi State File bị phân mảnh!
+> [!TIP]
+> **BÀI HỌC TIẾP THEO:**
+> Trong **[[Bài 06] Giải Mã Terraform State: Cấu Trúc JSON v4, Drift Detection & Refresh-Only Workflow](terraform-06-06-giai-ma-terraform-state-cau-truc-json-v4-drift-detection-refresh-only.html)**, chúng ta sẽ bước vào "trái tim" của mọi hệ thống Terraform: Phẫu thuật từng trường dữ liệu trong tệp State JSON v4, giải mã các tham số bí mật `serial`, `lineage`, và cách giải cứu hạ tầng khi State File bị phân mảnh!
 {% endraw %}

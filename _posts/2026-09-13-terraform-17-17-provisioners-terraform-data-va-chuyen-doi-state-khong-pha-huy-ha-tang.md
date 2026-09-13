@@ -317,6 +317,17 @@ sequenceDiagram
 
 ```
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `mkdir lab structure` | Khởi tạo thư mục và cấu trúc file |
+| <span class="badge badge--cyan">02</span> | `mock_ansible.sh` | Tạo script giả lập Ansible Playbook |
+| <span class="badge badge--indigo">03</span> | `main.tf config` | Định nghĩa `main.tf` với tài nguyên `terraform_data` |
+| <span class="badge badge--amber">04</span> | `init & apply` | Chạy `terraform init` và `terraform apply` |
+| <span class="badge badge--emerald">05</span> | `cat hosts.ini` | Kiểm tra file inventory được sinh tự động |
+| <span class="badge badge--primary">06</span> | `scale worker node` | Thử nghiệm thêm 1 Worker Node mới để kích hoạt trigger |
+| <span class="badge badge--rose">07</span> | `verify trigger sync` | Kiểm tra Ansible tự động đồng bộ node mới |
+| <span class="badge badge--emerald">08</span> | `cleanup lab` | Dọn dẹp môi trường lab |
+
 ### Bước 1: Khởi tạo thư mục lab
 ```bash
 mkdir -p terraform-lab17-provisioners
@@ -688,5 +699,7 @@ mindmap
 
 - **Quy tắc bất biến**: Tuyệt đối không dùng `remote-exec` để cài đặt phần mềm trên Production. Hãy đóng gói sẵn vào AMI/Image bằng **Packer** hoặc chuyển giao cho **Cloud-init / Ansible**.
 - **Tiêu chuẩn Terraform 1.4+**: Xóa bỏ vĩnh viễn `null_resource` khỏi codebase và chuyển sang sử dụng `terraform_data`.
-- **Bước tiếp theo**: Trong [[Bài 18] Provider Alias, Multi-Region & Multi-Account Enterprise Architecture](terraform-18-18-provider-alias-multi-region-va-multi-account-enterprise-architecture.html), chúng ta sẽ khám phá cách quản trị hạ tầng xuyên lục địa (Multi-Region Disaster Recovery) và mở rộng mô hình Multi-Account chuẩn AWS Landing Zone!
+
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiếp tục hành trình với **[[Bài 18] Provider Alias, Multi-Region & Multi-Account Enterprise Architecture](terraform-18-18-provider-alias-multi-region-va-multi-account-enterprise-architecture.html)** để khám phá cách quản trị hạ tầng xuyên lục địa (Multi-Region Disaster Recovery) và mở rộng mô hình Multi-Account chuẩn AWS Landing Zone!
 {% endraw %}

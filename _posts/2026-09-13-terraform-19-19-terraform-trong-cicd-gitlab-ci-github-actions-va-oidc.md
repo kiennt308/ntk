@@ -379,6 +379,15 @@ apply:
 
 Trong bài lab này, chúng ta sẽ viết mã Terraform tạo IAM OIDC Provider cho GitHub Actions và dùng script kiểm tra tính hợp lệ của Trust Policy.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo thư mục lab` | Chuẩn bị workspace độc lập cho cấu hình OIDC IAM |
+| **Bước 2** | `Tạo file main.tf` | Định nghĩa OIDC Provider, Trust Policy JSON & Execution Role |
+| **Bước 3** | `terraform init & apply` | Triển khai OIDC IAM resources lên AWS Account |
+| **Bước 4** | `aws iam get-role` | Kiểm tra Trust Policy Document đã được tạo trên AWS |
+| **Bước 5** | `Xác minh sub claim` | Đảm bảo điều kiện Subject khớp chính xác repo GitHub |
+| **Bước 6** | `terraform destroy` | Hủy tài nguyên lab và dọn dẹp workspace an toàn |
+
 ```mermaid
 graph LR
     A["Mã Nguồn Terraform: oidc.tf"] --> B["terraform apply"]
@@ -726,5 +735,7 @@ mindmap
 
 - **Tiêu chuẩn vàng bảo mật**: Khai tử 100% IAM Access Keys tĩnh trên GitHub/GitLab, chuyển đổi toàn bộ sang **OIDC Keyless Authentication**.
 - **Nguyên tắc vận hành**: Không bao giờ áp dụng thay đổi mà không thông qua bước kiểm tra Pull Request và lưu giữ file plan nhị phân `tfplan.binary`.
-- **Bước tiếp theo**: Trong [[Bài 20] Quản Lý Secrets & Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh Nghiệp](terraform-20-20-quan-ly-secrets-va-du-lieu-sensitive-trong-terraform.html), chúng ta sẽ giải quyết triệt để vấn đề rò rỉ mật khẩu trong State file bằng HashiCorp Vault, AWS Secrets Manager và biến số `sensitive = true`!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 20] Quản Lý Secrets & Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh Nghiệp](terraform-20-20-quan-ly-secrets-va-du-lieu-sensitive-trong-terraform.html), chúng ta sẽ giải quyết triệt để vấn đề rò rỉ mật khẩu trong State file bằng HashiCorp Vault, AWS Secrets Manager và biến số `sensitive = true`!
 {% endraw %}

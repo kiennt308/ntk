@@ -244,6 +244,17 @@ Mỗi khi Terraform State được cập nhật, trường `"serial"` bên trong
 
 Trong bài lab này, chúng ta sẽ cố tình tạo ra một tình trạng kẹt State Lock giả lập và thực hành quy trình mở khóa khẩn cấp bằng `terraform force-unlock`.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo thư mục lab` | Chuẩn bị workspace độc lập cho kịch bản sự cố |
+| **Bước 2** | `Tạo file main.tf` | Định nghĩa tài nguyên giả lập terraform_data.critical_service |
+| **Bước 3** | `terraform init & apply` | Khởi tạo tài nguyên và thiết lập state ban đầu |
+| **Bước 4** | `Tạo file lock giả lập` | Sinh file .terraform.tfstate.lock.info mô phỏng crash CI |
+| **Bước 5** | `terraform plan` | Quan sát thông báo lỗi Error acquiring the state lock |
+| **Bước 6** | `terraform force-unlock` | Mở khóa khẩn cấp với Lock ID thu thập từ thông báo lỗi |
+| **Bước 7** | `Kiểm tra lại hệ thống` | Chạy lại terraform plan xác nhận trạng thái mở khóa thành công |
+| **Bước 8** | `terraform destroy` | Dọn dẹp tài nguyên và xóa thư mục lab |
+
 ```mermaid
 graph LR
     A["Mã Nguồn Lab"] --> B["Chạy terraform apply và cố tình treo khóa"]
@@ -590,5 +601,7 @@ mindmap
 
 - **Quy tắc vàng ứng cứu**: Bình tĩnh điều tra danh tính `Who` trước khi bấm `force-unlock`.
 - **Tiêu chuẩn thiết kế Backend**: 100% S3 State Buckets bắt buộc phải bật **S3 Versioning + S3 Object Lock**.
-- **Bước tiếp theo**: Trong [[Bài 27] Quản Trị Hạ Tầng Doanh Nghiệp Với HCP Terraform & Terraform Cloud](terraform-27-27-quan-tri-ha-tang-doanh-nghiep-voi-hcp-terraform-cloud.html), chúng ta sẽ khám phá nền tảng SaaS Enterprise hàng đầu của HashiCorp với Private Registry, Remote Execution và Quản trị Chi phí chuyên sâu!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 27] Quản Trị Hạ Tầng Doanh Nghiệp Với HCP Terraform & Terraform Cloud](terraform-27-27-quan-tri-ha-tang-doanh-nghiep-voi-hcp-terraform-cloud.html), chúng ta sẽ khám phá nền tảng SaaS Enterprise hàng đầu của HashiCorp với Private Registry, Remote Execution và Quản trị Chi phí chuyên sâu!
 {% endraw %}

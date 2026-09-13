@@ -276,6 +276,16 @@ Một trong những tính năng cao cấp của HCP Terraform là **Scheduled He
 
 Trong bài lab này, chúng ta sẽ cấu hình khối `cloud` liên kết với HCP Terraform và trải nghiệm quy trình Remote Plan/Apply trực tiếp từ dòng lệnh.
 
+| Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
+| :--- | :--- | :--- |
+| **Bước 1** | `Khởi tạo thư mục thực hành` | Chuẩn bị workspace độc lập cho cấu hình HCP |
+| **Bước 2** | `terraform login` | Đăng nhập và lấy User API Token từ HCP Terraform |
+| **Bước 3** | `Tạo file main.tf` | Khai báo cloud block liên kết Organization và Workspace |
+| **Bước 4** | `terraform init` | Khởi tạo remote workspace trên giao diện HCP Cloud |
+| **Bước 5** | `terraform plan` | Thực thi remote evaluation trên hosted runner |
+| **Bước 6** | `terraform apply` | Xác nhận và theo dõi stream log theo thời gian thực |
+| **Bước 7** | `terraform destroy` | Hủy tài nguyên và dọn dẹp thư mục lab |
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -612,5 +622,7 @@ mindmap
 
 - **Tiêu chuẩn vận hành hiện đại**: Chuyển đổi từ mô hình tự quản lý S3 Backend sang **HCP Terraform Workspaces** để đạt được tính minh bạch, kiểm soát chi phí và bảo mật tuyệt đối.
 - **Tiêu chuẩn Module Doanh Nghiệp**: 100% Shared Modules phải được xuất bản và quản trị phiên bản thông qua **Private Module Registry**.
-- **Bước tiếp theo**: Trong [[Bài 28] CDKTF & Kiến Trúc Phát Triển Custom Terraform Provider](terraform-28-28-cdktf-va-kien-truc-phat-trien-custom-terraform-provider.html), chúng ta sẽ bước ra khỏi giới hạn của HCL để viết hạ tầng bằng Python/TypeScript với CDKTF và tự lập trình một Terraform Provider tùy biến bằng ngôn ngữ Golang!
+
+> [!TIP]
+> **Bước tiếp theo:** Trong [[Bài 28] CDKTF & Kiến Trúc Phát Triển Custom Terraform Provider](terraform-28-28-cdktf-va-kien-truc-phat-trien-custom-terraform-provider.html), chúng ta sẽ bước ra khỏi giới hạn của HCL để viết hạ tầng bằng Python/TypeScript với CDKTF và tự lập trình một Terraform Provider tùy biến bằng ngôn ngữ Golang!
 {% endraw %}

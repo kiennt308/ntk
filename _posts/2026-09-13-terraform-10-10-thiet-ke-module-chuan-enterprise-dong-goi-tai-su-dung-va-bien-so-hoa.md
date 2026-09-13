@@ -292,7 +292,7 @@ so it cannot be used with count, for_each, or depends_on.
 1. <span class="badge badge--primary">Why 1</span> **Tại sao Terraform từ chối chạy `for_each` trên module?** $\rightarrow$ Vì bên trong module con có chứa khối `provider "aws" {}`.
 2. <span class="badge badge--primary">Why 2</span> **Tại sao có khối provider lại cấm `for_each`?** $\rightarrow$ Vì trong kiến trúc của Terraform Core, Provider Plugin được khởi tạo ở cấp độ toàn cục trước khi đồ thị DAG mở rộng các nhánh vòng lặp; một Child Module không thể tự ý sinh ra nhiều phiên bản Provider độc lập trong vòng lặp.
 3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại viết provider vào trong module?** $\rightarrow$ Do thói quen sao chép từ Root Module cũ mà không hiểu nguyên lý Provider Inversion of Control.
-4. **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **<span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**:**:**:**
+4. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
    - **Xóa sạch toàn bộ khối `provider "aws" {}` ra khỏi Child Module.**
    - **Chuyển các yêu cầu phiên bản sang khối `required_providers` trong `versions.tf`.**
    - **Nếu cần truyền Region khác nhau, sử dụng kỹ thuật Provider Alias (`providers = { aws = aws.us_east }`).**
@@ -303,14 +303,14 @@ so it cannot be used with count, for_each, or depends_on.
 
 | Bước | Lệnh / Thao Tác | Mục Đích Kỹ Thuật |
 | :---: | :--- | :--- |
-| <span class="badge badge--primary">01</span> | `Thao tác 1` | Tạo cấu trúc thư mục Module hoàn chỉnh |
-| <span class="badge badge--cyan">02</span> | `variables.tf` | Viết tệp  cho Child Module |
-| <span class="badge badge--indigo">03</span> | `main.tf` | Viết tệp  cho Child Module |
-| <span class="badge badge--amber">04</span> | `outputs.tf` | Viết tệp  cho Child Module |
-| <span class="badge badge--emerald">05</span> | `for_each` | Viết tệp Root Module gọi Child Module với vòng lặp |
-| <span class="badge badge--primary">06</span> | `Thao tác 6` | Khởi tạo và kiểm tra tính hợp lệ |
-| <span class="badge badge--rose">07</span> | `Thao tác 7` | Thực thi triển khai Apply |
-| <span class="badge badge--emerald">08</span> | `Thao tác 8` | Xác minh kết quả Output và dọn dẹp |
+| <span class="badge badge--primary">01</span> | `mkdir module tree` | Tạo cấu trúc thư mục Module hoàn chỉnh |
+| <span class="badge badge--cyan">02</span> | `variables.tf spec` | Viết tệp `variables.tf` định nghĩa Input Contract |
+| <span class="badge badge--indigo">03</span> | `main.tf logic` | Viết tệp `main.tf` đóng gói logic tài nguyên |
+| <span class="badge badge--amber">04</span> | `outputs.tf contract` | Viết tệp `outputs.tf` định nghĩa Output Contract |
+| <span class="badge badge--emerald">05</span> | `root module call` | Viết tệp Root Module gọi Child Module với vòng lặp `for_each` |
+| <span class="badge badge--primary">06</span> | `validate & test` | Khởi tạo và kiểm tra tính hợp lệ cú pháp |
+| <span class="badge badge--rose">07</span> | `terraform apply` | Thực thi triển khai Apply sinh tài nguyên |
+| <span class="badge badge--emerald">08</span> | `verify output & clean` | Xác minh kết quả Output và dọn dẹp môi trường |
 
 ### Bước 1: Tạo cấu trúc thư mục Module hoàn chỉnh
 ```bash
@@ -607,12 +607,12 @@ cd .. && rm -rf /tmp/module-lab
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   <p style="margin: 0.4rem 0;">Sử dụng tham số <code>providers</code> khi gọi module:</p>
-  <p style="margin: 0.4rem 0;"><pre><code>module "us_storage" {</p>
-  <p style="margin: 0.4rem 0;">source    = "./modules/s3"</p>
-  <p style="margin: 0.4rem 0;">providers = {</p>
-  <p style="margin: 0.4rem 0;">aws = aws.us_east_1</p>
-  <p style="margin: 0.4rem 0;">}</p>
-  <p style="margin: 0.4rem 0;">}</code></pre></p>
+  <pre style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 6px; overflow-x: auto; color: #e2e8f0; font-family: monospace;"><code>module "us_storage" {
+  source    = "./modules/s3"
+  providers = {
+    aws = aws.us_east_1
+  }
+}</code></pre>
 </div>
 </details>
 
@@ -622,5 +622,6 @@ cd .. && rm -rf /tmp/module-lab
 
 Khép lại **Giai Đoạn 2: Quản Trị State & Modules Chuyên Sâu**, bạn đã nắm vững cấu trúc State Schema v4, kỹ thuật Remote Backend S3 + DynamoDB Locking, phẫu thuật State Subcommands, chiến lược chế ngự Drift và nghệ thuật đóng gói Enterprise Module.
 
-Trong **Giai Đoạn 3 (Lập Trình Nâng Cao & Tự Động Hóa Đa Môi Trường)** mở đầu với **[[Bài 11] Module Composition & Quản Lý Phụ Thuộc Module Đa Tầng Trong Private Registry](terraform-11-11-module-composition-private-registry-va-quan-ly-phu-thuoc-module-da-tang.html)**, chúng ta sẽ bước vào thế giới của kiến trúc phân tầng: Kỹ thuật kết hợp Module Composition, quản trị Private Module Registry và cách xử lý luồng dữ liệu giữa các module độc lập!
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Tiến vào **Giai Đoạn 3 (Lập Trình Nâng Cao & Tự Động Hóa Đa Môi Trường)** mở đầu với **[[Bài 11] Module Composition & Quản Lý Phụ Thuộc Module Đa Tầng Trong Private Registry](terraform-11-11-module-composition-private-registry-va-quan-ly-phu-thuoc-module-da-tang.html)** để bước vào thế giới kiến trúc phân tầng: Kỹ thuật kết hợp Module Composition, quản trị Private Module Registry và cách xử lý luồng dữ liệu giữa các module độc lập!
 {% endraw %}

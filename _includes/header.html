@@ -1,16 +1,22 @@
 <header class="navbar">
   <div class="container navbar__container">
     <a class="logo" href="{{ '/' | relative_url }}">
-      <div class="logo-badge">KN</div>
-      <span class="logo-text">{{ site.title }}</span>
+      <div class="logo-badge">{{ site.header.logo_badge | default: site.author.initials | default: "KN" }}</div>
+      <span class="logo-text">{{ site.header.logo_text | default: site.title }}</span>
     </a>
 
     <nav class="nav-menu">
-      <a class="nav-link {% if page.url == '/' %}active{% endif %}" href="{{ '/' | relative_url }}">Home</a>
-      <a class="nav-link {% if page.url contains '/blog' %}active{% endif %}" href="{{ '/blog.html' | relative_url }}">Blog</a>
-      <a class="nav-link {% if page.url contains '/categories' %}active{% endif %}" href="{{ '/categories.html' | relative_url }}">Topics</a>
-      <a class="nav-link {% if page.url contains '/about' %}active{% endif %}" href="{{ '/about.html' | relative_url }}">About</a>
-      <a class="nav-link {% if page.url contains '/contact' %}active{% endif %}" href="{{ '/contact.html' | relative_url }}">Contact</a>
+      {% for item in site.header.nav_menu %}
+        {% assign is_active = false %}
+        {% if item.url == '/' and page.url == '/' %}
+          {% assign is_active = true %}
+        {% elsif item.url != '/' and page.url contains item.url %}
+          {% assign is_active = true %}
+        {% endif %}
+        <a class="nav-link {% if is_active %}active{% endif %}" href="{{ item.url | relative_url }}">
+          {{ item.title }}
+        </a>
+      {% endfor %}
     </nav>
 
     <div class="nav-actions">

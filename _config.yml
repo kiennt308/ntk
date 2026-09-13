@@ -1,6 +1,9 @@
-title: Kien Nguyen
-email: kiennt.sg@gmail.com
-description: >- # this means to ignore newlines until "baseurl:"
+# ==============================================================================
+# ⚙️ 1. CẤU HÌNH CƠ BẢN & SEO (SITE SETTINGS)
+# ==============================================================================
+title: "Kien Nguyen"
+email: "kiennt.sg@gmail.com"
+description: >-
   Senior DevOps / SRE / Cloud Engineer sharing practical tutorials and deep dives
   about AWS, Kubernetes, Terraform, Platform Engineering, Observability, and AI.
 baseurl: "/ntk"
@@ -8,22 +11,126 @@ url: "https://kiennt308.github.io"
 repository: "kiennt308/ntk"
 show_ads: false
 
-# Author information for SEO and footer
+# ==============================================================================
+# 👤 2. THÔNG TIN TÁC GIẢ (AUTHOR PROFILE)
+# ==============================================================================
 author:
   name: "Kien Nguyen"
+  initials: "KN"
+  title: "Senior DevOps / SRE"
+  subtitle: "Cloud Architect & Platform Engineer"
+  location: "Vietnam (UTC+7)"
+  availability: "Open for Consulting"
+  bio: "Sharing battle-tested production guides on Cloud Architecture, Kubernetes, Terraform, and Observability."
   email: "kiennt.sg@gmail.com"
   twitter: "kiennt308"
   github: "kiennt308"
   linkedin: "kiennt308"
 
-# Social profile links
+# ==============================================================================
+# 🔗 3. MẠNG XÃ HỘI (SOCIAL LINKS)
+# ==============================================================================
 social:
-  github: kiennt308
-  linkedin: kiennt308
-  twitter: kiennt308
-  email: kiennt.sg@gmail.com
+  github: "kiennt308"
+  linkedin: "kiennt308"
+  twitter: "kiennt308"
+  email: "kiennt.sg@gmail.com"
 
-# Jekyll-SEO-Tag plugin metadata
+# ==============================================================================
+# 🎨 4. GIAO DIỆN HEADER & LOGO (HEADER & NAVBAR)
+# ==============================================================================
+header:
+  logo_badge: "KN"                # Text viết tắt trong ô badge logo
+  logo_text: "Kien Nguyen"        # Tên hiển thị cạnh badge
+  nav_menu:                       # Danh sách các menu trên Header
+    - title: "Home"
+      url: "/"
+    - title: "Blog"
+      url: "/blog.html"
+    - title: "Topics"
+      url: "/categories.html"
+    - title: "About"
+      url: "/about.html"
+    - title: "Contact"
+      url: "/contact.html"
+
+# ==============================================================================
+# 📝 5. CẤU HÌNH FOOTER (FOOTER TEXT)
+# ==============================================================================
+footer:
+  copyright_text: "All rights reserved."
+
+# ==============================================================================
+# 🏷️ 6. DANH SÁCH CHUYÊN MỤC / TOPICS (TOPIC PILLARS)
+# Dùng để tự động tạo bộ lọc trên Blog, Sidebar, Topic Hubs và Trang chủ
+# ==============================================================================
+topics:
+  - id: "aws"
+    category_name: "AWS"
+    title: "AWS & Cloud Architecture"
+    icon: "☁️"
+    badge_class: "badge--amber"
+    description: "Multi-account governance with Control Tower, Landing Zones, VPC networking, security guardrails, and cost optimization."
+  - id: "kubernetes"
+    category_name: "Kubernetes"
+    title: "Kubernetes & Containers"
+    icon: "🚢"
+    badge_class: "badge--cyan"
+    description: "Production EKS checklists, CNI networking deep-dives, ingress controllers, pod security standards, and GitOps deployments."
+  - id: "terraform"
+    category_name: "Terraform"
+    title: "Infrastructure as Code"
+    icon: "🏗️"
+    badge_class: "badge--primary"
+    description: "Zero-to-hero Terraform state management, reusable modules, multi-environment pipelines, and drift detection."
+  - id: "observability"
+    category_name: "Observability"
+    title: "Observability & SRE"
+    icon: "📊"
+    badge_class: "badge--emerald"
+    description: "OpenTelemetry distributed tracing, metric aggregation, incident triage playbooks, and blameless postmortem templates."
+  - id: "devops"
+    category_name: "DevOps"
+    title: "DevOps & Platform Eng"
+    icon: "⚡"
+    badge_class: "badge--rose"
+    description: "High-velocity CI/CD workflows, developer self-service platforms, automated security scanning, and release automation."
+
+# ==============================================================================
+# 🚀 7. TEXT TRANG CHỦ (HOMEPAGE CONTENT)
+# ==============================================================================
+homepage:
+  hero:
+    pill_text: "Open for Cloud Architecture & SRE Consulting"
+    title_line1: "Engineering Cloud & Platform"
+    title_highlight: "Systems at Scale."
+    subtitle: "Practical guides, architecture deep-dives, and production playbooks covering AWS, Kubernetes, Terraform, Observability, and Modern DevOps."
+    primary_cta_text: "Explore All Guides"
+    primary_cta_url: "/blog.html"
+    secondary_cta_text: "Browse Topic Hubs"
+    secondary_cta_url: "/categories.html"
+  
+  pillars_section:
+    badge: "STRUCTURED KNOWLEDGE"
+    title: "Core Engineering Pillars"
+    subtitle: "Master cloud-native platform engineering through our categorized domains and step-by-step learning paths."
+
+  latest_posts_section:
+    badge: "FRESH ARTICLES"
+    title: "Latest Technical Guides"
+
+  cta_section:
+    badge: "ENGINEERING EXCELLENCE"
+    title: "Automating Operations, Accelerating Velocity"
+    description: "I design, build, and maintain resilient multi-cloud architectures. By treating infrastructure as versioned code and enforcing robust observability guardrails, I help engineering organizations deliver reliable software at scale."
+    primary_btn_text: "Read My Story"
+    primary_btn_url: "/about.html"
+    secondary_btn_text: "View Experience & Resume"
+    secondary_btn_url: "/about.html#resume-download"
+
+# ==============================================================================
+# ⚙️ 8. JEKYLL PLUGINS & BUILD SETTINGS
+# ==============================================================================
 twitter:
   username: kiennt308
   card: summary_large_image
@@ -31,7 +138,6 @@ facebook:
   app_id: null
   publisher: null
 
-# Build settings
 markdown: kramdown
 highlighter: rouge
 lsi: false
@@ -44,7 +150,6 @@ kramdown:
   syntax_highlighter_opts:
     css_class: 'highlight'
 
-# Directory exclusions
 exclude:
   - Gemfile
   - Gemfile.lock
@@ -60,13 +165,11 @@ exclude:
   - task.md
   - walkthrough.md
 
-# Plugins
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-feed
 
-# Collections setup for Blog Posts permalinks
 defaults:
   - scope:
       path: ""

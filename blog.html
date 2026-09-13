@@ -32,11 +32,11 @@ permalink: /blog.html
       <div class="filter-wrapper no-print" style="margin-bottom: 2.5rem;">
         <div class="filter-bar">
           <button class="filter-btn live-filter-btn active" data-filter="all">All Topics ({{ site.posts.size }})</button>
-          <button class="filter-btn live-filter-btn" data-filter="aws">☁️ AWS ({{ site.categories['AWS'] | size }})</button>
-          <button class="filter-btn live-filter-btn" data-filter="kubernetes">🚢 Kubernetes ({{ site.categories['Kubernetes'] | size }})</button>
-          <button class="filter-btn live-filter-btn" data-filter="terraform">🏗️ Terraform ({{ site.categories['Terraform'] | size }})</button>
-          <button class="filter-btn live-filter-btn" data-filter="observability">📊 Observability ({{ site.categories['Observability'] | size }})</button>
-          <button class="filter-btn live-filter-btn" data-filter="devops">⚡ DevOps ({{ site.categories['DevOps'] | size }})</button>
+          {% for topic in site.topics %}
+            <button class="filter-btn live-filter-btn" data-filter="{{ topic.id }}">
+              {{ topic.icon }} {{ topic.category_name }} ({{ site.categories[topic.category_name] | size | default: 0 }})
+            </button>
+          {% endfor %}
         </div>
       </div>
 
@@ -85,15 +85,15 @@ permalink: /blog.html
       <div class="blog-sidebar-widget">
         <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
           <div class="author-avatar" style="width: 52px; height: 52px; font-size: 1.25rem;">
-            KN
+            {{ site.author.initials | default: "KN" }}
           </div>
           <div>
             <h3 style="font-size: 1.05rem; margin: 0 0 0.2rem 0;">{{ site.author.name }}</h3>
-            <div style="font-size: 0.775rem; font-weight: 600; color: var(--accent-primary);">Senior DevOps / SRE</div>
+            <div style="font-size: 0.775rem; font-weight: 600; color: var(--accent-primary);">{{ site.author.title }}</div>
           </div>
         </div>
         <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
-          Sharing battle-tested production guides on Cloud Architecture, Kubernetes, Terraform, and Observability.
+          {{ site.author.bio }}
         </p>
         <div style="display: flex; gap: 0.5rem;">
           <a href="{{ '/about.html' | relative_url }}" class="btn btn--secondary btn--sm" style="flex: 1; justify-content: center; font-size: 0.8rem;">About Me</a>
@@ -115,36 +115,14 @@ permalink: /blog.html
           Topic Pillars
         </h3>
         <ul class="blog-topic-list">
-          <li class="blog-topic-item">
-            <a href="#aws" class="sidebar-filter-trigger" data-filter="aws">
-              <span>☁️ AWS & Cloud</span>
-              <span class="badge badge--amber">{{ site.categories['AWS'] | size }}</span>
-            </a>
-          </li>
-          <li class="blog-topic-item">
-            <a href="#kubernetes" class="sidebar-filter-trigger" data-filter="kubernetes">
-              <span>🚢 Kubernetes</span>
-              <span class="badge badge--cyan">{{ site.categories['Kubernetes'] | size }}</span>
-            </a>
-          </li>
-          <li class="blog-topic-item">
-            <a href="#terraform" class="sidebar-filter-trigger" data-filter="terraform">
-              <span>🏗️ Terraform & IaC</span>
-              <span class="badge badge--primary">{{ site.categories['Terraform'] | size }}</span>
-            </a>
-          </li>
-          <li class="blog-topic-item">
-            <a href="#observability" class="sidebar-filter-trigger" data-filter="observability">
-              <span>📊 Observability & SRE</span>
-              <span class="badge badge--emerald">{{ site.categories['Observability'] | size }}</span>
-            </a>
-          </li>
-          <li class="blog-topic-item">
-            <a href="#devops" class="sidebar-filter-trigger" data-filter="devops">
-              <span>⚡ DevOps & CI/CD</span>
-              <span class="badge badge--rose">{{ site.categories['DevOps'] | size }}</span>
-            </a>
-          </li>
+          {% for topic in site.topics %}
+            <li class="blog-topic-item">
+              <a href="#{{ topic.id }}" class="sidebar-filter-trigger" data-filter="{{ topic.id }}">
+                <span>{{ topic.icon }} {{ topic.category_name }}</span>
+                <span class="badge {{ topic.badge_class }}">{{ site.categories[topic.category_name] | size | default: 0 }}</span>
+              </a>
+            </li>
+          {% endfor %}
         </ul>
       </div>
 

@@ -7,17 +7,11 @@
 
 {% assign post_cat = include.post.categories | first %}
 {% assign cat_class = "badge--primary" %}
-{% if post_cat == "AWS" or post_cat == "Cloud" %}
-  {% assign cat_class = "badge--amber" %}
-{% elsif post_cat == "Kubernetes" or post_cat == "Docker" %}
-  {% assign cat_class = "badge--cyan" %}
-{% elsif post_cat == "Terraform" or post_cat == "IaC" %}
-  {% assign cat_class = "badge--primary" %}
-{% elsif post_cat == "Observability" or post_cat == "SRE" %}
-  {% assign cat_class = "badge--emerald" %}
-{% elsif post_cat == "DevOps" or post_cat == "Security" %}
-  {% assign cat_class = "badge--rose" %}
-{% endif %}
+{% for topic in site.topics %}
+  {% if topic.category_name == post_cat %}
+    {% assign cat_class = topic.badge_class %}
+  {% endif %}
+{% endfor %}
 
 <article class="card post-card-item" 
   data-categories="{{ include.post.categories | join: ' ' }}" 

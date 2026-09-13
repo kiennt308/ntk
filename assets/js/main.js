@@ -351,4 +351,25 @@ document.addEventListener('DOMContentLoaded', () => {
       updateFilteredPosts();
     }
   }
+
+  /* ==========================================================================
+     8. Back to Top Floating Button
+     ========================================================================== */
+  const backToTopBtn = document.getElementById('back-to-top');
+  if (backToTopBtn) {
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    }, { passive: true });
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
 });

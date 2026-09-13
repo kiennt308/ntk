@@ -97,8 +97,18 @@ graph TD
     E --> F
     E --> G
     E --> H
-    C -. "Cung cấp biến fallback" .-> E
-    D -. "Cung cấp biến nội bộ" .-> E
+    C -.->|"Cung cấp biến fallback"| E
+    D -.->|"Cung cấp biến nội bộ"| E
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#ef4444,stroke-width:2px
+    style E fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#8b5cf6,stroke-width:2px
+    style H fill:none,stroke:#ec4899,stroke-width:2px
+    style I fill:none,stroke:#14b8a6,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Ansible Role là chuẩn tổ chức mã nguồn tự động hóa dưới dạng mô-đun độc lập, gom toàn bộ Tasks, Handlers, Variables, Templates và Files vào một cấu trúc thư mục quy chuẩn.
@@ -337,8 +347,21 @@ flowchart TD
     G --> H["Gọi Role: roles: - role: webserver"]
     H --> I["LƯỢT CHẠY LẦN 2"]
     I --> J{"PLAY RECAP Lần 2: changed=0?"}
-    J -- Có --> K["ĐẠT: Ansible Role chuẩn Idempotent"]
-    J -- Không --> L["LỖI: Rà soát lại task bên trong Role"]
+    J -->|"Có"| K["ĐẠT: Ansible Role chuẩn Idempotent"]
+    J -->|"Không"| L["LỖI: Rà soát lại task bên trong Role"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#f59e0b,stroke-width:2px
+    style E fill:none,stroke:#06b6d4,stroke-width:2px
+    style F fill:none,stroke:#8b5cf6,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
+    style H fill:none,stroke:#3b82f6,stroke-width:2px
+    style I fill:none,stroke:#a855f7,stroke-width:2px
+    style J fill:none,stroke:#eab308,stroke-width:2px
+    style K fill:none,stroke:#10b981,stroke-width:2px
+    style L fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -462,7 +485,7 @@ cd labs && make up && make key && make inventory
 graph TD
     SubGraph1["Control Node (ansible-playbook CLI)"] -->|"1. Nạp Playbook: site-roles.yml"| PB["Playbook: site-roles.yml"]
     
-    PB -->|"2. เรียก Role: roles/webserver"| R1["Role: webserver"]
+    PB -->|"2. Gọi Role: roles/webserver"| R1["Role: webserver"]
     
     subgraph "Nội bộ Role: roles/webserver/"
         R1 -->|"3. Read defaults/main.yml"| DEF["webserver_port=8080, webserver_title='Demo'"]
@@ -473,12 +496,22 @@ graph TD
     
     R1 -->|"7. Gửi cấu hình đã render"| T1["Target Container 1 (target1)"]
     
-    T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=4, changed=2"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENT)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-roles.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style PB fill:none,stroke:#6366f1,stroke-width:2px
+    style R1 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style DEF fill:none,stroke:#10b981,stroke-width:2px
+    style TSK fill:none,stroke:#f59e0b,stroke-width:2px
+    style HND fill:none,stroke:#06b6d4,stroke-width:2px
+    style TMP fill:none,stroke:#ec4899,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
@@ -830,198 +863,295 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise? <i>(Liên quan QT 4.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.5rem 0;">Ansible Role là chuẩn tổ chức mã nguồn tự động hóa dưới dạng mô-đun độc lập, gom toàn bộ Tasks, Handlers, Variables, Templates và Files vào một cấu trúc thư mục quy chuẩn.</div>
+    <div style="margin: 0.5rem 0;">Lợi ích chuẩn mực Enterprise:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tách biệt rõ ràng các mối quan tâm (Separation of Concerns).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tái sử dụng mã nguồn 100% trên nhiều Playbook và dự án khác nhau.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dễ dàng quản lý phiên bản, kiểm thử độc lập và chia sẻ cho cộng đồng qua Ansible Galaxy.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Ansible Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Role để chia nhỏ file nhưng không giải thích được các lợi ích chuẩn mực Enterprise.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác khái niệm Role và nguyên lý đóng gói mô-đun hóa.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa kiến trúc tổ chức Role cho hệ thống Web/DB Enterprise.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu không dùng Role, một file Playbook triển khai cụm ứng dụng lớn sẽ gặp khó khăn gì? <i>(Mã nguồn rườm rà hàng nghìn dòng, trùng lặp code, cực kỳ khó bảo trì và không thể tái sử dụng.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Role là gì? Tại sao việc sử dụng Role lại được coi là chuẩn mực thiết kế mã nguồn IaC (Infrastructure as Code) cho các dự án Enterprise? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-Ansible Role là chuẩn tổ chức mã nguồn tự động hóa dưới dạng mô-đun độc lập, gom toàn bộ Tasks, Handlers, Variables, Templates và Files vào một cấu trúc thư mục quy chuẩn.
-Lợi ích chuẩn mực Enterprise:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tách biệt rõ ràng các mối quan tâm (Separation of Concerns).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tái sử dụng mã nguồn 100% trên nhiều Playbook và dự án khác nhau.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Dễ dàng quản lý phiên bản, kiểm thử độc lập và chia sẻ cho cộng đồng qua Ansible Galaxy.</div>
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Ansible Role.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Role để chia nhỏ file nhưng không giải thích được các lợi ích chuẩn mực Enterprise.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác khái niệm Role và nguyên lý đóng gói mô-đun hóa.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa kiến trúc tổ chức Role cho hệ thống Web/DB Enterprise.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu không dùng Role, một file Playbook triển khai cụm ứng dụng lớn sẽ gặp khó khăn gì? *(Mã nguồn rườm rà hàng nghìn dòng, trùng lặp code, cực kỳ khó bảo trì và không thể tái sử dụng.)*
-</div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Trình bày tác dụng của lệnh CLI <code>ansible-galaxy role init &lt;role_name&gt;</code>. Tại sao nên dùng lệnh này thay vì tạo thư mục thủ công?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày tác dụng của lệnh CLI <code>ansible-galaxy role init &lt;role_name&gt;</code>. Tại sao nên dùng lệnh này thay vì tạo thư mục thủ công? <i>(Liên quan QT 4.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Lệnh <code>ansible-galaxy role init &lt;role_name&gt;</code> tự động sinh ra toàn bộ khung cây thư mục quy chuẩn gồm 8 thư mục con (<code>tasks</code>, <code>handlers</code>, <code>defaults</code>, <code>vars</code>, <code>templates</code>, <code>files</code>, <code>meta</code>, <code>tests</code>) cùng các tệp <code>main.yml</code> tương ứng. Nên dùng lệnh này vì nó đảm bảo 100% tên thư mục và cấu trúc tuân thủ chính xác quy ước của Ansible Engine, tránh lỗi gõ sai tên thư mục (như gõ nhầm <code>task/</code> thiếu 's').</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết lệnh <code>ansible-galaxy role init</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết lệnh init nhưng không nêu được các thư mục con nó tự động sinh ra.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác lợi ích tiết kiệm thời gian và chống lỗi gõ sai quy chuẩn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + thực thi lệnh CLI minh họa cây thư mục <code>roles/webserver</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Tệp <code>README.md</code> được tạo ra trong thư mục Role init dùng để làm gì? <i>(Dùng để viết tài liệu hướng dẫn cách sử dụng biến và cách gọi Role.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Khởi tạo Role với Lệnh `ansible-galaxy role init` 🔥
-**Hỏi:** Trình bày tác dụng của lệnh CLI `ansible-galaxy role init <role_name>`. Tại sao nên dùng lệnh này thay vì tạo thư mục thủ công? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:** Lệnh `ansible-galaxy role init <role_name>` tự động sinh ra toàn bộ khung cây thư mục quy chuẩn gồm 8 thư mục con (`tasks`, `handlers`, `defaults`, `vars`, `templates`, `files`, `meta`, `tests`) cùng các tệp `main.yml` tương ứng. Nên dùng lệnh này vì nó đảm bảo 100% tên thư mục và cấu trúc tuân thủ chính xác quy ước của Ansible Engine, tránh lỗi gõ sai tên thư mục (như gõ nhầm `task/` thiếu 's').
-**Tiêu chí chấm:**
-- 0: Không biết lệnh `ansible-galaxy role init`.
-- 1: Biết lệnh init nhưng không nêu được các thư mục con nó tự động sinh ra.
-- 2: Phân tích chính xác lợi ích tiết kiệm thời gian và chống lỗi gõ sai quy chuẩn.
-- 3: Nêu đúng + thực thi lệnh CLI minh họa cây thư mục `roles/webserver`.
-**Câu hỏi đào sâu:** Tệp `README.md` được tạo ra trong thư mục Role init dùng để làm gì? *(Dùng để viết tài liệu hướng dẫn cách sử dụng biến và cách gọi Role.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Phân biệt chức năng của 4 thư mục cốt lõi trong Role: <code>tasks/</code>, <code>handlers/</code>, <code>templates/</code>, và <code>files/</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Phân biệt chức năng của 4 thư mục cốt lõi trong Role: <code>tasks/</code>, <code>handlers/</code>, <code>templates/</code>, và <code>files/</code>. <i>(Liên quan QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>tasks/</code>: Chứa tệp <code>main.yml</code> định nghĩa danh sách các Task thi hành chính của Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>handlers/</code>: Chứa tệp <code>main.yml</code> định nghĩa các Handler xử lý khi có thông báo <code>notify</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>templates/</code>: Chứa các tệp mẫu Jinja2 <code>.j2</code> được render động bởi module <code>template</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>files/</code>: Chứa các tệp tin tĩnh (raw static files) được chép trực tiếp bởi module <code>copy</code> hay <code>script</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được các thư mục trong Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Phân biệt được <code>tasks</code> và <code>templates</code> nhưng nhầm lẫn giữa <code>templates</code> và <code>files</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác chức năng của cả 4 thư mục quy chuẩn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cho ví dụ cụ thể về loại file được đặt trong từng thư mục.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu đặt tệp <code>.j2</code> vào thư mục <code>files/</code> và gọi module <code>copy</code>, chuyện gì sẽ xảy ra? <i>(Tệp <code>.j2</code> sẽ bị chép thô sang máy đích mà không được render giải mã biến Jinja2.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Phân biệt thứ tự ưu tiên biến và mục đích sử dụng giữa <code>defaults/main.yml</code> và <code>vars/main.yml</code> trong Ansible Role.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Phân biệt thứ tự ưu tiên biến và mục đích sử dụng giữa <code>defaults/main.yml</code> và <code>vars/main.yml</code> trong Ansible Role. <i>(Liên quan QT 5.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>defaults/main.yml</code>: Chứa các biến mặc định có <b>độ ưu tiên thấp nhất</b> trong toàn bộ hệ thống Ansible. Mục đích: Đóng vai trò là "fallback values" giúp người gọi Role dễ dàng ghi đè từ <code>inventory</code>, <code>group_vars</code> hoặc khi gọi Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>vars/main.yml</code>: Chứa các biến nội bộ của Role có <b>độ ưu tiên rất cao</b>. Mục đích: Dùng để lưu trữ các hằng số nội bộ không muốn người dùng ghi đè tùy tiện từ bên ngoài.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng <code>defaults</code> và <code>vars</code> có độ ưu tiên giống nhau.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>defaults</code> ưu tiên thấp hơn <code>vars</code> nhưng giải thích sai mục đích áp dụng cho người dùng.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác thứ tự ưu tiên và tư duy phân chia biến linh hoạt vs biến hằng số.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cho ví dụ biến <code>http_port</code> đặt ở <code>defaults</code> và biến <code>internal_app_code</code> đặt ở <code>vars</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu một biến được định nghĩa ở CẢ <code>defaults/main.yml</code> VÀ <code>vars/main.yml</code>, giá trị nào sẽ được Ansible chọn sử dụng? <i>(Giá trị trong <code>vars/main.yml</code> sẽ thắng vì có độ ưu tiên cao hơn.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Chức năng của các Thư mục Quy chuẩn trong Role 🔥
-**Hỏi:** Phân biệt chức năng của 4 thư mục cốt lõi trong Role: `tasks/`, `handlers/`, `templates/`, và `files/`. *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-- `tasks/`: Chứa tệp `main.yml` định nghĩa danh sách các Task thi hành chính của Role.
-- `handlers/`: Chứa tệp `main.yml` định nghĩa các Handler xử lý khi có thông báo `notify`.
-- `templates/`: Chứa các tệp mẫu Jinja2 `.j2` được render động bởi module `template`.
-- `files/`: Chứa các tệp tin tĩnh (raw static files) được chép trực tiếp bởi module `copy` hay `script`.
-**Tiêu chí chấm:**
-- 0: Không phân biệt được các thư mục trong Role.
-- 1: Phân biệt được `tasks` và `templates` nhưng nhầm lẫn giữa `templates` và `files`.
-- 2: Phân tích chính xác chức năng của cả 4 thư mục quy chuẩn.
-- 3: Nêu đúng + cho ví dụ cụ thể về loại file được đặt trong từng thư mục.
-**Câu hỏi đào sâu:** Nếu đặt tệp `.j2` vào thư mục `files/` và gọi module `copy`, chuyện gì sẽ xảy ra? *(Tệp `.j2` sẽ bị chép thô sang máy đích mà không được render giải mã biến Jinja2.)*
-
----
-
-### Câu 4 — Phân biệt Biến `defaults/main.yml` và `vars/main.yml` 🔥
-**Hỏi:** Phân biệt thứ tự ưu tiên biến và mục đích sử dụng giữa `defaults/main.yml` và `vars/main.yml` trong Ansible Role. *(Liên quan QT 5.1)*
-**Đáp án chuẩn:**
-- `defaults/main.yml`: Chứa các biến mặc định có **độ ưu tiên thấp nhất** trong toàn bộ hệ thống Ansible. Mục đích: Đóng vai trò là "fallback values" giúp người gọi Role dễ dàng ghi đè từ `inventory`, `group_vars` hoặc khi gọi Role.
-- `vars/main.yml`: Chứa các biến nội bộ của Role có **độ ưu tiên rất cao**. Mục đích: Dùng để lưu trữ các hằng số nội bộ không muốn người dùng ghi đè tùy tiện từ bên ngoài.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng `defaults` và `vars` có độ ưu tiên giống nhau.
-- 1: Biết `defaults` ưu tiên thấp hơn `vars` nhưng giải thích sai mục đích áp dụng cho người dùng.
-- 2: Phân tích chính xác thứ tự ưu tiên và tư duy phân chia biến linh hoạt vs biến hằng số.
-- 3: Nêu đúng + cho ví dụ biến `http_port` đặt ở `defaults` và biến `internal_app_code` đặt ở `vars`.
-**Câu hỏi đào sâu:** Nếu một biến được định nghĩa ở CẢ `defaults/main.yml` VÀ `vars/main.yml`, giá trị nào sẽ được Ansible chọn sử dụng? *(Giá trị trong `vars/main.yml` sẽ thắng vì có độ ưu tiên cao hơn.)*
-
----
-
-### Câu 5 — Gọi Role và Ghi đè Biến trong Playbook 🔥
-**Hỏi:** Viết cú pháp YAML trong Playbook `site.yml` gọi Role `webserver` và ghi đè hai biến `webserver_port: 9090` và `webserver_title: "My Portal"`. *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-```yaml
-- name: Deploy Custom Webserver Role
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Viết cú pháp YAML trong Playbook <code>site.yml</code> gọi Role <code>webserver</code> và ghi đè hai biến <code>webserver_port: 9090</code> và <code>webserver_title: "My Portal"</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Viết cú pháp YAML trong Playbook <code>site.yml</code> gọi Role <code>webserver</code> và ghi đè hai biến <code>webserver_port: 9090</code> và <code>webserver_title: "My Portal"</code>. <i>(Liên quan QT 5.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <pre><code class="language-yaml">- name: Deploy Custom Webserver Role
   hosts: web
   become: true
   roles:
     - role: webserver
       vars:
         webserver_port: 9090
-        webserver_site_title: "My Portal"
-```
-**Tiêu chí chấm:**
-- 0: Không viết được cú pháp gọi Role.
-- 1: Viết được `roles: - webserver` nhưng sai cú pháp truyền biến `vars:`.
-- 2: Viết chuẩn xác cấu trúc YAML gọi Role truyền biến tùy chỉnh.
-- 3: Nêu đúng + giải thích cơ chế biến truyền qua `vars:` ghi đè biến trong `defaults/main.yml`.
-**Câu hỏi đào sâu:** Có thể gọi cùng một Role 2 lần trong 1 Playbook với 2 bộ biến khác nhau được không? *(Có thể, bằng cách định nghĩa 2 item trong danh sách `roles:` với bộ `vars:` riêng.)*
+        webserver_site_title: "My Portal"</code></pre>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không viết được cú pháp gọi Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Viết được <code>roles: - webserver</code> nhưng sai cú pháp truyền biến <code>vars:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Viết chuẩn xác cấu trúc YAML gọi Role truyền biến tùy chỉnh.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + giải thích cơ chế biến truyền qua <code>vars:</code> ghi đè biến trong <code>defaults/main.yml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Có thể gọi cùng một Role 2 lần trong 1 Playbook với 2 bộ biến khác nhau được không? <i>(Có thể, bằng cách định nghĩa 2 item trong danh sách <code>roles:</code> với bộ <code>vars:</code> riêng.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Trong Task của Role, khi gọi module <code>template: src=index.html.j2</code>, làm thế nào Ansible Engine biết chính xác vị trí tệp <code>index.html.j2</code> mà không cần đường dẫn tuyệt đối?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trong Task của Role, khi gọi module <code>template: src=index.html.j2</code>, làm thế nào Ansible Engine biết chính xác vị trí tệp <code>index.html.j2</code> mà không cần đường dẫn tuyệt đối? <i>(Liên quan QT 5.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Vì Ansible Engine có cơ chế tự động tìm kiếm đường dẫn tương đối (Implicit relative path search). Khi một Task nằm bên trong thư mục <code>roles/&lt;role_name&gt;/tasks/</code>, Ansible sẽ tự động ưu tiên tìm kiếm tệp template trong thư mục <code>roles/&lt;role_name&gt;/templates/</code> và tệp tĩnh trong <code>roles/&lt;role_name&gt;/files/</code> của chính Role đó.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu cơ chế tìm kiếm đường dẫn tương đối.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết không cần gõ đường dẫn dài nhưng không giải thích được quy tắc implicit search của Ansible Engine.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế nạp tài nguyên tương đối theo chuẩn cấu trúc Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cảnh báo tác hại của việc gõ đường dẫn tuyệt đối làm hỏng tính di động của Role.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu tệp <code>index.html.j2</code> không có trong <code>roles/webserver/templates/</code>, Ansible sẽ tìm tiếp ở đâu? <i>(Tìm ở thư mục <code>templates/</code> nằm cùng cấp với file Playbook chính.)</i></div>
+  </div>
+</details>
 
-### Câu 6 — Tham chiếu Đường dẫn Tương đối trong Role
-**Hỏi:** Trong Task của Role, khi gọi module `template: src=index.html.j2`, làm thế nào Ansible Engine biết chính xác vị trí tệp `index.html.j2` mà không cần đường dẫn tuyệt đối? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** Vì Ansible Engine có cơ chế tự động tìm kiếm đường dẫn tương đối (Implicit relative path search). Khi một Task nằm bên trong thư mục `roles/<role_name>/tasks/`, Ansible sẽ tự động ưu tiên tìm kiếm tệp template trong thư mục `roles/<role_name>/templates/` và tệp tĩnh trong `roles/<role_name>/files/` của chính Role đó.
-**Tiêu chí chấm:**
-- 0: Không hiểu cơ chế tìm kiếm đường dẫn tương đối.
-- 1: Biết không cần gõ đường dẫn dài nhưng không giải thích được quy tắc implicit search của Ansible Engine.
-- 2: Phân tích chính xác cơ chế nạp tài nguyên tương đối theo chuẩn cấu trúc Role.
-- 3: Nêu đúng + cảnh báo tác hại của việc gõ đường dẫn tuyệt đối làm hỏng tính di động của Role.
-**Câu hỏi đào sâu:** Nếu tệp `index.html.j2` không có trong `roles/webserver/templates/`, Ansible sẽ tìm tiếp ở đâu? *(Tìm ở thư mục `templates/` nằm cùng cấp với file Playbook chính.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Tệp <code>meta/main.yml</code> trong Role dùng để làm gì? Nêu ví dụ trường hợp sử dụng từ khóa <code>dependencies:</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tệp <code>meta/main.yml</code> trong Role dùng để làm gì? Nêu ví dụ trường hợp sử dụng từ khóa <code>dependencies:</code>. <i>(Liên quan QT 6.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Tệp <code>meta/main.yml</code> chứa các siêu dữ liệu của Role bao gồm thông tin tác giả, license, phiên bản Ansible hỗ trợ, và danh sách các Role phụ thuộc (<code>dependencies:</code>).<br>Ví dụ: Role <code>wordpress</code> khai báo <code>dependencies: - role: php</code> và <code>- role: mysql</code>. Khi Playbook gọi <code>role: wordpress</code>, Ansible Engine sẽ tự động thực thi <code>role: php</code> và <code>role: mysql</code> trước rồi mới chạy <code>wordpress</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tệp <code>meta/main.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>meta</code> chứa tác giả nhưng không giải thích được cơ chế tự động chạy Role phụ thuộc qua <code>dependencies</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò của <code>meta/main.yml</code> và cơ chế nạp dependencies.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa khai báo <code>dependencies</code> cho role WordPress.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Điều gì xảy ra nếu 2 Role cùng phụ thuộc vào 1 Role thứ 3? <i>(Ansible mặc định chỉ thi hành Role thứ 3 đúng 1 lần duy nhất để tránh trùng lặp.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Thế nào là một Ansible Role độc lập (Portable Role)? Cần tuân thủ nguyên tắc thiết kế nào để một Role có thể mang đi sử dụng ở bất kỳ dự án nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Thế nào là một Ansible Role độc lập (Portable Role)? Cần tuân thủ nguyên tắc thiết kế nào để một Role có thể mang đi sử dụng ở bất kỳ dự án nào? <i>(Liên quan QT 6.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Một Portable Role là Role có tính đóng gói hoàn chỉnh, có thể mang sang bất kỳ hệ thống hay dự án Ansible nào chạy mà <b>không bị văng lỗi thiếu biến hay thiếu phụ thuộc</b>.</div>
+    <div style="margin: 0.5rem 0;">Nguyên tắc thiết kế:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. Mọi biến tùy chọn được gọi trong Role phải có giá trị mặc định fallback định nghĩa trong <code>defaults/main.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. Tuyệt đối không tham chiếu đến các biến toàn cục chỉ tồn tại ở <code>group_vars</code> của dự án gốc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. Không gõ cứng đường dẫn đĩa cứng tuyệt đối.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Portable Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết khái niệm di động nhưng không nêu được các nguyên tắc thiết kế phòng tránh lỗi undefined.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác các nguyên tắc đóng gói độc lập và giá trị mặc định trong <code>defaults</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 nguyên tắc + cho ví dụ thực tế về việc chia sẻ Role lên Ansible Galaxy.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm thế nào để kiểm thử một Role xem nó có thực sự độc lập hay không? <i>(Viết kịch bản kiểm thử đơn giản trong thư mục <code>tests/test.yml</code> của chính Role đó.)</i></div>
+  </div>
+</details>
 
-### Câu 7 — Siêu dữ liệu Meta và Dependencies trong Role
-**Hỏi:** Tệp `meta/main.yml` trong Role dùng để làm gì? Nêu ví dụ trường hợp sử dụng từ khóa `dependencies:`. *(Liên quan QT 6.1)*
-**Đáp án chuẩn:** Tệp `meta/main.yml` chứa các siêu dữ liệu của Role bao gồm thông tin tác giả, license, phiên bản Ansible hỗ trợ, và danh sách các Role phụ thuộc (`dependencies:`).
-Ví dụ: Role `wordpress` khai báo `dependencies: - role: php` và `- role: mysql`. Khi Playbook gọi `role: wordpress`, Ansible Engine sẽ tự động thực thi `role: php` và `role: mysql` trước rồi mới chạy `wordpress`.
-**Tiêu chí chấm:**
-- 0: Không biết tệp `meta/main.yml`.
-- 1: Biết `meta` chứa tác giả nhưng không giải thích được cơ chế tự động chạy Role phụ thuộc qua `dependencies`.
-- 2: Phân tích chính xác vai trò của `meta/main.yml` và cơ chế nạp dependencies.
-- 3: Nêu đúng + viết đoạn YAML minh họa khai báo `dependencies` cho role WordPress.
-**Câu hỏi đào sâu:** Điều gì xảy ra nếu 2 Role cùng phụ thuộc vào 1 Role thứ 3? *(Ansible mặc định chỉ thi hành Role thứ 3 đúng 1 lần duy nhất để tránh trùng lặp.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng Ansible Roles để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng Ansible Roles để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site-roles.yml</code>: Các Task bên trong Role thực thi và chép file báo <code>changed &gt; 0</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site-roles.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task trong Role đều báo <code>ok</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /var/www/html/index.html</code> kiểm tra nội dung file thực sự được render đúng biến từ Role.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh <code>docker exec cat</code> kiểm tra kết quả render từ Role.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Việc đóng gói Task vào trong Role có làm thay đổi cơ chế đánh giá Idempotency của Ansible Engine không? <i>(Hoàn toàn không, các task trong Role vẫn được so sánh checksum SHA1 như task thông thường.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Ansible Engine tìm kiếm các Role theo các thứ tự đường dẫn mặc định nào? Nếu đặt thư mục <code>roles/</code> sai vị trí, làm thế nào để cấu hình lại trong <code>ansible.cfg</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Ansible Engine tìm kiếm các Role theo các thứ tự đường dẫn mặc định nào? Nếu đặt thư mục <code>roles/</code> sai vị trí, làm thế nào để cấu hình lại trong <code>ansible.cfg</code>?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.5rem 0;">Thứ tự tìm kiếm Role mặc định:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. Thư mục <code>roles/</code> nằm cùng cấp ngang hàng với file Playbook chính.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. Thư mục <code>~/.ansible/roles</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. Thư mục hệ thống <code>/etc/ansible/roles</code>.</div>
+    <div style="margin: 0.5rem 0;">Nếu muốn đặt thư mục Role ở vị trí khác (như <code>shared_roles/</code>), ta cấu hình thuộc tính <code>roles_path</code> trong tệp <code>ansible.cfg</code>:</div>
+    <pre><code class="language-ini">[defaults]
+roles_path = ./shared_roles:/etc/ansible/roles</code></pre>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết vị trí tìm kiếm mặc định của thư mục <code>roles/</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>roles/</code> nằm cùng cấp với Playbook nhưng không biết cấu hình <code>roles_path</code> trong <code>ansible.cfg</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác thứ tự ưu tiên đường dẫn tìm kiếm Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã cấu hình <code>roles_path</code> chuẩn trong <code>ansible.cfg</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Dấu hai chấm <code>:</code> trong dòng <code>roles_path</code> của <code>ansible.cfg</code> có ý nghĩa gì? <i>(Dùng để phân cách danh sách nhiều đường dẫn tìm kiếm Role khác nhau theo thứ tự ưu tiên từ trái qua phải.)</i></div>
+  </div>
+</details>
 
-### Câu 8 — Thiết kế Role Độc lập và Di động (Portable Role) ★★★
-**Hỏi:** Thế nào là một Ansible Role độc lập (Portable Role)? Cần tuân thủ nguyên tắc thiết kế nào để một Role có thể mang đi sử dụng ở bất kỳ dự án nào? *(Liên quan QT 6.2)*
-**Đáp án chuẩn:** Một Portable Role là Role có tính đóng gói hoàn chỉnh, có thể mang sang bất kỳ hệ thống hay dự án Ansible nào chạy mà **không bị văng lỗi thiếu biến hay thiếu phụ thuộc**.
-Nguyên tắc thiết kế:
-1. Mọi biến tùy chọn được gọi trong Role phải có giá trị mặc định fallback định nghĩa trong `defaults/main.yml`.
-2. Tuyệt đối không tham chiếu đến các biến toàn cục chỉ tồn tại ở `group_vars` của dự án gốc.
-3. Không gõ cứng đường dẫn đĩa cứng tuyệt đối.
-**Tiêu chí chấm:**
-- 0: Không hiểu khái niệm Portable Role.
-- 1: Biết khái niệm di động nhưng không nêu được các nguyên tắc thiết kế phòng tránh lỗi undefined.
-- 2: Phân tích chính xác các nguyên tắc đóng gói độc lập và giá trị mặc định trong `defaults`.
-- 3: Trình bày xuất sắc 3 nguyên tắc + cho ví dụ thực tế về việc chia sẻ Role lên Ansible Galaxy.
-**Câu hỏi đào sâu:** Làm thế nào để kiểm thử một Role xem nó có thực sự độc lập hay không? *(Viết kịch bản kiểm thử đơn giản trong thư mục `tests/test.yml` của chính Role đó.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Tại sao việc đặt tên biến trong <code>defaults/main.yml</code> của Role bắt buộc phải có tiền tố tên Role (Role Prefix Namespacing)? Cho ví dụ.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao việc đặt tên biến trong <code>defaults/main.yml</code> của Role bắt buộc phải có tiền tố tên Role (Role Prefix Namespacing)? Cho ví dụ.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Vì Ansible lưu trữ tất cả các biến vào một không gian biến toàn cục (Global Variable Namespace). Nếu Role <code>webserver</code> đặt tên biến chung chung <code>port: 80</code> và Role <code>database</code> cũng đặt <code>port: 5432</code>, hai biến này sẽ ghi đè lẫn nhau gây ra lỗi cấu hình nghiêm trọng.<br>Giải pháp (Role Prefix Namespacing): Bắt buộc thêm tiền tố tên Role vào trước mọi biến: <code>webserver_port: 80</code> và <code>dbserver_port: 5432</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết kỹ thuật Role Prefix Namespacing.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết quy tắc đặt tên biến có tiền tố nhưng không giải thích được nguy cơ xung đột không gian biến toàn cục.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế Global Variable Namespace và tác hại ghi đè biến chéo giữa các Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cho ví dụ chuẩn hóa tên biến cho 2 Role <code>nginx</code> và <code>postgresql</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Kỹ thuật này áp dụng cho loại biến nào trong Role? <i>(Áp dụng cho TOÀN BỘ các biến trong cả defaults, vars, và facts do Role tạo ra.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng Roles 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng Ansible Roles để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site-roles.yml`: Các Task bên trong Role thực thi và chép file báo `changed > 0`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site-roles.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task trong Role đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /var/www/html/index.html` kiểm tra nội dung file thực sự được render đúng biến từ Role.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.
-- 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh `docker exec cat` kiểm tra kết quả render từ Role.
-**Câu hỏi đào sâu:** Việc đóng gói Task vào trong Role có làm thay đổi cơ chế đánh giá Idempotency của Ansible Engine không? *(Hoàn toàn không, các task trong Role vẫn được so sánh checksum SHA1 như task thông thường.)*
-
----
-
-### Câu 10 — Vị trí Đặt Thư mục `roles/` trong Dự án ★★★
-**Hỏi:** Ansible Engine tìm kiếm các Role theo các thứ tự đường dẫn mặc định nào? Nếu đặt thư mục `roles/` sai vị trí, làm thế nào để cấu hình lại trong `ansible.cfg`?
-**Đáp án chuẩn:**
-Thứ tự tìm kiếm Role mặc định:
-1. Thư mục `roles/` nằm cùng cấp ngang hàng với file Playbook chính.
-2. Thư mục `~/.ansible/roles`.
-3. Thư mục hệ thống `/etc/ansible/roles`.
-Nếu muốn đặt thư mục Role ở vị trí khác (như `shared_roles/`), ta cấu hình thuộc tính `roles_path` trong tệp `ansible.cfg`:
-```ini
-[defaults]
-roles_path = ./shared_roles:/etc/ansible/roles
-```
-**Tiêu chí chấm:**
-- 0: Không biết vị trí tìm kiếm mặc định của thư mục `roles/`.
-- 1: Biết `roles/` nằm cùng cấp với Playbook nhưng không biết cấu hình `roles_path` trong `ansible.cfg`.
-- 2: Phân tích chính xác thứ tự ưu tiên đường dẫn tìm kiếm Role.
-- 3: Nêu đúng + viết đoạn mã cấu hình `roles_path` chuẩn trong `ansible.cfg`.
-**Câu hỏi đào sâu:** Dấu hai chấm `:` trong dòng `roles_path` của `ansible.cfg` có ý nghĩa gì? *(Dùng để phân cách danh sách nhiều đường dẫn tìm kiếm Role khác nhau theo thứ tự ưu tiên từ trái qua phải.)*
-
----
-
-### Câu 11 — Quản lý Tên Biến trong Role để Tránh Xung đột (Namespacing) ★★★
-**Hỏi:** Tại sao việc đặt tên biến trong `defaults/main.yml` của Role bắt buộc phải có tiền tố tên Role (Role Prefix Namespacing)? Cho ví dụ.
-**Đáp án chuẩn:** Vì Ansible lưu trữ tất cả các biến vào một không gian biến toàn cục (Global Variable Namespace). Nếu Role `webserver` đặt tên biến chung chung `port: 80` và Role `database` cũng đặt `port: 5432`, hai biến này sẽ ghi đè lẫn nhau gây ra lỗi cấu hình nghiêm trọng.
-Giải pháp (Role Prefix Namespacing): Bắt buộc thêm tiền tố tên Role vào trước mọi biến: `webserver_port: 80` và `dbserver_port: 5432`.
-**Tiêu chí chấm:**
-- 0: Không biết kỹ thuật Role Prefix Namespacing.
-- 1: Biết quy tắc đặt tên biến có tiền tố nhưng không giải thích được nguy cơ xung đột không gian biến toàn cục.
-- 2: Phân tích chính xác cơ chế Global Variable Namespace và tác hại ghi đè biến chéo giữa các Role.
-- 3: Nêu đúng + cho ví dụ chuẩn hóa tên biến cho 2 Role `nginx` và `postgresql`.
-**Câu hỏi đào sâu:** Kỹ thuật này áp dụng cho loại biến nào trong Role? *(Áp dụng cho TOÀN BỘ các biến trong cả defaults, vars, và facts do Role tạo ra.)*
-
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng khi Xây dựng Ansible Roles ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên xây dựng Ansible Roles chuyên nghiệp, chuẩn đóng gói và đạt Idempotency 100%.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Luôn dùng `ansible-galaxy role init` để tạo tự động cấu trúc Role chuẩn.
-2. **Quy tắc 2:** Phân biệt đúng `defaults/` (biến tùy chỉnh cho phép đè) và `vars/` (hằng số nội bộ).
-3. **Quy tắc 3:** Thêm tiền tố tên Role cho mọi tên biến để tránh xung đột Global Namespace.
-4. **Quy tắc 4:** Sử dụng tham chiếu đường dẫn tương đối cho tệp trong `templates/` và `files/`.
-5. **Quy tắc 5:** Đảm bảo Role độc lập (Portable Role) và kiểm thử Lần 2 đạt `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế mô-đun hạ tầng chuyên nghiệp.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào giúp ngăn ngừa lỗi biến bị ghi đè nhầm khi gọi nhiều Role? *(Quy tắc 3: Thêm tiền tố tên Role cho mọi tên biến.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng khi Xây dựng Ansible Roles.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên xây dựng Ansible Roles chuyên nghiệp, chuẩn đóng gói và đạt Idempotency 100%.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Luôn dùng <code>ansible-galaxy role init</code> để tạo tự động cấu trúc Role chuẩn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Phân biệt đúng <code>defaults/</code> (biến tùy chỉnh cho phép đè) và <code>vars/</code> (hằng số nội bộ).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Thêm tiền tố tên Role cho mọi tên biến để tránh xung đột Global Namespace.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Sử dụng tham chiếu đường dẫn tương đối cho tệp trong <code>templates/</code> và <code>files/</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Đảm bảo Role độc lập (Portable Role) và kiểm thử Lần 2 đạt <code>changed=0</code> qua <code>docker exec</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế mô-đun hạ tầng chuyên nghiệp.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào giúp ngăn ngừa lỗi biến bị ghi đè nhầm khi gọi nhiều Role? <i>(Quy tắc 3: Thêm tiền tố tên Role cho mọi tên biến.)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -1049,4 +1179,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm cấu trúc mã nguồn
 1. **Nghiên cứu trước 1:** Phân biệt sự khác nhau giữa việc nạp Role động `include_role` (Dynamic Re-use) và nạp Role tĩnh `import_role` (Static Re-use)?
 2. **Nghiên cứu trước 2:** Khi nào thì nên dùng `include_role` bên trong một vòng lặp `loop:`?
 3. **Nghiên cứu trước 3:** Làm thế nào để truyền danh sách biến phức tạp khi gọi `include_role` trong Task?
+
+---
+
+> [!TIP]
+> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 15: Kiến Trúc Ansible Roles Nâng Cao: include_role, import_role, role dependencies & Dynamic Reuse](ansible-15-15-roles-advanced.html).
+
 {% endraw %}

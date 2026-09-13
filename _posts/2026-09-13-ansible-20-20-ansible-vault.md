@@ -96,6 +96,15 @@ graph TD
     
     F --> G["Gửi cấu hình bảo mật đã render đến Máy đích (target1)"]
     G --> H["Lượt chạy Lần 2 đạt changed=0 (Chuẩn Idempotency)"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#10b981,stroke-width:2px
+    style C fill:none,stroke:#06b6d4,stroke-width:2px
+    style D fill:none,stroke:#f43f5e,stroke-width:2px
+    style E fill:none,stroke:#8b5cf6,stroke-width:2px
+    style F fill:none,stroke:#eab308,stroke-width:2px
+    style G fill:none,stroke:#3b82f6,stroke-width:2px
+    style H fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Ansible Vault là tính năng bảo mật tích hợp sẵn trong Ansible Core, sử dụng thuật toán mã hóa đối xứng AES-256 để bảo vệ bí mật tuyệt đối cho tệp biến hoặc chuỗi biến nhạy cảm.
@@ -331,8 +340,20 @@ flowchart TD
     G --> H["LƯỢT CHẠY LẦN 2"]
     H --> I{"PLAY RECAP Lần 2: changed=0?"}
     
-    I -- Có --> J["ĐẠT: Secure Vault Playbook Idempotent 100%"]
-    I -- Không --> K["LỖI: Rà soát lại task nạp biến Vault"]
+    I -->|"Có"| J["ĐẠT: Secure Vault Playbook Idempotent 100%"]
+    I -->|"Không"| K["LỖI: Rà soát lại task nạp biến Vault"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#06b6d4,stroke-width:2px
+    style D fill:none,stroke:#8b5cf6,stroke-width:2px
+    style E fill:none,stroke:#10b981,stroke-width:2px
+    style F fill:none,stroke:#f43f5e,stroke-width:2px
+    style G fill:none,stroke:#3b82f6,stroke-width:2px
+    style H fill:none,stroke:#6366f1,stroke-width:2px
+    style I fill:none,stroke:#f59e0b,stroke-width:2px
+    style J fill:none,stroke:#10b981,stroke-width:2px
+    style K fill:none,stroke:#f43f5e,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -464,12 +485,21 @@ graph TD
     
     PB -->|"7. Gửi cấu hình bảo mật đã render"| T1["Target Container 1 (target1)"]
     
-    T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=4, changed=2"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook với Vault"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#6366f1,stroke-width:2px
+    style CFG fill:none,stroke:#06b6d4,stroke-width:2px
+    style PASS fill:none,stroke:#f43f5e,stroke-width:2px
+    style GIT fill:none,stroke:#f59e0b,stroke-width:2px
+    style VFILE fill:none,stroke:#8b5cf6,stroke-width:2px
+    style PB fill:none,stroke:#3b82f6,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
 ---
@@ -792,192 +822,291 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q01</span><span class="qa-question-text">Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository?</span></summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ansible Vault là tính năng bảo mật tích hợp sẵn trong Ansible Core, sử dụng thuật toán mã hóa đối xứng AES-256 để bảo vệ thông tin nhạy cảm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Yêu cầu sinh tử: Trong dự án IaC, Playbook chứa rất nhiều thông tin bí mật (mật khẩu DB, SSH keys, API tokens). Nếu không dùng Vault mã hóa, lưu plaintext rồi push lên Git public sẽ dẫn tới nguy cơ lộ bí mật Doanh nghiệp, bị tin tặc tấn công chiếm đoạt hệ thống.</div>
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Ansible Vault là gì? Tại sao việc sử dụng Ansible Vault lại là yêu cầu sinh tử khi quản lý mã nguồn tự động hóa trên Git repository? <i>(Liên quan QT 4.1)</i></p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Ansible Vault</b> là tính năng bảo mật tích hợp sẵn trong Ansible Core, sử dụng thuật toán mã hóa đối xứng AES-256 để bảo vệ thông tin nhạy cảm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Yêu cầu sinh tử:</b> Trong dự án IaC, Playbook chứa rất nhiều thông tin bí mật (mật khẩu DB, SSH keys, API tokens). Nếu không dùng Vault mã hóa, lưu plaintext rồi push lên Git public sẽ dẫn tới nguy cơ lộ bí mật Doanh nghiệp, bị tin tặc tấn công chiếm đoạt hệ thống.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết Ansible Vault.</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Vault để giấu mật khẩu nhưng không nêu được thuật toán AES-256 và nguy cơ rò rỉ secret trên Git.</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế mã hóa AES-256 tích hợp giúp bảo vệ thông tin nhạy cảm trên Git repository.</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa đoạn header mã hóa <code>$ANSIBLE_VAULT;1.1;AES256</code> trên terminal.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Thuật toán mã hóa đối xứng AES-256 sử dụng mấy khóa để mã hóa và giải mã? *(Sử dụng đúng 1 khóa bí mật chung - Secret Key / Passphrase.)*
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Thuật toán mã hóa đối xứng AES-256 sử dụng mấy khóa để mã hóa và giải mã? <i>(Sử dụng đúng 1 khóa bí mật chung - Secret Key / Passphrase.)</i></p>
 </div>
 </details>
 
 ---
 
-### Câu 2 — Bộ Lệnh CLI Quản lý Vault 🔥
-**Hỏi:** Nêu công dụng của các câu lệnh CLI Ansible Vault sau: `create`, `encrypt`, `decrypt`, `view`, `edit`, và `rekey`. *(Liên quan QT 4.2)*
-**Đáp án chuẩn:**
-- `ansible-vault create`: Tạo một tệp mới và mã hóa ngay lập tức.
-- `ansible-vault encrypt`: Mã hóa một tệp văn bản plaintext sẵn có thành dạng ciphertext.
-- `ansible-vault decrypt`: Giải mã vĩnh viễn tệp Vault trở lại dạng plaintext trên đĩa.
-- `ansible-vault view`: Xem trực tiếp nội dung giải mã trên màn hình terminal mà KHÔNG giải mã file trên đĩa.
-- `ansible-vault edit`: Mở tệp mã hóa ra chỉnh sửa (tự động giải mã tạm thời và tự động mã hóa lại khi lưu).
-- `ansible-vault rekey`: Thay đổi mật khẩu giải mã Vault sang một mật khẩu mới.
-**Tiêu chí chấm:**
-- 0: Không biết các lệnh CLI của `ansible-vault`.
-- 1: Biết 1-2 lệnh cơ bản nhưng nhầm lẫn giữa `view` và `decrypt`.
-- 2: Phân tích chính xác công dụng của cả 6 câu lệnh CLI quản lý Vault.
-- 3: Nêu đúng + minh họa câu lệnh thực thi `ansible-vault edit vars/vault.yml`.
-**Câu hỏi đào sâu:** Tại sao khi cần sửa file mã hóa, ta nên dùng `ansible-vault edit` thay vì `ansible-vault decrypt` rồi gõ `vim`? *(Vì `edit` giúp chỉnh sửa và tự mã hóa lại ngay trong RAM, tránh rủi ro quên không mã hóa lại làm lộ file trần trên đĩa.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q02</span><span class="qa-question-text">Nêu công dụng của các câu lệnh CLI Ansible Vault sau: create, encrypt, decrypt, view, edit, và rekey.</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Nêu công dụng của các câu lệnh CLI Ansible Vault sau: <code>create</code>, <code>encrypt</code>, <code>decrypt</code>, <code>view</code>, <code>edit</code>, và <code>rekey</code>. <i>(Liên quan QT 4.2)</i></p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ansible-vault create</code>: Tạo một tệp mới và mã hóa ngay lập tức.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ansible-vault encrypt</code>: Mã hóa một tệp văn bản plaintext sẵn có thành dạng ciphertext.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ansible-vault decrypt</code>: Giải mã vĩnh viễn tệp Vault trở lại dạng plaintext trên đĩa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ansible-vault view</code>: Xem trực tiếp nội dung giải mã trên màn hình terminal mà KHÔNG giải mã file trên đĩa.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ansible-vault edit</code>: Mở tệp mã hóa ra chỉnh sửa (tự động giải mã tạm thời và tự động mã hóa lại khi lưu).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ansible-vault rekey</code>: Thay đổi mật khẩu giải mã Vault sang một mật khẩu mới.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết các lệnh CLI của <code>ansible-vault</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết 1-2 lệnh cơ bản nhưng nhầm lẫn giữa <code>view</code> và <code>decrypt</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác công dụng của cả 6 câu lệnh CLI quản lý Vault.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa câu lệnh thực thi <code>ansible-vault edit vars/vault.yml</code>.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao khi cần sửa file mã hóa, ta nên dùng <code>ansible-vault edit</code> thay vì <code>ansible-vault decrypt</code> rồi gõ <code>vim</code>? <i>(Vì <code>edit</code> giúp chỉnh sửa và tự mã hóa lại ngay trong RAM, tránh rủi ro quên không mã hóa lại làm lộ file trần trên đĩa.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 3 — Mã hóa Chuỗi Biến Đơn lẻ `encrypt_string` 🔥
-**Hỏi:** Trình bày tác dụng của lệnh `ansible-vault encrypt_string`. Khi nào nên dùng `encrypt_string` thay vì mã hóa toàn bộ tệp biến? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-- Tác dụng: Dùng để mã hóa một chuỗi biến đơn lẻ (Inline Secret) và in ra định dạng YAML bọc trong khối `!vault |` để dán trực tiếp vào file biến.
-- Khi nên dùng: Khi tệp `group_vars/web.yml` chứa hàng chục biến cấu hình bình thường (như `port`, `domain`) và chỉ có riêng 1 biến mật khẩu `db_password` là nhạy cảm. Mã hóa chuỗi đơn lẻ giúp đồng đội vẫn đọc hiểu được toàn bộ file YAML mà chỉ có riêng chuỗi mật khẩu là bị ẩn.
-**Tiêu chí chấm:**
-- 0: Không biết lệnh `encrypt_string`.
-- 1: Biết `encrypt_string` để mã hóa chuỗi nhưng không giải thích được ưu điểm giữ tính đọc hiểu cho file YAML.
-- 2: Phân tích chính xác cơ chế Inline Vault Encryption và trường hợp áp dụng thực tế.
-- 3: Nêu đúng + viết đoạn mã YAML minh họa chuỗi bọc trong từ khóa `!vault |`.
-**Câu hỏi đào sâu:** Viết lệnh CLI mã hóa chuỗi `'MySecret123'` gán cho biến `db_pass`. *(Chạy `ansible-vault encrypt_string 'MySecret123' --name 'db_pass'`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q03</span><span class="qa-question-text">Trình bày tác dụng của lệnh ansible-vault encrypt_string. Khi nào nên dùng encrypt_string thay vì mã hóa toàn bộ tệp biến?</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Trình bày tác dụng của lệnh <code>ansible-vault encrypt_string</code>. Khi nào nên dùng <code>encrypt_string</code> thay vì mã hóa toàn bộ tệp biến? <i>(Liên quan QT 4.3)</i></p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tác dụng:</b> Dùng để mã hóa một chuỗi biến đơn lẻ (Inline Secret) và in ra định dạng YAML bọc trong khối <code>!vault |</code> để dán trực tiếp vào file biến.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Khi nên dùng:</b> Khi tệp <code>group_vars/web.yml</code> chứa hàng chục biến cấu hình bình thường (như <code>port</code>, <code>domain</code>) và chỉ có riêng 1 biến mật khẩu <code>db_password</code> là nhạy cảm. Mã hóa chuỗi đơn lẻ giúp đồng đội vẫn đọc hiểu được toàn bộ file YAML mà chỉ có riêng chuỗi mật khẩu là bị ẩn.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết lệnh <code>encrypt_string</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>encrypt_string</code> để mã hóa chuỗi nhưng không giải thích được ưu điểm giữ tính đọc hiểu cho file YAML.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế Inline Vault Encryption và trường hợp áp dụng thực tế.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã YAML minh họa chuỗi bọc trong từ khóa <code>!vault |</code>.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Viết lệnh CLI mã hóa chuỗi <code>'MySecret123'</code> gán cho biến <code>db_pass</code>. <i>(Chạy <code>ansible-vault encrypt_string 'MySecret123' --name 'db_pass'</code>.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 4 — Tệp Mật khẩu `.vault_pass` và `ansible.cfg` 🔥
-**Hỏi:** Nêu tác dụng của tệp mật khẩu local `.vault_pass` và thuộc tính `vault_password_file` trong `ansible.cfg`. Phân quyền Linux an toàn cho tệp `.vault_pass` phải là bao nhiêu? *(Liên quan QT 5.1)*
-**Đáp án chuẩn:**
-- Tác dụng: Giúp tự động hóa quá trình giải mã Vault khi thi hành Playbook, khiến người dùng hoặc hệ thống CI/CD không phải gõ mật khẩu từ bàn phím ở từng lần chạy lệnh `ansible-playbook`.
-- Phân quyền Linux an toàn: Phải là **`chmod 0600`** (chỉ có duy nhất owner được đọc và ghi, ngắt toàn bộ quyền truy cập của Group và Others).
-- Cấu hình `ansible.cfg`: `vault_password_file = ./.vault_pass` (trong mục `[defaults]`).
-**Tiêu chí chấm:**
-- 0: Không biết tệp `.vault_pass` và cấu hình `ansible.cfg`.
-- 1: Biết file `.vault_pass` nhưng không nhớ phân quyền `0600` và cấu hình `ansible.cfg`.
-- 2: Phân tích chính xác vai trò tự động hóa giải mã và tầm quan trọng của phân quyền `0600`.
-- 3: Nêu đúng + dán đoạn cấu hình `ansible.cfg` chứa `vault_password_file = ./.vault_pass`.
-**Câu hỏi đào sâu:** Chuyện gì xảy ra nếu để tệp `.vault_pass` ở quyền `0777` trên server dùng chung? *(Bất kỳ user nào trên server cũng đọc được tệp để giải mã toàn bộ thông tin nhạy cảm.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q04</span><span class="qa-question-text">Nêu tác dụng của tệp mật khẩu local .vault_pass và thuộc tính vault_password_file trong ansible.cfg. Phân quyền Linux an toàn là bao nhiêu?</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Nêu tác dụng của tệp mật khẩu local <code>.vault_pass</code> và thuộc tính <code>vault_password_file</code> trong <code>ansible.cfg</code>. Phân quyền Linux an toàn cho tệp <code>.vault_pass</code> phải là bao nhiêu? <i>(Liên quan QT 5.1)</i></p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tác dụng:</b> Giúp tự động hóa quá trình giải mã Vault khi thi hành Playbook, khiến người dùng hoặc hệ thống CI/CD không phải gõ mật khẩu từ bàn phím ở từng lần chạy lệnh <code>ansible-playbook</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Phân quyền Linux an toàn:</b> Phải là <b><code>chmod 0600</code></b> (chỉ có duy nhất owner được đọc và ghi, ngắt toàn bộ quyền truy cập của Group và Others).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Cấu hình <code>ansible.cfg</code>:</b> <code>vault_password_file = ./.vault_pass</code> (trong mục <code>[defaults]</code>).</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tệp <code>.vault_pass</code> và cấu hình <code>ansible.cfg</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết file <code>.vault_pass</code> nhưng không nhớ phân quyền <code>0600</code> và cấu hình <code>ansible.cfg</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò tự động hóa giải mã và tầm quan trọng của phân quyền <code>0600</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + dán đoạn cấu hình <code>ansible.cfg</code> chứa <code>vault_password_file = ./.vault_pass</code>.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Chuyện gì xảy ra nếu để tệp <code>.vault_pass</code> ở quyền <code>0777</code> trên server dùng chung? <i>(Bất kỳ user nào trên server cũng đọc được tệp để giải mã toàn bộ thông tin nhạy cảm.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 5 — Quản lý Mật khẩu với Tệp `.gitignore` 🔥
-**Hỏi:** Tại sao việc khai báo tệp `.vault_pass` vào tệp cấu hình `.gitignore` lại là quy tắc an toàn sinh tử? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:**
-Vì tệp `.vault_pass` chứa mật khẩu giải mã tĩnh của Ansible Vault. Nếu mã hóa file `vars/vault.yml` rất cẩn thận bằng AES-256 nhưng lại quên không cho `.vault_pass` vào `.gitignore` rồi push cả 2 file lên Git repository public, kẻ xấu chỉ cần tải file `.vault_pass` về là lập tức giải mã được toàn bộ bí mật của Doanh nghiệp.
-**Tiêu chí chấm:**
-- 0: Không biết mối liên hệ giữa `.vault_pass` và `.gitignore`.
-- 1: Biết thêm vào `.gitignore` nhưng không giải thích được hậu quả triệt tiêu tính bảo mật của Vault.
-- 2: Phân tích chính xác nguyên tắc an toàn sinh tử bảo vệ kho mã nguồn Git.
-- 3: Nêu đúng + minh họa câu lệnh `echo ".vault_pass" >> .gitignore` và kiểm tra bằng `git status`.
-**Câu hỏi đào sâu:** Làm thế nào để kiểm tra xem một file đã bị Git bỏ qua qua tệp `.gitignore` chưa? *(Chạy lệnh `git check-ignore -v .vault_pass`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q05</span><span class="qa-question-text">Tại sao việc khai báo tệp .vault_pass vào tệp cấu hình .gitignore lại là quy tắc an toàn sinh tử?</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Tại sao việc khai báo tệp <code>.vault_pass</code> vào tệp cấu hình <code>.gitignore</code> lại là quy tắc an toàn sinh tử? <i>(Liên quan QT 5.3)</i></p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì tệp <code>.vault_pass</code> chứa mật khẩu giải mã tĩnh của Ansible Vault. Nếu mã hóa file <code>vars/vault.yml</code> rất cẩn thận bằng AES-256 nhưng lại quên không cho <code>.vault_pass</code> vào <code>.gitignore</code> rồi push cả 2 file lên Git repository public, kẻ xấu chỉ cần tải file <code>.vault_pass</code> về là lập tức giải mã được toàn bộ bí mật của Doanh nghiệp.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết mối liên hệ giữa <code>.vault_pass</code> và <code>.gitignore</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết thêm vào <code>.gitignore</code> nhưng không giải thích được hậu quả triệt tiêu tính bảo mật của Vault.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác nguyên tắc an toàn sinh tử bảo vệ kho mã nguồn Git.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa câu lệnh <code>echo ".vault_pass" &gt;&gt; .gitignore</code> và kiểm tra bằng <code>git status</code>.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Làm thế nào để kiểm tra xem một file đã bị Git bỏ qua qua tệp <code>.gitignore</code> chưa? <i>(Chạy lệnh <code>git check-ignore -v .vault_pass</code>.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 6 — Quản lý Nhiều Mật khẩu Vault với `--vault-id`
-**Hỏi:** Cờ tham số `--vault-id` dùng để làm gì? Trình bày kịch bản áp dụng `--vault-id` khi quản lý dữ liệu nhạy cảm cho 2 môi trường Dev và Prod. *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-- Tác dụng: Cho phép quản lý nhiều mật khẩu Vault khác nhau và gắn nhãn phân loại (Label Identity) cho từng môi trường hoặc từng phân quyền đội nhóm.
-- Kịch bản áp dụng:
-  + Môi trường Dev: Mã hóa với nhãn `dev@.vault_dev` (đội Dev nắm tệp `.vault_dev`).
-  + Môi trường Prod: Mã hóa với nhãn `prod@.vault_prod` (chỉ đội SysAdmin nắm tệp `.vault_prod`).
-  + Khi chạy Playbook Prod: `ansible-playbook --vault-id prod@.vault_prod site-vault.yml`.
-**Tiêu chí chấm:**
-- 0: Không biết cờ `--vault-id`.
-- 1: Biết `--vault-id` nhưng không nêu được kịch bản phân quyền giữa Dev và SysAdmin/Prod.
-- 2: Phân tích chính xác cơ chế gán nhãn Vault ID và kịch bản phân quyền đa môi trường.
-- 3: Nêu đúng + viết câu lệnh CLI thực thi mã hóa và chạy Playbook với `--vault-id`.
-**Câu hỏi đào sâu:** Có thể truyền nhiều cờ `--vault-id` trong 1 câu lệnh `ansible-playbook` không? *(Có thể, ví dụ `--vault-id dev@.vault_dev --vault-id prod@.vault_prod`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q06</span><span class="qa-question-text">Cờ tham số --vault-id dùng để làm gì? Trình bày kịch bản áp dụng --vault-id khi quản lý dữ liệu nhạy cảm cho 2 môi trường Dev và Prod.</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Cờ tham số <code>--vault-id</code> dùng để làm gì? Trình bày kịch bản áp dụng <code>--vault-id</code> khi quản lý dữ liệu nhạy cảm cho 2 môi trường Dev và Prod. <i>(Liên quan QT 5.2)</i></p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tác dụng:</b> Cho phép quản lý nhiều mật khẩu Vault khác nhau và gắn nhãn phân loại (Label Identity) cho từng môi trường hoặc từng phân quyền đội nhóm.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Kịch bản áp dụng:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 2rem; border-left: 2px solid var(--accent-primary);">+ Môi trường Dev: Mã hóa với nhãn <code>dev@.vault_dev</code> (đội Dev nắm tệp <code>.vault_dev</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 2rem; border-left: 2px solid var(--accent-primary);">+ Môi trường Prod: Mã hóa với nhãn <code>prod@.vault_prod</code> (chỉ đội SysAdmin nắm tệp <code>.vault_prod</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 2rem; border-left: 2px solid var(--accent-primary);">+ Khi chạy Playbook Prod: <code>ansible-playbook --vault-id prod@.vault_prod site-vault.yml</code>.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cờ <code>--vault-id</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>--vault-id</code> nhưng không nêu được kịch bản phân quyền giữa Dev và SysAdmin/Prod.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế gán nhãn Vault ID và kịch bản phân quyền đa môi trường.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết câu lệnh CLI thực thi mã hóa và chạy Playbook với <code>--vault-id</code>.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Có thể truyền nhiều cờ <code>--vault-id</code> trong 1 câu lệnh <code>ansible-playbook</code> không? <i>(Có thể, ví dụ <code>--vault-id dev@.vault_dev --vault-id prod@.vault_prod</code>.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 7 — Tự động hóa Giải mã Vault trong Pipeline CI/CD
-**Hỏi:** Làm thế nào để tự động hóa quá trình giải mã Ansible Vault trong các pipeline CI/CD (như Gitlab CI, Github Actions) mà không cần gõ mật khẩu từ bàn phím và không lộ mật khẩu trên kho mã nguồn? *(Liên quan QT 6.2)*
-**Đáp án chuẩn:**
-Quy trình 2 bước SecOps trong CI/CD:
-1. **Lưu mật khẩu vào Secret Variable của CI/CD:** Đẩy mật khẩu Vault vào hệ thống quản lý Secret của CI/CD (ví dụ biến `$ANSIBLE_VAULT_PASSWORD` trong Gitlab CI / Secret trong Github Actions).
-2. **Tạo tệp `.vault_pass` tạm thời trong runner execution:** Trước khi thi hành Playbook, runner chạy lệnh:
-   `echo "$ANSIBLE_VAULT_PASSWORD" > .vault_pass && chmod 0600 .vault_pass`
-   Sau khi thi hành xong, tệp tạm bị xóa tự động.
-**Tiêu chí chấm:**
-- 0: Không biết cách đưa Ansible Vault vào CI/CD pipeline.
-- 1: Biết dùng biến môi trường nhưng không nêu được bước ghi ra file `.vault_pass` tạm và phân quyền 0600.
-- 2: Phân tích chính xác quy trình SecOps tiêm Secret Variable trong runner execution.
-- 3: Nêu đúng + viết đoạn mã YAML minh họa trong `before_script` của pipeline.
-**Câu hỏi đào sâu:** Có thể truyền biến môi trường trực tiếp vào Ansible Vault không? *(Có thể dùng biến `ANSIBLE_VAULT_PASSWORD_FILE` trỏ tới script in mật khẩu.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q07</span><span class="qa-question-text">Làm thế nào để tự động hóa quá trình giải mã Ansible Vault trong các pipeline CI/CD mà không cần gõ mật khẩu từ bàn phím?</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Làm thế nào để tự động hóa quá trình giải mã Ansible Vault trong các pipeline CI/CD (như Gitlab CI, Github Actions) mà không cần gõ mật khẩu từ bàn phím và không lộ mật khẩu trên kho mã nguồn? <i>(Liên quan QT 6.2)</i></p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><b>Quy trình 2 bước SecOps trong CI/CD:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Lưu mật khẩu vào Secret Variable của CI/CD:</b> Đẩy mật khẩu Vault vào hệ thống quản lý Secret của CI/CD (ví dụ biến <code>$ANSIBLE_VAULT_PASSWORD</code> trong Gitlab CI / Secret trong Github Actions).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Tạo tệp <code>.vault_pass</code> tạm thời trong runner execution:</b> Trước khi thi hành Playbook, runner chạy lệnh: <code>echo "$ANSIBLE_VAULT_PASSWORD" &gt; .vault_pass &amp;&amp; chmod 0600 .vault_pass</code>. Sau khi thi hành xong, tệp tạm bị xóa tự động.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cách đưa Ansible Vault vào CI/CD pipeline.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết dùng biến môi trường nhưng không nêu được bước ghi ra file <code>.vault_pass</code> tạm và phân quyền 0600.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác quy trình SecOps tiêm Secret Variable trong runner execution.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã YAML minh họa trong <code>before_script</code> của pipeline.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Có thể truyền biến môi trường trực tiếp vào Ansible Vault không? <i>(Có thể dùng biến <code>ANSIBLE_VAULT_PASSWORD_FILE</code> trỏ tới script in mật khẩu.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 8 — Đổi Mật khẩu Vault với `ansible-vault rekey`
-**Hỏi:** Trình bày nguyên lý và câu lệnh CLI đổi mật khẩu Vault (Rekeying). Tại sao việc định kỳ rekey mật khẩu Vault lại là yêu cầu bắt buộc trong chính sách an toàn thông tin? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:**
-- Lệnh đổi mật khẩu: `ansible-vault rekey vars/vault.yml`.
-- Nguyên lý: Lệnh `rekey` sẽ giải mã dữ liệu AES-256 bằng mật khẩu cũ trong bộ nhớ RAM, sau đó lập tức mã hóa lại toàn bộ dữ liệu bằng mật khẩu mới và ghi đè tệp ciphertext.
-- Lý do bắt buộc: Định kỳ đổi mật khẩu (như 6 tháng/lần) giúp tuân thủ chính sách an toàn thông tin Doanh nghiệp, triệt tiêu nguy cơ nếu mật khẩu cũ lỡ bị rò rỉ cho nhân sự đã nghỉ việc.
-**Tiêu chí chấm:**
-- 0: Không biết lệnh `ansible-vault rekey`.
-- 1: Biết lệnh `rekey` nhưng lầm tưởng phải giải mã tay `decrypt` rồi `encrypt` lại.
-- 2: Phân tích chính xác cơ chế giải mã trong RAM và mã hóa lại với mật khẩu mới của `rekey`.
-- 3: Nêu đúng + minh họa lệnh `rekey` kết hợp cờ `--new-vault-password-file`.
-**Câu hỏi đào sâu:** Lệnh `rekey` có làm thay đổi tên các biến bên trong tệp Vault không? *(Hoàn toàn không, giá trị biến giải mã giữ nguyên 100%, chỉ có khóa mã hóa AES-256 là thay đổi.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q08</span><span class="qa-question-text">Trình bày nguyên lý và câu lệnh CLI đổi mật khẩu Vault (Rekeying). Tại sao việc định kỳ rekey mật khẩu lại bắt buộc?</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Trình bày nguyên lý và câu lệnh CLI đổi mật khẩu Vault (Rekeying). Tại sao việc định kỳ rekey mật khẩu Vault lại là yêu cầu bắt buộc trong chính sách an toàn thông tin? <i>(Liên quan QT 4.2)</i></p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Lệnh đổi mật khẩu:</b> <code>ansible-vault rekey vars/vault.yml</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Nguyên lý:</b> Lệnh <code>rekey</code> sẽ giải mã dữ liệu AES-256 bằng mật khẩu cũ trong bộ nhớ RAM, sau đó lập tức mã hóa lại toàn bộ dữ liệu bằng mật khẩu mới và ghi đè tệp ciphertext.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Lý do bắt buộc:</b> Định kỳ đổi mật khẩu (như 6 tháng/lần) giúp tuân thủ chính sách an toàn thông tin Doanh nghiệp, triệt tiêu nguy cơ nếu mật khẩu cũ lỡ bị rò rỉ cho nhân sự đã nghỉ việc.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết lệnh <code>ansible-vault rekey</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết lệnh <code>rekey</code> nhưng lầm tưởng phải giải mã tay <code>decrypt</code> rồi <code>encrypt</code> lại.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế giải mã trong RAM và mã hóa lại với mật khẩu mới của <code>rekey</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa lệnh <code>rekey</code> kết hợp cờ <code>--new-vault-password-file</code>.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Lệnh <code>rekey</code> có làm thay đổi tên các biến bên trong tệp Vault không? <i>(Hoàn toàn không, giá trị biến giải mã giữ nguyên 100%, chỉ có khóa mã hóa AES-256 là thay đổi.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng Vault 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng biến mã hóa từ Ansible Vault để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (hoàn thành 100% Objective RHCE EX294 #14).
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site-vault.yml`: Biến được nạp và giải mã tạm trong RAM, Task chép file cấu hình bảo mật thực thi báo `changed > 0`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site-vault.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/vault-app.conf` kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu mật khẩu `DATABASE_PASSWORD=SuperSecretDBPassword2026`.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.
-- 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294 #14 (`☑`).
-**Câu hỏi đào sâu:** Dữ liệu giải mã từ Vault trên máy Control Node có bị lưu lại tệp log trên máy đích không? *(Tùy thuộc vào thuộc tính `no_log: true` của task để ẩn log sensitive data trên terminal.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q09</span><span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng biến mã hóa từ Ansible Vault để đảm bảo tính Idempotency.</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng biến mã hóa từ Ansible Vault để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (hoàn thành 100% Objective RHCE EX294 #14).</p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site-vault.yml</code>: Biến được nạp và giải mã tạm trong RAM, Task chép file cấu hình bảo mật thực thi báo <code>changed &gt; 0</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site-vault.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task đều báo <code>ok</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/vault-app.conf</code> kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu mật khẩu <code>DATABASE_PASSWORD=SuperSecretDBPassword2026</code>.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294 #14.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Dữ liệu giải mã từ Vault trên máy Control Node có bị lưu lại tệp log trên máy đích không? <i>(Tùy thuộc vào thuộc tính <code>no_log: true</code> của task để ẩn log sensitive data trên terminal.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 10 — Thuộc tính `no_log: true` Bảo vệ Log Terminal ★★★
-**Hỏi:** Thuộc tính `no_log: true` trong Ansible Task có tác dụng gì? Tại sao nên kết hợp `no_log: true` với các Task xử lý biến mã hóa từ Vault?
-**Đáp án chuẩn:**
-- Tác dụng: Thuộc tính `no_log: true` chỉ đạo Ansible Engine ẩn toàn bộ thông tin tham số và giá trị biến của Task đó khỏi màn hình terminal và các tệp log xuất ra.
-- Lý do kết hợp: Mặc dù biến trong tệp Vault đã được mã hóa AES-256 trên đĩa, nhưng khi Playbook chạy ở chế độ Verbose (`-v` hoặc `-vvv`), giá trị biến sau khi giải mã có thể bị in ra màn hình terminal dưới dạng plaintext. Thuộc tính `no_log: true` ngăn chặn 100% việc rò rỉ bí mật ra màn hình console log.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `no_log: true`.
-- 1: Biết `no_log` để giấu log nhưng không giải thích được nguy cơ rò rỉ bí mật khi chạy cờ verbose `-vvv`.
-- 2: Phân tích chính xác vai trò bảo mật màn hình console log và tệp nhật ký thi hành.
-- 3: Nêu đúng + viết đoạn YAML minh họa task copy dùng `no_log: true`.
-**Câu hỏi đào sâu:** Khi bật `no_log: true`, nếu task bị fail thì terminal hiển thị thông tin gì? *(Terminal chỉ hiển thị thông báo task fail nhưng ẩn toàn bộ giá trị biến nhạy cảm.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q10</span><span class="qa-question-text">Thuộc tính no_log: true trong Ansible Task có tác dụng gì? Tại sao nên kết hợp no_log: true với các Task xử lý Vault?</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Thuộc tính <code>no_log: true</code> trong Ansible Task có tác dụng gì? Tại sao nên kết hợp <code>no_log: true</code> với các Task xử lý biến mã hóa từ Vault?</p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tác dụng:</b> Thuộc tính <code>no_log: true</code> chỉ đạo Ansible Engine ẩn toàn bộ thông tin tham số và giá trị biến của Task đó khỏi màn hình terminal và các tệp log xuất ra.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Lý do kết hợp:</b> Mặc dù biến trong tệp Vault đã được mã hóa AES-256 trên đĩa, nhưng khi Playbook chạy ở chế độ Verbose (<code>-v</code> hoặc <code>-vvv</code>), giá trị biến sau khi giải mã có thể bị in ra màn hình terminal dưới dạng plaintext. Thuộc tính <code>no_log: true</code> ngăn chặn 100% việc rò rỉ bí mật ra màn hình console log.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>no_log: true</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>no_log</code> để giấu log nhưng không giải thích được nguy cơ rò rỉ bí mật khi chạy cờ verbose <code>-vvv</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò bảo mật màn hình console log và tệp nhật ký thi hành.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa task copy dùng <code>no_log: true</code>.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khi bật <code>no_log: true</code>, nếu task bị fail thì terminal hiển thị thông tin gì? <i>(Terminal chỉ hiển thị thông báo task fail nhưng ẩn toàn bộ giá trị biến nhạy cảm.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 11 — Tích hợp Ansible Vault với External Vault Services ★★★
-**Hỏi:** Ngoài việc dùng tệp mật khẩu tĩnh `.vault_pass`, Ansible Vault có khả năng tích hợp với các hệ thống Quản lý Mật khẩu Doanh nghiệp (như HashiCorp Vault, CyberArk) ra sao?
-**Đáp án chuẩn:**
-Ansible Vault hỗ trợ cơ chế Vault Password Script: thay vì chỉ định một tệp tin tĩnh, tham số `vault_password_file` có thể trỏ tới một **bàn kịch bản có thể thực thi (Executable Script)** (ví dụ `vault_password_file = ./get_vault_pass.sh`). Khi thi hành, Ansible sẽ gọi script này để lấy mật khẩu giải mã trực tiếp từ HashiCorp Vault hoặc CyberArk API thông qua Token bảo mật.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng Ansible Vault chỉ đọc được tệp mật khẩu file văn bản tĩnh.
-- 1: Biết tích hợp với HashiCorp Vault nhưng không nêu được cơ chế Executable Script của `vault_password_file`.
-- 2: Phân tích chính xác cơ chế Executable Password Script gọi API từ Secret Manager Doanh nghiệp.
-- 3: Nêu đúng + viết ví dụ script bash đơn giản gọi API lấy token giải mã Vault.
-**Câu hỏi đào sâu:** Tệp script `get_vault_pass.sh` bắt buộc phải có quyền thi hành gì trong Linux? *(Bắt buộc phải có quyền thi hành Executable `chmod +x`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q11</span><span class="qa-question-text">Ngoài việc dùng tệp mật khẩu tĩnh .vault_pass, Ansible Vault có khả năng tích hợp với External Secret Managers ra sao?</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Ngoài việc dùng tệp mật khẩu tĩnh <code>.vault_pass</code>, Ansible Vault có khả năng tích hợp với các hệ thống Quản lý Mật khẩu Doanh nghiệp (như HashiCorp Vault, CyberArk) ra sao?</p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Ansible Vault hỗ trợ cơ chế <b>Vault Password Script</b>: thay vì chỉ định một tệp tin tĩnh, tham số <code>vault_password_file</code> có thể trỏ tới một <b>bản kịch bản có thể thực thi (Executable Script)</b> (ví dụ <code>vault_password_file = ./get_vault_pass.sh</code>). Khi thi hành, Ansible sẽ gọi script này để lấy mật khẩu giải mã trực tiếp từ HashiCorp Vault hoặc CyberArk API thông qua Token bảo mật.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng Ansible Vault chỉ đọc được tệp mật khẩu file văn bản tĩnh.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết tích hợp với HashiCorp Vault nhưng không nêu được cơ chế Executable Script của <code>vault_password_file</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế Executable Password Script gọi API từ Secret Manager Doanh nghiệp.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ script bash đơn giản gọi API lấy token giải mã Vault.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tệp script <code>get_vault_pass.sh</code> bắt buộc phải có quyền thi hành gì trong Linux? <i>(Bắt buộc phải có quyền thi hành Executable <code>chmod +x</code>.)</i></p>
+</div>
+</details>
 
 ---
 
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng về Ansible Vault ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng Ansible Vault chuyên nghiệp, bảo mật 100% dữ liệu nhạy cảm và đạt chuẩn Idempotency.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Mã hóa 100% mật khẩu và private keys bằng `ansible-vault` (AES-256) trước khi commit Git.
-2. **Quy tắc 2:** Sử dụng `encrypt_string` cho các chuỗi biến đơn lẻ để giữ tính dễ đọc cho file YAML.
-3. **Quy tắc 3:** Phân quyền `chmod 0600` cho `.vault_pass` và thêm ngay vào tệp `.gitignore`.
-4. **Quy tắc 4:** Tự động hóa giải mã trong CI/CD bằng Secret Variables và kết hợp `no_log: true` ẩn log console.
-5. **Quy tắc 5:** Định kỳ rekey mật khẩu và đảm bảo lượt chạy Lần 2 đạt `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy SecOps quản lý dữ liệu bí mật cấp Enterprise.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp ngăn ngừa nguy cơ rò rỉ mật khẩu lên mạng Internet công cộng? *(Quy tắc 3: Thêm `.vault_pass` vào `.gitignore`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary"><span class="qa-num-badge">Q12</span><span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng Ansible Vault chuyên nghiệp, bảo mật 100% dữ liệu nhạy cảm.</span></summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <p><b style="color: var(--accent-primary);">Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng Ansible Vault chuyên nghiệp, bảo mật 100% dữ liệu nhạy cảm và đạt chuẩn Idempotency.</p>
+  <p><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Mã hóa 100% mật khẩu và private keys bằng <code>ansible-vault</code> (AES-256) trước khi commit Git.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Sử dụng <code>encrypt_string</code> cho các chuỗi biến đơn lẻ để giữ tính dễ đọc cho file YAML.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Phân quyền <code>chmod 0600</code> cho <code>.vault_pass</code> và thêm ngay vào tệp <code>.gitignore</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Tự động hóa giải mã trong CI/CD bằng Secret Variables và kết hợp <code>no_log: true</code> ẩn log console.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Định kỳ rekey mật khẩu và đảm bảo lượt chạy Lần 2 đạt <code>changed=0</code> qua <code>docker exec</code>.</div>
+  <p><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></p>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy SecOps quản lý dữ liệu bí mật cấp Enterprise.</div>
+  <p><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp ngăn ngừa nguy cơ rò rỉ mật khẩu lên mạng Internet công cộng? <i>(Quy tắc 3: Thêm <code>.vault_pass</code> vào <code>.gitignore</code>.)</i></p>
+</div>
+</details>
 
 ---
 
@@ -1005,4 +1134,9 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm bảo mật dữ liệu
 1. **Nghiên cứu trước 1:** RHEL System Roles (`redhat.rhel_system_roles`) là gì? Tại sao Red Hat lại đóng gói sẵn các Role chuẩn hóa cho SELinux, Firewall, Timesync?
 2. **Nghiên cứu trước 2:** Cơ chế nâng quyền `become: true` trong Ansible hoạt động ra sao bên dưới hệ điều hành Linux?
 3. **Nghiên cứu trước 3:** Các module Ansible như `ansible.posix.selinux` và `ansible.posix.seport` dùng để quản lý trạng thái và cổng kết nối của SELinux như thế nào?
+
+---
+
+> [!TIP]
+> **Khám phá bài học tiếp theo**: Nâng cao kỹ năng tự động hóa hệ thống với các role chuẩn hóa của Red Hat và kiểm soát an ninh SELinux tại [Bài 21: Làm Chủ RHEL System Roles & Quản Trị SELinux Nâng Cao Với Ansible](ansible-21-21-system-roles-selinux.html).
 {% endraw %}

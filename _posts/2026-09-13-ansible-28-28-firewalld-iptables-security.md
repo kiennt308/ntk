@@ -1090,4 +1090,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý tường l�
 1. **Nghiên cứu trước 1:** AWX và Red Hat Ansible Automation Platform (AAP) cung cấp giao diện Web UI, REST API và RBAC quản lý Ansible như thế nào?
 2. **Nghiên cứu trước 2:** Khái niệm Execution Environments (EE), Project, Inventory, Credentials và Job Templates trong AWX hoạt động ra sao?
 3. **Nghiên cứu trước 3:** Làm thế nào để kích hoạt tự động chạy Playbook trong AWX qua Webhook từ GitHub / GitLab khi có sự kiện push code?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 29: Quản Trị Tự Động Hóa Doanh Nghiệp Với AWX & Red Hat Ansible Automation Platform (AAP): RBAC, Job Templates & Workflows](ansible-29-29-awx-aap.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

@@ -1076,4 +1076,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm đóng gói ứng dụn
 1. **Nghiên cứu trước 1:** Ansible Collection `ansible.posix.firewalld` quản lý các vùng bảo mật (Zones) và cổng dịch vụ (Ports / Services) như thế nào?
 2. **Nghiên cứu trước 2:** Sự khác biệt giữa thuộc tính `permanent: yes` và `immediate: yes` trong module `ansible.posix.firewalld` là gì?
 3. **Nghiên cứu trước 3:** Làm thế nào để mở cổng 80/4000 cho Web Server và cổng 22 cho SSH một cách an toàn mà không làm đứt kết nối quản trị?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 28: Tự Động Hóa An Ninh Mạng Với Firewalld & Iptables: Quản Lý Port, Rich Rules, IP Sets & Chặn IP Độc Hại Tự Động](ansible-28-28-firewalld-iptables-security.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

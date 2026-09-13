@@ -84,8 +84,8 @@ graph TD
     A["Bắt đầu thi hành Khối block:"] --> B["Thực thi các Task chính trong block"]
     B --> C{"Có Task nào bị VĂNG LỖI (Failed)?"}
     
-    C -- "KHÔNG (Thành công 100%)" --> D["Bỏ qua khối rescue:"]
-    C -- "CÓ (Gặp sự cố đứt gãy)" --> E["Chuyển hướng lập tức sang Khối rescue:"]
+    C -->|"KHÔNG (Thành công 100%)"| D["Bỏ qua khối rescue:"]
+    C -->|"CÓ (Gặp sự cố đứt gãy)"| E["Chuyển hướng lập tức sang Khối rescue:"]
     
     E --> F["Thực thi các Task Cứu hộ / Rollback / Báo động trong rescue"]
     
@@ -94,6 +94,16 @@ graph TD
     
     G --> H["BẮT BUỘC Thực thi các Task Dọn dẹp trong always"]
     H --> I["Kết thúc Playbook an toàn (PLAY RECAP ok/rescued)"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#8b5cf6,stroke-width:2px
+    style D fill:none,stroke:#10b981,stroke-width:2px
+    style E fill:none,stroke:#ef4444,stroke-width:2px
+    style F fill:none,stroke:#f59e0b,stroke-width:2px
+    style G fill:none,stroke:#06b6d4,stroke-width:2px
+    style H fill:none,stroke:#ec4899,stroke-width:2px
+    style I fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Bộ ba khối `block:`, `rescue:`, và `always:` cung cấp cơ chế xử lý lỗi hoàn chỉnh cho Ansible Playbook, hoạt động tương đương với cấu trúc `try...catch...finally` trong các ngôn ngữ lập trình hiện đại.
@@ -324,8 +334,19 @@ flowchart TD
     C --> F["Thực thi Task Dọn dẹp trong always: (100% Thi hành)"]
     F --> G["LƯỢT CHẠY LẦN 2"]
     G --> H{"PLAY RECAP Lần 2: changed=0?"}
-    H -- Có --> I["ĐẠT: Error Handling chuẩn Idempotent"]
-    H -- Không --> J["LỖI: Kiểm tra lại các cờ changed_when"]
+    H -->|"Có"| I["ĐẠT: Error Handling chuẩn Idempotent"]
+    H -->|"Không"| J["LỖI: Kiểm tra lại các cờ changed_when"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#8b5cf6,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#ef4444,stroke-width:2px
+    style E fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#a855f7,stroke-width:2px
+    style H fill:none,stroke:#eab308,stroke-width:2px
+    style I fill:none,stroke:#10b981,stroke-width:2px
+    style J fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -463,12 +484,16 @@ graph TD
     SubGraph1 -->|"4. Task 2: command date (changed_when: false)"| T1
     SubGraph1 -->|"5. Task 3: command check (failed_when: FATAL)"| T1
     
-    T1 -. "RECAP Lần 1: ok=5, changed=2, rescued=1" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=5, changed=2, rescued=1"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENT)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook error-handling-site.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
@@ -862,177 +887,278 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Trình bày cơ chế hoạt động của bộ ba khối <code>block:</code>, <code>rescue:</code>, và <code>always:</code> trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày cơ chế hoạt động của bộ ba khối <code>block:</code>, <code>rescue:</code>, và <code>always:</code> trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? <i>(Liên quan QT 4.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>block:</code> Nơi chứa các Task thực thi chính.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>rescue:</code> Nơi chứa các Task cứu hộ/phục hồi CHỈ CHẠY khi có Task trong <code>block</code> bị văng lỗi.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>always:</code> Nơi chứa các Task dọn dẹp BẮT BUỘC THỰC THI trong mọi tình huống (dù block thành công hay rescue thất bại).</div>
+    <div style="margin: 0.35rem 0;">Cấu trúc này tương đương 100% với mô hình <code>try...catch...finally</code> trong các ngôn ngữ lập trình hiện đại (Java, Python, C#).</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc <code>block-rescue-always</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết 3 khối nhưng không so sánh được với mô hình <code>try-catch-finally</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò và điều kiện thi hành của từng khối <code>block</code>, <code>rescue</code>, <code>always</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ cập nhật Database có Rollback trong <code>rescue</code> và xóa file tạm trong <code>always</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Khối <code>rescue:</code> và <code>always:</code> được đặt cùng cấp thụt lề với từ khóa nào trong YAML? <i>(Được đặt cùng cấp thụt lề với từ khóa <code>block:</code>.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cơ chế hoạt động của bộ ba khối <code>block:</code>, <code>rescue:</code>, và <code>always:</code> trong Ansible Playbook. Cấu trúc này tương đương với mô hình nào trong lập trình? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>block:</code> Nơi chứa các Task thực thi chính.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>rescue:</code> Nơi chứa các Task cứu hộ/phục hồi CHỈ CHẠY khi có Task trong <code>block</code> bị văng lỗi.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>always:</code> Nơi chứa các Task dọn dẹp BẮT BUỘC THỰC THI trong mọi tình huống (dù block thành công hay rescue thất bại).</div>
-Cấu trúc này tương đương 100% với mô hình <code>try...catch...finally</code> trong các ngôn ngữ lập trình hiện đại (Java, Python, C#).
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc <code>block-rescue-always</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết 3 khối nhưng không so sánh được với mô hình <code>try-catch-finally</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò và điều kiện thi hành của từng khối <code>block</code>, <code>rescue</code>, <code>always</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ cập nhật Database có Rollback trong <code>rescue</code> và xóa file tạm trong <code>always</code>.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khối <code>rescue:</code> và <code>always:</code> được đặt cùng cấp thụt lề với từ khóa nào trong YAML? *(Được đặt cùng cấp thụt lề với từ khóa <code>block:</code>.)*
-</div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Khối <code>rescue:</code> được Ansible Engine thực thi trong điều kiện nào? Nếu tất cả các Task trong khối <code>block:</code> đều thành công, khối <code>rescue:</code> sẽ ra sao?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Khối <code>rescue:</code> được Ansible Engine thực thi trong điều kiện nào? Nếu tất cả các Task trong khối <code>block:</code> đều thành công, khối <code>rescue:</code> sẽ ra sao? <i>(Liên quan QT 4.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Khối <code>rescue:</code> CHỈ THỰC THI khi có ít nhất một Task trong khối <code>block:</code> bị văng lỗi thất bại (Failed). Nếu tất cả các Task trong khối <code>block:</code> đều thi hành thành công 100%, Ansible Engine sẽ <b>TỰ ĐỘNG BỎ QUA TOÀN BỘ KHỐI <code>rescue:</code></b> và chuyển thẳng sang khối <code>always:</code> (hoặc task đằng sau).</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng khối <code>rescue:</code> luôn luôn chạy ở mọi lượt.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>rescue</code> chạy khi có lỗi nhưng thắc mắc tại sao chạy bình thường <code>rescue</code> lại không xuất hiện log.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác điều kiện kích hoạt của <code>rescue:</code> như một lưới an toàn thụ động.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa log terminal khi <code>block</code> thành công vs khi <code>block</code> bị fail.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu 1 task trong <code>block</code> bị fail và được <code>rescue</code> cứu hộ thành công, chỉ số trong bảng <code>PLAY RECAP</code> sẽ hiển thị ra sao? <i>(Hiển thị chỉ số <code>rescued=1</code> và <code>failed=0</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Điều kiện Kích hoạt Khối `rescue:` 🔥
-**Hỏi:** Khối `rescue:` được Ansible Engine thực thi trong điều kiện nào? Nếu tất cả các Task trong khối `block:` đều thành công, khối `rescue:` sẽ ra sao? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:** Khối `rescue:` CHỈ THỰC THI khi có ít nhất một Task trong khối `block:` bị văng lỗi thất bại (Failed). Nếu tất cả các Task trong khối `block:` đều thi hành thành công 100%, Ansible Engine sẽ **TỰ ĐỘNG BỎ QUA TOÀN BỘ KHỐI `rescue:`** và chuyển thẳng sang khối `always:` (hoặc task đằng sau).
-**Tiêu chí chấm:**
-- 0: Lầm tưởng khối `rescue:` luôn luôn chạy ở mọi lượt.
-- 1: Biết `rescue` chạy khi có lỗi nhưng thắc mắc tại sao chạy bình thường `rescue` lại không xuất hiện log.
-- 2: Phân tích chính xác điều kiện kích hoạt của `rescue:` như một lưới an toàn thụ động.
-- 3: Nêu đúng + minh họa log terminal khi `block` thành công vs khi `block` bị fail.
-**Câu hỏi đào sâu:** Nếu 1 task trong `block` bị fail và được `rescue` cứu hộ thành công, chỉ số trong bảng `PLAY RECAP` sẽ hiển thị ra sao? *(Hiển thị chỉ số `rescued=1` và `failed=0`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Tại sao các thao tác dọn dẹp tài nguyên tạm (xóa file lock, mở lại cờ bảo trì) bắt buộc phải được đặt trong khối <code>always:</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao các thao tác dọn dẹp tài nguyên tạm (xóa file lock, mở lại cờ bảo trì) bắt buộc phải được đặt trong khối <code>always:</code>? <i>(Liên quan QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Vì khối <code>always:</code> đảm bảo tính thực thi 100% trong MỌI TÌNH HUỐNG (kể cả khi <code>block</code> thành công hay khi <code>rescue</code> bị văng lỗi tiếp). Đặt thao tác dọn dẹp trong <code>always:</code> giúp ngăn chặn hoàn toàn nguy cơ rò rỉ file tạm, rò rỉ tài nguyên đĩa cứng hoặc bỏ quên hệ thống trong trạng thái Maintenance Mode khi sự cố xảy ra.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết vai trò của khối <code>always:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>always</code> chạy ở cuối nhưng không giải thích được lý do bảo vệ rò rỉ tài nguyên khi rescue bị crash.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác tính thực thi 100% bắt buộc của <code>always:</code> và lợi ích an toàn hệ thống.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa xóa file tạm <code>/tmp/*.lock</code> trong khối <code>always:</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu 1 task trong khối <code>always:</code> bị văng lỗi fatal, Playbook có bị dừng không? <i>(Có, ngoại trừ khi task trong always đó có cờ ignore_errors: true.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Thuộc tính <code>failed_when:</code> dùng để làm gì? Cho ví dụ trường hợp một lệnh CLI trả về exit code = 0 nhưng vẫn bị coi là FAILED.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Thuộc tính <code>failed_when:</code> dùng để làm gì? Cho ví dụ trường hợp một lệnh CLI trả về exit code = 0 nhưng vẫn bị coi là FAILED. <i>(Liên quan QT 5.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Thuộc tính <code>failed_when:</code> cho phép quản trị viên định nghĩa lại điều kiện khiến một Task bị coi là THẤT BẠI dựa trên logic biểu thức Jinja2 tùy biến. Ví dụ: Lệnh script trả về <code>rc = 0</code> (exit code thành công) nhưng trong stdout lại in ra chuỗi <code>"FATAL_ERROR: Database Connection Refused"</code>. Khai báo <code>failed_when: "'FATAL_ERROR' in result.stdout"</code> sẽ ép Ansible đánh dấu Task đó là FAILED.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>failed_when:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>failed_when</code> để báo lỗi nhưng không cho được ví dụ lệnh rc=0 chứa chuỗi lỗi stdout.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế ghi đè cờ failed dựa trên thuộc tính biến <code>register</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa task <code>command</code> kết hợp <code>register</code> và <code>failed_when</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Phân biệt sự khác nhau giữa <code>failed_when</code> và <code>ignore_errors</code>? <i>(<code>failed_when</code> ép task THẤT BẠI khi thỏa mãn điều kiện; <code>ignore_errors</code> BỎ QUA LỖI khi task bị thất bại.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Vai trò của Khối `always:` 🔥
-**Hỏi:** Tại sao các thao tác dọn dẹp tài nguyên tạm (xóa file lock, mở lại cờ bảo trì) bắt buộc phải được đặt trong khối `always:`? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:** Vì khối `always:` đảm bảo tính thực thi 100% trong MỌI TÌNH HUỐNG (kể cả khi `block` thành công hay khi `rescue` bị văng lỗi tiếp). Đặt thao tác dọn dẹp trong `always:` giúp ngăn chặn hoàn toàn nguy cơ rò rỉ file tạm, rò rỉ tài nguyên đĩa cứng hoặc bỏ quên hệ thống trong trạng thái Maintenance Mode khi sự cố xảy ra.
-**Tiêu chí chấm:**
-- 0: Không biết vai trò của khối `always:`.
-- 1: Biết `always` chạy ở cuối nhưng không giải thích được lý do bảo vệ rò rỉ tài nguyên khi rescue bị crash.
-- 2: Phân tích chính xác tính thực thi 100% bắt buộc của `always:` và lợi ích an toàn hệ thống.
-- 3: Nêu đúng + viết đoạn YAML minh họa xóa file tạm `/tmp/*.lock` trong khối `always:`.
-**Câu hỏi đào sâu:** Nếu 1 task trong khối `always:` bị văng lỗi fatal, Playbook có bị dừng không? *(Có, ngoại trừ khi task trong always đó có cờ ignore_errors: true.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Tại sao đối với các Task gọi lệnh CLI thô chỉ đọc (như <code>command: uptime</code> hoặc <code>command: date</code>), ta bắt buộc phải thêm thuộc tính <code>changed_when: false</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao đối với các Task gọi lệnh CLI thô chỉ đọc (như <code>command: uptime</code> hoặc <code>command: date</code>), ta bắt buộc phải thêm thuộc tính <code>changed_when: false</code>? <i>(Liên quan QT 5.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Vì các module <code>ansible.builtin.command</code> và <code>shell</code> mặc định không nhận biết được tính Idempotency của câu lệnh shell thô, nên <b>mặc định luôn gán cờ <code>changed: true</code> ở mọi lượt thi hành</b>. Nếu không thêm <code>changed_when: false</code>, các lệnh đọc thông số sẽ liên tục báo <code>changed=1</code> ở lượt chạy Lần 2, làm sai lệch báo cáo và hỏng hoàn toàn tiêu chuẩn Idempotency (<code>changed=0</code>).</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>changed_when: false</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết gõ <code>changed_when: false</code> nhưng không giải thích được cơ chế gán changed mạo danh mặc định của module <code>command</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác lý do khống chế cờ changed mạo danh để bảo vệ tiêu chuẩn Idempotency.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + chứng minh bằng bảng <code>PLAY RECAP</code> ở Lần 1 và Lần 2 khi có và không có <code>changed_when: false</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm sao để Task <code>command: echo "UPDATED"</code> chỉ báo <code>changed: true</code> khi stdout chứa từ <code>"UPDATED"</code>? <i>(Khai báo <code>changed_when: "'UPDATED' in result.stdout"</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Tại sao việc lạm dụng thuộc tính <code>ignore_errors: yes</code> cho các Task cốt lõi bị coi là một anti-pattern nguy hiểm trong Ansible?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao việc lạm dụng thuộc tính <code>ignore_errors: yes</code> cho các Task cốt lõi bị coi là một anti-pattern nguy hiểm trong Ansible? <i>(Liên quan QT 5.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Vì <code>ignore_errors: yes</code> sẽ "nuốt chửng" lỗi (silent error). Nếu áp dụng cho Task cốt lõi (như task phân quyền hoặc chép file SSL), khi Task bị thất bại, Ansible vẫn in màu xanh/vàng mạo danh và chạy tiếp. Kết quả: Playbook báo hoàn thành 100% nhưng hệ thống Production bị sập đứt gãy do thiếu file SSL. Thay vì lạm dụng <code>ignore_errors</code>, hãy dùng khối <code>block-rescue</code> có kiểm soát.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Cho rằng nên dùng <code>ignore_errors: yes</code> cho mọi task để Playbook không bao giờ bị dừng.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>ignore_errors</code> nguy hiểm nhưng không phân tích được hậu quả nuốt chửng lỗi làm sập Production.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác tác hại của nuốt chửng lỗi và đề xuất thay thế bằng <code>block-rescue</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cho ví dụ trường hợp hợp lệ duy nhất nên dùng <code>ignore_errors</code> (như ping thử server phụ tùy chọn).</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Thuộc tính <code>ignore_errors: yes</code> có bỏ qua được lỗi syntax YAML static không? <i>(Không, lỗi syntax YAML static bị ngắt thi hành ngay ở bước parse.)</i></div>
+  </div>
+</details>
 
-### Câu 4 — Tùy biến Điều kiện Thất bại với `failed_when:` 🔥
-**Hỏi:** Thuộc tính `failed_when:` dùng để làm gì? Cho ví dụ trường hợp một lệnh CLI trả về exit code = 0 nhưng vẫn bị coi là FAILED. *(Liên quan QT 5.1)*
-**Đáp án chuẩn:** Thuộc tính `failed_when:` cho phép quản trị viên định nghĩa lại điều kiện khiến một Task bị coi là THẤT BẠI dựa trên logic biểu thức Jinja2 tùy biến. Ví dụ: Lệnh script trả về `rc = 0` (exit code thành công) nhưng trong stdout lại in ra chuỗi `"FATAL_ERROR: Database Connection Refused"`. Khai báo `failed_when: "'FATAL_ERROR' in result.stdout"` sẽ ép Ansible đánh dấu Task đó là FAILED.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `failed_when:`.
-- 1: Biết `failed_when` để báo lỗi nhưng không cho được ví dụ lệnh rc=0 chứa chuỗi lỗi stdout.
-- 2: Phân tích chính xác cơ chế ghi đè cờ failed dựa trên thuộc tính biến `register`.
-- 3: Nêu đúng + viết đoạn YAML minh họa task `command` kết hợp `register` và `failed_when`.
-**Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa `failed_when` và `ignore_errors`? *(`failed_when` ép task THẤT BẠI khi thỏa mãn điều kiện; `ignore_errors` BỎ QUA LỖI khi task bị thất bại.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Thuộc tính <code>any_errors_fatal: true</code> giải quyết bài toán an toàn gì khi triển khai Playbook trên một cụm máy chủ (Cluster)?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Thuộc tính <code>any_errors_fatal: true</code> giải quyết bài toán an toàn gì khi triển khai Playbook trên một cụm máy chủ (Cluster)? <i>(Liên quan QT 6.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Mặc định khi 1 host trong Inventory bị lỗi, Ansible chỉ ngắt thi hành trên host đó và tiếp tục chạy Playbook trên các host còn lại. Trong các bài toán nâng cấp cụm (như K8s hay DB Cluster), điều này làm lệch phiên bản phần mềm giữa các node. Thuộc tính <code>any_errors_fatal: true</code> buộc Ansible kích hoạt <b>phanh khẩn cấp dừng 100% các host ngay lập tức</b> khi có ít nhất 1 host bị lỗi.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>any_errors_fatal</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>any_errors_fatal</code> dừng host nhưng không nêu được bài toán bảo vệ tính đồng nhất phiên bản cụm cluster.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế phanh khẩn cấp toàn cụm và ứng dụng cho Cluster Deployment.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML khai báo <code>any_errors_fatal: true</code> ở cấp Playbook.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Cờ <code>any_errors_fatal: true</code> được khai báo ở cấp độ Task hay cấp độ Playbook? <i>(Được khai báo ở cấp độ Playbook, cùng cấp với <code>hosts:</code> và <code>tasks:</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Trình bày mô hình thiết kế tự động Rollback khôi phục trạng thái cũ bằng khối <code>rescue:</code> khi gặp sự cố nâng cấp phần mềm.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày mô hình thiết kế tự động Rollback khôi phục trạng thái cũ bằng khối <code>rescue:</code> khi gặp sự cố nâng cấp phần mềm.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Mô hình 3 bước:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Khối <code>block:</code>:</b> Bước A1 tạo bản sao lưu file cấu hình cũ (<code>app.conf.bak</code>), Bước A2 thực hiện chép file cấu hình mới và chạy script upgrade.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Khối <code>rescue:</code>:</b> Nếu Bước A2 bị fail, khối <code>rescue:</code> lập tức gọi Task chép đè lại file <code>app.conf.bak</code> về vị trí <code>app.conf</code> gốc và restart lại dịch vụ cũ.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Khối <code>always:</code>:</b> Xóa bỏ file tạm sao lưu <code>/tmp/upgrade.lock</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không thiết kế được mô hình Rollback.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết rollback trong <code>rescue</code> nhưng không nêu được bước tạo file bak trước đó trong <code>block</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác luồng 3 bước backup -&gt; attempt upgrade -&gt; rollback on rescue -&gt; cleanup.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc mô hình + viết kịch bản YAML Rollback hoàn chỉnh chuẩn DevOps.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm sao để biết khối <code>rescue:</code> ở bước 2 có thực sự trả lại đĩa sạch hay không? <i>(Dùng lệnh <code>docker exec target1 cat /etc/app.conf</code> đối soát lại nội dung file sau khi rescue chạy xong.)</i></div>
+  </div>
+</details>
 
-### Câu 5 — Khống chế Cờ changed mạo danh với `changed_when: false` 🔥
-**Hỏi:** Tại sao đối với các Task gọi lệnh CLI thô chỉ đọc (như `command: uptime` hoặc `command: date`), ta bắt buộc phải thêm thuộc tính `changed_when: false`? *(Liên quan QT 5.2)*
-**Đáp án chuẩn:** Vì các module `ansible.builtin.command` và `shell` mặc định không nhận biết được tính Idempotency của câu lệnh shell thô, nên **mặc định luôn gán cờ `changed: true` ở mọi lượt thi hành**. Nếu không thêm `changed_when: false`, các lệnh đọc thông số sẽ liên tục báo `changed=1` ở lượt chạy Lần 2, làm sai lệch báo cáo và hỏng hoàn toàn tiêu chuẩn Idempotency (`changed=0`).
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `changed_when: false`.
-- 1: Biết gõ `changed_when: false` nhưng không giải thích được cơ chế gán changed mạo danh mặc định của module `command`.
-- 2: Phân tích chính xác lý do khống chế cờ changed mạo danh để bảo vệ tiêu chuẩn Idempotency.
-- 3: Nêu đúng + chứng minh bằng bảng `PLAY RECAP` ở Lần 1 và Lần 2 khi có và không có `changed_when: false`.
-**Câu hỏi đào sâu:** Làm sao để Task `command: echo "UPDATED"` chỉ báo `changed: true` khi stdout chứa từ `"UPDATED"`? *(Khai báo `changed_when: "'UPDATED' in result.stdout"`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook có cấu trúc xử lý lỗi để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook có cấu trúc xử lý lỗi để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site.yml</code>: Bắt lỗi và phục hồi thành công qua khối <code>rescue:</code>, bảng <code>PLAY RECAP</code> hiển thị <code>rescued=1</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task chính và task kiểm tra đều báo <code>ok</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/error-app.conf</code> kiểm tra file sản phẩm phục hồi thực sự tồn tại trên đĩa cứng máy đích.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không chú ý chỉ số <code>rescued=1</code> ở Lần 1.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và dòng log RECAP.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + phân tích ý nghĩa chỉ số <code>rescued=1</code> và <code>changed=0</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu ở Lần 2 bảng RECAP hiển thị <code>changed=1</code> do 1 task <code>command</code> trong <code>block</code> bị lặp, nguyên nhân do đâu? <i>(Do task command đó thiếu thuộc tính <code>changed_when: false</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Ý nghĩa của chỉ số <code>rescued=1</code> trong bảng tổng kết <code>PLAY RECAP</code> ở cuối buổi thi hành là gì? Nó có bị coi là lỗi thi hành không?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Ý nghĩa của chỉ số <code>rescued=1</code> trong bảng tổng kết <code>PLAY RECAP</code> ở cuối buổi thi hành là gì? Nó có bị coi là lỗi thi hành không?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Chỉ số <code>rescued=1</code> phản ánh rằng có 1 host bị văng ngoại lệ ở khối <code>block:</code>, và Ansible Engine đã <b>tự động chuyển sang khối <code>rescue:</code> bắt lỗi và khắc phục sự cố thành công 100%</b>. Nó KHÔNG BỊ COI LÀ LỖI (<code>failed=0</code>), mà là bằng chứng chứng minh kịch bản xử lý lỗi hoạt động tuyệt vời đúng thiết kế.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng <code>rescued=1</code> là Playbook bị lỗi không đạt yêu cầu.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>rescued</code> là bắt lỗi nhưng không khẳng định được <code>failed=0</code> là kịch bản thành công.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác ý nghĩa của <code>rescued=1</code> và khẳng định tính an toàn của Playbook.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + so sánh chỉ số <code>rescued=1, failed=0</code> vs <code>rescued=0, failed=1</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu trong khối <code>rescue:</code> lại có 1 Task bị văng lỗi tiếp, chỉ số RECAP sẽ hiển thị thế nào? <i>(Bảng RECAP sẽ hiển thị <code>failed=1</code> và Playbook dừng thi hành.)</i></div>
+  </div>
+</details>
 
-### Câu 6 — Rủi ro của `ignore_errors: yes`
-**Hỏi:** Tại sao việc lạm dụng thuộc tính `ignore_errors: yes` cho các Task cốt lõi bị coi là một anti-pattern nguy hiểm trong Ansible? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** Vì `ignore_errors: yes` sẽ "nuốt chửng" lỗi (silent error). Nếu áp dụng cho Task cốt lõi (như task phân quyền hoặc chép file SSL), khi Task bị thất bại, Ansible vẫn in màu xanh/vàng mạo danh và chạy tiếp. Kết quả: Playbook báo hoàn thành 100% nhưng hệ thống Production bị sập đứt gãy do thiếu file SSL. Thay vì lạm dụng `ignore_errors`, hãy dùng khối `block-rescue` có kiểm soát.
-**Tiêu chí chấm:**
-- 0: Cho rằng nên dùng `ignore_errors: yes` cho mọi task để Playbook không bao giờ bị dừng.
-- 1: Biết `ignore_errors` nguy hiểm nhưng không phân tích được hậu quả nuốt chửng lỗi làm sập Production.
-- 2: Phân tích chính xác tác hại của nuốt chửng lỗi và đề xuất thay thế bằng `block-rescue`.
-- 3: Nêu đúng + cho ví dụ trường hợp hợp lệ duy nhất nên dùng `ignore_errors` (như ping thử server phụ tùy chọn).
-**Câu hỏi đào sâu:** Thuộc tính `ignore_errors: yes` có bỏ qua được lỗi syntax YAML static không? *(Không, lỗi syntax YAML static bị ngắt thi hành ngay ở bước parse.)*
-
----
-
-### Câu 7 — Dừng Khẩn cấp Cụm Máy chủ với `any_errors_fatal`
-**Hỏi:** Thuộc tính `any_errors_fatal: true` giải quyết bài toán an toàn gì khi triển khai Playbook trên một cụm máy chủ (Cluster)? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:** Mặc định khi 1 host trong Inventory bị lỗi, Ansible chỉ ngắt thi hành trên host đó và tiếp tục chạy Playbook trên các host còn lại. Trong các bài toán nâng cấp cụm (như K8s hay DB Cluster), điều này làm lệch phiên bản phần mềm giữa các node. Thuộc tính `any_errors_fatal: true` buộc Ansible kích hoạt **phanh khẩn cấp dừng 100% các host ngay lập tức** khi có ít nhất 1 host bị lỗi.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `any_errors_fatal`.
-- 1: Biết `any_errors_fatal` dừng host nhưng không nêu được bài toán bảo vệ tính đồng nhất phiên bản cụm cluster.
-- 2: Phân tích chính xác cơ chế phanh khẩn cấp toàn cụm và ứng dụng cho Cluster Deployment.
-- 3: Nêu đúng + viết đoạn YAML khai báo `any_errors_fatal: true` ở cấp Playbook.
-**Câu hỏi đào sâu:** Cờ `any_errors_fatal: true` được khai báo ở cấp độ Task hay cấp độ Playbook? *(Được khai báo ở cấp độ Playbook, cùng cấp với `hosts:` và `tasks:`.)*
-
----
-
-### Câu 8 — Tự động Rollback trong Khối `rescue:` ★★★
-**Hỏi:** Trình bày mô hình thiết kế tự động Rollback khôi phục trạng thái cũ bằng khối `rescue:` khi gặp sự cố nâng cấp phần mềm.
-**Đáp án chuẩn:** Mô hình 3 bước:
-1. **Khối `block:`:** Bước A1 tạo bản sao lưu file cấu hình cũ (`app.conf.bak`), Bước A2 thực hiện chép file cấu hình mới và chạy script upgrade.
-2. **Khối `rescue:`:** Nếu Bước A2 bị fail, khối `rescue:` lập tức gọi Task chép đè lại file `app.conf.bak` về vị trí `app.conf` gốc và restart lại dịch vụ cũ.
-3. **Khối `always:`:** Xóa bỏ file tạm sao lưu `/tmp/upgrade.lock`.
-**Tiêu chí chấm:**
-- 0: Không thiết kế được mô hình Rollback.
-- 1: Biết rollback trong `rescue` nhưng không nêu được bước tạo file bak trước đó trong `block`.
-- 2: Phân tích chính xác luồng 3 bước backup -> attempt upgrade -> rollback on rescue -> cleanup.
-- 3: Trình bày xuất sắc mô hình + viết kịch bản YAML Rollback hoàn chỉnh chuẩn DevOps.
-**Câu hỏi đào sâu:** Làm sao để biết khối `rescue:` ở bước 2 có thực sự trả lại đĩa sạch hay không? *(Dùng lệnh `docker exec target1 cat /etc/app.conf` đối soát lại nội dung file sau khi rescue chạy xong.)*
-
----
-
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng Error Handling 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook có cấu trúc xử lý lỗi để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site.yml`: Bắt lỗi và phục hồi thành công qua khối `rescue:`, bảng `PLAY RECAP` hiển thị `rescued=1`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task chính và task kiểm tra đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/error-app.conf` kiểm tra file sản phẩm phục hồi thực sự tồn tại trên đĩa cứng máy đích.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không chú ý chỉ số `rescued=1` ở Lần 1.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và dòng log RECAP.
-- 3: Trình bày xuất sắc 3 bước + phân tích ý nghĩa chỉ số `rescued=1` và `changed=0`.
-**Câu hỏi đào sâu:** Nếu ở Lần 2 bảng RECAP hiển thị `changed=1` do 1 task `command` trong `block` bị lặp, nguyên nhân do đâu? *(Do task command đó thiếu thuộc tính `changed_when: false`.)*
-
----
-
-### Câu 10 — Chỉ số `rescued=1` trong Bảng `PLAY RECAP` ★★★
-**Hỏi:** Ý nghĩa của chỉ số `rescued=1` trong bảng tổng kết `PLAY RECAP` ở cuối buổi thi hành là gì? Nó có bị coi là lỗi thi hành không?
-**Đáp án chuẩn:** Chỉ số `rescued=1` phản ánh rằng có 1 host bị văng ngoại lệ ở khối `block:`, và Ansible Engine đã **tự động chuyển sang khối `rescue:` bắt lỗi và khắc phục sự cố thành công 100%**. Nó KHÔNG BỊ COI LÀ LỖI (`failed=0`), mà là bằng chứng chứng minh kịch bản xử lý lỗi hoạt động tuyệt vời đúng thiết kế.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng `rescued=1` là Playbook bị lỗi không đạt yêu cầu.
-- 1: Biết `rescued` là bắt lỗi nhưng không khẳng định được `failed=0` là kịch bản thành công.
-- 2: Phân tích chính xác ý nghĩa của `rescued=1` và khẳng định tính an toàn của Playbook.
-- 3: Nêu đúng + so sánh chỉ số `rescued=1, failed=0` vs `rescued=0, failed=1`.
-**Câu hỏi đào sâu:** Nếu trong khối `rescue:` lại có 1 Task bị văng lỗi tiếp, chỉ số RECAP sẽ hiển thị thế nào? *(Bảng RECAP sẽ hiển thị `failed=1` và Playbook dừng thi hành.)*
-
----
-
-### Câu 11 — Tùy biến `failed_when` Kết hợp Phép toán Logic Complex ★★★
-**Hỏi:** Viết thuộc tính `failed_when:` kết hợp 2 điều kiện: Task bị coi là FAILED khi exit code `rc != 0` VÀ trong `stderr` KHÔNG CHỨA chuỗi `"WARNING_ONLY"`.
-**Đáp án chuẩn:**
-```yaml
-- name: Execute custom system check script
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Viết thuộc tính <code>failed_when:</code> kết hợp 2 điều kiện: Task bị coi là FAILED khi exit code <code>rc != 0</code> VÀ trong <code>stderr</code> KHÔNG CHỨA chuỗi <code>"WARNING_ONLY"</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Viết thuộc tính <code>failed_when:</code> kết hợp 2 điều kiện: Task bị coi là FAILED khi exit code <code>rc != 0</code> VÀ trong <code>stderr</code> KHÔNG CHỨA chuỗi <code>"WARNING_ONLY"</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <pre><code class="language-yaml">- name: Execute custom system check script
   ansible.builtin.command: /usr/bin/custom-check.sh
   register: check_out
   failed_when:
     - check_out.rc != 0
-    - "'WARNING_ONLY' not in check_out.stderr"
-```
-**Tiêu chí chấm:**
-- 0: Không viết được biểu thức `failed_when` kết hợp logic complex.
-- 1: Viết được 1 điều kiện `rc != 0` nhưng sai cú pháp phủ định `'not in'`.
-- 2: Viết chuẩn xác mảng điều kiện AND trong `failed_when` cho 2 tiêu chí.
-- 3: Trình bày xuất sắc + giải thích cơ chế đánh giá logic AND của dạng mảng list trong `failed_when`.
-**Câu hỏi đào sâu:** Nếu muốn đổi sang logic OR giữa 2 điều kiện trên trong `failed_when`, ta viết ra sao? *(Viết trên 1 dòng: `failed_when: check_out.rc != 0 or ('WARNING_ONLY' not in check_out.stderr)`.)*
+    - "'WARNING_ONLY' not in check_out.stderr"</code></pre>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không viết được biểu thức <code>failed_when</code> kết hợp logic complex.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Viết được 1 điều kiện <code>rc != 0</code> nhưng sai cú pháp phủ định <code>'not in'</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Viết chuẩn xác mảng điều kiện AND trong <code>failed_when</code> cho 2 tiêu chí.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc + giải thích cơ chế đánh giá logic AND của dạng mảng list trong <code>failed_when</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu muốn đổi sang logic OR giữa 2 điều kiện trên trong <code>failed_when</code>, ta viết ra sao? <i>(Viết trên 1 dòng: <code>failed_when: check_out.rc != 0 or ('WARNING_ONLY' not in check_out.stderr)</code>.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng về Error Handling trong Ansible ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên xây dựng kịch bản xử lý lỗi chuyên nghiệp, an toàn và chuẩn Idempotency nhất.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Bọc các tác vụ nguy hiểm trong bộ ba `block:`, `rescue:`, `always:`.
-2. **Quy tắc 2:** Sử dụng `changed_when: false` cho tất cả các Task đọc dữ liệu CLI thô.
-3. **Quy tắc 3:** Tùy biến điều kiện thất bại thực sự bằng `failed_when:` thay vì chỉ tin vào exit code.
-4. **Quy tắc 4:** Tuyệt đối không lạm dụng `ignore_errors: yes` cho các tác vụ hệ thống cốt lõi.
-5. **Quy tắc 5:** Khai báo `any_errors_fatal: true` cho kịch bản cụm, và đối soát Lần 2 `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế Playbook chống chịu sự cố (Resilient Playbook) cho Enterprise.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào đảm bảo 100% đĩa cứng không bị đứt gãy dở dang khi có sự cố? *(Quy tắc 1 và Quy tắc 4.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng về Error Handling trong Ansible.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên xây dựng kịch bản xử lý lỗi chuyên nghiệp, an toàn và chuẩn Idempotency nhất.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Bọc các tác vụ nguy hiểm trong bộ ba <code>block:</code>, <code>rescue:</code>, <code>always:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Sử dụng <code>changed_when: false</code> cho tất cả các Task đọc dữ liệu CLI thô.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Tùy biến điều kiện thất bại thực sự bằng <code>failed_when:</code> thay vì chỉ tin vào exit code.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Tuyệt đối không lạm dụng <code>ignore_errors: yes</code> cho các tác vụ hệ thống cốt lõi.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Khai báo <code>any_errors_fatal: true</code> cho kịch bản cụm, và đối soát Lần 2 <code>changed=0</code> qua <code>docker exec</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế Playbook chống chịu sự cố (Resilient Playbook) cho Enterprise.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào đảm bảo 100% đĩa cứng không bị đứt gãy dở dang khi có sự cố? <i>(Quy tắc 1 và Quy tắc 4.)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -1060,4 +1186,10 @@ Chúc mừng học viên đã **HOÀN THÀNH 100% GIAI ĐOẠN 2 (Buổi 07–13
 1. **Nghiên cứu trước 1:** Khái niệm `Role` trong Ansible là gì? Tại sao phải chia nhỏ Playbook khổng lồ thành các Role?
 2. **Nghiên cứu trước 2:** Cấu trúc thư mục chuẩn của 1 Ansible Role gồm những thư mục con nào (ví dụ `tasks/`, `handlers/`, `templates/`, `vars/`, `defaults/`, `meta/`)?
 3. **Nghiên cứu trước 3:** Lệnh CLI `ansible-galaxy role init <role_name>` dùng để làm gì?
+
+---
+
+> [!TIP]
+> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 14: Kiến Trúc Ansible Roles Cơ Bản: Cấu Trúc Thư Mục, tasks, vars, defaults, handlers & meta](ansible-14-14-roles-basics.html).
+
 {% endraw %}

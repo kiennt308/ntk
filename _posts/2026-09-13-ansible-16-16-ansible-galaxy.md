@@ -97,6 +97,15 @@ graph TD
     E --> G["Playbook chính: site-galaxy.yml gọi Roles / Collections"]
     F --> G
     G --> H["Thi hành thành công trên Máy đích & Đạt changed=0 ở Lần 2"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#eab308,stroke-width:2px
+    style C fill:none,stroke:#6366f1,stroke-width:2px
+    style D fill:none,stroke:#8b5cf6,stroke-width:2px
+    style E fill:none,stroke:#10b981,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
+    style H fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Ansible Galaxy (galaxy.ansible.com) là kho tài nguyên công cộng chính thức lưu trữ hàng vạn Roles và Collections tự động hóa được đóng gói sẵn bởi Red Hat và cộng đồng toàn cầu.
@@ -319,8 +328,19 @@ flowchart TD
     E --> F["Playbook chính: site-galaxy.yml gọi Roles/Collections"]
     F --> G["LƯỢT CHẠY LẦN 2"]
     G --> H{"PLAY RECAP Lần 2: changed=0?"}
-    H -- Có --> I["ĐẠT: Galaxy Resources chuẩn Idempotent"]
-    H -- Không --> J["LỖI: Kiểm tra lại mã nguồn Role Galaxy"]
+    H -->|"Có"| I["ĐẠT: Galaxy Resources chuẩn Idempotent"]
+    H -->|"Không"| J["LỖI: Kiểm tra lại mã nguồn Role Galaxy"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#8b5cf6,stroke-width:2px
+    style D fill:none,stroke:#eab308,stroke-width:2px
+    style E fill:none,stroke:#06b6d4,stroke-width:2px
+    style F fill:none,stroke:#ec4899,stroke-width:2px
+    style G fill:none,stroke:#a855f7,stroke-width:2px
+    style H fill:none,stroke:#eab308,stroke-width:2px
+    style I fill:none,stroke:#10b981,stroke-width:2px
+    style J fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -454,12 +474,19 @@ graph TD
     
     RDIR -->|"5. Gửi cấu hình đã render"| T1["Target Container 1 (target1)"]
     
-    T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=4, changed=2"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENT)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-galaxy.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style GLX fill:none,stroke:#eab308,stroke-width:2px
+    style RDIR fill:none,stroke:#8b5cf6,stroke-width:2px
+    style PB fill:none,stroke:#6366f1,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
 ---
@@ -777,132 +804,191 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Ansible Galaxy (galaxy.ansible.com) là gì? Việc khai thác kho tài nguyên công cộng Galaxy mang lại lợi ích gì cho các dự án tự động hóa Doanh nghiệp?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Ansible Galaxy (galaxy.ansible.com) là gì? Việc khai thác kho tài nguyên công cộng Galaxy mang lại lợi ích gì cho các dự án tự động hóa Doanh nghiệp? <i>(Liên quan QT 4.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.5rem 0;">Ansible Galaxy là kho tài nguyên công cộng chính thức lưu trữ hàng vạn Roles và Collections tự động hóa được đóng gói sẵn bởi Red Hat và cộng đồng kỹ sư toàn cầu.</div>
+    <div style="margin: 0.5rem 0;">Lợi ích Doanh nghiệp:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tiết kiệm 90% thời gian phát triển: Tái sử dụng kịch bản đã được kiểm thử chuẩn hóa cho các dịch vụ phổ biến (Nginx, PostgreSQL, Kubernetes).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chuẩn hóa chất lượng mã nguồn theo Best Practices của Red Hat.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thúc đẩy khả năng chia sẻ và đóng góp mã nguồn mô-đun hóa trong cộng đồng.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Ansible Galaxy.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Galaxy là nơi tải code nhưng không giải thích được các lợi ích quy mô Doanh nghiệp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò kho tài nguyên công cộng và lợi ích tiết kiệm thời gian triển khai.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ lệnh CLI <code>ansible-galaxy search nginx</code> tìm kiếm tài nguyên.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Có thể xem thông tin tác giả và điểm đánh giá chất lượng của một Role trên Galaxy bằng lệnh CLI nào? <i>(Lệnh <code>ansible-galaxy role info &lt;author.role_name&gt;</code>.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Ansible Galaxy (galaxy.ansible.com) là gì? Việc khai thác kho tài nguyên công cộng Galaxy mang lại lợi ích gì cho các dự án tự động hóa Doanh nghiệp? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-Ansible Galaxy là kho tài nguyên công cộng chính thức lưu trữ hàng vạn Roles và Collections tự động hóa được đóng gói sẵn bởi Red Hat và cộng đồng kỹ sư toàn cầu.
-Lợi ích Doanh nghiệp:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tiết kiệm 90% thời gian phát triển: Tái sử dụng kịch bản đã được kiểm thử chuẩn hóa cho các dịch vụ phổ biến (Nginx, PostgreSQL, Kubernetes).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chuẩn hóa chất lượng mã nguồn theo Best Practices của Red Hat.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thúc đẩy khả năng chia sẻ và đóng góp mã nguồn mô-đun hóa trong cộng đồng.</div>
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Ansible Galaxy.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Galaxy là nơi tải code nhưng không giải thích được các lợi ích quy mô Doanh nghiệp.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò kho tài nguyên công cộng và lợi ích tiết kiệm thời gian triển khai.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ lệnh CLI <code>ansible-galaxy search nginx</code> tìm kiếm tài nguyên.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Có thể xem thông tin tác giả và điểm đánh giá chất lượng của một Role trên Galaxy bằng lệnh CLI nào? *(Lệnh <code>ansible-galaxy role info <author.role_name></code>.)*
-</div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Tệp <code>requirements.yml</code> trong dự án Ansible dùng để làm gì? Tại sao việc quản lý phụ thuộc qua <code>requirements.yml</code> lại quan trọng trong quy trình CI/CD?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tệp <code>requirements.yml</code> trong dự án Ansible dùng để làm gì? Tại sao việc quản lý phụ thuộc qua <code>requirements.yml</code> lại quan trọng trong quy trình CI/CD? <i>(Liên quan QT 4.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Tệp <code>requirements.yml</code> là tệp định nghĩa danh sách tất cả các Roles và Collections phụ thuộc bên ngoài của dự án.</div>
+    <div style="margin: 0.5rem 0;">Tầm quan trọng trong CI/CD:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp mã nguồn Git repository của dự án siêu gọn nhẹ (không cần commit trực tiếp mã nguồn của các Role bên ngoài vào Git).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tự động hóa 100%: Pipeline CI/CD chỉ cần chạy 1 câu lệnh <code>ansible-galaxy install -r requirements.yml</code> để tự động kéo toàn bộ phụ thuộc chuẩn xác trước khi thi hành Playbook.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tệp <code>requirements.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>requirements.yml</code> để tải role nhưng không giải thích được vai trò giữ Git gọn nhẹ và tích hợp CI/CD.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế manifest file quản lý phụ thuộc tập trung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa tệp <code>requirements.yml</code> chứa mục <code>roles:</code> và <code>collections:</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Sự khác biệt về cấu trúc khai báo giữa mảng <code>roles:</code> và mảng <code>collections:</code> trong <code>requirements.yml</code> là gì? <i>(Dạng <code>roles:</code> hỗ trợ thuộc tính <code>src</code>, <code>scm</code>, <code>version</code>; dạng <code>collections:</code> hỗ trợ thuộc tính <code>name</code>, <code>version</code>, <code>source</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Vai trò của Tệp `requirements.yml` 🔥
-**Hỏi:** Tệp `requirements.yml` trong dự án Ansible dùng để làm gì? Tại sao việc quản lý phụ thuộc qua `requirements.yml` lại quan trọng trong quy trình CI/CD? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:** Tệp `requirements.yml` là tệp định nghĩa danh sách tất cả các Roles và Collections phụ thuộc bên ngoài của dự án.
-Tầm quan trọng trong CI/CD:
-- Giúp mã nguồn Git repository của dự án siêu gọn nhẹ (không cần commit trực tiếp mã nguồn của các Role bên ngoài vào Git).
-- Tự động hóa 100%: Pipeline CI/CD chỉ cần chạy 1 câu lệnh `ansible-galaxy install -r requirements.yml` để tự động kéo toàn bộ phụ thuộc chuẩn xác trước khi thi hành Playbook.
-**Tiêu chí chấm:**
-- 0: Không biết tệp `requirements.yml`.
-- 1: Biết `requirements.yml` để tải role nhưng không giải thích được vai trò giữ Git gọn nhẹ và tích hợp CI/CD.
-- 2: Phân tích chính xác cơ chế manifest file quản lý phụ thuộc tập trung.
-- 3: Nêu đúng + viết đoạn YAML minh họa tệp `requirements.yml` chứa mục `roles:` và `collections:`.
-**Câu hỏi đào sâu:** Sự khác biệt về cấu trúc khai báo giữa mảng `roles:` và mảng `collections:` trong `requirements.yml` là gì? *(Dạng `roles:` hỗ trợ thuộc tính `src`, `scm`, `version`; dạng `collections:` hỗ trợ thuộc tính `name`, `version`, `source`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Trình bày câu lệnh CLI cài đặt toàn bộ phụ thuộc từ tệp <code>requirements.yml</code>. Giải thích ý nghĩa của cờ tham số <code>-r</code> và <code>--force</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày câu lệnh CLI cài đặt toàn bộ phụ thuộc từ tệp <code>requirements.yml</code>. Giải thích ý nghĩa của cờ tham số <code>-r</code> và <code>--force</code>. <i>(Liên quan QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Lệnh cài đặt: <code>ansible-galaxy install -r requirements.yml</code> (cho Roles) hoặc <code>ansible-galaxy collection install -r requirements.yml</code> (cho Collections).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ <code>-r</code> (<code>--role-file</code> / <code>--requirements</code>): Chỉ định đường dẫn tới tệp định nghĩa phụ thuộc <code>requirements.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ <code>--force</code>: Ép Ansible Galaxy tải và ghi đè cài đặt lại toàn bộ các Role/Collection đã có sẵn trên đĩa cứng local (dùng khi muốn cập nhật code mới).</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết lệnh <code>ansible-galaxy install -r</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết lệnh install nhưng không giải thích được ý nghĩa cờ <code>-r</code> và cờ ghi đè <code>--force</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác câu lệnh CLI và ý nghĩa từng cờ tham số.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa câu lệnh thực thi cài đặt trong pipeline build tự động.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu không có cờ <code>--force</code>, chuyện gì xảy ra khi cài đặt một Role đã tồn tại sẵn trong thư mục <code>./roles</code>? <i>(Ansible Galaxy sẽ im lặng bỏ qua không tải lại với thông báo <code>is already installed, skipping</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Kỹ thuật Version Pinning trong <code>requirements.yml</code> là gì? Tại sao việc chốt phiên bản lại là nguyên tắc sinh tử khi sử dụng tài nguyên công cộng từ Galaxy?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Kỹ thuật Version Pinning trong <code>requirements.yml</code> là gì? Tại sao việc chốt phiên bản lại là nguyên tắc sinh tử khi sử dụng tài nguyên công cộng từ Galaxy? <i>(Liên quan QT 5.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.5rem 0;">Kỹ thuật Version Pinning là việc khai báo cố định một phiên bản cụ thể (ví dụ <code>version: "3.1.0"</code>) hoặc dải phiên bản an toàn (ví dụ <code>version: "&gt;=2.0.0,&lt;3.0.0"</code>) cho các Role/Collection trong <code>requirements.yml</code>.</div>
+    <div style="margin: 0.5rem 0;">Nguyên tắc sinh tử: Tác giả của Role trên Galaxy có thể phát hành phiên bản mới chứa breaking changes (thay đổi cấu trúc đứt gãy). Nếu không chốt phiên bản, kịch bản tự động hóa của Doanh nghiệp có thể bị crash đột ngột khi chạy trên server mới do tự động tải bản code mới không tương thích.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Version Pinning.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết ghi version nhưng không nêu được nguy cơ rủi ro rách việc do breaking changes từ tác giả Galaxy.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò chốt phiên bản bảo vệ tính ổn định lâu dài của mã nguồn IaC.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa các cú pháp khai báo <code>version:</code> chuẩn trong <code>requirements.yml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu muốn chấp nhận tất cả các bản vá lỗi (patch updates) của phiên bản 3.1.x nhưng không muốn lên 3.2.0, ta viết <code>version:</code> ra sao? <i>(Viết <code>version: "~&gt;3.1.0"</code> hoặc <code>version: "&gt;=3.1.0,&lt;3.2.0"</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Cài đặt Phụ thuộc với `ansible-galaxy install -r` 🔥
-**Hỏi:** Trình bày câu lệnh CLI cài đặt toàn bộ phụ thuộc từ tệp `requirements.yml`. Giải thích ý nghĩa của cờ tham số `-r` và `--force`. *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-- Lệnh cài đặt: `ansible-galaxy install -r requirements.yml` (cho Roles) hoặc `ansible-galaxy collection install -r requirements.yml` (cho Collections).
-- Cờ `-r` (`--role-file` / `--requirements`): Chỉ định đường dẫn tới tệp định nghĩa phụ thuộc `requirements.yml`.
-- Cờ `--force`: Ép Ansible Galaxy tải và ghi đè cài đặt lại toàn bộ các Role/Collection đã có sẵn trên đĩa cứng local (dùng khi muốn cập nhật code mới).
-**Tiêu chí chấm:**
-- 0: Không biết lệnh `ansible-galaxy install -r`.
-- 1: Biết lệnh install nhưng không giải thích được ý nghĩa cờ `-r` và cờ ghi đè `--force`.
-- 2: Phân tích chính xác câu lệnh CLI và ý nghĩa từng cờ tham số.
-- 3: Nêu đúng + minh họa câu lệnh thực thi cài đặt trong pipeline build tự động.
-**Câu hỏi đào sâu:** Nếu không có cờ `--force`, chuyện gì xảy ra khi cài đặt một Role đã tồn tại sẵn trong thư mục `./roles`? *(Ansible Galaxy sẽ im lặng bỏ qua không tải lại với thông báo `is already installed, skipping`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Tại sao quản trị viên bắt buộc phải cấu hình <code>roles_path = ./roles</code> và <code>collections_path = ./collections</code> trong tệp <code>ansible.cfg</code> của dự án?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao quản trị viên bắt buộc phải cấu hình <code>roles_path = ./roles</code> và <code>collections_path = ./collections</code> trong tệp <code>ansible.cfg</code> của dự án? <i>(Liên quan QT 5.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Vì mặc định Ansible Galaxy sẽ cài đặt tất cả các tài nguyên tải về vào thư mục cá nhân người dùng (<code>~/.ansible/roles</code>).</div>
+    <div style="margin: 0.5rem 0;">Lý do cô lập:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. Tránh ô nhiễm môi trường: Ngăn ngừa việc 2 dự án Ansible trên cùng 1 server ghi đè làm hỏng Role của nhau.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. Quản lý độc lập: Giúp dự án tự chứa (Self-contained) toàn bộ tài nguyên lưu ngay tại thư mục làm việc local.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu hình <code>roles_path</code> trong <code>ansible.cfg</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết thuộc tính <code>roles_path</code> nhưng không giải thích được nguy cơ xung đột giữa các dự án trên cùng server.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác tư duy cô lập môi trường dự án tự chứa (Self-contained Project).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã cấu hình thuộc tính <code>roles_path</code> và <code>collections_path</code> trong <code>ansible.cfg</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm thế nào để kiểm tra danh sách các đường dẫn mà Ansible đang tìm kiếm Role? <i>(Dùng lệnh <code>ansible-config dump | grep ROLES_PATH</code>.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 4 — Kỹ thuật Chốt Phiên bản (Version Pinning) 🔥
-**Hỏi:** Kỹ thuật Version Pinning trong `requirements.yml` là gì? Tại sao việc chốt phiên bản lại là nguyên tắc sinh tử khi sử dụng tài nguyên công cộng từ Galaxy? *(Liên quan QT 5.1)*
-**Đáp án chuẩn:**
-Kỹ thuật Version Pinning là việc khai báo cố định một phiên bản cụ thể (ví dụ `version: "3.1.0"`) hoặc dải phiên bản an toàn (ví dụ `version: ">=2.0.0,<3.0.0"`) cho các Role/Collection trong `requirements.yml`.
-Nguyên tắc sinh tử: Tác giả của Role trên Galaxy có thể phát hành phiên bản mới chứa breaking changes (thay đổi cấu trúc đứt gãy). Nếu không chốt phiên bản, kịch bản tự động hóa của Doanh nghiệp có thể bị crash đột ngột khi chạy trên server mới do tự động tải bản code mới không tương thích.
-**Tiêu chí chấm:**
-- 0: Không hiểu khái niệm Version Pinning.
-- 1: Biết ghi version nhưng không nêu được nguy cơ rủi ro rách việc do breaking changes từ tác giả Galaxy.
-- 2: Phân tích chính xác vai trò chốt phiên bản bảo vệ tính ổn định lâu dài của mã nguồn IaC.
-- 3: Nêu đúng + minh họa các cú pháp khai báo `version:` chuẩn trong `requirements.yml`.
-**Câu hỏi đào sâu:** Nếu muốn chấp nhận tất cả các bản vá lỗi (patch updates) của phiên bản 3.1.x nhưng không muốn lên 3.2.0, ta viết `version:` ra sao? *(Viết `version: "~>3.1.0"` hoặc `version: ">=3.1.0,<3.2.0"`.)*
-
----
-
-### Câu 5 — Cô lập Đường dẫn Cài đặt trong `ansible.cfg` 🔥
-**Hỏi:** Tại sao quản trị viên bắt buộc phải cấu hình `roles_path = ./roles` và `collections_path = ./collections` trong tệp `ansible.cfg` của dự án? *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-Vì mặc định Ansible Galaxy sẽ cài đặt tất cả các tài nguyên tải về vào thư mục cá nhân người dùng (`~/.ansible/roles`).
-Lý do cô lập:
-1. Tránh ô nhiễm môi trường: Ngăn ngừa việc 2 dự án Ansible trên cùng 1 server ghi đè làm hỏng Role của nhau.
-2. Quản lý độc lập: Giúp dự án tự chứa (Self-contained) toàn bộ tài nguyên lưu ngay tại thư mục làm việc local.
-**Tiêu chí chấm:**
-- 0: Không biết cấu hình `roles_path` trong `ansible.cfg`.
-- 1: Biết thuộc tính `roles_path` nhưng không giải thích được nguy cơ xung đột giữa các dự án trên cùng server.
-- 2: Phân tích chính xác tư duy cô lập môi trường dự án tự chứa (Self-contained Project).
-- 3: Nêu đúng + viết đoạn mã cấu hình thuộc tính `roles_path` và `collections_path` trong `ansible.cfg`.
-**Câu hỏi đào sâu:** Làm thế nào để kiểm tra danh sách các đường dẫn mà Ansible đang tìm kiếm Role? *(Dùng lệnh `ansible-config dump | grep ROLES_PATH`.)*
-
----
-
-### Câu 6 — Nạp Role từ Git Repository Cá nhân
-**Hỏi:** Ngoài kho công cộng Galaxy, làm thế nào để khai báo tải một Role nội bộ bảo mật từ Gitlab/Github riêng tư của Doanh nghiệp trong `requirements.yml`? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** Khai báo thông số `src` chỉ tới đường dẫn Git SSH/HTTP, `scm: git`, và `version:` chỉ tới branch/tag:
-```yaml
-roles:
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Ngoài kho công cộng Galaxy, làm thế nào để khai báo tải một Role nội bộ bảo mật từ Gitlab/Github riêng tư của Doanh nghiệp trong <code>requirements.yml</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Ngoài kho công cộng Galaxy, làm thế nào để khai báo tải một Role nội bộ bảo mật từ Gitlab/Github riêng tư của Doanh nghiệp trong <code>requirements.yml</code>? <i>(Liên quan QT 5.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Khai báo thông số <code>src</code> chỉ tới đường dẫn Git SSH/HTTP, <code>scm: git</code>, và <code>version:</code> chỉ tới branch/tag:</div>
+    <pre><code class="language-yaml">roles:
   - src: git@gitlab.company.com:ansible-roles/role-security.git
     scm: git
     version: v1.2.0
-    name: company_security
-```
-Điều kiện: Máy Control Node phải được cấp quyền truy cập SSH Key để clone repo riêng tư đó.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng `requirements.yml` chỉ tải được từ kho công cộng Galaxy.
-- 1: Biết nạp từ Git nhưng không nêu được các từ khóa `src`, `scm: git`, `version`.
-- 2: Phân tích chính xác cơ chế nạp Role riêng tư từ Gitlab/Github Enterprise.
-- 3: Nêu đúng + viết đoạn YAML chuẩn khai báo nạp Role từ Gitlab riêng tư.
-**Câu hỏi đào sâu:** Cụm từ `name: company_security` trong khai báo trên có tác dụng gì? *(Dùng để đổi tên thư mục Role tải về thành `company_security` trong thư mục `./roles`.)*
+    name: company_security</code></pre>
+    <div style="margin: 0.5rem 0;">Điều kiện: Máy Control Node phải được cấp quyền truy cập SSH Key để clone repo riêng tư đó.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng <code>requirements.yml</code> chỉ tải được từ kho công cộng Galaxy.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết nạp từ Git nhưng không nêu được các từ khóa <code>src</code>, <code>scm: git</code>, <code>version</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế nạp Role riêng tư từ Gitlab/Github Enterprise.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML chuẩn khai báo nạp Role từ Gitlab riêng tư.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Cụm từ <code>name: company_security</code> trong khai báo trên có tác dụng gì? <i>(Dùng để đổi tên thư mục Role tải về thành <code>company_security</code> trong thư mục <code>./roles</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Trong môi trường trung tâm dữ liệu bảo mật cao bị ngắt hoàn toàn Internet (Air-gapped Network), làm thế nào để cài đặt các Roles/Collections từ Galaxy?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trong môi trường trung tâm dữ liệu bảo mật cao bị ngắt hoàn toàn Internet (Air-gapped Network), làm thế nào để cài đặt các Roles/Collections từ Galaxy? <i>(Liên quan QT 6.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.5rem 0;">Quy trình 2 bước:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Tại máy ngoài có mạng Internet:</b> Sử dụng lệnh <code>ansible-galaxy role download &lt;role_name&gt;</code> hoặc tải tệp nén tarball <code>.tar.gz</code> chứa mã nguồn Role/Collection.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Chuyển tệp vào máy Air-gapped:</b> Chép tệp <code>.tar.gz</code> qua ổ đĩa an toàn vào Control Node local và chạy lệnh cài đặt offline: <code>ansible-galaxy role install ./downloads/geerlingguy-nginx-3.1.0.tar.gz</code></div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Cho rằng không thể cài đặt tài nguyên Galaxy trong môi trường Air-gapped.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết tải file tarball nhưng không nêu được câu lệnh CLI cài đặt từ file <code>.tar.gz</code> local.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác quy trình 2 bước triển khai offline cho Air-gapped Network.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết câu lệnh CLI cài đặt từ tệp nén tarball offline.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Cần lưu ý điều gì về các Role phụ thuộc (dependencies) khi cài đặt offline từ tệp tarball? <i>(Phải tải thủ công đầy đủ tất cả các tệp tarball của các Role phụ thuộc.)</i></div>
+  </div>
+</details>
 
-### Câu 7 — Quản lý Hạ tầng Offline Air-Gapped với Galaxy
-**Hỏi:** Trong môi trường trung tâm dữ liệu bảo mật cao bị ngắt hoàn toàn Internet (Air-gapped Network), làm thế nào để cài đặt các Roles/Collections từ Galaxy? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:**
-Quy trình 2 bước:
-1. **Tại máy ngoài có mạng Internet:** Sử dụng lệnh `ansible-galaxy role download <role_name>` hoặc tải tệp nén tarball `.tar.gz` chứa mã nguồn Role/Collection.
-2. **Chuyển tệp vào máy Air-gapped:** Chép tệp `.tar.gz` qua ổ đĩa an toàn vào Control Node local và chạy lệnh cài đặt offline:
-   `ansible-galaxy role install ./downloads/geerlingguy-nginx-3.1.0.tar.gz`
-**Tiêu chí chấm:**
-- 0: Cho rằng không thể cài đặt tài nguyên Galaxy trong môi trường Air-gapped.
-- 1: Biết tải file tarball nhưng không nêu được câu lệnh CLI cài đặt từ file `.tar.gz` local.
-- 2: Phân tích chính xác quy trình 2 bước triển khai offline cho Air-gapped Network.
-- 3: Nêu đúng + viết câu lệnh CLI cài đặt từ tệp nén tarball offline.
-**Câu hỏi đào sâu:** Cần lưu ý điều gì về các Role phụ thuộc (dependencies) khi cài đặt offline từ tệp tarball? *(Phải tải thủ công đầy đủ tất cả các tệp tarball của các Role phụ thuộc.)*
-
----
-
-### Câu 8 — Gọi Tài nguyên Galaxy trong Playbook
-**Hỏi:** Sau khi đã tải các Roles và Collections từ Galaxy về thư mục local, làm thế nào để gọi và áp dụng chúng trong Playbook `site-galaxy.yml`? *(Liên quan QT 6.2)*
-**Đáp án chuẩn:**
-Khai báo từ khóa `collections:` và `roles:` ở cấp Playbook:
-```yaml
-- name: Apply Galaxy Resources
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Sau khi đã tải các Roles và Collections từ Galaxy về thư mục local, làm thế nào để gọi và áp dụng chúng trong Playbook <code>site-galaxy.yml</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Sau khi đã tải các Roles và Collections từ Galaxy về thư mục local, làm thế nào để gọi và áp dụng chúng trong Playbook <code>site-galaxy.yml</code>? <i>(Liên quan QT 6.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Khai báo từ khóa <code>collections:</code> và <code>roles:</code> ở cấp Playbook:</div>
+    <pre><code class="language-yaml">- name: Apply Galaxy Resources
   hosts: web
   become: true
   collections:
@@ -910,72 +996,109 @@ Khai báo từ khóa `collections:` và `roles:` ở cấp Playbook:
   roles:
     - role: geerlingguy.nginx
       vars:
-        nginx_http_port: 8080
-```
-**Tiêu chí chấm:**
-- 0: Không biết cách gọi tài nguyên Galaxy trong Playbook.
-- 1: Biết gọi `roles:` nhưng nhầm lẫn tên Role trên đĩa làm Ansible không nạp được.
-- 2: Phân tích chính xác cú pháp gọi Collection và Role nạp từ Galaxy.
-- 3: Nêu đúng + viết ví dụ Playbook hoàn chỉnh gọi Role Galaxy truyền biến tùy chỉnh.
-**Câu hỏi đào sâu:** Tại sao tên Role tải từ Galaxy thường có dạng `username.rolename` (như `geerlingguy.nginx`)? *(Đó là chuẩn phân biệt không gian tên Namespace của Ansible Galaxy để chống trùng tên.)*
+        nginx_http_port: 8080</code></pre>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cách gọi tài nguyên Galaxy trong Playbook.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết gọi <code>roles:</code> nhưng nhầm lẫn tên Role trên đĩa làm Ansible không nạp được.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cú pháp gọi Collection và Role nạp từ Galaxy.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ Playbook hoàn chỉnh gọi Role Galaxy truyền biến tùy chỉnh.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Tại sao tên Role tải từ Galaxy thường có dạng <code>username.rolename</code> (như <code>geerlingguy.nginx</code>)? <i>(Đó là chuẩn phân biệt không gian tên Namespace của Ansible Galaxy để chống trùng tên.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng Roles/Collections tải từ Ansible Galaxy để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng Roles/Collections tải từ Ansible Galaxy để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site-galaxy.yml</code>: Các Task trong Role Galaxy thực thi và cài đặt ứng dụng báo <code>changed &gt; 0</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site-galaxy.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task trong Role Galaxy đều báo <code>ok</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/galaxy-demo.conf</code> kiểm tra file cấu hình thực sự tồn tại và chứa đúng tham số đã render.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh <code>docker exec cat</code> kiểm tra kết quả từ Role Galaxy.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm sao để biết một Role trên Galaxy có đạt chuẩn Idempotency trước khi tải về dùng? <i>(Xem điểm đánh giá Quality Score và chỉ số CI Build Status trên trang galaxy.ansible.com.)</i></div>
+  </div>
+</details>
 
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng Galaxy Roles 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng Roles/Collections tải từ Ansible Galaxy để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site-galaxy.yml`: Các Task trong Role Galaxy thực thi và cài đặt ứng dụng báo `changed > 0`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site-galaxy.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task trong Role Galaxy đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/galaxy-demo.conf` kiểm tra file cấu hình thực sự tồn tại và chứa đúng tham số đã render.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.
-- 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh `docker exec cat` kiểm tra kết quả từ Role Galaxy.
-**Câu hỏi đào sâu:** Làm sao để biết một Role trên Galaxy có đạt chuẩn Idempotency trước khi tải về dùng? *(Xem điểm đánh giá Quality Score và chỉ số CI Build Status trên trang galaxy.ansible.com.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Tệp <code>ansible-galaxy.yml</code> khác tệp <code>requirements.yml</code> ở điểm cốt lõi nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tệp <code>ansible-galaxy.yml</code> khác tệp <code>requirements.yml</code> ở điểm cốt lõi nào?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>requirements.yml</code>: Dùng cho <b>NGƯỜI DÙNG (Consumer)</b> để khai báo danh sách các Roles/Collections phụ thuộc cần tải về dự án.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ansible-galaxy.yml</code> (hoặc <code>galaxy.yml</code>): Dùng cho <b>TÁC GIẢ (Author/Publisher)</b> để định nghĩa siêu dữ liệu (namespace, name, version, readme) khi đóng gói và xuất bản một Collection mới lên Ansible Galaxy.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Nhầm lẫn giữa <code>requirements.yml</code> và <code>galaxy.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết 2 file khác nhau nhưng không phân biệt được góc độ Consumer vs Publisher.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò Consumer tải về vs Publisher xuất bản Collection.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết các trường siêu dữ liệu chính trong tệp <code>galaxy.yml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Lệnh CLI nào dùng để đóng gói một Collection từ tệp <code>galaxy.yml</code> thành tệp nén tarball? <i>(Lệnh <code>ansible-galaxy collection build</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Khi 2 Collections trong <code>requirements.yml</code> cùng phụ thuộc vào một Collection thứ 3 nhưng yêu cầu 2 phiên bản khác nhau, Ansible Galaxy sẽ xử lý ra sao?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Khi 2 Collections trong <code>requirements.yml</code> cùng phụ thuộc vào một Collection thứ 3 nhưng yêu cầu 2 phiên bản khác nhau, Ansible Galaxy sẽ xử lý ra sao?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Ansible Galaxy có thuật toán giải quyết phụ thuộc (Dependency Resolver). Nó sẽ cố gắng tìm một phiên bản chung duy nhất thỏa mãn tất cả các điều kiện ràng buộc phiên bản (Version Constraints). Nếu không tìm thấy phiên bản thỏa mãn đồng thời, lệnh <code>ansible-galaxy install</code> sẽ dừng và báo lỗi <code>Dependency resolution failed conflict</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cơ chế xử lý xung đột phiên bản của Galaxy.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết văng lỗi nhưng không giải thích được nguyên lý tìm phiên bản giao thoa của Dependency Resolver.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác thuật toán Dependency Resolver và lý do báo lỗi xung đột phiên bản.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + đưa ra giải pháp điều chỉnh dải phiên bản trong <code>requirements.yml</code> để khắc phục lỗi.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Cờ tham số nào cho phép bỏ qua kiểm tra dependency khi cài đặt Collection? <i>(Cờ <code>--ignore-with-deps</code> hoặc <code>--no-deps</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 10 — Tệp Nạp Cấu hình Nâng cao `ansible-galaxy.yml` ★★★
-**Hỏi:** Tệp `ansible-galaxy.yml` khác tệp `requirements.yml` ở điểm cốt lõi nào?
-**Đáp án chuẩn:**
-- `requirements.yml`: Dùng cho **NGƯỜI DÙNG (Consumer)** để khai báo danh sách các Roles/Collections phụ thuộc cần tải về dự án.
-- `ansible-galaxy.yml` (hoặc `galaxy.yml`): Dùng cho **TÁC GIẢ (Author/Publisher)** để định nghĩa siêu dữ liệu (namespace, name, version, readme) khi đóng gói và xuất bản một Collection mới lên Ansible Galaxy.
-**Tiêu chí chấm:**
-- 0: Nhầm lẫn giữa `requirements.yml` và `galaxy.yml`.
-- 1: Biết 2 file khác nhau nhưng không phân biệt được góc độ Consumer vs Publisher.
-- 2: Phân tích chính xác vai trò Consumer tải về vs Publisher xuất bản Collection.
-- 3: Nêu đúng + viết các trường siêu dữ liệu chính trong tệp `galaxy.yml`.
-**Câu hỏi đào sâu:** Lệnh CLI nào dùng để đóng gói một Collection từ tệp `galaxy.yml` thành tệp nén tarball? *(Lệnh `ansible-galaxy collection build`.)*
-
----
-
-### Câu 11 — Xử lý Xung đột Phiên bản Phụ thuộc (Dependency Resolution) ★★★
-**Hỏi:** Khi 2 Collections trong `requirements.yml` cùng phụ thuộc vào một Collection thứ 3 nhưng yêu cầu 2 phiên bản khác nhau, Ansible Galaxy sẽ xử lý ra sao?
-**Đáp án chuẩn:** Ansible Galaxy có thuật toán giải quyết phụ thuộc (Dependency Resolver). Nó sẽ cố gắng tìm một phiên bản chung duy nhất thỏa mãn tất cả các điều kiện ràng buộc phiên bản (Version Constraints). Nếu không tìm thấy phiên bản thỏa mãn đồng thời, lệnh `ansible-galaxy install` sẽ dừng và báo lỗi `Dependency resolution failed conflict`.
-**Tiêu chí chấm:**
-- 0: Không biết cơ chế xử lý xung đột phiên bản của Galaxy.
-- 1: Biết văng lỗi nhưng không giải thích được nguyên lý tìm phiên bản giao thoa của Dependency Resolver.
-- 2: Phân tích chính xác thuật toán Dependency Resolver và lý do báo lỗi xung đột phiên bản.
-- 3: Nêu đúng + đưa ra giải pháp điều chỉnh dải phiên bản trong `requirements.yml` để khắc phục lỗi.
-**Câu hỏi đào sâu:** Cờ tham số nào cho phép bỏ qua kiểm tra dependency khi cài đặt Collection? *(Cờ `--ignore-with-deps` hoặc `--no-deps`.)*
-
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng khi Khai thác Ansible Galaxy ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên khai thác tài nguyên Ansible Galaxy chuyên nghiệp, an toàn bảo mật và chuẩn Idempotency 100%.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Quản lý tập trung 100% phụ thuộc qua tệp `requirements.yml`.
-2. **Quy tắc 2:** Luôn chốt phiên bản (Version Pinning) cố định để chống đứt gãy code.
-3. **Quy tắc 3:** Cô lập đường dẫn cài đặt `./roles` và `./collections` trong `ansible.cfg`.
-4. **Quy tắc 4:** Kiểm tra mã nguồn (Code Audit) các Role công cộng trước khi đưa vào Production.
-5. **Quy tắc 5:** Tự động hóa cài đặt bằng `install -r` trong CI/CD và kiểm thử Lần 2 `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy quản lý tài nguyên IaC chuyên nghiệp Doanh nghiệp.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp bảo vệ an toàn thông tin hạ tầng Doanh nghiệp? *(Quy tắc 4: Kiểm tra mã nguồn Code Audit trước khi chạy Production.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng khi Khai thác Ansible Galaxy.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên khai thác tài nguyên Ansible Galaxy chuyên nghiệp, an toàn bảo mật và chuẩn Idempotency 100%.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Quản lý tập trung 100% phụ thuộc qua tệp <code>requirements.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Luôn chốt phiên bản (Version Pinning) cố định để chống đứt gãy code.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Cô lập đường dẫn cài đặt <code>./roles</code> và <code>./collections</code> trong <code>ansible.cfg</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Kiểm tra mã nguồn (Code Audit) các Role công cộng trước khi đưa vào Production.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Tự động hóa cài đặt bằng <code>install -r</code> trong CI/CD và kiểm thử Lần 2 <code>changed=0</code> qua <code>docker exec</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy quản lý tài nguyên IaC chuyên nghiệp Doanh nghiệp.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp bảo vệ an toàn thông tin hạ tầng Doanh nghiệp? <i>(Quy tắc 4: Kiểm tra mã nguồn Code Audit trước khi chạy Production.)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -1003,4 +1126,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm khai thác kho tài ngu
 1. **Nghiên cứu trước 1:** Khái niệm FQCN (Fully Qualified Collection Name) trong Ansible 2.9+ là gì? Cho ví dụ minh họa FQCN của module `copy` và module `user`.
 2. **Nghiên cứu trước 2:** Khác biệt lớn nhất về mặt cấu trúc lưu trữ giữa một Ansible Role truyền thống và một Ansible Collection là gì?
 3. **Nghiên cứu trước 3:** Tại sao Red Hat khuyến nghị bắt buộc phải sử dụng FQCN thay vì tên short-name module cũ trong các Playbook Enterprise?
+
+---
+
+> [!TIP]
+> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 17: Tổ Chức Module Hiện Đại Với Ansible Collections: FQCN, Xây Dựng & Phân Phối Gói Tự Động Hóa](ansible-17-17-collections-fqcn.html).
+
 {% endraw %}

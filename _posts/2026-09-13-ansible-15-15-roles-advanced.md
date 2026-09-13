@@ -83,16 +83,26 @@ Nâng tầm kỹ năng quản lý mô-đun hạ tầng tiệm cận mốc 50% to
 graph TD
     A["Playbook thi hành: site-advanced-roles.yml"] --> B{"Chọn phương pháp Nạp Role"}
     
-    B -- "import_role (Static Import)" --> C["Phân tích Pre-parse ở đầu phiên chạy"]
+    B -->|"import_role (Static Import)"| C["Phân tích Pre-parse ở đầu phiên chạy"]
     C --> D["Nạp toàn bộ Tasks vào Playbook Tree trước khi chạy"]
     D --> E["Ưu điểm: Hỗ trợ notify Handler & Tags toàn cục"]
     
-    B -- "include_role (Dynamic Include)" --> F["Đánh giá Runtime khi tiến trình chạy đến Task"]
+    B -->|"include_role (Dynamic Include)"| F["Đánh giá Runtime khi tiến trình chạy đến Task"]
     F --> G["Tính toán linh hoạt theo Biến, Điều kiện when, và loop:"]
     G --> H["Ưu điểm: Dễ dàng chạy trong Vòng lặp & Nạp theo môi trường"]
     
     E --> I["Chạy kịch bản và giữ nguyên changed=0 ở Lần 2"]
     H --> I
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#eab308,stroke-width:2px
+    style C fill:none,stroke:#6366f1,stroke-width:2px
+    style D fill:none,stroke:#8b5cf6,stroke-width:2px
+    style E fill:none,stroke:#10b981,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#f59e0b,stroke-width:2px
+    style H fill:none,stroke:#10b981,stroke-width:2px
+    style I fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Phân biệt chính xác bản chất khác nhau giữa hai module `ansible.builtin.import_role` (Nạp tĩnh ở thời điểm Parse Playbook) và `ansible.builtin.include_role` (Nạp động ở thời điểm Runtime).
@@ -325,8 +335,20 @@ flowchart TD
     
     G --> H["LƯỢT CHẠY LẦN 2 (MỐC 50% KHÓA HỌC)"]
     H --> I{"PLAY RECAP Lần 2: changed=0?"}
-    I -- Có --> J["ĐẠT: Enterprise Advanced Role Idempotent"]
-    I -- Không --> K["LỖI: Rà soát lại task bên trong Role"]
+    I -->|"Có"| J["ĐẠT: Enterprise Advanced Role Idempotent"]
+    I -->|"Không"| K["LỖI: Rà soát lại task bên trong Role"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#eab308,stroke-width:2px
+    style C fill:none,stroke:#6366f1,stroke-width:2px
+    style D fill:none,stroke:#06b6d4,stroke-width:2px
+    style E fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#8b5cf6,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
+    style H fill:none,stroke:#a855f7,stroke-width:2px
+    style I fill:none,stroke:#eab308,stroke-width:2px
+    style J fill:none,stroke:#10b981,stroke-width:2px
+    style K fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -461,7 +483,7 @@ graph TD
     PB -->|"3. Task 2: include_role -> app_server (when: production)"| R2["Role: app_server"]
     
     subgraph "Nội bộ Role: roles/app_server/"
-        R2 -. "Auto dependency -> meta/main.yml" .-> R1
+        R2 -.->|"Auto dependency -> meta/main.yml"| R1
         R2 -->|"4. Run tasks_from: configure.yml"| TCFG["configure.yml: Deploy /etc/app-server.conf"]
     end
     
@@ -469,12 +491,21 @@ graph TD
     
     R2 -->|"6. Gửi cấu hình đã render"| T1["Target Container 1 (target1)"]
     
-    T1 -. "RECAP Lần 1: ok=6, changed=3" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=6, changed=0 (MỐC 50% KHÓA HỌC)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=6, changed=3"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=6, changed=0 (MỐC 50% KHÓA HỌC)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-advanced-roles.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style PB fill:none,stroke:#6366f1,stroke-width:2px
+    style R1 fill:none,stroke:#10b981,stroke-width:2px
+    style R2 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style TCFG fill:none,stroke:#f59e0b,stroke-width:2px
+    style R3 fill:none,stroke:#06b6d4,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#ec4899,stroke-width:2px
 ```
 
 ---
@@ -829,206 +860,302 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa <code>ansible.builtin.import_role</code> và <code>ansible.builtin.include_role</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa <code>ansible.builtin.import_role</code> và <code>ansible.builtin.include_role</code>. <i>(Liên quan QT 4.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>import_role</code> (Static Import): Nạp tĩnh tại thời điểm <b>Parse Playbook</b> (Pre-parse). Toàn bộ các Task của Role được chèn trực tiếp vào cây Playbook trước khi chạy. Hỗ trợ đầy đủ cờ <code>tags</code> và <code>handlers</code> toàn cục.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>include_role</code> (Dynamic Include): Nạp động tại thời điểm <b>Runtime</b> khi tiến trình chạy đến đúng Task đó. Cho phép kết hợp linh hoạt với vòng lặp <code>loop:</code> và điều kiện <code>when:</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được <code>import_role</code> và <code>include_role</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết một cái tĩnh một cái động nhưng giải thích sai về thời điểm parse time vs runtime.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt về Parse time vs Runtime và khả năng dùng với <code>loop:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ kịch bản thực tế khi nào dùng <code>import_role</code> vs <code>include_role</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu muốn gọi 1 Role lặp qua một mảng danh sách IP, bắt buộc phải dùng module nào? <i>(Bắt buộc dùng <code>ansible.builtin.include_role</code>.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> So sánh sự khác nhau cốt lõi về thời điểm thi hành (Execution Time) và hành vi giữa <code>ansible.builtin.import_role</code> và <code>ansible.builtin.include_role</code>. *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>import_role</code> (Static Import): Nạp tĩnh tại thời điểm <b style="color: var(--accent-primary);">Parse Playbook</b> (Pre-parse). Toàn bộ các Task của Role được chèn trực tiếp vào cây Playbook trước khi chạy. Hỗ trợ đầy đủ cờ <code>tags</code> và <code>handlers</code> toàn cục.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>include_role</code> (Dynamic Include): Nạp động tại thời điểm <b style="color: var(--accent-primary);">Runtime</b> khi tiến trình chạy đến đúng Task đó. Cho phép kết hợp linh hoạt với vòng lặp <code>loop:</code> và điều kiện <code>when:</code>.</div>
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được <code>import_role</code> và <code>include_role</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết một cái tĩnh một cái động nhưng giải thích sai về thời điểm parse time vs runtime.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt về Parse time vs Runtime và khả năng dùng với <code>loop:</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ kịch bản thực tế khi nào dùng <code>import_role</code> vs <code>include_role</code>.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu muốn gọi 1 Role lặp qua một mảng danh sách IP, bắt buộc phải dùng module nào? *(Bắt buộc dùng <code>ansible.builtin.include_role</code>.)*
-</div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Cơ chế Role Dependencies trong tệp <code>meta/main.yml</code> hoạt động như thế nào? Nêu lợi ích của nó trong quản lý mô-đun hạ tầng Doanh nghiệp.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Cơ chế Role Dependencies trong tệp <code>meta/main.yml</code> hoạt động như thế nào? Nêu lợi ích của nó trong quản lý mô-đun hạ tầng Doanh nghiệp. <i>(Liên quan QT 4.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.5rem 0;">Cơ chế: Khi một Role chính (như <code>app_server</code>) khai báo danh sách các Role phụ thuộc (<code>dependencies: - role: common</code>) trong <code>meta/main.yml</code>, Ansible Engine sẽ <b>tự động nhận biết và thực thi toàn bộ các Role phụ thuộc đó TRƯỚC KHI các Task của Role chính chạy</b>.</div>
+    <div style="margin: 0.5rem 0;">Lợi ích: Đảm bảo 100% các máy chủ ứng dụng tự động được cài đặt sẵn hạ tầng nền tảng (như Security, NTP, Logging) mà không cần người dùng phải khai báo thủ công <code>role: common</code> trong mọi Playbook.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cơ chế Role Dependencies.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết dependency trong <code>meta</code> nhưng không giải thích được thứ tự ưu tiên thi hành trước Role chính.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế tự động nạp trước và lợi ích chuẩn hóa hạ tầng Doanh nghiệp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa file <code>meta/main.yml</code> khai báo dependency truyền biến.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Mặc định, nếu 2 Role chính cùng phụ thuộc vào <code>role: common</code>, <code>role: common</code> sẽ chạy mấy lần? <i>(Mặc định chỉ chạy 1 LẦN duy nhất để tránh trùng lặp.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Tự động hóa Giải quyết Phụ thuộc với Role Dependencies 🔥
-**Hỏi:** Cơ chế Role Dependencies trong tệp `meta/main.yml` hoạt động như thế nào? Nêu lợi ích của nó trong quản lý mô-đun hạ tầng Doanh nghiệp. *(Liên quan QT 4.2)*
-**Đáp án chuẩn:**
-Cơ chế: Khi một Role chính (như `app_server`) khai báo danh sách các Role phụ thuộc (`dependencies: - role: common`) trong `meta/main.yml`, Ansible Engine sẽ **tự động nhận biết và thực thi toàn bộ các Role phụ thuộc đó TRƯỚC KHI các Task của Role chính chạy**.
-Lợi ích: Đảm bảo 100% các máy chủ ứng dụng tự động được cài đặt sẵn hạ tầng nền tảng (như Security, NTP, Logging) mà không cần người dùng phải khai báo thủ công `role: common` trong mọi Playbook.
-**Tiêu chí chấm:**
-- 0: Không biết cơ chế Role Dependencies.
-- 1: Biết dependency trong `meta` nhưng không giải thích được thứ tự ưu tiên thi hành trước Role chính.
-- 2: Phân tích chính xác cơ chế tự động nạp trước và lợi ích chuẩn hóa hạ tầng Doanh nghiệp.
-- 3: Nêu đúng + viết đoạn YAML minh họa file `meta/main.yml` khai báo dependency truyền biến.
-**Câu hỏi đào sâu:** Mặc định, nếu 2 Role chính cùng phụ thuộc vào `role: common`, `role: common` sẽ chạy mấy lần? *(Mặc định chỉ chạy 1 LẦN duy nhất để tránh trùng lặp.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Trình bày cách kết hợp module <code>ansible.builtin.include_role</code> với từ khóa vòng lặp <code>loop:</code>. Tại sao không thể dùng <code>import_role</code> với <code>loop:</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày cách kết hợp module <code>ansible.builtin.include_role</code> với từ khóa vòng lặp <code>loop:</code>. Tại sao không thể dùng <code>import_role</code> với <code>loop:</code>? <i>(Liên quan QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cách kết hợp: Dùng <code>include_role</code> với <code>loop: {{ my_list }}</code> để nạp và thực thi lại Role cho từng phần tử trong danh sách, biến từng phần tử thành một bộ tham số đè cho Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không dùng được <code>import_role</code> với <code>loop:</code> vì <code>import_role</code> là nạp tĩnh ở thời điểm Parse Playbook (Pre-parse), lúc này các biến vòng lặp <code>loop:</code> chưa được Ansible Engine tính toán.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng <code>import_role</code> dùng được với <code>loop:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>include_role</code> đi được với <code>loop:</code> nhưng giải thích sai nguyên nhân parser của <code>import_role</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác lý do pre-parse của <code>import_role</code> khiến nó không thể nhận biến <code>loop:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn Playbook YAML minh họa lặp <code>include_role</code> tạo Virtual Hosts.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Khi lồng <code>include_role</code> trong <code>loop:</code>, cần lưu ý thuộc tính nào để tránh ghi đè tên biến <code>item</code>? <i>(Sử dụng <code>loop_control: loop_var: my_custom_var</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Thuộc tính <code>tasks_from:</code> trong <code>include_role</code> / <code>import_role</code> dùng để làm gì? Nêu trường hợp sử dụng thực tế.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Thuộc tính <code>tasks_from:</code> trong <code>include_role</code> / <code>import_role</code> dùng để làm gì? Nêu trường hợp sử dụng thực tế. <i>(Liên quan QT 5.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Thuộc tính <code>tasks_from: &lt;file.yml&gt;</code> dùng để chỉ định nạp một tệp Task cụ thể nằm trong thư mục <code>tasks/</code> của Role thay vì tệp mặc định <code>tasks/main.yml</code>.<br>Trường hợp sử dụng: Khi Role được chia nhỏ thành nhiều công đoạn riêng biệt (như <code>install.yml</code>, <code>configure.yml</code>, <code>cleanup.yml</code>), người dùng có thể gọi riêng <code>tasks_from: cleanup.yml</code> để thực hiện tác vụ dọn dẹp mà không cần chạy lại toàn bộ tiến trình cài đặt.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>tasks_from:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>tasks_from</code> chỉ file nhưng không cho được ví dụ thực tế chia nhỏ công đoạn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế chỉ định tệp entrypoint và tư duy chia nhỏ mã nguồn.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa nạp <code>tasks_from: configure.yml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Có thể áp dụng tương tự cho tệp Handler và tệp Variable không? <i>(Có, sử dụng thuộc tính <code>handlers_from:</code> và <code>vars_from:</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Sử dụng `include_role` trong Vòng lặp `loop:` 🔥
-**Hỏi:** Trình bày cách kết hợp module `ansible.builtin.include_role` với từ khóa vòng lặp `loop:`. Tại sao không thể dùng `import_role` với `loop:`? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-- Cách kết hợp: Dùng `include_role` với `loop: {{ my_list }}` để nạp và thực thi lại Role cho từng phần tử trong danh sách, biến từng phần tử thành một bộ tham số đè cho Role.
-- Không dùng được `import_role` với `loop:` vì `import_role` là nạp tĩnh ở thời điểm Parse Playbook (Pre-parse), lúc này các biến vòng lặp `loop:` chưa được Ansible Engine tính toán.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng `import_role` dùng được với `loop:`.
-- 1: Biết `include_role` đi được với `loop:` nhưng giải thích sai nguyên nhân parser của `import_role`.
-- 2: Phân tích chính xác lý do pre-parse của `import_role` khiến nó không thể nhận biến `loop:`.
-- 3: Nêu đúng + viết đoạn Playbook YAML minh họa lặp `include_role` tạo Virtual Hosts.
-**Câu hỏi đào sâu:** Khi lồng `include_role` trong `loop:`, cần lưu ý thuộc tính nào để tránh ghi đè tên biến `item`? *(Sử dụng `loop_control: loop_var: my_custom_var`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Có những cách nào để truyền biến tùy chỉnh khi nạp Role bằng <code>include_role</code> hoặc <code>import_role</code>? Cách nào có độ ưu tiên cao nhất?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Có những cách nào để truyền biến tùy chỉnh khi nạp Role bằng <code>include_role</code> hoặc <code>import_role</code>? Cách nào có độ ưu tiên cao nhất? <i>(Liên quan QT 5.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.5rem 0;">Có 2 cách truyền biến chính:</div>
+    <pre><code class="language-yaml"># 1. Truyền trực tiếp dưới từ khóa vars của include_role:
+include_role:
+  name: webserver
+vars:
+  webserver_port: 8080
 
----
+# 2. Truyền dạng tham số inline:
+include_role: name=webserver webserver_port=8080</code></pre>
+    <div style="margin: 0.5rem 0;">Khối biến truyền trực tiếp dưới <code>vars:</code> của task nạp có <b>độ ưu tiên rất cao</b>, ghi đè toàn bộ các biến trong <code>defaults/main.yml</code> của Role.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cách truyền biến cho <code>include_role</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết truyền biến nhưng không nắm được độ ưu tiên ghi đè của nó.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác các cú pháp truyền biến và thứ tự ưu tiên.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ truyền biến tùy chỉnh cho môi trường Production.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Mặc định, các biến truyền vào <code>include_role</code> có bị rò rỉ (leak) sang các Task phía sau không? <i>(Mặc định có bị rò rỉ; muốn giới hạn phạm vi phải dùng cờ <code>public: false</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 4 — Chia nhỏ Task với `tasks_from:` 🔥
-**Hỏi:** Thuộc tính `tasks_from:` trong `include_role` / `import_role` dùng để làm gì? Nêu trường hợp sử dụng thực tế. *(Liên quan QT 5.1)*
-**Đáp án chuẩn:** Thuộc tính `tasks_from: <file.yml>` dùng để chỉ định nạp một tệp Task cụ thể nằm trong thư mục `tasks/` của Role thay vì tệp mặc định `tasks/main.yml`.
-Trường hợp sử dụng: Khi Role được chia nhỏ thành nhiều công đoạn riêng biệt (như `install.yml`, `configure.yml`, `cleanup.yml`), người dùng có thể gọi riêng `tasks_from: cleanup.yml` để thực hiện tác vụ dọn dẹp mà không cần chạy lại toàn bộ tiến trình cài đặt.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `tasks_from:`.
-- 1: Biết `tasks_from` chỉ file nhưng không cho được ví dụ thực tế chia nhỏ công đoạn.
-- 2: Phân tích chính xác cơ chế chỉ định tệp entrypoint và tư duy chia nhỏ mã nguồn.
-- 3: Nêu đúng + viết đoạn YAML minh họa nạp `tasks_from: configure.yml`.
-**Câu hỏi đào sâu:** Có thể áp dụng tương tự cho tệp Handler và tệp Variable không? *(Có, sử dụng thuộc tính `handlers_from:` và `vars_from:`.)*
-
----
-
-### Câu 5 — Truyền Biến Tùy chỉnh Nâng cao cho Role
-**Hỏi:** Có những cách nào để truyền biến tùy chỉnh khi nạp Role bằng `include_role` hoặc `import_role`? Cách nào có độ ưu tiên cao nhất? *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-Có 2 cách truyền biến chính:
-1. Truyền trực tiếp dưới từ khóa `vars:` của `include_role`:
-   ```yaml
-   include_role:
-     name: webserver
-   vars:
-     webserver_port: 8080
-   ```
-2. Truyền dạng tham số inline: `include_role: name=webserver webserver_port=8080`.
-Khối biến truyền trực tiếp dưới `vars:` của task nạp có **độ ưu tiên rất cao**, ghi đè toàn bộ các biến trong `defaults/main.yml` của Role.
-**Tiêu chí chấm:**
-- 0: Không biết cách truyền biến cho `include_role`.
-- 1: Biết truyền biến nhưng không nắm được độ ưu tiên ghi đè của nó.
-- 2: Phân tích chính xác các cú pháp truyền biến và thứ tự ưu tiên.
-- 3: Nêu đúng + minh họa ví dụ truyền biến tùy chỉnh cho môi trường Production.
-**Câu hỏi đào sâu:** Mặc định, các biến truyền vào `include_role` có bị rò rỉ (leak) sang các Task phía sau không? *(Mặc định có bị rò rỉ; muốn giới hạn phạm vi phải dùng cờ `public: false`.)*
-
----
-
-### Câu 6 — Nạp Tệp Variable Theo Hệ điều hành với `vars_from:`
-**Hỏi:** Làm thế nào để tự động nạp các tệp biến số khác nhau (`vars/RedHat.yml` vs `vars/Debian.yml`) trong Role dựa trên hệ điều hành của máy đích? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** Sử dụng thuộc tính `vars_from:` kết hợp với Ansible Facts `ansible_facts.os_family`:
-```yaml
-- name: Load OS specific variables
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Làm thế nào để tự động nạp các tệp biến số khác nhau (<code>vars/RedHat.yml</code> vs <code>vars/Debian.yml</code>) trong Role dựa trên hệ điều hành của máy đích?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Làm thế nào để tự động nạp các tệp biến số khác nhau (<code>vars/RedHat.yml</code> vs <code>vars/Debian.yml</code>) trong Role dựa trên hệ điều hành của máy đích? <i>(Liên quan QT 5.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Sử dụng thuộc tính <code>vars_from:</code> kết hợp với Ansible Facts <code>ansible_facts.os_family</code>:</div>
+    <pre><code class="language-yaml">- name: Load OS specific variables
   ansible.builtin.include_role:
     name: common
-    vars_from: "{{ ansible_facts.os_family }}.yml"
-```
-Ansible sẽ tự động giải mã biến và nạp đúng tệp `vars/RedHat.yml` trên CentOS/RHEL hoặc `vars/Debian.yml` trên Ubuntu.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `vars_from:`.
-- 1: Biết `vars_from` nhưng không kết hợp được với facts `os_family`.
-- 2: Phân tích chính xác cơ chế nạp biến đa nền tảng OS linh hoạt.
-- 3: Nêu đúng + viết đoạn YAML minh họa hoàn chỉnh nạp biến OS.
-**Câu hỏi đào sâu:** Nếu tệp `vars/Solaris.yml` không tồn tại khi chạy trên máy Solaris, Ansible sẽ xử lý ra sao? *(Ansible sẽ văng lỗi fatal `Could not find vars file` ngoại trừ khi dùng `first_available_file`.)*
+    vars_from: "{{ '{{' }} ansible_facts.os_family {{ '}}' }}.yml"</code></pre>
+    <div style="margin: 0.5rem 0;">Ansible sẽ tự động giải mã biến và nạp đúng tệp <code>vars/RedHat.yml</code> trên CentOS/RHEL hoặc <code>vars/Debian.yml</code> trên Ubuntu.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>vars_from:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>vars_from</code> nhưng không kết hợp được với facts <code>os_family</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế nạp biến đa nền tảng OS linh hoạt.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa hoàn chỉnh nạp biến OS.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu tệp <code>vars/Solaris.yml</code> không tồn tại khi chạy trên máy Solaris, Ansible sẽ xử lý ra sao? <i>(Ansible sẽ văng lỗi fatal <code>Could not find vars file</code> ngoại trừ khi dùng <code>first_available_file</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Mặc định khi một Role đã thi hành 1 lần, nếu Playbook gọi lại Role đó lần thứ 2, Ansible Engine sẽ xử lý thế nào? Làm sao để bắt buộc Role chạy lại?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Mặc định khi một Role đã thi hành 1 lần, nếu Playbook gọi lại Role đó lần thứ 2, Ansible Engine sẽ xử lý thế nào? Làm sao để bắt buộc Role chạy lại? <i>(Liên quan QT 6.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mặc định: Ansible Engine áp dụng cơ chế chống trùng lặp (<code>allow_duplicates: false</code>), sẽ <b>IM LẶNG BỎ QUA</b> lượt gọi thứ 2 để tiết kiệm tài nguyên.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Muốn bắt buộc Role chạy lại: Khai báo thuộc tính <code>allow_duplicates: true</code> trong tệp <code>meta/main.yml</code> của Role đó.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng Role luôn chạy lại ở mọi lần gọi.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Role bị bỏ qua nhưng không nêu được thuộc tính <code>allow_duplicates</code> trong <code>meta/main.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế chống trùng lặp mặc định và cách override bằng <code>allow_duplicates: true</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cho ví dụ trường hợp thực tế cần <code>allow_duplicates: true</code> (như Role tạo tài khoản tạm).</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu gọi cùng 1 Role 2 lần nhưng với 2 bộ tham số <code>vars:</code> KHÁC NHAU, Role có chạy lại không? <i>(Mặc định vẫn chạy lại vì bộ biến khác nhau được tính là invocation riêng.)</i></div>
+  </div>
+</details>
 
-### Câu 7 — Kiểm soát Nạp Trùng lặp với `allow_duplicates`
-**Hỏi:** Mặc định khi một Role đã thi hành 1 lần, nếu Playbook gọi lại Role đó lần thứ 2, Ansible Engine sẽ xử lý thế nào? Làm sao để bắt buộc Role chạy lại? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:**
-- Mặc định: Ansible Engine áp dụng cơ chế chống trùng lặp (`allow_duplicates: false`), sẽ **IM LẶNG BỎ QUA** lượt gọi thứ 2 để tiết kiệm tài nguyên.
-- Muốn bắt buộc Role chạy lại: Khai báo thuộc tính `allow_duplicates: true` trong tệp `meta/main.yml` của Role đó.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng Role luôn chạy lại ở mọi lần gọi.
-- 1: Biết Role bị bỏ qua nhưng không nêu được thuộc tính `allow_duplicates` trong `meta/main.yml`.
-- 2: Phân tích chính xác cơ chế chống trùng lặp mặc định và cách override bằng `allow_duplicates: true`.
-- 3: Nêu đúng + cho ví dụ trường hợp thực tế cần `allow_duplicates: true` (như Role tạo tài khoản tạm).
-**Câu hỏi đào sâu:** Nếu gọi cùng 1 Role 2 lần nhưng với 2 bộ tham số `vars:` KHÁC NHAU, Role có chạy lại không? *(Mặc định vẫn chạy lại vì bộ biến khác nhau được tính là invocation riêng.)*
-
----
-
-### Câu 8 — Điều khiển Nạp Role theo Môi trường với `when:`
-**Hỏi:** Trình bày kỹ thuật nạp Role linh hoạt theo môi trường triển khai (Dev/Prod) bằng thuộc tính `when:` trong `include_role`. *(Liên quan QT 6.2)*
-**Đáp án chuẩn:**
-Kỹ thuật: Kết hợp `include_role` với điều kiện `when:` để kiểm tra biến môi trường `env_type`.
-```yaml
-- name: Deploy SSL Security Role on Production Only
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Trình bày kỹ thuật nạp Role linh hoạt theo môi trường triển khai (Dev/Prod) bằng thuộc tính <code>when:</code> trong <code>include_role</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày kỹ thuật nạp Role linh hoạt theo môi trường triển khai (Dev/Prod) bằng thuộc tính <code>when:</code> trong <code>include_role</code>. <i>(Liên quan QT 6.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.5rem 0;">Kỹ thuật: Kết hợp <code>include_role</code> với điều kiện <code>when:</code> để kiểm tra biến môi trường <code>env_type</code>.</div>
+    <pre><code class="language-yaml">- name: Deploy SSL Security Role on Production Only
   ansible.builtin.include_role:
     name: ssl_security
-  when: env_type == 'production'
-```
-Ý nghĩa: Ngăn ngừa tuyệt đối việc thực thi các tác vụ Production đắt tiền hoặc nguy hiểm (như đăng ký SSL thật) trên các máy chủ Local Dev.
-**Tiêu chí chấm:**
-- 0: Không biết kết hợp `when:` với `include_role`.
-- 1: Viết được `when:` nhưng nhầm lẫn dùng với `import_role` gây nạp tĩnh sai thời điểm.
-- 2: Phân tích chính xác lợi ích nạp động runtime bảo vệ môi trường Dev/Prod.
-- 3: Nêu đúng + viết ví dụ Playbook phân nhánh môi trường chuẩn hóa.
-**Câu hỏi đào sâu:** Nếu dùng `import_role` với `when: env_type == 'production'`, cờ `when:` sẽ áp dụng cho cái gì? *(Cờ `when:` sẽ bị ép gắn vào TOÀN BỘ từng task riêng lẻ trong Role đó.)*
+  when: env_type == 'production'</code></pre>
+    <div style="margin: 0.5rem 0;">Ý nghĩa: Ngăn ngừa tuyệt đối việc thực thi các tác vụ Production đắt tiền hoặc nguy hiểm (như đăng ký SSL thật) trên các máy chủ Local Dev.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết kết hợp <code>when:</code> với <code>include_role</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Viết được <code>when:</code> nhưng nhầm lẫn dùng với <code>import_role</code> gây nạp tĩnh sai thời điểm.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác lợi ích nạp động runtime bảo vệ môi trường Dev/Prod.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ Playbook phân nhánh môi trường chuẩn hóa.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu dùng <code>import_role</code> với <code>when: env_type == 'production'</code>, cờ <code>when:</code> sẽ áp dụng cho cái gì? <i>(Cờ <code>when:</code> sẽ bị ép gắn vào TOÀN BỘ từng task riêng lẻ trong Role đó.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng nạp Role nâng cao để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (kỷ niệm mốc 50% khóa học).</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng nạp Role nâng cao để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (kỷ niệm mốc 50% khóa học).</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site-advanced-roles.yml</code>: Các Role nạp động/tĩnh thi hành và chép file báo <code>changed &gt; 0</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site-advanced-roles.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task nạp qua import/include đều báo <code>ok</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/app-server.conf</code> kiểm tra nội dung file chứa đúng dữ liệu từ <code>include_role</code> loop.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và dòng log RECAP.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + tự tin khẳng định tiêu chí Idempotency mốc 50% khóa học.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Việc nạp Role động với <code>include_role</code> trong vòng lặp <code>loop:</code> có làm trôi cờ Idempotency không? <i>(Hoàn toàn không, nếu các task bên trong chuẩn hóa <code>changed_when: false</code> cho task read-only.)</i></div>
+  </div>
+</details>
 
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng Advanced Roles 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng nạp Role nâng cao để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (kỷ niệm mốc 50% khóa học).
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site-advanced-roles.yml`: Các Role nạp động/tĩnh thi hành và chép file báo `changed > 0`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site-advanced-roles.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task nạp qua import/include đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/app-server.conf` kiểm tra nội dung file chứa đúng dữ liệu từ `include_role` loop.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và dòng log RECAP.
-- 3: Trình bày xuất sắc 3 bước + tự tin khẳng định tiêu chí Idempotency mốc 50% khóa học.
-**Câu hỏi đào sâu:** Việc nạp Role động với `include_role` trong vòng lặp `loop:` có làm trôi cờ Idempotency không? *(Hoàn toàn không, nếu các task bên trong chuẩn hóa `changed_when: false` cho task read-only.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Thuộc tính <code>public: false</code> trong module <code>ansible.builtin.include_role</code> có tác dụng gì đối với phạm vi biến (Variable Scope)?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Thuộc tính <code>public: false</code> trong module <code>ansible.builtin.include_role</code> có tác dụng gì đối với phạm vi biến (Variable Scope)?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Mặc định (<code>public: true</code>), các biến và defaults được nạp từ <code>include_role</code> sẽ tồn tại và lan truyền (leak) sang tất cả các Task phía sau trong cùng một Play. Khi khai báo <code>public: false</code>, toàn bộ biến của Role đó sẽ <b>BỊ GIỚI HẠN PHẠM VI CHỈ NẰM TRONG BẢN THÂN ROLE ĐÓ</b>, giúp chống ô nhiễm không gian biến toàn cục của Playbook.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>public: false</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>public</code> liên quan đến biến nhưng không giải thích được hiện tượng rò rỉ biến (variable leakage).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế phong tỏa phạm vi biến của <code>public: false</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ ngăn chặn rò rỉ biến bằng <code>public: false</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Đối với <code>import_role</code> (Static), biến có mặc định bị rò rỉ không? <i>(Có, <code>import_role</code> luôn luôn làm rò rỉ biến ra toàn Playbook vì nó nạp ở Parse time.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 10 — Giới hạn Phạm vi Biến với `public: false` ★★★
-**Hỏi:** Thuộc tính `public: false` trong module `ansible.builtin.include_role` có tác dụng gì đối với phạm vi biến (Variable Scope)?
-**Đáp án chuẩn:** Mặc định (`public: true`), các biến và defaults được nạp từ `include_role` sẽ tồn tại và lan truyền (leak) sang tất cả các Task phía sau trong cùng một Play. Khi khai báo `public: false`, toàn bộ biến của Role đó sẽ **BỊ GIỚI HẠN PHẠM VI CHỈ NẰM TRONG BẢN THÂN ROLE ĐÓ**, giúp chống ô nhiễm không gian biến toàn cục của Playbook.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `public: false`.
-- 1: Biết `public` liên quan đến biến nhưng không giải thích được hiện tượng rò rỉ biến (variable leakage).
-- 2: Phân tích chính xác cơ chế phong tỏa phạm vi biến của `public: false`.
-- 3: Nêu đúng + minh họa ví dụ ngăn chặn rò rỉ biến bằng `public: false`.
-**Câu hỏi đào sâu:** Đối với `import_role` (Static), biến có mặc định bị rò rỉ không? *(Có, `import_role` luôn luôn làm rò rỉ biến ra toàn Playbook vì nó nạp ở Parse time.)*
-
----
-
-### Câu 11 — Thừa hưởng Thẻ Tags với `apply:` trong `include_role` ★★★
-**Hỏi:** Làm thế nào để áp dụng một thuộc tính task (như `tags:` hoặc `become:`) cho TOÀN BỘ các Task bên trong một Role nạp động bằng `include_role`?
-**Đáp án chuẩn:** Sử dụng thuộc tính `apply:` bên trong `include_role`:
-```yaml
-- name: Include Webserver Role with global tags
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Làm thế nào để áp dụng một thuộc tính task (như <code>tags:</code> hoặc <code>become:</code>) cho TOÀN BỘ các Task bên trong một Role nạp động bằng <code>include_role</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Làm thế nào để áp dụng một thuộc tính task (như <code>tags:</code> hoặc <code>become:</code>) cho TOÀN BỘ các Task bên trong một Role nạp động bằng <code>include_role</code>?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Sử dụng thuộc tính <code>apply:</code> bên trong <code>include_role</code>:</div>
+    <pre><code class="language-yaml">- name: Include Webserver Role with global tags
   ansible.builtin.include_role:
     name: webserver
     apply:
       tags:
         - web_deploy
-      become: true
-```
-Toàn bộ các Task được nạp động từ role `webserver` sẽ tự động thừa hưởng thẻ `tags: ['web_deploy']` và quyền `become: true`.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `apply:`.
-- 1: Biết gắn tag cho include_role nhưng nhầm lẫn gắn trực tiếp làm tag chỉ áp dụng cho task include chứ không áp dụng cho các task con.
-- 2: Phân tích chính xác vai trò truyền thuộc tính xuống các task con của `apply:`.
-- 3: Nêu đúng + viết đoạn YAML minh họa dùng `apply: tags:`.
-**Câu hỏi đào sâu:** Đối với `import_role` (Static), có cần dùng `apply:` để gắn tag cho task con không? *(Không cần, `import_role` nạp tĩnh nên gắn tag trực tiếp sẽ tự động lan xuống mọi task con.)*
+      become: true</code></pre>
+    <div style="margin: 0.5rem 0;">Toàn bộ các Task được nạp động từ role <code>webserver</code> sẽ tự động thừa hưởng thẻ <code>tags: ['web_deploy']</code> và quyền <code>become: true</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>apply:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết gắn tag cho include_role nhưng nhầm lẫn gắn trực tiếp làm tag chỉ áp dụng cho task include chứ không áp dụng cho các task con.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò truyền thuộc tính xuống các task con của <code>apply:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa dùng <code>apply: tags:</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Đối với <code>import_role</code> (Static), có cần dùng <code>apply:</code> để gắn tag cho task con không? <i>(Không cần, <code>import_role</code> nạp tĩnh nên gắn tag trực tiếp sẽ tự động lan xuống mọi task con.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng về Tổ chức Role Nâng cao ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên làm chủ các kỹ thuật nạp Role nâng cao chuyên nghiệp và chuẩn Idempotency nhất.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Chọn đúng module: dùng `import_role` cho static tags/handlers, dùng `include_role` cho `loop:` và `when:`.
-2. **Quy tắc 2:** Khai báo tự động giải quyết phụ thuộc trong `meta/main.yml` (`dependencies:`).
-3. **Quy tắc 3:** Chia nhỏ công đoạn bằng `tasks_from: <file.yml>` để tăng tính mô-đun hóa.
-4. **Quy tắc 4:** Sử dụng `public: false` hoặc Role Prefix Namespacing để tránh rò rỉ và xung đột biến.
-5. **Quy tắc 5:** Kiểm soát `allow_duplicates` và đảm bảo Lần 2 đạt `changed=0` Idempotent qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + tự tin khẳng định năng lực làm chủ Ansible mô-đun hóa mốc 50% khóa học.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp giúp Playbook chạy linh hoạt theo danh sách đối tượng? *(Quy tắc 1 và Quy tắc 3.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng về Tổ chức Role Nâng cao.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên làm chủ các kỹ thuật nạp Role nâng cao chuyên nghiệp và chuẩn Idempotency nhất.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Chọn đúng module: dùng <code>import_role</code> cho static tags/handlers, dùng <code>include_role</code> cho <code>loop:</code> và <code>when:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Khai báo tự động giải quyết phụ thuộc trong <code>meta/main.yml</code> (<code>dependencies:</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Chia nhỏ công đoạn bằng <code>tasks_from: &lt;file.yml&gt;</code> để tăng tính mô-đun hóa.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Sử dụng <code>public: false</code> hoặc Role Prefix Namespacing để tránh rò rỉ và xung đột biến.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Kiểm soát <code>allow_duplicates</code> và đảm bảo Lần 2 đạt <code>changed=0</code> Idempotent qua <code>docker exec</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + tự tin khẳng định năng lực làm chủ Ansible mô-đun hóa mốc 50% khóa học.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp giúp Playbook chạy linh hoạt theo danh sách đối tượng? <i>(Quy tắc 1 và Quy tắc 3.)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -1056,4 +1183,10 @@ Chúc mừng học viên đã **ĐẠT MỐC 50% KHÓA HỌC (Buổi 01–15)**!
 1. **Nghiên cứu trước 1:** Ansible Galaxy là gì? Lệnh CLI nào dùng để tìm kiếm và cài đặt một Role công đồng từ Galaxy?
 2. **Nghiên cứu trước 2:** Tệp `requirements.yml` dùng để làm gì trong việc quản lý danh sách các Roles và Collections phụ thuộc của dự án?
 3. **Nghiên cứu trước 3:** Lệnh CLI `ansible-galaxy install -r requirements.yml` có tác dụng gì khi triển khai dự án mới?
+
+---
+
+> [!TIP]
+> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 16: Quản Lý Phụ Thuộc Với Ansible Galaxy: Tải Roles, Collections & Cấu Hình requirements.yml](ansible-16-16-ansible-galaxy.html).
+
 {% endraw %}

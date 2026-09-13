@@ -89,6 +89,15 @@ graph TD
     D -- Không có --> F{"Kiểm tra file ẩn ~/.ansible.cfg"}
     F -- Có file --> G["Sử dụng ~/.ansible.cfg trong thư mục cá nhân"]
     F -- Không có --> H["Sử dụng cấu hình mặc định /etc/ansible/ansible.cfg"]
+
+    style A fill:none
+    style B fill:none
+    style C fill:none
+    style D fill:none
+    style E fill:none
+    style F fill:none
+    style G fill:none
+    style H fill:none
 ```
 
 **Nguyên lý cốt lõi:** Ansible áp dụng thứ tự ưu tiên 4 tầng để tìm kiếm file cấu hình `ansible.cfg`: Biến môi trường `ANSIBLE_CONFIG` > File `./ansible.cfg` ở thư mục hiện tại > File ẩn `~/.ansible.cfg` ở thư mục người dùng > File mặc định toàn hệ thống `/etc/ansible/ansible.cfg`.
@@ -285,6 +294,15 @@ flowchart LR
     C1 -- Không --> C3["Giữ nguyên -> Báo OK (changed=false)"]
     C2 --> E["Tổng hợp kết quả hiển thị trên Terminal"]
     C3 --> E
+
+    style A fill:none
+    style B fill:none
+    style C fill:none
+    style D fill:none
+    style C1 fill:none
+    style C2 fill:none
+    style C3 fill:none
+    style E fill:none
 ```
 
 ### Năm điều phải nhớ
@@ -407,6 +425,12 @@ graph TD
     DEV["Học viên (Tester)"] -->|"A. Chạy lệnh ad-hoc"| CLI
     DEV -->|"B. Kiểm tra thực tế bằng docker exec"| T1
     DEV -->|"C. Kiểm tra thực tế bằng docker exec"| T2
+
+    style SubGraph1 fill:none
+    style CLI fill:none
+    style T1 fill:none
+    style T2 fill:none
+    style DEV fill:none
 ```
 
 ---
@@ -694,154 +718,197 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình ansible.cfg. Làm sao biết hệ thống đang dùng file nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Ansible tìm kiếm theo thứ tự ưu tiên giảm dần: (1) Biến môi trường <code>ANSIBLE_CONFIG</code>, (2) File <code>./ansible.cfg</code> tại thư mục hiện tại, (3) File ẩn <code>~/.ansible.cfg</code> tại thư mục cá nhân người dùng, (4) File cấu hình mặc định hệ thống <code>/etc/ansible/ansible.cfg</code>. Để biết chính xác file đang được áp dụng, chạy lệnh <code>ansible --version</code> và quan sát dòng <code>config file = ...</code>.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 không nêu được &bull; 1 nhớ 2-3 tầng sai thứ tự &bull; 2 đúng 4 tầng &bull; 3 đúng 4 tầng + nêu lệnh <code>ansible --version</code> và bẫy <code>chmod 777</code>.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Nếu file <code>./ansible.cfg</code> bị gán quyền <code>chmod 777</code>, Ansible sẽ xử lý thế nào? <i>(Bỏ qua file đó vì lý do an toàn bảo mật và tự động lùi về dùng file tầng thấp hơn.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày chi tiết thứ tự ưu tiên 4 tầng khi Ansible tìm kiếm file cấu hình <code>ansible.cfg</code>. Làm sao biết hệ thống đang dùng file nào? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Ansible tìm kiếm theo thứ tự ưu tiên giảm dần: (1) Biến môi trường <code>ANSIBLE_CONFIG</code>, (2) File <code>./ansible.cfg</code> tại thư mục hiện tại, (3) File ẩn <code>~/.ansible.cfg</code> tại thư mục cá nhân người dùng, (4) File cấu hình mặc định hệ thống <code>/etc/ansible/ansible.cfg</code>. Để biết chính xác file đang được áp dụng, chạy lệnh <code>ansible --version</code> và quan sát dòng <code>config file = ...</code>.
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b> 
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được các tầng cấu hình.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 tầng nhưng sai thứ tự ưu tiên.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đúng 4 tầng theo thứ tự chính xác.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng 4 tầng + chỉ ra lệnh <code>ansible --version</code> và bẫy file <code>./ansible.cfg</code> bị bỏ qua nếu lỡ gán quyền <code>world-writable</code> (<code>chmod 777</code>).</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu file <code>./ansible.cfg</code> bị gán quyền <code>chmod 777</code>, Ansible sẽ xử lý thế nào? *(Bỏ qua file đó vì lý do an toàn bảo mật và tự động lùi về dùng file tầng thấp hơn.)*
-</div>
 </details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Tại sao Ansible không cần cài agent trên máy đích nhưng vẫn quản trị được? Việc gán host_key_checking = False có tác dụng gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Ansible là công cụ agentless, sử dụng giao thức SSH tiêu chuẩn để kết nối và tự động đẩy các module Python ngắn hạn lên máy đích thực thi, sau đó dọn dẹp file tạm. Máy đích chỉ cần dịch vụ <code>sshd</code> và môi trường Python 3. Cờ <code>host_key_checking = False</code> trong <code>ansible.cfg</code> giúp bỏ qua bước xác nhận Fingerprint SSH thủ công (gõ <code>yes</code>), giúp các kịch bản tự động hóa hoặc kịch bản thử nghiệm lab chạy mượt mà không bị treo vô hạn.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 trả lời có agent ngầm &bull; 1 nêu SSH nhưng thiếu Python &bull; 2 đủ SSH + Python + host_key_checking &bull; 3 đủ + phân tích rủi ro bảo mật trên production.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Nếu máy đích là Linux minimal thiếu Python 3, lệnh ad-hoc <code>ping</code> có chạy được không? <i>(Không, phải dùng module <code>ansible.builtin.raw</code> để cài Python 3 trước.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Xác thực SSH và Cơ chế Agentless 🔥
-**Hỏi:** Tại sao Ansible không cần cài agent trên máy đích nhưng vẫn quản trị được? Việc gán `host_key_checking = False` có tác dụng gì? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:** Ansible là công cụ agentless, sử dụng giao thức SSH tiêu chuẩn để kết nối và tự động đẩy các module Python ngắn hạn lên máy đích thực thi, sau đó dọn dẹp file tạm. Máy đích chỉ cần dịch vụ `sshd` và môi trường Python 3. Cờ `host_key_checking = False` trong `ansible.cfg` giúp bỏ qua bước xác nhận Fingerprint SSH thủ công (gõ `yes`), giúp các kịch bản tự động hóa hoặc kịch bản thử nghiệm lab chạy mượt mà không bị treo vô hạn.
-**Tiêu chí chấm:**
-- 0: Trả lời "Ansible dùng agent ngầm".
-- 1: Nêu được "dùng SSH" nhưng không giải thích được vai trò của Python trên target.
-- 2: Nêu đầy đủ cơ chế SSH + Python + tác dụng của `host_key_checking`.
-- 3: Nêu đủ cơ chế + phân tích rủi ro bảo mật của `host_key_checking = False` trên production và cách xử lý bằng `known_hosts`.
-**Câu hỏi đào sâu:** Nếu máy đích là hệ điều hành Linux minimal không có sẵn Python 3, lệnh ad-hoc module `ping` có chạy được không? *(Không, phải dùng module `ansible.builtin.raw` để cài Python 3 trước.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Cơ chế become trong Ansible hoạt động thế nào? Sự khác biệt giữa remote_user và become_user là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Cơ chế <code>become</code> cho phép Ansible thực hiện privilege escalation (nâng quyền) trên target node, mặc định sử dụng công cụ <code>sudo</code>. <code>remote_user</code> là tài khoản dùng để thiết lập kết nối SSH ban đầu từ Control node sang Target node (ví dụ: <code>ansible</code>), còn <code>become_user</code> là tài khoản mà lệnh đó sẽ leo quyền tới trên máy đích để thực thi tác vụ (mặc định là <code>root</code>).
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 nhầm become là SSH password &bull; 1 biết là sudo nhưng không phân biệt user &bull; 2 phân biệt đúng &bull; 3 nêu đủ + cấu hình ansible.cfg và sudoers.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Muốn chạy lệnh ad-hoc leo quyền root không bị hỏi password sudo thì cần cấu hình gì? <i>(Cấu hình <code>NOPASSWD: ALL</code> trong <code>/etc/sudoers.d/ansible</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Phân tích cú pháp tiêu chuẩn của một lệnh ad-hoc Ansible. Khi nào nên dùng lệnh ad-hoc thay vì viết Playbook?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Cú pháp tiêu chuẩn: <code>ansible &lt;pattern&gt; -m &lt;module&gt; -a "&lt;arguments&gt;" [options]</code>. Lệnh ad-hoc nên được sử dụng cho các công việc quản trị một lần (one-off tasks), nhanh chóng, mang tính kiểm tra/truy vấn (ví dụ: reboot nhóm máy, kiểm tra dung lượng đĩa, cập nhật bản vá khẩn cấp). Khi công việc gồm chuỗi nhiều bước phức tạp có phụ thuộc lẫn nhau, bắt buộc phải dùng Playbook.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 sai cú pháp &bull; 1 đúng cú pháp thiếu ngữ cảnh &bull; 2 so sánh chuẩn &bull; 3 nêu đúng + ví dụ thực tế.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Nếu không truyền tham số <code>-m</code>, Ansible sử dụng module mặc định nào? <i>(Module <code>ansible.builtin.command</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Leo quyền quản trị với `become` 🔥
-**Hỏi:** Cơ chế `become` trong Ansible hoạt động thế nào? Sự khác biệt giữa SSH user (`remote_user`) và `become_user` là gì? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:** Cơ chế `become` cho phép Ansible thực hiện privilege escalation (nâng quyền) trên target node, mặc định sử dụng công cụ `sudo`. `remote_user` là tài khoản dùng để thiết lập kết nối SSH ban đầu từ Control node sang Target node (ví dụ: `ansible`), còn `become_user` là tài khoản mà lệnh đó sẽ leo quyền tới trên máy đích để thực thi tác vụ (mặc định là `root`).
-**Tiêu chí chấm:**
-- 0: Nhầm lẫn `become` là cài đặt SSH password.
-- 1: Biết `become` là `sudo` nhưng không phân biệt được `remote_user` và `become_user`.
-- 2: Phân biệt chính xác `remote_user` vs `become_user` và cơ chế `sudo`.
-- 3: Nêu đủ + cấu hình tường minh trong `ansible.cfg` (`become=True`, `become_method=sudo`, `become_ask_pass=False`) và điều kiện file `/etc/sudoers`.
-**Câu hỏi đào sâu:** Muốn chạy lệnh ad-hoc leo quyền root mà không bị hỏi password sudo thì máy đích cần cấu hình gì trong `/etc/sudoers`? *(Cấu hình `NOPASSWD: ALL` cho user đăng nhập SSH.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Module ansible.builtin.ping khác gì với câu lệnh ping truyền thống của hệ điều hành?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Lệnh <code>ping</code> của hệ điều hành sử dụng giao thức ICMP để kiểm tra thông mạng ở tầng network. Module <code>ansible.builtin.ping</code> của Ansible thực hiện một chuỗi thao tác thực tế: mở kết nối SSH, xác thực tài khoản, đẩy một đoạn mã Python nhỏ lên máy đích, thực thi mã Python đó và nhận phản hồi <code>pong</code>. Do đó, <code>ansible ping</code> thành công chứng minh toàn bộ chuỗi SSH + Python + Quyền thi hành đã sẵn sàng.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 coi hai lệnh là một &bull; 1 biết dùng SSH thiếu Python &bull; 2 phân biệt chuẩn &bull; 3 phân biệt chuẩn + tình huống ICMP thông nhưng Ansible ping lỗi.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Nếu target host chặn hoàn toàn giao thức ICMP, lệnh <code>ansible all -m ping</code> có chạy thành công không? <i>(Vẫn thành công bình thường vì Ansible dùng SSH port 22 chứ không dùng ICMP.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">So sánh bản chất và trường hợp sử dụng của 3 module: command, shell, và raw.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <code>command</code> chạy trực tiếp file thực thi không qua shell (an toàn, không hỗ trợ pipe <code>|</code>, redirect <code>&gt;</code>). <code>shell</code> thực thi câu lệnh thông qua <code>/bin/sh</code> trên máy đích (hỗ trợ đầy đủ pipe, redirect, biến môi trường shell). <code>raw</code> gửi câu lệnh SSH thô trực tiếp mà không cần sự tồn tại của Python trên máy đích (dùng bootstrap cài Python). Cả 3 module này đều luôn báo <code>CHANGED</code> và không idempotent tự nhiên.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 không phân biệt được &bull; 1 nêu được pipe &bull; 2 phân biệt đúng 3 module &bull; 3 giải thích rủi ro Shell Injection &amp; tính Idempotency.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Tại sao Ansible khuyến cáo nên hạn chế tối đa việc dùng <code>shell</code> trong tự động hóa? <i>(Vì không có tính bất biến, dễ gây side-effects khi chạy lại và có rủi ro Shell Injection.)</i></div>
+  </div>
+</details>
 
-### Câu 4 — Cấu trúc Lệnh Ad-hoc tổng quát
-**Hỏi:** Phân tích cú pháp tiêu chuẩn của một lệnh ad-hoc Ansible. Khi nào nên dùng lệnh ad-hoc thay vì viết Playbook? *(Liên quan QT 5.1)*
-**Đáp án chuẩn:** Cú pháp tiêu chuẩn: `ansible <pattern> -m <module> -a "<arguments>" [options]`. Lệnh ad-hoc nên được sử dụng cho các công việc quản trị một lần (one-off tasks), nhanh chóng, mang tính kiểm tra/truy vấn (ví dụ: reboot nhóm máy, kiểm tra dung lượng đĩa, cập nhật bản vá khẩn cấp). Khi công việc gồm chuỗi nhiều bước phức tạp có phụ thuộc lẫn nhau, bắt buộc phải dùng Playbook.
-**Tiêu chí chấm:**
-- 0: Trả lời sai cú pháp cờ lệnh CLI.
-- 1: Đọc đúng cú pháp nhưng không nêu được ngữ cảnh sử dụng ad-hoc.
-- 2: Đọc đúng cú pháp + so sánh chuẩn ngữ cảnh ad-hoc vs Playbook.
-- 3: Nêu đúng cú pháp + đưa ví dụ thực tế cụ thể cho ad-hoc (`ansible all -m package ...`) và giải thích tham số `-a`.
-**Câu hỏi đào sâu:** Nếu trong lệnh ad-hoc ta không truyền tham số `-m <module>`, Ansible sẽ sử dụng module mặc định nào? *(Module `ansible.builtin.command`.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Tại sao nên dùng module ansible.builtin.package thay vì gọi lệnh apt hay dnf qua ad-hoc shell?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Module <code>package</code> là module trừu tượng hóa (abstraction module). Nó tự động phát hiện trình quản lý gói của hệ điều hành đích (RHEL dùng <code>dnf</code>, Ubuntu dùng <code>apt</code>). Quan trọng nhất, <code>package</code> kiểm tra trạng thái gói trước khi thực hiện. Nếu gói đã được cài đúng <code>state=present</code>, module sẽ giữ nguyên và báo <code>changed=false</code> (idempotent), trong khi gọi lệnh shell <code>apt-get install</code> sẽ luôn làm thay đổi hệ thống và báo <code>CHANGED</code>.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 coi như nhau &bull; 1 nêu tính đa nền tảng thiếu Idempotency &bull; 2 nêu đủ cả hai &bull; 3 nêu đủ + minh họa output changed=false lần 2.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Tham số <code>state=latest</code> khác <code>state=present</code> ở điểm nào? <i>(<code>present</code> chỉ cần gói đã cài là dừng, <code>latest</code> sẽ nâng cấp gói lên bản mới nhất nếu có.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Khi dùng ad-hoc module ansible.builtin.service, làm sao để đảm bảo dịch vụ vừa được khởi chạy vừa tự động bật khi reboot máy?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Truyền đồng thời hai tham số trong thuộc tính <code>-a</code>: <code>state=started</code> (để đảm bảo dịch vụ đang chạy ở thời điểm hiện tại) và <code>enabled=yes</code> (để cấu hình init system/systemd tự động kích hoạt dịch vụ cùng hệ thống khi khởi động).
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 không biết tham số &bull; 1 nhớ state=started quên enabled &bull; 2 nêu đúng cả hai &bull; 3 nêu đúng + lệnh đối soát docker exec.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Nếu dịch vụ đã chạy và đã <code>enabled=yes</code>, khi gõ lại lệnh ad-hoc đó Ansible trả về kết quả gì? <i>(Trả về <code>SUCCESS</code> với <code>changed=false</code> do đã đạt đúng trạng thái.)</i></div>
+  </div>
+</details>
 
-### Câu 5 — So sánh `ping` Ansible vs `ping` ICMP hệ điều hành
-**Hỏi:** Module `ansible.builtin.ping` khác gì với câu lệnh `ping` truyền thống của hệ điều hành? *(Liên quan QT 5.2)*
-**Đáp án chuẩn:** Lệnh `ping` của hệ điều hành sử dụng giao thức ICMP để kiểm tra thông mạng ở tầng network. Module `ansible.builtin.ping` của Ansible thực hiện một chuỗi thao tác thực tế: mở kết nối SSH, xác thực tài khoản, đẩy một đoạn mã Python nhỏ lên máy đích, thực thi mã Python đó và nhận phản hồi `pong`. Do đó, `ansible ping` thành công chứng minh toàn bộ chuỗi SSH + Python + Quyền thi hành đã sẵn sàng.
-**Tiêu chí chấm:**
-- 0: Trả lời "hai cái là một".
-- 1: Biết `ansible ping` dùng SSH nhưng không giải thích được đoạn mã Python.
-- 2: Phân biệt chính xác ICMP network ping vs SSH+Python application ping.
-- 3: Phân biệt chính xác + chỉ ra trường hợp `ping` ICMP thông nhưng `ansible ping` hỏng (do sai SSH key hoặc thiếu Python).
-**Câu hỏi đào sâu:** Nếu target host chặn hoàn toàn giao thức ICMP, lệnh `ansible all -m ping` có chạy thành công không? *(Vẫn thành công bình thường vì Ansible dùng SSH port 22 chứ không dùng ICMP.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Làm thế nào để tạo một tài khoản người dùng appuser kèm file cấu hình riêng bằng ad-hoc module mà không làm đứt gãy hệ thống khi chạy lại?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng module <code>ansible.builtin.user</code> với tham số <code>name=appuser state=present</code> để tạo user, sau đó dùng module <code>ansible.builtin.copy</code> với <code>content='...' dest=/etc/app.conf mode='0644'</code>. Cả hai module này đều tự động kiểm tra dữ liệu cũ trên máy đích, nếu thông tin đã trùng khớp sẽ không tạo lại hay ghi đè lãng phí, đảm bảo tính Idempotency.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 trả lời dùng useradd qua shell &bull; 1 biết module thiếu mode &bull; 2 nêu đúng &bull; 3 nêu đúng + cơ chế so sánh md5 hash của copy.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Nếu file <code>/etc/app.conf</code> đã tồn tại với nội dung giống hệt, Ansible sẽ làm gì? <i>(Ansible so sánh hash mã hóa, thấy trùng khớp nên bỏ qua không ghi đè và báo <code>changed=false</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Làm sao để chứng minh một tác vụ ad-hoc đạt chuẩn Idempotency và máy đích đang ở đúng trạng thái mong muốn?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    (1) Thực hiện chạy câu lệnh ad-hoc lần thứ nhất để áp đặt thay đổi (<code>changed=true</code>). (2) Thực hiện chạy chính xác câu lệnh ad-hoc đó lần thứ hai: nếu kết quả trả về <code>changed=false</code> thì tác vụ đạt tính Idempotency. (3) Dùng lệnh kiểm tra độc lập trực tiếp trên máy đích (truy vấn qua SSH hoặc <code>docker exec target1 systemctl is-active &lt;service&gt;</code> / <code>dpkg -l &lt;package&gt;</code>) để xác minh sự thật khách quan, tuyệt đối không phụ thuộc duy nhất vào báo cáo terminal của Control node.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 chỉ nhìn màu xanh terminal (trần 1) &bull; 1 chạy lần 2 quên kiểm máy đích &bull; 2 đủ 2 bước &bull; 3 xuất sắc cả 3 bước kèm lệnh đối soát.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Tại sao báo cáo SUCCESS trên Control node đôi khi lại nói dối? <i>(Do <code>ignore_errors</code>, <code>changed_when: false</code>, hoặc nhầm host pattern trong inventory.)</i></div>
+  </div>
+</details>
 
-### Câu 6 — Phân biệt `command`, `shell` và `raw`
-**Hỏi:** So sánh bản chất và trường hợp sử dụng của 3 module: `command`, `shell`, và `raw`. *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** `command` chạy trực tiếp file thực thi không qua shell (an toàn, không hỗ trợ pipe `|`, redirect `>`). `shell` thực thi câu lệnh thông qua `/bin/sh` trên máy đích (hỗ trợ đầy đủ pipe, redirect, biến môi trường shell). `raw` gửi câu lệnh SSH thô trực tiếp mà không cần sự tồn tại của Python trên máy đích (dùng bootstrap cài Python). Cả 3 module này đều luôn báo `CHANGED` và không idempotent.
-**Tiêu chí chấm:**
-- 0: Không phân biệt được 3 module.
-- 1: Nêu được `shell` hỗ trợ pipe còn `command` thì không.
-- 2: Phân biệt chính xác cơ chế của cả 3 module.
-- 3: Phân biệt chính xác + giải thích rủi ro bảo mật Shell Injection và lý do tại sao cả 3 đều không đạt Idempotency tự nhiên.
-**Câu hỏi đào sâu:** Tại sao Ansible khuyến cáo nên hạn chế tối đa việc dùng `shell` trong tự động hóa? *(Vì `shell` không có tính bất biến, dễ gây tác dụng phụ khi chạy lại và có nguy cơ Shell Injection.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Cờ --check và --diff trong lệnh ad-hoc Ansible có vai trò gì trong quy trình vận hành an toàn trên Production?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Cờ <code>--check</code> kích hoạt chế độ Dry-run (chạy thử nghiệm), Ansible sẽ mô phỏng quá trình thực thi lệnh ad-hoc và dự báo những thay đổi sẽ xảy ra mà không thực sự áp đặt bất kỳ thay đổi nào lên máy đích. Cờ <code>--diff</code> hiển thị chi tiết sự khác biệt dòng-theo-dòng (line-by-line diff) giữa cấu hình cũ và cấu hình mới. Kết hợp <code>--check --diff</code> giúp quản trị viên rà soát rủi ro trước khi áp dụng thật lên Production.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 không biết &bull; 1 biết check thiếu diff &bull; 2 nêu đúng cả hai &bull; 3 nêu đúng + lưu ý module custom không hỗ trợ check mode.</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Nếu chạy ad-hoc với cờ <code>--check</code> lên một gói chưa cài, Ansible báo gì? <i>(Báo <code>CHANGED</code> để dự báo gói SẼ được cài, nhưng thực tế đĩa cứng chưa bị ghi.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 7 — Quản lý Gói phần mềm với `ansible.builtin.package`
-**Hỏi:** Tại sao nên dùng module `ansible.builtin.package` thay vì gọi lệnh `apt` hay `dnf` qua ad-hoc shell? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:** Module `package` là module trừu tượng hóa (abstraction module). Nó tự động phát hiện trình quản lý gói của hệ điều hành đích (RHEL dùng `dnf`, Ubuntu dùng `apt`). Quan trọng nhất, `package` kiểm tra trạng thái gói trước khi thực hiện. Nếu gói đã được cài đúng `state=present`, module sẽ giữ nguyên và báo `changed=false` (idempotent), trong khi gọi lệnh shell `apt-get install` sẽ luôn làm thay đổi hệ thống và báo `CHANGED`.
-**Tiêu chí chấm:**
-- 0: Trả lời "dùng cái nào cũng như nhau".
-- 1: Nêu được tính đa nền tảng nhưng chưa đề cập tính Idempotency.
-- 2: Nêu đủ tính đa nền tảng + kiểm tra trạng thái Idempotency.
-- 3: Nêu đủ + minh họa được câu lệnh ad-hoc chuẩn và chỉ số `changed=false` khi chạy lại lần thứ hai.
-**Câu hỏi đào sâu:** Tham số `state=latest` khác `state=present` ở điểm nào? *(`present` chỉ cần gói đã cài là dừng, `latest` sẽ nâng cấp gói lên phiên bản mới nhất nếu có.)*
-
----
-
-### Câu 8 — Quản lý Dịch vụ với `ansible.builtin.service`
-**Hỏi:** Khi dùng ad-hoc module `ansible.builtin.service`, làm sao để đảm bảo dịch vụ vừa được khởi chạy vừa tự động bật khi reboot máy? *(Liên quan QT 6.2)*
-**Đáp án chuẩn:** Truyền đồng thời hai tham số trong thuộc tính `-a`: `state=started` (để đảm bảo dịch vụ đang chạy ở thời điểm hiện tại) và `enabled=yes` (để cấu hình init system/systemd tự động kích hoạt dịch vụ cùng hệ thống khi khởi động).
-**Tiêu chí chấm:**
-- 0: Không biết các tham số điều khiển dịch vụ.
-- 1: Chỉ nhớ tham số `state=started` mà quên `enabled=yes`.
-- 2: Nêu chính xác hai tham số `state=started` và `enabled=yes`.
-- 3: Nêu chính xác + minh họa lệnh ad-hoc hoàn chỉnh kèm cờ `--become` và đối soát bằng `docker exec`.
-**Câu hỏi đào sâu:** Nếu dịch vụ đã chạy và đã được `enabled=yes`, khi gõ lại lệnh ad-hoc đó Ansible sẽ trả về kết quả gì? *(Trả về `SUCCESS` với chỉ số `changed=false` do đã đạt đúng trạng thái khai báo.)*
-
----
-
-### Câu 9 — Quản lý Người dùng và Phân quyền tệp tin
-**Hỏi:** Làm thế nào để tạo một tài khoản người dùng `appuser` kèm file cấu hình riêng bằng ad-hoc module mà không làm đứt gãy hệ thống khi chạy lại? *(Liên quan QT 6.3)*
-**Đáp án chuẩn:** Sử dụng module `ansible.builtin.user` với tham số `name=appuser state=present` để tạo user, sau đó dùng module `ansible.builtin.copy` với `content='...' dest=/etc/app.conf mode='0644'`. Cả hai module này đều tự động kiểm tra dữ liệu cũ trên máy đích, nếu thông tin đã trùng khớp sẽ không tạo lại hay ghi đè lãng phí, đảm bảo tính Idempotency.
-**Tiêu chí chấm:**
-- 0: Trả lời dùng lệnh `useradd` qua module `shell`.
-- 1: Biết tên 2 module `user` và `copy` nhưng thiếu tham số phân quyền `mode`.
-- 2: Nêu đúng 2 module và các tham số phân quyền chuẩn.
-- 3: Nêu đúng + giải thích cơ chế check md5 hash của module `copy` trước khi chép file.
-**Câu hỏi đào sâu:** Nếu file `/etc/app.conf` đã tồn tại trên target node với nội dung giống hệt nội dung ta truyền vào module `copy`, Ansible sẽ làm gì? *(Ansible so sánh hash mã hóa, thấy trùng khớp nên bỏ qua không ghi file và báo `changed=false`.)*
-
----
-
-### Câu 10 — Phương pháp Xác minh tính Bất biến và Trạng thái Thực tế 🔥
-**Hỏi:** Làm sao để chứng minh một tác vụ ad-hoc đạt chuẩn Idempotency và máy đích đang ở đúng trạng thái mong muốn?
-**Đáp án chuẩn:** (1) Thực hiện chạy câu lệnh ad-hoc lần thứ nhất để áp đặt thay đổi (`changed=true`). (2) Thực hiện chạy chính xác câu lệnh ad-hoc đó lần thứ hai: nếu kết quả trả về `changed=false` thì tác vụ đạt tính Idempotency. (3) Dùng lệnh kiểm tra độc lập trực tiếp trên máy đích (truy vấn qua SSH hoặc `docker exec target1 systemctl is-active <service>` / `dpkg -l <package>`) để xác minh sự thật khách quan, tuyệt đối không phụ thuộc duy nhất vào báo cáo terminal của Control node.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal thấy báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Trả lời chạy lần 2 có `changed=false` nhưng quên bước kiểm tra trực tiếp trên máy đích.
-- 2: Nêu đủ 2 bước: chạy lần 2 `changed=false` + kiểm tra bằng `docker exec`/truy vấn trực tiếp.
-- 3: Trả lời xuất sắc cả 3 bước + đưa ví dụ thực tế minh chứng cho từng bước với lệnh CLI cụ thể.
-**Câu hỏi đào sâu:** Tại sao báo cáo `SUCCESS` trên Control node đôi khi lại nói dối? *(Do cấu hình giấu lỗi `ignore_errors`, ép trạng thái `changed_when: false`, hoặc chỉ số inventory chỉ định nhầm target node.)*
-
----
-
-### Câu 11 — Sử dụng cờ Thử nghiệm `--check` và `--diff`
-**Hỏi:** Cờ cờ `--check` và `--diff` trong lệnh ad-hoc Ansible có vai trò gì trong quy trình vận hành an toàn trên Production?
-**Đáp án chuẩn:** Cờ `--check` kích hoạt chế độ Dry-run (chạy thử nghiệm), Ansible sẽ mô phỏng quá trình thực thi lệnh ad-hoc và dự báo những thay đổi sẽ xảy ra mà không thực sự áp đặt bất kỳ thay đổi nào lên máy đích. Cờ `--diff` hiển thị chi tiết sự khác biệt dòng-theo-dòng (line-by-line diff) giữa cấu hình cũ và cấu hình mới. Kết hợp `--check --diff` giúp quản trị viên rà soát rủi ro trước khi áp dụng thật lên Production.
-**Tiêu chí chấm:**
-- 0: Không biết công dụng của 2 cờ CLI.
-- 1: Biết `--check` là chạy thử nhưng không giải thích được `--diff`.
-- 2: Nêu chính xác vai trò Dry-run của `--check` và so sánh cấu hình của `--diff`.
-- 3: Nêu chính xác + lưu ý trường hợp một số module custom không hỗ trợ check mode.
-**Câu hỏi đào sâu:** Nếu chạy lệnh ad-hoc với cờ `--check` lên một gói phần mềm chưa được cài, Ansible sẽ báo kết quả thế nào? *(Báo `CHANGED` để dự báo rằng gói này SẼ được cài nếu chạy thật, nhưng thực tế đĩa cứng chưa bị ghi dữ liệu.)*
-
----
-
-### Câu 12 — Quản lý Phạm vi Thực thi với `--limit` ★★★
-**Hỏi:** Trong một kịch bản ad-hoc tác động đến hạ tầng hàng ngàn máy chủ, làm thế nào để bó hẹp phạm vi thực thi thử nghiệm trên duy nhất 1 máy chủ trước khi nhân rộng?
-**Đáp án chuẩn:** Sử dụng cờ `--limit <host_pattern>` trong câu lệnh ad-hoc (ví dụ: `ansible web --limit target1 -m package -a "name=curl state=present"`). Cờ `--limit` sẽ lọc danh sách máy đích rút gọn từ inventory gốc, đảm bảo lệnh ad-hoc chỉ tác động duy nhất lên `target1`.
-**Tiêu chí chấm:**
-- 0: Trả lời tạo file inventory mới chứa 1 máy.
-- 1: Trớ trêu nhớ cờ `--limit` nhưng dùng sai cú pháp.
-- 2: Nêu đúng cờ `--limit` và cú pháp áp dụng trên lệnh CLI ad-hoc.
-- 3: Nêu đúng + kết hợp giải thích các pattern lọc nâng cao (ví dụ: `web:!db`, `target1,target2`, `all[0]`).
-**Câu hỏi đào sâu:** Pattern `web:!db` trong lệnh ad-hoc Ansible có ý nghĩa gì? *(Thực thi trên tất cả máy thuộc nhóm `web` ngoại trừ các máy đồng thời nằm trong nhóm `db`.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Trong một kịch bản ad-hoc tác động đến hạ tầng hàng ngàn máy chủ, làm thế nào để bó hẹp phạm vi thực thi thử nghiệm trên duy nhất 1 máy chủ trước khi nhân rộng?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    Sử dụng cờ <code>--limit &lt;host_pattern&gt;</code> trong câu lệnh ad-hoc (ví dụ: <code>ansible web --limit target1 -m package -a "name=curl state=present"</code>). Cờ <code>--limit</code> sẽ lọc danh sách máy đích rút gọn từ inventory gốc, đảm bảo lệnh ad-hoc chỉ tác động duy nhất lên <code>target1</code>.
+    <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm:</b> 0 tạo inventory mới &bull; 1 nhớ limit sai cú pháp &bull; 2 nêu đúng &bull; 3 nêu đúng + các pattern lọc nâng cao (<code>web:!db</code>, <code>all[0]</code>).</div>
+    <div><b style="color: var(--accent-rose);">&bull; Câu hỏi đào sâu:</b> Pattern <code>web:!db</code> có ý nghĩa gì? <i>(Thực thi trên tất cả máy thuộc nhóm <code>web</code> ngoại trừ các máy đồng thời nằm trong nhóm <code>db</code>.)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -869,4 +936,10 @@ Khi nhà tuyển dụng phỏng vấn về năng lực vận hành Ansible và l
 1. **Nghiên cứu trước 1:** File Inventory dạng INI và YAML khác nhau như thế nào về mặt cú pháp? Tại sao dự án lớn ưu tiên dùng YAML?
 2. **Nghiên cứu trước 2:** Thư mục `group_vars/` và `host_vars/` đặt ở đâu trong cây thư mục dự án? Ansible tự động nạp biến từ các thư mục này theo cơ chế nào?
 3. **Nghiên cứu trước 3:** Lệnh `ansible-inventory --graph` và `ansible <pattern> --list-hosts` giúp ích gì cho quản trị viên trước khi thực thi một Playbook tác động hạ tầng lớn?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 03: Thiết Kế & Quản Trị Inventory Chuẩn Enterprise: Static, Group, Host/Group Vars & Patterns](ansible-03-03-inventory.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

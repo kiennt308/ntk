@@ -82,17 +82,27 @@ Mở rộng kỹ năng tối ưu hóa quản lý dịch vụ hệ thống (I-10)
 ```mermaid
 graph TD
     A["Task A: Copy nginx.conf (notify: restart nginx)"] --> B{"Nội dung file có thay đổi trên đĩa đĩa?"}
-    B -- "CÓ (Lần 1)" --> C["Báo CHANGED: true -> Đưa 'restart nginx' vào Hàng chờ Handler"]
-    B -- "KHÔNG (Lần 2)" --> D["Báo OK (changed=false) -> KHÔNG đưa vào Hàng chờ Handler"]
+    B -->|"CÓ (Lần 1)"| C["Báo CHANGED: true -> Đưa 'restart nginx' vào Hàng chờ Handler"]
+    B -->|"KHÔNG (Lần 2)"| D["Báo OK (changed=false) -> KHÔNG đưa vào Hàng chờ Handler"]
     
     E["Task B: Copy site.conf (notify: restart nginx)"] --> F{"Nội dung file có thay đổi?"}
-    F -- "CÓ (Lần 1)" --> C
-    F -- "KHÔNG (Lần 2)" --> D
+    F -->|"CÓ (Lần 1)"| C
+    F -->|"KHÔNG (Lần 2)"| D
     
     C --> G["Kết thúc các Task thường trong Playbook"]
     G --> H["Khử trùng lặp: 'restart nginx' chỉ chạy DUY NHẤT 1 LẦN ở CUỐI PLAYBOOK"]
     
     D --> I["Hàng chờ Handler RỖNG -> PLAY RECAP Lần 2: changed=0 (Idempotent)"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#06b6d4,stroke-width:2px
+    style D fill:none,stroke:#10b981,stroke-width:2px
+    style E fill:none,stroke:#6366f1,stroke-width:2px
+    style F fill:none,stroke:#f59e0b,stroke-width:2px
+    style G fill:none,stroke:#8b5cf6,stroke-width:2px
+    style H fill:none,stroke:#ec4899,stroke-width:2px
+    style I fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Khối `handlers:` được khai báo ở cấp độ Play (cùng cấp thụt lề với `tasks:`) chứa các Task đặc biệt chỉ chạy khi nhận được thông báo từ thuộc tính `notify:` của các Task chính.
@@ -314,10 +324,6 @@ Khi quản trị cụm máy chủ Web Server Nginx / HAProxy trong Production:
   1. Bắt buộc chuyển tất cả các lệnh restart/reload dịch vụ xuống khối `handlers:` và chỉ kích hoạt qua `notify:`.
   2. Luôn thử nghiệm với cờ `ansible-playbook --check` để đảm bảo cờ `changed` và `notify` hoạt động đúng dự kiến.
 
-### 7.3. Đo lường chỉ số Trước – Sau khi áp dụng
-- **Trước khi dùng `handlers`:** Dịch vụ bị restart 100% số lần chạy Playbook (gây gián đoạn dịch vụ 5-10 phút/ngày).
-- **Sau khi dùng `handlers`:** Dịch vụ chỉ restart đúng 1 lần khi có thay đổi file cấu hình thật (giảm 99% thời gian gián đoạn dịch vụ).
-
 ### 7.4. Khi nào KHÔNG nên dùng hoặc không nên lạm dụng handlers
 - **Không lạm dụng `handlers` cho các tác vụ mang tính chất phụ thuộc tuần tự nghiêm ngặt giữa các task chính:** Nếu Task B ngay phía sau bắt buộc phải có dịch vụ đã restart ở Task A thì mới chạy được, **đừng để Handler chờ tự nhiên ở cuối Playbook**, mà hãy gọi ngay `ansible.builtin.meta: flush_handlers` giữa 2 Task đó.
 
@@ -358,8 +364,21 @@ flowchart TD
     
     C & F & H --> I["LƯỢT CHẠY LẦN 2"]
     I --> J{"PLAY RECAP Lần 2: changed=0 & No Handler?"}
-    J -- Có --> K["ĐẠT: Cấu hình Handler chuẩn Idempotent"]
-    J -- Không --> L["LỖI: Kiểm tra lại các Task phát notify"]
+    I -->|"Có"| K["ĐẠT: Cấu hình Handler chuẩn Idempotent"]
+    I -->|"Không"| L["LỖI: Kiểm tra lại các Task phát notify"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#06b6d4,stroke-width:2px
+    style E fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#8b5cf6,stroke-width:2px
+    style G fill:none,stroke:#64748b,stroke-width:2px
+    style H fill:none,stroke:#ec4899,stroke-width:2px
+    style I fill:none,stroke:#f59e0b,stroke-width:2px
+    style J fill:none,stroke:#f59e0b,stroke-width:2px
+    style K fill:none,stroke:#10b981,stroke-width:2px
+    style L fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -504,12 +523,16 @@ graph TD
     T1 -->|"Execution: RUNNING HANDLER Restart App (Ngay tại Step 2)"| T1
     T1 -->|"Execution: RUNNING HANDLER Reload Web Stack (Cuối Play)"| T1
     
-    T1 -. "RECAP Lần 1: ok=5, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=3, changed=0 (No Handler -> IDEMPOTENT)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=5, changed=2"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=3, changed=0 (No Handler -> IDEMPOTENT)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook handlers-site.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#6366f1,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
@@ -925,164 +948,297 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q01</span>
+  <span class="qa-question-text">Cơ chế <code>handlers</code> và từ khóa <code>notify:</code> trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới <code>tasks:</code>?</span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Cơ chế <code>handlers</code> và từ khóa <code>notify:</code> trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới <code>tasks:</code>? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Khối <code>handlers:</code> chứa các Task đặc biệt chỉ được kích hoạt thi hành khi nhận được thông báo từ thuộc tính <code>notify:</code> của các Task chính. Không nên restart dịch vụ trực tiếp dưới <code>tasks:</code> vì nó sẽ khiến dịch vụ bị restart vô điều kiện ở mọi lượt chạy kịch bản ngay cả khi tệp cấu hình KHÔNG đổi, gây gián đoạn dịch vụ lãng phí. Dùng <code>notify/handlers</code> đảm bảo dịch vụ CHỈ RESTART khi file cấu hình thực sự có sự thay đổi (<code>changed: true</code>).
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết vai trò của <code>handlers</code> và <code>notify</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>handlers</code> để restart dịch vụ nhưng không giải thích được rủi ro gián đoạn khi đặt restart trong <code>tasks</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò phản ứng sự kiện và điều kiện kích hoạt <code>changed: true</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ chép file cấu hình Nginx phát <code>notify: Restart Nginx</code>.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khối <code>handlers:</code> nằm cùng cấp thụt lề với từ khóa nào trong file Playbook? *(Nằm ở cấp độ Play, cùng cấp thụt lề với từ khóa <code>tasks:</code>.)*
+  <p><b>Hỏi:</b> Cơ chế <code>handlers</code> và từ khóa <code>notify:</code> trong Ansible Playbook có tác dụng gì? Tại sao không nên restart dịch vụ trực tiếp dưới <code>tasks:</code>? <i>(Liên quan QT 4.1)</i></p>
+  <p><b>Đáp án chuẩn:</b> Khối <code>handlers:</code> chứa các Task đặc biệt chỉ được kích hoạt thi hành khi nhận được thông báo từ thuộc tính <code>notify:</code> của các Task chính. Không nên restart dịch vụ trực tiếp dưới <code>tasks:</code> vì nó sẽ khiến dịch vụ bị restart vô điều kiện ở mọi lượt chạy kịch bản ngay cả khi tệp cấu hình KHÔNG đổi, gây gián đoạn dịch vụ lãng phí. Dùng <code>notify/handlers</code> đảm bảo dịch vụ CHỈ RESTART khi file cấu hình thực sự có sự thay đổi (<code>changed: true</code>).</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết vai trò của <code>handlers</code> và <code>notify</code>.</li>
+    <li><b>1:</b> Biết <code>handlers</code> để restart dịch vụ nhưng không giải thích được rủi ro gián đoạn khi đặt restart trong <code>tasks</code>.</li>
+    <li><b>2:</b> Phân tích chính xác vai trò phản ứng sự kiện và điều kiện kích hoạt <code>changed: true</code>.</li>
+    <li><b>3:</b> Nêu đúng + minh họa ví dụ chép file cấu hình Nginx phát <code>notify: Restart Nginx</code>.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Khối <code>handlers:</code> nằm cùng cấp thụt lề với từ khóa nào trong file Playbook? <i>(Nằm ở cấp độ Play, cùng cấp thụt lề với từ khóa <code>tasks:</code>.)</i></p>
 </div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q02</span>
+  <span class="qa-question-text">Điều kiện bắt buộc về trạng thái của Task để thông báo <code>notify:</code> đưa được Handler vào hàng chờ thực thi là gì? Ở lượt chạy Lần 2 điều gì sẽ xảy ra?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Điều kiện bắt buộc về trạng thái của Task để thông báo <code>notify:</code> đưa được Handler vào hàng chờ thực thi là gì? Ở lượt chạy Lần 2 điều gì sẽ xảy ra? <i>(Liên quan QT 4.2)</i></p>
+  <p><b>Đáp án chuẩn:</b> Điều kiện bắt buộc: Task chứa <code>notify:</code> phải trả về trạng thái <b><code>changed: true</code></b>. Ở lượt chạy Lần 2, khi tệp cấu hình đã trùng khớp hoàn toàn với đĩa cứng, Task báo trạng thái <code>ok</code> (<code>changed: false</code>), thông báo <code>notify</code> bị hủy bỏ và Handler <b>KHÔNG BỊ KÍCH HOẠT THỪA</b>, giúp Playbook đạt <code>changed=0</code> tuyệt đối.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Nhầm lẫn rằng Handler luôn chạy bất kể Task báo <code>ok</code> hay <code>changed</code>.</li>
+    <li><b>1:</b> Biết cần <code>changed: true</code> nhưng thắc mắc tại sao lượt 2 Handler lại im lặng không chạy.</li>
+    <li><b>2:</b> Phân tích chính xác điều kiện <code>changed: true</code> và khẳng định hành vi im lặng hợp lệ ở Lần 2.</li>
+    <li><b>3:</b> Nêu đúng + chứng minh bằng kết quả bảng <code>PLAY RECAP</code> ở Lần 1 và Lần 2.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu 1 task dùng module <code>command</code> luôn trả về <code>changed: true</code>, làm sao để ngăn không cho nó liên tục kích hoạt Handler ở Lần 2? <i>(Khai báo thuộc tính <code>changed_when: false</code> cho task command đó.)</i></p>
+</div>
+</details>
 
-### Câu 2 — Điều kiện Bắt buộc Kích hoạt Handler 🔥
-**Hỏi:** Điều kiện bắt buộc về trạng thái của Task để thông báo `notify:` đưa được Handler vào hàng chờ thực thi là gì? Ở lượt chạy Lần 2 điều gì sẽ xảy ra? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:** Điều kiện bắt buộc: Task chứa `notify:` phải trả về trạng thái **`changed: true`**. Ở lượt chạy Lần 2, khi tệp cấu hình đã trùng khớp hoàn toàn với đĩa cứng, Task báo trạng thái `ok` (`changed: false`), thông báo `notify` bị hủy bỏ và Handler **KHÔNG BỊ KÍCH HOẠT THỪA**, giúp Playbook đạt `changed=0` tuyệt đối.
-**Tiêu chí chấm:**
-- 0: Nhầm lẫn rằng Handler luôn chạy bất kể Task báo `ok` hay `changed`.
-- 1: Biết cần `changed: true` nhưng thắc mắc tại sao lượt 2 Handler lại im lặng không chạy.
-- 2: Phân tích chính xác điều kiện `changed: true` và khẳng định hành vi im lặng hợp lệ ở Lần 2.
-- 3: Nêu đúng + chứng minh bằng kết quả bảng `PLAY RECAP` ở Lần 1 và Lần 2.
-**Câu hỏi đào sâu:** Nếu 1 task dùng module `command` luôn trả về `changed: true`, làm sao để ngăn không cho nó liên tục kích hoạt Handler ở Lần 2? *(Khai báo thuộc tính `changed_when: false` cho task command đó.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q03</span>
+  <span class="qa-question-text">Giải thích cơ chế Khử trùng lặp (Deduplication) của Handler khi có 5 Task riêng biệt cùng phát thông báo <code>notify: Restart Nginx</code>.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Giải thích cơ chế Khử trùng lặp (Deduplication) của Handler khi có 5 Task riêng biệt cùng phát thông báo <code>notify: Restart Nginx</code>. <i>(Liên quan QT 4.3)</i></p>
+  <p><b>Đáp án chuẩn:</b> Ansible Engine tự động quản lý một hàng chờ (Queue) các Handler đã được kích hoạt. Mặc định, dù có 5 Task hay 100 Task cùng phát thông báo <code>notify: Restart Nginx</code>, Ansible vẫn tự động khử trùng lặp và <b>CHỈ THỰC THI HANDLER ĐÓ ĐÚNG 1 LẦN DUY NHẤT Ở CUỐI PLAYBOOK</b> sau khi tất cả các Task chính đã hoàn thành.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Lầm tưởng Handler sẽ bị gọi chạy 5 lần liên tiếp.</li>
+    <li><b>1:</b> Biết Handler chạy 1 lần nhưng không giải thích được mốc thời gian thi hành ở cuối Playbook.</li>
+    <li><b>2:</b> Phân tích chính xác cơ chế hàng chờ và khử trùng lặp Deduplication tự động của Ansible.</li>
+    <li><b>3:</b> Nêu đúng + phân tích lợi ích bảo vệ đĩa cứng và hiệu năng dịch vụ Nginx trong Production.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu 5 Task phát <code>notify</code> tới 5 Handler KHÁC NHAU, thứ tự chạy của 5 Handler đó ở cuối Playbook được quyết định bởi thứ tự <code>notify</code> hay thứ tự khai báo trong khối <code>handlers:</code>? <i>(Được quyết định bởi thứ tự khai báo trong khối <code>handlers:</code>.)</i></p>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q04</span>
+  <span class="qa-question-text">Từ khóa <code>listen:</code> trong khối <code>handlers:</code> dùng để làm gì? Cho ví dụ ứng dụng thực tế.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Từ khóa <code>listen:</code> trong khối <code>handlers:</code> dùng để làm gì? Cho ví dụ ứng dụng thực tế. <i>(Liên quan QT 5.1)</i></p>
+  <p><b>Đáp án chuẩn:</b> Từ khóa <code>listen: &lt;topic_name&gt;</code> cho phép định nghĩa một tên chủ đề thông báo chung để nhóm nhiều Handler khác nhau lại với nhau. Khi Task chính phát <code>notify: &lt;topic_name&gt;</code>, TẤT CẢ các Handler có khai báo <code>listen: &lt;topic_name&gt;</code> sẽ đồng loạt được đưa vào hàng chờ kích hoạt. Ứng dụng: Chỉ cần 1 dòng <code>notify: reload web stack</code> là tự động kích hoạt cả Handler restart Nginx và Handler restart PHP-FPM.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết từ khóa <code>listen:</code>.</li>
+    <li><b>1:</b> Biết <code>listen</code> nhưng không giải thích được cơ chế nhóm nhiều Handler theo chủ đề.</li>
+    <li><b>2:</b> Phân tích chính xác vai trò pub/sub topic của <code>listen:</code> và lợi ích rút gọn mã <code>notify</code>.</li>
+    <li><b>3:</b> Nêu đúng + viết đoạn YAML minh họa 2 Handler cùng lắng nghe <code>listen: restart web services</code>.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Một Handler có thể vừa có thuộc tính <code>name:</code> vừa có thuộc tính <code>listen:</code> không? <i>(Có, Task có thể notify theo <code>name</code> hoặc notify theo <code>listen</code> đều được.)</i></p>
+</div>
+</details>
 
-### Câu 3 — Cơ chế Khử trùng lặp (Deduplication) 🔥
-**Hỏi:** Giải thích cơ chế Khử trùng lặp (Deduplication) của Handler khi có 5 Task riêng biệt cùng phát thông báo `notify: Restart Nginx`. *(Liên quan QT 4.3)*
-**Đáp án chuẩn:** Ansible Engine tự động quản lý một hàng chờ (Queue) các Handler đã được kích hoạt. Mặc định, dù có 5 Task hay 100 Task cùng phát thông báo `notify: Restart Nginx`, Ansible vẫn tự động khử trùng lặp và **CHỈ THỰC THI HANDLER ĐÓ ĐÚNG 1 LẦN DUY NHẤT Ở CUỐI PLAYBOOK** sau khi tất cả các Task chính đã hoàn thành.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng Handler sẽ bị gọi chạy 5 lần liên tiếp.
-- 1: Biết Handler chạy 1 lần nhưng không giải thích được mốc thời gian thi hành ở cuối Playbook.
-- 2: Phân tích chính xác cơ chế hàng chờ và khử trùng lặp Deduplication tự động của Ansible.
-- 3: Nêu đúng + phân tích lợi ích bảo vệ đĩa cứng và hiệu năng dịch vụ Nginx trong Production.
-**Câu hỏi đào sâu:** Nếu 5 Task phát `notify` tới 5 Handler KHÁC NHAU, thứ tự chạy của 5 Handler đó ở cuối Playbook được quyết định bởi thứ tự `notify` hay thứ tự khai báo trong khối `handlers:`? *(Được quyết định bởi thứ tự khai báo trong khối `handlers:`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q05</span>
+  <span class="qa-question-text">Module <code>ansible.builtin.meta: flush_handlers</code> dùng để giải quyết vấn đề gì? Cho ví dụ.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Module <code>ansible.builtin.meta: flush_handlers</code> dùng để giải quyết vấn đề gì? Cho ví dụ. <i>(Liên quan QT 5.2)</i></p>
+  <p><b>Đáp án chuẩn:</b> Mặc định Handler sẽ chờ đến tận cuối Playbook mới thi hành. Module <code>ansible.builtin.meta: flush_handlers</code> dùng để ép Ansible thi hành <b>NGAY LẬP TỨC</b> toàn bộ các Handler đang nằm trong hàng chờ tại đúng mốc vị trí đó. Ứng dụng: Khi Task 1 sửa file cấu hình Nginx, cần ép Handler restart Nginx chạy ngay để Task 3 phía sau thực hiện test kết nối HTTP thành công.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết module <code>meta: flush_handlers</code>.</li>
+    <li><b>1:</b> Biết <code>flush_handlers</code> ép Handler chạy nhưng không giải thích được lý do tại sao phải dùng giữa 2 task.</li>
+    <li><b>2:</b> Phân tích chính xác cơ chế ép thi hành hàng chờ Handler ngay tại thời điểm gọi.</li>
+    <li><b>3:</b> Nêu đúng + viết đoạn mã YAML 3 bước: copy config -&gt; flush_handlers -&gt; verify URI test.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Sau khi <code>flush_handlers</code> thi hành xong các Handler trong hàng chờ, hàng chờ Handler đó có bị xóa rỗng không? <i>(Có, hàng chờ được xóa rỗng hoàn toàn.)</i></p>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q06</span>
+  <span class="qa-question-text">Điều gì xảy ra với các Handler trong hàng chờ nếu một Task phía sau bị văng lỗi đứt gãy? Làm sao để đảm bảo Handler vẫn được thi hành?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Điều gì xảy ra với các Handler trong hàng chờ nếu một Task phía sau bị văng lỗi đứt gãy? Làm sao để đảm bảo Handler vẫn được thi hành? <i>(Liên quan QT 6.1)</i></p>
+  <p><b>Đáp án chuẩn:</b> Mặc định nếu một Task ở giữa Playbook bị crash, Ansible sẽ dừng ngay Playbook và BỎ QUA toàn bộ các Handler đang chờ. Để đảm bảo các Handler trong hàng chờ vẫn được thi hành phục hồi dịch vụ, ta khai báo thuộc tính <b><code>force_handlers: yes</code></b> ở cấp độ Play.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết rủi ro bỏ qua Handler khi task sau crash.</li>
+    <li><b>1:</b> Biết bị bỏ qua nhưng không nêu được tên thuộc tính <code>force_handlers: yes</code>.</li>
+    <li><b>2:</b> Phân tích chính xác cơ chế hủy hàng chờ mặc định và giải pháp bọc <code>force_handlers: yes</code>.</li>
+    <li><b>3:</b> Nêu đúng + minh họa ví dụ thực tế bảo vệ file cấu hình bảo mật hệ thống.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Khai báo <code>force_handlers: yes</code> ở vị trí nào trong file Playbook? <i>(Khai báo ở cấp độ Play, cùng cấp thụt lề với <code>hosts:</code> và <code>tasks:</code>.)</i></p>
+</div>
+</details>
 
-### Câu 4 — Nhóm Handler với Từ khóa `listen:` 🔥
-**Hỏi:** Từ khóa `listen:` trong khối `handlers:` dùng để làm gì? Cho ví dụ ứng dụng thực tế. *(Liên quan QT 5.1)*
-**Đáp án chuẩn:** Từ khóa `listen: <topic_name>` cho phép định nghĩa một tên chủ đề thông báo chung để nhóm nhiều Handler khác nhau lại với nhau. Khi Task chính phát `notify: <topic_name>`, TẤT CẢ các Handler có khai báo `listen: <topic_name>` sẽ đồng loạt được đưa vào hàng chờ kích hoạt. Ứng dụng: Chỉ cần 1 dòng `notify: reload web stack` là tự động kích hoạt cả Handler restart Nginx và Handler restart PHP-FPM.
-**Tiêu chí chấm:**
-- 0: Không biết từ khóa `listen:`.
-- 1: Biết `listen` nhưng không giải thích được cơ chế nhóm nhiều Handler theo chủ đề.
-- 2: Phân tích chính xác vai trò pub/sub topic của `listen:` và lợi ích rút gọn mã `notify`.
-- 3: Nêu đúng + viết đoạn YAML minh họa 2 Handler cùng lắng nghe `listen: restart web services`.
-**Câu hỏi đào sâu:** Một Handler có thể vừa có thuộc tính `name:` vừa có thuộc tính `listen:` không? *(Có, Task có thể notify theo `name` hoặc notify theo `listen` đều được.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q07</span>
+  <span class="qa-question-text">Có thể khai báo mệnh đề <code>when:</code> bên trong khối Handler được không? Khi nào nên áp dụng?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Có thể khai báo mệnh đề <code>when:</code> bên trong khối Handler được không? Khi nào nên áp dụng? <i>(Liên quan QT 5.3)</i></p>
+  <p><b>Đáp án chuẩn:</b> Hoàn toàn có thể. Mệnh đề <code>when:</code> đặt bên trong khối Handler sẽ được đánh giá khi Handler đó chuẩn bị thi hành. Ứng dụng: Dùng để rẽ nhánh câu lệnh restart dịch vụ theo từng họ hệ điều hành (ví dụ <code>when: ansible_facts.os_family == "RedHat"</code> restart <code>httpd</code>, ngược lại restart <code>apache2</code>).</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Cho rằng Handler không hỗ trợ mệnh đề <code>when</code>.</li>
+    <li><b>1:</b> Biết dùng <code>when</code> nhưng đặt sai vị trí ở từ khóa <code>notify</code>.</li>
+    <li><b>2:</b> Phân tích chính xác việc đặt <code>when</code> bên trong khối Handler và ứng dụng đa OS.</li>
+    <li><b>3:</b> Nêu đúng + viết đoạn mã YAML Handler rẽ nhánh dịch vụ theo <code>os_family</code>.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu mệnh đề <code>when</code> trong Handler đánh giá FALSE, Handler đó có chạy không? <i>(Không, Handler sẽ bị skipped.)</i></p>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q08</span>
+  <span class="qa-question-text">Tại sao trong các Handler quản lý Web Server (Nginx, HAProxy), người ta thường ưu tiên dùng <code>state: reloaded</code> thay vì <code>state: restarted</code>?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Tại sao trong các Handler quản lý Web Server (như Nginx, HAProxy), người ta thường ưu tiên dùng <code>state: reloaded</code> thay vì <code>state: restarted</code>?</p>
+  <p><b>Đáp án chuẩn:</b></p>
+  <ul>
+    <li><b><code>state: restarted</code>:</b> Tắt hẳn tiến trình chính và khởi động lại từ đầu, gây đứt gãy các kết nối HTTP/TCP đang mở của người dùng (downtime ngắn).</li>
+    <li><b><code>state: reloaded</code>:</b> Thực hiện <b>Graceful Reload</b> — nạp lại file cấu hình mới vào bộ nhớ mà vẫn giữ nguyên các worker process đang phục vụ kết nối cũ, 0% rớt kết nối của khách hàng (Zero Downtime).</li>
+  </ul>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không phân biệt được <code>restarted</code> và <code>reloaded</code>.</li>
+    <li><b>1:</b> Biết <code>reloaded</code> nhẹ hơn nhưng không giải thích được cơ chế Graceful Reload duy trì kết nối HTTP.</li>
+    <li><b>2:</b> Phân tích chính xác sự khác biệt về tiến trình và trải nghiệm người dùng giữa <code>restarted</code> và <code>reloaded</code>.</li>
+    <li><b>3:</b> Nêu đúng + đưa ra lời khuyên thiết kế Playbook cho hệ thống E-commerce Production.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Khi nào thì BẮT BUỘC phải dùng <code>restarted</code> thay vì <code>reloaded</code>? <i>(Khi có sự thay đổi về cổng lắng nghe listen port, thay đổi module kernel, hoặc nâng cấp phiên bản binary.)</i></p>
+</div>
+</details>
 
-### Câu 5 — Ép thi hành Handler giữa chừng với `meta: flush_handlers` 🔥
-**Hỏi:** Module `ansible.builtin.meta: flush_handlers` dùng để giải quyết vấn đề gì? Cho ví dụ. *(Liên quan QT 5.2)*
-**Đáp án chuẩn:** Mặc định Handler sẽ chờ đến tận cuối Playbook mới thi hành. Module `ansible.builtin.meta: flush_handlers` dùng để ép Ansible thi hành NGAY LẬP TỨC toàn bộ các Handler đang nằm trong hàng chờ tại đúng mốc vị trí đó. Ứng dụng: Khi Task 1 sửa file cấu hình Nginx, cần ép Handler restart Nginx chạy ngay để Task 3 phía sau thực hiện test kết nối HTTP thành công.
-**Tiêu chí chấm:**
-- 0: Không biết module `meta: flush_handlers`.
-- 1: Biết `flush_handlers` ép Handler chạy nhưng không giải thích được lý do tại sao phải dùng giữa 2 task.
-- 2: Phân tích chính xác cơ chế ép thi hành hàng chờ Handler ngay tại thời điểm gọi.
-- 3: Nêu đúng + viết đoạn mã YAML 3 bước: copy config -> flush_handlers -> verify URI test.
-**Câu hỏi đào sâu:** Sau khi `flush_handlers` thi hành xong các Handler trong hàng chờ, hàng chờ Handler đó có bị xóa rỗng không? *(Có, hàng chờ được xóa rỗng hoàn toàn.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q09</span>
+  <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng <code>handlers</code> để đảm bảo tính Idempotency và dịch vụ trên máy đích đúng trạng thái.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng <code>handlers</code> để đảm bảo tính Idempotency và dịch vụ trên máy đích đúng trạng thái.</p>
+  <p><b>Đáp án chuẩn:</b></p>
+  <ol>
+    <li><b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site.yml</code>: Task chép file cấu hình báo <code>changed=1</code> và terminal xuất hiện dòng <code>RUNNING HANDLER [Restart App]</code>.</li>
+    <li><b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> và KHÔNG CÓ BẤT KỲ dòng <code>RUNNING HANDLER</code> nào xuất hiện.</li>
+    <li><b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/app.conf</code> và kiểm tra tiến trình/uptime để chứng minh dịch vụ đang hoạt động thực sự với cấu hình mới.</li>
+  </ol>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</li>
+    <li><b>1:</b> Thiếu bước Lần 2 <code>changed=0</code> hoặc không chú ý việc Handler im lặng ở Lần 2.</li>
+    <li><b>2:</b> Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và dòng log terminal.</li>
+    <li><b>3:</b> Trình bày xuất sắc 3 bước + phân tích ý nghĩa của việc Handler không chạy ở Lần 2.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu ở Lần 2 bảng RECAP vẫn báo <code>changed=1</code> và Handler vẫn bị kích hoạt, nguyên nhân do đâu? <i>(Do có 1 Task chính bị lặp thay đổi liên tục, ví dụ task command không có changed_when: false.)</i></p>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q10</span>
+  <span class="qa-question-text">Khi thuộc tính <code>notify: Restart App</code> được đặt bên trong một Task chứa vòng lặp <code>loop:</code> duyệt 5 phần tử, Handler sẽ được kích hoạt khi nào và bao nhiêu lần?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Khi thuộc tính <code>notify: Restart App</code> được đặt bên trong một Task chứa vòng lặp <code>loop:</code> duyệt 5 phần tử, Handler sẽ được kích hoạt khi nào và bao nhiêu lần?</p>
+  <p><b>Đáp án chuẩn:</b> Handler sẽ được đưa vào hàng chờ <b>KHI CÓ ÍT NHẤT 1 PHẦN TỬ trong 5 phần tử trả về <code>changed: true</code></b>. Nhờ cơ chế khử trùng lặp (Deduplication), Handler <code>Restart App</code> vẫn <b>CHỈ THỰC THI ĐÚNG 1 LẦN DUY NHẤT Ở CUỐI PLAYBOOK</b> chứ không bị restart 5 lần.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Cho rằng Handler sẽ bị chạy 5 lần cho 5 item.</li>
+    <li><b>1:</b> Biết Handler chạy 1 lần nhưng không giải thích được điều kiện "ít nhất 1 item changed".</li>
+    <li><b>2:</b> Phân tích chính xác cơ chế đánh giá cờ changed mảng loop và khử trùng lặp Handler.</li>
+    <li><b>3:</b> Nêu đúng + viết đoạn YAML minh họa Task copy loop 3 file config phát notify.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu cả 5 phần tử trong <code>loop</code> ở Lần 2 đều báo <code>ok</code> (<code>changed: false</code>), Handler có chạy không? <i>(Không, Handler im lặng 100%.)</i></p>
+</div>
+</details>
 
-### Câu 6 — Bảo vệ Handler với `force_handlers: yes`
-**Hỏi:** Điều gì xảy ra với các Handler trong hàng chờ nếu một Task phía sau bị văng lỗi đứt gãy? Làm sao để đảm bảo Handler vẫn được thi hành? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:** Mặc định nếu một Task ở giữa Playbook bị crash, Ansible sẽ dừng ngay Playbook và BỎ QUA toàn bộ các Handler đang chờ. Để đảm bảo các Handler trong hàng chờ vẫn được thi hành phục hồi dịch vụ, ta khai báo thuộc tính **`force_handlers: yes`** ở cấp độ Play.
-**Tiêu chí chấm:**
-- 0: Không biết rủi ro bỏ qua Handler khi task sau crash.
-- 1: Biết bị bỏ qua nhưng không nêu được tên thuộc tính `force_handlers: yes`.
-- 2: Phân tích chính xác cơ chế hủy hàng chờ mặc định và giải pháp bọc `force_handlers: yes`.
-- 3: Nêu đúng + minh họa ví dụ thực tế bảo vệ file cấu hình bảo mật hệ thống.
-**Câu hỏi đào sâu:** Khai báo `force_handlers: yes` ở vị trí nào trong file Playbook? *(Khai báo ở cấp độ Play, cùng cấp thụt lề với `hosts:` và `tasks:`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q11</span>
+  <span class="qa-question-text">Xử lý tình huống Handler văng lỗi cú pháp tệp cấu hình: Giả sử Task 1 copy file config lỗi syntax, Task 2 <code>flush_handlers</code> chạy Handler và Handler bị crash, Ansible sẽ xử lý ra sao?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Giả sử Task 1 copy file cấu hình lỗi syntax Nginx, Task 2 <code>flush_handlers</code> chạy Handler <code>Reload Nginx</code> và Handler này bị văng lỗi fatal do file config sai syntax. Ansible sẽ xử lý các task phía sau ra sao?</p>
+  <p><b>Đáp án chuẩn:</b> Khi Handler bị văng lỗi fatal trong quá trình thực thi, Ansible Engine sẽ coi đây là lỗi nghiêm trọng, ngay lập tức ngắt toàn bộ Playbook và BỎ QUA các Task chính phía sau. Hệ thống máy đích sẽ dừng lại ở đúng mốc thời gian đó để quản trị viên vào kiểm tra lỗi syntax file cấu hình.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Cho rằng Ansible bỏ qua lỗi Handler và chạy tiếp các task sau.</li>
+    <li><b>1:</b> Biết Playbook dừng nhưng không giải thích được lý do ngắt thi hành khi Handler fatal.</li>
+    <li><b>2:</b> Phân tích chính xác luồng xử lý ngắt thi hành an toàn của Ansible khi Handler fail.</li>
+    <li><b>3:</b> Nêu đúng + đưa ra lời khuyên sử dụng module <code>command: nginx -t</code> kiểm tra syntax trước khi notify.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Làm sao để viết Task kiểm tra syntax file config trước khi kích hoạt Handler restart? <i>(Thực hiện task <code>command: nginx -t</code> kiểm tra trước, nếu ok mới phát notify restart.)</i></p>
+</div>
+</details>
 
----
-
-### Câu 7 — Handler với Mệnh đề Điều kiện `when:`
-**Hỏi:** Có thể khai báo mệnh đề `when:` bên trong khối Handler được không? Khi nào nên áp dụng? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** Hoàn toàn có thể. Mệnh đề `when:` đặt bên trong khối Handler sẽ được đánh giá khi Handler đó chuẩn bị thi hành. Ứng dụng: Dùng để rẽ nhánh câu lệnh restart dịch vụ theo từng họ hệ điều hành (ví dụ `when: ansible_facts.os_family == "RedHat"` restart `httpd`, ngược lại restart `apache2`).
-**Tiêu chí chấm:**
-- 0: Cho rằng Handler không hỗ trợ mệnh đề `when`.
-- 1: Biết dùng `when` nhưng đặt sai vị trí ở từ khóa `notify`.
-- 2: Phân tích chính xác việc đặt `when` bên trong khối Handler và ứng dụng đa OS.
-- 3: Nêu đúng + viết đoạn mã YAML Handler rẽ nhánh dịch vụ theo `os_family`.
-**Câu hỏi đào sâu:** Nếu mệnh đề `when` trong Handler đánh giá FALSE, Handler đó có chạy không? *(Không, Handler sẽ bị skipped.)*
-
----
-
-### Câu 8 — Graceful Reload vs Full Restart trong Handler ★★★
-**Hỏi:** Tại sao trong các Handler quản lý Web Server (như Nginx, HAProxy), người ta thường ưu tiên dùng `state: reloaded` thay vì `state: restarted`?
-**Đáp án chuẩn:**
-- `state: restarted`: Tắt hẳn tiến trình chính và khởi động lại từ đầu, gây đứt gãy các kết nối HTTP/TCP đang mở của người dùng (downtime ngắn).
-- `state: reloaded`: Thực hiện **Graceful Reload** — nạp lại file cấu hình mới vào bộ nhớ mà vẫn giữ nguyên các worker process đang phục vụ kết nối cũ, 0% rớt kết nối của khách hàng (Zero Downtime).
-**Tiêu chí chấm:**
-- 0: Không phân biệt được `restarted` và `reloaded`.
-- 1: Biết `reloaded` nhẹ hơn nhưng không giải thích được cơ chế Graceful Reload duy trì kết nối HTTP.
-- 2: Phân tích chính xác sự khác biệt về tiến trình và trải nghiệm người dùng giữa `restarted` và `reloaded`.
-- 3: Nêu đúng + đưa ra lời khuyên thiết kế Playbook cho hệ thống E-commerce Production.
-**Câu hỏi đào sâu:** Khi nào thì BẮT BUỘC phải dùng `restarted` thay vì `reloaded`? *(Khi có sự thay đổi về cổng lắng nghe listen port, thay đổi module kernel, hoặc nâng cấp phiên bản binary.)*
-
----
-
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng Handlers 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng `handlers` để đảm bảo tính Idempotency và dịch vụ trên máy đích đúng trạng thái.
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site.yml`: Task chép file cấu hình báo `changed=1` và terminal xuất hiện dòng `RUNNING HANDLER [Restart App]`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** và KHÔNG CÓ BẤT KỲ dòng `RUNNING HANDLER` nào xuất hiện.
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/app.conf` và kiểm tra tiến trình/uptime để chứng minh dịch vụ đang hoạt động thực sự với cấu hình mới.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không chú ý việc Handler im lặng ở Lần 2.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và dòng log terminal.
-- 3: Trình bày xuất sắc 3 bước + phân tích ý nghĩa của việc Handler không chạy ở Lần 2.
-**Câu hỏi đào sâu:** Nếu ở Lần 2 bảng RECAP vẫn báo `changed=1` và Handler vẫn bị kích hoạt, nguyên nhân do đâu? *(Do có 1 Task chính bị lặp thay đổi liên tục, ví dụ task command không có changed_when: false.)*
-
----
-
-### Câu 10 — `notify` trong Task Vòng lặp `loop:` ★★★
-**Hỏi:** Khi thuộc tính `notify: Restart App` được đặt bên trong một Task chứa vòng lặp `loop:` duyệt 5 phần tử, Handler sẽ được kích hoạt khi nào và bao nhiêu lần?
-**Đáp án chuẩn:** Handler sẽ được đưa vào hàng chờ KHI CÓ ÍT NHẤT 1 PHẦN TỬ trong 5 phần tử trả về `changed: true`. Nhờ cơ chế khử trùng lặp (Deduplication), Handler `Restart App` vẫn **CHỈ THỰC THI ĐÚNG 1 LẦN DUY NHẤT Ở CUỐI PLAYBOOK** chứ không bị restart 5 lần.
-**Tiêu chí chấm:**
-- 0: Cho rằng Handler sẽ bị chạy 5 lần cho 5 item.
-- 1: Biết Handler chạy 1 lần nhưng không giải thích được điều kiện "ít nhất 1 item changed".
-- 2: Phân tích chính xác cơ chế đánh giá cờ changed mảng loop và khử trùng lặp Handler.
-- 3: Nêu đúng + viết đoạn YAML minh họa Task copy loop 3 file config phát notify.
-**Câu hỏi đào sâu:** Nếu cả 5 phần tử trong `loop` ở Lần 2 đều báo `ok` (`changed: false`), Handler có chạy không? *(Không, Handler im lặng 100%.)*
-
----
-
-### Câu 11 — Xử lý Tình huống Handler văng Lỗi Syntax Config ★★★
-**Hỏi:** Giả sử Task 1 copy file cấu hình lỗi syntax Nginx, Task 2 `flush_handlers` chạy Handler `Reload Nginx` và Handler này bị văng lỗi fatal do file config sai syntax. Ansible sẽ xử lý các task phía sau ra sao?
-**Đáp án chuẩn:** Khi Handler bị văng lỗi fatal trong quá trình thực thi, Ansible Engine sẽ coi đây là lỗi nghiêm trọng, ngay lập tức ngắt toàn bộ Playbook và BỎ QUA các Task chính phía sau. Hệ thống máy đích sẽ dừng lại ở đúng mốc thời gian đó để quản trị viên vào kiểm tra lỗi syntax file cấu hình.
-**Tiêu chí chấm:**
-- 0: Cho rằng Ansible bỏ qua lỗi Handler và chạy tiếp các task sau.
-- 1: Biết Playbook dừng nhưng không giải thích được lý do ngắt thi hành khi Handler fatal.
-- 2: Phân tích chính xác luồng xử lý ngắt thi hành an toàn của Ansible khi Handler fail.
-- 3: Nêu đúng + đưa ra lời khuyên sử dụng module `command: nginx -t` kiểm tra syntax trước khi notify.
-**Câu hỏi đào sâu:** Làm sao để viết Task kiểm tra syntax file config trước khi kích hoạt Handler restart? *(Thực hiện task `command: nginx -t` kiểm tra trước, nếu ok mới phát notify restart.)*
-
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng khi Dùng handlers và notify ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng `handlers` và `notify` hiệu quả, an toàn và chuẩn Idempotency nhất.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Tuyệt đối KHÔNG restart dịch vụ trong `tasks:`, hãy dùng `notify` và `handlers`.
-2. **Quy tắc 2:** Tận dụng cơ chế khử trùng lặp tự động (Deduplication) để tiết kiệm thời gian restart.
-3. **Quy tắc 3:** Sử dụng `listen:` để nhóm nhiều Handler cùng phản ứng với 1 chủ đề thông báo.
-4. **Quy tắc 4:** Sử dụng `meta: flush_handlers` khi Task sau bắt buộc cần dịch vụ đã restart.
-5. **Quy tắc 5:** Khai báo `force_handlers: yes` để bảo vệ hàng chờ, và đối soát Lần 2 `changed=0` (Handler im lặng) qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy kiến tạo hạ tầng tự động hóa chuyên nghiệp.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào đảm bảo 0% gián đoạn dịch vụ lãng phí cho người dùng? *(Quy tắc 1 và Quy tắc 2.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q12</span>
+  <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng <code>handlers</code> và <code>notify</code> hiệu quả, an toàn và chuẩn Idempotency nhất.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng <code>handlers</code> và <code>notify</code> hiệu quả, an toàn và chuẩn Idempotency nhất.</p>
+  <p><b>Đáp án chuẩn:</b></p>
+  <ol>
+    <li><b>Quy tắc 1:</b> Tuyệt đối KHÔNG restart dịch vụ trong <code>tasks:</code>, hãy dùng <code>notify</code> và <code>handlers</code>.</li>
+    <li><b>Quy tắc 2:</b> Tận dụng cơ chế khử trùng lặp tự động (Deduplication) để tiết kiệm thời gian restart.</li>
+    <li><b>Quy tắc 3:</b> Sử dụng <code>listen:</code> để nhóm nhiều Handler cùng phản ứng với 1 chủ đề thông báo.</li>
+    <li><b>Quy tắc 4:</b> Sử dụng <code>meta: flush_handlers</code> khi Task sau bắt buộc cần dịch vụ đã restart.</li>
+    <li><b>Quy tắc 5:</b> Khai báo <code>force_handlers: yes</code> để bảo vệ hàng chờ, và đối soát Lần 2 <code>changed=0</code> (Handler im lặng) qua <code>docker exec</code>.</li>
+  </ol>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không tóm tắt được các quy tắc.</li>
+    <li><b>1:</b> Liệt kê được 2-3 quy tắc chung chung.</li>
+    <li><b>2:</b> Nêu đầy đủ 5 Quy tắc Vàng chính xác.</li>
+    <li><b>3:</b> Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy kiến tạo hạ tầng tự động hóa chuyên nghiệp.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào đảm bảo 0% gián đoạn dịch vụ lãng phí cho người dùng? <i>(Quy tắc 1 và Quy tắc 2.)</i></p>
+</div>
+</details>
 
 ---
 
@@ -1108,6 +1264,11 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm thiết kế kịch b�
 Để chuẩn bị tốt nhất cho **Buổi 12: Templates và Filters — template, jinja2, filter**, học viên làm 3 câu hỏi nghiên cứu trước sau:
 
 1. **Nghiên cứu trước 1:** Module `ansible.builtin.template` khác module `ansible.builtin.copy` ở điểm cốt lõi nào?
-2. **Nghiên cứu trước 2:** Định dạng tệp tin Jinja2 Template thường có đuôi mở rộng là gì? Cú pháp chèn biến `{{ ... }}` và vòng lặp `{% for ... %}` trong Jinja2 viết ra sao?
+2. **Nghiên cứu trước 2:** Định dạng tệp tin Jinja2 Template thường có đuôi mở rộng là gì? Cú pháp chèn biến `{{ '{{' }} ... {{ '}}' }}` và vòng lặp `{% for ... %}` trong Jinja2 viết ra sao?
 3. **Nghiên cứu trước 3:** Liệt kê 3 Jinja2 Filters thường dùng để biến đổi dữ liệu (ví dụ `default`, `lower`, `join`).
+
+---
+
+> [!TIP]
+> **Bài tiếp theo:** [Bài 12: Biến Đổi Dữ Liệu & Mẫu Động Với Jinja2 Templates: filters, lookups & dynamic configurations](ansible-12-12-templates-jinja2.html)
 {% endraw %}

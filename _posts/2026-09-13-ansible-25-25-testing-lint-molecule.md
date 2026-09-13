@@ -1034,4 +1034,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm kiểm thử kịch b�
 1. **Nghiên cứu trước 1:** Pipeline CI/CD trong Gitlab CI (`.gitlab-ci.yml`) được chia làm các giai đoạn (Stages) như thế nào để tích hợp Ansible tự động?
 2. **Nghiên cứu trước 2:** Làm thế nào để truyền mật khẩu Vault giải mã an toàn trong Runner execution của CI/CD mà không bị rò rỉ log console?
 3. **Nghiên cứu trước 3:** Kỹ thuật Rolling Deployment kết hợp với cờ `serial:` và Load Balancer unregister/register trong pipeline CI/CD diễn ra ra sao?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 26: Tích Hợp Ansible Trong CI/CD: GitLab CI, GitHub Actions, Jenkins Automation & Quản Lý SSH Private Keys Không Để Lộ](ansible-26-26-ansible-trong-cicd.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

@@ -1067,4 +1067,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý hạ tầng 
 1. **Nghiên cứu trước 1:** Công cụ `ansible-lint` là gì? Tại sao việc kiểm tra linter trước khi push code lên Git lại giúp ngăn ngừa 90% lỗi cú pháp và Security Smells?
 2. **Nghiên cứu trước 2:** Cờ `--check` (Check Mode) và `--diff` trong câu lệnh `ansible-playbook` có tác dụng gì trong việc thử nghiệm thay đổi (Dry-run execution)?
 3. **Nghiên cứu trước 3:** Framework `Molecule` dùng để tự động hóa việc kiểm thử Role (Testing Roles) trên các container Docker cách ly ra sao?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 25: Kiểm Thử Tự Động Playbooks & Roles: Ansible-Lint, Syntax Check, Molecule Testing Framework & Docker Scenario Test](ansible-25-25-testing-lint-molecule.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

@@ -1286,4 +1286,10 @@ Chúc mừng bạn đã hoàn thành xuất sắc 30/30 Buổi học của khóa
 1. **Bước 1 — Xây dựng Portfolio IaC trên GitHub:** Push toàn bộ bộ 4 Roles Capstone, `site-capstone.yml`, tệp `README.md` hướng dẫn và hình ảnh sơ đồ Mermaid L2 lên kho GitHub cá nhân. Đây là minh chứng vàng cho năng lực thực chiến khi ứng tuyển các vị trí Senior DevOps / Cloud Engineer.
 2. **Bước 2 — Đăng ký và Ôn luyện Kỳ thi RHCE EX294:** Rà soát lại 100% các mục tiêu bài thi RHCE EX294 Blueprint, tự bấm giờ làm lại kịch bản Capstone Buổi 30 trong 2.5 giờ để sẵn sàng thi đạt RHCE điểm tối đa.
 3. **Bước 3 — Mở rộng Hệ sinh thái Tự động hóa:** Tiếp tục nghiên cứu mở rộng tích hợp Ansible với HashiCorp Terraform (khai báo ảo hóa Cloud), Kubernetes / OpenShift (quản lý container orchestration), và Event-Driven Ansible (EDA) để xây dựng hạ tầng tự động hóa tự chữa lành (Self-healing Infrastructure) cấp Doanh nghiệp.
+
+---
+
+> [!TIP]
+> **Tài Liệu Ôn Tập & Phỏng Vấn:** Tiếp tục khám phá [Bài 31: Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Ansible Automation & DevOps Chuyên Sâu (30 Buổi)](ansible-31-31-tong-hop-cau-hoi-phong-van-ansible-automation-chuyen-sau-30-buoi.html) để ôn tập toàn diện kiến thức và tự tin chinh phục mọi kỳ phỏng vấn kỹ thuật.
+
 {% endraw %}

@@ -83,16 +83,26 @@ Bảo vệ kiến trúc mã nguồn IaC khỏi các bẫy nạp tệp không đ�
 graph TD
     A["Bắt đầu Playbook: site-include-import.yml"] --> B{"Chọn Phương pháp Nạp Tệp Task Con"}
     
-    B -- "import_tasks (Static Import)" --> C["Phân tích Pre-parse tại thời điểm Load Playbook"]
+    B -->|"import_tasks (Static Import)"| C["Phân tích Pre-parse tại thời điểm Load Playbook"]
     C --> D["Hòa trộn phẳng toàn bộ Task con vào Playbook Tree trước khi chạy"]
     D --> E["Hỗ trợ Handler notify & Tags toàn cục trực tiếp"]
     
-    B -- "include_tasks (Dynamic Include)" --> F["Đánh giá Runtime khi tiến trình chạy đến Task"]
+    B -->|"include_tasks (Dynamic Include)"| F["Đánh giá Runtime khi tiến trình chạy đến Task"]
     F --> G["Tính toán linh hoạt theo Biến Runtime, when, và loop:"]
     G --> H["Yêu cầu dùng apply: nếu muốn truyền Tags/Become xuống task con"]
     
     E --> I["Chạy kịch bản và giữ nguyên changed=0 ở Lần 2"]
     H --> I
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#06b6d4,stroke-width:2px
+    style D fill:none,stroke:#8b5cf6,stroke-width:2px
+    style E fill:none,stroke:#10b981,stroke-width:2px
+    style F fill:none,stroke:#f59e0b,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
+    style H fill:none,stroke:#14b8a6,stroke-width:2px
+    style I fill:none,stroke:#22c55e,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Phân biệt chính xác bản chất khác nhau về thời điểm thi hành giữa `ansible.builtin.import_tasks` (Static Re-use ở Parse-time) và `ansible.builtin.include_tasks` (Dynamic Re-use ở Runtime).
@@ -329,8 +339,21 @@ flowchart TD
     
     H --> I["LƯỢT CHẠY LẦN 2"]
     I --> J{"PLAY RECAP Lần 2: changed=0?"}
-    J -- Có --> K["ĐẠT: Modular Playbook chuẩn Idempotent"]
-    J -- Không --> L["LỖI: Rà soát lại task trong tệp con"]
+    J -->|"Có"| K["ĐẠT: Modular Playbook chuẩn Idempotent"]
+    J -->|"Không"| L["LỖI: Rà soát lại task trong tệp con"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#06b6d4,stroke-width:2px
+    style D fill:none,stroke:#8b5cf6,stroke-width:2px
+    style E fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#10b981,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
+    style H fill:none,stroke:#64748b,stroke-width:2px
+    style I fill:none,stroke:#3b82f6,stroke-width:2px
+    style J fill:none,stroke:#eab308,stroke-width:2px
+    style K fill:none,stroke:#22c55e,stroke-width:2px
+    style L fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -479,12 +502,21 @@ graph TD
     T1 -->|"6. Gửi cấu hình tĩnh"| TARGET1["Target Container 1 (target1)"]
     T2 -->|"7. Gửi cấu hình động"| TARGET1
     
-    TARGET1 -. "RECAP Lần 1: ok=6, changed=3" .-> SubGraph1
-    TARGET1 -. "RECAP Lần 2: ok=6, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
+    TARGET1 -.->|"RECAP Lần 1: ok=6, changed=3"| SubGraph1
+    TARGET1 -.->|"RECAP Lần 2: ok=6, changed=0 (ĐẠT IDEMPOTENCY 100%)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-include-import.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| TARGET1
+
+    style SubGraph1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style PB fill:none,stroke:#6366f1,stroke-width:2px
+    style T1 fill:none,stroke:#06b6d4,stroke-width:2px
+    style T2 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style T3 fill:none,stroke:#f59e0b,stroke-width:2px
+    style SUB fill:none,stroke:#ec4899,stroke-width:2px
+    style TARGET1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#64748b,stroke-width:2px
 ```
 
 ---
@@ -849,120 +881,182 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa <code>ansible.builtin.import_tasks</code> (Static Import) và <code>ansible.builtin.include_tasks</code> (Dynamic Include)?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa <code>ansible.builtin.import_tasks</code> (Static Import) và <code>ansible.builtin.include_tasks</code> (Dynamic Include)? <i>(Liên quan QT 4.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b><code>import_tasks</code> (Static Import):</b> Nạp tĩnh tại thời điểm <b>Parse-time</b> (trước khi Playbook chạy). Toàn bộ nội dung tệp task con được hòa trộn phẳng vào cây Playbook chính ngay ở bước đọc file.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b><code>include_tasks</code> (Dynamic Include):</b> Nạp động tại thời điểm <b>Runtime</b> (khi tiến trình chạy tới đúng Task đó). Tệp task con chỉ được đọc và phân tích khi execution engine chạy tới task include.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được Static vs Dynamic.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>import</code> là tĩnh <code>include</code> là động nhưng không giải thích được khái niệm Parse-time vs Runtime.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác bản chất Parse-time hòa trộn phẳng vs Runtime nạp tại thời điểm chạy.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ sử dụng thực tế của 2 module trong Playbook.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Module nào chạy nhanh hơn về mặt hiệu năng thi hành? <i>(<code>import_tasks</code> chạy nhanh hơn vì không mất overhead phân tích file ở runtime.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Phân biệt sự khác nhau cốt lõi về thời điểm thi hành giữa <code>ansible.builtin.import_tasks</code> (Static Import) và <code>ansible.builtin.include_tasks</code> (Dynamic Include)? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>import_tasks</code> (Static Import): Nạp tĩnh tại thời điểm <b style="color: var(--accent-primary);">Parse-time</b> (trước khi Playbook chạy). Toàn bộ nội dung tệp task con được hòa trộn phẳng vào cây Playbook chính ngay ở bước đọc file.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>include_tasks</code> (Dynamic Include): Nạp động tại thời điểm <b style="color: var(--accent-primary);">Runtime</b> (khi tiến trình chạy tới đúng Task đó). Tệp task con chỉ được đọc và phân tích khi execution engine chạy tới task include.</div>
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được Static vs Dynamic.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>import</code> là tĩnh <code>include</code> là động nhưng không giải thích được khái niệm Parse-time vs Runtime.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác bản chất Parse-time hòa trộn phẳng vs Runtime nạp tại thời điểm chạy.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ sử dụng thực tế của 2 module trong Playbook.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Module nào chạy nhanh hơn về mặt hiệu năng thi hành? *(<code>import_tasks</code> chạy nhanh hơn vì không mất overhead phân tích file ở runtime.)*
-</div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Tại sao ta có thể dùng <code>include_tasks</code> với từ khóa <code>loop:</code> để lặp danh sách task con nhưng KHÔNG THỂ dùng <code>import_tasks</code> với <code>loop:</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao ta có thể dùng <code>include_tasks</code> với từ khóa <code>loop:</code> để lặp danh sách task con nhưng KHÔNG THỂ dùng <code>import_tasks</code> với <code>loop:</code>? <i>(Liên quan QT 5.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>import_tasks</code> được hòa trộn phẳng ở bước Parse-time trước khi chạy. Tại thời điểm Parse-time, Ansible Parser chưa thể tính toán được số lượng phần tử của mảng <code>loop:</code> ở Runtime, nên việc kết hợp <code>import_tasks</code> với <code>loop:</code> là bất khả thi về mặt kiến trúc (văng lỗi syntax).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ngược lại, <code>include_tasks</code> được đánh giá ở Runtime nên có thể nạp tệp task con lặp đi lặp lại linh hoạt ứng với từng phần tử của mảng <code>loop:</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không giải thích được lý do kỹ thuật.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>import_tasks</code> không chạy được với <code>loop:</code> nhưng lầm tưởng là do lỗi bug phần mềm.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác nguyên lý Parse-time không thể tính toán số phần tử mảng của <code>import_tasks</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ YAML chuẩn nạp <code>include_tasks</code> với <code>loop:</code> và <code>loop_control</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Cần làm gì nếu muốn đổi tên biến mặc định <code>item</code> khi dùng <code>include_tasks</code> trong vòng lặp? <i>(Sử dụng <code>loop_control: loop_var: custom_var_name</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Sử dụng `include_tasks` với Vòng lặp `loop:` 🔥
-**Hỏi:** Tại sao ta có thể dùng `include_tasks` với từ khóa `loop:` để lặp danh sách task con nhưng KHÔNG THỂ dùng `import_tasks` với `loop:`? *(Liên quan QT 5.1)*
-**Đáp án chuẩn:**
-Vì `import_tasks` được hòa trộn phẳng ở bước Parse-time trước khi chạy. Tại thời điểm Parse-time, Ansible Parser chưa thể tính toán được số lượng phần tử của mảng `loop:` ở Runtime, nên việc kết hợp `import_tasks` với `loop:` là bất khả thi về mặt kiến trúc (văng lỗi syntax).
-Ngược lại, `include_tasks` được đánh giá ở Runtime nên có thể nạp tệp task con lặp đi lặp lại linh hoạt ứng với từng phần tử của mảng `loop:`.
-**Tiêu chí chấm:**
-- 0: Không giải thích được lý do kỹ thuật.
-- 1: Biết `import_tasks` không chạy được với `loop:` nhưng lầm tưởng là do lỗi bug phần mềm.
-- 2: Phân tích chính xác nguyên lý Parse-time không thể tính toán số phần tử mảng của `import_tasks`.
-- 3: Nêu đúng + viết ví dụ YAML chuẩn nạp `include_tasks` với `loop:` và `loop_control`.
-**Câu hỏi đào sâu:** Cần làm gì nếu muốn đổi tên biến mặc định `item` khi dùng `include_tasks` trong vòng lặp? *(Sử dụng `loop_control: loop_var: custom_var_name`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Module <code>ansible.builtin.import_playbook</code> dùng để làm gì? Vị trí khai báo của nó trong file YAML tổng khác gì so với <code>import_tasks</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Module <code>ansible.builtin.import_playbook</code> dùng để làm gì? Vị trí khai báo của nó trong file YAML tổng khác gì so với <code>import_tasks</code>? <i>(Liên quan QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tác dụng:</b> Dùng để gom nhóm và thi hành tuần tự nhiều tệp Playbook hoàn chỉnh độc lập (chứa từ khóa <code>hosts:</code>) trong một kịch bản tổng thể (như <code>site-all.yml</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Vị trí khai báo:</b> <code>import_playbook</code> là directive ở <b>cấp root Playbook</b> (cùng cấp với <code>hosts:</code>), tuyệt đối <b>KHÔNG nằm trong khối <code>tasks:</code></b>. Ngược lại, <code>import_tasks</code> là module nằm bên trong khối <code>tasks:</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Nhầm lẫn giữa <code>import_playbook</code> và <code>import_tasks</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>import_playbook</code> để nạp file playbook nhưng đặt sai vị trí bên trong khối <code>tasks:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò gom nhóm Playbook và vị trí khai báo cấp root.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ file <code>site-all.yml</code> gọi 2 Playbook con qua <code>import_playbook</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Chuyện gì xảy ra nếu đặt <code>import_playbook</code> bên trong khối <code>tasks:</code>? <i>(Ansible Engine báo lỗi <code>The task 'import_playbook' was not found in a play</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Tại sao các Task con nạp qua <code>import_tasks</code> lại tự động thừa hưởng thẻ <code>tags</code> và có thể thông báo <code>notify:</code> tới Handler nằm ở Playbook chính một cách trực tiếp?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao các Task con nạp qua <code>import_tasks</code> lại tự động thừa hưởng thẻ <code>tags</code> và có thể thông báo <code>notify:</code> tới Handler nằm ở Playbook chính một cách trực tiếp? <i>(Liên quan QT 5.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>import_tasks</code> thực hiện hòa trộn phẳng (Flattening) toàn bộ danh sách task con vào cây Playbook chính ở thời điểm parse-time. Do đó, về mặt bản chất mã nguồn, các task con trở thành các task trực tiếp của Playbook chính, nên tự động nhận thẻ <code>tags</code> gán ở task import và nhìn thấy tất cả các Handler khai báo ở <code>handlers/main.yml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu cơ chế thừa hưởng tags và handlers.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết nhận được tags nhưng không giải thích được bản chất hòa trộn phẳng ở parse-time.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế hòa trộn phẳng cây Playbook (Playbook Tree Flattening).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ gán <code>tags:</code> ở <code>import_tasks</code> lan xuống task con.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu gán <code>tags: [web]</code> ở dòng <code>import_tasks</code>, khi chạy <code>ansible-playbook --tags web</code> thì các task con trong tệp import có chạy không? <i>(Có, 100% task con đều chạy vì đã thừa hưởng tag <code>web</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Gom Nhóm Playbook bằng `import_playbook` 🔥
-**Hỏi:** Module `ansible.builtin.import_playbook` dùng để làm gì? Vị trí khai báo của nó trong file YAML tổng khác gì so với `import_tasks`? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-- Tác dụng: Dùng để gom nhóm và thi hành tuần tự nhiều tệp Playbook hoàn chỉnh độc lập (chứa từ khóa `hosts:`) trong một kịch bản tổng thể (như `site-all.yml`).
-- Vị trí khai báo: `import_playbook` là directive ở **cấp root Playbook** (cùng cấp với `hosts:`), tuyệt đối **KHÔNG nằm trong khối `tasks:`**. Ngược lại, `import_tasks` là module nằm bên trong khối `tasks:`.
-**Tiêu chí chấm:**
-- 0: Nhầm lẫn giữa `import_playbook` và `import_tasks`.
-- 1: Biết `import_playbook` để nạp file playbook nhưng đặt sai vị trí bên trong khối `tasks:`.
-- 2: Phân tích chính xác vai trò gom nhóm Playbook và vị trí khai báo cấp root.
-- 3: Nêu đúng + viết ví dụ file `site-all.yml` gọi 2 Playbook con qua `import_playbook`.
-**Câu hỏi đào sâu:** Chuyện gì xảy ra nếu đặt `import_playbook` bên trong khối `tasks:`? *(Ansible Engine báo lỗi `The task 'import_playbook' was not found in a play`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Tại sao khi gán <code>tags: [web]</code> cho <code>include_tasks</code>, các task con bên trong tệp nạp động lại KHÔNG tự động nhận tag? Giải thích vai trò của thuộc tính <code>apply:</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao khi gán <code>tags: [web]</code> cho <code>include_tasks</code>, các task con bên trong tệp nạp động lại KHÔNG tự động nhận tag? Giải thích vai trò của thuộc tính <code>apply:</code>. <i>(Liên quan QT 5.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>include_tasks</code> nạp động ở runtime, thẻ <code>tags:</code> gán trực tiếp ở dòng <code>include_tasks</code> chỉ có hiệu lực áp dụng cho bản thân task include đó (để quyết định có include tệp hay không), mà <b>không lan xuống các task con bên trong</b>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Vai trò của <code>apply:</code>:</b> Khối <code>apply:</code> cho phép chỉ định ép buộc truyền các thuộc tính task (như <code>tags:</code>, <code>become:</code>, <code>environment:</code>) xuống từng task con bên trong tệp được include động.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>apply:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>apply:</code> dùng cho <code>include_tasks</code> nhưng không giải thích được lý do thẻ tag không tự lan xuống task con.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế nạp động runtime và vai trò của khối <code>apply:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML chuẩn dùng <code>apply: tags:</code> trong <code>include_tasks</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Viết cú pháp <code>apply:</code> gán cả <code>tags: [deploy]</code> và <code>become: true</code> cho <code>include_tasks</code>. <i>(Viết <code>apply: tags: [deploy] become: true</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Tại sao tuyệt đối không được tham chiếu các biến sinh ra ở thời điểm Runtime (như biến <code>register:</code>) vào cờ điều kiện <code>when:</code> của <code>import_tasks</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao tuyệt đối không được tham chiếu các biến sinh ra ở thời điểm Runtime (như biến <code>register:</code>) vào cờ điều kiện <code>when:</code> của <code>import_tasks</code>? <i>(Liên quan QT 6.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì <code>import_tasks</code> được Ansible Engine phân tích và đánh giá cờ <code>when:</code> ngay ở bước Parse-time trước khi Playbook bắt đầu chạy. Tại thời điểm Parse-time, các biến sinh ra từ <code>register:</code> ở các task trước chưa hề tồn tại trên bộ nhớ. Việc tham chiếu này sẽ làm cờ <code>when:</code> bị đánh giá sai hoặc văng lỗi <code>undefined variable</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Giải pháp:</b> Chuyển sang dùng <code>include_tasks</code> (Dynamic) để đánh giá cờ <code>when:</code> theo biến runtime.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không thấy được rủi ro khi dùng biến <code>register</code> với <code>import_tasks</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết bị lỗi nhưng không nêu được bản chất đánh giá cờ <code>when:</code> ở parse-time vs runtime.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác xung đột thời điểm giữa parse-time evaluation và runtime variable registration.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ sửa lỗi từ <code>import_tasks</code> sang <code>include_tasks</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Cờ <code>when:</code> gán cho <code>import_tasks</code> sẽ áp dụng lên task include hay áp dụng lên từng task con? <i>(Áp dụng lên TỪNG task con sau khi hòa trộn phẳng.)</i></div>
+  </div>
+</details>
 
-### Câu 4 — Thừa hưởng Thẻ Tags và Handlers qua `import_tasks` 🔥
-**Hỏi:** Tại sao các Task con nạp qua `import_tasks` lại tự động thừa hưởng thẻ `tags` và có thể thông báo `notify:` tới Handler nằm ở Playbook chính một cách trực tiếp? *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-Vì `import_tasks` thực hiện hòa trộn phẳng (Flattening) toàn bộ danh sách task con vào cây Playbook chính ở thời điểm parse-time. Do đó, về mặt bản chất mã nguồn, các task con trở thành các task trực tiếp của Playbook chính, nên tự động nhận thẻ `tags` gán ở task import và nhìn thấy tất cả các Handler khai báo ở `handlers/main.yml`.
-**Tiêu chí chấm:**
-- 0: Không hiểu cơ chế thừa hưởng tags và handlers.
-- 1: Biết nhận được tags nhưng không giải thích được bản chất hòa trộn phẳng ở parse-time.
-- 2: Phân tích chính xác cơ chế hòa trộn phẳng cây Playbook (Playbook Tree Flattening).
-- 3: Nêu đúng + minh họa ví dụ gán `tags:` ở `import_tasks` lan xuống task con.
-**Câu hỏi đào sâu:** Nếu gán `tags: [web]` ở dòng `import_tasks`, khi chạy `ansible-playbook --tags web` thì các task con trong tệp import có chạy không? *(Có, 100% task con đều chạy vì đã thừa hưởng tag `web`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Trình bày kỹ thuật sử dụng <code>include_tasks</code> kết hợp với biến facts hệ điều hành để nạp linh hoạt các tệp task cấu hình theo từng OS (CentOS vs Ubuntu).</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày kỹ thuật sử dụng <code>include_tasks</code> kết hợp với biến facts hệ điều hành để nạp linh hoạt các tệp task cấu hình theo từng OS (CentOS vs Ubuntu). <i>(Liên quan QT 6.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sử dụng biến facts <code>ansible_facts.os_family</code> để truyền động vào tên tệp trong <code>include_tasks</code>:
+      <pre><code>- name: Include OS-specific setup tasks dynamically
+  ansible.builtin.include_tasks: "tasks/{{ '{{' }} ansible_facts.os_family | lower {{ '}}' }}_tasks.yml"</code></pre>
+      Khi chạy trên RedHat, nó nạp <code>tasks/redhat_tasks.yml</code>; khi chạy trên Debian, nó nạp <code>tasks/debian_tasks.yml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết kỹ thuật nạp tệp theo biến hệ điều hành.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết dùng <code>when:</code> cho từng task nhưng không biết nạp động cả tệp task bằng biến.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế nội suy chuỗi tên tệp trong <code>include_tasks</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML chuẩn nạp tệp task theo hệ điều hành.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Kỹ thuật này có áp dụng được với <code>import_tasks</code> không? <i>(Không áp dụng được an toàn với <code>import_tasks</code> nếu biến facts chưa được thu thập ở parse-time.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 5 — Thuộc tính `apply:` trong `include_tasks` 🔥
-**Hỏi:** Tại sao khi gán `tags: [web]` cho `include_tasks`, các task con bên trong tệp nạp động lại KHÔNG tự động nhận tag? Giải thích vai trò của thuộc tính `apply:`. *(Liên quan QT 5.3)*
-**Đáp án chuẩn:**
-Vì `include_tasks` nạp động ở runtime, thẻ `tags:` gán trực tiếp ở dòng `include_tasks` chỉ có hiệu lực áp dụng cho bản thân task include đó (để quyết định có include tệp hay không), mà **không lan xuống các task con bên trong**.
-Vai trò của `apply:`: Khối `apply:` cho phép chỉ định ép buộc truyền các thuộc tính task (như `tags:`, `become:`, `environment:`) xuống từng task con bên trong tệp được include động.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `apply:`.
-- 1: Biết `apply:` dùng cho `include_tasks` nhưng không giải thích được lý do thẻ tag không tự lan xuống task con.
-- 2: Phân tích chính xác cơ chế nạp động runtime và vai trò của khối `apply:`.
-- 3: Nêu đúng + viết đoạn YAML chuẩn dùng `apply: tags:` trong `include_tasks`.
-**Câu hỏi đào sâu:** Viết cú pháp `apply:` gán cả `tags: [deploy]` và `become: true` cho `include_tasks`. *(Viết `apply: tags: [deploy] become: true`.)*
-
----
-
-### Câu 6 — Bẫy Tham chiếu Biến Runtime trong `import_tasks`
-**Hỏi:** Tại sao tuyệt đối không được tham chiếu các biến sinh ra ở thời điểm Runtime (như biến `register:`) vào cờ điều kiện `when:` của `import_tasks`? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:**
-Vì `import_tasks` được Ansible Engine phân tích và đánh giá cờ `when:` ngay ở bước Parse-time trước khi Playbook bắt đầu chạy. Tại thời điểm Parse-time, các biến sinh ra từ `register:` ở các task trước chưa hề tồn tại trên bộ nhớ. Việc tham chiếu này sẽ làm cờ `when:` bị đánh giá sai hoặc văng lỗi `undefined variable`.
-Giải pháp: Chuyển sang dùng `include_tasks` (Dynamic) để đánh giá cờ `when:` theo biến runtime.
-**Tiêu chí chấm:**
-- 0: Không thấy được rủi ro khi dùng biến `register` với `import_tasks`.
-- 1: Biết bị lỗi nhưng không nêu được bản chất đánh giá cờ `when:` ở parse-time vs runtime.
-- 2: Phân tích chính xác xung đột thời điểm giữa parse-time evaluation và runtime variable registration.
-- 3: Nêu đúng + minh họa ví dụ sửa lỗi từ `import_tasks` sang `include_tasks`.
-**Câu hỏi đào sâu:** Cờ `when:` gán cho `import_tasks` sẽ áp dụng lên task include hay áp dụng lên từng task con? *(Áp dụng lên TỪNG task con sau khi hòa trộn phẳng.)*
-
----
-
-### Câu 7 — Nạp Tệp Task Theo Môi trường và Hệ điều hành
-**Hỏi:** Trình bày kỹ thuật sử dụng `include_tasks` kết hợp với biến facts hệ điều hành để nạp linh hoạt các tệp task cấu hình theo từng OS (CentOS vs Ubuntu). *(Liên quan QT 6.2)*
-**Đáp án chuẩn:**
-Sử dụng biến facts `ansible_facts.os_family` để truyền động vào tên tệp trong `include_tasks`:
-```yaml
-- name: Include OS-specific setup tasks dynamically
-  ansible.builtin.include_tasks: "tasks/{{ ansible_facts.os_family | lower }}_tasks.yml"
-```
-Khi chạy trên RedHat, nó nạp `tasks/redhat_tasks.yml`; khi chạy trên Debian, nó nạp `tasks/debian_tasks.yml`.
-**Tiêu chí chấm:**
-- 0: Không biết kỹ thuật nạp tệp theo biến hệ điều hành.
-- 1: Biết dùng `when:` cho từng task nhưng không biết nạp động cả tệp task bằng biến.
-- 2: Phân tích chính xác cơ chế nội suy chuỗi tên tệp trong `include_tasks`.
-- 3: Nêu đúng + viết đoạn YAML chuẩn nạp tệp task theo hệ điều hành.
-**Câu hỏi đào sâu:** Kỹ thuật này có áp dụng được với `import_tasks` không? *(Không áp dụng được an toàn với `import_tasks` nếu biến facts chưa được thu thập ở parse-time.)*
-
----
-
-### Câu 8 — Cấu trúc Thư mục Dự án Mô-đun hóa `tasks/`
-**Hỏi:** Trình bày cấu trúc thư mục tiêu chuẩn của một dự án Ansible Playbook mô-đun hóa được chia nhỏ thành nhiều tệp task con. *(Liên quan QT 4.2)*
-**Đáp án chuẩn:**
-Cấu trúc tiêu chuẩn:
-```bash
-project/
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Trình bày cấu trúc thư mục tiêu chuẩn của một dự án Ansible Playbook mô-đun hóa được chia nhỏ thành nhiều tệp task con.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày cấu trúc thư mục tiêu chuẩn của một dự án Ansible Playbook mô-đun hóa được chia nhỏ thành nhiều tệp task con. <i>(Liên quan QT 4.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cấu trúc tiêu chuẩn:
+      <pre><code>project/
 ├── ansible.cfg
 ├── inventory.ini
 ├── site-all.yml               (Playbook chính gọi import_playbook)
@@ -972,75 +1066,113 @@ project/
 └── tasks/
     ├── common_tasks.yml       (Tasks dùng chung nạp qua import_tasks)
     ├── web_tasks.yml          (Tasks ứng dụng nạp qua include_tasks)
-    └── db_tasks.yml
-```
-**Tiêu chí chấm:**
-- 0: Đặt tất cả file nằm lộn xộn trong thư mục gốc.
-- 1: Biết chia thư mục nhưng không phân định được vai trò thư mục `tasks/` và `playbooks/`.
-- 2: Phân tích chính xác cấu trúc thư mục mô-đun hóa chuẩn mực.
-- 3: Nêu đúng + vẽ sơ đồ cây thư mục và giải thích luồng nạp tệp của `site-all.yml`.
-**Câu hỏi đào sâu:** Thư mục `tasks/` có thể chứa các thư mục con nữa không? *(Có thể, ví dụ `tasks/web/nginx.yml`.)*
+    └── db_tasks.yml</code></pre>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Đặt tất cả file nằm lộn xộn trong thư mục gốc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết chia thư mục nhưng không phân định được vai trò thư mục <code>tasks/</code> và <code>playbooks/</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cấu trúc thư mục mô-đun hóa chuẩn mực.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + vẽ sơ đồ cây thư mục và giải thích luồng nạp tệp của <code>site-all.yml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Thư mục <code>tasks/</code> có thể chứa các thư mục con nữa không? <i>(Có thể, ví dụ <code>tasks/web/nginx.yml</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook chia nhỏ bằng <code>include_tasks</code> / <code>import_tasks</code> để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook chia nhỏ bằng <code>include_tasks</code> / <code>import_tasks</code> để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (hoàn thành 100% Objective RHCE EX294 #13).</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site-include-import.yml</code>: Các tệp task con nạp qua <code>import_tasks</code> và <code>include_tasks</code> thực thi và chép file báo <code>changed &gt; 0</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site-include-import.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task trong các tệp con đều báo <code>ok</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/include-import-app.conf</code> kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu từ tệp task con.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294 #13.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Việc chia nhỏ Playbook thành 5 tệp task con có làm thay đổi cơ chế tính toán checksum của module <code>ansible.builtin.copy</code> bên trong tệp con không? <i>(Hoàn toàn không, checksum vẫn được so sánh chuẩn xác.)</i></div>
+  </div>
+</details>
 
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Chia nhỏ Playbook 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook chia nhỏ bằng `include_tasks` / `import_tasks` để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (hoàn thành 100% Objective RHCE EX294 #13).
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site-include-import.yml`: Các tệp task con nạp qua `import_tasks` và `include_tasks` thực thi và chép file báo `changed > 0`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site-include-import.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task trong các tệp con đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/include-import-app.conf` kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu từ tệp task con.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.
-- 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294 #13 (`☑`).
-**Câu hỏi đào sâu:** Việc chia nhỏ Playbook thành 5 tệp task con có làm thay đổi cơ chế tính toán checksum của module `ansible.builtin.copy` bên trong tệp con không? *(Hoàn toàn không, checksum vẫn được so sánh chuẩn xác.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Khi truyền biến qua thuộc tính <code>vars:</code> trong <code>include_tasks</code>, phạm vi tồn tại của biến đó ảnh hưởng tới các Task phía sau như thế nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Khi truyền biến qua thuộc tính <code>vars:</code> trong <code>include_tasks</code>, phạm vi tồn tại của biến đó ảnh hưởng tới các Task phía sau như thế nào?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mặc định trong Ansible, biến được truyền vào <code>include_tasks</code> qua thuộc tính <code>vars:</code> sẽ tồn tại trong phạm vi của tệp task được include và <b>lan ra cả các Task tiếp theo nằm sau task include đó trong cùng một Play</b>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Để phong tỏa phạm vi biến chỉ nằm trong tệp task include mà không bị rò rỉ ra ngoài, quản trị viên nên sử dụng cấu trúc Role với <code>public: false</code> hoặc đặt tên biến có tiền tố chuyên biệt.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết phạm vi tồn tại của biến truyền trong <code>include_tasks</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Lầm tưởng biến truyền vào <code>include_tasks</code> tự động biến mất khi chạy xong tệp task con.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế rò rỉ biến out-of-scope trong cùng một Play.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + giải pháp đặt tiền tố biến hoặc dùng Role cô lập biến.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm sao để ngăn 2 tệp task con nạp qua <code>include_tasks</code> ghi đè biến của nhau? <i>(Đặt tên biến có tiền tố riêng biệt cho từng tệp task con.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Ansible có cho phép lồng <code>include_tasks</code> bên trong một tệp task con đã được <code>include_tasks</code> trước đó không? Giới hạn độ sâu khuyến nghị là bao nhiêu?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Ansible có cho phép lồng <code>include_tasks</code> bên trong một tệp task con đã được <code>include_tasks</code> trước đó không? Giới hạn độ sâu khuyến nghị là bao nhiêu?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ansible hoàn toàn cho phép lồng <code>include_tasks</code> nhiều cấp (Nested Includes).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Giới hạn độ sâu khuyến nghị:</b> <b>Tối đa 2 đến 3 cấp</b>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Lý do giới hạn:</b> Lồng quá nhiều cấp include sẽ khiến tiến trình thi hành bị rối luồng, rất khó theo dõi vết lỗi khi gặp exception, và làm giảm hiệu năng phân tích runtime của Ansible Engine.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng Ansible cấm lồng <code>include_tasks</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết cho phép lồng nhưng không đưa ra được giới hạn độ sâu khuyến nghị và lý do kỹ thuật.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế Nested Includes và giới hạn độ sâu 2-3 cấp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + đưa ra lời khuyên refactor sang cấu trúc Role khi kịch bản quá phức tạp.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu nạp lặp đệ quy <code>include_tasks</code> chính tệp đó thì chuyện gì xảy ra? <i>(Dẫn đến vòng lặp vô tận văng lỗi <code>Maximum recursion depth exceeded</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 10 — Phạm vi Biến (Variable Scope) trong `include_tasks` ★★★
-**Hỏi:** Khi truyền biến qua thuộc tính `vars:` trong `include_tasks`, phạm vi tồn tại của biến đó ảnh hưởng tới các Task phía sau như thế nào?
-**Đáp án chuẩn:**
-Mặc định trong Ansible, biến được truyền vào `include_tasks` qua thuộc tính `vars:` sẽ tồn tại trong phạm vi của tệp task được include và **lan ra cả các Task tiếp theo nằm sau task include đó trong cùng một Play**.
-Để phong tỏa phạm vi biến chỉ nằm trong tệp task include mà không bị rò rỉ ra ngoài, quản trị viên nên sử dụng cấu trúc Role với `public: false` hoặc đặt tên biến có tiền tố chuyên biệt.
-**Tiêu chí chấm:**
-- 0: Không biết phạm vi tồn tại của biến truyền trong `include_tasks`.
-- 1: Lầm tưởng biến truyền vào `include_tasks` tự động biến mất khi chạy xong tệp task con.
-- 2: Phân tích chính xác cơ chế rò rỉ biến out-of-scope trong cùng một Play.
-- 3: Nêu đúng + giải pháp đặt tiền tố biến hoặc dùng Role cô lập biến.
-**Câu hỏi đào sâu:** Làm sao để ngăn 2 tệp task con nạp qua `include_tasks` ghi đè biến của nhau? *(Đặt tên biến có tiền tố riêng biệt cho từng tệp task con.)*
-
----
-
-### Câu 11 — Lồng `include_tasks` (Nested Includes) và Giới hạn Độ sâu ★★★
-**Hỏi:** Ansible có cho phép lồng `include_tasks` bên trong một tệp task con đã được `include_tasks` trước đó không? Giới hạn độ sâu khuyến nghị là bao nhiêu?
-**Đáp án chuẩn:**
-- Ansible hoàn toàn cho phép lồng `include_tasks` nhiều cấp (Nested Includes).
-- Giới hạn độ sâu khuyến nghị: **Tối đa 2 đến 3 cấp**.
-- Lý do giới hạn: Lồng quá nhiều cấp include sẽ khiến tiến trình thi hành bị rối luồng, rất khó theo dõi vết lỗi khi gặp exception, và làm giảm hiệu năng phân tích runtime của Ansible Engine.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng Ansible cấm lồng `include_tasks`.
-- 1: Biết cho phép lồng nhưng không đưa ra được giới hạn độ sâu khuyến nghị và lý do kỹ thuật.
-- 2: Phân tích chính xác cơ chế Nested Includes và giới hạn độ sâu 2-3 cấp.
-- 3: Nêu đúng + đưa ra lời khuyên refactor sang cấu trúc Role khi kịch bản quá phức tạp.
-**Câu hỏi đào sâu:** Nếu nạp lặp đệ quy `include_tasks` chính tệp đó thì chuyện gì xảy ra? *(Dẫn đến vòng lặp vô tận văng lỗi `Maximum recursion depth exceeded`.)*
-
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng về `include` vs `import` ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên lựa chọn chính xác giữa `include` và `import`, chia nhỏ Playbook chuyên nghiệp và đạt Idempotency 100%.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Dùng `import_tasks` cho các task tĩnh nền tảng để thừa hưởng Tags & Handlers hòa trộn ở Parse-time.
-2. **Quy tắc 2:** Dùng `include_tasks` khi cần lặp mảng danh sách `loop:` hoặc nạp động theo cờ `when:` biến Runtime.
-3. **Quy tắc 3:** Sử dụng `import_playbook` ở cấp root để gom nhóm các tệp Playbook độc lập.
-4. **Quy tắc 4:** Sử dụng thuộc tính `apply: tags:` khi gán thẻ tag cho `include_tasks`.
-5. **Quy tắc 5:** Giữ cấu trúc chia nhỏ phẳng gọn và đảm bảo ở lượt chạy Lần 2 đạt `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế mã nguồn IaC chuyên nghiệp Doanh nghiệp.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp triệt tiêu lỗi syntax khi kết hợp với vòng lặp `loop:`? *(Quy tắc 2: Dùng `include_tasks` với `loop:`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng về <code>include</code> vs <code>import</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên lựa chọn chính xác giữa <code>include</code> và <code>import</code>, chia nhỏ Playbook chuyên nghiệp và đạt Idempotency 100%.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Dùng <code>import_tasks</code> cho các task tĩnh nền tảng để thừa hưởng Tags &amp; Handlers hòa trộn ở Parse-time.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Dùng <code>include_tasks</code> khi cần lặp mảng danh sách <code>loop:</code> hoặc nạp động theo cờ <code>when:</code> biến Runtime.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Sử dụng <code>import_playbook</code> ở cấp root để gom nhóm các tệp Playbook độc lập.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Sử dụng thuộc tính <code>apply: tags:</code> khi gán thẻ tag cho <code>include_tasks</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Giữ cấu trúc chia nhỏ phẳng gọn và đảm bảo ở lượt chạy Lần 2 đạt <code>changed=0</code> qua <code>docker exec</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế mã nguồn IaC chuyên nghiệp Doanh nghiệp.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp triệt tiêu lỗi syntax khi kết hợp với vòng lặp <code>loop:</code>? <i>(Quy tắc 2: Dùng <code>include_tasks</code> với <code>loop:</code>.)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -1068,4 +1200,11 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tổ chức mã nguồn
 1. **Nghiên cứu trước 1:** Cấu trúc tổ chức hai thư mục inventory riêng biệt `inventory/staging/` và `inventory/production/` khác gì so với dùng 1 file inventory duy nhất?
 2. **Nghiên cứu trước 2:** Thứ tự ghi đè biến (Precedence) giữa `group_vars/all.yml`, `group_vars/web.yml`, và `host_vars/target1.yml` diễn ra như thế nào?
 3. **Nghiên cứu trước 3:** Làm thế nào để chỉ định tệp inventory khi chạy lệnh `ansible-playbook` cho môi trường Staging vs Production bằng cờ `-i`?
+
+---
+
+> [!TIP]
+> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 19: Quản Trị Đa Môi Trường Chuyên Nghiệp: Tách Biệt Inventory Staging/Production & Cấu Trúc Group_vars Layering](ansible-19-19-da-moi-truong-inventory.html).
+
 {% endraw %}
+

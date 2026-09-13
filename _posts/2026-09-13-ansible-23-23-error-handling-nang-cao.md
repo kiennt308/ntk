@@ -1087,4 +1087,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm xử lý lỗi nâng ca
 1. **Nghiên cứu trước 1:** Dynamic Inventory là gì? Tại sao trong môi trường Cloud (AWS, Azure, GCP), việc dùng Static Inventory lại trở nên bất khả thi?
 2. **Nghiên cứu trước 2:** Sự khác nhau giữa Dynamic Inventory Script (kiểu cũ) và Dynamic Inventory Plugin (kiểu mới đuôi `.aws_ec2.yml`) trong Ansible là gì?
 3. **Nghiên cứu trước 3:** Plugin `ansible.builtin.constructed` dùng để tự động tạo các nhóm máy chủ động dựa trên các thông số Tags và Facts như thế nào?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 24: Dynamic Inventory Đa Nền Tảng: Tự Động Khám Phá Máy Chủ Trên AWS EC2, GCP Compute, Azure VM & Kubernetes Pods](ansible-24-24-dynamic-inventory.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

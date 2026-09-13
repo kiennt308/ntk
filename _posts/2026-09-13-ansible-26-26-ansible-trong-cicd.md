@@ -1111,4 +1111,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tích hợp Ansible và
 1. **Nghiên cứu trước 1:** Cấu trúc tệp Unit File của Systemd (gồm các phần `[Unit]`, `[Service]`, `[Install]`) được quản lý bằng Ansible module nào?
 2. **Nghiên cứu trước 2:** Lệnh `systemctl daemon-reload` bắt buộc phải chạy khi nào? Module `ansible.builtin.systemd` hỗ trợ cờ `daemon_reload: yes` ra sao?
 3. **Nghiên cứu trước 3:** Làm thế nào để tạo một Custom Systemd Service chạy ứng dụng Python/NodeJS ngầm dưới quyền user không phải root?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 27: Quản Lý Systemd Unit & Custom Services: Tạo Daemon, Quản Trị Vòng Đời Tiến Trình & Health Check Tự Phục Hồi](ansible-27-27-systemd-custom-service.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

@@ -89,6 +89,15 @@ graph TD
     WEB --> H1["Host: target1 (web1.example.com)"]
     WEB --> H2["Host: target2 (web2.example.com)"]
     DB --> H3["Host: target3 (db1.example.com)"]
+
+    style ALL fill:none
+    style UNGROUPED fill:none
+    style DC1 fill:none
+    style WEB fill:none
+    style DB fill:none
+    style H1 fill:none
+    style H2 fill:none
+    style H3 fill:none
 ```
 
 **Nguyên lý cốt lõi:** Ansible tự động tạo hai nhóm mặc định trong mọi Inventory: `all` (chứa toàn bộ tất cả máy chủ) và `ungrouped` (chứa những máy chủ không thuộc bất kỳ nhóm tùy chỉnh nào).
@@ -299,6 +308,15 @@ flowchart TD
     E --> F{"Áp dụng Host Pattern (CLI / Playbook)"}
     F -->|"Pattern: web:!db"| G["Tập hợp Target Hosts chính xác"]
     G --> H["Thực thi Module / Task an toàn"]
+
+    style A fill:none
+    style B fill:none
+    style C fill:none
+    style D fill:none
+    style E fill:none
+    style F fill:none
+    style G fill:none
+    style H fill:none
 ```
 
 ### Năm điều phải nhớ
@@ -425,6 +443,13 @@ graph TD
     DEV["Học viên (Tester)"] -->|"A. Khai báo Inventory & Vars"| SubGraph1
     DEV -->|"B. Đối soát trực tiếp bằng docker exec"| T1
     DEV -->|"C. Đối soát trực tiếp bằng docker exec"| T2
+
+    style SubGraph1 fill:none
+    style PATTERN fill:none
+    style T1 fill:none
+    style T2 fill:none
+    style VARS fill:none
+    style DEV fill:none
 ```
 
 ---
@@ -754,164 +779,259 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Inventory trong Ansible có vai trò gì? Hai nhóm mặc định nào luôn tự động tồn tại trong mọi Inventory?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Inventory là nguồn chân lý chứa danh sách các máy chủ bị quản lý, thông tin phân nhóm và các biến kết nối tương ứng. Hai nhóm mặc định luôn tồn tại trong mọi Inventory là:</div>
+    <div>1. <code>all</code>: chứa tất cả các máy chủ có trong inventory.</div>
+    <div>2. <code>ungrouped</code>: chứa các máy chủ không thuộc bất kỳ nhóm tùy chỉnh nào.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không nêu được vai trò của Inventory.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nêu được vai trò nhưng chỉ nhớ nhóm <code>all</code>, quên nhóm <code>ungrouped</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu chính xác vai trò và 2 nhóm mặc định <code>all</code> và <code>ungrouped</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu chính xác + giải thích ý nghĩa của 2 nhóm mặc định trong việc nạp biến toàn cục (<code>group_vars/all.yml</code>).</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu một máy chủ nằm trong nhóm <code>web</code>, máy chủ đó có đồng thời thuộc nhóm <code>all</code> không? <i>(Có, 100% mọi host đều thuộc nhóm <code>all</code>.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Inventory trong Ansible có vai trò gì? Hai nhóm mặc định nào luôn tự động tồn tại trong mọi Inventory? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Inventory là nguồn chân lý chứa danh sách các máy chủ bị quản lý, thông tin phân nhóm và các biến kết nối tương ứng. Hai nhóm mặc định luôn tồn tại trong mọi Inventory là: (1) <code>all</code> (chứa tất cả các máy chủ có trong inventory) và (2) <code>ungrouped</code> (chứa các máy chủ không thuộc bất kỳ nhóm tùy chỉnh nào).
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không nêu được vai trò của Inventory.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nêu được vai trò nhưng chỉ nhớ nhóm <code>all</code>, quên nhóm <code>ungrouped</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu chính xác vai trò và 2 nhóm mặc định <code>all</code> và <code>ungrouped</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu chính xác + giải thích ý nghĩa của 2 nhóm mặc định trong việc nạp biến toàn cục (<code>group_vars/all.yml</code>).</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu một máy chủ nằm trong nhóm <code>web</code>, máy chủ đó có đồng thời thuộc nhóm <code>all</code> không? *(Có, 100% mọi host đều thuộc nhóm <code>all</code>.)*
-</div>
 </details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Cấu trúc nhóm lồng nhóm (Child groups / Group nesting) được khai báo thế nào trong định dạng INI và YAML? Lợi ích là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Trong INI, dùng cú pháp <code>[parent_name:children]</code> rồi liệt kê danh sách các nhóm con bên dưới. Trong YAML, dùng từ khóa <code>children:</code> bên dưới tên nhóm cha. Lợi ích: Cho phép quản lý phân cấp hạ tầng (ví dụ: nhóm cha <code>vietnam</code> chứa các nhóm con <code>hanoi</code> và <code>hcm</code>), giúp áp dụng biến chung hoặc thực thi lệnh trên quy mô vùng miền dễ dàng mà không cần gõ lại tên từng host.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết cú pháp khai báo nhóm cha-con.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết từ khóa <code>children</code> nhưng nhầm lẫn giữa INI và YAML.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng cú pháp cho cả INI và YAML + lợi ích quản lý.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + minh họa câu lệnh <code>ansible-inventory --graph</code> để kiểm tra cây phân cấp.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu gõ nhầm <code>[parent_name]</code> mà quên chữ <code>:children</code> trong file INI thì Ansible sẽ hiểu thế nào? <i>(Ansible hiểu các dòng bên dưới là tên máy chủ tĩnh chứ không phải tên nhóm con.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Phân cấp Nhóm cha - Nhóm con (`children`) 🔥
-**Hỏi:** Cấu trúc nhóm lồng nhóm (Child groups / Group nesting) được khai báo thế nào trong định dạng INI và YAML? Lợi ích là gì? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:** Trong INI, dùng cú pháp `[parent_name:children]` rồi liệt kê danh sách các nhóm con bên dưới. Trong YAML, dùng từ khóa `children:` bên dưới tên nhóm cha. Lợi ích: Cho phép quản lý phân cấp hạ tầng (ví dụ: nhóm cha `vietnam` chứa các nhóm con `hanoi` và `hcm`), giúp áp dụng biến chung hoặc thực thi lệnh trên quy mô vùng miền dễ dàng mà không cần gõ lại tên từng host.
-**Tiêu chí chấm:**
-- 0: Không biết cú pháp khai báo nhóm cha-con.
-- 1: Biết từ khóa `children` nhưng nhầm lẫn giữa INI và YAML.
-- 2: Nêu đúng cú pháp cho cả INI và YAML + lợi ích quản lý.
-- 3: Nêu đúng + minh họa câu lệnh `ansible-inventory --graph` để kiểm tra cây phân cấp.
-**Câu hỏi đào sâu:** Nếu gõ nhầm `[parent_name]` mà quên chữ `:children` trong file INI thì Ansible sẽ hiểu thế nào? *(Ansible hiểu các dòng bên dưới là tên máy chủ tĩnh chứ không phải tên nhóm con.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Tại sao nên tách biến ra thư mục group_vars/ và host_vars/ thay vì viết trực tiếp vào file Inventory tĩnh?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Việc đặt biến trực tiếp trong file Inventory khiến file phình to, rối mắt và rất khó bảo trì khi hạ tầng tăng trưởng. Tách thành thư mục <code>group_vars/</code> (file trùng tên nhóm, ví dụ <code>web.yml</code>) và <code>host_vars/</code> (file trùng tên host, ví dụ <code>target1.yml</code>) giúp chuẩn hóa cấu trúc dự án, dễ đọc, dễ bảo trì và thuận tiện cho việc quản lý mã nguồn qua Git.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Trả lời "viết vào đâu cũng được như nhau".</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết tách thư mục là tốt nhưng không nêu được tên các file bên trong.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng đường dẫn thư mục và quy tắc đặt tên file trùng tên nhóm/host.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + giải thích cơ chế Ansible tự động tìm kiếm và nạp các file này theo tên nhóm/host tương ứng.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu thư mục đặt tên là <code>groups_vars</code> (thừa chữ s) thì Ansible có nạp biến được không? <i>(Không, Ansible chỉ tìm đúng tên thư mục chuẩn là <code>group_vars</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Trình bày quy tắc ưu tiên biến khi một biến app_port được định nghĩa ở cả group_vars/all.yml, group_vars/web.yml và host_vars/target1.yml.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Thứ tự ưu tiên tăng dần từ phạm vi rộng tới hẹp: <code>group_vars/all.yml</code> (thấp nhất) &lt; <code>group_vars/web.yml</code> (nhóm con) &lt; <code>host_vars/target1.yml</code> (cao nhất). Do đó, giá trị <code>app_port</code> khai báo tại <code>host_vars/target1.yml</code> sẽ chiến thắng và được áp dụng cho <code>target1</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Trả lời sai thứ tự ưu tiên.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nhớ <code>host_vars</code> ưu tiên hơn nhưng nhầm lẫn giữa <code>all.yml</code> và <code>web.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu chính xác thứ tự 3 tầng ưu tiên.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu chính xác + chỉ ra lệnh <code>ansible-inventory --host target1</code> để đối soát giá trị biến thực tế cuối cùng.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Làm sao để định nghĩa biến mặc định cho toàn bộ tất cả các host trong hệ thống mà vẫn cho phép từng host override? <i>(Khai báo biến mặc định trong <code>group_vars/all.yml</code> và ghi đè khi cần trong <code>host_vars/</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Cấu trúc Thư mục `group_vars/` và `host_vars/` 🔥
-**Hỏi:** Tại sao nên tách biến ra thư mục `group_vars/` và `host_vars/` thay vì viết trực tiếp vào file Inventory tĩnh? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:** Việc đặt biến trực tiếp trong file Inventory khiến file phình to, rối mắt và rất khó bảo trì khi hạ tầng tăng trưởng. Tách thành thư mục `group_vars/` (file trùng tên nhóm, ví dụ `web.yml`) và `host_vars/` (file trùng tên host, ví dụ `target1.yml`) giúp chuẩn hóa cấu trúc dự án, dễ đọc, dễ bảo trì và thuận tiện cho việc quản lý mã nguồn qua Git.
-**Tiêu chí chấm:**
-- 0: Trả lời "viết vào đâu cũng được như nhau".
-- 1: Biết tách thư mục là tốt nhưng không nêu được tên các file bên trong.
-- 2: Nêu đúng đường dẫn thư mục và quy tắc đặt tên file trùng tên nhóm/host.
-- 3: Nêu đúng + giải thích cơ chế Ansible tự động tìm kiếm và nạp các file này theo tên nhóm/host tương ứng.
-**Câu hỏi đào sâu:** Nếu thư mục đặt tên là `groups_vars` (thừa chữ s) thì Ansible có nạp biến được không? *(Không, Ansible chỉ tìm đúng tên thư mục chuẩn là `group_vars`.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Phân biệt các toán tử Host Pattern: Dấu phẩy ',', Dấu và '&amp;', và Dấu chấm cảm '!'. Cho ví dụ.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>• Dấu phẩy <code>,</code> (hoặc <code>:</code>): Phép HỢP (UNION) — lấy tất cả máy thuộc nhóm 1 HOẶC nhóm 2 (ví dụ: <code>web,db</code>).</div>
+    <div>• Dấu và <code>&amp;</code>: Phép GIAO (INTERSECTION) — lấy các máy VỪA thuộc nhóm 1 VỪA thuộc nhóm 2 (ví dụ: <code>web:&amp;prod</code>).</div>
+    <div>• Dấu chấm cảm <code>!</code>: Phép LOẠI TRỪ (EXCLUSION) — lấy các máy thuộc nhóm 1 NHƯNG KHÔNG thuộc nhóm 2 (ví dụ: <code>web:!db</code>).</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết các toán tử pattern.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nhớ được các dấu nhưng giải thích nhầm lẫn giữa phép giao và phép hợp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Giải thích chính xác 3 phép toán logic + cho ví dụ.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Giải thích chính xác + cảnh báo lỗi Bash Event Expansion với dấu <code>!</code> và giải pháp bọc trong cặp ngoặc đơn <code>'...'</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Tại sao gõ <code>ansible web:!db --list-hosts</code> trực tiếp trên terminal Bash lại bị báo lỗi <code>bash: !db: event not found</code>? <i>(Do Bash hiểu nhầm dấu <code>!</code> là lệnh history expansion, phải bọc pattern trong cặp ngoặc đơn <code>'web:!db'</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Hai câu lệnh CLI nào là công cụ quan trọng nhất để rà soát Inventory và Host Pattern trước khi chạy Playbook?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>1. <code>ansible-inventory --graph</code> (hoặc <code>-i &lt;inventory&gt;</code>): Dùng để xem sơ đồ cây phân cấp kiểm kê tài nguyên toàn bộ hệ thống.</div>
+    <div>2. <code>ansible &lt;pattern&gt; --list-hosts</code>: Dùng để in ra danh sách tên/IP của các máy đích thực tế sẽ bị tác động bởi biểu thức pattern cụ thể.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết câu lệnh rà soát.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nhớ cờ <code>--list-hosts</code> nhưng không nhớ <code>ansible-inventory --graph</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu chính xác cả 2 câu lệnh CLI.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu chính xác + giải thích quy trình an toàn bắt buộc trong vận hành Production (luôn gõ <code>--list-hosts</code> trước khi thực thi lệnh tác động).</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu cờ <code>--list-hosts</code> trả về <code>hosts (0):</code>, điều đó có nghĩa là gì? <i>(Có nghĩa là biểu thức pattern không khớp với bất kỳ máy chủ nào trong inventory.)</i></div>
+  </div>
+</details>
 
-### Câu 4 — Thứ tự Ưu tiên Nạp biến trong Inventory và Vars
-**Hỏi:** Trình bày quy tắc ưu tiên biến khi một biến `app_port` được định nghĩa ở cả `group_vars/all.yml`, `group_vars/web.yml` và `host_vars/target1.yml`. *(Liên quan QT 5.1)*
-**Đáp án chuẩn:** Thứ tự ưu tiên tăng dần từ phạm vi rộng tới hẹp: `group_vars/all.yml` (thấp nhất) < `group_vars/web.yml` (nhóm con) < `host_vars/target1.yml` (cao nhất). Do đó, giá trị `app_port` khai báo tại `host_vars/target1.yml` sẽ chiến thắng và được áp dụng cho `target1`.
-**Tiêu chí chấm:**
-- 0: Trả lời sai thứ tự ưu tiên.
-- 1: Nhớ `host_vars` ưu tiên hơn nhưng nhầm lẫn giữa `all.yml` và `web.yml`.
-- 2: Nêu chính xác thứ tự 3 tầng ưu tiên.
-- 3: Nêu chính xác + chỉ ra lệnh `ansible-inventory --host target1` để đối soát giá trị biến thực tế cuối cùng.
-**Câu hỏi đào sâu:** Làm sao để định nghĩa biến mặc định cho toàn bộ tất cả các host trong hệ thống mà vẫn cho phép từng host override? *(Khai báo biến mặc định trong `group_vars/all.yml` và ghi đè khi cần trong `host_vars/`.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Kể tên các biến kết nối hệ thống thường dùng trong Inventory và giải thích công dụng của chúng.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>• <code>ansible_host</code>: Địa chỉ IP hoặc FQDN thực tế dùng để kết nối SSH (khi dùng tên alias ngắn trong inventory).</div>
+    <div>• <code>ansible_port</code>: Cổng kết nối SSH thực tế trên máy đích (khi không dùng port 22 mặc định).</div>
+    <div>• <code>ansible_user</code>: Tài khoản người dùng dùng để đăng nhập SSH vào máy đích (ví dụ: <code>ubuntu</code>, <code>ansible</code>).</div>
+    <div>• <code>ansible_ssh_private_key_file</code>: Đường dẫn tới chìa khóa SSH private key riêng.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không kể được tên biến kết nối.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Kể được 1-2 biến nhưng không giải thích rõ công dụng.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng 3-4 biến kết nối và công dụng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + đưa ví dụ thực tế cấu hình container Docker SSH (port 2221, 2222).</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu máy đích đổi cổng SSH sang 2222, ta cần khai báo biến nào trong inventory? <i>(Khai báo <code>ansible_port=2222</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Trình bày phương pháp tổ chức Inventory để quản lý đa môi trường (Development, Staging, Production) mà không cần sửa đổi Playbook.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Tạo các thư mục hoặc file inventory riêng biệt cho từng môi trường (ví dụ: <code>inventory/dev</code> và <code>inventory/prod</code>). Trong mỗi môi trường khai báo danh sách IP và <code>group_vars</code> riêng. Playbook giữ nguyên 100% mã nguồn xử lý. Khi thực thi, chỉ cần chỉ định cờ <code>-i</code> tương ứng: <code>ansible-playbook -i inventory/dev site.yml</code> hoặc <code>-i inventory/prod site.yml</code>.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Trả lời phải sửa IP trực tiếp trong Playbook.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết tách file inventory nhưng không giải thích được cơ chế cờ <code>-i</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng phương pháp tách thư mục inventory + cờ CLI <code>-i</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + phân tích lợi ích an toàn (tránh vỡ môi trường Prod khi test ở Dev) và tích hợp vào CI/CD pipeline.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Có nên để chung máy Dev và máy Prod trong cùng 1 file inventory tĩnh không? Tại sao? <i>(Không nên, vì rất dễ gõ nhầm pattern làm tác động lệnh thử nghiệm lên nhầm máy Production.)</i></div>
+  </div>
+</details>
 
-### Câu 5 — Cú pháp Biểu thức Host Pattern CLI 🔥
-**Hỏi:** Phân biệt các toán tử Host Pattern: Dấu phẩy `,`, Dấu và `&`, và Dấu chấm cảm `!`. Cho ví dụ. *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-- Dấu phẩy `,` (hoặc `:`): Phép HỢP (UNION) — lấy tất cả máy thuộc nhóm 1 HOẶC nhóm 2 (ví dụ: `web,db`).
-- Dấu và `&`: Phép GIAO (INTERSECTION) — lấy các máy VỪA thuộc nhóm 1 VỪA thuộc nhóm 2 (ví dụ: `web:&prod`).
-- Dấu chấm cảm `!`: Phép LOẠI TRỪ (EXCLUSION) — lấy các máy thuộc nhóm 1 NHƯNG KHÔNG thuộc nhóm 2 (ví dụ: `web:!db`).
-**Tiêu chí chấm:**
-- 0: Không biết các toán tử pattern.
-- 1: Nhớ được các dấu nhưng giải thích nhầm lẫn giữa phép giao và phép hợp.
-- 2: Giải thích chính xác 3 phép toán logic + cho ví dụ.
-- 3: Giải thích chính xác + cảnh báo lỗi Bash Event Expansion với dấu `!` và giải pháp bọc trong cặp ngoặc đơn `'...'`.
-**Câu hỏi đào sâu:** Tại sao gõ `ansible web:!db --list-hosts` trực tiếp trên terminal Bash lại bị báo lỗi `bash: !db: event not found`? *(Do Bash hiểu nhầm dấu `!` là lệnh history expansion, phải bọcpattern trong cặp ngoặc đơn `'web:!db'`.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Nguyên tắc an toàn bảo mật đối với các biến nhạy cảm (mật khẩu, token) trong Inventory là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Tuyệt đối không bao giờ lưu trữ mật khẩu, token hay chìa khóa bí mật dạng plain-text trong file Inventory hay thư mục <code>group_vars/host_vars</code> rồi commit lên Git. Giải pháp chuẩn: Chuyển sang dùng xác thực SSH Key không mật khẩu, hoặc sử dụng công cụ mã hóa <b>Ansible Vault</b> để mã hóa file chứa biến nhạy cảm trước khi lưu trữ.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Cho rằng ghi mật khẩu vào <code>group_vars</code> là bình thường.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết rủi ro lộ mật khẩu nhưng không nêu được giải pháp Ansible Vault.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu đúng nguyên tắc an toàn + giải pháp SSH Key / Ansible Vault.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + minh họa câu lệnh mã hóa <code>ansible-vault encrypt</code> và quản lý Vault ID.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu vô tình commit file inventory chứa mật khẩu thô lên GitHub public, cách xử lý khẩn cấp là gì? <i>(Đổi mật khẩu tài khoản lập tức trên hệ thống thật, xóa commit history chứa secret.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước để đảm bảo một lệnh tác động dựa trên Inventory vừa Idempotent vừa chính xác trên máy đích.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b></div>
+    <div>1. <b>Bước 1 (Rà soát):</b> Chạy <code>ansible &lt;pattern&gt; --list-hosts</code> để chắc chắn 100% lệnh chỉ tác động đúng các host mong muốn.</div>
+    <div>2. <b>Bước 2 (Kiểm Idempotency):</b> Thực thi lệnh lần 1 (<code>changed=true</code>), sau đó thực thi lại chính xác lệnh đó lần 2: phải thu được <code>changed=false</code> (màu xanh lá cây).</div>
+    <div>3. <b>Bước 3 (Đối soát sự thật):</b> Dùng <code>docker exec &lt;target&gt; cat /etc/app_env.conf</code> hoặc SSH trực tiếp vào máy đích kiểm tra tệp tin/dịch vụ thật, không phụ thuộc duy nhất vào màn hình Control node.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Trả lời "chỉ cần nhìn terminal thấy OK là xong" (trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Thiếu bước rà soát <code>--list-hosts</code> hoặc bước đối soát <code>docker exec</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Trình bày đủ 3 bước nhưng chưa nêu lệnh CLI minh họa.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Trình bày xuất sắc cả 3 bước + lệnh CLI cụ thể và giải thích tầm quan trọng của từng bước.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Nếu lệnh chạy lần 2 vẫn báo <code>CHANGED</code>, điều đó chứng tỏ điều gì? <i>(Tác vụ không đạt tính Idempotency, có thể do lạm dụng module shell hoặc nội dung thay đổi liên tục.)</i></div>
+  </div>
+</details>
 
-### Câu 6 — Kiểm tra và Đối soát Pattern bằng CLI ★★★
-**Hỏi:** Hai câu lệnh CLI nào là công cụ quan trọng nhất để rà soát Inventory và Host Pattern trước khi chạy Playbook? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** (1) `ansible-inventory --graph` (hoặc `-i <inventory>`): Dùng để xem sơ đồ cây phân cấp kiểm kê tài nguyên toàn bộ hệ thống. (2) `ansible <pattern> --list-hosts`: Dùng để in ra danh sách tên/IP của các máy đích thực tế sẽ bị tác động bởi biểu thức pattern cụ thể.
-**Tiêu chí chấm:**
-- 0: Không biết câu lệnh rà soát.
-- 1: Nhớ cờ `--list-hosts` nhưng không nhớ `ansible-inventory --graph`.
-- 2: Nêu chính xác cả 2 câu lệnh CLI.
-- 3: Nêu chính xác + giải thích quy trình an toàn bắt buộc trong vận hành Production (luôn gõ `--list-hosts` trước khi thực thi lệnh tác động).
-**Câu hỏi đào sâu:** Nếu cờ `--list-hosts` trả về `hosts (0):`, điều đó có nghĩa là gì? *(Có nghĩa là biểu thức pattern không khớp với bất kỳ máy chủ nào trong inventory.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Khi nào nên dùng ký tự đại diện Wildcard '*' trong Host Pattern? Cần lưu ý gì khi sử dụng?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Dùng wildcard <code>*</code> khi muốn chọn một tập hợp host có quy tắc đặt tên đồng nhất (ví dụ: <code>web*</code> chọn <code>web1</code>, <code>web2</code>, <code>web-prod-01</code>; <code>*.example.com</code> chọn tất cả host thuộc domain). Lưu ý: Phải dùng <code>--list-hosts</code> kiểm tra trước để tránh trường hợp wildcard chọn nhầm các host có tên tương tự không mong muốn (ví dụ <code>web*</code> có thể dính cả <code>web-deprecated</code>).</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết ký tự wildcard.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Biết <code>*</code> đại diện cho chuỗi ký tự nhưng không nêu được rủi ro.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Nêu chính xác cú pháp wildcard + các trường hợp sử dụng phổ biến.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Nêu đúng + lưu ý an toàn rà soát bằng <code>--list-hosts</code> trước khi chạy lệnh thật.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Pattern <code>'192.168.1.*'</code> có hợp lệ không? <i>(Hợp lệ, chọn tất cả các host có IP thuộc dải subnet 192.168.1.0/24 trong inventory.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 7 — Các Biến Kết nối Đặc biệt trong Inventory
-**Hỏi:** Kể tên 3 biến kết nối hệ thống thường dùng trong Inventory và giải thích công dụng của chúng. *(Liên quan QT 6.1)*
-**Đáp án chuẩn:**
-- `ansible_host`: Địa chỉ IP hoặc FQDN thực tế dùng để kết nối SSH (khi dùng tên alias ngắn trong inventory).
-- `ansible_port`: Cổng kết nối SSH thực tế trên máy đích (khi không dùng port 22 mặc định).
-- `ansible_user`: Tài khoản người dùng dùng để đăng nhập SSH vào máy đích (ví dụ: `ubuntu`, `ansible`).
-- `ansible_ssh_private_key_file`: Đường dẫn tới chìa khóa SSH private key riêng.
-**Tiêu chí chấm:**
-- 0: Không kể được tên biến kết nối.
-- 1: Kể được 1-2 biến nhưng không giải thích rõ công dụng.
-- 2: Nêu đúng 3-4 biến kết nối và công dụng chính xác.
-- 3: Nêu đúng + đưa ví dụ thực tế cấu hình container Docker SSH (port 2221, 2222).
-**Câu hỏi đào sâu:** Nếu máy đích đổi cổng SSH sang 2222, ta cần khai báo biến nào trong inventory? *(Khai báo `ansible_port=2222`.)*
-
----
-
-### Câu 8 — Quản lý Đa Môi trường Dev/Prod
-**Hỏi:** Trình bày phương pháp tổ chức Inventory để quản lý đa môi trường (Development, Staging, Production) mà không cần sửa đổi Playbook. *(Liên quan QT 6.2)*
-**Đáp án chuẩn:** Tạo các thư mục hoặc file inventory riêng biệt cho từng môi trường (ví dụ: `inventory/dev` và `inventory/prod`). Trong mỗi môi trường khai báo danh sách IP và `group_vars` riêng. Playbook giữ nguyên 100% mã nguồn xử lý. Khi thực thi, chỉ cần chỉ định cờ `-i` tương ứng: `ansible-playbook -i inventory/dev site.yml` hoặc `-i inventory/prod site.yml`.
-**Tiêu chí chấm:**
-- 0: Trả lời phải sửa IP trực tiếp trong Playbook.
-- 1: Biết tách file inventory nhưng không giải thích được cơ chế cờ `-i`.
-- 2: Nêu đúng phương pháp tách thư mục inventory + cờ CLI `-i`.
-- 3: Nêu đúng + phân tích lợi ích an toàn (tránh vỡ môi trường Prod khi test ở Dev) và tích hợp vào CI/CD pipeline.
-**Câu hỏi đào sâu:** Có nên để chung máy Dev và máy Prod trong cùng 1 file inventory tĩnh không? Tại sao? *(Không nên, vì rất dễ gõ nhầm pattern làm tác động lệnh thử nghiệm lên nhầm máy Production.)*
-
----
-
-### Câu 9 — An toàn Bảo mật Biến trong Inventory
-**Hỏi:** Nguyên tắc an toàn bảo mật đối với các biến nhạy cảm (mật khẩu, token) trong Inventory là gì? *(Liên quan QT 6.3)*
-**Đáp án chuẩn:** Tuyệt đối không bao giờ lưu trữ mật khẩu, token hay chìa khóa bí mật dạng plain-text trong file Inventory hay thư mục `group_vars/host_vars` rồi commit lên Git. Giải pháp chuẩn: Chuyển sang dùng xác thực SSH Key không mật khẩu, hoặc sử dụng công cụ mã hóa **Ansible Vault** để mã hóa file chứa biến nhạy cảm trước khi lưu trữ.
-**Tiêu chí chấm:**
-- 0: Cho rằng ghi mật khẩu vào `group_vars` là bình thường.
-- 1: Biết rủi ro lộ mật khẩu nhưng không nêu được giải pháp Ansible Vault.
-- 2: Nêu đúng nguyên tắc an toàn + giải pháp SSH Key / Ansible Vault.
-- 3: Nêu đúng + minh họa câu lệnh mã hóa `ansible-vault encrypt` và quản lý Vault ID.
-**Câu hỏi đào sâu:** Nếu vô tình commit file inventory chứa mật khẩu thô lên GitHub public, cách xử lý khẩn cấp là gì? *(Đổi mật khẩu tài khoản lập tức trên hệ thống thật, xóa commit history chứa secret.)*
-
----
-
-### Câu 10 — Phương pháp Xác minh tính Bất biến và Trạng thái Máy đích 🔥
-**Hỏi:** Trình bày quy trình 3 bước để đảm bảo một lệnh tác động dựa trên Inventory vừa Idempotent vừa chính xác trên máy đích.
-**Đáp án chuẩn:** 
-1. **Bước 1 (Rà soát):** Chạy `ansible <pattern> --list-hosts` để chắc chắn 100% lệnh chỉ tác động đúng các host mong muốn.
-2. **Bước 2 (Kiểm Idempotency):** Thực thi lệnh lần 1 (`changed=true`), sau đó thực thi lại chính xác lệnh đó lần 2: phải thu được `changed=false` (màu xanh lá cây).
-3. **Bước 3 (Đối soát sự thật):** Dùng `docker exec <target> cat /etc/app_env.conf` hoặc SSH trực tiếp vào máy đích kiểm tra tệp tin/dịch vụ thật, không phụ thuộc duy nhất vào màn hình Control node.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal thấy OK là xong" (trần điểm 1).
-- 1: Thiếu bước rà soát `--list-hosts` hoặc bước đối soát `docker exec`.
-- 2: Trình bày đủ 3 bước nhưng chưa nêu lệnh CLI minh họa.
-- 3: Trình bày xuất sắc cả 3 bước + lệnh CLI cụ thể và giải thích tầm quan trọng của từng bước.
-**Câu hỏi đào sâu:** Nếu lệnh chạy lần 2 vẫn báo `CHANGED`, điều đó chứng tỏ điều gì? *(Tác vụ không đạt tính Idempotency, có thể do lạm dụng module shell hoặc nội dung thay đổi liên tục.)*
-
----
-
-### Câu 11 — Sử dụng Ký tự Đại diện Wildcard trong Pattern
-**Hỏi:** Khi nào nên dùng ký tự đại diện Wildcard `*` trong Host Pattern? Cần lưu ý gì khi sử dụng?
-**Đáp án chuẩn:** Dùng wildcard `*` khi muốn chọn một tập hợp host có quy tắc đặt tên đồng nhất (ví dụ: `web*` chọn `web1`, `web2`, `web-prod-01`; `*.example.com` chọn tất cả host thuộc domain). Lưu ý: Phải dùng `--list-hosts` kiểm tra trước để tránh trường hợp wildcard chọn nhầm các host có tên tương tự không mong muốn (ví dụ `web*` có thể dính cả `web-deprecated`).
-**Tiêu chí chấm:**
-- 0: Không biết ký tự wildcard.
-- 1: Biết `*` đại diện cho chuỗi ký tự nhưng không nêu được rủi ro.
-- 2: Nêu chính xác cú pháp wildcard + các trường hợp sử dụng phổ biến.
-- 3: Nêu đúng + lưu ý an toàn rà soát bằng `--list-hosts` trước khi chạy lệnh thật.
-**Câu hỏi đào sâu:** Pattern `'192.168.1.*'` có hợp lệ không? *(Hợp lệ, chọn tất cả các host có IP thuộc dải subnet 192.168.1.0/24 trong inventory.)*
-
----
-
-### Câu 12 — Quản lý Inventory Quy mô lớn với Dynamic Inventory ★★★
-**Hỏi:** Khi hạ tầng mở rộng lên hàng ngàn máy chủ Cloud (AWS/GCP) tự động co giãn, hạn chế lớn nhất của Static Inventory là gì? Giải pháp thay thế ở các buổi sau là gì?
-**Đáp án chuẩn:** Hạn chế của Static Inventory ghi tay: Không phản ánh kịp thời sự thay đổi của hạ tầng Cloud (các máy chủ mới tạo hoặc bị xoá bỏ tự động theo lưu lượng), gây ra tình trạng file tĩnh bị lạc hậu, kết nối SSH thất bại tới các máy đã xóa hoặc bỏ sót máy mới. Giải pháp: Chuyển sang sử dụng **Dynamic Inventory Plugin** (sẽ học ở Buổi 24), tự động gọi API của Cloud Provider để sinh danh sách host thời gian thực.
-**Tiêu chí chấm:**
-- 0: Không biết hạn chế của Static Inventory trên Cloud.
-- 1: Nêu được hạn chế ghi tay vất vả nhưng không biết giải pháp Dynamic Inventory.
-- 2: Phân tích chính xác hạn chế với hạ tầng Auto Scaling + giải pháp Dynamic Inventory Plugin.
-- 3: Phân tích xuất sắc + so sánh ưu/nhược điểm giữa Static và Dynamic Inventory trong thực tế DevOps.
-**Câu hỏi đào sâu:** Với dự án nhỏ 3-5 máy chủ tĩnh cố định, có cần thiết phải dùng Dynamic Inventory không? *(Không cần, static inventory ghi tay đơn giản và nhanh hơn cho dự án cố định.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Khi hạ tầng mở rộng lên hàng ngàn máy chủ Cloud (AWS/GCP) tự động co giãn, hạn chế lớn nhất của Static Inventory là gì? Giải pháp thay thế là gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div><b>Đáp án chuẩn:</b> Hạn chế của Static Inventory ghi tay: Không phản ánh kịp thời sự thay đổi của hạ tầng Cloud (các máy chủ mới tạo hoặc bị xoá bỏ tự động theo lưu lượng), gây ra tình trạng file tĩnh bị lạc hậu, kết nối SSH thất bại tới các máy đã xóa hoặc bỏ sót máy mới. Giải pháp: Chuyển sang sử dụng <b>Dynamic Inventory Plugin</b> (sẽ học ở Buổi 24), tự động gọi API của Cloud Provider để sinh danh sách host thời gian thực.</div>
+    <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0:</b> Không biết hạn chế của Static Inventory trên Cloud.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1:</b> Nêu được hạn chế ghi tay vất vả nhưng không biết giải pháp Dynamic Inventory.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Phân tích chính xác hạn chế với hạ tầng Auto Scaling + giải pháp Dynamic Inventory Plugin.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Phân tích xuất sắc + so sánh ưu/nhược điểm giữa Static và Dynamic Inventory trong thực tế DevOps.</div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Với dự án nhỏ 3-5 máy chủ tĩnh cố định, có cần thiết phải dùng Dynamic Inventory không? <i>(Không cần, static inventory ghi tay đơn giản và nhanh hơn cho dự án cố định.)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -939,4 +1059,9 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý Inventory v�
 1. **Nghiên cứu trước 1:** Các module cốt lõi `ansible.builtin.copy`, `ansible.builtin.file`, `ansible.builtin.lineinfile` khác nhau thế nào khi quản lý tệp tin trên máy đích?
 2. **Nghiên cứu trước 2:** Module `ansible.builtin.cron` giúp quản trị viên tạo và quản lý các tác vụ định kỳ trên Linux như thế nào?
 3. **Nghiên cứu trước 3:** Làm thế nào để sử dụng module `ansible.builtin.stat` kiểm tra sự tồn tại của một file trước khi quyết định thực thi các bước tiếp theo?
+
+---
+
+> [!TIP]
+> **Bài tiếp theo:** Khám phá chuyên sâu các module quản trị hệ thống cốt lõi và lệnh ad-hoc trong [Bài 04: Module Cơ Bản và Lệnh Ad-hoc](ansible-04-04-module-co-ban.html).
 {% endraw %}

@@ -81,14 +81,22 @@ Mở rộng kỹ năng sinh file cấu hình tự động cho hạ tầng đa d�
 
 ```mermaid
 graph TD
-    A["Control Node: Đọc file mẫu templates/app.conf.j2"] --> B["Nạp giá trị Biến & Facts của Host cụ thể"]
-    B --> C["Jinja2 Engine Render: Tính toán {{ var }}, {% if %}, {% for %}"]
-    C --> D{"So sánh nội dung Render với File trên Máy đích"}
+    A["Control Node: Đọc file mẫu templates/app.conf.j2"] -->|"Đọc tệp"| B["Nạp giá trị Biến & Facts của Host cụ thể"]
+    B -->|"Truyền biến"| C["Jinja2 Engine Render: Tính toán {{ var }}, {% if %}, {% for %}"]
+    C -->|"So sánh SHA1"| D{"So sánh nội dung Render với File trên Máy đích"}
     
-    D -- "Nội dung Khác biệt (Lần 1)" --> E["Chép file mới vào /etc/app.conf -> Báo CHANGED: true"]
-    D -- "Nội dung Giống hệt (Lần 2)" --> F["Không ghi đĩa -> Báo OK (changed=false, Idempotent)"]
+    D -->|"Nội dung Khác biệt (Lần 1)"| E["Chép file mới vào /etc/app.conf -> Báo CHANGED: true"]
+    D -->|"Nội dung Giống hệt (Lần 2)"| F["Không ghi đĩa -> Báo OK (changed=false, Idempotent)"]
     
     E --> G["Kích hoạt notify (nếu có)"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#8b5cf6,stroke-width:2px
+    style D fill:none,stroke:#ec4899,stroke-width:2px
+    style E fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#10b981,stroke-width:2px
+    style G fill:none,stroke:#06b6d4,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Sử dụng module `ansible.builtin.template` (thay vì module `copy`) khi nguồn tệp tin là một mẫu thiết kế Jinja2 chứa các biểu thức động `.j2`.
@@ -310,8 +318,21 @@ flowchart TD
     
     G --> I["LƯỢT CHẠY LẦN 2"]
     I --> J{"PLAY RECAP Lần 2: changed=0?"}
-    J -- Có --> K["ĐẠT: Jinja2 Template chuẩn Idempotent"]
-    J -- Không --> L["LỖI: Rà soát lại biến gây trôi checksum"]
+    J -->|"Có"| K["ĐẠT: Jinja2 Template chuẩn Idempotent"]
+    J -->|"Không"| L["LỖI: Rà soát lại biến gây trôi checksum"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#8b5cf6,stroke-width:2px
+    style D fill:none,stroke:#a855f7,stroke-width:2px
+    style E fill:none,stroke:#ec4899,stroke-width:2px
+    style F fill:none,stroke:#f43f5e,stroke-width:2px
+    style G fill:none,stroke:#10b981,stroke-width:2px
+    style H fill:none,stroke:#ef4444,stroke-width:2px
+    style I fill:none,stroke:#06b6d4,stroke-width:2px
+    style J fill:none,stroke:#eab308,stroke-width:2px
+    style K fill:none,stroke:#10b981,stroke-width:2px
+    style L fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -451,12 +472,17 @@ graph TD
     PB -->|"3. Validate Syntax: validate: 'cat %s'"| PB
     PB -->|"4. Deploy rendered files: /etc/nginx-demo.conf, /etc/app.ini"| T1["Target Container 1 (target1)"]
     
-    T1 -. "RECAP Lần 1: ok=3, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=3, changed=0 (Checksum Identical -> IDEMPOTENT)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=3, changed=2"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=3, changed=0 (Checksum Identical -> IDEMPOTENT)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook template-site.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style PB fill:none,stroke:#8b5cf6,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
@@ -883,175 +909,276 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Module <code>ansible.builtin.template</code> khác module <code>ansible.builtin.copy</code> ở điểm cốt lõi nào? Khi nào thì bắt buộc phải dùng <code>template</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Module <code>ansible.builtin.template</code> khác module <code>ansible.builtin.copy</code> ở điểm cốt lõi nào? Khi nào thì bắt buộc phải dùng <code>template</code>? <i>(Liên quan QT 4.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Module <code>copy</code>: Chỉ chép nguyên vẹn dữ liệu thô (raw content) của tệp nguồn sang máy đích, KHÔNG HỀ tính toán hay giải mã các biểu thức Jinja2 bên trong tệp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Module <code>template</code>: Khởi chạy bộ máy Jinja2 Engine trên Control Node để thế giá trị các biến <code>{{ var }}</code>, thực thi các vòng lặp <code>{% for %}</code> và rẽ nhánh <code>{% if %}</code> để sinh ra tệp cấu hình động hoàn chỉnh trước khi gửi tới máy đích.</div>
+    <div style="margin: 0.35rem 0;">Bắt buộc dùng <code>template</code> khi tệp nguồn là tệp mẫu thiết kế <code>.j2</code> cần sinh cấu hình linh hoạt theo từng máy đích.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được <code>copy</code> và <code>template</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>template</code> dùng cho <code>.j2</code> nhưng không giải thích được cơ chế render của Jinja2 Engine.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt giữa chép thô và rendering động trên Control Node.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ tệp <code>nginx.conf.j2</code> sinh <code>worker_processes</code> theo CPU.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu dùng module <code>copy</code> chép file <code>app.conf.j2</code>, nội dung file trên máy đích sẽ ra sao? <i>(Nó sẽ chứa nguyên văn chuỗi thô <code>{{ ansible_facts.memtotal_mb }}</code> chưa được giải mã.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Module <code>ansible.builtin.template</code> khác module <code>ansible.builtin.copy</code> ở điểm cốt lõi nào? Khi nào thì bắt buộc phải dùng <code>template</code>? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Module <code>copy</code>: Chỉ chép nguyên vẹn dữ liệu thô (raw content) của tệp nguồn sang máy đích, KHÔNG HỀ tính toán hay giải mã các biểu thức Jinja2 bên trong tệp.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Module <code>template</code>: Khởi chạy bộ máy Jinja2 Engine trên Control Node để thế giá trị các biến <code>{{ var }}</code>, thực thi các vòng lặp <code>{% for %}</code> và rẽ nhánh <code>{% if %}</code> để sinh ra tệp cấu hình động hoàn chỉnh trước khi gửi tới máy đích.</div>
-Bắt buộc dùng <code>template</code> khi tệp nguồn là tệp mẫu thiết kế <code>.j2</code> cần sinh cấu hình linh hoạt theo từng máy đích.
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được <code>copy</code> và <code>template</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>template</code> dùng cho <code>.j2</code> nhưng không giải thích được cơ chế render của Jinja2 Engine.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt giữa chép thô và rendering động trên Control Node.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ tệp <code>nginx.conf.j2</code> sinh <code>worker_processes</code> theo CPU.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu dùng module <code>copy</code> chép file <code>app.conf.j2</code>, nội dung file trên máy đích sẽ ra sao? *(Nó sẽ chứa nguyên văn chuỗi thô <code>{{ ansible_facts.memtotal_mb }}</code> chưa được giải mã.)*
-</div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Phân biệt cú pháp Jinja2 cặp ngoặc nhọn <code>{{ '{{' }} ... {{ '}}' }}</code> và ngoặc phần trăm <code>{% raw %}{% ... %}{% endraw %}</code>. Cho ví dụ.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Phân biệt cú pháp Jinja2 cặp ngoặc nhọn <code>{{ '{{' }} ... {{ '}}' }}</code> và ngoặc phần trăm <code>{% raw %}{% ... %}{% endraw %}</code>. Cho ví dụ. <i>(Liên quan QT 4.2, QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cú pháp <code>{{ '{{' }} ... {{ '}}' }}</code> (Variable Interpolation): Dùng để <b>IN GIÁ TRỊ</b> của một biến hoặc kết quả biểu thức ra tệp tin (ví dụ <code>listen {{ '{{' }} web_port {{ '}}' }};</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cú pháp <code>{% raw %}{% ... %}{% endraw %}</code> (Control Structure): Dùng để <b>THỰC THI LỆNH ĐIỀU KHIỂN LOGIC</b> như vòng lặp <code>{% raw %}{% for item in list %}{% endraw %}</code> hoặc rẽ nhánh <code>{% raw %}{% if condition %}{% endraw %}</code> (ví dụ <code>{% raw %}{% if ssl_enabled %}{% endraw %}</code>).</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Nhầm lẫn giữa <code>{{ '{{' }} {{ '}}' }}</code> và <code>{% raw %}{% %}{% endraw %}</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>{{ '{{' }} {{ '}}' }}</code> in biến nhưng không giải thích được cấu trúc điều khiển <code>{% raw %}{% %}{% endraw %}</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cú pháp và chức năng của từng loại cặp ngoặc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã Jinja2 minh họa cả <code>{{ '{{' }} {{ '}}' }}</code> và <code>{% raw %}{% for %}{% endraw %}</code> sinh Virtual Hosts.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm thế nào để xóa bỏ các khoảng trắng dòng trống thừa do vòng lặp <code>{% raw %}{% for %}{% endraw %}</code> sinh ra? <i>(Sử dụng cú pháp ngắt khoảng trắng với dấu trừ <code>{% raw %}{%- for item in list -%}{% endraw %}</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Cú pháp Biến và Khối Điều khiển Jinja2 🔥
-**Hỏi:** Phân biệt cú pháp Jinja2 cặp ngoặc nhọn `{{ ... }}` và ngoặc phần trăm `{% ... %}`. Cho ví dụ. *(Liên quan QT 4.2, QT 4.3)*
-**Đáp án chuẩn:**
-- Cú pháp `{{ ... }}` (Variable Interpolation): Dùng để **IN GIÁ TRỊ** của một biến hoặc kết quả biểu thức ra tệp tin (ví dụ `listen {{ web_port }};`).
-- Cú pháp `{% ... %}` (Control Structure): Dùng để **THỰC THI LỆNH ĐIỀU KHIỂN LOGIC** như vòng lặp `{% for item in list %}` hoặc rẽ nhánh `{% if condition %}` (ví dụ `{% if ssl_enabled %}`).
-**Tiêu chí chấm:**
-- 0: Nhầm lẫn giữa `{{ }}` và `{% %}`.
-- 1: Biết `{{ }}` in biến nhưng không giải thích được cấu trúc điều khiển `{% %}`.
-- 2: Phân tích chính xác cú pháp và chức năng của từng loại cặp ngoặc.
-- 3: Nêu đúng + viết đoạn mã Jinja2 minh họa cả `{{ }}` và `{% for %}` sinh Virtual Hosts.
-**Câu hỏi đào sâu:** Làm thế nào để xóa bỏ các khoảng trắng dòng trống thừa do vòng lặp `{% for %}` sinh ra? *(Sử dụng cú pháp ngắt khoảng trắng với dấu trừ `{%- for item in list -%}`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Jinja2 Filter <code>default</code> có tác dụng gì? Tại sao việc sử dụng filter <code>default</code> được coi là nguyên tắc lập trình phòng vệ (Defensive Programming)?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Jinja2 Filter <code>default</code> có tác dụng gì? Tại sao việc sử dụng filter <code>default</code> được coi là nguyên tắc lập trình phòng vệ (Defensive Programming)? <i>(Liên quan QT 5.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Filter <code>default('fallback_val')</code> dùng để cung cấp một giá trị mặc định phòng vệ khi biến được gọi chưa được khai báo ở bất kỳ tầng nào. Đây là nguyên tắc lập trình phòng vệ vì nó ngăn chặn 100% việc Playbook bị crash đứt gãy với lỗi fatal <code>undefined variable</code> khi chạy trên các máy đích thiếu biến tùy chọn (ví dụ <code>{{ '{{' }} app_port | default(8080) {{ '}}' }}</code>).</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết Jinja2 Filter <code>default</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>default</code> gán giá trị mặc định nhưng không nêu được vai trò phòng chống lỗi fatal undefined.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế fallback value và tư duy lập trình phòng vệ.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML và Jinja2 Template minh họa filter <code>default</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu biến <code>app_port</code> có giá trị là <code>false</code>, filter <code>{{ '{{' }} app_port | default(8080) {{ '}}' }}</code> sẽ trả về giá trị gì? <i>(Trả về false; muốn ép nhận default khi biến bằng false/empty phải dùng <code>default(8080, true)</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Trình bày tác dụng của Jinja2 Filter <code>join</code>. Tại sao phải dùng filter <code>join</code> khi chèn một mảng biến Ansible List vào tệp cấu hình INI/Properties?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày tác dụng của Jinja2 Filter <code>join</code>. Tại sao phải dùng filter <code>join</code> khi chèn một mảng biến Ansible List vào tệp cấu hình INI/Properties? <i>(Liên quan QT 5.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Filter <code>join('sep')</code> dùng để nối các phần tử của một mảng danh sách (List) thành một chuỗi duy nhất phân cách bởi ký tự <code>sep</code>. Phải dùng filter <code>join</code> vì tệp cấu hình ứng dụng (như INI, Java properties) không hiểu định dạng mảng Python <code>['10.0.0.1', '10.0.0.2']</code>, mà bắt buộc cần dạng chuỗi <code>10.0.0.1, 10.0.0.2</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết filter <code>join</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>join</code> nối chuỗi nhưng không giải thích được lý do ép kiểu từ mảng sang chuỗi cho file INI.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế biến đổi mảng sang chuỗi chuẩn hóa ứng dụng.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa cú pháp <code>{{ '{{' }} allowed_ips | join(', ') {{ '}}' }}</code> trong template INI.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Ngược lại với filter <code>join</code> là filter nào? <i>(Là filter <code>split</code> dùng để cắt chuỗi thành mảng.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Sử dụng Jinja2 Filter `default` 🔥
-**Hỏi:** Jinja2 Filter `default` có tác dụng gì? Tại sao việc sử dụng filter `default` được coi là nguyên tắc lập trình phòng vệ (Defensive Programming)? *(Liên quan QT 5.1)*
-**Đáp án chuẩn:** Filter `default('fallback_val')` dùng để cung cấp một giá trị mặc định phòng vệ khi biến được gọi chưa được khai báo ở bất kỳ tầng nào. Đây là nguyên tắc lập trình phòng vệ vì nó ngăn chặn 100% việc Playbook bị crash đứt gãy với lỗi fatal `undefined variable` khi chạy trên các máy đích thiếu biến tùy chọn (ví dụ `{{ app_port | default(8080) }}`).
-**Tiêu chí chấm:**
-- 0: Không biết Jinja2 Filter `default`.
-- 1: Biết `default` gán giá trị mặc định nhưng không nêu được vai trò phòng chống lỗi fatal undefined.
-- 2: Phân tích chính xác cơ chế fallback value và tư duy lập trình phòng vệ.
-- 3: Nêu đúng + viết đoạn YAML và Jinja2 Template minh họa filter `default`.
-**Câu hỏi đào sâu:** Nếu biến `app_port` có giá trị là `false`, filter `{{ app_port | default(8080) }}` sẽ trả về giá trị gì? *(Trả về false; muốn ép nhận default khi biến bằng false/empty phải dùng `default(8080, true)`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Các Jinja2 Filters <code>to_json</code> và <code>to_nice_yaml</code> được ứng dụng trong trường hợp nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Các Jinja2 Filters <code>to_json</code> và <code>to_nice_yaml</code> được ứng dụng trong trường hợp nào? <i>(Liên quan QT 5.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Các filter này dùng để tự động mã hóa (serialize) một từ điển hoặc mảng dữ liệu Ansible thành tệp tin định dạng JSON hoặc YAML chuẩn hóa. Ứng dụng: Dùng để sinh các tệp cấu hình JSON/YAML phức tạp (như Kubernetes manifest, Docker config, Elasticsearch settings) chỉ bằng 1 dòng trong template <code>{{ '{{' }} app_config_dict | to_nice_yaml {{ '}}' }}</code> mà không cần nối chuỗi thủ công.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết các filter chuyển đổi định dạng.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>to_json</code> nhưng không phân biệt được với <code>to_nice_json</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò mã hóa tự động cấu trúc dữ liệu sang JSON/YAML.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ template sinh tệp YAML đẹp với <code>to_nice_yaml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Phân biệt sự khác nhau giữa <code>to_json</code> và <code>to_nice_json</code>? <i>(<code>to_json</code> in toàn bộ JSON trên 1 dòng dài; <code>to_nice_json</code> tự động thụt lề và xuống dòng đẹp cho người đọc.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Thuộc tính <code>validate:</code> trong module <code>template</code> có vai trò gì đối với sự an toàn của dịch vụ Production? Ký tự <code>%s</code> đại diện cho điều gì?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Thuộc tính <code>validate:</code> trong module <code>template</code> có vai trò gì đối với sự an toàn của dịch vụ Production? Ký tự <code>%s</code> đại diện cho điều gì? <i>(Liên quan QT 6.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Thuộc tính <code>validate: "&lt;command&gt; %s"</code> dùng để ép Ansible mở một tệp tạm thời trên máy đích, chạy câu lệnh kiểm tra cú pháp (ví dụ <code>nginx -t -c %s</code>), nếu câu lệnh kiểm tra thành công (exit code = 0) mới cho phép ghi đè vào tệp thật. Ký tự <code>%s</code> đại diện cho đường dẫn của tệp tạm thời đó. Vai trò: Ngăn chặn 100% rủi ro ghi đè file cấu hình lỗi làm ngắt dịch vụ Web Server trên Production.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>validate:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>validate</code> kiểm tra file nhưng không giải thích được cơ chế tệp tạm <code>%s</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế tệp tạm <code>%s</code> và vai trò bảo vệ an toàn dịch vụ.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã YAML module <code>template</code> có <code>validate: "nginx -t -c %s"</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu câu lệnh trong <code>validate</code> trả về exit code != 0 (thất bại), Ansible sẽ làm gì? <i>(Ansible ngắt thi hành Task, báo lỗi fatal và HỦY BỎ việc ghi đè file thật.)</i></div>
+  </div>
+</details>
 
-### Câu 4 — Biến đổi Mảng với Jinja2 Filter `join` 🔥
-**Hỏi:** Trình bày tác dụng của Jinja2 Filter `join`. Tại sao phải dùng filter `join` khi chèn một mảng biến Ansible List vào tệp cấu hình INI/Properties? *(Liên quan QT 5.2)*
-**Đáp án chuẩn:** Filter `join('sep')` dùng để nối các phần tử của một mảng danh sách (List) thành một chuỗi duy nhất phân cách bởi ký tự `sep`. Phải dùng filter `join` vì tệp cấu hình ứng dụng (như INI, Java properties) không hiểu định dạng mảng Python `['10.0.0.1', '10.0.0.2']`, mà bắt buộc cần dạng chuỗi `10.0.0.1, 10.0.0.2`.
-**Tiêu chí chấm:**
-- 0: Không biết filter `join`.
-- 1: Biết `join` nối chuỗi nhưng không giải thích được lý do ép kiểu từ mảng sang chuỗi cho file INI.
-- 2: Phân tích chính xác cơ chế biến đổi mảng sang chuỗi chuẩn hóa ứng dụng.
-- 3: Nêu đúng + minh họa cú pháp `{{ allowed_ips | join(', ') }}` trong template INI.
-**Câu hỏi đào sâu:** Ngược lại với filter `join` là filter nào? *(Là filter `split` dùng để cắt chuỗi thành mảng.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Biến <code>{{ '{{' }} ansible_managed {{ '}}' }}</code> dùng để làm gì? Tại sao nên chèn nó ở dòng đầu tiên của mọi tệp template <code>.j2</code>?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Biến <code>{{ '{{' }} ansible_managed {{ '}}' }}</code> dùng để làm gì? Tại sao nên chèn nó ở dòng đầu tiên của mọi tệp template <code>.j2</code>? <i>(Liên quan QT 6.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Biến <code>{{ '{{' }} ansible_managed {{ '}}' }}</code> tự động sinh ra một chuỗi comment header (ví dụ <code># Ansible managed: modified on 2026-08-22 by user on control_node</code>). Nên chèn nó ở dòng 1 để cảnh báo các quản trị viên không được chỉnh sửa bằng tay trên máy đích (tránh bị Ansible ghi đè ở lượt sau) và lưu vết thời gian khởi tạo.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết biến <code>ansible_managed</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>ansible_managed</code> là dòng comment nhưng không nêu được mục đích cảnh báo sửa tay.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò cảnh báo quản trị viên và lưu vết hệ thống.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa dòng comment <code># {{ '{{' }} ansible_managed {{ '}}' }}</code> ở đầu file Nginx/Apache.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Chuỗi định dạng của <code>ansible_managed</code> có thể tùy chỉnh trong tệp cấu hình nào? <i>(Tùy chỉnh trong tệp <code>ansible.cfg</code> qua thuộc tính <code>ansible_managed</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Tại sao việc chèn các biến thời gian thực (như <code>{{ '{{' }} ansible_date_time.iso8601 {{ '}}' }}</code>) vào nội dung tệp template lại bị coi là sai quy chuẩn Idempotency?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao việc chèn các biến thời gian thực (như <code>{{ '{{' }} ansible_date_time.iso8601 {{ '}}' }}</code>) vào nội dung tệp template lại bị coi là sai quy chuẩn Idempotency? <i>(Liên quan QT 6.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Vì biến thời gian thay đổi liên tục theo từng giây/ngày. Mỗi lần Playbook chạy, bộ máy Jinja2 Engine sinh ra nội dung mới có timestamp mới, làm checksum SHA1 của file render bị khác biệt so với file trên đĩa. Kết quả: Module <code>template</code> bị đánh lầm là có thay đổi và báo <code>changed=1</code> ở MỌI LƯỢT CHẠY LẦN 2, hỏng hoàn toàn tính Idempotency và làm restart dịch vụ lãng phí.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết lý do tại sao biến thời gian làm hỏng Idempotency.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>changed=1</code> nhưng không giải thích được cơ chế so sánh checksum SHA1 của module <code>template</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế so sánh checksum SHA1 nội dung render vs file đĩa cứng.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + đưa ra giải pháp loại bỏ biến thời gian thực khỏi nội dung template.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm sao để module <code>template</code> nhận biết tệp tin trên máy đích có cần thay đổi hay không? <i>(Bằng cách so sánh mã checksum SHA1 của chuỗi nội dung render với checksum SHA1 của tệp đĩa đích.)</i></div>
+  </div>
+</details>
 
-### Câu 5 — Chuyển đổi Định dạng với `to_nice_yaml` và `to_json`
-**Hỏi:** Các Jinja2 Filters `to_json` và `to_nice_yaml` được ứng dụng trong trường hợp nào? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** Các filter này dùng để tự động mã hóa (serialize) một từ điển hoặc mảng dữ liệu Ansible thành tệp tin định dạng JSON hoặc YAML chuẩn hóa. Ứng dụng: Dùng để sinh các tệp cấu hình JSON/YAML phức tạp (như Kubernetes manifest, Docker config, Elasticsearch settings) chỉ bằng 1 dòng trong template `{{ app_config_dict | to_nice_yaml }}` mà không cần nối chuỗi thủ công.
-**Tiêu chí chấm:**
-- 0: Không biết các filter chuyển đổi định dạng.
-- 1: Biết `to_json` nhưng không phân biệt được với `to_nice_json`.
-- 2: Phân tích chính xác vai trò mã hóa tự động cấu trúc dữ liệu sang JSON/YAML.
-- 3: Nêu đúng + viết ví dụ template sinh tệp YAML đẹp với `to_nice_yaml`.
-**Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa `to_json` và `to_nice_json`? *(`to_json` in toàn bộ JSON trên 1 dòng dài; `to_nice_json` tự động thụt lề và xuống dòng đẹp cho người đọc.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng <code>template</code> để đảm bảo tính Idempotency và tệp tin trên máy đích ở đúng trạng thái.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng <code>template</code> để đảm bảo tính Idempotency và tệp tin trên máy đích ở đúng trạng thái.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site.yml</code>: Task template render và chép file báo <code>changed=1</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (vì checksum nội dung render trùng khớp 100%).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/nginx-demo.conf</code> kiểm tra nội dung file thực sự được giải mã biến và chứa đúng cấu hình đã render.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI cụ thể.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh <code>docker exec cat</code> đối soát file đã render.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu ở Lần 2 ta thay đổi một giá trị biến trong <code>group_vars</code>, chỉ số RECAP Lần 2 sẽ báo thế nào? <i>(RECAP Lần 2 sẽ báo <code>changed=1</code> vì checksum nội dung mới bị thay đổi so với file đĩa.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 6 — Kiểm tra Cú pháp Cấu hình với `validate:` 🔥
-**Hỏi:** Thuộc tính `validate:` trong module `template` có vai trò gì đối với sự an toàn của dịch vụ Production? Ký tự `%s` đại diện cho điều gì? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:** Thuộc tính `validate: "<command> %s"` dùng để ép Ansible mở một tệp tạm thời trên máy đích, chạy câu lệnh kiểm tra cú pháp (ví dụ `nginx -t -c %s`), nếu câu lệnh kiểm tra thành công (exit code = 0) mới cho phép ghi đè vào tệp thật. Ký tự `%s` đại diện cho đường dẫn của tệp tạm thời đó. Vai trò: Ngăn chặn 100% rủi ro ghi đè file cấu hình lỗi làm ngắt dịch vụ Web Server trên Production.
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `validate:`.
-- 1: Biết `validate` kiểm tra file nhưng không giải thích được cơ chế tệp tạm `%s`.
-- 2: Phân tích chính xác cơ chế tệp tạm `%s` và vai trò bảo vệ an toàn dịch vụ.
-- 3: Nêu đúng + viết đoạn mã YAML module `template` có `validate: "nginx -t -c %s"`.
-**Câu hỏi đào sâu:** Nếu câu lệnh trong `validate` trả về exit code != 0 (thất bại), Ansible sẽ làm gì? *(Ansible ngắt thi hành Task, báo lỗi fatal và HỦY BỎ việc ghi đè file thật.)*
-
----
-
-### Câu 7 — Ý nghĩa Biến Header `{{ ansible_managed }}`
-**Hỏi:** Biến `{{ ansible_managed }}` dùng để làm gì? Tại sao nên chèn nó ở dòng đầu tiên của mọi tệp template `.j2`? *(Liên quan QT 6.2)*
-**Đáp án chuẩn:** Biến `{{ ansible_managed }}` tự động sinh ra một chuỗi comment header (ví dụ `# Ansible managed: modified on 2026-08-22 by user on control_node`). Nên chèn nó ở dòng 1 để cảnh báo các quản trị viên không được chỉnh sửa bằng tay trên máy đích (tránh bị Ansible ghi đè ở lượt sau) và lưu vết thời gian khởi tạo.
-**Tiêu chí chấm:**
-- 0: Không biết biến `ansible_managed`.
-- 1: Biết `ansible_managed` là dòng comment nhưng không nêu được mục đích cảnh báo sửa tay.
-- 2: Phân tích chính xác vai trò cảnh báo quản trị viên và lưu vết hệ thống.
-- 3: Nêu đúng + minh họa dòng comment `# {{ ansible_managed }}` ở đầu file Nginx/Apache.
-**Câu hỏi đào sâu:** Chuỗi định dạng của `ansible_managed` có thể tùy chỉnh trong tệp cấu hình nào? *(Tùy chỉnh trong tệp `ansible.cfg` qua thuộc tính `ansible_managed`.)*
-
----
-
-### Câu 8 — Cạm bẫy Trôi Checksum Idempotency trong Template 🔥
-**Hỏi:** Tại sao việc chèn các biến thời gian thực (như `{{ ansible_date_time.iso8601 }}`) vào nội dung tệp template lại bị coi là sai quy chuẩn Idempotency? *(Liên quan QT 6.3)*
-**Đáp án chuẩn:** Vì biến thời gian thay đổi liên tục theo từng giây/ngày. Mỗi lần Playbook chạy, bộ máy Jinja2 Engine sinh ra nội dung mới có timestamp mới, làm checksum SHA1 của file render bị khác biệt so với file trên đĩa. Kết quả: Module `template` bị đánh lầm là có thay đổi và báo `changed=1` ở MỌI LƯỢT CHẠY LẦN 2, hỏng hoàn toàn tính Idempotency và làm restart dịch vụ lãng phí.
-**Tiêu chí chấm:**
-- 0: Không biết lý do tại sao biến thời gian làm hỏng Idempotency.
-- 1: Biết `changed=1` nhưng không giải thích được cơ chế so sánh checksum SHA1 của module `template`.
-- 2: Phân tích chính xác cơ chế so sánh checksum SHA1 nội dung render vs file đĩa cứng.
-- 3: Nêu đúng + đưa ra giải pháp loại bỏ biến thời gian thực khỏi nội dung template.
-**Câu hỏi đào sâu:** Làm sao để module `template` nhận biết tệp tin trên máy đích có cần thay đổi hay không? *(Bằng cách so sánh mã checksum SHA1 của chuỗi nội dung render với checksum SHA1 của tệp đĩa đích.)*
-
----
-
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng Templates 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng `template` để đảm bảo tính Idempotency và tệp tin trên máy đích ở đúng trạng thái.
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site.yml`: Task template render và chép file báo `changed=1`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (vì checksum nội dung render trùng khớp 100%).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/nginx-demo.conf` kiểm tra nội dung file thực sự được giải mã biến và chứa đúng cấu hình đã render.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI cụ thể.
-- 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh `docker exec cat` đối soát file đã render.
-**Câu hỏi đào sâu:** Nếu ở Lần 2 ta thay đổi một giá trị biến trong `group_vars`, chỉ số RECAP Lần 2 sẽ báo thế nào? *(RECAP Lần 2 sẽ báo `changed=1` vì checksum nội dung mới bị thay đổi so với file đĩa.)*
-
----
-
-### Câu 10 — Vòng lặp `{% for %}` và Filter `selectattr` Nâng cao ★★★
-**Hỏi:** Viết một đoạn mã Jinja2 Template sử dụng vòng lặp `{% for %}` kết hợp filter `selectattr` để chỉ duyệt và in ra danh sách các Virtual Host có cờ `active == true`.
-**Đáp án chuẩn:**
-```jinja2
-{% for vhost in web_vhosts | selectattr('active', 'defined') | selectattr('active', 'equalto', true) %}
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Viết một đoạn mã Jinja2 Template sử dụng vòng lặp <code>{% raw %}{% for %}{% endraw %}</code> kết hợp filter <code>selectattr</code> để chỉ duyệt và in ra danh sách các Virtual Host có cờ <code>active == true</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Viết một đoạn mã Jinja2 Template sử dụng vòng lặp <code>{% raw %}{% for %}{% endraw %}</code> kết hợp filter <code>selectattr</code> để chỉ duyệt và in ra danh sách các Virtual Host có cờ <code>active == true</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <pre><code class="language-jinja2">{% raw %}{% for vhost in web_vhosts | selectattr('active', 'defined') | selectattr('active', 'equalto', true) %}
 server {
     listen {{ vhost.port | default(80) }};
     server_name {{ vhost.domain }};
 }
-{% endfor %}
-```
-**Tiêu chí chấm:**
-- 0: Không viết được kịch bản Jinja2 nâng cao.
-- 1: Viết được `{% for %}` nhưng không biết lọc mảng bằng `selectattr`.
-- 2: Phân tích chính xác vai trò lọc phần tử mảng của filter `selectattr`.
-- 3: Nêu đúng + viết đoạn mã Jinja2 Template hoàn chỉnh lọc vhost active.
-**Câu hỏi đào sâu:** Filter `map(attribute='domain')` trong Jinja2 có tác dụng gì? *(Dùng để trích xuất mảng danh sách chỉ chứa thuộc tính domain từ danh sách từ điển.)*
+{% endfor %}{% endraw %}</code></pre>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không viết được kịch bản Jinja2 nâng cao.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Viết được <code>{% raw %}{% for %}{% endraw %}</code> nhưng không biết lọc mảng bằng <code>selectattr</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò lọc phần tử mảng của filter <code>selectattr</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã Jinja2 Template hoàn chỉnh lọc vhost active.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Filter <code>map(attribute='domain')</code> trong Jinja2 có tác dụng gì? <i>(Dùng để trích xuất mảng danh sách chỉ chứa thuộc tính domain từ danh sách từ điển.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Có nên dùng module <code>ansible.builtin.template</code> để chép các tệp nhị phân (Binary files như <code>.tar.gz</code>, <code>.png</code>, <code>.so</code>) hay không? Vì sao?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Có nên dùng module <code>ansible.builtin.template</code> để chép các tệp nhị phân (Binary files như <code>.tar.gz</code>, <code>.png</code>, <code>.so</code>) hay không? Vì sao?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> TUYỆT ĐỐI KHÔNG. Module <code>template</code> và bộ máy Jinja2 Engine được thiết kế riêng cho các tệp văn bản mã hóa UTF-8. Nếu truyền tệp nhị phân vào module <code>template</code>, Jinja2 Parser sẽ cố gắng đọc và parse các ký tự nhị phân thành chuỗi văn bản, gây hỏng dữ liệu (corruption) và văng lỗi <code>UnicodeDecodeError</code>. Đối với tệp nhị phân, BẮT BUỘC dùng module <code>ansible.builtin.copy</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Cho rằng <code>template</code> chép được mọi loại file kể cả binary.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết không nên chép binary bằng <code>template</code> nhưng không giải thích được lỗi <code>UnicodeDecodeError</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt về mã hóa UTF-8 text vs Binary data.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + đưa ra quy tắc chọn module <code>template</code> (cho text dynamic) và <code>copy</code> (cho binary/raw).</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu tệp tin là tệp văn bản tĩnh KHÔNG CÓ BIẾN ĐỘNG NÀO, nên chọn <code>copy</code> hay <code>template</code>? <i>(Nên chọn <code>copy</code> để tiết kiệm chi phí CPU rendering của Jinja2 Engine.)</i></div>
+  </div>
+</details>
 
-### Câu 11 — Quản lý File Nhị phân Binary vs File Văn bản Text ★★★
-**Hỏi:** Có nên dùng module `ansible.builtin.template` để chép các tệp nhị phân (Binary files như `.tar.gz`, `.png`, `.so`) hay không? Vì sao?
-**Đáp án chuẩn:** TUYỆT ĐỐI KHÔNG. Module `template` và bộ máy Jinja2 Engine được thiết kế riêng cho các tệp văn bản mã hóa UTF-8. Nếu truyền tệp nhị phân vào module `template`, Jinja2 Parser sẽ cố gắng đọc và parse các ký tự nhị phân thành chuỗi văn bản, gây hỏng dữ liệu (corruption) và văng lỗi `UnicodeDecodeError`. Đối với tệp nhị phân, BẮT BUỘC dùng module `ansible.builtin.copy`.
-**Tiêu chí chấm:**
-- 0: Cho rằng `template` chép được mọi loại file kể cả binary.
-- 1: Biết không nên chép binary bằng `template` nhưng không giải thích được lỗi `UnicodeDecodeError`.
-- 2: Phân tích chính xác sự khác biệt về mã hóa UTF-8 text vs Binary data.
-- 3: Nêu đúng + đưa ra quy tắc chọn module `template` (cho text dynamic) và `copy` (cho binary/raw).
-**Câu hỏi đào sâu:** Nếu tệp tin là tệp văn bản tĩnh KHÔNG CÓ BIẾN ĐỘNG NÀO, nên chọn `copy` hay `template`? *(Nên chọn `copy` để tiết kiệm chi phí CPU rendering của Jinja2 Engine.)*
-
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng khi Dùng `template` và Jinja2 ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng `template` và Jinja2 Filters hiệu quả, an toàn và chuẩn Idempotency nhất.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Dùng module `template` cho tệp mẫu `.j2` và module `copy` cho tệp nhị phân/tĩnh.
-2. **Quy tắc 2:** Phân biệt rõ cú pháp `{{ }}` (in giá trị) và `{% %}` (vòng lặp/rẽ nhánh).
-3. **Quy tắc 3:** Luôn bọc filter `| default('val')` phòng thủ lỗi fatal undefined variable.
-4. **Quy tắc 4:** Khai báo thuộc tính `validate:` kiểm tra cú pháp tệp tin trước khi ghi đĩa.
-5. **Quy tắc 5:** Loại bỏ biến thời gian thực khỏi nội dung template, và kiểm thử Lần 2 `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy quản trị hạ tầng qua mã nguồn (IaC) chuyên nghiệp.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp ngăn ngừa sự cố sập dịch vụ do file config lỗi? *(Quy tắc 4: Khai báo thuộc tính validate:)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng <code>template</code> và Jinja2 Filters hiệu quả, an toàn và chuẩn Idempotency nhất.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng <code>template</code> và Jinja2 Filters hiệu quả, an toàn và chuẩn Idempotency nhất.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Dùng module <code>template</code> cho tệp mẫu <code>.j2</code> và module <code>copy</code> cho tệp nhị phân/tĩnh.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Phân biệt rõ cú pháp <code>{{ '{{' }} {{ '}}' }}</code> (in giá trị) và <code>{% raw %}{% %}{% endraw %}</code> (vòng lặp/rẽ nhánh).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Luôn bọc filter <code>| default('val')</code> phòng thủ lỗi fatal undefined variable.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Khai báo thuộc tính <code>validate:</code> kiểm tra cú pháp tệp tin trước khi ghi đĩa.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Loại bỏ biến thời gian thực khỏi nội dung template, và kiểm thử Lần 2 <code>changed=0</code> qua <code>docker exec</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy quản trị hạ tầng qua mã nguồn (IaC) chuyên nghiệp.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp ngăn ngừa sự cố sập dịch vụ do file config lỗi? <i>(Quy tắc 4: Khai báo thuộc tính validate:)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -1059,7 +1186,7 @@ server {
 
 Khi nhà tuyển dụng phỏng vấn về kỹ năng tự động hóa sinh file cấu hình động bằng Ansible và Jinja2, học viên hãy đưa ra câu chốt tự tin sau:
 
-> **"Tôi chuyển đổi toàn bộ các tệp cấu hình tĩnh rườm rà thành các tệp mẫu sinh cấu hình động Jinja2 Template `.j2` thông minh. Tôi làm chủ cú pháp nội suy biến `{{ }}`, vòng lặp `{% for %}`, rẽ nhánh `{% if %}`, và các bộ lọc Jinja2 Filters (`default`, `join`, `to_nice_yaml`) để xử lý an toàn mọi dữ liệu đầu vào. Để bảo vệ hạ tầng Production, tôi luôn sử dụng thuộc tính `validate:` kiểm tra cú pháp tệp tin trước khi ghi đĩa. Mọi tệp template của tôi đều được loại bỏ các biến trôi checksum, đảm bảo ở lượt chạy Lần hai đạt `changed=0` Idempotency tuyệt đối và đối soát sự thật thực tế trên máy đích bằng `docker exec`."**
+> **"Tôi chuyển đổi toàn bộ các tệp cấu hình tĩnh rườm rà thành các tệp mẫu sinh cấu hình động Jinja2 Template `.j2` thông minh. Tôi làm chủ cú pháp nội suy biến `{{ '{{' }} {{ '}}' }}`, vòng lặp `{% raw %}{% for %}{% endraw %}`, rẽ nhánh `{% raw %}{% if %}{% endraw %}`, và các bộ lọc Jinja2 Filters (`default`, `join`, `to_nice_yaml`) để xử lý an toàn mọi dữ liệu đầu vào. Để bảo vệ hạ tầng Production, tôi luôn sử dụng thuộc tính `validate:` kiểm tra cú pháp tệp tin trước khi ghi đĩa. Mọi tệp template của tôi đều được loại bỏ các biến trôi checksum, đảm bảo ở lượt chạy Lần hai đạt `changed=0` Idempotency tuyệt đối và đối soát sự thật thực tế trên máy đích bằng `docker exec`."**
 
 ---
 
@@ -1079,4 +1206,10 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng tự động hóa sinh fil
 1. **Nghiên cứu trước 1:** Khối `block:` kết hợp `rescue:` và `always:` trong Ansible có cơ chế hoạt động tương đương cấu trúc `try...catch...finally` trong lập trình như thế nào?
 2. **Nghiên cứu trước 2:** Thuộc tính `failed_when:` dùng để thay đổi định nghĩa một Task bị coi là THẤT BẠI khi nào?
 3. **Nghiên cứu trước 3:** Thuộc tính `changed_when:` dùng để làm gì khi gọi các lệnh CLI thô với module `command` / `shell`?
+
+---
+
+> [!TIP]
+> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 13: Xử Lý Ngoại Lệ & Kiểm Soát Luồng Với Blocks: rescue, always & failure strategies](ansible-13-13-blocks-error-handling.html).
+
 {% endraw %}

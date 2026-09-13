@@ -100,6 +100,18 @@ graph TD
     
     D --> J["Target Staging Container (target1)"]
     G --> K["Target Production Server"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#0ea5e9,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#10b981,stroke-width:2px
+    style E fill:none,stroke:#10b981,stroke-width:2px
+    style F fill:none,stroke:#f43f5e,stroke-width:2px
+    style G fill:none,stroke:#f43f5e,stroke-width:2px
+    style H fill:none,stroke:#f43f5e,stroke-width:2px
+    style I fill:none,stroke:#8b5cf6,stroke-width:2px
+    style J fill:none,stroke:#10b981,stroke-width:2px
+    style K fill:none,stroke:#f43f5e,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Tổ chức danh mục máy chủ và cấu hình bằng cách tách biệt hoàn toàn thành các thư mục riêng cho từng môi trường: `inventory/staging/` và `inventory/production/`.
@@ -343,8 +355,22 @@ flowchart TD
     I --> K{"PLAY RECAP Lần 2: changed=0?"}
     J --> K
     
-    K -- Có --> L["ĐẠT: Đa môi trường chuẩn Idempotency 100%"]
-    K -- Không --> M["LỖI: Rà soát lại biến phân tầng group_vars"]
+    K -->|"Có"| L["ĐẠT: Đa môi trường chuẩn Idempotency 100%"]
+    K -->|"Không"| M["LỖI: Rà soát lại biến phân tầng group_vars"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#0ea5e9,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#f43f5e,stroke-width:2px
+    style E fill:none,stroke:#06b6d4,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#8b5cf6,stroke-width:2px
+    style H fill:none,stroke:#8b5cf6,stroke-width:2px
+    style I fill:none,stroke:#10b981,stroke-width:2px
+    style J fill:none,stroke:#f43f5e,stroke-width:2px
+    style K fill:none,stroke:#f59e0b,stroke-width:2px
+    style L fill:none,stroke:#10b981,stroke-width:2px
+    style M fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -483,12 +509,25 @@ graph TD
     PB -->|"5. Run Staging: -i inventory/staging"| T1["Target Container 1 (target1 - Staging)"]
     PB -->|"6. Run Prod: -i inventory/production"| T2["Target Container 2 (target2 - Production)"]
     
-    T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=4, changed=2"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY 100%)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook với cờ -i"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#6366f1,stroke-width:2px
+    style CFG fill:none,stroke:#f59e0b,stroke-width:2px
+    style STG_DIR fill:none,stroke:#10b981,stroke-width:2px
+    style PRD_DIR fill:none,stroke:#f43f5e,stroke-width:2px
+    style STG_H fill:none,stroke:#10b981,stroke-width:2px
+    style STG_GV fill:none,stroke:#10b981,stroke-width:2px
+    style PRD_H fill:none,stroke:#f43f5e,stroke-width:2px
+    style PRD_GV fill:none,stroke:#f43f5e,stroke-width:2px
+    style PB fill:none,stroke:#8b5cf6,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style T2 fill:none,stroke:#f43f5e,stroke-width:2px
+    style DEV fill:none,stroke:#06b6d4,stroke-width:2px
 ```
 
 ---
@@ -816,196 +855,290 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q01</span>
+  <span class="qa-question-text">Tại sao Red Hat khuyến nghị tổ chức đa môi trường qua cấu trúc thư mục <code>inventory/staging/</code> và <code>inventory/production/</code> riêng biệt thay vì gom chung vào 1 file inventory?</span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
   
-<b style="color: var(--accent-primary);">Hỏi:</b> Tại sao Red Hat khuyến nghị tổ chức đa môi trường qua cấu trúc thư mục <code>inventory/staging/</code> và <code>inventory/production/</code> riêng biệt thay vì gom chung vào 1 file inventory? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-Lý do cô lập:
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Cô lập 100% dữ liệu:</b> Tách biệt hoàn toàn danh sách IP máy chủ và các biến cấu hình giữa Staging và Production, triệt tiêu nguy cơ biến Staging bị rò rỉ đè hỏng cấu hình Production.</div>
   <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Quản lý biến tự động:</b> Khi thi hành với cờ <code>-i inventory/staging</code>, Ansible Engine chỉ tự động nạp các biến trong <code>inventory/staging/group_vars/</code>, ngăn ngừa đọc nhầm biến của Production.</div>
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cấu trúc thư mục inventory đa môi trường.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết tách thư mục nhưng không giải thích được cơ chế tự động nạp biến theo cờ <code>-i</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò cô lập biến và triệt tiêu nguy cơ rò rỉ cấu hình Production.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + vẽ sơ đồ cây thư mục chuẩn <code>inventory/staging/</code> và <code>inventory/production/</code>.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu dự án có thêm môi trường UAT, ta tạo thư mục nào? *(Tạo thư mục <code>inventory/uat/</code> chứa <code>hosts.ini</code> và <code>group_vars/</code> tương tự.)*
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không biết cấu trúc thư mục inventory đa môi trường.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết tách thư mục nhưng không giải thích được cơ chế tự động nạp biến theo cờ <code>-i</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác vai trò cô lập biến và triệt tiêu nguy cơ rò rỉ cấu hình Production.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + vẽ sơ đồ cây thư mục chuẩn <code>inventory/staging/</code> và <code>inventory/production/</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu dự án có thêm môi trường UAT, ta tạo thư mục nào? <i>(Tạo thư mục <code>inventory/uat/</code> chứa <code>hosts.ini</code> và <code>group_vars/</code> tương tự.)</i></div>
 </div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q02</span>
+  <span class="qa-question-text">Thư mục <code>group_vars/</code> bắt buộc phải nằm ở vị trí nào trong cấu trúc dự án đa môi trường? Chuyện gì xảy ra nếu để <code>group_vars/</code> ở root dự án?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Vị trí bắt buộc:</b> Đặt trực tiếp bên trong từng thư mục môi trường tương ứng (ví dụ <code>inventory/staging/group_vars/</code> và <code>inventory/production/group_vars/</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Nguy cơ nếu để ở root:</b> Ansible Engine sẽ nạp hòa trộn biến ở root với biến môi trường, dẫn đến các biến ở root ghi đè hoặc xung đột với biến của môi trường cụ thể, gây rủi ro ghi đè nhầm cấu hình Production.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không biết vị trí đặt <code>group_vars/</code> trong dự án đa môi trường.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết đặt trong thư mục môi trường nhưng không giải thích được nguy cơ hòa trộn biến khi để ở root.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác cơ chế nạp biến theo vị trí thư mục và nguy cơ ghi đè nhầm lẫn.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + minh họa ví dụ cấu trúc thư mục ĐÚNG vs SAI trên terminal.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Ansible Engine ưu tiên nạp biến trong <code>inventory/staging/group_vars/all.yml</code> hay <code>group_vars/all.yml</code> ở root? <i>(Biến trong <code>inventory/staging/group_vars/all.yml</code> có độ ưu tiên cao hơn.)</i></div>
+</div>
+</details>
 
-### Câu 2 — Vị trí Đặt Thư mục `group_vars/` 🔥
-**Hỏi:** Thư mục `group_vars/` bắt buộc phải nằm ở vị trí nào trong cấu trúc dự án đa môi trường? Chuyện gì xảy ra nếu để `group_vars/` ở root dự án? *(Liên quan QT 4.2, QT 6.1)*
-**Đáp án chuẩn:**
-- Vị trí bắt buộc: Đặt trực tiếp bên trong từng thư mục môi trường tương ứng (ví dụ `inventory/staging/group_vars/` và `inventory/production/group_vars/`).
-- Nguy cơ nếu để ở root: Nếu để `group_vars/` ở root dự án, Ansible Engine sẽ nạp hòa trộn biến ở root với biến môi trường, dẫn đến các biến ở root ghi đè hoặc xung đột với biến của môi trường cụ thể, gây rủi ro ghi đè nhầm cấu hình Production.
-**Tiêu chí chấm:**
-- 0: Không biết vị trí đặt `group_vars/` trong dự án đa môi trường.
-- 1: Biết đặt trong thư mục môi trường nhưng không giải thích được nguy cơ hòa trộn biến khi để ở root.
-- 2: Phân tích chính xác cơ chế nạp biến theo vị trí thư mục và nguy cơ ghi đè nhầm lẫn.
-- 3: Nêu đúng + minh họa ví dụ cấu trúc thư mục ĐÚNG vs SAI trên terminal.
-**Câu hỏi đào sâu:** Ansible Engine ưu tiên nạp biến trong `inventory/staging/group_vars/all.yml` hay `group_vars/all.yml` ở root? *(Biến trong `inventory/staging/group_vars/all.yml` có độ ưu tiên cao hơn.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q03</span>
+  <span class="qa-question-text">Trình bày tác dụng của cờ tham số <code>-i</code> trong lệnh <code>ansible-playbook</code>. Tại sao khi truyền cờ <code>-i</code>, ta nên truyền đường dẫn thư mục <code>inventory/staging</code> thay vì chỉ truyền file <code>hosts.ini</code>?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Tác dụng cờ -i:</b> Chỉ định tường minh đường dẫn danh mục máy chủ và cấu hình môi trường mục tiêu cho Playbook.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Lý do truyền đường dẫn thư mục:</b> Nếu chỉ truyền file <code>inventory/staging/hosts.ini</code>, Ansible chỉ nạp file <code>hosts.ini</code> mà bỏ qua không tự động nạp thư mục <code>group_vars/</code> bên cạnh. Khi truyền đường dẫn thư mục <code>inventory/staging</code>, Ansible sẽ nạp đồng thời file host và toàn bộ thư mục <code>group_vars/</code> bên trong.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không biết cờ <code>-i</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết cờ <code>-i</code> dùng trỏ inventory nhưng không phân biệt được truyền file vs truyền thư mục.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác sự khác nhau giữa truyền file <code>.ini</code> và truyền đường dẫn thư mục chứa <code>group_vars/</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + minh họa câu lệnh CLI <code>ansible-playbook -i inventory/staging site-env.yml</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Có thể truyền nhiều cờ <code>-i</code> trong 1 câu lệnh <code>ansible-playbook</code> không? <i>(Có thể, ví dụ <code>-i inventory/staging -i inventory/common</code>.)</i></div>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q04</span>
+  <span class="qa-question-text">Trình bày thứ tự độ ưu tiên nạp biến (Variable Precedence) từ rộng đến hẹp giữa các tệp biến: <code>group_vars/all.yml</code>, <code>group_vars/web.yml</code>, và <code>host_vars/target1.yml</code>.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>group_vars/all.yml</code> (Ưu tiên thấp nhất trong nhóm): Khai báo các biến dùng chung cho mọi máy chủ (như <code>env_name</code>, <code>dns_server</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>group_vars/web.yml</code> (Ưu tiên trung bình): Ghi đè các biến dành riêng cho nhóm máy chủ web (như <code>app_port: 8080</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>host_vars/target1.yml</code> (Ưu tiên cao nhất trong kiểm kê): Ghi đè các biến đặc thù dành riêng cho duy nhất máy chủ <code>target1</code> (như <code>max_clients: 99</code>).</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không biết thứ tự ưu tiên phân tầng biến.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Nêu được 3 tầng file nhưng xếp sai thứ tự ưu tiên đè biến.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác nguyên lý phân tầng từ rộng đến hẹp <code>all</code> -&gt; <code>group</code> -&gt; <code>host</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + cho ví dụ minh họa 1 biến <code>app_port</code> bị ghi đè qua 3 tầng.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu trong <code>group_vars/all.yml</code> ghi <code>app_port: 80</code> và <code>group_vars/web.yml</code> ghi <code>app_port: 8080</code>, thì máy trong nhóm <code>web</code> nhận giá trị nào? <i>(Nhận giá trị <code>8080</code> từ <code>group_vars/web.yml</code>.)</i></div>
+</div>
+</details>
 
-### Câu 3 — Sử dụng Cờ Tham số `-i` (`--inventory`) 🔥
-**Hỏi:** Trình bày tác dụng của cờ tham số `-i` trong lệnh `ansible-playbook`. Tại sao khi truyền cờ `-i`, ta nên truyền đường dẫn thư mục `inventory/staging` thay vì chỉ truyền file `hosts.ini`? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-- Tác dụng cờ `-i`: Chỉ định tường minh đường dẫn danh mục máy chủ và cấu hình môi trường mục tiêu cho Playbook.
-- Lý do truyền đường dẫn thư mục: Nếu chỉ truyền file `inventory/staging/hosts.ini`, Ansible chỉ nạp file `hosts.ini` mà bỏ qua không tự động nạp thư mục `group_vars/` bên cạnh. Khi truyền đường dẫn thư mục `inventory/staging`, Ansible sẽ nạp đồng thời file host và **toàn bộ thư mục `group_vars/` bên trong**.
-**Tiêu chí chấm:**
-- 0: Không biết cờ `-i`.
-- 1: Biết cờ `-i` dùng trỏ inventory nhưng không phân biệt được truyền file vs truyền thư mục.
-- 2: Phân tích chính xác sự khác nhau giữa truyền file `.ini` và truyền đường dẫn thư mục chứa `group_vars/`.
-- 3: Nêu đúng + minh họa câu lệnh CLI `ansible-playbook -i inventory/staging site-env.yml`.
-**Câu hỏi đào sâu:** Có thể truyền nhiều cờ `-i` trong 1 câu lệnh `ansible-playbook` không? *(Có thể, ví dụ `-i inventory/staging -i inventory/common`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q05</span>
+  <span class="qa-question-text">Nêu các câu lệnh CLI <code>ansible-inventory</code> dùng để xem đồ thị phân nhóm máy chủ và tra cứu ma trận biến đã giải mã của môi trường Staging.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b>Xem đồ thị phân nhóm host:</b> <code>ansible-inventory -i inventory/staging --graph</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b>Xem ma trận biến giải mã của toàn bộ inventory:</b> <code>ansible-inventory -i inventory/staging --vars --list</code></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b>Tra cứu ma trận biến của 1 host cụ thể (<code>target1</code>):</b> <code>ansible-inventory -i inventory/staging --host target1</code></div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không biết công cụ <code>ansible-inventory</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết công cụ nhưng không nhớ cờ <code>--graph</code> và <code>--vars</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác vai trò tra cứu ma trận biến và đồ thị phân nhóm host của CLI.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + thực thi câu lệnh CLI minh họa tra cứu trên terminal.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Công cụ <code>ansible-inventory</code> có tác động làm thay đổi cấu hình trên máy đích không? <i>(Không, nó chỉ là công cụ read-only tra cứu thông tin trên Control Node.)</i></div>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q06</span>
+  <span class="qa-question-text">Tại sao trong tệp <code>ansible.cfg</code> ta lại bắt buộc phải khai báo <code>inventory = ./inventory/staging</code> làm cấu hình mặc định?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div>Đây là lá chắn an toàn tối quan trọng (Fail-safe Default): Nếu người dùng đứng ở terminal gõ lệnh <code>ansible-playbook site.yml</code> mà lỡ <b>quên không truyền cờ <code>-i</code></b>, Ansible Engine sẽ tự động lấy cấu hình mặc định trỏ vào môi trường thử nghiệm <b>Staging</b>, giúp bảo vệ môi trường Production không bao giờ bị tác động nhầm bất ngờ.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không hiểu ý nghĩa thiết lập safe default trong <code>ansible.cfg</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết dòng cấu hình nhưng không giải thích được vai trò lá chắn bảo vệ Production.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác cơ chế phòng thủ tác động nhầm Production khi thiếu cờ <code>-i</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + viết đoạn mã cấu hình <code>ansible.cfg</code> chuẩn mực Doanh nghiệp.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Chuyện gì xảy ra nếu ai đó đặt <code>inventory = ./inventory/production</code> làm mặc định trong <code>ansible.cfg</code>? <i>(Cực kỳ nguy hiểm, mọi lệnh gõ thiếu cờ <code>-i</code> sẽ tự động giội thẳng vào Production.)</i></div>
+</div>
+</details>
 
-### Câu 4 — Nguyên lý Phân tầng Biến Group Variables Layering 🔥
-**Hỏi:** Trình bày thứ tự độ ưu tiên nạp biến (Variable Precedence) từ rộng đến hẹp giữa các tệp biến: `group_vars/all.yml`, `group_vars/web.yml`, và `host_vars/target1.yml`. *(Liên quan QT 5.1)*
-**Đáp án chuẩn:**
-Thứ tự ưu tiên từ thấp đến cao (biến ở tầng hẹp hơn sẽ đè giá trị biến ở tầng rộng hơn):
-1. **`group_vars/all.yml` (Ưu tiên thấp nhất trong nhóm):** Khai báo các biến dùng chung cho mọi máy chủ (như `env_name`, `dns_server`).
-2. **`group_vars/web.yml` (Ưu tiên trung bình):** Ghi đè các biến dành riêng cho nhóm máy chủ web (như `app_port: 8080`).
-3. **`host_vars/target1.yml` (Ưu tiên cao nhất trong kiểm kê):** Ghi đè các biến đặc thù dành riêng cho duy nhất máy chủ `target1` (như `max_clients: 99`).
-**Tiêu chí chấm:**
-- 0: Không biết thứ tự ưu tiên phân tầng biến.
-- 1: Nêu được 3 tầng file nhưng xếp sai thứ tự ưu tiên đè biến.
-- 2: Phân tích chính xác nguyên lý phân tầng từ rộng đến hẹp `all` -> `group` -> `host`.
-- 3: Nêu đúng + cho ví dụ minh họa 1 biến `app_port` bị ghi đè qua 3 tầng.
-**Câu hỏi đào sâu:** Nếu trong `group_vars/all.yml` ghi `app_port: 80` và `group_vars/web.yml` ghi `app_port: 8080`, thì máy trong nhóm `web` nhận giá trị nào? *(Nhận giá trị `8080` từ `group_vars/web.yml`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q07</span>
+  <span class="qa-question-text">Tại sao ta nên định nghĩa bộ biến nhận dạng môi trường (<code>env_name</code>, <code>domain_suffix</code>) trong từng tệp <code>group_vars/all.yml</code> của mỗi môi trường?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div>Giúp Playbook và các tệp Template Jinja2 giữ nguyên tính tổng quát: Thay vì phải cứng hóa chuỗi URL hay cấu hình riêng cho từng môi trường, Template chỉ cần tham chiếu biến <code>{{ '{{' }} env_name {{ '}}' }}</code> và <code>{{ '{{' }} domain_suffix {{ '}}' }}</code>. Khi chạy với <code>-i inventory/staging</code>, nó tự render thành <code>staging.internal</code>; khi chạy với <code>-i inventory/production</code>, nó tự render thành <code>company.com</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Cứng hóa URL và thông số môi trường trực tiếp trong Playbook/Template.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết dùng biến nhưng không đưa biến lên <code>group_vars/all.yml</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác vai trò giúp Playbook duy trì tính tổng quát và dễ tái sử dụng.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + minh họa đoạn file Template Jinja2 sử dụng biến <code>env_name</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Làm thế nào để bật cờ <code>log_level: debug</code> ở Staging nhưng <code>log_level: warn</code> ở Production? <i>(Khai báo <code>log_level: debug</code> trong <code>inventory/staging/group_vars/all.yml</code> và <code>log_level: warn</code> trong <code>inventory/production/group_vars/all.yml</code>.)</i></div>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q08</span>
+  <span class="qa-question-text">Tại sao trong tư duy IaC hiện đại, quản trị viên chỉ nên duy trì ĐÚNG 1 FILE PLAYBOOK DUY NHẤT (<code>site-env.yml</code>) để triển khai cho tất cả các môi trường Staging, UAT, và Production?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Triệt tiêu rủi ro Lệch Mã nguồn (Code Drift):</b> Nếu tạo 2 file Playbook <code>site-staging.yml</code> và <code>site-prod.yml</code>, khi sửa lỗi ở file này rất dễ quên sửa ở file kia.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Đảm bảo tính nhất quán 100%:</b> Code triển khai trên Staging được kiểm thử ra sao thì khi đưa lên Production sẽ thi hành chính xác 100% như vậy, sự khác biệt duy nhất chỉ là dữ liệu biến nạp từ <code>inventory/</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Cho rằng nên tạo 2 file Playbook riêng cho Staging và Production.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết dùng 1 Playbook nhưng không giải thích được khái niệm Code Drift.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác rủi ro Code Drift và nguyên lý tách biệt logic thi hành vs dữ liệu biến.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + minh họa tư duy triển khai Playbook qua các stage của pipeline CI/CD.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Khái niệm "Infrastructure as Code - Separation of Code and Data" nghĩa là gì? <i>(Nghĩa là mã nguồn Playbook chỉ chứa logic thi hành, toàn bộ dữ liệu cấu hình được đẩy hết ra tệp biến inventory.)</i></div>
+</div>
+</details>
 
-### Câu 5 — Tra cứu Ma trận Biến với `ansible-inventory` CLI 🔥
-**Hỏi:** Nêu các câu lệnh CLI `ansible-inventory` dùng để xem đồ thị phân nhóm máy chủ và tra cứu ma trận biến đã giải mã của môi trường Staging. *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-- Xem đồ thị phân nhóm host:
-  `ansible-inventory -i inventory/staging --graph`
-- Xem ma trận biến giải mã của toàn bộ inventory:
-  `ansible-inventory -i inventory/staging --vars --list`
-- Tra cứu ma trận biến của 1 host cụ thể (`target1`):
-  `ansible-inventory -i inventory/staging --host target1`
-**Tiêu chí chấm:**
-- 0: Không biết công cụ `ansible-inventory`.
-- 1: Biết công cụ nhưng không nhớ cờ `--graph` và `--vars`.
-- 2: Phân tích chính xác vai trò tra cứu ma trận biến và đồ thị phân nhóm host của CLI.
-- 3: Nêu đúng + thực thi câu lệnh CLI minh họa tra cứu trên terminal.
-**Câu hỏi đào sâu:** Công cụ `ansible-inventory` có tác động làm thay đổi cấu hình trên máy đích không? *(Không, nó chỉ là công cụ read-only tra cứu thông tin trên Control Node.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q09</span>
+  <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook thi hành trên môi trường Staging qua cờ <code>-i inventory/staging</code> để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook -i inventory/staging site-env.yml</code>: Task chép file cấu hình nạp biến Staging thực thi báo <code>changed &gt; 0</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook -i inventory/staging site-env.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task đều báo <code>ok</code>).</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/environment-app.conf</code> kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu <code>ENVIRONMENT=staging</code> và <code>APP_PORT=8080</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294 #4.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu chạy lại Lần 2 mà terminal báo <code>changed=1</code>, nguyên nhân có thể do đâu? <i>(Do task trong Playbook bị lặp changed mạo danh hoặc do file template bị thay đổi timestamp/checksum liên tục.)</i></div>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q10</span>
+  <span class="qa-question-text">Thư mục <code>host_vars/</code> dùng để làm gì trong cấu trúc inventory đa môi trường? Cho ví dụ trường hợp phải dùng <code>host_vars/</code>.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Tác dụng:</b> <code>host_vars/</code> chứa các tệp biến dành riêng cho từng máy chủ cá biệt (tên tệp trùng với tên hostname trong <code>hosts.ini</code>, ví dụ <code>host_vars/target1.yml</code>). Biến trong <code>host_vars/</code> có độ ưu tiên cao nhất trong inventory, nạp đè lên biến của <code>group_vars/</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Ví dụ trường hợp dùng:</b> Máy chủ <code>target1</code> trong nhóm Web là máy Master đảm nhận vai trò Primary Node, cần cấu hình <code>is_primary: true</code> hoặc số lượng kết nối <code>max_clients: 99</code> khác với các máy Worker trong cùng nhóm.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không biết khái niệm <code>host_vars/</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết <code>host_vars/</code> nhưng không giải thích được độ ưu tiên nạp đè lên <code>group_vars/</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác vai trò nạp đè biến cá biệt cho từng node.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + minh họa ví dụ tệp <code>inventory/staging/host_vars/target1.yml</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Thư mục <code>host_vars/</code> nên đặt ở đâu trong dự án đa môi trường? <i>(Được đặt bên trong thư mục môi trường tương ứng, ví dụ <code>inventory/staging/host_vars/</code>.)</i></div>
+</div>
+</details>
 
-### Câu 6 — Thiết lập Lá chắn Mặc định An toàn trong `ansible.cfg`
-**Hỏi:** Tại sao trong tệp `ansible.cfg` ta lại bắt buộc phải khai báo `inventory = ./inventory/staging` làm cấu hình mặc định? *(Liên quan QT 6.2)*
-**Đáp án chuẩn:**
-Đây là lá chắn an toàn tối quan trọng (Fail-safe Default):
-Nếu người dùng đứng ở terminal gõ lệnh `ansible-playbook site.yml` mà lỡ **quên không truyền cờ `-i`**, Ansible Engine sẽ tự động lấy cấu hình mặc định trỏ vào môi trường thử nghiệm **Staging**, giúp bảo vệ môi trường Production không bao giờ bị tác động nhầm bất ngờ.
-**Tiêu chí chấm:**
-- 0: Không hiểu ý nghĩa thiết lập safe default trong `ansible.cfg`.
-- 1: Biết dòng cấu hình nhưng không giải thích được vai trò lá chắn bảo vệ Production.
-- 2: Phân tích chính xác cơ chế phòng thủ tác động nhầm Production khi thiếu cờ `-i`.
-- 3: Nêu đúng + viết đoạn mã cấu hình `ansible.cfg` chuẩn mực Doanh nghiệp.
-**Câu hỏi đào sâu:** Chuyện gì xảy ra nếu ai đó đặt `inventory = ./inventory/production` làm mặc định trong `ansible.cfg`? *(Cực kỳ nguy hiểm, mọi lệnh gõ thiếu cờ `-i` sẽ tự động giội thẳng vào Production.)*
-
----
-
-### Câu 7 — Định nghĩa Biến Nhận dạng Môi trường `env_name`
-**Hỏi:** Tại sao ta nên định nghĩa bộ biến nhận dạng môi trường (`env_name`, `domain_suffix`) trong từng tệp `group_vars/all.yml` của mỗi môi trường? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:**
-Giúp Playbook và các tệp Template Jinja2 giữ nguyên tính tổng quát:
-Thay vì phải cứng hóa chuỗi URL hay cấu hình riêng cho từng môi trường, Template chỉ cần tham chiếu biến `{{ env_name }}` và `{{ domain_suffix }}`. Khi chạy với `-i inventory/staging`, nó tự render thành `staging.internal`; khi chạy với `-i inventory/production`, nó tự render thành `company.com`.
-**Tiêu chí chấm:**
-- 0: Cứng hóa URL và thông số môi trường trực tiếp trong Playbook/Template.
-- 1: Biết dùng biến nhưng không đưa biến lên `group_vars/all.yml`.
-- 2: Phân tích chính xác vai trò giúp Playbook duy trì tính tổng quát và dễ tái sử dụng.
-- 3: Nêu đúng + minh họa đoạn file Template Jinja2 sử dụng biến `env_name`.
-**Câu hỏi đào sâu:** Làm thế nào để bật cờ `log_level: debug` ở Staging nhưng `log_level: warn` ở Production? *(Khai báo `log_level: debug` trong `inventory/staging/group_vars/all.yml` và `log_level: warn` trong `inventory/production/group_vars/all.yml`.)*
-
----
-
-### Câu 8 — Duy trì 1 Playbook Duy nhất cho Đa Môi trường
-**Hỏi:** Tại sao trong tư duy IaC hiện đại, quản trị viên chỉ nên duy trì **ĐÚNG 1 FILE PLAYBOOK DUY NHẤT** (`site-env.yml`) để triển khai cho tất cả các môi trường Staging, UAT, và Production? *(Liên quan QT 4.1, QT 4.3)*
-**Đáp án chuẩn:**
-- Triệt tiêu rủi ro Lệch Mã nguồn (Code Drift): Nếu tạo 2 file Playbook `site-staging.yml` và `site-prod.yml`, khi sửa lỗi ở file này rất dễ quên sửa ở file kia.
-- Đảm bảo tính nhất quán 100%: Code triển khai trên Staging được kiểm thử ra sao thì khi đưa lên Production sẽ thi hành chính xác 100% như vậy, sự khác biệt duy nhất chỉ là dữ liệu biến nạp từ `inventory/`.
-**Tiêu chí chấm:**
-- 0: Cho rằng nên tạo 2 file Playbook riêng cho Staging và Production.
-- 1: Biết dùng 1 Playbook nhưng không giải thích được khái niệm Code Drift.
-- 2: Phân tích chính xác rủi ro Code Drift và nguyên lý tách biệt logic thi hành vs dữ liệu biến.
-- 3: Nêu đúng + minh họa tư duy triển khai Playbook qua các stage của pipeline CI/CD.
-**Câu hỏi đào sâu:** Khái niệm "Infrastructure as Code - Separation of Code and Data" nghĩa là gì? *(Nghĩa là mã nguồn Playbook chỉ chứa logic thi hành, toàn bộ dữ liệu cấu hình được đẩy hết ra tệp biến inventory.)*
-
----
-
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng Đa Môi trường 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook thi hành trên môi trường Staging qua cờ `-i inventory/staging` để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (hoàn thành 100% Objective RHCE EX294 #4).
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook -i inventory/staging site-env.yml`: Task chép file cấu hình nạp biến Staging thực thi báo `changed > 0`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook -i inventory/staging site-env.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/environment-app.conf` kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu `ENVIRONMENT=staging` và `APP_PORT=8080`.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.
-- 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294 #4 (`☑`).
-**Câu hỏi đào sâu:** Nếu chạy lại Lần 2 mà terminal báo `changed=1`, nguyên nhân có thể do đâu? *(Do task trong Playbook bị lặp changed mạo danh hoặc do file template bị thay đổi timestamp/checksum liên tục.)*
-
----
-
-### Câu 10 — Sử dụng `host_vars/` Nạp đè Biến Cá biệt ★★★
-**Hỏi:** Thư mục `host_vars/` dùng để làm gì trong cấu trúc inventory đa môi trường? Cho ví dụ trường hợp phải dùng `host_vars/`.
-**Đáp án chuẩn:**
-- Tác dụng: `host_vars/` chứa các tệp biến dành riêng cho từng máy chủ cá biệt (tên tệp trùng với tên hostname trong `hosts.ini`, ví dụ `host_vars/target1.yml`). Biến trong `host_vars/` có độ ưu tiên cao nhất trong inventory, nạp đè lên biến của `group_vars/`.
-- Ví dụ trường hợp dùng: Máy chủ `target1` trong nhóm Web là máy Master đảm nhận vai trò Primary Node, cần cấu hình `is_primary: true` hoặc số lượng kết nối `max_clients: 99` khác với các máy Worker trong cùng nhóm.
-**Tiêu chí chấm:**
-- 0: Không biết khái niệm `host_vars/`.
-- 1: Biết `host_vars/` nhưng không giải thích được độ ưu tiên nạp đè lên `group_vars/`.
-- 2: Phân tích chính xác vai trò nạp đè biến cá biệt cho từng node.
-- 3: Nêu đúng + minh họa ví dụ tệp `inventory/staging/host_vars/target1.yml`.
-**Câu hỏi đào sâu:** Thư mục `host_vars/` nên đặt ở đâu trong dự án đa môi trường? *(Được đặt bên trong thư mục môi trường tương ứng, ví dụ `inventory/staging/host_vars/`.)*
-
----
-
-### Câu 11 — Guard Task Bảo vệ Môi trường Production ★★★
-**Hỏi:** Làm thế nào để viết một Guard Task (Task bảo vệ) trong Playbook giúp ngăn chặn tuyệt đối việc người dùng gõ nhầm lệnh làm tác động sai môi trường Production?
-**Đáp án chuẩn:**
-Thêm một Task kiểm tra điều kiện an toàn ngay ở đầu Playbook, dùng module `ansible.builtin.assert` hoặc `fail`:
-```yaml
-- name: Guard Task - Prevent accidental execution on Production
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q11</span>
+  <span class="qa-question-text">Làm thế nào để viết một Guard Task (Task bảo vệ) trong Playbook giúp ngăn chặn tuyệt đối việc người dùng gõ nhầm lệnh làm tác động sai môi trường Production?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div>Thêm một Task kiểm tra điều kiện an toàn ngay ở đầu Playbook, dùng module <code>ansible.builtin.assert</code> hoặc <code>fail</code>:</div>
+  <pre><code class="language-yaml">- name: Guard Task - Prevent accidental execution on Production
   ansible.builtin.assert:
     that:
       - not (env_name == 'production' and ansible_host == '127.0.0.1')
-    fail_msg: "ERROR: Accidental execution detected! Production env cannot use localhost IP!"
-```
-Nếu phát hiện biến `env_name == 'production'` nhưng IP lại trỏ vào máy local Staging, Playbook lập tức dừng ngắt an toàn.
-**Tiêu chí chấm:**
-- 0: Không biết khái niệm Guard Task bảo vệ môi trường.
-- 1: Biết kiểm tra điều kiện nhưng không viết được module `assert` hay `fail`.
-- 2: Phân tích chính xác cơ chế gác cổng an toàn ngay ở đầu Playbook.
-- 3: Nêu đúng + viết đoạn mã Guard Task chuẩn bằng `ansible.builtin.assert`.
-**Câu hỏi đào sâu:** Module `ansible.builtin.assert` khác gì so với module `ansible.builtin.fail`? *(`assert` kiểm tra biểu thức logic `that:`, nếu sai mới trigger fail; còn `fail` luôn luôn ngắt execution.)*
+    fail_msg: "ERROR: Accidental execution detected! Production env cannot use localhost IP!"</code></pre>
+  <div>Nếu phát hiện biến <code>env_name == 'production'</code> nhưng IP lại trỏ vào máy local Staging, Playbook lập tức dừng ngắt an toàn.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không biết khái niệm Guard Task bảo vệ môi trường.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Biết kiểm tra điều kiện nhưng không viết được module <code>assert</code> hay <code>fail</code>.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Phân tích chính xác cơ chế gác cổng an toàn ngay ở đầu Playbook.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Nêu đúng + viết đoạn mã Guard Task chuẩn bằng <code>ansible.builtin.assert</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Module <code>ansible.builtin.assert</code> khác gì so với module <code>ansible.builtin.fail</code>? <i>(<code>assert</code> kiểm tra biểu thức logic <code>that:</code>, nếu sai mới trigger fail; còn <code>fail</code> luôn luôn ngắt execution.)</i></div>
+</div>
+</details>
 
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng về Tổ chức Đa Môi trường ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên tổ chức đa môi trường chuyên nghiệp, an toàn bảo mật và đạt Idempotency 100%.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Tách biệt 100% thư mục môi trường `inventory/staging/` và `inventory/production/`.
-2. **Quy tắc 2:** Đặt `group_vars/` bên trong từng thư mục môi trường tương ứng để nạp đè tự động theo cờ `-i`.
-3. **Quy tắc 3:** Luôn chỉ định cờ `-i` khi thi hành và khai báo `inventory = ./inventory/staging` mặc định trong `ansible.cfg`.
-4. **Quy tắc 4:** Duy trì 1 Playbook logic duy nhất (`site-env.yml`) cho tất cả các môi trường.
-5. **Quy tắc 5:** Tra cứu ma trận biến với `ansible-inventory` và đảm bảo Lần 2 đạt `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế hệ thống IaC an toàn cấp Enterprise.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp triệt tiêu nguy cơ Code Drift? *(Quy tắc 4: Duy trì 1 Playbook logic duy nhất cho tất cả các môi trường.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q12</span>
+  <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng giúp quản trị viên tổ chức đa môi trường chuyên nghiệp, an toàn bảo mật và đạt Idempotency 100%.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  
+  <div><b style="color: var(--accent-primary);">Đáp án chuẩn:</b></div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b>Quy tắc 1:</b> Tách biệt 100% thư mục môi trường <code>inventory/staging/</code> và <code>inventory/production/</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b>Quy tắc 2:</b> Đặt <code>group_vars/</code> bên trong từng thư mục môi trường tương ứng để nạp đè tự động theo cờ <code>-i</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b>Quy tắc 3:</b> Luôn chỉ định cờ <code>-i</code> khi thi hành và khai báo <code>inventory = ./inventory/staging</code> mặc định trong <code>ansible.cfg</code>.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b>Quy tắc 4:</b> Duy trì 1 Playbook logic duy nhất (<code>site-env.yml</code>) cho tất cả các môi trường.</div>
+  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">5.</b> <b>Quy tắc 5:</b> Tra cứu ma trận biến với <code>ansible-inventory</code> và đảm bảo Lần 2 đạt <code>changed=0</code> qua <code>docker exec</code>.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm:</b></div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>0 điểm:</b> Không tóm tắt được các quy tắc.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>1 điểm:</b> Liệt kê được 2-3 quy tắc chung chung.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2 điểm:</b> Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+  <div style="margin: 0.2rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3 điểm:</b> Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế hệ thống IaC an toàn cấp Enterprise.</div>
+  <div style="margin-top: 0.5rem;"><b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp triệt tiêu nguy cơ Code Drift? <i>(Quy tắc 4: Duy trì 1 Playbook logic duy nhất cho tất cả các môi trường.)</i></div>
+</div>
+</details>
 
 ---
 
@@ -1033,4 +1166,9 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản lý đa môi tr�
 1. **Nghiên cứu trước 1:** Công cụ `ansible-vault` dùng để làm gì? Tại sao không bao giờ được lưu mật khẩu hoặc private key dạng plaintext trên Git repository?
 2. **Nghiên cứu trước 2:** Lệnh CLI nào dùng để mã hóa một file biến (`vault.yml`) và lệnh nào dùng để xem nội dung file đã mã hóa?
 3. **Nghiên cứu trước 3:** Làm thế nào để truyền mật khẩu giải mã Vault khi chạy `ansible-playbook` bằng cờ `--vault-id` hoặc `--ask-vault-pass`?
+
+---
+
+> [!TIP]
+> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 20: Bảo Mật Tuyệt Đối Với Ansible Vault: Mã Hóa Biến Nhạy Cảm, Quản Trị Multi-Vault Password & Tích Hợp CI/CD](ansible-20-20-ansible-vault.html).
 {% endraw %}

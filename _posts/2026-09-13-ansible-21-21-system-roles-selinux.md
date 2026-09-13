@@ -98,6 +98,16 @@ graph TD
     F --> I["Máy đích ở đúng trạng thái bảo mật & changed=0 ở Lần 2"]
     G --> I
     H --> I
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#10b981,stroke-width:2px
+    style C fill:none,stroke:#06b6d4,stroke-width:2px
+    style D fill:none,stroke:#f43f5e,stroke-width:2px
+    style E fill:none,stroke:#8b5cf6,stroke-width:2px
+    style F fill:none,stroke:#eab308,stroke-width:2px
+    style G fill:none,stroke:#3b82f6,stroke-width:2px
+    style H fill:none,stroke:#ec4899,stroke-width:2px
+    style I fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** RHEL System Roles (`redhat.rhel_system_roles`) là bộ sưu tập các Roles được Red Hat kiểm thử và phát hành chính thức, cung cấp giao diện tự động hóa nhất quán để quản lý các dịch vụ hệ thống cốt lõi trên RHEL (như SELinux, Firewall, Timesync, Network, Storage).
@@ -343,8 +353,20 @@ flowchart TD
     G --> H["LƯỢT CHẠY LẦN 2"]
     H --> I{"PLAY RECAP Lần 2: changed=0?"}
     
-    I -- Có --> J["ĐẠT: RHEL Security Standardized Idempotent 100%"]
-    I -- Không --> K["LỖI: Rà soát lại task SELinux & System Roles"]
+    I -->|"Có"| J["ĐẠT: RHEL Security Standardized Idempotent 100%"]
+    I -->|"Không"| K["LỖI: Rà soát lại task SELinux & System Roles"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#06b6d4,stroke-width:2px
+    style D fill:none,stroke:#8b5cf6,stroke-width:2px
+    style E fill:none,stroke:#10b981,stroke-width:2px
+    style F fill:none,stroke:#ec4899,stroke-width:2px
+    style G fill:none,stroke:#3b82f6,stroke-width:2px
+    style H fill:none,stroke:#6366f1,stroke-width:2px
+    style I fill:none,stroke:#f59e0b,stroke-width:2px
+    style J fill:none,stroke:#10b981,stroke-width:2px
+    style K fill:none,stroke:#f43f5e,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -502,12 +524,24 @@ graph TD
     
     PB -->|"9. Gửi cấu hình bảo mật RHEL"| T1["Target Container 1 (target1)"]
     
-    T1 -. "RECAP Lần 1: ok=7, changed=4" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=7, changed=0 (ĐẠT IDEMPOTENCY 100%)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=7, changed=4"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=7, changed=0 (ĐẠT IDEMPOTENCY 100%)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-selinux.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#6366f1,stroke-width:2px
+    style CFG fill:none,stroke:#06b6d4,stroke-width:2px
+    style SUDO fill:none,stroke:#f59e0b,stroke-width:2px
+    style USER fill:none,stroke:#8b5cf6,stroke-width:2px
+    style SEL fill:none,stroke:#10b981,stroke-width:2px
+    style FCTX fill:none,stroke:#ec4899,stroke-width:2px
+    style PORT fill:none,stroke:#3b82f6,stroke-width:2px
+    style ROLE fill:none,stroke:#eab308,stroke-width:2px
+    style PB fill:none,stroke:#6366f1,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#f43f5e,stroke-width:2px
 ```
 
 ---
@@ -1085,4 +1119,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm quản trị bảo mậ
 1. **Nghiên cứu trước 1:** Tham số `forks` trong `ansible.cfg` có tác dụng gì đối với số lượng máy chủ thi hành song song? Mặc định `forks` bằng bao nhiêu?
 2. **Nghiên cứu trước 2:** Phân biệt sự khác nhau giữa 2 chiến lược thi hành Playbook (Execution Strategy): `strategy: linear` vs `strategy: free`?
 3. **Nghiên cứu trước 3:** Từ khóa `serial:` ở cấp Playbook được áp dụng ra sao trong bài toán Rolling Update (nâng cấp cuốn chiếu từng cụm server)?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 22: Tối Ưu Hiệu Năng & Tốc Độ Thực Thi: Forks, Free Strategy, Pipelining, ControlPersist SSH & Mitogen Accelerator](ansible-22-22-strategy-performance.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

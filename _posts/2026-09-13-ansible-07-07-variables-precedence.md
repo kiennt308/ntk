@@ -91,6 +91,17 @@ graph TD
     G --> H["host_vars (thư mục host_vars/hostname.yml)"]
     H --> I["group_vars (thư mục group_vars/group.yml)"]
     I --> J["Role Defaults (defaults/main.yml) -> TẦNG THẤP NHẤT"]
+
+    style A fill:none,stroke:#ef4444,stroke-width:2px
+    style B fill:none,stroke:#f97316,stroke-width:2px
+    style C fill:none,stroke:#f59e0b,stroke-width:2px
+    style D fill:none,stroke:#eab308,stroke-width:2px
+    style E fill:none,stroke:#84cc16,stroke-width:2px
+    style F fill:none,stroke:#10b981,stroke-width:2px
+    style G fill:none,stroke:#06b6d4,stroke-width:2px
+    style H fill:none,stroke:#3b82f6,stroke-width:2px
+    style I fill:none,stroke:#6366f1,stroke-width:2px
+    style J fill:none,stroke:#8b5cf6,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Trong Ansible, biến được truy vấn bằng cú pháp Jinja2 bọc trong cặp ngoặc nhọn đúp `{{ variable_name }}` và phải được bọc trong cặp dấu ngoặc kép khi nằm ở đầu giá trị thuộc tính YAML.
@@ -319,6 +330,18 @@ flowchart TD
     C & D & E & F & G & H --> I["Jinja2 Interpolation: {{ variable_name }}"]
     I --> J["Gỡ lỗi bằng ansible.builtin.debug"]
     J --> K["Kiểm tra Idempotency lượt 2 changed=0"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#ef4444,stroke-width:2px
+    style D fill:none,stroke:#f97316,stroke-width:2px
+    style E fill:none,stroke:#10b981,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#3b82f6,stroke-width:2px
+    style H fill:none,stroke:#8b5cf6,stroke-width:2px
+    style I fill:none,stroke:#ec4899,stroke-width:2px
+    style J fill:none,stroke:#3b82f6,stroke-width:2px
+    style K fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -366,7 +389,7 @@ flowchart TD
           - name: Get hostname
             ansible.builtin.command: hostname
             register: host_res
-
+ 
           - name: Print hostname stdout
             ansible.builtin.debug:
               msg: "Host name is {{ host_res.stdout }}"
@@ -455,12 +478,20 @@ graph TD
     
     PB -->|"5. Đã chốt biến: app_port=9999"| T1["Target Container 1 (target1)"]
     
-    T1 -. "RECAP Lần 1: ok=5, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENT)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=5, changed=2"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=5, changed=0 (ĐẠT IDEMPOTENT)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy CLI với -e app_port=9999"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#6366f1,stroke-width:2px
+    style PB fill:none,stroke:#3b82f6,stroke-width:2px
+    style N1 fill:none,stroke:#10b981,stroke-width:2px
+    style N2 fill:none,stroke:#06b6d4,stroke-width:2px
+    style N3 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
@@ -806,170 +837,261 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">Trình bày cú pháp chuẩn để khai báo và truy vấn một biến trong Ansible Playbook. Khi nào bắt buộc phải bọc ngoặc kép quanh cú pháp {{ }}?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Biến được truy vấn bằng cú pháp Jinja2 bọc trong cặp ngoặc nhọn đúp <code>{{ variable_name }}</code>. Bắt buộc phải bọc ngoặc kép <code>"{{ variable_name }}"</code> khi biểu thức Jinja2 nằm ở <b>ĐẦU GIÁ TRỊ</b> của một thuộc tính YAML (ví dụ <code>dest: "{{ my_path }}"</code>), để ngăn trình biên dịch YAML hiểu nhầm cặp ngoặc nhọn <code>{</code> là mở đầu của một Dictionary YAML.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cú pháp Jinja2 <code>{{ }}</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>{{ }}</code> nhưng không giải thích được khi nào bắt buộc bọc ngoặc kép.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cú pháp Jinja2 + lý do bọc ngoặc kép do quy chuẩn parser YAML.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã YAML minh họa lỗi nếu thiếu ngoặc kép và cách khắc phục.</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu viết <code>dest: /etc/{{ app_name }}.conf</code> (không nằm ở đầu dòng giá trị), có bắt buộc phải bọc ngoặc kép không? <i>(Không bắt buộc, nhưng khuyến khích bọc toàn bộ chuỗi trong ngoặc kép để tạo thói quen an toàn.)</i>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Trình bày cú pháp chuẩn để khai báo và truy vấn một biến trong Ansible Playbook. Khi nào bắt buộc phải bọc ngoặc kép quanh cú pháp <code>{{ }}</code>? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Biến được truy vấn bằng cú pháp Jinja2 bọc trong cặp ngoặc nhọn đúp <code>{{ variable_name }}</code>. Bắt buộc phải bọc ngoặc kép <code>"{{ variable_name }}"</code> khi biểu thức Jinja2 nằm ở ĐẦU GIÁ TRỊ của một thuộc tính YAML (ví dụ <code>dest: "{{ my_path }}"</code>), để ngăn trình biên dịch YAML hiểu nhầm cặp ngoặc nhọn <code>{</code> là mở đầu của một Dictionary YAML.
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cú pháp Jinja2 <code>{{ }}</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>{{ }}</code> nhưng không giải thích được khi nào bắt buộc bọc ngoặc kép.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cú pháp Jinja2 + lý do bọc ngoặc kép do quy chuẩn parser YAML.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn mã YAML minh họa lỗi nếu thiếu ngoặc kép và cách khắc phục.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu viết <code>dest: /etc/{{ app_name }}.conf</code> (không nằm ở đầu dòng giá trị), có bắt buộc phải bọc ngoặc kép không? *(Không bắt buộc, nhưng khuyến khích bọc toàn bộ chuỗi trong ngoặc kép để tạo thói quen an toàn.)*
-</div>
 </details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Trình bày nguyên tắc tổng quát của Bảng thứ tự ưu tiên biến trong Ansible. So sánh độ ưu tiên giữa group_vars, host_vars, Play vars:, và vars_files:.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Nguyên tắc tổng quát: <b>Càng hẹp và càng gần thời điểm thực thi thì có độ ưu tiên càng cao</b>. Thứ tự ưu tiên tăng dần: <code>group_vars</code> (Tầng 5) &lt; <code>host_vars</code> (Tầng 9) &lt; Play <code>vars:</code> (Tầng 12) &lt; <code>vars_files:</code> (Tầng 14). Do đó, biến khai báo trong Play <code>vars:</code> hoặc <code>vars_files:</code> sẽ ghi đè lên biến cùng tên trong <code>host_vars</code> và <code>group_vars</code>.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Nhầm lẫn cho rằng <code>group_vars</code> có ưu tiên cao nhất.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nêu được một vài tầng nhưng xếp sai thứ tự giữa <code>host_vars</code> và Play <code>vars:</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác thứ tự 4 nguồn biến phổ biến này theo nguyên tắc từ rộng đến hẹp.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ thực tế xung đột biến <code>app_port</code> ở cả 4 tầng.</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tại sao Ansible lại thiết kế nhiều tầng biến như vậy? <i>(Để cho phép định nghĩa các giá trị mặc định chung ở tầng rộng, sau đó cho phép tùy biến đè giá trị ở các tầng hẹp hơn mà không phải sửa mã nguồn gốc.)</i>
+  </div>
+</details>
 
-### Câu 2 — Bảng Thứ tự Ưu tiên 22 Tầng Biến (Variable Precedence) 🔥
-**Hỏi:** Trình bày nguyên tắc tổng quát của Bảng thứ tự ưu tiên biến trong Ansible. So sánh độ ưu tiên giữa `group_vars`, `host_vars`, Play `vars:`, và `vars_files:`. *(Liên quan QT 4.2)*
-**Đáp án chuẩn:** Nguyên tắc tổng quát: **Càng hẹp và càng gần thời điểm thực thi thì có độ ưu tiên càng cao**. Thứ tự ưu tiên tăng dần: `group_vars` (Tầng 5) < `host_vars` (Tầng 9) < Play `vars:` (Tầng 12) < `vars_files:` (Tầng 14). Do đó, biến khai báo trong Play `vars:` hoặc `vars_files:` sẽ ghi đè lên biến cùng tên trong `host_vars` và `group_vars`.
-**Tiêu chí chấm:**
-- 0: Nhầm lẫn cho rằng `group_vars` có ưu tiên cao nhất.
-- 1: Nêu được một vài tầng nhưng xếp sai thứ tự giữa `host_vars` và Play `vars:`.
-- 2: Phân tích chính xác thứ tự 4 nguồn biến phổ biến này theo nguyên tắc từ rộng đến hẹp.
-- 3: Nêu đúng + minh họa ví dụ thực tế xung đột biến `app_port` ở cả 4 tầng.
-**Câu hỏi đào sâu:** Tại sao Ansible lại thiết kế nhiều tầng biến như vậy? *(Để cho phép định nghĩa các giá trị mặc định chung ở tầng rộng, sau đó cho phép tùy biến đè giá trị ở các tầng hẹp hơn mà không phải sửa mã nguồn gốc.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Extra Vars (truyền qua cờ CLI -e / --extra-vars) nằm ở tầng ưu tiên nào trong tháp ưu tiên biến? Cho ví dụ ứng dụng thực tế.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Extra Vars nằm ở <b>TẦNG ƯU TIÊN CAO NHẤT TUYỆT ĐỐI (Tầng 22)</b>, ghi đè lên <b>TẤT CẢ</b> các biến đã được khai báo ở bất kỳ file hay vị trí nào khác trong Playbook và Inventory. Ứng dụng thực tế: Dùng khi người vận hành CLI cần hot-fix hoặc truyền tham số chạy khẩn cấp (ví dụ <code>ansible-playbook -e "app_port=9999" site.yml</code>) mà không muốn sửa mã nguồn trên Git.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cờ CLI <code>-e</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết cờ <code>-e</code> truyền biến nhưng không biết nó đứng ở tầng cao nhất tuyệt đối.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Giải thích chính xác vị trí Tầng 22 của Extra Vars + cú pháp câu lệnh CLI.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa 2 cách truyền cờ <code>-e</code> (dạng chuỗi <code>key=val</code> và dạng file JSON/YAML <code>-e "@file.yml"</code>).</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu trong Playbook có gọi module <code>set_fact: app_port=8080</code>, cờ CLI <code>-e "app_port=9999"</code> có bị thay đổi theo không? <i>(Không, cờ Extra Vars -e vẫn thắng cả set_fact và duy trì giá trị 9999.)</i>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Phân biệt 3 phạm vi hoạt động của biến: Global Scope, Play Scope, và Host Scope. Đưa ra ví dụ cho từng loại.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
+    • <b>Global Scope:</b> Biến có hiệu lực trên toàn bộ hệ thống (ví dụ: cờ Extra Vars <code>-e</code>, biến môi trường <code>ansible.cfg</code>).<br>
+    • <b>Play Scope:</b> Biến chỉ có hiệu lực trong phạm vi một Play cụ thể (ví dụ: biến trong từ khóa <code>vars:</code> hoặc <code>vars_files:</code> của Play đó).<br>
+    • <b>Host Scope:</b> Biến gắn liền với một host cụ thể (ví dụ: <code>host_vars</code>, <code>ansible_facts</code>, biến đăng ký <code>register</code>, <code>set_fact</code>).<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được Scope của biến.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được tên Scope nhưng xếp nhầm nguồn biến vào sai Scope.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác bản chất và ví dụ của cả 3 loại Scope.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + giải thích lý do tại sao biến <code>register</code> ở Play 1 lại có thể dùng được ở Play 2 (vì mang Host Scope).</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Biến khai báo trong <code>vars:</code> của Play 1 có dùng được cho Task thuộc Play 2 trong cùng 1 file Playbook không? <i>(Không, vì biến trong <code>vars:</code> của Play mang Play Scope, tự động biến mất khi kết thúc Play 1.)</i>
+  </div>
+</details>
 
-### Câu 3 — Quyền lực Tuyệt đối của Extra Vars `-e` 🔥
-**Hỏi:** Extra Vars (truyền qua cờ CLI `-e` / `--extra-vars`) nằm ở tầng ưu tiên nào trong tháp ưu tiên biến? Cho ví dụ ứng dụng thực tế. *(Liên quan QT 4.3)*
-**Đáp án chuẩn:** Extra Vars nằm ở TẦNG UY TIÊN CAO NHẤT TUYỆT ĐỐI (Tầng 22), ghi đè lên TẤT CẢ các biến đã được khai báo ở bất kỳ file hay vị trí nào khác trong Playbook và Inventory. Ứng dụng thực tế: Dùng khi người vận hành CLI cần hot-fix hoặc truyền tham số chạy khẩn cấp (ví dụ `ansible-playbook -e "app_port=9999" site.yml`) mà không muốn sửa mã nguồn trên Git.
-**Tiêu chí chấm:**
-- 0: Không biết cờ CLI `-e`.
-- 1: Biết cờ `-e` truyền biến nhưng không biết nó đứng ở tầng cao nhất tuyệt đối.
-- 2: Giải thích chính xác vị trí Tầng 22 của Extra Vars + cú pháp câu lệnh CLI.
-- 3: Nêu đúng + minh họa 2 cách truyền cờ `-e` (dạng chuỗi `key=val` và dạng file JSON/YAML `-e "@file.yml"`).
-**Câu hỏi đào sâu:** Nếu trong Playbook có gọi module `set_fact: app_port=8080`, cờ CLI `-e "app_port=9999"` có bị thay đổi theo không? *(Không, cờ Extra Vars -e vẫn thắng cả set_fact và duy trì giá trị 9999.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Thuộc tính register hoạt động như thế nào? Cấu trúc của một biến register gồm những thông tin quan trọng nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Thuộc tính <code>register: var_name</code> bắt toàn bộ dữ liệu kết quả trả về từ việc thi hành một Task và lưu vào biến <code>var_name</code> mang Host Scope. Cấu trúc của biến <code>register</code> là một Dictionary chứa các trường dữ liệu quan trọng: <code>rc</code> (mã exit code), <code>stdout</code> (chuỗi văn bản in ra), <code>stdout_lines</code> (danh sách các dòng output), <code>stderr</code> (chuỗi báo lỗi), và <code>changed</code> (trạng thái có thay đổi hay không).<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết thuộc tính <code>register</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>register</code> lưu kết quả nhưng không liệt kê được các trường <code>rc</code>, <code>stdout</code>, <code>stderr</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế lưu trữ và cấu trúc Dictionary của biến <code>register</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa lấy <code>var_name.stdout</code> làm dữ liệu đầu vào cho task sau.</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Làm thế nào để kiểm tra một Task chạy lệnh shell có thành công (exit code = 0) hay không thông qua biến <code>register</code>? <i>(Dùng điều kiện <code>when: res_var.rc == 0</code> ở task tiếp theo.)</i>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Module ansible.builtin.set_fact được sử dụng trong trường hợp nào? Biến tạo bởi set_fact nằm ở tầng ưu tiên và Scope nào?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> <code>set_fact</code> được dùng để khởi tạo hoặc cập nhật giá trị biến mới một cách linh hoạt tại thời điểm runtime (dựa trên kết quả tính toán hoặc thông tin Facts thu thập được). Biến tạo bởi <code>set_fact</code> mang <b>Host Scope</b> (tồn tại xuyên suốt các Play sau) và nằm ở <b>Tầng ưu tiên rất cao (Tầng 19)</b>, ghi đè các biến tĩnh trong <code>vars:</code>, <code>vars_files:</code>, <code>host_vars</code>, <code>group_vars</code>.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết module <code>set_fact</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>set_fact</code> tạo biến nhưng nhầm sang Play Scope.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò tạo biến runtime + Host Scope + Tầng ưu tiên 19.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cho ví dụ thực tế tính toán cổng dịch vụ động: <code>set_fact: app_port="{{ base_port | int + host_id }}"</code>.</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Biến tạo bởi <code>set_fact</code> ở Play 1 có bị đè bởi cờ Extra Vars CLI <code>-e</code> không? <i>(Có, vì Extra Vars Tầng 22 cao hơn set_fact Tầng 19.)</i>
+  </div>
+</details>
 
-### Câu 4 — Phân biệt Phạm vi Biến (Variable Scopes) 🔥
-**Hỏi:** Phân biệt 3 phạm vi hoạt động của biến: Global Scope, Play Scope, và Host Scope. Dưa ra ví dụ cho từng loại. *(Liên quan QT 5.1)*
-**Đáp án chuẩn:**
-- **Global Scope:** Biến có hiệu lực trên toàn bộ hệ thống (ví dụ: cờ Extra Vars `-e`, biến môi trường `ansible.cfg`).
-- **Play Scope:** Biến chỉ có hiệu lực trong phạm vi một Play cụ thể (ví dụ: biến trong từ khóa `vars:` hoặc `vars_files:` của Play đó).
-- **Host Scope:** Biến gắn liền với một host cụ thể (ví dụ: `host_vars`, `ansible_facts`, biến đăng ký `register`, `set_fact`).
-**Tiêu chí chấm:**
-- 0: Không phân biệt được Scope của biến.
-- 1: Liệt kê được tên Scope nhưng xếp nhầm nguồn biến vào sai Scope.
-- 2: Phân tích chính xác bản chất và ví dụ của cả 3 loại Scope.
-- 3: Nêu đúng + giải thích lý do tại sao biến `register` ở Play 1 lại có thể dùng được ở Play 2 (vì mang Host Scope).
-**Câu hỏi đào sâu:** Biến khai báo trong `vars:` của Play 1 có dùng được cho Task thuộc Play 2 trong cùng 1 file Playbook không? *(Không, vì biến trong `vars:` của Play mang Play Scope, tự động biến mất khi kết thúc Play 1.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Phân biệt cách dùng thuộc tính msg: và thuộc tính var: trong module ansible.builtin.debug.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
+    • <code>msg:</code> Dùng để in một chuỗi văn bản định dạng tự chọn. Nếu muốn chèn giá trị biến vào chuỗi thì <b>BẮT BUỘC bọc <code>{{ variable_name }}</code></b> (ví dụ <code>msg: "Port is {{ app_port }}"</code>).<br>
+    • <code>var:</code> Dùng để in toàn bộ giá trị hoặc cấu trúc dữ liệu (String, List, Dict) của một biến. <b>TUYỆT ĐỐI KHÔNG bọc <code>{{ }}</code></b> (ví dụ <code>var: app_port</code> hoặc <code>var: register_res</code>).<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không phân biệt được <code>msg</code> và <code>var</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết cả 2 nhưng nhầm lẫn bọc <code>{{ }}</code> ở thuộc tính <code>var</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác sự khác biệt về mục đích sử dụng và cú pháp Jinja2 của <code>msg</code> và <code>var</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa output hiển thị của màn hình terminal trong cả 2 trường hợp.</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu viết <code>- ansible.builtin.debug: var="{{ app_port }}"</code>, màn hình terminal sẽ in ra gì? <i>(Nó sẽ in ra tên chuỗi biến đại diện chứ không in cấu trúc dữ liệu chuẩn của biến.)</i>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Trình bày các quy tắc bắt buộc khi đặt tên biến trong Ansible. Tại sao việc dùng phím gạch ngang - (như web-port) lại gây ra lỗi hệ thống?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Quy tắc đặt tên biến: Chỉ được sử dụng chữ cái thường, chữ số và dấu gạch dưới <code>_</code> (dạng <code>snake_case</code>), bắt đầu bằng chữ cái. CẤM tuyệt đối dùng dấu gạch ngang <code>-</code>, khoảng trắng, hay ký tự đặc biệt. Dùng phím gạch ngang <code>-</code> sẽ bị trình biên dịch Jinja2 và Python hiểu nhầm là phép toán trừ (subtraction), dẫn tới lỗi cú pháp <code>UndefinedError</code> hoặc tính toán sai.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Cho rằng đặt tên biến kiểu gì cũng được.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết dùng dấu <code>_</code> nhưng không giải thích được lý do phím <code>-</code> bị lỗi toán trừ Python.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Giải thích chính xác quy chuẩn <code>snake_case</code> và xung đột toán tử trừ <code>-</code> trong Jinja2.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ các tên biến chuẩn cho dự án thực tế.</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Tên biến <code>123_app_port</code> có hợp lệ không? <i>(Không hợp lệ, vì tên biến không được bắt đầu bằng chữ số.)</i>
+  </div>
+</details>
 
-### Câu 5 — Kỹ thuật Đăng ký Kết quả với `register`
-**Hỏi:** Thuộc tính `register` hoạt động như thế nào? Cấu trúc của một biến `register` gồm những thông tin quan trọng nào? *(Liên quan QT 5.2)*
-**Đáp án chuẩn:** Thuộc tính `register: var_name` bắt toàn bộ dữ liệu kết quả trả về từ việc thi hành một Task và lưu vào biến `var_name` mang Host Scope. Cấu trúc của biến `register` là một Dictionary chứa các trường dữ liệu quan trọng: `rc` (mã exit code), `stdout` (chuỗi văn bản in ra), `stdout_lines` (danh sách các dòng output), `stderr` (chuỗi báo lỗi), và `changed` (trạng thái có thay đổi hay không).
-**Tiêu chí chấm:**
-- 0: Không biết thuộc tính `register`.
-- 1: Biết `register` lưu kết quả nhưng không liệt kê được các trường `rc`, `stdout`, `stderr`.
-- 2: Phân tích chính xác cơ chế lưu trữ và cấu trúc Dictionary của biến `register`.
-- 3: Nêu đúng + viết đoạn YAML minh họa lấy `var_name.stdout` làm dữ liệu đầu vào cho task sau.
-**Câu hỏi đào sâu:** Làm thế nào để kiểm tra một Task chạy lệnh shell có thành công (exit code = 0) hay không thông qua biến `register`? *(Dùng điều kiện `when: res_var.rc == 0` ở task tiếp theo.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook có sử dụng biến số để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
+    1. <b>Bước 1 (Thực thi Lần 1 với Biến):</b> Chạy <code>ansible-playbook -e "app_port=9999" site.yml</code> để áp đặt cấu hình theo giá trị biến mới.<br>
+    2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn lệnh CLI đó Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b>.<br>
+    3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/app.conf</code> để kiểm tra giá trị <code>9999</code> thực sự được ghi xuống file đĩa cứng máy đích, không dừng lại ở báo cáo terminal.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần xem log terminal Lần 1 báo xanh là đủ" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc bước đối soát <code>docker exec</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI cụ thể.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh <code>docker exec grep</code> đối soát giá trị biến trên máy đích.</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu ở Lần 2 không truyền cờ <code>-e "app_port=9999"</code>, chỉ số RECAP Lần 2 sẽ ra sao? <i>(Lần 2 sẽ bị <code>changed=1</code> do Playbook nạp lại biến cũ ở tầng thấp hơn và thực hiện sửa lùi cấu hình.)</i>
+  </div>
+</details>
 
----
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Phân biệt sự khác nhau về ngữ cảnh sử dụng giữa thư mục group_vars/ và từ khóa vars_files: trong Playbook.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
+    • <code>group_vars/</code>: Biến được Ansible <b>TỰ ĐỘNG NẠP</b> dựa trên tên nhóm máy trong Inventory (ví dụ: host thuộc nhóm <code>web</code> tự động nạp <code>group_vars/web.yml</code>). Giúp mã nguồn Playbook gọn gàng, tách biệt cấu hình môi trường khỏi logic Playbook.<br>
+    • <code>vars_files:</code> Biến được <b>KHAI BÁO CỨNG</b> trong file Playbook YAML (ví dụ <code>vars_files: - vars/external.yml</code>). Tất cả các host chạy Play đó đều nạp chung file này bất kể thuộc nhóm nào.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Nhầm lẫn giữa <code>group_vars</code> và <code>vars_files</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nêu được <code>group_vars</code> tự động nạp nhưng không giải thích được vai trò của <code>vars_files</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế nạp tự động theo Inventory vs nạp khai báo cứng trong Playbook.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + khuyến nghị tổ chức mã nguồn chuẩn DevOps (ưu tiên <code>group_vars</code> hơn <code>vars_files</code>).</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu cả <code>group_vars/web.yml</code> và <code>vars_files:</code> cùng chứa biến <code>port</code>, giá trị ở đâu sẽ thắng? <i>(Giá trị trong <code>vars_files:</code> thắng vì có tầng ưu tiên Tầng 14 cao hơn group_vars Tầng 5.)</i>
+  </div>
+</details>
 
-### Câu 6 — Khởi tạo Biến Runtime với `ansible.builtin.set_fact`
-**Hỏi:** Module `ansible.builtin.set_fact` được sử dụng trong trường hợp nào? Biến tạo bởi `set_fact` nằm ở tầng ưu tiên và Scope nào? *(Liên quan QT 5.3)*
-**Đáp án chuẩn:** `set_fact` được dùng để khởi tạo hoặc cập nhật giá trị biến mới một cách linh hoạt tại thời điểm runtime (dựa trên kết quả tính toán hoặc thông tin Facts thu thập được). Biến tạo bởi `set_fact` mang **Host Scope** (tồn tại xuyên suốt các Play sau) và nằm ở **Tầng ưu tiên rất cao (Tầng 19)**, ghi đè các biến tĩnh trong `vars:`, `vars_files:`, `host_vars`, `group_vars`.
-**Tiêu chí chấm:**
-- 0: Không biết module `set_fact`.
-- 1: Biết `set_fact` tạo biến nhưng nhầm sang Play Scope.
-- 2: Phân tích chính xác vai trò tạo biến runtime + Host Scope + Tầng ưu tiên 19.
-- 3: Nêu đúng + cho ví dụ thực tế tính toán cổng dịch vụ động: `set_fact: app_port="{{ base_port | int + host_id }}"`.
-**Câu hỏi đào sâu:** Biến tạo bởi `set_fact` ở Play 1 có bị đè bởi cờ Extra Vars CLI `-e` không? *(Có, vì Extra Vars Tầng 22 cao hơn set_fact Tầng 19.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Làm thế nào để quản lý các biến chứa thông tin nhạy cảm (như mật khẩu DB, API Key) một cách an toàn trong mã nguồn Playbook?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Sử dụng công cụ <b>Ansible Vault</b> để mã hóa file chứa biến nhạy cảm (lệnh <code>ansible-vault encrypt vars/secrets.yml</code>). File sau khi mã hóa trở thành chuỗi văn bản vô nghĩa có thể commit an toàn lên Git. Khi thực thi Playbook, truyền cờ <code>--vault-id @prompt</code> hoặc <code>--vault-password-file</code> để Ansible giải mã file biến trong bộ nhớ RAM ở thời điểm chạy.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Cho rằng gõ mật khẩu plain-text vào Playbook rồi đẩy lên Git là bình thường.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết dùng Ansible Vault mã hóa nhưng không nhớ cờ CLI nạp password khi chạy.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác quy trình mã hóa bằng Vault + nạp password qua cờ CLI.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + mô tả mô hình quản lý key Vault bằng file mật khẩu phân quyền trong doanh nghiệp.</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Nếu file biến bị mã hóa bởi Vault nhưng khi chạy Playbook không truyền cờ Vault password, Ansible sẽ báo lỗi gì? <i>(Ansible báo lỗi <code>Decryption failed</code> và dừng thi hành ngay lập tức.)</i>
+  </div>
+</details>
 
----
-
-### Câu 7 — Quy trình Gỡ lỗi Biến với module `debug`
-**Hỏi:** Phân biệt cách dùng thuộc tính `msg:` và thuộc tính `var:` trong module `ansible.builtin.debug`. *(Liên quan QT 6.1)*
-**Đáp án chuẩn:**
-- `msg:` Dùng để in một chuỗi văn bản định dạng tự chọn. Nếu muốn chèn giá trị biến vào chuỗi thì **BẮT BUỘC bọc `{{ variable_name }}`** (ví dụ `msg: "Port is {{ app_port }}"`).
-- `var:` Dùng để in toàn bộ giá trị hoặc cấu trúc dữ liệu (String, List, Dict) của một biến. **TUYỆT ĐỐI KHÔNG bọc `{{ }}`** (ví dụ `var: app_port` hoặc `var: register_res`).
-**Tiêu chí chấm:**
-- 0: Không phân biệt được `msg` và `var`.
-- 1: Biết cả 2 nhưng nhầm lẫn bọc `{{ }}` ở thuộc tính `var`.
-- 2: Phân tích chính xác sự khác biệt về mục đích sử dụng và cú pháp Jinja2 của `msg` và `var`.
-- 3: Nêu đúng + minh họa output hiển thị của màn hình terminal trong cả 2 trường hợp.
-**Câu hỏi đào sâu:** Nếu viết `- ansible.builtin.debug: var="{{ app_port }}"`, màn hình terminal sẽ in ra gì? *(Nó sẽ in ra tên chuỗi biến đại diện chứ không in cấu trúc dữ liệu chuẩn của biến.)*
-
----
-
-### Câu 8 — Quy tắc Đặt tên Biến An toàn 🔥
-**Hỏi:** Trình bày các quy tắc bắt buộc khi đặt tên biến trong Ansible. Tại sao việc dùng phím gạch ngang `-` (như `web-port`) lại gây ra lỗi hệ thống? *(Liên quan QT 6.2)*
-**Đáp án chuẩn:** Quy tắc đặt tên biến: Chỉ được sử dụng chữ cái thường, chữ số và dấu gạch dưới `_` (dạng `snake_case`), bắt đầu bằng chữ cái. CẤM tuyệt đối dùng dấu gạch ngang `-`, khoảng trắng, hay ký tự đặc biệt. Dùng phím gạch ngang `-` sẽ bị trình biên dịch Jinja2 và Python hiểu nhầm là phép toán trừ (subtraction), dẫn tới lỗi cú pháp `UndefinedError` hoặc tính toán sai.
-**Tiêu chí chấm:**
-- 0: Cho rằng đặt tên biến kiểu gì cũng được.
-- 1: Biết dùng dấu `_` nhưng không giải thích được lý do phím `-` bị lỗi toán trừ Python.
-- 2: Giải thích chính xác quy chuẩn `snake_case` và xung đột toán tử trừ `-` trong Jinja2.
-- 3: Nêu đúng + viết ví dụ các tên biến chuẩn cho dự án thực tế.
-**Câu hỏi đào sâu:** Tên biến `123_app_port` có hợp lệ không? *(Không hợp lệ, vì tên biến không được bắt đầu bằng chữ số.)*
-
----
-
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi dùng Biến 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook có sử dụng biến số để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1 với Biến):** Chạy `ansible-playbook -e "app_port=9999" site.yml` để áp đặt cấu hình theo giá trị biến mới.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn lệnh CLI đó Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`**.
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/app.conf` để kiểm tra giá trị `9999` thực sự được ghi xuống file đĩa cứng máy đích, không dừng lại ở báo cáo terminal.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần xem log terminal Lần 1 báo xanh là đủ" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc bước đối soát `docker exec`.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI cụ thể.
-- 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh `docker exec grep` đối soát giá trị biến trên máy đích.
-**Câu hỏi đào sâu:** Nếu ở Lần 2 không truyền cờ `-e "app_port=9999"`, chỉ số RECAP Lần 2 sẽ ra sao? *(Lần 2 sẽ bị `changed=1` do Playbook nạp lại biến cũ ở tầng thấp hơn và thực hiện sửa lùi cấu hình.)*
-
----
-
-### Câu 10 — Kỹ thuật Nạp Biến từ File `vars_files` và `group_vars` ★★★
-**Hỏi:** Phân biệt sự khác nhau về ngữ cảnh sử dụng giữa thư mục `group_vars/` và từ khóa `vars_files:` trong Playbook.
-**Đáp án chuẩn:**
-- `group_vars/`: Biến được Ansible TỰ ĐỘNG NẠP dựa trên tên nhóm máy trong Inventory (ví dụ: host thuộc nhóm `web` tự động nạp `group_vars/web.yml`). Giúp mã nguồn Playbook gọn gàng, tách biệt cấu hình môi trường khỏi logic Playbook.
-- `vars_files:` Biến được KHAI BÁO CỨNG trong file Playbook YAML (ví dụ `vars_files: - vars/external.yml`). Tất cả các host chạy Play đó đều nạp chung file này bất kể thuộc nhóm nào.
-**Tiêu chí chấm:**
-- 0: Nhầm lẫn giữa `group_vars` và `vars_files`.
-- 1: Nêu được `group_vars` tự động nạp nhưng không giải thích được vai trò của `vars_files`.
-- 2: Phân tích chính xác cơ chế nạp tự động theo Inventory vs nạp khai báo cứng trong Playbook.
-- 3: Nêu đúng + khuyến nghị tổ chức mã nguồn chuẩn DevOps (ưu tiên `group_vars` hơn `vars_files`).
-**Câu hỏi đào sâu:** Nếu cả `group_vars/web.yml` và `vars_files:` cùng chứa biến `port`, giá trị ở đâu sẽ thắng? *(Giá trị trong `vars_files:` thắng vì có tầng ưu tiên Tầng 14 cao hơn group_vars Tầng 5.)*
-
----
-
-### Câu 11 — Bảo mật Biến Nhạy cảm với Ansible Vault ★★★
-**Hỏi:** Làm thế nào để quản lý các biến chứa thông tin nhạy cảm (như mật khẩu DB, API Key) một cách an toàn trong mã nguồn Playbook?
-**Đáp án chuẩn:** Sử dụng công cụ **Ansible Vault** để mã hóa file chứa biến nhạy cảm (lệnh `ansible-vault encrypt vars/secrets.yml`). File sau khi mã hóa trở thành chuỗi văn bản vô nghĩa có thể commit an toàn lên Git. Khi thực thi Playbook, truyền cờ `--vault-id @prompt` hoặc `--vault-password-file` để Ansible giải mã file biến trong bộ nhớ RAM ở thời điểm chạy.
-**Tiêu chí chấm:**
-- 0: Cho rằng gõ mật khẩu plain-text vào Playbook rồi đẩy lên Git là bình thường.
-- 1: Biết dùng Ansible Vault mã hóa nhưng không nhớ cờ CLI nạp password khi chạy.
-- 2: Phân tích chính xác quy trình mã hóa bằng Vault + nạp password qua cờ CLI.
-- 3: Nêu đúng + mô tả mô hình quản lý key Vault bằng file mật khẩu phân quyền trong doanh nghiệp.
-**Câu hỏi đào sâu:** Nếu file biến bị mã hóa bởi Vault nhưng khi chạy Playbook không truyền cờ Vault password, Ansible sẽ báo lỗi gì? *(Ansible báo lỗi `Decryption failed` và dừng thi hành ngay lập tức.)*
-
----
-
-### Câu 12 — Quản lý Biến trong Môi trường Đa Hạ tầng (Dev/Staging/Prod) ★★★
-**Hỏi:** Trình bày kiến trúc tổ chức biến tối ưu cho một dự án triển khai trên 3 môi trường Dev, Staging, và Production nhưng chỉ dùng duy nhất 1 file Playbook `site.yml`.
-**Đáp án chuẩn:**
-1. Tạo 1 file Playbook duy nhất `site.yml` chứa logic khai báo trạng thái (dùng tên biến trừu tượng `{{ db_host }}`, `{{ app_port }}`).
-2. Tổ chức cấu hình biến theo từng môi trường trong Inventory hoặc thư mục `group_vars`:
-   - `group_vars/dev.yml` chứa biến môi trường Dev.
-   - `group_vars/staging.yml` chứa biến môi trường Staging.
-   - `group_vars/prod.yml` chứa biến môi trường Prod.
-3. Khi deploy môi trường nào, chỉ cần chỉ định Inventory tương ứng: `ansible-playbook -i inventories/prod/hosts site.yml`.
-**Tiêu chí chấm:**
-- 0: Trả lời tạo 3 file Playbook riêng lẻ cho 3 môi trường.
-- 1: Nêu được dùng 1 Playbook nhưng không biết cách chia biến theo `group_vars` môi trường.
-- 2: Phân tích chính xác kiến trúc 1 Playbook + đa Inventory/group_vars theo môi trường.
-- 3: Nêu đúng + phân tích lợi ích tối đa của việc tái sử dụng mã nguồn và tuân thủ nguyên tắc DRY (Don't Repeat Yourself).
-**Câu hỏi đào sâu:** Kiến trúc trên giúp tiết kiệm bao nhiêu phần trăm công sức bảo trì mã nguồn Playbook? *(Tiết kiệm hơn 70% công sức, vì khi sửa đổi logic cài đặt chỉ cần sửa trên 1 file site.yml duy nhất.)*
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Trình bày kiến trúc tổ chức biến tối ưu cho một dự án triển khai trên 3 môi trường Dev, Staging, và Production nhưng chỉ dùng duy nhất 1 file Playbook site.yml.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <b style="color: var(--accent-primary);">Đáp án chuẩn:</b><br>
+    1. Tạo 1 file Playbook duy nhất <code>site.yml</code> chứa logic khai báo trạng thái (dùng tên biến trừu tượng <code>{{ db_host }}</code>, <code>{{ app_port }}</code>).<br>
+    2. Tổ chức cấu hình biến theo từng môi trường trong Inventory hoặc thư mục <code>group_vars</code>:<br>
+       - <code>group_vars/dev.yml</code> chứa biến môi trường Dev.<br>
+       - <code>group_vars/staging.yml</code> chứa biến môi trường Staging.<br>
+       - <code>group_vars/prod.yml</code> chứa biến môi trường Prod.<br>
+    3. Khi deploy môi trường nào, chỉ cần chỉ định Inventory tương ứng: <code>ansible-playbook -i inventories/prod/hosts site.yml</code>.<br><br>
+    <b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời tạo 3 file Playbook riêng lẻ cho 3 môi trường.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Nêu được dùng 1 Playbook nhưng không biết cách chia biến theo <code>group_vars</code> môi trường.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác kiến trúc 1 Playbook + đa Inventory/group_vars theo môi trường.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + phân tích lợi ích tối đa của việc tái sử dụng mã nguồn và tuân thủ nguyên tắc DRY (Don't Repeat Yourself).</div>
+    <b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Kiến trúc trên giúp tiết kiệm bao nhiêu phần trăm công sức bảo trì mã nguồn Playbook? <i>(Tiết kiệm hơn 70% công sức, vì khi sửa đổi logic cài đặt chỉ cần sửa trên 1 file site.yml duy nhất.)</i>
+  </div>
+</details>
 
 ---
 
@@ -997,4 +1119,8 @@ Khi nhà tuyển dụng phỏng vấn về năng lực quản lý biến và x�
 1. **Nghiên cứu trước 1:** Ansible Facts là gì? Module nào tự động chạy ở đầu mỗi Play để thu thập thông tin này?
 2. **Nghiên cứu trước 2:** Làm thế nào để trích xuất địa chỉ IP, dung lượng RAM, và phiên bản hệ điều hành từ biến `ansible_facts`?
 3. **Nghiên cứu trước 3:** Custom Facts (.fact files) được lưu ở đường dẫn thư mục nào trên máy đích và có cấu trúc ra sao?
+
+> [!TIP]
+> **Khám phá bài học tiếp theo:** [Bài 08: Thu Thập Thông Tin Hệ Thống (Ansible Facts & Setup Module)](ansible-08-08-facts.html)
 {% endraw %}
+

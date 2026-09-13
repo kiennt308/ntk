@@ -88,9 +88,19 @@ graph TD
     B --> E["3. Plugin: Tên module / plugin thi hành (ví dụ: copy, file, ini_file)"]
     
     subgraph "So sánh Tên gọi Module"
-        F["Tên ngắn cũ (Legacy Short-name): copy"] -- "Rủi ro: Dễ xung đột module" --> G["Không khuyến nghị dùng từ Ansible 2.9+"]
-        H["Tên chuẩn mới FQCN: ansible.builtin.copy"] -- "An toàn: Định danh duy nhất 100%" --> I["BẮT BUỘC DÙNG TRONG ENTERPRISE"]
+        F["Tên ngắn cũ (Legacy Short-name): copy"] -->|"Rủi ro: Dễ xung đột module"| G["Không khuyến nghị dùng từ Ansible 2.9+"]
+        H["Tên chuẩn mới FQCN: ansible.builtin.copy"] -->|"An toàn: Định danh duy nhất 100%"| I["BẮT BUỘC DÙNG TRONG ENTERPRISE"]
     end
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#8b5cf6,stroke-width:2px
+    style D fill:none,stroke:#eab308,stroke-width:2px
+    style E fill:none,stroke:#06b6d4,stroke-width:2px
+    style F fill:none,stroke:#ef4444,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
+    style H fill:none,stroke:#10b981,stroke-width:2px
+    style I fill:none,stroke:#a855f7,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** FQCN (Fully Qualified Collection Name) là chuẩn đặt tên định danh đầy đủ gồm 3 thành phần phân cách bởi dấu chấm: `<namespace>.<collection>.<plugin_name>`.
@@ -338,8 +348,21 @@ flowchart TD
     G --> H["Playbook chính: site-fqcn.yml"]
     H --> I["LƯỢT CHẠY LẦN 2"]
     I --> J{"PLAY RECAP Lần 2: changed=0?"}
-    J -- Có --> K["ĐẠT: FQCN Standardized Idempotent 100%"]
-    J -- Không --> L["LỖI: Kiểm tra lại các task FQCN trong Playbook"]
+    J -->|"Có"| K["ĐẠT: FQCN Standardized Idempotent 100%"]
+    J -->|"Không"| L["LỖI: Kiểm tra lại các task FQCN trong Playbook"]
+
+    style A fill:none,stroke:#3b82f6,stroke-width:2px
+    style B fill:none,stroke:#6366f1,stroke-width:2px
+    style C fill:none,stroke:#8b5cf6,stroke-width:2px
+    style D fill:none,stroke:#eab308,stroke-width:2px
+    style E fill:none,stroke:#06b6d4,stroke-width:2px
+    style F fill:none,stroke:#10b981,stroke-width:2px
+    style G fill:none,stroke:#ec4899,stroke-width:2px
+    style H fill:none,stroke:#f59e0b,stroke-width:2px
+    style I fill:none,stroke:#3b82f6,stroke-width:2px
+    style J fill:none,stroke:#eab308,stroke-width:2px
+    style K fill:none,stroke:#10b981,stroke-width:2px
+    style L fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -476,12 +499,22 @@ graph TD
     M2 -->|"7. Gửi cấu hình đã render FQCN"| T1["Target Container 1 (target1)"]
     M4 -->|"8. Gửi cấu hình INI"| T1
     
-    T1 -. "RECAP Lần 1: ok=4, changed=2" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY FQCN 100%)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=4, changed=2"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=4, changed=0 (ĐẠT IDEMPOTENCY FQCN 100%)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook site-fqcn.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#3b82f6,stroke-width:2px
+    style DOC fill:none,stroke:#06b6d4,stroke-width:2px
+    style PB fill:none,stroke:#6366f1,stroke-width:2px
+    style M1 fill:none,stroke:#8b5cf6,stroke-width:2px
+    style M2 fill:none,stroke:#10b981,stroke-width:2px
+    style M3 fill:none,stroke:#f59e0b,stroke-width:2px
+    style M4 fill:none,stroke:#ec4899,stroke-width:2px
+    style T1 fill:none,stroke:#14b8a6,stroke-width:2px
+    style DEV fill:none,stroke:#a855f7,stroke-width:2px
 ```
 
 ---
@@ -793,203 +826,298 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span class="qa-question-text">FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ. <i>(Liên quan QT 4.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> FQCN là chuẩn đặt tên định danh đầy đủ giúp Ansible Engine xác định chính xác tuyệt đối vị trí mã nguồn của module/plugin. Cấu trúc 3 thành phần: <code>&lt;namespace&gt;.&lt;collection_name&gt;.&lt;plugin_name&gt;</code>:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>&lt;namespace&gt;</code>: Không gian tên của nhà phát triển (ví dụ: <code>ansible</code>, <code>community</code>, <code>amazon</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>&lt;collection_name&gt;</code>: Tên bộ sưu tập (ví dụ: <code>builtin</code>, <code>general</code>, <code>aws</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>&lt;plugin_name&gt;</code>: Tên module/plugin thi hành (ví dụ: <code>copy</code>, <code>ini_file</code>, <code>ec2_instance</code>).</div>
+    <div style="margin: 0.5rem 0;">Ví dụ: <code>ansible.builtin.copy</code> hoặc <code>community.general.ini_file</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm FQCN.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết FQCN nhưng không phân tích được 3 thành phần <code>namespace.collection.plugin</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cấu trúc 3 thành phần và nêu lý do chống xung đột module.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ 3 tên FQCN thực tế cho module Core, Community và Cloud.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Từ phiên bản Ansible nào trở đi Red Hat khuyến nghị bắt buộc phải dùng FQCN? <i>(Từ Ansible 2.9 và Ansible Core 2.10 trở đi.)</i></div>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> FQCN (Fully Qualified Collection Name) là gì? Hãy phân tích cấu trúc 3 thành phần quy chuẩn của một tên FQCN và cho ví dụ. *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b>
-FQCN là chuẩn đặt tên định danh đầy đủ giúp Ansible Engine xác định chính xác tuyệt đối vị trí mã nguồn của module/plugin.
-Cấu trúc 3 thành phần: <code><namespace>.<collection_name>.<plugin_name></code>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><namespace></code>: Không gian tên của nhà phát triển (ví dụ: <code>ansible</code>, <code>community</code>, <code>amazon</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><collection_name></code>: Tên bộ sưu tập (ví dụ: <code>builtin</code>, <code>general</code>, <code>aws</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code><plugin_name></code>: Tên module/plugin thi hành (ví dụ: <code>copy</code>, <code>ini_file</code>, <code>ec2_instance</code>).</div>
-Ví dụ: <code>ansible.builtin.copy</code> hoặc <code>community.general.ini_file</code>.
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm FQCN.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết FQCN nhưng không phân tích được 3 thành phần <code>namespace.collection.plugin</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cấu trúc 3 thành phần và nêu lý do chống xung đột module.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ 3 tên FQCN thực tế cho module Core, Community và Cloud.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Từ phiên bản Ansible nào trở đi Red Hat khuyến nghị bắt buộc phải dùng FQCN? *(Từ Ansible 2.9 và Ansible Core 2.10 trở đi.)*
-</div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span class="qa-question-text">Ansible Collection là gì? Nó khác biệt gì so với một Ansible Role truyền thống về mặt đóng gói nội dung?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Ansible Collection là gì? Nó khác biệt gì so với một Ansible Role truyền thống về mặt đóng gói nội dung? <i>(Liên quan QT 4.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Ansible Collection:</b> Là định dạng đóng gói nội dung tự động hóa thế hệ mới của Red Hat.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Khác biệt đóng gói:</b>
+      <br>- <i>Ansible Role truyền thống:</i> Chỉ đóng gói Tasks, Handlers, Templates, Files và Vars.
+      <br>- <i>Ansible Collection:</i> Đóng gói <b>TOÀN BỘ HỆ SINH THÁI</b> gồm Modules (Python code), Action Plugins, Filter Plugins, Lookup Plugins, Roles, và cả Playbooks mẫu vào duy nhất 1 gói nén tarball.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng Ansible Collection chỉ là một dạng khác của Role.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết Collection lớn hơn Role nhưng không liệt kê được các loại Plugins và Modules nó chứa.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác khái niệm Collection và sự khác biệt về phạm vi đóng gói nội dung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + vẽ sơ đồ cây thư mục cấu trúc của 1 Collection (<code>plugins/modules/</code>, <code>plugins/filter/</code>, <code>roles/</code>).</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Tại sao Red Hat lại tách các Module ra khỏi bộ nhân <code>ansible-core</code> để đưa vào các Collections? <i>(Để các nhà cung cấp như VMware, AWS, Cisco có thể độc lập phát hành và update module mà không cần chờ chu kỳ phát hành của Ansible Core.)</i></div>
+  </div>
+</details>
 
-### Câu 2 — Khái niệm Ansible Collection 🔥
-**Hỏi:** Ansible Collection là gì? Nó khác biệt gì so với một Ansible Role truyền thống về mặt đóng gói nội dung? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:**
-- Ansible Collection là định dạng đóng gói nội dung tự động hóa thế hệ mới của Red Hat.
-- Khác biệt đóng gói:
-  + Ansible Role truyền thống: Chỉ đóng gói Tasks, Handlers, Templates và Files.
-  + Ansible Collection: Đóng gói **TOÀN BỘ HỆ SINH THÁI** gồm Modules (Python code), Action Plugins, Filter Plugins, Lookup Plugins, Roles, và cả Playbooks mẫu vào duy nhất 1 gói nén.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng Ansible Collection chỉ là một dạng khác của Role.
-- 1: Biết Collection lớn hơn Role nhưng không liệt kê được các loại Plugins và Modules nó chứa.
-- 2: Phân tích chính xác khái niệm Collection và sự khác biệt về phạm vi đóng gói nội dung.
-- 3: Nêu đúng + vẽ sơ đồ cây thư mục cấu trúc của 1 Collection (`plugins/modules/`, `plugins/filter/`, `roles/`).
-**Câu hỏi đào sâu:** Tại sao Red Hat lại tách các Module ra khỏi bộ nhân `ansible-core` để đưa vào các Collections? *(Để các nhà cung cấp như VMware, AWS, Cisco có thể độc lập phát hành và update module mà không cần chờ chu kỳ phát hành của Ansible Core.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span class="qa-question-text">Tại sao trong các kịch bản Ansible Enterprise mới, quản trị viên bắt buộc phải viết <code>ansible.builtin.copy</code> thay vì viết <code>copy:</code> như trước đây?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tại sao trong các kịch bản Ansible Enterprise mới, quản trị viên bắt buộc phải viết <code>ansible.builtin.copy</code> thay vì viết <code>copy:</code> như trước đây? <i>(Liên quan QT 4.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> 3 lý do kỹ thuật cốt lõi:</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Triệt tiêu 100% xung đột tên module:</b> Nếu có 2 Collection cùng có module tên <code>copy</code>, dùng FQCN <code>ansible.builtin.copy</code> giúp Ansible Engine gọi đúng module cốt lõi của Ansible Core.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Tăng tốc độ thực thi:</b> Ansible Engine không phải mất thêm tài nguyên tìm kiếm và tra cứu bảng ánh xạ tên ngắn sang FQCN.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Đảm bảo tính tương thích lâu dài:</b> Sẵn sàng cho các phiên bản Ansible Core tương lai khi tên ngắn bị loại bỏ hoàn toàn.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Cho rằng gõ tên ngắn <code>copy:</code> hay FQCN <code>ansible.builtin.copy:</code> cũng hoàn toàn giống hệt nhau.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết FQCN tốt hơn nhưng không giải thích được lý do triệt tiêu xung đột module và hiệu năng parse.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác 3 lý do kỹ thuật bắt buộc phải dùng FQCN trong Enterprise.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa so sánh kịch bản dùng Short-name vs FQCN.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu gõ nhầm <code>ansible.copy:</code> (thiếu <code>builtin</code>), Ansible Engine sẽ báo lỗi gì? <i>(Báo lỗi <code>Could not resolve module/action 'ansible.copy'</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span class="qa-question-text">Trình bày tác dụng của từ khóa <code>collections:</code> ở cấp Playbook. Khi nào nên dùng và khi nào KHÔNG nên lạm dụng từ khóa này?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày tác dụng của từ khóa <code>collections:</code> ở cấp Playbook. Khi nào nên dùng và khi nào KHÔNG nên lạm dụng từ khóa này? <i>(Liên quan QT 5.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Tác dụng:</b> Khai báo danh sách các không gian tên Collection (như <code>collections: - community.general</code>), cho phép rút ngắn cú pháp gọi module trong Playbook mà không cần gõ tiền tố FQCN dài ở từng Task.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Khi nên dùng:</b> Khi một Playbook gọi hàng chục module thuộc cùng 1 Collection ngoài (như <code>community.general</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Khi KHÔNG lạm dụng:</b> Trong các dự án Doanh nghiệp lớn có nhiều Collection trùng tên module, lạm dụng <code>collections:</code> có thể gây nhầm lẫn thứ tự ưu tiên giải mã module.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết từ khóa <code>collections:</code> directive.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>collections:</code> để rút ngắn code nhưng không nêu được nguy cơ rủi ro khi có module trùng tên.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế giải mã module của <code>collections:</code> directive và trường hợp áp dụng.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết đoạn YAML minh họa dùng <code>collections:</code> ở cấp Playbook.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Từ khóa <code>collections:</code> có tác dụng tự động tải Collection từ mạng về không? <i>(Không, Collection phải được cài đặt sẵn trước đó qua requirements.yml.)</i></div>
+  </div>
+</details>
 
-### Câu 3 — Lý do Bắt buộc Chuyển đổi sang FQCN 🔥
-**Hỏi:** Tại sao trong các kịch bản Ansible Enterprise mới, quản trị viên bắt buộc phải viết `ansible.builtin.copy` thay vì viết `copy:` như trước đây? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-Lý do bắt buộc:
-1. **Triệt tiêu 100% xung đột tên module:** Nếu có 2 Collection cùng có module tên `copy`, dùng FQCN `ansible.builtin.copy` giúp Ansible Engine gọi đúng module cốt lõi của Ansible Core.
-2. **Tăng tốc độ thực thi:** Ansible Engine không phải mất thêm tài nguyên tìm kiếm và tra cứu bảng ánh xạ tên ngắn sang FQCN.
-3. **Đảm bảo tính tương thích lâu dài:** Sẵn sàng cho các phiên bản Ansible Core tương lai khi tên ngắn bị loại bỏ hoàn toàn.
-**Tiêu chí chấm:**
-- 0: Cho rằng gõ tên ngắn `copy:` hay FQCN `ansible.builtin.copy:` cũng hoàn toàn giống hệt nhau.
-- 1: Biết FQCN tốt hơn nhưng không giải thích được lý do triệt tiêu xung đột module và hiệu năng parse.
-- 2: Phân tích chính xác 3 lý do kỹ thuật bắt buộc phải dùng FQCN trong Enterprise.
-- 3: Nêu đúng + minh họa so sánh kịch bản dùng Short-name vs FQCN.
-**Câu hỏi đào sâu:** Nếu gõ nhầm `ansible.copy:` (thiếu `builtin`), Ansible Engine sẽ báo lỗi gì? *(Báo lỗi `Could not resolve module/action 'ansible.copy'`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span class="qa-question-text">Nêu câu lệnh CLI <code>ansible-doc</code> để tra cứu tài liệu và xem ví dụ mẫu của module <code>ansible.builtin.file</code>. Giải thích ý nghĩa của cờ <code>-s</code>.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Nêu câu lệnh CLI <code>ansible-doc</code> để tra cứu tài liệu và xem ví dụ mẫu của module <code>ansible.builtin.file</code>. Giải thích ý nghĩa của cờ <code>-s</code>. <i>(Liên quan QT 5.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Lệnh tra cứu đầy đủ:</b> <code>ansible-doc ansible.builtin.file</code></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Lệnh xem ví dụ mẫu ngắn gọn:</b> <code>ansible-doc ansible.builtin.file -s</code></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Ý nghĩa cờ <code>-s</code> (<code>--snippet</code>):</b> Chỉ in ra đoạn mã mẫu cú pháp YAML (Snippet) của module với các tham số chính, giúp copy nhanh vào Playbook mà không cần đọc toàn bộ mô tả lý thuyết dài.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết lệnh <code>ansible-doc</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết lệnh <code>ansible-doc</code> nhưng gõ short-name hoặc không giải thích được cờ <code>-s</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác câu lệnh CLI tra cứu FQCN và vai trò của cờ <code>-s</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + thực thi lệnh CLI minh họa tra cứu tài liệu <code>ansible.builtin.file</code> trên terminal.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Làm thế nào để liệt kê toàn bộ các module có sẵn trong Collection <code>community.general</code> bằng <code>ansible-doc</code>? <i>(Chạy lệnh <code>ansible-doc -l community.general</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span class="qa-question-text">Ngoài Module, chuẩn FQCN được áp dụng cho các loại Plugin nào khác trong Ansible Playbook? Cho ví dụ với Lookup Plugin.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Ngoài Module, chuẩn FQCN được áp dụng cho các loại Plugin nào khác trong Ansible Playbook? Cho ví dụ với Lookup Plugin. <i>(Liên quan QT 5.3)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Chuẩn FQCN áp dụng đồng bộ cho tất cả các loại Plugins: Lookup Plugins, Filter Plugins, Action Plugins, Connection Plugins, và Callback Plugins.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ví dụ Lookup Plugin đọc biến môi trường:
+      <br>- Cũ: <code>{{ '{{' }} lookup('env', 'PATH') {{ '}}' }}</code>
+      <br>- Chuẩn FQCN: <code>{{ '{{' }} lookup('ansible.builtin.env', 'PATH') {{ '}}' }}</code></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ví dụ Filter Plugin: <code>{{ '{{' }} my_dict | ansible.builtin.to_nice_json {{ '}}' }}</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Lầm tưởng FQCN chỉ áp dụng cho Module.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết FQCN dùng cho Plugin nhưng không viết được cú pháp FQCN cho Lookup Plugin.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác tính đồng nhất FQCN cho toàn bộ hệ thống Plugins.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ YAML minh họa dùng FQCN cho cả Module, Filter và Lookup Plugin trong 1 Playbook.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Tại sao nên dùng FQCN cho Filter Plugin <code>ansible.builtin.to_nice_yaml</code>? <i>(Để tránh xung đột nếu dự án có một custom filter trùng tên <code>to_nice_yaml</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 4 — Sử dụng Từ khóa `collections:` Directive 🔥
-**Hỏi:** Trình bày tác dụng của từ khóa `collections:` ở cấp Playbook. Khi nào nên dùng và khi nào KHÔNG nên lạm dụng từ khóa này? *(Liên quan QT 5.1)*
-**Đáp án chuẩn:**
-- Tác dụng: Khai báo danh sách các không gian tên Collection (như `collections: - community.general`), cho phép rút ngắn cú pháp gọi module trong Playbook mà không cần gõ tiền tố FQCN dài ở từng Task.
-- Khi nên dùng: Khi một Playbook gọi hàng chục module thuộc cùng 1 Collection ngoài (như `community.general`).
-- Khi KHÔNG lạm dụng: Trong các dự án Doanh nghiệp lớn có nhiều Collection trùng tên module, lạm dụng `collections:` có thể gây nhầm lẫn thứ tự ưu tiên giải mã module.
-**Tiêu chí chấm:**
-- 0: Không biết từ khóa `collections:` directive.
-- 1: Biết `collections:` để rút ngắn code nhưng không nêu được nguy cơ rủi ro khi có module trùng tên.
-- 2: Phân tích chính xác cơ chế giải mã module của `collections:` directive và trường hợp áp dụng.
-- 3: Nêu đúng + viết đoạn YAML minh họa dùng `collections:` ở cấp Playbook.
-**Câu hỏi đào sâu:** Từ khóa `collections:` có tác dụng tự động tải Collection từ mạng về không? *(Không, Collection phải được cài đặt sẵn trước đó qua requirements.yml.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span class="qa-question-text">Bài toán Module Name Collision (xung đột tên module) là gì? FQCN giải quyết triệt để bài toán này ra sao?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Bài toán Module Name Collision (xung đột tên module) là gì? FQCN giải quyết triệt để bài toán này ra sao? <i>(Liên quan QT 6.1)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b> Module Name Collision xảy ra khi hệ thống cài đặt 2 Collections khác nhau nhưng cùng chứa 1 module trùng tên (ví dụ <code>amazon.aws.ec2</code> vs <code>community.aws.ec2</code>). Nếu người dùng viết short-name <code>ec2:</code>, Ansible Engine sẽ nạp nhầm module tùy theo thứ tự ưu tiên đường dẫn đĩa cứng, gây ra lỗi thực thi nghiêm trọng. FQCN giải quyết bằng cách ép buộc chỉ định chính xác nhà phát triển: <code>amazon.aws.ec2</code> hoặc <code>community.aws.ec2</code>, triệt tiêu 100% sự nhập nhằng.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không hiểu khái niệm Module Name Collision.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết xung đột tên nhưng không giải thích được cơ chế định danh duy nhất của FQCN.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác bài toán xung đột tên module và giải pháp triệt để của FQCN.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cho ví dụ thực tế xung đột giữa module AWS hoặc VMware.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Nếu trong 1 Playbook có khai báo <code>collections: - community.aws</code> và <code>collections: - amazon.aws</code>, module short-name <code>ec2:</code> sẽ nạp cái nào? <i>(Nạp Collection được khai báo ĐẦU TIÊN trong danh sách <code>collections:</code>.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span class="qa-question-text">Trình bày cấu trúc khai báo cài đặt Collection <code>community.general</code> trong <code>requirements.yml</code> và câu lệnh CLI để tự động cài đặt.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày cấu trúc khai báo cài đặt Collection <code>community.general</code> trong <code>requirements.yml</code> và câu lệnh CLI để tự động cài đặt. <i>(Liên quan QT 6.2)</i></div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cấu trúc <code>requirements.yml</code>:
+      <pre><code>collections:
+  - name: community.general
+    version: "&gt;=7.0.0"</code></pre>
+    </div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Câu lệnh CLI cài đặt: <code>ansible-galaxy collection install -r requirements.yml</code></div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cách khai báo Collection trong <code>requirements.yml</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Viết được YAML nhưng nhầm lệnh <code>ansible-galaxy install</code> (thiếu từ khóa <code>collection</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cấu trúc YAML và câu lệnh CLI cài đặt Collection.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa câu lệnh cài đặt cô lập vào thư mục <code>./collections</code> của dự án.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Thư mục lưu trữ mặc định của Collections khi cài đặt cô lập trong dự án được cấu hình ở thuộc tính nào của <code>ansible.cfg</code>? <i>(Thuộc tính <code>collections_path = ./collections</code>.)</i></div>
+  </div>
+</details>
 
-### Câu 5 — Tra cứu Tài liệu FQCN với `ansible-doc` 🔥
-**Hỏi:** Nêu câu lệnh CLI `ansible-doc` để tra cứu tài liệu và xem ví dụ mẫu của module `ansible.builtin.file`. Giải thích ý nghĩa của cờ `-s`. *(Liên quan QT 5.2)*
-**Đáp án chuẩn:**
-- Lệnh tra cứu đầy đủ: `ansible-doc ansible.builtin.file`
-- Lệnh xem ví dụ mẫu ngắn gọn: `ansible-doc ansible.builtin.file -s`
-- Ý nghĩa cờ `-s` (`--snippet`): Chỉ in ra đoạn mã mẫu cú pháp YAML (Snippet) của module với các tham số chính, giúp copy nhanh vào Playbook mà không cần đọc toàn bộ mô tả lý thuyết dài.
-**Tiêu chí chấm:**
-- 0: Không biết lệnh `ansible-doc`.
-- 1: Biết lệnh `ansible-doc` nhưng gõ short-name hoặc không giải thích được cờ `-s`.
-- 2: Phân tích chính xác câu lệnh CLI tra cứu FQCN và vai trò của cờ `-s`.
-- 3: Nêu đúng + thực thi lệnh CLI minh họa tra cứu tài liệu `ansible.builtin.file` trên terminal.
-**Câu hỏi đào sâu:** Làm thế nào để liệt kê toàn bộ các module có sẵn trong Collection `community.general` bằng `ansible-doc`? *(Chạy lệnh `ansible-doc -l community.general`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng 100% module FQCN để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng 100% module FQCN để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook site-fqcn.yml</code>: Các module FQCN <code>ansible.builtin.*</code> và <code>community.general.*</code> thực thi và chép file báo <code>changed &gt; 0</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn <code>ansible-playbook site-fqcn.yml</code> Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (tất cả các Task FQCN đều báo <code>ok</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/fqcn-app.conf</code> kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu từ module FQCN.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Thiếu bước Lần 2 <code>changed=0</code> hoặc không dùng <code>docker exec</code> đối soát file thật.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Việc chuyển đổi từ short-name sang FQCN có làm thay đổi logic kiểm tra checksum SHA1 của module <code>ansible.builtin.copy</code> không? <i>(Hoàn toàn không, checksum SHA1 vẫn được so sánh chuẩn xác.)</i></div>
+  </div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span class="qa-question-text">Công cụ <code>ansible-lint</code> là gì? Cờ kiểm tra <code>fqcn[action]</code> trong <code>ansible-lint</code> có tác dụng gì đối với việc chuẩn hóa mã nguồn tự động hóa?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Công cụ <code>ansible-lint</code> là gì? Cờ kiểm tra <code>fqcn[action]</code> trong <code>ansible-lint</code> có tác dụng gì đối với việc chuẩn hóa mã nguồn tự động hóa?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b><code>ansible-lint</code>:</b> Là công cụ phân tích mã nguồn tĩnh (Static Code Analyzer) chính thức của Red Hat giúp kiểm tra tiêu chuẩn chất lượng và Best Practices của Playbook.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Cờ <code>fqcn[action]</code>:</b> Tự động quét và phát hiện tất cả các Task vẫn còn sử dụng tên module ngắn cũ (như <code>copy:</code>, <code>file:</code>), và cảnh báo ép người viết phải refactor sang chuẩn FQCN <code>ansible.builtin.copy</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết công cụ <code>ansible-lint</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>ansible-lint</code> check code nhưng không giải thích được rule <code>fqcn[action]</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò quét mã nguồn tĩnh và ép chuẩn FQCN trong CI/CD pipeline.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết lệnh CLI <code>ansible-lint site-fqcn.yml</code> chạy kiểm tra.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Có thể tự động sửa lỗi FQCN short-name bằng <code>ansible-lint</code> không? <i>(Có thể dùng cờ <code>ansible-lint --write</code> để tự động refactor short-name sang FQCN.)</i></div>
+  </div>
+</details>
 
-### Câu 6 — Sử dụng FQCN cho Plugins
-**Hỏi:** Ngoài Module, chuẩn FQCN được áp dụng cho các loại Plugin nào khác trong Ansible Playbook? Cho ví dụ với Lookup Plugin. *(Liên quan QT 5.3)*
-**Đáp án chuẩn:**
-Chuẩn FQCN áp dụng đồng bộ cho tất cả các loại Plugins: Lookup Plugins, Filter Plugins, Action Plugins, Connection Plugins, và Callback Plugins.
-Ví dụ Lookup Plugin đọc biến môi trường:
-- Cũ: `{{ lookup('env', 'PATH') }}`
-- Chuẩn FQCN: `{{ lookup('ansible.builtin.env', 'PATH') }}`
-Ví dụ Filter Plugin: `{{ my_dict | ansible.builtin.to_nice_json }}`.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng FQCN chỉ áp dụng cho Module.
-- 1: Biết FQCN dùng cho Plugin nhưng không viết được cú pháp FQCN cho Lookup Plugin.
-- 2: Phân tích chính xác tính đồng nhất FQCN cho toàn bộ hệ thống Plugins.
-- 3: Nêu đúng + viết ví dụ YAML minh họa dùng FQCN cho cả Module, Filter và Lookup Plugin trong 1 Playbook.
-**Câu hỏi đào sâu:** Tại sao nên dùng FQCN cho Filter Plugin `ansible.builtin.to_nice_yaml`? *(Để tránh xung đột nếu dự án có một custom filter trùng tên `to_nice_yaml`.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span class="qa-question-text">Lệnh CLI nào dùng để khởi tạo cấu trúc khung của một Ansible Collection mới? Cấu trúc thư mục của nó khác gì so với Role?</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Lệnh CLI nào dùng để khởi tạo cấu trúc khung của một Ansible Collection mới? Cấu trúc thư mục của nó khác gì so với Role?</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Lệnh khởi tạo:</b> <code>ansible-galaxy collection init &lt;namespace&gt;.&lt;collection_name&gt;</code> (ví dụ <code>ansible-galaxy collection init my_company.my_tools</code>).</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>Khác biệt cấu trúc:</b>
+      <br>- <i>Role:</i> Khung thư mục phẳng chứa <code>tasks/</code>, <code>handlers/</code>, <code>templates/</code>.
+      <br>- <i>Collection:</i> Thư mục phân cấp chứa <code>plugins/modules/</code>, <code>plugins/filter/</code>, <code>plugins/lookup/</code>, <code>roles/</code>, và tệp siêu dữ liệu <code>galaxy.yml</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết lệnh <code>ansible-galaxy collection init</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết lệnh init nhưng không nêu được cấu trúc thư mục phân cấp <code>plugins/</code> của Collection.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác câu lệnh CLI khởi tạo và cấu trúc đa tầng của Collection.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + cho ví dụ minh họa tạo Collection nội bộ Doanh nghiệp <code>company.core</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Tệp siêu dữ liệu chính của Collection mới tạo tên là gì? <i>(Tệp <code>galaxy.yml</code>.)</i></div>
+  </div>
+</details>
 
----
-
-### Câu 7 — Triệt tiêu Rủi ro Module Name Collision
-**Hỏi:** Bài toán Module Name Collision (xung đột tên module) là gì? FQCN giải quyết triệt để bài toán này ra sao? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:**
-Module Name Collision xảy ra khi hệ thống cài đặt 2 Collections khác nhau nhưng cùng chứa 1 module trùng tên (ví dụ `amazon.aws.ec2` vs `community.aws.ec2`). Nếu người dùng viết short-name `ec2:`, Ansible Engine sẽ nạp nhầm module tùy theo thứ tự ưu tiên đường dẫn đĩa cứng, gây ra lỗi thực thi nghiêm trọng.
-FQCN giải quyết bằng cách ép buộc chỉ định chính xác nhà phát triển: `amazon.aws.ec2` hoặc `community.aws.ec2`, triệt tiêu 100% sự nhập nhằng.
-**Tiêu chí chấm:**
-- 0: Không hiểu khái niệm Module Name Collision.
-- 1: Biết xung đột tên nhưng không giải thích được cơ chế định danh duy nhất của FQCN.
-- 2: Phân tích chính xác bài toán xung đột tên module và giải pháp triệt để của FQCN.
-- 3: Nêu đúng + cho ví dụ thực tế xung đột giữa module AWS hoặc VMware.
-**Câu hỏi đào sâu:** Nếu trong 1 Playbook có khai báo `collections: - community.aws` và `collections: - amazon.aws`, module short-name `ec2:` sẽ nạp cái nào? *(Nạp Collection được khai báo ĐẦU TIÊN trong danh sách `collections:`.)*
-
----
-
-### Câu 8 — Cài đặt Collections Phụ thuộc qua `requirements.yml`
-**Hỏi:** Trình bày cấu trúc khai báo cài đặt Collection `community.general` trong `requirements.yml` và câu lệnh CLI để tự động cài đặt. *(Liên quan QT 6.2)*
-**Đáp án chuẩn:**
-- Cấu trúc `requirements.yml`:
-  ```yaml
-  collections:
-    - name: community.general
-      version: ">=7.0.0"
-  ```
-- Câu lệnh CLI cài đặt:
-  `ansible-galaxy collection install -r requirements.yml`
-**Tiêu chí chấm:**
-- 0: Không biết cách khai báo Collection trong `requirements.yml`.
-- 1: Viết được YAML nhưng nhầm lệnh `ansible-galaxy install` (thiếu từ khóa `collection`).
-- 2: Phân tích chính xác cấu trúc YAML và câu lệnh CLI cài đặt Collection.
-- 3: Nêu đúng + minh họa câu lệnh cài đặt cô lập vào thư mục `./collections` của dự án.
-**Câu hỏi đào sâu:** Thư mục lưu trữ mặc định của Collections khi cài đặt cô lập trong dự án được cấu hình ở thuộc tính nào của `ansible.cfg`? *(Thuộc tính `collections_path = ./collections`.)*
-
----
-
-### Câu 9 — Phương pháp Chứng minh Idempotency và Máy đúng khi Dùng FQCN 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook sử dụng 100% module FQCN để đảm bảo tính Idempotency và máy đích ở đúng trạng thái (hoàn thành 100% Objective RHCE EX294 #12).
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook site-fqcn.yml`: Các module FQCN `ansible.builtin.*` và `community.general.*` thực thi và chép file báo `changed > 0`.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn `ansible-playbook site-fqcn.yml` Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (tất cả các Task FQCN đều báo `ok`).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/fqcn-app.conf` kiểm tra file cấu hình thực sự tồn tại đúng dữ liệu từ module FQCN.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là xong" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc không dùng `docker exec` đối soát file thật.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI và đối soát file render.
-- 3: Trình bày xuất sắc 3 bước + khẳng định hoàn thành 100% Objective RHCE EX294 #12 (`☑`).
-**Câu hỏi đào sâu:** Việc chuyển đổi từ short-name sang FQCN có làm thay đổi logic kiểm tra checksum SHA1 của module `ansible.builtin.copy` không? *(Hoàn toàn không, checksum SHA1 vẫn được so sánh chuẩn xác.)*
-
----
-
-### Câu 10 — Công cụ `ansible-lint` Kiểm tra Cú pháp FQCN ★★★
-**Hỏi:** Công cụ `ansible-lint` là gì? Cờ kiểm tra `fqcn[action]` trong `ansible-lint` có tác dụng gì đối với việc chuẩn hóa mã nguồn tự động hóa?
-**Đáp án chuẩn:**
-- `ansible-lint`: Là công cụ phân tích mã nguồn tĩnh (Static Code Analyzer) chính thức của Red Hat giúp kiểm tra tiêu chuẩn chất lượng và Best Practices của Playbook.
-- Cờ `fqcn[action]`: Tự động quét và phát hiện tất cả các Task vẫn còn sử dụng tên module ngắn cũ (như `copy:`, `file:`), và cảnh báo ép người viết phải refactor sang chuẩn FQCN `ansible.builtin.copy`.
-**Tiêu chí chấm:**
-- 0: Không biết công cụ `ansible-lint`.
-- 1: Biết `ansible-lint` check code nhưng không giải thích được rule `fqcn[action]`.
-- 2: Phân tích chính xác vai trò quét mã nguồn tĩnh và ép chuẩn FQCN trong CI/CD pipeline.
-- 3: Nêu đúng + viết lệnh CLI `ansible-lint site-fqcn.yml` chạy kiểm tra.
-**Câu hỏi đào sâu:** Có thể tự động sửa lỗi FQCN short-name bằng `ansible-lint` không? *(Có thể dùng cờ `ansible-lint --write` để tự động refactor short-name sang FQCN.)*
-
----
-
-### Câu 11 — Tự Tạo Một Ansible Collection Nội bộ ★★★
-**Hỏi:** Lệnh CLI nào dùng để khởi tạo cấu trúc khung của một Ansible Collection mới? Cấu trúc thư mục của nó khác gì so với Role?
-**Đáp án chuẩn:**
-- Lệnh khởi tạo: `ansible-galaxy collection init <namespace>.<collection_name>` (ví dụ `ansible-galaxy collection init my_company.my_tools`).
-- Khác biệt cấu trúc:
-  + Role: Khung thư mục phẳng chứa `tasks/`, `handlers/`, `templates/`.
-  + Collection: Thư mục phân cấp chứa `plugins/modules/`, `plugins/filter/`, `plugins/lookup/`, `roles/`, và tệp siêu dữ liệu `galaxy.yml`.
-**Tiêu chí chấm:**
-- 0: Không biết lệnh `ansible-galaxy collection init`.
-- 1: Biết lệnh init nhưng không nêu được cấu trúc thư mục phân cấp `plugins/` của Collection.
-- 2: Phân tích chính xác câu lệnh CLI khởi tạo và cấu trúc đa tầng của Collection.
-- 3: Nêu đúng + cho ví dụ minh họa tạo Collection nội bộ Doanh nghiệp `company.core`.
-**Câu hỏi đào sâu:** Tệp siêu dữ liệu chính của Collection mới tạo tên là gì? *(Tệp `galaxy.yml`.)*
-
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng về Sử dụng FQCN và Collections ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên áp dụng chuẩn FQCN và Collections chuyên nghiệp, an toàn bảo mật và đạt Idempotency 100%.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** Viết 100% FQCN `ansible.builtin.*` cho tất cả các module hệ thống cốt lõi.
-2. **Quy tắc 2:** Sử dụng `ansible-doc <FQCN> -s` để tra cứu cú pháp và ví dụ chuẩn từ CLI.
-3. **Quy tắc 3:** Quản lý tập trung Collections mở rộng qua `requirements.yml` và cô lập trong `ansible.cfg`.
-4. **Quy tắc 4:** Sử dụng `ansible-lint` trong CI/CD để chặn 100% kịch bản dùng tên ngắn cũ.
-5. **Quy tắc 5:** Triệt tiêu hoàn toàn rủi ro xung đột module và đảm bảo Lần 2 đạt `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy chuẩn hóa mã nguồn IaC cấp Enterprise.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp tự động hóa việc gác cổng chất lượng mã nguồn? *(Quy tắc 4: Sử dụng `ansible-lint` trong CI/CD.)*
+<details class="qa-card" markdown="1">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng về Sử dụng FQCN và Collections.</span>
+  </summary>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <div style="margin: 0.5rem 0;"><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên áp dụng chuẩn FQCN và Collections chuyên nghiệp, an toàn bảo mật và đạt Idempotency 100%.</div>
+    <div style="margin: 0.5rem 0;"><b>Đáp án chuẩn:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">1. <b>Quy tắc 1:</b> Viết 100% FQCN <code>ansible.builtin.*</code> cho tất cả các module hệ thống cốt lõi.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">2. <b>Quy tắc 2:</b> Sử dụng <code>ansible-doc &lt;FQCN&gt; -s</code> để tra cứu cú pháp và ví dụ chuẩn từ CLI.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">3. <b>Quy tắc 3:</b> Quản lý tập trung Collections mở rộng qua <code>requirements.yml</code> và cô lập trong <code>ansible.cfg</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">4. <b>Quy tắc 4:</b> Sử dụng <code>ansible-lint</code> trong CI/CD để chặn 100% kịch bản dùng tên ngắn cũ.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">5. <b>Quy tắc 5:</b> Triệt tiêu hoàn toàn rủi ro xung đột module và đảm bảo Lần 2 đạt <code>changed=0</code> qua <code>docker exec</code>.</div>
+    <div style="margin: 0.5rem 0;"><b>Tiêu chí chấm:</b></div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không tóm tắt được các quy tắc.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Liệt kê được 2-3 quy tắc chung chung.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy chuẩn hóa mã nguồn IaC cấp Enterprise.</div>
+    <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp tự động hóa việc gác cổng chất lượng mã nguồn? <i>(Quy tắc 4: Sử dụng <code>ansible-lint</code> trong CI/CD.)</i></div>
+  </div>
+</details>
 
 ---
 
@@ -1017,4 +1145,11 @@ Khi nhà tuyển dụng phỏng vấn về tiêu chuẩn viết mã Ansible hi�
 1. **Nghiên cứu trước 1:** Phân biệt sự khác nhau giữa `include_tasks` vs `import_tasks` và `include_playbook` vs `import_playbook`?
 2. **Nghiên cứu trước 2:** Tại sao khi dùng `import_tasks` (Static), ta không thể sử dụng biến được tạo ra ở Runtime (như biến từ `register`) trong điều kiện `when:`?
 3. **Nghiên cứu trước 3:** Khi nào thì nên chia nhỏ tệp Playbook thành nhiều tệp task con bằng `include_tasks`?
+
+---
+
+> [!TIP]
+> **TIẾP THEO:** Khám phá bài học kế tiếp: [Bài 18: Tái Sử Dụng Mã Nguồn Tối Ưu Với include vs import: Phân Biệt Tĩnh (Static) & Động (Dynamic) Trong Kịch Bản Phức Tạp](ansible-18-18-include-import.html).
+
 {% endraw %}
+

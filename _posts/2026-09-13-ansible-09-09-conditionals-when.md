@@ -82,14 +82,23 @@ Tiếp nối bài toán thực tế của khóa học (I-10):
 ```mermaid
 graph TD
     A["Ansible Engine bắt đầu Task"] --> B{"Đánh giá Biểu thức Mệnh đề when:"}
-    B -- "Kết quả = TRUE" --> C["Thực thi Task trên Target Node"]
-    B -- "Kết quả = FALSE" --> D["Bỏ qua Task -> Status SKIPPED (changed=false)"]
+    B -->|"Kết quả = TRUE"| C["Thực thi Task trên Target Node"]
+    B -->|"Kết quả = FALSE"| D["Bỏ qua Task -> Status SKIPPED (changed=false)"]
     
     C --> E{"Task có thay đổi hệ thống?"}
-    E -- "Có" --> F["PLAY RECAP: changed=1"]
-    E -- "Không" --> G["PLAY RECAP: ok=1"]
+    E -->|"Có"| F["PLAY RECAP: changed=1"]
+    E -->|"Không"| G["PLAY RECAP: ok=1"]
     
     D --> H["PLAY RECAP: skipped=1, changed=0"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#10b981,stroke-width:2px
+    style D fill:none,stroke:#64748b,stroke-width:2px
+    style E fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#10b981,stroke-width:2px
+    style H fill:none,stroke:#64748b,stroke-width:2px
 ```
 
 **Nguyên lý cốt lõi:** Mệnh đề `when:` đặt ở cấp độ Task chấp nhận một biểu thức logic Jinja2 để quyết định Task đó CÓ ĐƯỢC THỰC THI HAY KHÔNG trên từng host cụ thể.
@@ -338,8 +347,20 @@ flowchart TD
     
     C & F & G --> H["CHẠY THỬ LẦN 2"]
     H --> I{"PLAY RECAP Lần 2: changed=0?"}
-    I -- Có --> J["ĐẠT: Playbook rẽ nhánh chuẩn Idempotent"]
-    I -- Không --> K["LỖI: Cần kiểm tra lại Task"]
+    I -->|"Có"| J["ĐẠT: Playbook rẽ nhánh chuẩn Idempotent"]
+    I -->|"Không"| K["LỖI: Cần kiểm tra lại Task"]
+
+    style A fill:none,stroke:#6366f1,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#64748b,stroke-width:2px
+    style D fill:none,stroke:#10b981,stroke-width:2px
+    style E fill:none,stroke:#f59e0b,stroke-width:2px
+    style F fill:none,stroke:#06b6d4,stroke-width:2px
+    style G fill:none,stroke:#10b981,stroke-width:2px
+    style H fill:none,stroke:#8b5cf6,stroke-width:2px
+    style I fill:none,stroke:#f59e0b,stroke-width:2px
+    style J fill:none,stroke:#10b981,stroke-width:2px
+    style K fill:none,stroke:#ef4444,stroke-width:2px
 ```
 
 ### Năm điều phải nhớ
@@ -475,12 +496,17 @@ graph TD
     PB -->|"3. Task 2: when os_family == Debian/Alpine"| T1
     PB -->|"4. Task 3: block when app_env == production"| T1
     
-    T1 -. "RECAP Lần 1: ok=4, changed=2, skipped=1" .-> SubGraph1
-    T1 -. "RECAP Lần 2: ok=4, changed=0, skipped=1 (ĐẠT IDEMPOTENT)" .-> SubGraph1
+    T1 -.->|"RECAP Lần 1: ok=4, changed=2, skipped=1"| SubGraph1
+    T1 -.->|"RECAP Lần 2: ok=4, changed=0, skipped=1 (ĐẠT IDEMPOTENT)"| SubGraph1
     
     DEV["Học viên (Tester)"] -->|"A. Chạy Playbook conditionals-site.yml"| SubGraph1
     DEV -->|"B. Khẳng định changed=0 ở Lần 2"| SubGraph1
     DEV -->|"C. Đối soát sự thật máy đích"| T1
+
+    style SubGraph1 fill:none,stroke:#6366f1,stroke-width:2px
+    style PB fill:none,stroke:#06b6d4,stroke-width:2px
+    style T1 fill:none,stroke:#10b981,stroke-width:2px
+    style DEV fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
@@ -880,155 +906,273 @@ Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các v�
 
 ## Bộ câu hỏi phỏng vấn chuyên sâu — ĐÚNG 12 câu
 
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q01</span>
+  <span class="qa-question-text">Mệnh đề <code>when</code> trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task?</span>
+</summary>
 <div class="qa-answer">
   <div class="qa-answer-header">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
     <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
   </div>
-  
-<b style="color: var(--accent-primary);">Hỏi:</b> Mệnh đề <code>when</code> trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? *(Liên quan QT 4.1)*
-<b style="color: var(--accent-primary);">Đáp án chuẩn:</b> Mệnh đề <code>when</code> cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau <code>when:</code> đánh giá kết quả là <code>TRUE</code>. Mệnh đề <code>when</code> được Ansible Engine đánh giá ngay tại thời điểm runtime TRƯỚC KHU TASK ĐƯỢC GỬI THI HÀNH trên máy đích. Nếu điều kiện đánh giá <code>FALSE</code>, Task lập tức bị bỏ qua với trạng thái <code>skipped</code>.
-<b style="color: var(--accent-primary);">Tiêu chí chấm:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết tác dụng của <code>when</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết <code>when</code> rẽ nhánh nhưng không giải thích được mốc thời gian đánh giá runtime trước khi chạy task.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo <code>ansible_facts.os_family</code>.</div>
-<b style="color: var(--accent-primary);">Câu hỏi đào sâu:</b> Mệnh đề <code>when</code> được đánh giá trên Control Node hay trên Managed Node? *(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)*
+  <p><b>Hỏi:</b> Mệnh đề <code>when</code> trong Ansible Playbook có tác dụng gì? Nó được đánh giá tại thời điểm nào trong chu trình thi hành Task? <i>(Liên quan QT 4.1)</i></p>
+  <p><b>Đáp án chuẩn:</b> Mệnh đề <code>when</code> cho phép đưa ra quyết định rẽ nhánh logic: Task chỉ được thực thi trên máy đích nếu biểu thức điều kiện sau <code>when:</code> đánh giá kết quả là <code>TRUE</code>. Mệnh đề <code>when</code> được Ansible Engine đánh giá ngay tại thời điểm runtime <b>TRƯỚC KHI TASK ĐƯỢC GỬI THI HÀNH</b> trên máy đích. Nếu điều kiện đánh giá <code>FALSE</code>, Task lập tức bị bỏ qua với trạng thái <code>skipped</code>.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết tác dụng của <code>when</code>.</li>
+    <li><b>1:</b> Biết <code>when</code> rẽ nhánh nhưng không giải thích được mốc thời gian đánh giá runtime trước khi chạy task.</li>
+    <li><b>2:</b> Phân tích chính xác vai trò rẽ nhánh + thời điểm đánh giá runtime trên từng host.</li>
+    <li><b>3:</b> Nêu đúng + minh họa ví dụ rẽ nhánh cài đặt gói theo <code>ansible_facts.os_family</code>.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Mệnh đề <code>when</code> được đánh giá trên Control Node hay trên Managed Node? <i>(Được đánh giá trên Control Node dựa trên dữ liệu facts/biến của host đó.)</i></p>
 </div>
 </details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q02</span>
+  <span class="qa-question-text">Tại sao việc bọc cặp dấu ngoặc nhọn Jinja2 <code>{{ '{{' }} {{ '}}' }}</code> bên trong từ khóa <code>when:</code> bị coi là sai cú pháp chuẩn?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Tại sao việc bọc cặp dấu ngoặc nhọn Jinja2 <code>{{ '{{' }} {{ '}}' }}</code> bên trong từ khóa <code>when:</code> (ví dụ <code>when: "{{ '{{' }} var == 'val' {{ '}}' }}"</code>) bị coi là sai cú pháp chuẩn? <i>(Liên quan QT 4.2)</i></p>
+  <p><b>Đáp án chuẩn:</b> Vì bản thân từ khóa <code>when:</code> đã tự động được Ansible Engine đặt sẵn trong môi trường biểu thức Jinja2 thô. Việc chèn thêm cặp ngoặc nhọn <code>{{ '{{' }} {{ '}}' }}</code> bên trong sẽ làm Ansible hiểu nhầm là truyền một chuỗi mẫu template thô, dẫn đến cảnh báo <code>Bare variable warning</code> hoặc lỗi parse syntax làm sai lệch kết quả so sánh logic.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Cho rằng phải bọc <code>{{ '{{' }} {{ '}}' }}</code> mới đúng cú pháp.</li>
+    <li><b>1:</b> Biết không bọc <code>{{ '{{' }} {{ '}}' }}</code> nhưng không giải thích được cơ chế parser Jinja2 thô của từ khóa <code>when</code>.</li>
+    <li><b>2:</b> Phân tích chính xác lý do từ khóa <code>when</code> tự động xử lý môi trường Jinja2 thô.</li>
+    <li><b>3:</b> Nêu đúng + viết ví dụ so sánh mã ĐÚNG và SAI trực quan.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Ngoại lệ duy nhất nào cho phép bọc ngoặc kép <code>""</code> ở mệnh đề <code>when</code>? <i>(Bọc ngoặc kép toàn bộ chuỗi bên ngoài cùng để tránh lỗi YAML khi chuỗi chứa ký tự đặc biệt như dấu hai chấm.)</i></p>
+</div>
+</details>
 
-### Câu 2 — Quy tắc Cấm bọc `{{ }}` trong `when` 🔥
-**Hỏi:** Tại sao việc bọc cặp dấu ngoặc nhọn Jinja2 `{{ }}` bên trong từ khóa `when:` (ví dụ `when: "{{ var == 'val' }}"`) bị coi là sai cú pháp chuẩn? *(Liên quan QT 4.2)*
-**Đáp án chuẩn:** Vì bản thân từ khóa `when:` đã tự động được Ansible Engine đặt sẵn trong môi trường biểu thức Jinja2 thô. Việc chèn thêm cặp ngoặc nhọn `{{ }}` bên trong sẽ làm Ansible hiểu nhầm là truyền một chuỗi mẫu template thô, dẫn đến cảnh báo `Bare variable warning` hoặc lỗi parse syntax làm sai lệch kết quả so sánh logic.
-**Tiêu chí chấm:**
-- 0: Cho rằng phải bọc `{{ }}` mới đúng cú pháp.
-- 1: Biết không bọc `{{ }}` nhưng không giải thích được cơ chế parser Jinja2 thô của từ khóa `when`.
-- 2: Phân tích chính xác lý do từ khóa `when` tự động xử lý môi trường Jinja2 thô.
-- 3: Nêu đúng + viết ví dụ so sánh mã ĐÚNG và SAI trực quan.
-**Câu hỏi đào sâu:** Ngoại lệ duy nhất nào cho phép bọc ngoặc kép `""` ở mệnh đề `when`? *(Bọc ngoặc kép toàn bộ chuỗi bên ngoài cùng để tránh lỗi YAML khi chuỗi chứa ký tự đặc biệt như dấu hai chấm.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q03</span>
+  <span class="qa-question-text">Trình bày 2 cách biểu diễn phép toán điều kiện AND trong mệnh đề <code>when</code>. Cách nào được khuyến khích trong thực tế?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Trình bày 2 cách biểu diễn phép toán điều kiện AND trong mệnh đề <code>when</code>. Cách nào được khuyến khích trong thực tế? <i>(Liên quan QT 4.3)</i></p>
+  <p><b>Đáp án chuẩn:</b></p>
+  <ul>
+    <li><b>Cách 1 (Toán tử <code>and</code> trên 1 dòng):</b> <code>when: cond1 and cond2 and cond3</code></li>
+    <li><b>Cách 2 (Mảng danh sách YAML - KHUYẾN KHÍCH):</b>
+      <pre><code class="language-yaml">when:
+  - cond1
+  - cond2
+  - cond3</code></pre>
+    </li>
+  </ul>
+  <p>Cách 2 được khuyến khích tuyệt đối trong thực tế vì trình bày dạng mảng danh sách rõ ràng, dễ đọc, dễ bảo trì và loại bỏ hoàn toàn nguy cơ nhầm lẫn thứ tự ưu tiên phép toán.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết biểu diễn phép toán AND.</li>
+    <li><b>1:</b> Biết gõ từ khóa <code>and</code> nhưng không biết cách biểu diễn mảng danh sách YAML.</li>
+    <li><b>2:</b> Phân tích chính xác cả 2 cách + lý do chọn mảng danh sách theo chuẩn DevOps.</li>
+    <li><b>3:</b> Nêu đúng + viết ví dụ kết hợp cả <code>and</code>, <code>or</code>, <code>not</code> có ngoặc đơn phân nhóm ưu tiên.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Mảng danh sách các điều kiện bên dưới <code>when:</code> đại diện cho phép toán AND hay phép toán OR? <i>(Đại diện cho phép toán AND 100%.)</i></p>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q04</span>
+  <span class="qa-question-text">Jinja2 Test <code>is defined</code> được dùng trong trường hợp nào? Nếu truy xuất một biến chưa khai báo mà KHÔNG dùng <code>is defined</code>, điều gì sẽ xảy ra?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Jinja2 Test <code>is defined</code> được dùng trong trường hợp nào? Nếu truy xuất một biến chưa khai báo mà KHÔNG dùng <code>is defined</code>, điều gì sẽ xảy ra? <i>(Liên quan QT 5.1)</i></p>
+  <p><b>Đáp án chuẩn:</b> <code>is defined</code> được dùng để kiểm tra xem một biến tùy chọn (Optional variable) đã được khai báo hay chưa trước khi đọc giá trị của nó (ví dụ <code>when: custom_port is defined</code>). Nếu truy xuất một biến chưa bao giờ được khai báo mà KHÔNG dùng <code>is defined</code>, Ansible sẽ ném lỗi fatal <code>undefined variable</code> và làm dừng thi hành toàn bộ Playbook lập tức.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết Jinja2 Test <code>is defined</code>.</li>
+    <li><b>1:</b> Biết <code>is defined</code> kiểm tra biến nhưng không nêu được rủi ro văng lỗi fatal khi thiếu nó.</li>
+    <li><b>2:</b> Phân tích chính xác vai trò phòng chống lỗi fatal undefined variable của <code>is defined</code>.</li>
+    <li><b>3:</b> Nêu đúng + cho ví dụ thực tế cài đặt cổng dịch vụ tùy chỉnh với <code>is defined</code>.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Phân biệt sự khác nhau giữa <code>when: my_var is defined</code> và <code>when: my_var</code>? <i>(<code>is defined</code> chỉ kiểm tra biến CÓ TỒN TẠI HAY KHÔNG; <code>when: my_var</code> vừa kiểm tra tồn tại vừa kiểm tra giá trị của biến có phải là TRUE/non-empty hay không.)</i></p>
+</div>
+</details>
 
-### Câu 3 — Biểu diễn Toán tử Logic AND / OR / NOT 🔥
-**Hỏi:** Trình bày 2 cách biểu diễn phép toán điều kiện AND trong mệnh đề `when`. Cách nào được khuyến khích trong thực tế? *(Liên quan QT 4.3)*
-**Đáp án chuẩn:**
-- **Cách 1 (Toán tử `and` trên 1 dòng):** `when: cond1 and cond2 and cond3`.
-- **Cách 2 (Mảng danh sách YAML - KHUYẾN KHÍCH):**
-  ```yaml
-  when:
-    - cond1
-    - cond2
-    - cond3
-  ```
-Cách 2 được khuyến khích tuyệt đối trong thực tế vì trình bày dạng mảng danh sách rõ ràng, dễ đọc, dễ bảo trì và loại bỏ hoàn toàn nguy cơ nhầm lẫn thứ tự ưu tiên phép toán.
-**Tiêu chí chấm:**
-- 0: Không biết biểu diễn phép toán AND.
-- 1: Biết gõ từ khóa `and` nhưng không biết cách biểu diễn mảng danh sách YAML.
-- 2: Phân tích chính xác cả 2 cách + lý do chọn mảng danh sách theo chuẩn DevOps.
-- 3: Nêu đúng + viết ví dụ kết hợp cả `and`, `or`, `not` có ngoặc đơn phân nhóm ưu tiên.
-**Câu hỏi đào sâu:** Mảng danh sách các điều kiện bên dưới `when:` đại diện cho phép toán AND hay phép toán OR? *(Đại diện cho phép toán AND 100%.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q05</span>
+  <span class="qa-question-text">Trình bày cơ chế xây dựng Luồng phục hồi lỗi (Recovery Flow) kết hợp giữa thuộc tính <code>register</code> và Jinja2 Test <code>is failed</code>.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Trình bày cơ chế xây dựng Luồng phục hồi lỗi (Recovery Flow) kết hợp giữa thuộc tính <code>register</code> và Jinja2 Test <code>is failed</code>. <i>(Liên quan QT 5.2)</i></p>
+  <p><b>Đáp án chuẩn:</b> Quy trình 2 bước:</p>
+  <ol>
+    <li><b>Task chính:</b> Đăng ký kết quả chạy bằng <code>register: primary_res</code> và thêm <code>ignore_errors: true</code> để không dừng Playbook nếu bị lỗi.</li>
+    <li><b>Task phục hồi (Fallback):</b> Khai báo mệnh đề <code>when: primary_res is failed</code>. Task phục hồi này CHỈ THỰC THI khi Task chính bị thất bại, giúp hệ thống tự động chuyển sang phương án dự phòng an toàn.</li>
+  </ol>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết cách bắt lỗi để chạy task phục hồi.</li>
+    <li><b>1:</b> Biết dùng <code>register</code> nhưng không biết các test <code>is failed</code> / <code>is succeeded</code>.</li>
+    <li><b>2:</b> Trình bày chính xác luồng 2 bước kết hợp <code>register</code>, <code>ignore_errors</code>, và <code>is failed</code>.</li>
+    <li><b>3:</b> Nêu đúng + viết đoạn YAML hoàn chỉnh thử nghiệm chạy script primary fail -&gt; fallback run.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Ngoài <code>is failed</code> và <code>is succeeded</code>, Ansible còn hỗ trợ các Jinja2 Status Tests nào khác? <i>(<code>is skipped</code>, <code>is changed</code>, <code>is finished</code>.)</i></p>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q06</span>
+  <span class="qa-question-text">Nêu 3 Jinja2 File Tests thường dùng để kiểm tra trạng thái tệp tin/thư mục trên đĩa cứng máy đích. Cho ví dụ.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Nêu 3 Jinja2 File Tests thường dùng để kiểm tra trạng thái tệp tin/thư mục trên đĩa cứng máy đích. Cho ví dụ. <i>(Liên quan QT 5.3)</i></p>
+  <p><b>Đáp án chuẩn:</b></p>
+  <ol>
+    <li><code>is file</code>: Kiểm tra đường dẫn có phải là một tệp tin thông thường (ví dụ <code>when: "'/etc/app.conf' is file"</code>).</li>
+    <li><code>is directory</code>: Kiểm tra đường dẫn có phải là một thư mục (ví dụ <code>when: "'/var/log/app' is directory"</code>).</li>
+    <li><code>is mount</code>: Kiểm tra đường dẫn có phải là một điểm mount đĩa cứng (ví dụ <code>when: "'/mnt/data' is mount"</code>).</li>
+  </ol>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết các Jinja2 File Tests.</li>
+    <li><b>1:</b> Liệt kê được 1 test nhưng viết sai cú pháp.</li>
+    <li><b>2:</b> Phân tích chính xác cả 3 File Tests <code>is file</code>, <code>is directory</code>, <code>is mount</code>.</li>
+    <li><b>3:</b> Nêu đúng + viết ví dụ Playbook rẽ nhánh chép file chỉ khi thư mục đích đã tồn tại.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Để sử dụng các File Tests này một cách chính xác nhất, ta nên kết hợp với module thu thập thông số nào trước đó? <i>(Kết hợp với module <code>ansible.builtin.stat</code> để lấy thông số đĩa cứng.)</i></p>
+</div>
+</details>
 
-### Câu 4 — Kỹ thuật Kiểm tra Biến với `is defined` 🔥
-**Hỏi:** Jinja2 Test `is defined` được dùng trong trường hợp nào? Nếu truy xuất một biến chưa khai báo mà KHÔNG dùng `is defined`, điều gì sẽ xảy ra? *(Liên quan QT 5.1)*
-**Đáp án chuẩn:** `is defined` được dùng để kiểm tra xem một biến tùy chọn (Optional variable) đã được khai báo hay chưa trước khi đọc giá trị của nó (ví dụ `when: custom_port is defined`). Nếu truy xuất một biến chưa bao giờ được khai báo mà KHÔNG dùng `is defined`, Ansible sẽ ném lỗi fatal `undefined variable` và làm dừng thi hành toàn bộ Playbook lập tức.
-**Tiêu chí chấm:**
-- 0: Không biết Jinja2 Test `is defined`.
-- 1: Biết `is defined` kiểm tra biến nhưng không nêu được rủi ro văng lỗi fatal khi thiếu nó.
-- 2: Phân tích chính xác vai trò phòng chống lỗi fatal undefined variable của `is defined`.
-- 3: Nêu đúng + cho ví dụ thực tế cài đặt cổng dịch vụ tùy chỉnh với `is defined`.
-**Câu hỏi đào sâu:** Phân biệt sự khác nhau giữa `when: my_var is defined` và `when: my_var`? *(is defined chỉ kiểm tra biến CÓ TỒN TẠI HAY KHÔNG; when: my_var vừa kiểm tra tồn tại vừa kiểm tra giá trị của biến có phải là TRUE/non-empty hay không.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q07</span>
+  <span class="qa-question-text">Việc sử dụng khối <code>block:</code> kết hợp với mệnh đề <code>when:</code> mang lại lợi ích gì cho việc thiết kế mã nguồn Playbook?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Việc sử dụng khối <code>block:</code> kết hợp với mệnh đề <code>when:</code> mang lại lợi ích gì cho việc thiết kế mã nguồn Playbook? <i>(Liên quan QT 6.1)</i></p>
+  <p><b>Đáp án chuẩn:</b> Khối <code>block:</code> cho phép nhóm nhiều Task có chung logic hoạt động lại với nhau và chỉ cần khai báo thuộc tính <code>when:</code> <b>duy nhất 1 lần ở cấp độ Block</b>. Tất cả các Task bên trong Block sẽ tự động thừa hưởng điều kiện <code>when</code> đó. Lợi ích: Giúp mã nguồn ngắn gọn, loại bỏ lặp lại mã (DRY principle) và dễ dàng quản lý luồng rẽ nhánh theo hạ tầng.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết cấu trúc <code>block:</code>.</li>
+    <li><b>1:</b> Biết <code>block</code> nhưng lặp lại thuộc tính <code>when</code> ở từng task bên trong.</li>
+    <li><b>2:</b> Phân tích chính xác lợi ích thừa hưởng điều kiện <code>when</code> ở cấp độ Block.</li>
+    <li><b>3:</b> Nêu đúng + viết đoạn mã YAML minh họa Block cấu hình dành riêng cho hệ điều hành RedHat.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu một Task bên trong Block có khai báo thêm mệnh đề <code>when</code> riêng, Ansible sẽ xử lý ra sao? <i>(Task đó phải thỏa mãn CẢ điều kiện của Block VÀ điều kiện riêng của Task thì mới được thực thi.)</i></p>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q08</span>
+  <span class="qa-question-text">Tại sao một Playbook có nhiều Task bị <code>skipped</code> ở lượt chạy Lần 2 nhưng vẫn được kết luận là ĐẠT chuẩn Idempotency 100%?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Tại sao một Playbook có nhiều Task bị <code>skipped</code> ở lượt chạy Lần 2 nhưng vẫn được kết luận là ĐẠT chuẩn Idempotency 100%? <i>(Liên quan QT 6.2)</i></p>
+  <p><b>Đáp án chuẩn:</b> Vì chỉ số <code>skipped</code> trong bảng <code>PLAY RECAP</code> chỉ phản ánh số lượng Task rẽ nhánh bị bỏ qua do điều kiện <code>when</code> đánh giá FALSE. Việc bỏ qua một Task <b>KHÔNG LÀM THAY ĐỔI</b> bất kỳ byte nào trên đĩa cứng máy đích. Tiêu chuẩn nghiệm thu Idempotency chỉ căn cứ duy nhất vào chỉ số <code>changed=0</code> ở lượt chạy Lần 2. Do đó <code>skipped=N, changed=0</code> hoàn toàn đạt chuẩn Idempotency tuyệt đối.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Lầm tưởng <code>skipped &gt; 0</code> là Playbook bị lỗi không đạt Idempotency.</li>
+    <li><b>1:</b> Biết <code>skipped</code> là bỏ qua nhưng không giải thích được lý do tại sao nó không ảnh hưởng <code>changed=0</code>.</li>
+    <li><b>2:</b> Phân tích chính xác bản chất chỉ số <code>skipped</code> và khẳng định tiêu chuẩn <code>changed=0</code> ở Lần 2.</li>
+    <li><b>3:</b> Nêu đúng + minh họa bảng <code>PLAY RECAP</code> chuẩn chứa chỉ số <code>skipped</code>.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Chỉ số <code>skipped</code> có làm tăng thời gian chạy Playbook nhiều không? <i>(Không, task bị skipped được bỏ qua gần như tức thì trong vài milisecond.)</i></p>
+</div>
+</details>
 
-### Câu 5 — Đánh giá Trạng thái Task trước với `is succeeded` / `is failed`
-**Hỏi:** Trình bày cơ chế xây dựng Luồng phục hồi lỗi (Recovery Flow) kết hợp giữa thuộc tính `register` và Jinja2 Test `is failed`. *(Liên quan QT 5.2)*
-**Đáp án chuẩn:** Quy trình 2 bước:
-1. **Task chính:** Đăng ký kết quả chạy bằng `register: primary_res` và thêm `ignore_errors: true` để không dừng Playbook nếu bị lỗi.
-2. **Task phục hồi (Fallback):** Khai báo mệnh đề `when: primary_res is failed`. Task phục hồi này CHỈ THỰC THI khi Task chính bị thất bại, giúp hệ thống tự động chuyển sang phương án dự phòng an toàn.
-**Tiêu chí chấm:**
-- 0: Không biết cách bắt lỗi để chạy task phục hồi.
-- 1: Biết dùng `register` nhưng không biết các test `is failed` / `is succeeded`.
-- 2: Trình bày chính xác luồng 2 bước kết hợp `register`, `ignore_errors`, và `is failed`.
-- 3: Nêu đúng + viết đoạn YAML hoàn chỉnh thử nghiệm chạy script primary fail -> fallback run.
-**Câu hỏi đào sâu:** Ngoài `is failed` và `is succeeded`, Ansible còn hỗ trợ các Jinja2 Status Tests nào khác? *(`is skipped`, `is changed`, `is finished`.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q09</span>
+  <span class="qa-question-text">Tại sao việc đọc <code>register_var.stdout</code> của một Task vừa bị <code>skipped</code> lại khiến Playbook bị văng lỗi fatal? Làm sao để xử lý an toàn?</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Tại sao việc đọc <code>register_var.stdout</code> của một Task vừa bị <code>skipped</code> lại khiến Playbook bị văng lỗi fatal? Làm sao để xử lý an toàn? <i>(Liên quan QT 6.3)</i></p>
+  <p><b>Đáp án chuẩn:</b> Khi một Task bị <code>skipped</code>, Ansible vẫn khởi tạo biến đăng ký <code>register_var</code> nhưng <b>CHỈ GÁN thuộc tính <code>skipped: true</code></b> chứ <b>KHÔNG THỰC THI LỆNH</b> để tạo ra trường <code>stdout</code>. Truy xuất <code>register_var.stdout</code> sẽ bị lỗi <code>undefined attribute</code>. Cách xử lý an toàn: Bổ sung điều kiện <code>when: register_var is succeeded</code> (hoặc <code>when: register_var.stdout is defined</code>) ở Task đằng sau trước khi đọc.</p>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không biết bẫy lỗi này.</li>
+    <li><b>1:</b> Biết bị lỗi nhưng không giải thích được tại sao task skipped lại không có trường <code>stdout</code>.</li>
+    <li><b>2:</b> Phân tích chính xác cơ chế tạo biến register khi skipped + giải pháp bọc <code>is succeeded</code>.</li>
+    <li><b>3:</b> Nêu đúng + viết đoạn mã YAML minh họa cạm bẫy và cách xử lý chuẩn hóa.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu Task A bị skipped, thuộc tính <code>register_var.changed</code> sẽ có giá trị là gì? <i>(Có giá trị là <code>false</code>.)</i></p>
+</div>
+</details>
 
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q10</span>
+  <span class="qa-question-text">Trình bày quy trình 3 bước nghiệm thu một Playbook có sử dụng mệnh đề <code>when</code> rẽ nhánh để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Trình bày quy trình 3 bước nghiệm thu một Playbook có sử dụng mệnh đề <code>when</code> rẽ nhánh để đảm bảo tính Idempotency và máy đích ở đúng trạng thái. <i>(Liên quan QT 6.3)</i></p>
+  <p><b>Đáp án chuẩn:</b></p>
+  <ol>
+    <li><b>Bước 1 (Thực thi Lần 1):</b> Chạy <code>ansible-playbook -e "target_env=production" site.yml</code> để áp đặt cấu hình theo nhánh production.</li>
+    <li><b>Bước 2 (Kiểm Idempotency Lần 2):</b> Chạy lại nguyên vẹn lệnh CLI đó Lần 2: bảng <code>PLAY RECAP</code> <b>bắt buộc phải đạt <code>changed=0</code></b> (chỉ số <code>skipped</code> giữ nguyên).</li>
+    <li><b>Bước 3 (Đối soát Sự thật Máy đích):</b> Dùng <code>docker exec target1 cat /etc/production.conf</code> kiểm tra file sản phẩm của nhánh production thực sự tồn tại trên đĩa cứng máy đích, không dừng lại ở màn hình terminal.</li>
+  </ol>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là đủ" (dính bẫy trần điểm 1).</li>
+    <li><b>1:</b> Thiếu bước Lần 2 <code>changed=0</code> hoặc bước đối soát <code>docker exec</code>.</li>
+    <li><b>2:</b> Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI cụ thể.</li>
+    <li><b>3:</b> Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh <code>docker exec</code> đối soát file được tạo bởi mệnh đề <code>when</code>.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu ở Lần 2 ta đổi cờ Extra Vars thành <code>-e "target_env=staging"</code>, chỉ số RECAP Lần 2 sẽ ra sao? <i>(RECAP Lần 2 sẽ báo <code>changed &gt; 0</code> do Playbook thực thi nhánh staging mới và bỏ qua nhánh production.)</i></p>
+</div>
+</details>
 
-### Câu 6 — Kiểm tra Hệ thống Tệp tin với Jinja2 File Tests
-**Hỏi:** Nêu 3 Jinja2 File Tests thường dùng để kiểm tra trạng thái tệp tin/thư mục trên đĩa cứng máy đích. Cho ví dụ. *(Liên quan QT 5.3)*
-**Đáp án chuẩn:**
-1. `is file`: Kiểm tra đường dẫn có phải là một tệp tin thông thường (ví dụ `when: "'/etc/app.conf' is file"`).
-2. `is directory`: Kiểm tra đường dẫn có phải là một thư mục (ví dụ `when: "'/var/log/app' is directory"`).
-3. `is mount`: Kiểm tra đường dẫn có phải là một điểm mount đĩa cứng (ví dụ `when: "'/mnt/data' is mount"`).
-**Tiêu chí chấm:**
-- 0: Không biết các Jinja2 File Tests.
-- 1: Liệt kê được 1 test nhưng viết sai cú pháp.
-- 2: Phân tích chính xác cả 3 File Tests `is file`, `is directory`, `is mount`.
-- 3: Nêu đúng + viết ví dụ Playbook rẽ nhánh chép file chỉ khi thư mục đích đã tồn tại.
-**Câu hỏi đào sâu:** Để sử dụng các File Tests này một cách chính xác nhất, ta nên kết hợp với module thu thập thông số nào trước đó? *(Kết hợp với module `ansible.builtin.stat` để lấy thông số đĩa cứng.)*
-
----
-
-### Câu 7 — Gom nhóm Task Rẽ nhánh bằng `block:` 🔥
-**Hỏi:** Việc sử dụng khối `block:` kết hợp với mệnh đề `when:` mang lại lợi ích gì cho việc thiết kế mã nguồn Playbook? *(Liên quan QT 6.1)*
-**Đáp án chuẩn:** Khối `block:` cho phép nhóm nhiều Task có chung logic hoạt động lại với nhau và chỉ cần khai báo thuộc tính `when:` **duy nhất 1 lần ở cấp độ Block**. Tất cả các Task bên trong Block sẽ tự động thừa hưởng điều kiện `when` đó. Lợi ích: Giúp mã nguồn ngắn gọn, loại bỏ lặp lại mã (DRY principle) và dễ dàng quản lý luồng rẽ nhánh theo hạ tầng.
-**Tiêu chí chấm:**
-- 0: Không biết cấu trúc `block:`.
-- 1: Biết `block` nhưng lặp lại thuộc tính `when` ở từng task bên trong.
-- 2: Phân tích chính xác lợi ích thừa hưởng điều kiện `when` ở cấp độ Block.
-- 3: Nêu đúng + viết đoạn mã YAML minh họa Block cấu hình dành riêng cho hệ điều hành RedHat.
-**Câu hỏi đào sâu:** Nếu một Task bên trong Block có khai báo thêm mệnh đề `when` riêng, Ansible sẽ xử lý ra sao? *(Task đó phải thỏa mãn CẢ điều kiện của Block VÀ điều kiện riêng của Task thì mới được thực thi.)*
-
----
-
-### Câu 8 — Quản lý Trạng thái `skipped` trong Bảng `PLAY RECAP`
-**Hỏi:** Tại sao một Playbook có nhiều Task bị `skipped` ở lượt chạy Lần 2 nhưng vẫn được kết luận là ĐẠT chuẩn Idempotency 100%? *(Liên quan QT 6.2)*
-**Đáp án chuẩn:** Vì chỉ số `skipped` trong bảng `PLAY RECAP` chỉ phản ánh số lượng Task rẽ nhánh bị bỏ qua do điều kiện `when` đánh giá FALSE. Việc bỏ qua một Task KHÔNG LÀM THAY ĐỔI bất kỳ byte nào trên đĩa cứng máy đích. Tiêu chuẩn nghiệm thu Idempotency chỉ căn cứ duy nhất vào chỉ số `changed=0` ở lượt chạy Lần 2. Do đó `skipped=N, changed=0` hoàn toàn đạt chuẩn Idempotency tuyệt đối.
-**Tiêu chí chấm:**
-- 0: Lầm tưởng `skipped > 0` là Playbook bị lỗi không đạt Idempotency.
-- 1: Biết `skipped` là bỏ qua nhưng không giải thích được lý do tại sao nó không ảnh hưởng `changed=0`.
-- 2: Phân tích chính xác bản chất chỉ số `skipped` và khẳng định tiêu chuẩn `changed=0` ở Lần 2.
-- 3: Nêu đúng + minh họa bảng `PLAY RECAP` chuẩn chứa chỉ số `skipped`.
-**Câu hỏi đào sâu:** Chỉ số `skipped` có làm tăng thời gian chạy Playbook nhiều không? *(Không, task bị skipped được bỏ qua gần như tức thì trong vài milisecond.)*
-
----
-
-### Câu 9 — Cạm bẫy Bắt Biến `register` của Task bị `skipped` 🔥
-**Hỏi:** Tại sao việc đọc `register_var.stdout` của một Task vừa bị `skipped` lại khiến Playbook bị văng lỗi fatal? Làm sao để xử lý an toàn? *(Liên quan QT 6.3)*
-**Đáp án chuẩn:** Khi một Task bị `skipped`, Ansible vẫn khởi tạo biến đăng ký `register_var` nhưng CHỈ GÁN thuộc tính `skipped: true` chứ KHÔNG THỰC THI LỆNH để tạo ra trường `stdout`. Truy xuất `register_var.stdout` sẽ bị lỗi `undefined attribute`. Cách xử lý an toàn: Bổ sung điều kiện `when: register_var is succeeded` (hoặc `when: register_var.stdout is defined`) ở Task đằng sau trước khi đọc.
-**Tiêu chí chấm:**
-- 0: Không biết bẫy lỗi này.
-- 1: Biết bị lỗi nhưng không giải thích được tại sao task skipped lại không có trường `stdout`.
-- 2: Phân tích chính xác cơ chế tạo biến register khi skipped + giải pháp bọc `is succeeded`.
-- 3: Nêu đúng + viết đoạn mã YAML minh họa cạm bẫy và cách xử lý chuẩn hóa.
-**Câu hỏi đào sâu:** Nếu Task A bị skipped, thuộc tính `register_var.changed` sẽ có giá trị là gì? *(Có giá trị là `false`.)*
-
----
-
-### Câu 10 — Phương pháp Chứng minh Idempotency và Máy đúng khi Rẽ nhánh 🔥
-**Hỏi:** Trình bày quy trình 3 bước nghiệm thu một Playbook có sử dụng mệnh đề `when` rẽ nhánh để đảm bảo tính Idempotency và máy đích ở đúng trạng thái.
-**Đáp án chuẩn:**
-1. **Bước 1 (Thực thi Lần 1):** Chạy `ansible-playbook -e "target_env=production" site.yml` để áp đặt cấu hình theo nhánh production.
-2. **Bước 2 (Kiểm Idempotency Lần 2):** Chạy lại nguyên vẹn lệnh CLI đó Lần 2: bảng `PLAY RECAP` **bắt buộc phải đạt `changed=0`** (chỉ số `skipped` giữ nguyên).
-3. **Bước 3 (Đối soát Sự thật Máy đích):** Dùng `docker exec target1 cat /etc/production.conf` kiểm tra file sản phẩm của nhánh production thực sự tồn tại trên đĩa cứng máy đích, không dừng lại ở màn hình terminal.
-**Tiêu chí chấm:**
-- 0: Trả lời "chỉ cần nhìn terminal Lần 1 báo xanh là đủ" (dính bẫy trần điểm 1).
-- 1: Thiếu bước Lần 2 `changed=0` hoặc bước đối soát `docker exec`.
-- 2: Trình bày đủ 3 bước nhưng chưa minh họa câu lệnh CLI cụ thể.
-- 3: Trình bày xuất sắc 3 bước + cho ví dụ thực tế lệnh `docker exec` đối soát file được tạo bởi mệnh đề `when`.
-**Câu hỏi đào sâu:** Nếu ở Lần 2 ta đổi cờ Extra Vars thành `-e "target_env=staging"`, chỉ số RECAP Lần 2 sẽ ra sao? *(RECAP Lần 2 sẽ báo `changed > 0` do Playbook thực thi nhánh staging mới và bỏ qua nhánh production.)*
-
----
-
-### Câu 11 — Kỹ thuật Rẽ nhánh theo Thông tin Facts OS ★★★
-**Hỏi:** Viết một đoạn Playbook YAML sử dụng `ansible_facts.os_family` kết hợp mệnh đề `when` để tự động chép file cấu hình thích hợp (`/etc/httpd/conf/httpd.conf` cho RedHat, `/etc/nginx/nginx.conf` cho Debian).
-**Đáp án chuẩn:**
-```yaml
----
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q11</span>
+  <span class="qa-question-text">Viết một đoạn Playbook YAML sử dụng <code>ansible_facts.os_family</code> kết hợp mệnh đề <code>when</code> để tự động chép file cấu hình thích hợp (httpd cho RedHat, nginx cho Debian).</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Viết một đoạn Playbook YAML sử dụng <code>ansible_facts.os_family</code> kết hợp mệnh đề <code>when</code> để tự động chép file cấu hình thích hợp (<code>/etc/httpd/conf/httpd.conf</code> cho RedHat, <code>/etc/nginx/nginx.conf</code> cho Debian).</p>
+  <p><b>Đáp án chuẩn:</b></p>
+  <pre><code class="language-yaml">---
 - name: OS Family Conditional Configuration
   hosts: web
   become: true
@@ -1045,31 +1189,47 @@ Cách 2 được khuyến khích tuyệt đối trong thực tế vì trình bà
         src: files/nginx.conf
         dest: /etc/nginx/nginx.conf
         mode: '0644'
-      when: ansible_facts.os_family == "Debian"
-```
-**Tiêu chí chấm:**
-- 0: Không viết được kịch bản rẽ nhánh theo `os_family`.
-- 1: Viết được kịch bản nhưng bọc ngoặc nhọn `{{ }}` sai cú pháp trong mệnh đề `when`.
-- 2: Viết kịch bản chuẩn xác rẽ nhánh theo `os_family` cho 2 dòng OS.
-- 3: Trình bày xuất sắc + giải thích tính an toàn khi 1 host chạy chỉ có 1 task thực thi và 1 task bị skipped.
-**Câu hỏi đào sâu:** Nếu Playbook chạy trên hệ điều hành Alpine Linux (`os_family == "Alpine"`), cả 2 task trên sẽ ra sao? *(Cả 2 task sẽ đều bị skipped vì không thỏa mãn cả 2 điều kiện.)*
+      when: ansible_facts.os_family == "Debian"</code></pre>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không viết được kịch bản rẽ nhánh theo <code>os_family</code>.</li>
+    <li><b>1:</b> Viết được kịch bản nhưng bọc ngoặc nhọn <code>{{ '{{' }} {{ '}}' }}</code> sai cú pháp trong mệnh đề <code>when</code>.</li>
+    <li><b>2:</b> Viết kịch bản chuẩn xác rẽ nhánh theo <code>os_family</code> cho 2 dòng OS.</li>
+    <li><b>3:</b> Trình bày xuất sắc + giải thích tính an toàn khi 1 host chạy chỉ có 1 task thực thi và 1 task bị skipped.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Nếu Playbook chạy trên hệ điều hành Alpine Linux (<code>os_family == "Alpine"</code>), cả 2 task trên sẽ ra sao? <i>(Cả 2 task sẽ đều bị skipped vì không thỏa mãn cả 2 điều kiện.)</i></p>
+</div>
+</details>
 
----
-
-### Câu 12 — Tóm tắt 5 Quy tắc Vàng khi Dùng Mệnh đề `when` ★★★
-**Hỏi:** Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng mệnh đề `when` hiệu quả, an toàn và sạch sẽ nhất trong Ansible.
-**Đáp án chuẩn:**
-1. **Quy tắc 1:** KHÔNG bọc cặp dấu ngoặc nhọn `{{ }}` bên trong từ khóa `when:`.
-2. **Quy tắc 2:** Ưu tiên dùng mảng danh sách YAML thay cho phép toán `and` dài trên 1 dòng.
-3. **Quy tắc 3:** Luôn bọc `is defined` kiểm tra sự tồn tại trước khi đọc các biến tùy chọn.
-4. **Quy tắc 4:** Sử dụng `block:` để gom nhóm các Task có cùng điều kiện rẽ nhánh (DRY principle).
-5. **Quy tắc 5:** Kiểm tra `is succeeded` trước khi đọc `stdout` của biến `register` và đối soát Lần 2 `changed=0` qua `docker exec`.
-**Tiêu chí chấm:**
-- 0: Không tóm tắt được các quy tắc.
-- 1: Liệt kê được 2-3 quy tắc chung chung.
-- 2: Nêu đầy đủ 5 Quy tắc Vàng chính xác.
-- 3: Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế Playbook thông minh chuyên nghiệp.
-**Câu hỏi đào sâu:** Trong 5 quy tắc trên, quy tắc nào trực tiếp ngăn chặn các lỗi crash Playbook phổ biến nhất? *(Quy tắc 1 và Quy tắc 3.)*
+<details class="qa-card" markdown="1">
+<summary class="qa-summary">
+  <span class="qa-num-badge">Q12</span>
+  <span class="qa-question-text">Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng mệnh đề <code>when</code> hiệu quả, an toàn và sạch sẽ nhất trong Ansible.</span>
+</summary>
+<div class="qa-answer">
+  <div class="qa-answer-header">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+  </div>
+  <p><b>Hỏi:</b> Tóm tắt 5 Quy tắc Vàng giúp quản trị viên sử dụng mệnh đề <code>when</code> hiệu quả, an toàn và sạch sẽ nhất trong Ansible.</p>
+  <p><b>Đáp án chuẩn:</b></p>
+  <ol>
+    <li><b>Quy tắc 1:</b> KHÔNG bọc cặp dấu ngoặc nhọn <code>{{ '{{' }} {{ '}}' }}</code> bên trong từ khóa <code>when:</code>.</li>
+    <li><b>Quy tắc 2:</b> Ưu tiên dùng mảng danh sách YAML thay cho phép toán <code>and</code> dài trên 1 dòng.</li>
+    <li><b>Quy tắc 3:</b> Luôn bọc <code>is defined</code> kiểm tra sự tồn tại trước khi đọc các biến tùy chọn.</li>
+    <li><b>Quy tắc 4:</b> Sử dụng <code>block:</code> để gom nhóm các Task có cùng điều kiện rẽ nhánh (DRY principle).</li>
+    <li><b>Quy tắc 5:</b> Kiểm tra <code>is succeeded</code> trước khi đọc <code>stdout</code> của biến <code>register</code> và đối soát Lần 2 <code>changed=0</code> qua <code>docker exec</code>.</li>
+  </ol>
+  <p><b>Tiêu chí chấm:</b></p>
+  <ul>
+    <li><b>0:</b> Không tóm tắt được các quy tắc.</li>
+    <li><b>1:</b> Liệt kê được 2-3 quy tắc chung chung.</li>
+    <li><b>2:</b> Nêu đầy đủ 5 Quy tắc Vàng chính xác.</li>
+    <li><b>3:</b> Phân tích xuất sắc cả 5 quy tắc + thể hiện tư duy thiết kế Playbook thông minh chuyên nghiệp.</li>
+  </ul>
+  <p><b>Câu hỏi đào sâu:</b> Trong 5 quy tắc trên, quy tắc nào trực tiếp ngăn chặn các lỗi crash Playbook phổ biến nhất? <i>(Quy tắc 1 và Quy tắc 3.)</i></p>
+</div>
+</details>
 
 ---
 
@@ -1077,7 +1237,7 @@ Cách 2 được khuyến khích tuyệt đối trong thực tế vì trình bà
 
 Khi nhà tuyển dụng phỏng vấn về kỹ năng thiết kế kịch bản rẽ nhánh linh hoạt trong Ansible, học viên hãy đưa ra câu chốt tự tin sau:
 
-> **"Tôi sử dụng mệnh đề `when` và các Jinja2 Tests để xây dựng những Playbook thông minh có khả năng tự động thích ứng trên 100% hạ tầng đa dạng mà không cần duy trì nhiều file mã nguồn lặp lại. Tôi tuân thủ nghiêm ngặt quy tắc không bọc `{{ }}` trong `when`, biểu diễn toán tử AND bằng mảng danh sách clean-code, phòng chống lỗi undefined bằng `is defined`, và gom nhóm task bằng `block`. Mọi kịch bản rẽ nhánh của tôi đều được kiểm soát trạng thái `skipped` minh bạch, đảm bảo Phép thử Lượt chạy Lần hai đạt `changed=0`, và đối soát sự thật thực tế trên máy đích qua `docker exec`."**
+> **"Tôi sử dụng mệnh đề `when` và các Jinja2 Tests để xây dựng những Playbook thông minh có khả năng tự động thích ứng trên 100% hạ tầng đa dạng mà không cần duy trì nhiều file mã nguồn lặp lại. Tôi tuân thủ nghiêm ngặt quy tắc không bọc `{{ '{{' }} {{ '}}' }}` trong `when`, biểu diễn toán tử AND bằng mảng danh sách clean-code, phòng chống lỗi undefined bằng `is defined`, và gom nhóm task bằng `block`. Mọi kịch bản rẽ nhánh của tôi đều được kiểm soát trạng thái `skipped` minh bạch, đảm bảo Phép thử Lượt chạy Lần hai đạt `changed=0`, và đối soát sự thật thực tế trên máy đích qua `docker exec`."**
 
 ---
 
@@ -1097,4 +1257,9 @@ Khi nhà tuyển dụng phỏng vấn về kỹ năng thiết kế kịch bản 
 1. **Nghiên cứu trước 1:** Từ khóa `loop` trong Ansible dùng để làm gì? Biến mặc định chứa phần tử hiện tại của vòng lặp tên là gì?
 2. **Nghiên cứu trước 2:** Phân biệt sự khác nhau giữa từ khóa lặp hiện đại `loop` và từ khóa lặp legacy `with_items`.
 3. **Nghiên cứu trước 3:** Từ khóa `loop_control` hỗ trợ đổi tên biến phần tử lặp (`loop_var`) và hiển thị nhãn lặp (`label`) như thế nào?
+
+---
+
+> [!TIP]
+> **Bài tiếp theo:** [Bài 10: Vòng Lặp Với Loops: loop, loop_control & Kỹ Thuật Lặp Nâng Cao](ansible-10-10-loops.html)
 {% endraw %}

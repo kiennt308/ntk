@@ -1073,4 +1073,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm tối ưu hóa hiệu n
 1. **Nghiên cứu trước 1:** Thuộc tính `ignore_errors: true` khác gì với `failed_when:` trong việc xử lý lỗi Task?
 2. **Nghiên cứu trước 2:** Từ khóa `any_errors_fatal: true` ở cấp Playbook có tác dụng gì khi 1 host trong cụm bị fail?
 3. **Nghiên cứu trước 3:** Làm thế nào để cấu hình tự động thử lại (Retry mechanism) cho một Task bị lỗi mạng bằng `until:`, `retries:`, và `delay:`?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 23: Quản Trị Lỗi Nâng Cao: failed_when, changed_when, ignore_errors, ignore_unreachable & any_errors_fatal](ansible-23-23-error-handling-nang-cao.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

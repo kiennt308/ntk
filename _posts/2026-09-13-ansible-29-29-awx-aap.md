@@ -1092,4 +1092,10 @@ Khi nhà tuyển dụng phỏng vấn về kinh nghiệm vận hành nền tản
 1. **Nghiên cứu trước 1:** Kiến trúc hệ thống Web-App-DB 3 tầng (Multi-tier Infrastructure) gồm Load Balancer Nginx, Web Node Python/NodeJS và Database PostgreSQL được phối hợp như thế nào bằng Ansible Roles?
 2. **Nghiên cứu trước 2:** Làm thế nào để hợp nhất toàn bộ các kỹ năng đã học (Inventory, Variables, Vault, System Roles, Performance, Error Handling, Testing, CI/CD, Systemd, Firewall, AWX) vào tệp Playbook Capstone tổng thể?
 3. **Nghiên cứu trước 3:** Kịch bản kiểm thử Idempotency toàn diện từ đầu tới cuối (End-to-End Idempotency Test) cho một hạ tầng 3 tầng phức tạp đòi hỏi các bước đối soát CLI và `docker exec` ra sao để đạt điểm tuyệt đối 100% của khóa học?
+
+---
+
+> [!TIP]
+> **Khám Phá Bài Tiếp Theo:** Chuyển sang [Bài 30: Đồ Án Capstone: Xây Dựng Hệ Thống Tự Động Hóa Hạ Tầng Doanh Nghiệp Đa Tầng (Load Balancer, Web, DB, Security) End-to-End](ansible-30-30-capstone-tu-dong-hoa-da-tang.html) để tiếp tục làm chủ hạ tầng tự động hóa.
+
 {% endraw %}

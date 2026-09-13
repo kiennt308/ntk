@@ -840,6 +840,87 @@ html.dark-theme .theme-toggle .moon-icon { display: none; }
 }
 
 /* ==========================================================================
+   Blog Listing Layout with Right Sidebar (`blog.html`)
+   ========================================================================== */
+.blog-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .blog-layout {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+  .blog-sidebar {
+    position: sticky;
+    top: calc(var(--header-height) + 2rem);
+    height: fit-content;
+    max-height: calc(100vh - var(--header-height) - 3rem);
+    overflow-y: auto;
+  }
+}
+
+.blog-main {
+  min-width: 0;
+}
+
+.blog-sidebar-widget {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.75rem;
+}
+
+.blog-sidebar-title {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.blog-topic-list, .blog-series-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.blog-topic-item a, .blog-series-item a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: var(--bg-subtle);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.blog-topic-item a:hover, .blog-series-item a:hover {
+  background: var(--accent-primary-light);
+  color: var(--accent-primary);
+  border-color: rgba(var(--accent-primary-rgb), 0.25);
+  transform: translateX(3px);
+}
+
+/* ==========================================================================
    Article Detail Layout (`_layouts/post.html`)
    ========================================================================== */
 .article-layout {

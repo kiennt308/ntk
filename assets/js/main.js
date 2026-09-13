@@ -237,6 +237,20 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Sidebar filter triggers
+    const sidebarTriggers = document.querySelectorAll('.sidebar-filter-trigger');
+    sidebarTriggers.forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        const filterVal = trigger.getAttribute('data-filter')?.toLowerCase();
+        const targetBtn = Array.from(filterButtons).find(b => b.getAttribute('data-filter')?.toLowerCase() === filterVal);
+        if (targetBtn) {
+          targetBtn.click();
+          window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+      });
+    });
+
     // Check URL hash for initial filter on load (e.g. blog.html#aws)
     if (window.location.hash) {
       const hash = window.location.hash.replace('#', '').toLowerCase();

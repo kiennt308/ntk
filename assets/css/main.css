@@ -1045,15 +1045,36 @@ html.dark-theme .theme-toggle .moon-icon { display: none; }
   border: 1px solid var(--border-color);
   border-left: 4px solid var(--accent-amber);
   border-radius: var(--radius-md);
-  padding: 1.5rem;
+  padding: 1.15rem 1.35rem;
   margin: 2rem 0;
   box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast);
+}
+.series-box summary {
+  list-style: none;
+  outline: none;
+}
+.series-box summary::-webkit-details-marker {
+  display: none;
+}
+.series-box-summary {
+  cursor: pointer;
+  user-select: none;
+}
+.series-box .series-chevron {
+  transition: transform var(--transition-fast);
+  color: var(--text-muted);
+}
+.series-box:hover .series-chevron {
+  color: var(--text-primary);
+}
+.series-box[open] .series-chevron {
+  transform: rotate(180deg);
 }
 .series-box-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
 }
 .series-box-title {
   font-size: 1.05rem;

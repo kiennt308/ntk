@@ -34,23 +34,32 @@ Khi hạ tầng đám mây (**Cloud Infrastructure**) mở rộng từ vài ch�
 
 ```mermaid
 flowchart TB
-    subgraph IMP["MÔ HÌNH IMPERATIVE (MỆNH LỆNH - Ansible / Bash)"]
+    subgraph IMP["⚠️ MÔ HÌNH IMPERATIVE (MỆNH LỆNH - Ansible / Bash)"]
         direction TB
         I1["1. Gửi API kiểm tra S3 Bucket"] --> I2{"Kiểm tra tồn tại"}
         I2 -->|Chưa có| I3["2. Gửi API tạo mới S3 Bucket"]
         I2 -->|Đã có| I4["3. Cấu hình mã hóa KMS & Policy"]
         I3 --> I4
         I4 --> I5{"Kiểm tra kết nối"}
-        I5 -->|Đứt mạng / Crash| I_ERR["Rơi vào Partial State (Treo tài nguyên)"]
-        I5 -->|Thành công| I_OK["Hoàn tất tuần tự"]
+        I5 -->|Đứt mạng / Crash| I_ERR["❌ Rơi vào Partial State (Treo tài nguyên)"]
+        I5 -->|Thành công| I_OK["✅ Hoàn tất tuần tự"]
     end
 
-    subgraph DEC["MÔ HÌNH DECLARATIVE (KHAI BÁO - Terraform Desired State)"]
+    subgraph DEC["✨ MÔ HÌNH DECLARATIVE (KHAI BÁO - Terraform Desired State)"]
         direction TB
-        D1["Code HCL: Khai báo S_desired"] --> D2["Terraform Core Reconcile Loop"]
-        D2 --> D3["Cloud Provider API"]
-        D3 --> D4["Đạt Chuẩn Tuyệt Đối & Tự Phục Hồi"]
+        D1["📄 Code HCL: Khai báo S_desired"] --> D2["⚙️ Terraform Core Reconcile Loop"]
+        D2 --> D3["☁️ Cloud Provider API: Tự điều chỉnh"]
+        D3 --> D4["🎯 Đạt Chuẩn Tuyệt Đối & Tự Phục Hồi"]
     end
+
+    style IMP fill:#fff5f5,stroke:#f43f5e,stroke-width:1.5px
+    style DEC fill:#f0fdf4,stroke:#10b981,stroke-width:1.5px
+    style I_ERR fill:#fef2f2,stroke:#ef4444,stroke-width:2px
+    style I_OK fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px
+    style D1 fill:#f8fafc,stroke:#64748b,stroke-width:1.5px
+    style D2 fill:#eff6ff,stroke:#3b82f6,stroke-width:2px
+    style D3 fill:#e0f2fe,stroke:#0284c7,stroke-width:1.5px
+    style D4 fill:#ecfdf5,stroke:#059669,stroke-width:2px
 ```
 
 ### 1.1. Bản Chất của Phương Pháp Imperative (Mệnh Lệnh)
@@ -76,22 +85,22 @@ Terraform Engine sẽ tự động thực hiện phép so sánh 3 ngôi giữa:
 
 ```mermaid
 flowchart TD
-    subgraph Inputs["1. Đầu Vào Hệ Thống (3 Nguồn Dữ Liệu)"]
-        HCL["Mã Nguồn HCL (.tf)<br/>Desired State: S_desired"]
-        STATE["State Backend (S3/GCS)<br/>Recorded State: S_recorded"]
-        CLOUD["Cloud API (AWS/GCP)<br/>Actual State: S_actual"]
+    subgraph Inputs["1. ĐẦU VÀO HỆ THỐNG (3 NGUỒN DỮ LIỆU)"]
+        HCL["📄 Mã Nguồn HCL (.tf)<br/>Desired State: S_desired"]
+        STATE["📦 State Backend (S3/GCS)<br/>Recorded State: S_recorded"]
+        CLOUD["☁️ Cloud API (AWS/GCP)<br/>Actual State: S_actual"]
     end
 
-    subgraph Core["2. Cơ Chế Tính Toán (Terraform Core Engine)"]
-        REFRESH["Refresh: So khớp S_actual và State"]
-        DIFF["Diff Engine: Tính Delta = S_desired ∖ S_actual"]
-        DAG["Xây dựng Đồ Thị Phụ Thuộc (DAG)"]
+    subgraph Core["2. CƠ CHẾ TÍNH TOÁN (TERRAFORM CORE ENGINE)"]
+        REFRESH["🔄 Refresh: So khớp S_actual và State"]
+        DIFF["⚖️ Diff Engine: Tính Delta = S_desired ∖ S_actual"]
+        DAG["🕸️ Dependency Graph (DAG)"]
     end
 
-    subgraph Outputs["3. Kế Hoạch & Thực Thi (Execution)"]
-        PLAN["Execution Plan (+ Create / ~ Update / - Destroy)"]
-        APPLY["Terraform Apply: Gọi Provider API"]
-        NEW_STATE["Ghi đè bản ghi mới vào State Backend"]
+    subgraph Outputs["3. KẾ HOẠCH & THỰC THI (EXECUTION)"]
+        PLAN["📋 Execution Plan (+ Create / ~ Update / - Destroy)"]
+        APPLY["🚀 Terraform Apply: Gọi Provider API"]
+        NEW_STATE["💾 Ghi đè bản ghi mới vào State Backend"]
     end
 
     CLOUD -->|1. Đọc thực tế| REFRESH
@@ -103,6 +112,22 @@ flowchart TD
     PLAN --> APPLY
     APPLY --> CLOUD
     APPLY --> NEW_STATE
+
+    style Inputs fill:#f8fafc,stroke:#94a3b8,stroke-width:1.5px
+    style Core fill:#eff6ff,stroke:#3b82f6,stroke-width:1.5px
+    style Outputs fill:#f0fdf4,stroke:#10b981,stroke-width:1.5px
+
+    style HCL fill:#ffffff,stroke:#6366f1,stroke-width:2px
+    style STATE fill:#ffffff,stroke:#f59e0b,stroke-width:2px
+    style CLOUD fill:#ffffff,stroke:#0ea5e9,stroke-width:2px
+
+    style REFRESH fill:#ffffff,stroke:#3b82f6,stroke-width:1.5px
+    style DIFF fill:#ffffff,stroke:#8b5cf6,stroke-width:2px
+    style DAG fill:#ffffff,stroke:#ec4899,stroke-width:1.5px
+
+    style PLAN fill:#ffffff,stroke:#f59e0b,stroke-width:2px
+    style APPLY fill:#ffffff,stroke:#10b981,stroke-width:2px
+    style NEW_STATE fill:#ffffff,stroke:#059669,stroke-width:2px
 ```
 
 ---
@@ -330,16 +355,22 @@ aws_db_instance.primary: Modifying... [id=rds-prod-postgres]
 
 ```mermaid
 flowchart TD
-    A["02:00 AM: Sửa trực tiếp trên AWS Console<br/>(ClickOps: r6g.xlarge lên r6g.2xlarge)"]
-    B["Hạ tầng thực tế S_actual bị lệch cấu hình (Drift)"]
-    C["09:00 AM: Pipeline chạy lệnh terraform apply -auto-approve"]
-    D["Terraform thấy Code khai báo r6g.xlarge nên ép hạ cấu hình"]
-    E["HẬU QUẢ: RDS bị Restart lập tức làm gián đoạn thanh toán 15 phút!"]
+    A["🕒 02:00 AM: Sửa trực tiếp trên AWS Console<br/>(ClickOps: r6g.xlarge lên r6g.2xlarge)"]
+    B["☁️ Hạ tầng thực tế S_actual bị lệch cấu hình (Drift)"]
+    C["🕘 09:00 AM: Pipeline chạy lệnh terraform apply -auto-approve"]
+    D["⚙️ Terraform thấy Code khai báo r6g.xlarge nên ép hạ cấu hình"]
+    E["💥 HẬU QUẢ: RDS bị Restart lập tức làm gián đoạn thanh toán 15 phút!"]
 
     A --> B
     B --> C
     C --> D
     D --> E
+
+    style A fill:#fff1f2,stroke:#f43f5e,stroke-width:2px
+    style B fill:#fffbeb,stroke:#f59e0b,stroke-width:2px
+    style C fill:#f8fafc,stroke:#64748b,stroke-width:1.5px
+    style D fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    style E fill:#fee2e2,stroke:#dc2626,stroke-width:2.5px
 ```
 
 ### 5-Whys Root Cause Analysis:

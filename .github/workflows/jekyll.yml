@@ -1,4 +1,3 @@
-# Workflow to build and deploy Jekyll site to GitHub Pages using modern Actions hosting
 name: Deploy Jekyll site to Pages
 
 on:
@@ -18,6 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -28,11 +28,8 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
-
-      - name: Install Dependencies
-        run: |
-          bundle install
+          ruby-version: "3.2"
+          bundler-cache: true
 
       - name: Build Static Site with Jekyll
         run: bundle exec jekyll build
@@ -41,13 +38,17 @@ jobs:
 
       - name: Upload Static Web Assets Artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
 
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

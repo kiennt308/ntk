@@ -261,3 +261,26 @@ Mọi bài viết thuộc một lộ trình (Series) khi giới thiệu bài h�
 3. **Bài tổng kết / Cuối series (Finale)**:
    - Bài cuối cùng dẫn link quay trở lại **Bài 01** để ôn tập hoặc dẫn về **Topic Hub** (`/categories.html#terraform`).
 
+---
+
+## 11. Bảng Checklist 13 Tiêu Chí Kiểm Tra Toàn Diện (Pre-Commit Audit Checklist)
+
+Mọi bài viết trước khi xuất bản hoặc push lên GitHub bắt buộc phải vượt qua 100% bộ kiểm tra tự động (`python qc/verify_full_standards.py`):
+
+| STT | Tiêu Chí Kiểm Tra | Yêu Cầu Kỹ Thuật Bắt Buộc | Trạng Thái |
+| :---: | :--- | :--- | :---: |
+| <span class="badge badge--primary">01</span> | **Frontmatter Schema** | Đầy đủ `layout`, `title`, `date`, `categories`, `tags`, `tldr`. | ✅ Đạt |
+| <span class="badge badge--primary">02</span> | **TL;DR Quality** | Tối thiểu từ 3–5 gạch đầu dòng tóm tắt súc tích, không để trống. | ✅ Đạt |
+| <span class="badge badge--cyan">03</span> | **Liquid Raw Wrapper** | Toàn bộ thân bài được bọc giữa `{% raw %}` và `{% endraw %}`. | ✅ Đạt |
+| <span class="badge badge--cyan">04</span> | **Mermaid Zero Solid Fill** | Mọi Node, Subgraph, Decision Rhombus đều trong suốt (`fill:none`). | ✅ Đạt |
+| <span class="badge badge--amber">05</span> | **Mermaid Quoted Labels** | 100% nhãn cạnh (`-->|"..."|`) và nhãn node chứa ký tự đặc biệt được bọc dấu ngoặc kép. | ✅ Đạt |
+| <span class="badge badge--amber">06</span> | **Sequence Autonumber** | Sơ đồ tuần tự luôn kích hoạt chỉ thị `autonumber` ở đầu block. | ✅ Đạt |
+| <span class="badge badge--emerald">07</span> | **Responsive Tables** | Bảng 3–4 cột, cột 1 dùng Badge pill căn giữa, không sinh scrollbar ngang. | ✅ Đạt |
+| <span class="badge badge--rose">08</span> | **5-Whys Incident Block** | Mục Hậu Quả & Log Lỗi thực tế bắt buộc chứa trong Fenced Code Block. | ✅ Đạt |
+| <span class="badge badge--rose">09</span> | **Rouge Compatible Tags** | Không dùng ```` ```log ````. Dùng ```` ```text ```` cho log lỗi và ```` ```diff ```` cho so sánh. | ✅ Đạt |
+| <span class="badge badge--indigo">10</span> | **Bash Syntax Highlighting** | Khối lệnh CLI dùng ```` ```bash ```` để hiển thị đầy đủ màu sắc lệnh, biến, cờ, prompt `$ `. | ✅ Đạt |
+| <span class="badge badge--indigo">11</span> | **No Unlabeled Code Blocks** | 100% code block đều có định danh ngôn ngữ, không để trống ```` ``` ````. | ✅ Đạt |
+| <span class="badge badge--emerald">12</span> | **Q&A HTML Compliance** | Khối câu hỏi Q&A `<details class="qa-card">` chuyển đổi 100% HTML, sạch Markdown thô. | ✅ Đạt |
+| <span class="badge badge--emerald">13</span> | **Next Lesson Routing** | Liên kết bài tiếp theo dùng relative link slug `.html`, không dùng link `.md` hay `file:///`. | ✅ Đạt |
+
+

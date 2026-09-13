@@ -2865,6 +2865,151 @@ mark.search-highlight {
   font-weight: 700 !important;
 }
 
+/* ==========================================================================
+   Mermaid Mindmap Diagram Enhancements (High Contrast & Theme Compatibility)
+   ========================================================================== */
+.mermaid .mindmap-node,
+.mermaid-lightbox-content .mindmap-node {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Mindmap Node Typography: Ensure crisp, readable text across all nodes */
+.mermaid .mindmap-node text,
+.mermaid .mindmap-node tspan,
+.mermaid .mindmap-node .node-text,
+.mermaid .mindmap-node foreignObject div,
+.mermaid-lightbox-content .mindmap-node text,
+.mermaid-lightbox-content .mindmap-node tspan,
+.mermaid-lightbox-content .mindmap-node .node-text,
+.mermaid-lightbox-content .mindmap-node foreignObject div {
+  fill: var(--text-primary, #f8fafc) !important;
+  color: var(--text-primary, #f8fafc) !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  text-anchor: middle !important;
+}
+
+/* Root Node: High-contrast prominent card */
+.mermaid .mindmap-node.section-root .node-bkg,
+.mermaid .mindmap-node.section-0 .node-bkg,
+.mermaid-lightbox-content .mindmap-node.section-root .node-bkg,
+.mermaid-lightbox-content .mindmap-node.section-0 .node-bkg {
+  fill: var(--bg-surface-elevated, #1e293b) !important;
+  stroke: var(--accent-primary, #38bdf8) !important;
+  stroke-width: 2.5px !important;
+  rx: 12px !important;
+  ry: 12px !important;
+  filter: drop-shadow(0 4px 14px rgba(56, 189, 248, 0.3));
+}
+
+.mermaid .mindmap-node.section-root text,
+.mermaid .mindmap-node.section-0 text,
+.mermaid-lightbox-content .mindmap-node.section-root text,
+.mermaid-lightbox-content .mindmap-node.section-0 text {
+  fill: var(--text-primary, #f8fafc) !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+}
+
+/* Branch Level 1 Nodes - Distinct Thematic Badges */
+.mermaid .mindmap-node.section-1 .node-bkg,
+.mermaid-lightbox-content .mindmap-node.section-1 .node-bkg {
+  fill: rgba(56, 189, 248, 0.15) !important;
+  stroke: var(--accent-cyan, #06b6d4) !important;
+  stroke-width: 2px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+.mermaid .mindmap-node.section-2 .node-bkg,
+.mermaid-lightbox-content .mindmap-node.section-2 .node-bkg {
+  fill: rgba(245, 158, 11, 0.15) !important;
+  stroke: var(--accent-amber, #f59e0b) !important;
+  stroke-width: 2px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+.mermaid .mindmap-node.section-3 .node-bkg,
+.mermaid-lightbox-content .mindmap-node.section-3 .node-bkg {
+  fill: rgba(16, 185, 129, 0.15) !important;
+  stroke: var(--accent-emerald, #10b981) !important;
+  stroke-width: 2px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+.mermaid .mindmap-node.section-4 .node-bkg,
+.mermaid-lightbox-content .mindmap-node.section-4 .node-bkg {
+  fill: rgba(168, 85, 247, 0.15) !important;
+  stroke: #a855f7 !important;
+  stroke-width: 2px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+.mermaid .mindmap-node.section-5 .node-bkg,
+.mermaid-lightbox-content .mindmap-node.section-5 .node-bkg {
+  fill: rgba(244, 63, 94, 0.15) !important;
+  stroke: var(--accent-rose, #f43f5e) !important;
+  stroke-width: 2px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+.mermaid .mindmap-node.section-6 .node-bkg,
+.mermaid-lightbox-content .mindmap-node.section-6 .node-bkg {
+  fill: rgba(99, 102, 241, 0.15) !important;
+  stroke: var(--accent-indigo, #6366f1) !important;
+  stroke-width: 2px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+/* Fallback for general mindmap node background */
+.mermaid .mindmap-node .node-bkg,
+.mermaid-lightbox-content .mindmap-node .node-bkg {
+  fill: var(--bg-surface-elevated, #1e293b);
+  stroke: var(--border-color, #475569);
+  stroke-width: 1.5px;
+  rx: 8px;
+  ry: 8px;
+}
+
+/* Connecting Edges / Branches */
+.mermaid path.mindmap-edge,
+.mermaid .mindmap-edges path,
+.mermaid g.mindmap-edges path,
+.mermaid .edge.section-edge-0,
+.mermaid .edge.section-edge-1,
+.mermaid .edge.section-edge-2,
+.mermaid .edge.section-edge-3,
+.mermaid .edge.section-edge-4,
+.mermaid .edge.section-edge-5,
+.mermaid .edge.section-edge-6,
+.mermaid-lightbox-content path.mindmap-edge,
+.mermaid-lightbox-content .mindmap-edges path,
+.mermaid-lightbox-content g.mindmap-edges path,
+.mermaid-lightbox-content .edge.section-edge-0,
+.mermaid-lightbox-content .edge.section-edge-1,
+.mermaid-lightbox-content .edge.section-edge-2,
+.mermaid-lightbox-content .edge.section-edge-3,
+.mermaid-lightbox-content .edge.section-edge-4,
+.mermaid-lightbox-content .edge.section-edge-5,
+.mermaid-lightbox-content .edge.section-edge-6 {
+  stroke-width: 2.25px !important;
+  opacity: 0.95 !important;
+}
+
+.mermaid .edge.section-edge-1, .mermaid-lightbox-content .edge.section-edge-1 { stroke: var(--accent-cyan, #06b6d4) !important; }
+.mermaid .edge.section-edge-2, .mermaid-lightbox-content .edge.section-edge-2 { stroke: var(--accent-amber, #f59e0b) !important; }
+.mermaid .edge.section-edge-3, .mermaid-lightbox-content .edge.section-edge-3 { stroke: var(--accent-emerald, #10b981) !important; }
+.mermaid .edge.section-edge-4, .mermaid-lightbox-content .edge.section-edge-4 { stroke: #a855f7 !important; }
+.mermaid .edge.section-edge-5, .mermaid-lightbox-content .edge.section-edge-5 { stroke: var(--accent-rose, #f43f5e) !important; }
+.mermaid .edge.section-edge-6, .mermaid-lightbox-content .edge.section-edge-6 { stroke: var(--accent-indigo, #6366f1) !important; }
+
 .mermaid-zoom-btn {
   position: absolute;
   top: 12px;

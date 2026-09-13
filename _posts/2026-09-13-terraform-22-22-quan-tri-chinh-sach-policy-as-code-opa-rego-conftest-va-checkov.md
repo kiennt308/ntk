@@ -639,19 +639,17 @@ deny[msg] {
 mindmap
   root((Policy as Code Guardrails))
     ["Kiến Trúc Tổng Thể"]
-      ["tfplan.binary -&gt; tfplan.json"]
-      ["Independent Auditor truoc Apply"]
-      ["Exit Code 1: Reject & Block Pipeline"]
-    ["Công Cụ & Ngôn Ngữ"]
-      ["Open Policy Agent: Ngon ngu Rego da nang"]
-      ["Conftest: CLI thuc thi test plan JSON sieu toc"]
+      ["Chuyển đổi tfplan sang JSON"]
+      ["Independent Auditor trước Apply"]
+      ["Exit Code 1: Chặn và dừng Pipeline"]
+    ["Công Cụ và Ngôn Ngữ"]
+      ["Open Policy Agent: Ngôn ngữ Rego đa năng"]
+      ["Conftest: Thẩm định Plan JSON siêu tốc"]
       ["Checkov: 1000+ Out-of-the-box Security Rules"]
     ["Chính Sách Điển Hình"]
-      ["Tag Governance: Bat buoc CostCenter, Owner"]
-      ["Cost Control: Chan may chu GPU, RDS lon"]
-      ["Security Hardening: Chan mo Port 22/3389 0.0.0.0/0"]
-
-
+      ["Tag Governance: Bắt buộc CostCenter và Owner"]
+      ["Cost Control: Chặn máy chủ GPU và RDS ngoại cỡ"]
+      ["Security Hardening: Chặn mở Port 22 và 3389"]
 ```
 
 - **Nguyên tắc bảo vệ Enterprise**: "Trust, but Verify" — Không một đoạn mã Terraform nào được phép chạy `terraform apply` trên Production nếu chưa vượt qua cổng kiểm thử tự động của **Conftest / OPA Policy Engine**.

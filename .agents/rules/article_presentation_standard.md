@@ -123,6 +123,22 @@ Mọi sơ đồ Mermaid (bao gồm `flowchart`, `graph`, và `sequenceDiagram`) 
      - Node Database: `DB[("PostgreSQL Cluster (Primary)")]`
 3. **Tuyệt đối không dùng ký tự Markdown thô (`**`, `` ` ``) trong nhãn Mermaid**: Mermaid không hỗ trợ parse markdown trong text nhãn thông thường; dùng chữ in hoa hoặc nhãn rõ ràng.
 
+### 5.5. Quy Chuẩn Dành Riêng Cho Sơ Đồ Mindmap (Mermaid Mindmap Standards)
+Khi sử dụng sơ đồ tư duy `mindmap` để tổng kết bài học hoặc xây dựng Cheat Sheet, bắt buộc tuân thủ:
+1. **Cấu trúc phân nhánh chuẩn mực**:
+   - **Gốc (Root Node)**: Sử dụng cú pháp `root((Tên Chủ Đề Gốc))` với cặp ngoặc tròn kép `((...))`.
+   - **Nhánh cấp 1 & cấp 2+**: Luôn bọc tiêu đề trong cặp ngoặc vuông `["Tiêu Đề Nhánh"]` để đảm bảo parser nhận diện chính xác khối hình chữ nhật bo góc.
+2. **Quy tắc an toàn chuỗi văn bản (String Safety)**:
+   - ❌ **Tuyệt đối không dùng mũi tên hoặc thực thể HTML thô** (`->`, `-->`, `&gt;`, `&lt;`, `|`) bên trong nhãn text của mindmap vì sẽ làm sập bộ render.
+   - ✅ **Thay thế bằng từ nối tiếng Việt**: Dùng `chuyển sang`, `thành`, `kết nối đến` hoặc text mô tả tự nhiên.
+   - ❌ **Không nhúng thẻ HTML (`<b>`, `<code>`) hay ký hiệu Markdown (`**`, `` ` ``)** vào text node của mindmap.
+3. **Độ tương phản màu sắc & Typography (Theme Compatibility)**:
+   - **Node Gốc (Root)**: Hiển thị dạng Card nổi bật với viền `var(--accent-primary)`, nền `--bg-surface-elevated`, chữ in đậm `font-weight: 800`.
+   - **Các Phân Nhánh (Sections 1–6)**: Tự động áp dụng bảng màu nhận diện thương hiệu với nền mờ bán trong suốt (15% opacity) và viền sắc nét (Cyan `#06b6d4`, Amber `#f59e0b`, Emerald `#10b981`, Purple `#a855f7`, Rose `#f43f5e`, Indigo `#6366f1`).
+   - **Chữ trong Node (`.mindmap-node text`)**: Bắt buộc có màu `--text-primary` (`#f8fafc` trên Dark Mode, `#0f172a` trên Light Mode), `font-weight: 600`, không bao giờ bị chìm vào nền hay đổi màu đơn điệu.
+4. **Tương thích toàn diện Lightbox Zoom Modal**:
+   - Hệ thống tự động đồng bộ hóa ID CSS selectors (`#originalId` -> `#modalPrefix-originalId`) khi nhân bản sang Modal phóng to, đảm bảo 100% màu sắc nhánh, đường nối (`mindmap-edge`) và text hiển thị sắc nét, mượt mà khi zoom và kéo thả (pan).
+
 ---
 
 ## 6. Chuẩn Hóa Bảng So Sánh & Bảng Thực Hành (Table Optimization Standards)

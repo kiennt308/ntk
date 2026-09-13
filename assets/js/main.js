@@ -791,13 +791,29 @@ document.addEventListener('DOMContentLoaded', () => {
           if (bcr.height > 0) heightVal = bcr.height;
         }
 
-        // Clone and rename all IDs in defs/markers to prevent DOM collision and fix missing arrows
+        // Clone and rename all IDs in defs/markers and CSS selectors to prevent DOM collision and fix missing styles
         let svgString = svgElement.outerHTML;
+        const origId = svgElement.id;
         const modalPrefix = 'lb-' + Math.floor(Math.random() * 100000) + '-';
-        svgString = svgString.replace(/\bid="([^"]+)"/g, (match, id) => `id="${modalPrefix}${id}"`);
-        svgString = svgString.replace(/url\(["']?#([^"')]+)["']?\)/g, (match, id) => `url(#${modalPrefix}${id})`);
-        svgString = svgString.replace(/xlink:href=["']?#([^"')]+)["']?/g, (match, id) => `xlink:href="#${modalPrefix}${id}"`);
-        svgString = svgString.replace(/href=["']?#([^"')]+)["']?/g, (match, id) => `href="#${modalPrefix}${id}"`);
+        if (origId) {
+          svgString = svgString.replaceAll(origId, `${modalPrefix}${origId}`);
+        }
+        svgString = svgString.replace(/\bid="([^"]+)"/g, (match, id) => {
+          if (id.startsWith(modalPrefix)) return match;
+          return `id="${modalPrefix}${id}"`;
+        });
+        svgString = svgString.replace(/url\(["']?#([^"')]+)["']?\)/g, (match, id) => {
+          if (id.startsWith(modalPrefix)) return match;
+          return `url(#${modalPrefix}${id})`;
+        });
+        svgString = svgString.replace(/xlink:href=["']?#([^"')]+)["']?/g, (match, id) => {
+          if (id.startsWith(modalPrefix)) return match;
+          return `xlink:href="#${modalPrefix}${id}"`;
+        });
+        svgString = svgString.replace(/href=["']?#([^"')]+)["']?/g, (match, id) => {
+          if (id.startsWith(modalPrefix)) return match;
+          return `href="#${modalPrefix}${id}"`;
+        });
 
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = svgString;
@@ -813,8 +829,12 @@ document.addEventListener('DOMContentLoaded', () => {
           clonedSvg.style.display = 'block';
           clonedSvg.style.background = 'transparent';
 
-          // Zero Solid Fill: Sanitize any dark or opaque fills on nodes, clusters, polygons, and actors
+          // Zero Solid Fill: Sanitize dark/opaque fills on nodes, clusters, polygons, and actors
+          // (Skip mindmap elements so their node backgrounds, shapes, borders, and colors remain intact)
           clonedSvg.querySelectorAll('rect, polygon, circle, ellipse, path').forEach(el => {
+            if (el.closest('.mindmap-node') || el.classList.contains('node-bkg') || el.classList.contains('mindmap-edge') || el.classList.contains('edge')) {
+              return;
+            }
             const tagName = el.tagName.toLowerCase();
             const fill = el.getAttribute('fill') || '';
             const style = el.getAttribute('style') || '';
@@ -854,7 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
           content.appendChild(clonedSvg);
         }
 
-        scale = 1.1;
+        scale = 1.0;
         panX = 0;
         panY = 0;
         updateTransform();
@@ -991,7 +1011,12 @@ document.addEventListener('DOMContentLoaded', () => {
         noteTextColor: isDark ? '#fbbf24' : '#b45309',
         activationBorderColor: '#38bdf8',
         activationBkgColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(2, 132, 199, 0.1)',
-        sequenceNumberColor: '#ffffff'
+        sequenceNumberColor: '#ffffff',
+        // Mindmap Theme Variables
+        mindmapNodeBkg: isDark ? '#1e293b' : '#f1f5f9',
+        mindmapNodeBorder: isDark ? '#38bdf8' : '#0284c7',
+        mindmapEdgeColor: isDark ? '#94a3b8' : '#64748b',
+        mindmapTextColor: isDark ? '#f8fafc' : '#0f172a'
       },
       flowchart: {
         htmlLabels: true,
@@ -1012,6 +1037,10 @@ document.addEventListener('DOMContentLoaded', () => {
         useMaxWidth: false,
         rightAngles: false,
         showSequenceNumbers: true
+      },
+      mindmap: {
+        useMaxWidth: false,
+        padding: 16
       },
       securityLevel: 'loose'
     });

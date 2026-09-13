@@ -245,7 +245,7 @@ terraform apply -auto-approve
 ```
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```text
+```diff
 # Trích đoạn log thảm họa từ Terraform CLI
 Terraform will perform the following actions:
 

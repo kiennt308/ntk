@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'TF': 'TERRAFORM'
   };
 
-  const codeBlocks = document.querySelectorAll('div.highlighter-rouge, figure.highlight');
+  const codeBlocks = document.querySelectorAll('div.highlighter-rouge, figure.highlight, div[class*="language-"]');
   
   codeBlocks.forEach(wrapper => {
     let rawLang = 'CODE';

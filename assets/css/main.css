@@ -1784,7 +1784,7 @@ blockquote cite::before {
 }
 
 /* Code Highlighting Blocks */
-div.highlighter-rouge, figure.highlight {
+div.highlighter-rouge, figure.highlight, div[class*="language-"], pre.highlight {
   position: relative;
   background-color: var(--bg-code);
   border: 1px solid var(--border-color);

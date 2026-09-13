@@ -244,7 +244,7 @@ resource "aws_subnet" "app_subnets" {
 Sau một đợt tối ưu hóa, kỹ sư xóa bỏ vùng `ap-southeast-1a` ở đầu danh sách vì chi phí cao.
 
 ### Hậu Quả & Log Lỗi Thực Tế:
-```text
+```diff
 Terraform will perform the following actions:
 
   # aws_subnet.app_subnets[0] must be replaced

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 04] Làm Chủ Dependency Graph (DAG): Quản Lý Phụ Thuộc Tường Minh vs Ngầm"
+title: "[Bài 04] Làm Chủ Dependency Graph (DAG): Quản Lý Phụ Thuộc Tường Minh vs Ngầm Định & Data Sources"
 date: 2026-09-13 11:30:00 +0700
 categories: [Terraform]
 tags:
@@ -13,21 +13,21 @@ series: "Terraform Enterprise Architecture"
 series_order: 4
 difficulty: Intermediate
 thumbnail: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80"
-summary: "Phân tích sâu cơ chế tự động xây dựng đồ thị phụ thuộc (DAG), phân biệt Implicit"
+summary: "Phân tích sâu cơ chế tự động xây dựng đồ thị DAG trong Terraform Core, phân biệt Implicit vs Explicit Dependencies, quản lý Data Sources an toàn và kỹ thuật bẻ gãy vòng lặp phụ thuộc 2 chiều."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Làm Chủ Dependency Graph (DAG): Quản Lý Phụ Thuộc Tường Minh vs Ngầm."
-  - "Làm chủ kiến trúc điều hòa Reconcile Loop, cơ chế quản trị trạng thái State và bảo mật hạ tầng Production."
-  - "Thực hành chuẩn hóa mã nguồn HCL, phòng chống cạm bẫy Drift và tối ưu hóa chi phí vận hành đám mây."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Cơ chế đồ thị DAG: Terraform Core mô hình hóa tài nguyên thành các Node và quan hệ thành Edges, xác định thứ tự tạo (+) xuôi và thứ tự hủy (-) ngược theo LIFO."
+  - "Implicit vs Explicit: Luôn ưu tiên Implicit References (truyền ID trực tiếp) để tối đa hóa luồng song song; chỉ dùng depends_on cho các side-effects logic."
+  - "Phá vỡ Cyclic Dependency: Tách rời các inline rules trong Security Groups thành các resource aws_security_group_rule độc lập để triệt tiêu quan hệ phụ thuộc chéo 2 chiều."
+  - "Cạm bẫy Data Sources: Tuyệt đối không dùng Data Source để truy vấn lại tài nguyên vừa tạo trong cùng một State tại pha Plan để tránh lỗi Deferred/Unknown."
 ---
 {% raw %}
 # Làm Chủ Dependency Graph (DAG): Quản Lý Phụ Thuộc Tường Minh vs Ngầm Định & Data Sources
 
 Trong một hệ thống hạ tầng đám mây đa tầng (Multi-Tier Enterprise Infrastructure), mối quan hệ phụ thuộc giữa các thành phần là vô cùng chằng chịt: *EC2 Instance bắt buộc phải đặt trong Subnet, Subnet phải gắn vào VPC, Security Group Rule cần ID của Security Group, và Kubernetes EKS Node Group chỉ có thể khởi động sau khi IAM Policy Attachment đã hoàn tất trên AWS IAM Service*.
 
-Terraform Core xử lý mạng lưới phụ thuộc phức tạp này một cách tự động và chuẩn xác thông qua cấu trúc dữ liệu **Đồ thị không tuần hoàn có hướng (Directed Acyclic Graph - DAG)**. Tuy nhiên, việc hiểu sai cơ chế dựng đồ thị (đặc biệt là lạm dụng từ khóa `depends_on`, khai báo quan hệ phụ thuộc chéo hoặc sử dụng Data Sources phụ thuộc vào giá trị động chưa xác định tại pha Plan) là nguyên nhân hàng đầu phá hủy khả năng thực thi song song (`parallelism`), gây kéo dài thời gian deploy hoặc dẫn tới lỗi nghiêm trọng **Cyclic Dependency**.
+Terraform Core xử lý mạng lưới phụ thuộc phức tạp này một cách tự động và chuẩn xác thông qua cấu trúc dữ liệu **Đồ thị không tuần hoàn có hướng (Directed Acyclic Graph - DAG)**. Tuy nhiên, việc hiểu sai cơ chế dựng đồ thị (đặc biệt là lạm dụng từ khóa `<code style="color: var(--accent-rose); font-weight: 700;">depends_on</code>`, khai báo quan hệ phụ thuộc chéo hoặc sử dụng Data Sources phụ thuộc vào giá trị động chưa xác định tại pha Plan) là nguyên nhân hàng đầu phá hủy khả năng thực thi song song (`parallelism`), gây kéo dài thời gian deploy hoặc dẫn tới lỗi nghiêm trọng <strong style="color: var(--accent-rose);">Cyclic Dependency</strong>.
 
-Bài viết này sẽ hướng dẫn bạn giải phẫu cấu trúc DAG trong Terraform Core, phân biệt rạch ròi giữa **Phụ thuộc ngầm định (Implicit)** và **Phụ thuộc tường minh (Explicit)**, làm chủ cơ chế nạp dữ liệu của **Data Sources** và kỹ thuật phá vỡ vòng lặp phụ thuộc 2 chiều.
+Bài viết này sẽ hướng dẫn bạn giải phẫu cấu trúc DAG trong Terraform Core, phân biệt rạch ròi giữa <strong style="color: var(--accent-primary);">Phụ thuộc ngầm định (Implicit)</strong> và <strong style="color: var(--accent-amber);">Phụ thuộc tường minh (Explicit)</strong>, làm chủ cơ chế nạp dữ liệu của <strong style="color: var(--accent-cyan);">Data Sources</strong> và kỹ thuật phá vỡ vòng lặp phụ thuộc 2 chiều.
 
 ---
 
@@ -52,7 +52,16 @@ graph TD
         AWS_VPC["data.aws_vpc.existing_vpc"] -->|"vpc_id = data.aws_vpc.existing_vpc.id"| SG["aws_security_group.db_sg"]
     end
 
-
+    style VPC fill:none,stroke:#3b82f6,stroke-width:2px
+    style SUB fill:none,stroke:#0ea5e9,stroke-width:2px
+    style EC2 fill:none,stroke:#10b981,stroke-width:2px
+    style S3 fill:none,stroke:#f59e0b,stroke-width:2px
+    style ROLE fill:none,stroke:#8b5cf6,stroke-width:2px
+    style POLICY fill:none,stroke:#ec4899,stroke-width:2px
+    style EKS_NODES fill:none,stroke:#10b981,stroke-width:2px
+    style AWS_AMI fill:none,stroke:#06b6d4,stroke-width:2px
+    style AWS_VPC fill:none,stroke:#06b6d4,stroke-width:2px
+    style SG fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---
@@ -62,10 +71,10 @@ graph TD
 | Tiêu Chí Kỹ Thuật | Phụ Thuộc Ngầm Định (Implicit) | Phụ Thuộc Tường Minh (`depends_on`) | Data Source References |
 | :--- | :--- | :--- | :--- |
 | **Cơ Chế Nhận Diện** | Tự động phân tích từ cú pháp `${resource.name.attr}` | Kỹ sư khai báo thủ công trong khối `depends_on = [...]` | Truy vấn API đám mây thông qua khối `data "type" "name"` |
-| **Tối Ưu Thực Thi Song Song** | Tối đa (Chỉ khóa chính xác thuộc tính cần thiết) | Kém (Khóa toàn bộ Node, làm tuần tự hóa DAG) | Tối ưu nếu Data Source không phụ thuộc giá trị động |
+| **Tối Ưu Thực Thi Song Song** | <b style="color: var(--accent-emerald);">Tối đa</b> (Chỉ khóa chính xác thuộc tính cần thiết) | <b style="color: var(--accent-rose);">Kém</b> (Khóa toàn bộ Node, làm tuần tự hóa DAG) | <b style="color: var(--accent-cyan);">Tối ưu</b> nếu Data Source không phụ thuộc giá trị động |
 | **Thứ Tự Hủy Tài Nguyên (`destroy`)** | Tự động đảo ngược 100% theo thứ tự LIFO | Tự động đảo ngược theo danh sách khai báo | Không bị ảnh hưởng (Data Source là Read-Only) |
-| **Nguy Cơ Gây Lỗi Cycle** | Thấp (Dễ phát hiện khi code) | Cao (Dễ vô tình tạo quan hệ chéo đa module) | Rất cao nếu Data Source phụ thuộc Resource mới tạo |
-| **Khuyến Nghị Thiết Kế** | **Khuyến nghị số 1 cho 95% trường hợp** | Chỉ dùng cho Side-effects (IAM propagation, S3 Bucket Policy) | Dùng để tích hợp hạ tầng chia sẻ có sẵn |
+| **Nguy Cơ Gây Lỗi Cycle** | Thấp (Dễ phát hiện khi code) | <b style="color: var(--accent-amber);">Cao</b> (Dễ vô tình tạo quan hệ chéo đa module) | <b style="color: var(--accent-rose);">Rất cao</b> nếu Data Source phụ thuộc Resource mới tạo |
+| **Khuyến Nghị Thiết Kế** | <span class="badge badge--emerald">Khuyến nghị 95%</span> Ưu tiên hàng đầu | <span class="badge badge--amber">Cân nhắc kỹ</span> Chỉ dùng cho Side-effects | <span class="badge badge--cyan">Tích hợp sẵn</span> Dùng cho hạ tầng chia sẻ có sẵn |
 
 > [!IMPORTANT]
 > **NGUYÊN TẮC THIẾT KẾ DAG TINH GỌN:**
@@ -77,12 +86,12 @@ graph TD
 
 Một trong những bài toán kinh điển trong quản trị mạng AWS là: **Security Group của Web Server cần cho phép Ingress từ Security Group của Database Server, và Security Group của Database Server chỉ cho phép Ingress từ Web Server**.
 
-Nếu bạn khai báo Ingress Rules trực tiếp lồng bên trong khối `aws_security_group`, Terraform sẽ gặp lỗi **Cyclic Dependency** ngay lập tức vì không thể xác định cái nào phải tạo trước:
+Nếu bạn khai báo Ingress Rules trực tiếp lồng bên trong khối `aws_security_group`, Terraform sẽ gặp lỗi <strong style="color: var(--accent-rose);">Cyclic Dependency</strong> ngay lập tức vì không thể xác định cái nào phải tạo trước:
 
 ```mermaid
 flowchart LR
     subgraph WRONG["SAI: Khai Báo Ingress Lồng Nhau (Tạo Lỗi Cycle)"]
-        SG_A["aws_security_group.web<br/>(Cần ID của sg.db)"] [---] SG_B["aws_security_group.db<br/>(Cần ID của sg.web)"]
+        SG_A["aws_security_group.web<br/>(Cần ID của sg.db)"] --- SG_B["aws_security_group.db<br/>(Cần ID của sg.web)"]
     end
 
     subgraph CORRECT["ĐÚNG: Tách Rời Bằng Resource Độc Lập"]
@@ -98,7 +107,12 @@ flowchart LR
         SG_DB --> RULE_DB
     end
 
-
+    style SG_A fill:none,stroke:#f43f5e,stroke-width:2px
+    style SG_B fill:none,stroke:#f43f5e,stroke-width:2px
+    style SG_WEB fill:none,stroke:#3b82f6,stroke-width:2px
+    style SG_DB fill:none,stroke:#3b82f6,stroke-width:2px
+    style RULE_WEB fill:none,stroke:#10b981,stroke-width:2px
+    style RULE_DB fill:none,stroke:#10b981,stroke-width:2px
 ```
 
 ---
@@ -108,7 +122,9 @@ flowchart LR
 Dưới đây là bộ mã nguồn HCL giải quyết triệt để bài toán phụ thuộc đa tầng, tích hợp Data Sources và tách rời Security Group Rules độc lập:
 
 ```hcl
-# main.tf - Kiến trúc 3-Tier Enterprise tách rời phụ thuộc
+# ==============================================================================
+# File: main.tf - Kiến trúc 3-Tier Enterprise tách rời phụ thuộc
+# ==============================================================================
 terraform {
   required_version = ">= 1.7.0"
   required_providers {
@@ -216,8 +232,8 @@ resource "aws_iam_role_policy_attachment" "cni_policy" {
 
 # 5. EC2 INSTANCE: Tích hợp Implicit Dependency và Data Source AMI
 resource "aws_instance" "web_server" {
-  ami                  = data.aws_ami.ubuntu_lts.id # Implicit tu Data Source
-  instance_type        = var.instance_type
+  ami                    = data.aws_ami.ubuntu_lts.id # Implicit tu Data Source
+  instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.web_tier.id] # Implicit tu SG
 
   # Phụ thuộc tường minh: Đảm bảo Policy đã gắn xong vào IAM Role
@@ -233,7 +249,9 @@ resource "aws_instance" "web_server" {
 ```
 
 ```hcl
-# variables.tf
+# ==============================================================================
+# File: variables.tf
+# ==============================================================================
 variable "aws_region" {
   type    = string
   default = "ap-southeast-1"
@@ -255,7 +273,7 @@ variable "instance_type" {
 ## 5. Phân Tích Cạm Bẫy Thực Chiến: Lỗi "Data Source Deferral & Cycle Error"
 
 ### Tình Huống Sự Cố Thực Tế:
-Một nhóm kỹ sư muốn cấu hình Security Group dựa trên thông tin trả về từ một Data Source VPC Subnet. Tuy nhiên, Data Source này lại được truyền vào một biến `vpc_id` lấy từ tài nguyên `aws_vpc` được tạo trong cùng một đợt Apply:
+Vào lúc <span class="badge badge--rose">🕒 14:20 PM</span>, một nhóm kỹ sư muốn cấu hình Security Group dựa trên thông tin trả về từ một Data Source VPC Subnet. Tuy nhiên, Data Source này lại được truyền vào một biến `vpc_id` lấy từ tài nguyên `aws_vpc` được tạo trong cùng một đợt Apply:
 
 ```hcl
 # CODE GÂY LỖI: Data Source phụ thuộc thuộc tính chưa xác định tại Pha Plan
@@ -272,38 +290,47 @@ data "aws_subnets" "created_subnets" {
 ```
 
 ### Log Lỗi Trả Về Khi Chạy `terraform plan`:
-```log
-Error: Invalid data source query during plan
-
-  on main.tf line 6, in data "aws_subnets" "created_subnets":
-   6:   values = [aws_vpc.new_vpc.id]
-
-The argument "values" depends on a resource attribute that cannot be determined 
-until apply. Data sources must be readable during the plan phase to build the 
-dependency graph.
+```diff
+# Trích đoạn log lỗi từ Terraform Core Engine
+! [CRITICAL ERROR] Error: Invalid data source query during plan
+!   on main.tf line 6, in data "aws_subnets" "created_subnets":
+!    6:   values = [aws_vpc.new_vpc.id]
+! 
+! The argument "values" depends on a resource attribute that cannot be determined 
+! until apply. Data sources must be readable during the plan phase to build the 
+! dependency graph.
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. **Tại sao Data Source bị lỗi không đọc được?** $\rightarrow$ Vì Data Source cố gắng gửi API query lên AWS trong pha `plan`, nhưng tham số `vpc_id` lại là `(known after apply)`.
-2. **Tại sao `vpc_id` chưa có giá trị?** $\rightarrow$ Vì tài nguyên `aws_vpc.new_vpc` mới chỉ được khai báo, chưa hề được tạo trên AWS.
-3. **Tại sao Data Source lại chạy ở pha Plan?** $\rightarrow$ Vì Terraform cần toàn bộ kết quả của Data Source để tính toán số lượng phần tử cho các khối vòng lặp và dựng đồ thị DAG.
-4. **Tại sao kỹ sư lại dùng Data Source cho tài nguyên vừa tạo?** $\rightarrow$ Do thói quen thiết kế sai lầm; thay vì tham chiếu trực tiếp tài nguyên con qua mã HCL, kỹ sư lại cố gắng query ngược lại từ Cloud.
-5. **Biện pháp khắc phục chuẩn SRE:**
-   - **Tuyệt đối không dùng Data Source để đọc lại tài nguyên vừa tạo trong cùng một Terraform State:** Hãy sử dụng trực tiếp tham chiếu tài nguyên (`aws_subnet.my_subnet.id`).
-   - **Tách Workspace/Module độc lập:** Nếu bắt buộc phải query, hãy tách tầng Network (VPC/Subnet) thành một State riêng biệt được apply trước, sau đó tầng App mới dùng Data Source để đọc.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Data Source bị lỗi không đọc được?** $\rightarrow$ Vì Data Source cố gắng gửi API query lên AWS trong pha `plan`, nhưng tham số `vpc_id` lại là `(known after apply)`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao `vpc_id` chưa có giá trị?** $\rightarrow$ Vì tài nguyên `aws_vpc.new_vpc` mới chỉ được khai báo, chưa hề được tạo trên AWS.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Data Source lại chạy ở pha Plan?** $\rightarrow$ Vì Terraform cần toàn bộ kết quả của Data Source để tính toán số lượng phần tử cho các khối vòng lặp và dựng đồ thị DAG.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao kỹ sư lại dùng Data Source cho tài nguyên vừa tạo?** $\rightarrow$ Do thói quen thiết kế sai lầm; thay vì tham chiếu trực tiếp tài nguyên con qua mã HCL, kỹ sư lại cố gắng query ngược lại từ Cloud.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
+   - <span class="badge badge--emerald">Direct Reference</span> **Tuyệt đối không dùng Data Source để đọc lại tài nguyên vừa tạo trong cùng một Terraform State:** Hãy sử dụng trực tiếp tham chiếu tài nguyên (`aws_subnet.my_subnet.id`).
+   - <span class="badge badge--cyan">State Decoupling</span> **Tách Workspace/Module độc lập:** Nếu bắt buộc phải query, hãy tách tầng Network (VPC/Subnet) thành một State riêng biệt được apply trước, sau đó tầng App mới dùng Data Source để đọc.
 
 ---
 
 ## 6. Hands-on Lab: Tái Hiện & Phá Vỡ Lỗi Cyclic Dependency (8 Bước)
 
-### Bước 1: Khởi tạo thư mục thực hành thử nghiệm
+| Bước | Lệnh CLI | Mục Đích Thực Thi |
+| :---: | :--- | :--- |
+| <span class="badge badge--primary">01</span> | `mkdir -p /tmp/terraform-dag-lab && cd /tmp/terraform-dag-lab` | Khởi tạo thư mục thực hành thử nghiệm môi trường cô lập |
+| <span class="badge badge--cyan">02</span> | `cat << 'EOF' > cycle_test.tf ...` | Cố tình tạo mã nguồn có chứa lỗi Cycle phụ thuộc 2 chiều |
+| <span class="badge badge--rose">03</span> | `terraform plan` | Chạy lệnh kiểm tra và quan sát thông báo lỗi Cycle bế tắc |
+| <span class="badge badge--indigo">04</span> | `terraform graph \| grep -E "service_a\|service_b"` | Xuất bản cấu trúc đồ thị DOT thể hiện vòng lặp phụ thuộc |
+| <span class="badge badge--amber">05</span> | `cat << 'EOF' > cycle_test.tf ... (Refactor)` | Tách rời Ingress Rules thành các tài nguyên độc lập để phá vỡ Cycle |
+| <span class="badge badge--primary">06</span> | `terraform validate` | Chạy kiểm tra cú pháp và cấu trúc tham chiếu HCL sau khi sửa |
+| <span class="badge badge--emerald">07</span> | `terraform plan` | Xác nhận đồ thị DAG hợp lệ và kế hoạch tạo 4 tài nguyên thành công |
+| <span class="badge badge--emerald">08</span> | `cd .. && rm -rf /tmp/terraform-dag-lab` | Thu dọn sạch sẽ thư mục thử nghiệm sau khi hoàn tất |
+
 ```bash
+# 1. Khởi tạo thư mục thực hành thử nghiệm
 mkdir -p /tmp/terraform-dag-lab && cd /tmp/terraform-dag-lab
 terraform init
-```
 
-### Bước 2: Cố tình tạo mã nguồn có chứa lỗi Cycle phụ thuộc 2 chiều
-```bash
+# 2. Cố tình tạo mã nguồn có chứa lỗi Cycle phụ thuộc 2 chiều
 cat << 'EOF' > cycle_test.tf
 terraform {
   required_providers {
@@ -340,21 +367,14 @@ resource "aws_security_group" "service_b" {
   }
 }
 EOF
-```
 
-### Bước 3: Chạy `terraform plan` để quan sát thông báo lỗi Cycle
-```bash
+# 3. Chạy terraform plan để quan sát thông báo lỗi Cycle
 terraform plan
-```
-Quan sát thông báo lỗi: `Error: Cycle: aws_security_group.service_a, aws_security_group.service_b`.
 
-### Bước 4: Xuất bản đồ thị thể hiện vòng lặp bế tắc
-```bash
+# 4. Xuất bản đồ thị thể hiện vòng lặp bế tắc
 terraform graph | grep -E "service_a|service_b"
-```
 
-### Bước 5: Refactor mã nguồn — Tách rời Ingress Rules độc lập
-```bash
+# 5. Refactor mã nguồn — Tách rời Ingress Rules độc lập
 cat << 'EOF' > cycle_test.tf
 terraform {
   required_providers {
@@ -397,21 +417,14 @@ resource "aws_security_group_rule" "b_from_a" {
   security_group_id        = aws_security_group.service_b.id
 }
 EOF
-```
 
-### Bước 6: Chạy kiểm tra lại với `terraform validate`
-```bash
+# 6. Chạy kiểm tra lại với terraform validate
 terraform validate
-```
 
-### Bước 7: Thực hiện `terraform plan` kiểm tra tính hợp lệ của DAG
-```bash
+# 7. Thực hiện terraform plan kiểm tra tính hợp lệ của DAG
 terraform plan
-```
-Xác nhận kế hoạch tạo thành công 4 tài nguyên mà không còn bất kỳ lỗi Cycle nào!
 
-### Bước 8: Dọn dẹp thư mục thử nghiệm
-```bash
+# 8. Dọn dẹp thư mục thử nghiệm
 cd .. && rm -rf /tmp/terraform-dag-lab
 ```
 
@@ -419,12 +432,11 @@ cd .. && rm -rf /tmp/terraform-dag-lab
 
 ## 7. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A)
 
-
 <details class="qa-card">
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q01</span>
-    <span>Tại sao phụ thuộc ngầm định (Implicit Dependency) luôn được ưu tiên hơn phụ thuộc tường minh (`depends_on`)?</span>
+    <span>Tại sao phụ thuộc ngầm định (Implicit Dependency) luôn được ưu tiên hơn phụ thuộc tường minh (<code>depends_on</code>)?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -500,7 +512,7 @@ cd .. && rm -rf /tmp/terraform-dag-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q05</span>
-    <span>Khi nào bắt buộc phải dùng từ khóa `depends_on`? Cho ví dụ thực tế?</span>
+    <span>Khi nào bắt buộc phải dùng từ khóa <code>depends_on</code>? Cho ví dụ thực tế?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -519,7 +531,7 @@ cd .. && rm -rf /tmp/terraform-dag-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q06</span>
-    <span>Điều gì xảy ra khi bạn đặt `depends_on` ở cấp độ Module (`module "vpc"`)?</span>
+    <span>Điều gì xảy ra khi bạn đặt <code>depends_on</code> ở cấp độ Module (<code>module "vpc"</code>)?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -557,7 +569,7 @@ cd .. && rm -rf /tmp/terraform-dag-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q08</span>
-    <span>Thuật toán sắp xếp Topo (Topological Sort) duyệt qua đồ thị DAG theo thứ tự nào khi hủy tài nguyên (`terraform destroy`)?</span>
+    <span>Thuật toán sắp xếp Topo (Topological Sort) duyệt qua đồ thị DAG theo thứ tự nào khi hủy tài nguyên (<code>terraform destroy</code>)?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -576,7 +588,7 @@ cd .. && rm -rf /tmp/terraform-dag-lab
 <summary class="qa-summary">
   <div class="qa-summary-left">
     <span class="qa-num-badge">Q09</span>
-    <span>Data Source `aws_ami` với tham số `most_recent = true` có rủi ro tiềm ẩn nào khi vận hành?</span>
+    <span>Data Source <code>aws_ami</code> với tham số <code>most_recent = true</code> có rủi ro tiềm ẩn nào khi vận hành?</span>
   </div>
   <span class="qa-chevron">
     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -616,5 +628,7 @@ cd .. && rm -rf /tmp/terraform-dag-lab
 
 Làm chủ **Dependency Graph (DAG)**, phân biệt rõ ràng **Implicit vs Explicit Dependencies** và nắm vững quy tắc vận hành của **Data Sources** giúp bạn tự tin thiết kế những hệ sinh thái hạ tầng khổng lồ mà không bao giờ gặp phải các lỗi bế tắc vòng lặp.
 
-Trong **[Bài 05: Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Type Constraints, Validation Rules & Sensitive Data Masking](05-thiet-ke-variables-locals-outputs-chuan-enterprise.md)**, chúng ta sẽ hoàn thiện chặng 1 với nghệ thuật thiết kế giao diện hạ tầng: Tùy biến biến đầu vào với các quy tắc kiểm tra biểu thức chính quy (Regex Validation), quản lý biến nội bộ bất biến `locals` và che giấu dữ liệu nhạy cảm với cờ `sensitive = true`.
+> [!TIP]
+> **BÀI HỌC TIẾP THEO:**
+> Trong **[Bài 05: Thiết Kế Variables, Locals & Outputs Chuẩn Enterprise: Type Constraints, Validation Rules & Sensitive Data Masking](./05-thiet-ke-variables-locals-outputs-chuan-enterprise.md)**, chúng ta sẽ hoàn thiện chặng 1 với nghệ thuật thiết kế giao diện hạ tầng: Tùy biến biến đầu vào với các quy tắc kiểm tra biểu thức chính quy (Regex Validation), quản lý biến nội bộ bất biến `locals` và che giấu dữ liệu nhạy cảm với cờ `sensitive = true`.
 {% endraw %}

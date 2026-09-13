@@ -1,20 +1,44 @@
 ---
 layout: default
-title: "Home"
+title: "Kien Nguyen | Senior DevOps Engineer & Cloud Architect"
 permalink: /
 ---
 
 {% assign home = site.homepage %}
+{% assign about = site.about_page %}
 
 <!-- Hero Section -->
 <section class="hero">
   <div class="hero-glow"></div>
   <div class="container">
+    
+    <!-- Status Indicator Pill -->
     <div class="hero-pill">
       <span class="hero-pill-dot"></span>
-      <span>{{ home.hero.pill_text }}</span>
+      <span>{{ home.hero.pill_text | default: "Open for Cloud Architecture & SRE Consulting" }}</span>
     </div>
 
+    <!-- Author Profile Spotlight Chip -->
+    <div>
+      <a href="{{ '/about.html' | relative_url }}" class="hero-author-chip" title="View Kien Nguyen's Full Profile">
+        {% if site.author.avatar %}
+          <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}" class="hero-author-avatar">
+        {% else %}
+          <div class="author-avatar" style="width: 42px; height: 42px; font-size: 1rem; border-radius: 50%;">
+            {{ site.author.initials | default: "KN" }}
+          </div>
+        {% endif %}
+        <div class="hero-author-info">
+          <div class="hero-author-name">
+            <span>{{ site.author.name }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#38bdf8" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z"/></svg>
+          </div>
+          <div class="hero-author-title">{{ site.author.title | default: "Senior DevOps Engineer" }} · {{ site.author.location | default: "Ho Chi Minh City" }}</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Main Title -->
     <h1 class="hero__title">
       {{ home.hero.title_line1 }}<br>
       <span class="gradient-text">{{ home.hero.title_highlight }}</span>
@@ -24,48 +48,128 @@ permalink: /
       {{ home.hero.subtitle | default: site.description }}
     </p>
 
-    <div class="hero__ctas">
-      <a href="{{ home.hero.primary_cta_url | default: '/blog.html' | relative_url }}" class="btn btn--accent">
-        {{ home.hero.primary_cta_text }}
+    <!-- CTAs -->
+    <div class="hero__ctas" style="flex-wrap: wrap; gap: 0.85rem;">
+      <a href="{{ home.hero.primary_cta_url | default: '/blog.html' | relative_url }}" class="btn btn--accent" style="padding: 0.75rem 1.6rem; font-size: 1rem;">
+        {{ home.hero.primary_cta_text | default: "Explore All Guides" }} →
       </a>
-      <a href="{{ home.hero.secondary_cta_url | default: '/categories.html' | relative_url }}" class="btn btn--secondary">
-        {{ home.hero.secondary_cta_text }}
+      <a href="{{ '/about.html' | relative_url }}" class="btn btn--secondary" style="padding: 0.75rem 1.4rem; font-size: 1rem;">
+        {% include icon.html name="book" size=16 %}
+        <span>About Me & CV</span>
       </a>
+      {% if site.social.linkedin %}
+        <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary" style="padding: 0.75rem 1.25rem; font-size: 1rem;">
+          {% include icon.html name="briefcase" size=16 %}
+          <span>LinkedIn</span>
+        </a>
+      {% endif %}
     </div>
 
     <!-- Quick Stats Grid -->
     <div class="hero-stats-grid">
-      {% for stat in home.stats %}
-        <div class="hero-stat-card">
-          <div class="hero-stat-value">
-            {% if stat.type == "topics_count" %}
-              {{ site.topics.size | default: 5 }}
-            {% elsif stat.type == "posts_count" %}
-              {{ site.posts.size }}
-            {% else %}
-              {{ stat.value }}
-            {% endif %}
-          </div>
-          <div class="hero-stat-label">{{ stat.label }}</div>
+      <div class="hero-stat-card">
+        <div class="hero-stat-value">10+ Yrs</div>
+        <div class="hero-stat-label">IT Engineering</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hero-stat-value">5+ Yrs</div>
+        <div class="hero-stat-label">AWS & DevOps</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hero-stat-value">15</div>
+        <div class="hero-stat-label">Certifications</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hero-stat-value">{{ site.posts.size | default: 24 }}</div>
+        <div class="hero-stat-label">Technical Guides</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Verified Certifications & Badges Showcase -->
+<section class="badges-showcase-section">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <span class="badge badge--emerald" style="font-size: 0.75rem;">VERIFIED CREDENTIALS</span>
+        <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">15 Professional Licenses & Certifications</span>
+      </div>
+      <a href="{{ '/about.html#certifications' | relative_url }}" style="font-size: 0.85rem; color: var(--accent-primary); font-weight: 600; text-decoration: none;">
+        View All 15 Badges & IDs →
+      </a>
+    </div>
+
+    <div class="badges-showcase-grid">
+      <!-- CKA -->
+      <a href="{{ '/about.html' | relative_url }}" class="badge-showcase-item" title="Certified Kubernetes Administrator (CKA)">
+        <img src="{{ '/assets/imgs/certs/cka.png' | relative_url }}" alt="CKA Badge" class="badge-showcase-img">
+        <div class="badge-showcase-text">
+          <div class="badge-showcase-title">CKA Kubernetes</div>
+          <div class="badge-showcase-issuer">The Linux Foundation</div>
         </div>
-      {% endfor %}
+      </a>
+
+      <!-- CKAD -->
+      <a href="{{ '/about.html' | relative_url }}" class="badge-showcase-item" title="Certified Kubernetes Application Developer (CKAD)">
+        <img src="{{ '/assets/imgs/certs/ckad.png' | relative_url }}" alt="CKAD Badge" class="badge-showcase-img">
+        <div class="badge-showcase-text">
+          <div class="badge-showcase-title">CKAD Developer</div>
+          <div class="badge-showcase-issuer">The Linux Foundation</div>
+        </div>
+      </a>
+
+      <!-- AWS SAP -->
+      <a href="{{ '/about.html' | relative_url }}" class="badge-showcase-item" title="AWS Certified Solutions Architect - Professional">
+        <img src="{{ '/assets/imgs/certs/aws-sap.png' | relative_url }}" alt="AWS SAP Badge" class="badge-showcase-img">
+        <div class="badge-showcase-text">
+          <div class="badge-showcase-title">Solutions Architect Pro</div>
+          <div class="badge-showcase-issuer">Amazon Web Services</div>
+        </div>
+      </a>
+
+      <!-- AWS ANS -->
+      <a href="{{ '/about.html' | relative_url }}" class="badge-showcase-item" title="AWS Certified Advanced Networking - Specialty">
+        <img src="{{ '/assets/imgs/certs/aws-ans.png' | relative_url }}" alt="AWS ANS Badge" class="badge-showcase-img">
+        <div class="badge-showcase-text">
+          <div class="badge-showcase-title">Advanced Networking</div>
+          <div class="badge-showcase-issuer">AWS Specialty</div>
+        </div>
+      </a>
+
+      <!-- Azure SA Expert -->
+      <a href="{{ '/about.html' | relative_url }}" class="badge-showcase-item" title="Microsoft Certified: Azure Solutions Architect Expert">
+        <img src="{{ '/assets/imgs/certs/azure-solutions-architect-expert.svg' | relative_url }}" alt="Azure SA Expert" class="badge-showcase-img">
+        <div class="badge-showcase-text">
+          <div class="badge-showcase-title">Azure Architect Expert</div>
+          <div class="badge-showcase-issuer">Microsoft Certified</div>
+        </div>
+      </a>
+
+      <!-- Alibaba Trainer -->
+      <a href="{{ '/about.html' | relative_url }}" class="badge-showcase-item" title="Alibaba Cloud Certified Professional Trainer">
+        <img src="{{ '/assets/imgs/certs/alibaba-trainer.svg' | relative_url }}" alt="Alibaba Trainer" class="badge-showcase-img">
+        <div class="badge-showcase-text">
+          <div class="badge-showcase-title">Trainer ACT81002</div>
+          <div class="badge-showcase-issuer">Alibaba Cloud</div>
+        </div>
+      </a>
     </div>
   </div>
 </section>
 
 <!-- Topic Pillars (Category Hubs) Section -->
-<section style="padding: 4.5rem 0; background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+<section style="padding: 4.5rem 0; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
   <div class="container">
     <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem auto;">
-      <span class="badge badge--primary" style="margin-bottom: 0.75rem;">{{ home.pillars_section.badge }}</span>
-      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem;">{{ home.pillars_section.title }}</h2>
-      <p style="color: var(--text-secondary); font-size: 1.05rem;">
-        {{ home.pillars_section.subtitle }}
+      <span class="badge badge--primary" style="margin-bottom: 0.75rem;">{{ home.pillars_section.badge | default: "STRUCTURED KNOWLEDGE" }}</span>
+      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem; font-weight: 800;">{{ home.pillars_section.title | default: "Core Engineering Pillars" }}</h2>
+      <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
+        {{ home.pillars_section.subtitle | default: "Master cloud-native platform engineering through our categorized domains and step-by-step learning paths." }}
       </p>
     </div>
 
     <div class="grid grid--3col">
-      <!-- Dynamic Topic Pillars from _config.yml -->
       {% for topic in site.topics %}
         <a href="{{ '/categories.html' | relative_url }}#{{ topic.id }}" class="pillar-card">
           <div class="pillar-icon">{% include icon.html name=topic.icon size=24 %}</div>
@@ -78,7 +182,6 @@ permalink: /
         </a>
       {% endfor %}
 
-      <!-- Complete Topic Hub Link -->
       {% if home.pillars_section.hub_card %}
         <a href="{{ home.pillars_section.hub_card.url | relative_url }}" class="pillar-card" style="background: var(--bg-subtle);">
           <div class="pillar-icon">{% include icon.html name=home.pillars_section.hub_card.icon size=24 %}</div>
@@ -99,11 +202,11 @@ permalink: /
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
       <div>
-        <span class="badge badge--cyan" style="margin-bottom: 0.5rem;">{{ home.latest_posts_section.badge }}</span>
-        <h2 style="margin: 0; font-size: 2.25rem;">{{ home.latest_posts_section.title }}</h2>
+        <span class="badge badge--cyan" style="margin-bottom: 0.5rem;">{{ home.latest_posts_section.badge | default: "FRESH ARTICLES" }}</span>
+        <h2 style="margin: 0; font-size: 2.25rem; font-weight: 800;">{{ home.latest_posts_section.title | default: "Latest Technical Guides" }}</h2>
       </div>
       <a href="{{ home.latest_posts_section.view_all_url | default: '/blog.html' | relative_url }}" class="btn btn--secondary btn--sm">
-        <span>{{ home.latest_posts_section.view_all_text }} ({{ site.posts.size }})</span>
+        <span>{{ home.latest_posts_section.view_all_text | default: "View All Articles" }} ({{ site.posts.size }})</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
       </a>
     </div>
@@ -128,20 +231,83 @@ permalink: /
   </div>
 </section>
 
+<!-- Proven Experience & Leadership Highlights -->
+<section style="padding: 4.5rem 0; background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+  <div class="container">
+    <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem auto;">
+      <span class="badge badge--amber" style="margin-bottom: 0.75rem;">PROVEN TRACK RECORD</span>
+      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem; font-weight: 800;">Career Milestones & Leadership</h2>
+      <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
+        Over 10 years of IT experience and 5+ years driving AWS Cloud, Kubernetes & DevOps initiatives for global and regional enterprises.
+      </p>
+    </div>
+
+    <div class="grid grid--3col" style="gap: 1.5rem;">
+      <!-- Angst+Pfister -->
+      <div class="experience-card-home">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span class="badge badge--amber" style="font-size: 0.72rem;">2025 – 2026</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Hybrid</span>
+        </div>
+        <h3 style="font-size: 1.15rem; margin: 0 0 0.25rem 0; color: var(--text-primary); font-weight: 750;">Senior DevOps Engineer</h3>
+        <div style="font-size: 0.925rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 0.75rem;">Angst+Pfister</div>
+        <p style="font-size: 0.885rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 0;">
+          Architected scalable, secure AWS infrastructure supporting IoT-driven manufacturing applications, Kinesis/EMR data pipelines, and Terraform automation.
+        </p>
+      </div>
+
+      <!-- NEC Vietnam -->
+      <div class="experience-card-home">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span class="badge badge--primary" style="font-size: 0.72rem;">2023 – 2025</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Hybrid</span>
+        </div>
+        <h3 style="font-size: 1.15rem; margin: 0 0 0.25rem 0; color: var(--text-primary); font-weight: 750;">Cloud Engineer</h3>
+        <div style="font-size: 0.925rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 0.75rem;">NEC Vietnam</div>
+        <p style="font-size: 0.885rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 0;">
+          Delivered multi-account AWS environments, managed production Amazon EKS clusters, and built high-velocity CI/CD delivery pipelines.
+        </p>
+      </div>
+
+      <!-- Bach Khoa University -->
+      <div class="experience-card-home" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span class="badge badge--emerald" style="font-size: 0.72rem;">HCMUT ALUMNI</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Master & Bachelor</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.5rem;">
+            <img src="{{ '/assets/imgs/logobachkhoasang.png' | relative_url }}" alt="Bach Khoa University" style="width: 32px; height: 32px; object-fit: contain;">
+            <h3 style="font-size: 1.15rem; margin: 0; color: var(--text-primary); font-weight: 750;">Bach Khoa University</h3>
+          </div>
+          <p style="font-size: 0.885rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 0;">
+            Master of Science in Telecommunications (2014-2016) & Bachelor of Engineering in Electrical/Electronics (2009-2014).
+          </p>
+        </div>
+        <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-color);">
+          <a href="{{ '/about.html' | relative_url }}" style="font-size: 0.85rem; color: var(--accent-primary); font-weight: 600; text-decoration: none;">
+            View Full Work History (7 Roles) →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Engineering Mindset & Bio Callout -->
-<section style="padding: 4.5rem 0; background: var(--bg-surface); border-top: 1px solid var(--border-color);">
+<section style="padding: 4.5rem 0;">
   <div class="container container--narrow text-center">
-    <span class="badge badge--emerald" style="margin-bottom: 1rem;">{{ home.cta_section.badge }}</span>
-    <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 1.25rem;">{{ home.cta_section.title }}</h2>
+    <span class="badge badge--emerald" style="margin-bottom: 1rem;">{{ home.cta_section.badge | default: "ENGINEERING EXCELLENCE" }}</span>
+    <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 1.25rem; font-weight: 800;">{{ home.cta_section.title }}</h2>
     <p style="font-size: 1.1rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 2.5rem;">
       {{ home.cta_section.description }}
     </p>
     <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-      <a href="{{ home.cta_section.primary_btn_url | default: '/about.html' | relative_url }}" class="btn btn--primary">
-        {{ home.cta_section.primary_btn_text }}
+      <a href="{{ home.cta_section.primary_btn_url | default: '/about.html' | relative_url }}" class="btn btn--primary" style="padding: 0.75rem 1.6rem; font-size: 1rem;">
+        {{ home.cta_section.primary_btn_text | default: "Read My Story" }}
       </a>
-      <a href="{{ home.cta_section.secondary_btn_url | default: '/about.html#resume-download' | relative_url }}" class="btn btn--secondary">
-        {{ home.cta_section.secondary_btn_text }}
+      <a href="{{ home.cta_section.secondary_btn_url | default: '/about.html#resume-download' | relative_url }}" class="btn btn--secondary" style="padding: 0.75rem 1.4rem; font-size: 1rem;">
+        {{ home.cta_section.secondary_btn_text | default: "View Experience & Resume" }}
       </a>
     </div>
   </div>
@@ -149,11 +315,11 @@ permalink: /
 
 <!-- Dedicated Homepage Contact Section -->
 {% if home.contact_section %}
-<section style="padding: 5rem 0; border-top: 1px solid var(--border-color);">
+<section style="padding: 5rem 0; background: var(--bg-surface); border-top: 1px solid var(--border-color);">
   <div class="container">
     <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem auto;">
-      <span class="badge badge--amber" style="margin-bottom: 0.75rem;">{{ home.contact_section.badge }}</span>
-      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem;">{{ home.contact_section.title }}</h2>
+      <span class="badge badge--amber" style="margin-bottom: 0.75rem;">{{ home.contact_section.badge | default: "GET IN TOUCH" }}</span>
+      <h2 style="font-size: 2.25rem; margin-top: 0; margin-bottom: 0.75rem; font-weight: 800;">{{ home.contact_section.title }}</h2>
       <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
         {{ home.contact_section.subtitle }}
       </p>
@@ -165,12 +331,12 @@ permalink: /
         <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; text-align: left;">
           <div>
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-              <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: {{ channel.icon_bg }}; color: {{ channel.icon_color }}; display: flex; align-items: center; justify-content: center;">
+              <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: {{ channel.icon_bg }}; color: {{ channel.icon_color }}; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
                 {% include icon.html name=channel.icon size=20 %}
               </div>
               <span class="badge {{ channel.badge_class }}">{{ channel.badge }}</span>
             </div>
-            <h3 style="font-size: 1.1rem; margin: 0 0 0.35rem 0; color: var(--text-primary);">{{ channel.title }}</h3>
+            <h3 style="font-size: 1.1rem; margin: 0 0 0.35rem 0; color: var(--text-primary); font-weight: 750;">{{ channel.title }}</h3>
             <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
               {{ channel.desc }}
             </p>

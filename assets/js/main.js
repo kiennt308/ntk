@@ -262,8 +262,38 @@ document.addEventListener('DOMContentLoaded', () => {
       leftCol.appendChild(langSpan);
       headerEl.appendChild(leftCol);
 
+      // Default: Wrap is enabled
+      wrapper.classList.add('code-wrapped');
+
+      const actions = document.createElement('div');
+      actions.className = 'code-header-actions';
+
+      // 1. Wrap Toggle Button (Default: Active)
+      const wrapBtn = document.createElement('button');
+      wrapBtn.className = 'btn-code-action btn-wrap active';
+      wrapBtn.type = 'button';
+      wrapBtn.setAttribute('aria-label', 'Bật / Tắt tự động xuống dòng (Toggle Word Wrap)');
+      wrapBtn.setAttribute('title', 'Tự động xuống dòng: ĐANG BẬT (Bấm để tắt)');
+      wrapBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10a3 3 0 013 3v0a3 3 0 01-3 3H11m0 0l2-2m-2 2l2 2M4 18h4" />
+        </svg>
+        <span>Wrap</span>
+      `;
+
+      wrapBtn.addEventListener('click', () => {
+        const isWrapped = wrapper.classList.toggle('code-wrapped');
+        wrapBtn.classList.toggle('active', isWrapped);
+        if (isWrapped) {
+          wrapBtn.setAttribute('title', 'Tự động xuống dòng: ĐANG BẬT (Bấm để tắt)');
+        } else {
+          wrapBtn.setAttribute('title', 'Tự động xuống dòng: ĐANG TẮT (Bấm để bật)');
+        }
+      });
+
+      // 2. Copy Button
       const copyBtn = document.createElement('button');
-      copyBtn.className = 'btn-copy';
+      copyBtn.className = 'btn-code-action btn-copy';
       copyBtn.type = 'button';
       copyBtn.setAttribute('aria-label', `Copy ${displayLang} code`);
       copyBtn.innerHTML = `
@@ -296,7 +326,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      headerEl.appendChild(copyBtn);
+      actions.appendChild(wrapBtn);
+      actions.appendChild(copyBtn);
+      headerEl.appendChild(actions);
       wrapper.insertBefore(headerEl, wrapper.firstChild);
     }
 

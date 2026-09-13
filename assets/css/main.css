@@ -1835,6 +1835,12 @@ div.highlighter-rouge, figure.highlight {
   letter-spacing: 0.05em;
   font-size: 0.75rem;
 }
+.code-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.btn-code-action,
 .btn-copy {
   display: inline-flex;
   align-items: center;
@@ -1848,18 +1854,46 @@ div.highlighter-rouge, figure.highlight {
   font-size: 0.75rem;
   font-weight: 500;
   transition: all var(--transition-fast);
+  user-select: none;
 }
+.btn-code-action:hover,
 .btn-copy:hover {
   background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
 }
-div.highlighter-rouge pre, figure.highlight pre {
+.btn-wrap.active {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+}
+.btn-wrap.active:hover {
+  background: rgba(56, 189, 248, 0.28);
+  color: #ffffff;
+}
+
+/* Default wrapped code block (Word Wrap is ON by default) */
+div.highlighter-rouge pre,
+figure.highlight pre,
+div.highlighter-rouge.code-wrapped pre,
+figure.highlight.code-wrapped pre {
   padding: 1.25rem;
-  overflow-x: auto;
   font-family: var(--font-mono);
   font-size: 0.925rem;
   line-height: 1.6;
   color: #f8fafc;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  overflow-x: hidden;
+}
+
+/* When word wrap is toggled OFF (Scroll mode) */
+div.highlighter-rouge:not(.code-wrapped) pre,
+figure.highlight:not(.code-wrapped) pre {
+  white-space: pre !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  overflow-x: auto !important;
 }
 
 /* Syntax Highlight Colors (Rouge) */

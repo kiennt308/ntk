@@ -193,11 +193,14 @@ Tất cả 10 câu hỏi trắc nghiệm / tự luận chuyên sâu ở cuối b
 
 ## 9. Chuẩn Hóa Khối Mã Nguồn (Code Blocks)
 
-- Mọi code block đều phải khai báo định danh ngôn ngữ (`hcl`, `bash`, `yaml`, `diff`, `json`, `python`, `typescript`).
-- Các file cấu hình lớn phải có header chú thích tệp rõ ràng:
+- **Định danh ngôn ngữ**: Mọi code block đều phải khai báo định danh ngôn ngữ (`hcl`, `bash`, `yaml`, `diff`, `json`, `python`, `typescript`).
+- **Header và Nút Thao Tác (Wrap & Copy Buttons)**:
+  - Tất cả các khối code block đều tự động được gắn thanh tiêu đề hiển thị macOS Dots, tên ngôn ngữ (`HCL`, `BASH`, `YAML`...) và nhóm nút điều khiển (`Wrap` và `Copy`).
+  - **Mặc định Word Wrap (BẬT)**: Toàn bộ code block được kích hoạt chế độ **tự động xuống dòng mềm mại (`white-space: pre-wrap`)** để người đọc có thể theo dõi trọn vẹn source code mà không cần phải cuộn ngang (scrollbar). Người dùng có thể bấm nút `Wrap` trên thanh header để chuyển qua lại giữa chế độ Wrap và Scroll mode truyền thống.
+- **Header chú thích tệp**: Các file cấu hình lớn phải có header chú thích tệp rõ ràng:
   ```hcl
   # ==============================================================================
   # File: main.tf - Mô tả chức năng tệp
   # ==============================================================================
   ```
-- Khối giải thích code từng dòng (`Line-by-Line Breakdown`) phải gắn badge cho từng tham số quan trọng: `<span class="badge badge--rose"><code>prevent_destroy = true</code></span>`.
+- **Line-by-Line Breakdown**: Khối giải thích code từng dòng phải gắn badge cho từng tham số quan trọng: `<span class="badge badge--rose"><code>prevent_destroy = true</code></span>`.

@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const postsGrid = document.getElementById('posts-grid');
 
   if (postCards.length > 0) {
-    const POSTS_PER_PAGE = 4;
+    const POSTS_PER_PAGE = 8;
     let currentCategory = 'all';
     let searchQuery = '';
     let currentPage = 1;
@@ -423,22 +423,51 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       paginationControls.appendChild(prevBtn);
 
-      // Page Number Buttons
-      for (let p = 1; p <= totalPages; p++) {
-        const pageBtn = document.createElement('button');
-        pageBtn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
-        pageBtn.textContent = p;
-        pageBtn.type = 'button';
-        pageBtn.setAttribute('aria-label', `Page ${p}`);
-        pageBtn.addEventListener('click', () => {
-          if (currentPage !== p) {
-            currentPage = p;
-            renderPagination();
-            scrollToGrid();
-          }
-        });
-        paginationControls.appendChild(pageBtn);
+      // Page Number Buttons with Smart Sliding Window & Ellipsis
+      function getPaginationRange(current, total) {
+        if (total <= 7) {
+          return Array.from({ length: total }, (_, i) => i + 1);
+        }
+
+        if (current <= 4) {
+          return [1, 2, 3, 4, 5, '...', total];
+        }
+
+        if (current >= total - 3) {
+          return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+        }
+
+        return [1, '...', current - 1, current, current + 1, '...', total];
       }
+
+      const pageRange = getPaginationRange(currentPage, totalPages);
+
+      pageRange.forEach((item) => {
+        if (item === '...') {
+          const ellipsis = document.createElement('span');
+          ellipsis.className = 'pagination-ellipsis';
+          ellipsis.textContent = '…';
+          ellipsis.setAttribute('aria-hidden', 'true');
+          paginationControls.appendChild(ellipsis);
+        } else {
+          const pageBtn = document.createElement('button');
+          pageBtn.className = `page-btn ${item === currentPage ? 'active' : ''}`;
+          pageBtn.textContent = item;
+          pageBtn.type = 'button';
+          pageBtn.setAttribute('aria-label', `Page ${item}`);
+          if (item === currentPage) {
+            pageBtn.setAttribute('aria-current', 'page');
+          }
+          pageBtn.addEventListener('click', () => {
+            if (currentPage !== item) {
+              currentPage = item;
+              renderPagination();
+              scrollToGrid();
+            }
+          });
+          paginationControls.appendChild(pageBtn);
+        }
+      });
 
       // Next Page Button
       const nextBtn = document.createElement('button');

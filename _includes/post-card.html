@@ -14,23 +14,35 @@
   {% endif %}
 {% endfor %}
 
+{% assign post_summary = include.post.summary | default: include.post.description %}
+
 <article class="card post-card-item" 
   data-categories="{{ include.post.categories | default: post_cat | join: ' ' }}" 
   data-tags="{{ include.post.tags | join: ' ' }}" 
   data-title="{{ include.post.title | escape }}" 
-  data-desc="{{ include.post.description | default: include.post.excerpt | strip_html | strip_newlines | escape }}">
+  data-desc="{{ post_summary | default: include.post.excerpt | strip_html | strip_newlines | escape }}">
   
   <header class="card__top">
     <div class="card__badges">
       <a href="{{ '/categories.html' | relative_url }}#{{ post_cat | slugify }}" class="badge {{ cat_class }}">
         {{ post_cat }}
       </a>
+      {% if include.post.difficulty %}
+        <span class="badge badge-diff badge-diff--{{ include.post.difficulty | downcase }}">
+          {{ include.post.difficulty }}
+        </span>
+      {% endif %}
     </div>
 
     <div class="card__meta">
       <span class="card__meta-item">
         {% include icon.html name="calendar" size=12 %}
         <span>{{ include.post.date | date: site.post_page.date_format_short | default: "%b %d, %Y" }}</span>
+      </span>
+      <span class="card__meta-dot"></span>
+      <span class="card__meta-item">
+        {% include icon.html name="clock" size=12 %}
+        <span>{{ read_time }}</span>
       </span>
     </div>
   </header>
@@ -39,7 +51,7 @@
     <div class="card__series-row">
       <span class="card__series-tag">
         {% include icon.html name="book" size=12 %}
-        <span>{{ include.post.series }}{% if include.post.series_order %} · Part {{ include.post.series_order }}{% endif %}</span>
+        <span>{{ include.post.series }}{% if include.post.series_order %} · Bài {{ include.post.series_order }}{% endif %}</span>
       </span>
     </div>
   {% endif %}
@@ -48,8 +60,8 @@
     <a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
   </h3>
 
-  {% if include.post.description %}
-    <p class="card__description">{{ include.post.description | strip_html | truncate: 140 }}</p>
+  {% if post_summary %}
+    <p class="card__description">{{ post_summary | strip_html | truncate: 180 }}</p>
   {% endif %}
 
   <div class="card__footer">
@@ -67,3 +79,4 @@
     </a>
   </div>
 </article>
+

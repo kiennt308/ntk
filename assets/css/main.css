@@ -1893,6 +1893,19 @@ div.highlighter-rouge pre, figure.highlight pre {
   box-shadow: none;
 }
 
+.pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 40px;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  user-select: none;
+}
+
 .pagination-info {
   font-size: 0.85rem;
   color: var(--text-muted);

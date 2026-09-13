@@ -293,7 +293,7 @@ about_page:
       - role: "Cloud Engineer"
         company: "Innovative Hub (SG) Pte Ltd"
         period: "Jul 2021 – Mar 2023"
-        badge_class: "badge--cyan"
+        badge_class: "badge--secondary"
         location: "Ho Chi Minh City, Vietnam (Hybrid)"
         # highlights:
         #   - "Designed and provisioned resilient cloud infrastructure using Terraform and CloudFormation across staging and production environments."
@@ -302,7 +302,7 @@ about_page:
       - role: "IoT & Cloud Engineer"
         company: "VIETNET Distribution JSC."
         period: "Jan 2021 – Mar 2022"
-        badge_class: "badge--emerald"
+        badge_class: "badge--secondary"
         location: "Ho Chi Minh City, Vietnam (Hybrid)"
         # highlights:
         #   - "Developed IoT edge gateway integration and cloud communication bridges for telemetry data collection and device fleet monitoring."
@@ -310,12 +310,12 @@ about_page:
       - role: "System Administrator"
         company: "HOANG PHUC COMMUNICATION"
         period: "Jan 2019 – Jan 2021"
-        badge_class: "badge--purple"
+        badge_class: "badge--secondary"
         location: "Ho Chi Minh City, Vietnam (On-site)"
       #   highlights:
       #     - "Administered enterprise Linux server hosts, internal network infrastructure, and virtualization platforms maintaining 99.9% uptime."
       #     - "Authored automated Python and Bash maintenance scripts for daily backups, log rotation, security patching, and health checks."
-      # - role: "System Integration Engineer"
+      - role: "System Integration Engineer"
         company: "SCTV Online"
         period: "Jan 2015 – Feb 2019"
         badge_class: "badge--secondary"

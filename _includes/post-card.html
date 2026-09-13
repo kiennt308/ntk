@@ -34,11 +34,6 @@
 
     <div class="card__meta">
       <span class="card__meta-item">
-        {% include icon.html name="clock" size=12 %}
-        <span>{{ read_time }}</span>
-      </span>
-      <span class="card__meta-dot"></span>
-      <span class="card__meta-item">
         {% include icon.html name="calendar" size=12 %}
         <span>{{ include.post.date | date: site.post_page.date_format_short | default: "%b %d, %Y" }}</span>
       </span>

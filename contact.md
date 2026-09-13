@@ -4,67 +4,94 @@ title: "Get in Touch"
 permalink: /contact.html
 ---
 
-<p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 3rem; text-align: center; max-width: 650px; margin-left: auto; margin-right: auto;">
-  Have a technical question, looking to discuss cloud scalability, or interested in platform engineering consulting? Reach out directly through any of the channels below.
-</p>
+<div style="text-align: center; max-width: 650px; margin: 0 auto 3.5rem auto;">
+  <span class="badge badge--primary" style="margin-bottom: 0.75rem;">CONTACT & CONNECT</span>
+  <h2 style="font-size: 2.25rem; font-weight: 800; margin-top: 0; margin-bottom: 0.75rem;">Let's Work Together</h2>
+  <p style="font-size: 1.15rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0;">
+    Have a question about cloud architectures, Kubernetes best practices, or looking for DevOps / SRE consulting? Reach out directly via the channels below.
+  </p>
+</div>
 
-<div class="contact-grid">
-  <!-- Interactive Form Placeholders -->
-  <div class="card" style="padding: 2.25rem;">
-    <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.35rem;">Send a Message</h3>
-    
-    <form onsubmit="event.preventDefault(); alert('Please email me directly at kiennt.sg@gmail.com!');" style="display: flex; flex-direction: column; gap: 1.25rem;">
-      <div>
-        <label for="name" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Name</label>
-        <input type="text" id="name" placeholder="Your Name" class="search-input-box" style="padding: 0.75rem 1.25rem; border-radius: var(--radius-md);" required>
+<div class="grid grid--2col" style="gap: 1.5rem; margin-bottom: 3.5rem;">
+  
+  <!-- Channel 1: Email -->
+  <div class="card" style="padding: 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--accent-amber-light); color: var(--accent-amber); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700;">
+          ✉️
+        </div>
+        <span class="badge badge--amber">Primary</span>
       </div>
-      
-      <div>
-        <label for="email" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Email Address</label>
-        <input type="email" id="email" placeholder="you@company.com" class="search-input-box" style="padding: 0.75rem 1.25rem; border-radius: var(--radius-md);" required>
-      </div>
-
-      <div>
-        <label for="message" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">Message</label>
-        <textarea id="message" rows="5" placeholder="Let's talk about cloud architecture, Kubernetes, or SRE..." class="search-input-box" style="padding: 0.75rem 1.25rem; border-radius: var(--radius-md); resize: vertical; font-family: var(--font-sans);" required></textarea>
-      </div>
-
-      <button type="submit" class="btn btn--primary" style="width: 100%; padding: 0.85rem;">Send Message</button>
-    </form>
+      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; color: var(--text-primary);">Direct Email</h3>
+      <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+        Best for technical inquiries, consulting proposals, or architecture discussions.
+      </p>
+    </div>
+    <div style="padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <a href="mailto:{{ site.email }}" style="font-weight: 600; font-size: 1rem;">{{ site.email }}</a>
+      <a href="mailto:{{ site.email }}" class="btn btn--primary btn--sm">Send Email →</a>
+    </div>
   </div>
 
-  <!-- Social Link Deck -->
-  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-    
-    <div class="card" style="padding: 1.75rem; flex-direction: row; align-items: center; gap: 1.5rem;">
-      <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--accent-amber-light); color: var(--accent-amber); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 700; flex-shrink: 0;">
-        @
+  <!-- Channel 2: LinkedIn -->
+  <div class="card" style="padding: 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--accent-cyan-light); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700;">
+          💼
+        </div>
+        <span class="badge badge--cyan">Network</span>
       </div>
-      <div>
-        <h4 style="margin: 0 0 0.25rem 0; font-size: 1.1rem;">Direct Email</h4>
-        <a href="mailto:{{ site.email }}" style="font-size: 0.95rem; font-weight: 500;">{{ site.email }}</a>
-      </div>
+      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; color: var(--text-primary);">LinkedIn</h3>
+      <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+        Connect for professional networking, industry insights, and career collaborations.
+      </p>
     </div>
-
-    <div class="card" style="padding: 1.75rem; flex-direction: row; align-items: center; gap: 1.5rem;">
-      <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--accent-primary-light); color: var(--accent-primary); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 700; flex-shrink: 0;">
-        GH
-      </div>
-      <div>
-        <h4 style="margin: 0 0 0.25rem 0; font-size: 1.1rem;">GitHub Profile</h4>
-        <a href="https://github.com/{{ site.social.github }}" target="_blank" rel="noopener noreferrer" style="font-size: 0.95rem; font-weight: 500;">github.com/{{ site.social.github }}</a>
-      </div>
+    <div style="padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <span style="font-weight: 600; font-size: 1rem; color: var(--text-secondary);">linkedin.com/in/{{ site.social.linkedin }}</span>
+      <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm">Connect →</a>
     </div>
-
-    <div class="card" style="padding: 1.75rem; flex-direction: row; align-items: center; gap: 1.5rem;">
-      <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--accent-cyan-light); color: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; font-weight: 700; flex-shrink: 0;">
-        IN
-      </div>
-      <div>
-        <h4 style="margin: 0 0 0.25rem 0; font-size: 1.1rem;">LinkedIn Network</h4>
-        <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer" style="font-size: 0.95rem; font-weight: 500;">linkedin.com/in/{{ site.social.linkedin }}</a>
-      </div>
-    </div>
-
   </div>
+
+  <!-- Channel 3: GitHub -->
+  <div class="card" style="padding: 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--accent-primary-light); color: var(--accent-primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700;">
+          🐙
+        </div>
+        <span class="badge badge--primary">Code</span>
+      </div>
+      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; color: var(--text-primary);">GitHub Profile</h3>
+      <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+        Explore open-source infrastructure scripts, Terraform blueprints, and configurations.
+      </p>
+    </div>
+    <div style="padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <span style="font-weight: 600; font-size: 1rem; color: var(--text-secondary);">github.com/{{ site.social.github }}</span>
+      <a href="https://github.com/{{ site.social.github }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm">Follow →</a>
+    </div>
+  </div>
+
+  <!-- Channel 4: Location & Availability -->
+  <div class="card" style="padding: 2rem; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+        <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--accent-emerald-light); color: var(--accent-emerald); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700;">
+          📍
+        </div>
+        <span class="badge badge--emerald">Available</span>
+      </div>
+      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; color: var(--text-primary);">Location & Availability</h3>
+      <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+        Based in Vietnam (UTC+7 / ICT). Open for remote advisory, cloud consulting, and technical writing.
+      </p>
+    </div>
+    <div style="padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <span style="font-weight: 600; font-size: 0.95rem; color: var(--accent-emerald);">🟢 Open for Consulting</span>
+      <a href="{{ '/about.html' | relative_url }}" class="btn btn--secondary btn--sm">View Profile →</a>
+    </div>
+  </div>
+
 </div>

@@ -569,7 +569,7 @@ docker exec target1 cat /etc/environment-app.conf
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0: Không biết cách tham số hóa Template.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1: Biết dùng biến nhưng vẫn hardcode tên môi trường trong Playbook.</div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2: Phân tích chính xác cơ chế tách biệt mã nguồn logic và dữ liệu môi trường.</div>
-    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ mẫu Template Jinja2 kết hợp cờ điều kiện <code>{% raw %}{% if env_name == 'production' %}{% endraw %}</code>.</div>
+    <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3: Nêu đúng + viết ví dụ mẫu Template Jinja2 kết hợp cờ điều kiện <code>&#123;% if env_name == 'production' %&#125;</code>.</div>
     <div style="margin: 0.5rem 0;"><b>Câu hỏi đào sâu:</b> Cần làm gì nếu muốn đặt giá trị mặc định cho biến trong template phòng trường hợp quên khai báo? <i>(Sử dụng filter <code>{{ '{{' }} my_var | default('default_value') {{ '}}' }}</code>.)</i></div>
   </div>
 </details>

@@ -619,7 +619,7 @@ fi
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
     <div><b>Đáp án chuẩn:</b> Có 2 cách chuẩn trong Jinja2:</div>
-    <div>• <b>Cách 1 (Khối raw):</b> Bao bọc đoạn văn bản cần in nguyên văn trong cặp thẻ <code>{% raw %} ... {% endraw %}</code>. Toàn bộ nội dung bên trong sẽ không bị Jinja2 phân tích cú pháp.</div>
+    <div>• <b>Cách 1 (Khối raw):</b> Bao bọc đoạn văn bản cần in nguyên văn trong cặp thẻ <code>&#123;% raw %&#125; ... &#123;% endraw %&#125;</code>. Toàn bộ nội dung bên trong sẽ không bị Jinja2 phân tích cú pháp.</div>
     <div>• <b>Cách 2 (Escape chuỗi ngắn):</b> In ký tự nhọn dưới dạng chuỗi: <code>{{ '{{' }}</code> hoặc <code>{{ '{%' }}</code>.</div>
     <div>Rất hữu ích khi viết template để sinh file cấu hình Prometheus Alerting Rules, Logstash, hoặc các file template của framework khác cũng dùng cú pháp <code>{{ }}</code>.</div>
     <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
@@ -628,7 +628,7 @@ fi
     <div style="margin-top: 0.35rem; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>2:</b> Trình bày chính xác cả 2 phương pháp Escape và ngữ cảnh sử dụng (Prometheus/Logstash).</div>
     <div style="margin-top: 0.5rem;"><b>Tiêu chí chấm:</b></div>
     <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b>3:</b> Minh họa xuất sắc đoạn template sinh file Prometheus Rule có chứa biểu thức <code>{{ $value }}</code> của Prometheus.</div>
-    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Cú pháp nào escape một biến đơn lẻ <code>{{ $labels.instance }}</code> trong file Prometheus rule? <i>(<code>{% raw %}{{ $labels.instance }}{% endraw %}</code>)</i></div>
+    <div style="margin-top: 0.5rem;"><b>Câu hỏi đào sâu:</b> Cú pháp nào escape một biến đơn lẻ <code>{{ $labels.instance }}</code> trong file Prometheus rule? <i>(<code>&#123;% raw %&#125;{{ $labels.instance }}&#123;% endraw %&#125;</code>)</i></div>
   </div>
 </details>
 

@@ -151,43 +151,7 @@ permalink: /blog.html
         </ul>
       </div>
 
-      <!-- Widget 3: Learning Path Series -->
-      <div class="blog-sidebar-widget">
-        <h3 class="blog-sidebar-title">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-          Learning Series
-        </h3>
-        <ul class="blog-series-list">
-          <li class="blog-series-item">
-            <a href="#aws" class="sidebar-filter-trigger" data-filter="aws">
-              <span>AWS Landing Zone</span>
-              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">2 Parts</span>
-            </a>
-          </li>
-          <li class="blog-series-item">
-            <a href="#kubernetes" class="sidebar-filter-trigger" data-filter="kubernetes">
-              <span>Kubernetes Production</span>
-              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">2 Parts</span>
-            </a>
-          </li>
-          <li class="blog-series-item">
-            <a href="#terraform" class="sidebar-filter-trigger" data-filter="terraform">
-              <span>Terraform in Production</span>
-              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">1 Part</span>
-            </a>
-          </li>
-          <li class="blog-series-item">
-            <a href="#observability" class="sidebar-filter-trigger" data-filter="observability">
-              <span>Observability & SRE</span>
-              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">1 Part</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Widget 4: Trending Tags -->
+      <!-- Widget 3: Popular Tags -->
       <div class="blog-sidebar-widget">
         <h3 class="blog-sidebar-title">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -200,18 +164,6 @@ permalink: /blog.html
             <a href="{{ '/tags.html' | relative_url }}#{{ tag[0] | downcase }}" class="badge">#{{ tag[0] }}</a>
           {% endfor %}
         </div>
-      </div>
-
-      <!-- Widget 5: Subscribe & RSS -->
-      <div class="blog-sidebar-widget" style="background: linear-gradient(135deg, var(--bg-surface), var(--bg-subtle)); border-color: rgba(var(--accent-primary-rgb), 0.25);">
-        <h3 class="blog-sidebar-title" style="border-bottom: none; margin-bottom: 0.5rem;">Stay Connected</h3>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-          Subscribe to our RSS feed to receive updates whenever a new engineering guide is published.
-        </p>
-        <a href="{{ '/feed.xml' | relative_url }}" class="btn btn--primary btn--sm" style="width: 100%; justify-content: center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M6.503 20.752c0 1.794-1.456 3.248-3.251 3.248-1.796 0-3.252-1.454-3.252-3.248 0-1.794 1.456-3.248 3.252-3.248 1.795.001 3.251 1.454 3.251 3.248zm-6.503-12.572v4.811c6.05 0 10.96 4.91 10.96 10.96h4.812c0-8.697-7.074-15.771-15.772-15.771zm0-8.18v4.812c10.563 0 19.14 8.576 19.14 19.14h4.812c0-13.208-10.744-23.952-23.952-23.952z"/></svg>
-          Subscribe via RSS
-        </a>
       </div>
 
     </aside>

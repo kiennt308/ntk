@@ -1,0 +1,16 @@
+{
+  "name": "Kien Nguyen - Cloud & DevOps Engineer",
+  "short_name": "KN Tech",
+  "description": "Senior DevOps / SRE / Cloud Engineer sharing practical tutorials and deep dives.",
+  "start_url": "/ntk/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "icons": [
+    {
+      "src": "/assets/imgs/logo.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

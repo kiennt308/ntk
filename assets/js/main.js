@@ -1,107 +1,218 @@
 document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================================================
-     1. Toast Notification Utility
+     1. Toast Notification Utility (Debounced & Race-Condition Safe: BUG-01)
      ========================================================================== */
+  let toastTimer = null;
   function showToast(message) {
     let toast = document.getElementById('toast-notification');
     if (!toast) {
       toast = document.createElement('div');
       toast.id = 'toast-notification';
+      toast.setAttribute('aria-live', 'polite');
       document.body.appendChild(toast);
     }
     toast.textContent = message;
     toast.classList.add('show');
-    setTimeout(() => {
+
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+    }
+
+    toastTimer = setTimeout(() => {
       toast.classList.remove('show');
+      toastTimer = null;
     }, 2500);
   }
 
   /* ==========================================================================
-     2. Dark Mode Toggle Logic
+     2. Resilient Clipboard Copy Helper (HTTPS + Fallback: BUG-02)
+     ========================================================================== */
+  function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    } else {
+      // Fallback using temporary textarea
+      return new Promise((resolve, reject) => {
+        try {
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          textArea.style.position = 'fixed';
+          textArea.style.left = '-999999px';
+          textArea.style.top = '-999999px';
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          const successful = document.execCommand('copy');
+          document.body.removeChild(textArea);
+          if (successful) {
+            resolve();
+          } else {
+            reject(new Error('execCommand copy unsuccessful'));
+          }
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+  }
+
+  /* ==========================================================================
+     3. Debounce Utility (BUG-95)
+     ========================================================================== */
+  function debounce(fn, delay) {
+    let timer = null;
+    return function (...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  /* ==========================================================================
+     4. Dark Mode Toggle Logic (Safe Storage & ARIA Sync: BUG-96)
      ========================================================================== */
   const themeToggle = document.getElementById('theme-toggle');
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
       const isDark = document.documentElement.classList.toggle('dark-theme');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      try {
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      } catch (e) {
+        // Handle QuotaExceeded or Incognito mode restrictions gracefully
+      }
       themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
     });
   }
 
   /* ==========================================================================
-     3. Mobile Hamburger Menu
+     5. Mobile Hamburger Menu (ARIA Sync & Closest Delegation: BUG-06, BUG-58)
      ========================================================================== */
   const hamburger = document.querySelector('.hamburger');
   const navMenu = document.querySelector('.nav-menu');
 
   if (hamburger && navMenu) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      navMenu.classList.toggle('open');
+    function toggleMenu(openState) {
+      const isOpen = openState !== undefined ? openState : !navMenu.classList.contains('open');
+      hamburger.classList.toggle('open', isOpen);
+      navMenu.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    hamburger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
     });
 
-    // Close mobile menu when clicking outside
+    // Close mobile menu when clicking outside safely
     document.addEventListener('click', (e) => {
-      if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-        hamburger.classList.remove('open');
-        navMenu.classList.remove('open');
+      if (!e.target.closest('.hamburger') && !e.target.closest('.nav-menu')) {
+        toggleMenu(false);
       }
     });
 
     // Close menu when clicking navigation links
     navMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
-        hamburger.classList.remove('open');
-        navMenu.classList.remove('open');
+        toggleMenu(false);
       });
     });
   }
 
   /* ==========================================================================
-     4. Reading Progress Bar & Header Shadow
+     6. Throttled Scroll Engine: Reading Progress & Header Shadow (BUG-03, BUG-05)
      ========================================================================== */
   const progressBar = document.getElementById('reading-progress');
   const header = document.querySelector('header.navbar');
   const articleMain = document.querySelector('.article-main');
+  const backToTopBtn = document.getElementById('back-to-top');
 
-  window.addEventListener('scroll', () => {
+  let isScrollScheduled = false;
+
+  function onScrollFrame() {
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+
     // Header shadow on scroll
     if (header) {
-      if (window.scrollY > 15) {
+      if (scrollY > 15) {
         header.style.boxShadow = 'var(--shadow-md)';
       } else {
         header.style.boxShadow = 'none';
       }
     }
 
-    // Article reading progress calculation
+    // Article reading progress calculation (Division-by-zero protected: BUG-03)
     if (progressBar && articleMain) {
-      const articleRect = articleMain.getBoundingClientRect();
       const articleTop = articleMain.offsetTop;
       const articleHeight = articleMain.offsetHeight;
       const windowHeight = window.innerHeight;
-      const scrollPos = window.scrollY;
+      const denominator = Math.max(1, articleHeight - windowHeight * 0.4);
 
       const progress = Math.min(
         100,
-        Math.max(0, ((scrollPos - articleTop + windowHeight * 0.4) / (articleHeight - windowHeight * 0.4)) * 100)
+        Math.max(0, ((scrollY - articleTop + windowHeight * 0.4) / denominator) * 100)
       );
       progressBar.style.width = `${progress}%`;
     }
-  });
+
+    // Back to top floating button
+    if (backToTopBtn) {
+      if (scrollY > 300) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    }
+
+    isScrollScheduled = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!isScrollScheduled) {
+      isScrollScheduled = true;
+      window.requestAnimationFrame(onScrollFrame);
+    }
+  }, { passive: true });
+
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
 
   /* ==========================================================================
-     5. Kramdown Code Block Headers & Copy Functionality
+     7. Kramdown Code Block Headers & Copy Functionality (BUG-02, BUG-10)
      ========================================================================== */
+  const languageAliases = {
+    'BASH': 'BASH',
+    'SH': 'SHELL',
+    'ZSH': 'ZSH',
+    'YML': 'YAML',
+    'YAML': 'YAML',
+    'JSON': 'JSON',
+    'TERRAFORM': 'TERRAFORM',
+    'TF': 'TERRAFORM',
+    'DOCKERFILE': 'DOCKER',
+    'KUBERNETES': 'K8S',
+    'K8S': 'K8S',
+    'GO': 'GOLANG',
+    'PYTHON': 'PYTHON',
+    'PY': 'PYTHON',
+    'TEXT': 'TXT'
+  };
+
   const codeBlocks = document.querySelectorAll('div.highlighter-rouge, figure.highlight');
   
   codeBlocks.forEach(wrapper => {
-    let lang = 'CODE';
+    let rawLang = 'CODE';
     wrapper.classList.forEach(cls => {
       if (cls.startsWith('language-')) {
-        lang = cls.replace('language-', '').toUpperCase();
+        rawLang = cls.replace('language-', '').toUpperCase();
       }
     });
+
+    const displayLang = languageAliases[rawLang] || rawLang;
 
     let headerEl = wrapper.querySelector('.code-header');
     if (!headerEl) {
@@ -119,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const langSpan = document.createElement('span');
       langSpan.className = 'code-header-lang';
-      langSpan.textContent = lang;
+      langSpan.textContent = displayLang;
 
       leftCol.appendChild(dots);
       leftCol.appendChild(langSpan);
@@ -128,8 +239,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const copyBtn = document.createElement('button');
       copyBtn.className = 'btn-copy';
       copyBtn.type = 'button';
+      copyBtn.setAttribute('aria-label', `Copy ${displayLang} code`);
       copyBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
         </svg>
         <span>Copy</span>
@@ -139,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
         if (code) {
           const rawText = code.innerText;
-          navigator.clipboard.writeText(rawText).then(() => {
+          copyTextToClipboard(rawText).then(() => {
             copyBtn.querySelector('span').textContent = 'Copied!';
             copyBtn.style.color = '#34d399';
             showToast('Code snippet copied to clipboard!');
@@ -160,13 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     6. Copy Page URL / Share Button
+     8. Copy Page URL / Share Button (BUG-02)
      ========================================================================== */
   const copyLinkButtons = document.querySelectorAll('.btn-copy-link');
   copyLinkButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const url = window.location.href;
-      navigator.clipboard.writeText(url).then(() => {
+      copyTextToClipboard(url).then(() => {
         showToast('Article link copied to clipboard!');
       }).catch(() => {
         showToast('Failed to copy link.');
@@ -175,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     7. Live Blog Category Filtering, Instant Search & Dynamic Pagination (blog.html)
+     9. Live Blog Category Filtering, Instant Search & Pagination (BUG-04, BUG-08, BUG-09, BUG-95)
      ========================================================================== */
   const filterButtons = document.querySelectorAll('.live-filter-btn');
   const postCards = Array.from(document.querySelectorAll('.post-card-item'));
@@ -186,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const postsGrid = document.getElementById('posts-grid');
 
   if (postCards.length > 0) {
-    const POSTS_PER_PAGE = 4; // 4 bài viết trên mỗi trang cho bố cục 2 cột thoáng đẹp
+    const POSTS_PER_PAGE = 4;
     let currentCategory = 'all';
     let searchQuery = '';
     let currentPage = 1;
@@ -202,6 +314,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderPagination() {
       const totalPosts = matchingCards.length;
+
+      // Handle empty filtered posts (BUG-08)
+      if (totalPosts === 0) {
+        postCards.forEach(card => { card.style.display = 'none'; });
+        if (postCountDisplay) postCountDisplay.textContent = '0';
+        const emptyNotice = document.getElementById('no-filter-results');
+        if (emptyNotice) emptyNotice.style.display = 'block';
+        if (paginationWrapper) paginationWrapper.style.display = 'none';
+        return;
+      }
+
       const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE) || 1;
 
       if (currentPage > totalPages) {
@@ -228,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const emptyNotice = document.getElementById('no-filter-results');
       if (emptyNotice) {
-        emptyNotice.style.display = totalPosts === 0 ? 'block' : 'none';
+        emptyNotice.style.display = 'none';
       }
 
       if (!paginationWrapper || !paginationControls) return;
@@ -245,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const prevBtn = document.createElement('button');
       prevBtn.className = `page-btn ${currentPage === 1 ? 'disabled' : ''}`;
       prevBtn.innerHTML = '‹ Prev';
+      prevBtn.type = 'button';
       prevBtn.setAttribute('aria-label', 'Previous Page');
       prevBtn.addEventListener('click', () => {
         if (currentPage > 1) {
@@ -260,6 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pageBtn = document.createElement('button');
         pageBtn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
         pageBtn.textContent = p;
+        pageBtn.type = 'button';
         pageBtn.setAttribute('aria-label', `Page ${p}`);
         pageBtn.addEventListener('click', () => {
           if (currentPage !== p) {
@@ -275,6 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const nextBtn = document.createElement('button');
       nextBtn.className = `page-btn ${currentPage === totalPages ? 'disabled' : ''}`;
       nextBtn.innerHTML = 'Next ›';
+      nextBtn.type = 'button';
       nextBtn.setAttribute('aria-label', 'Next Page');
       nextBtn.addEventListener('click', () => {
         if (currentPage < totalPages) {
@@ -288,22 +414,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateFilteredPosts() {
       matchingCards = postCards.filter(card => {
-        const categories = (card.getAttribute('data-categories') || '').toLowerCase();
+        const categoriesRaw = (card.getAttribute('data-categories') || '').toLowerCase();
+        const categoriesList = categoriesRaw.split(/\s+/).filter(Boolean);
         const tags = (card.getAttribute('data-tags') || '').toLowerCase();
         const title = (card.getAttribute('data-title') || '').toLowerCase();
         const desc = (card.getAttribute('data-desc') || '').toLowerCase();
 
-        const matchesCategory = currentCategory === 'all' || categories.includes(currentCategory);
+        // Exact category matching to avoid substring collisions (BUG-04)
+        const matchesCategory = currentCategory === 'all' || categoriesList.includes(currentCategory);
         const matchesSearch = !searchQuery || 
           title.includes(searchQuery) || 
           desc.includes(searchQuery) || 
           tags.includes(searchQuery) || 
-          categories.includes(searchQuery);
+          categoriesRaw.includes(searchQuery);
 
         return matchesCategory && matchesSearch;
       });
 
-      currentPage = 1; // Reset to page 1 on category/search query changes
+      currentPage = 1;
       renderPagination();
     }
 
@@ -318,9 +446,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (blogSearchInput) {
-      blogSearchInput.addEventListener('input', (e) => {
-        searchQuery = e.target.value.trim().toLowerCase();
+      const debouncedBlogSearch = debounce((query) => {
+        searchQuery = query;
         updateFilteredPosts();
+      }, 200);
+
+      blogSearchInput.addEventListener('input', (e) => {
+        debouncedBlogSearch(e.target.value.trim().toLowerCase());
       });
     }
 
@@ -329,8 +461,8 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebarTriggers.forEach(trigger => {
       trigger.addEventListener('click', (e) => {
         e.preventDefault();
-        const filterVal = trigger.getAttribute('data-filter')?.toLowerCase();
-        const targetBtn = Array.from(filterButtons).find(b => b.getAttribute('data-filter')?.toLowerCase() === filterVal);
+        const filterVal = (trigger.getAttribute('data-filter') || '').toLowerCase();
+        const targetBtn = Array.from(filterButtons).find(b => (b.getAttribute('data-filter') || '').toLowerCase() === filterVal);
         if (targetBtn) {
           targetBtn.click();
           scrollToGrid();
@@ -338,38 +470,21 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Check URL hash for initial filter on load (e.g. blog.html#aws)
+    // Check URL hash for initial filter with decodeURIComponent (BUG-09)
     if (window.location.hash) {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
-      const targetBtn = Array.from(filterButtons).find(b => b.getAttribute('data-filter')?.toLowerCase() === hash);
-      if (targetBtn) {
-        targetBtn.click();
-      } else {
+      try {
+        const hash = decodeURIComponent(window.location.hash.replace('#', '')).toLowerCase();
+        const targetBtn = Array.from(filterButtons).find(b => (b.getAttribute('data-filter') || '').toLowerCase() === hash);
+        if (targetBtn) {
+          targetBtn.click();
+        } else {
+          updateFilteredPosts();
+        }
+      } catch (e) {
         updateFilteredPosts();
       }
     } else {
       updateFilteredPosts();
     }
-  }
-
-  /* ==========================================================================
-     8. Back to Top Floating Button
-     ========================================================================== */
-  const backToTopBtn = document.getElementById('back-to-top');
-  if (backToTopBtn) {
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 300) {
-        backToTopBtn.classList.add('visible');
-      } else {
-        backToTopBtn.classList.remove('visible');
-      }
-    }, { passive: true });
-
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
   }
 });

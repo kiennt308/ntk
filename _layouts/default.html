@@ -2,13 +2,14 @@
 <html lang="en">
   {% include head.html %}
   <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div id="reading-progress"></div>
     {% include header.html %}
-    <main>
+    <main id="main-content" role="main">
       {{ content }}
     </main>
     {% include footer.html %}
-    <div id="toast-notification"></div>
+    <div id="toast-notification" aria-live="polite"></div>
     <button id="back-to-top" class="back-to-top no-print" aria-label="Back to top" title="Back to top">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />

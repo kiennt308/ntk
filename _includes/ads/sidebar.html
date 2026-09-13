@@ -18,7 +18,7 @@
       </script>
     {% elsif ad_cfg.image and ad_cfg.image != "" %}
       <a href="{{ ad_cfg.url | default: '/contact.html' | relative_url }}" class="ad-banner-link" {% if ad_cfg.target_blank %}target="_blank" rel="noopener noreferrer"{% endif %}>
-        <img src="{{ ad_cfg.image | relative_url }}" alt="{{ ad_cfg.alt | default: 'Advertisement' }}" class="ad-banner-img" loading="lazy" />
+        <img src="{{ ad_cfg.image | relative_url }}" alt="{{ ad_cfg.alt | default: 'Advertisement' }}" class="ad-banner-img" loading="lazy" width="300" height="250" onerror="this.parentElement.style.display='none'" />
       </a>
     {% endif %}
   </div>

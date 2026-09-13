@@ -10,6 +10,8 @@ baseurl: "/ntk"
 url: "https://kiennt308.github.io"
 repository: "kiennt308/ntk"
 favicon: "/assets/imgs/logo.jpg"
+timezone: "Asia/Ho_Chi_Minh"
+future: false
 show_ads: true                      # Cờ tương thích ngược cũ
 
 # ==============================================================================

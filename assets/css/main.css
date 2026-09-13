@@ -109,11 +109,43 @@ html.dark-theme {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -999px;
+  left: 1.5rem;
+  background: var(--accent-primary);
+  color: #ffffff;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: var(--shadow-lg);
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-height) + 1.5rem);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) var(--bg-page);
 }
 
 body {
@@ -153,6 +185,8 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; }
@@ -255,6 +289,8 @@ html.dark-theme header.navbar {
   align-items: center;
   width: 100%;
   position: relative;
+  padding-left: max(1.5rem, env(safe-area-inset-left));
+  padding-right: max(1.5rem, env(safe-area-inset-right));
 }
 
 .logo {
@@ -1798,7 +1834,7 @@ footer.footer {
     color: #000000 !important;
     font-size: 11pt !important;
   }
-  header.navbar, footer.footer, .theme-toggle, .btn:not(.btn-print), .ad-wrapper, .post-navigation, .related-posts, .no-print, #reading-progress, .article-sidebar-left, .article-sidebar-right {
+  header.navbar, footer.footer, .theme-toggle, .btn:not(.btn-print), .ad-wrapper, .post-navigation, .related-posts, .no-print, #reading-progress, .article-sidebar-left, .article-sidebar-right, #back-to-top, .skip-link, .search-wrapper {
     display: none !important;
   }
   main {
@@ -1812,5 +1848,16 @@ footer.footer {
   }
   .article-layout {
     grid-template-columns: 1fr !important;
+  }
+  div.highlighter-rouge, pre {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+  }
+}
+@media (max-width: 360px) {
+  .container {
+    padding: 0 0.85rem;
   }
 }

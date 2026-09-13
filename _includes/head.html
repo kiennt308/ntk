@@ -1,16 +1,49 @@
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#090d16">
+
+  <!-- Immediate Theme Initializer to eliminate FOUT/flashing -->
+  <script>
+    (function() {
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+          document.documentElement.classList.add('dark-theme');
+        } else {
+          document.documentElement.classList.remove('dark-theme');
+        }
+      } catch (e) {
+        document.documentElement.classList.add('dark-theme');
+      }
+    })();
+  </script>
+
+  <!-- Icons & Web App Manifest -->
   <link rel="icon" type="image/jpeg" href="{{ site.favicon | default: '/assets/imgs/logo.jpg' | relative_url }}">
   <link rel="shortcut icon" href="{{ '/favicon.ico' | relative_url }}">
   <link rel="apple-touch-icon" href="{{ site.favicon | default: '/assets/imgs/logo.jpg' | relative_url }}">
+  <link rel="manifest" href="{{ '/manifest.json' | relative_url }}">
 
-  <!-- Google Fonts Preconnect -->
+  <!-- Google Fonts Preconnect & Optimized Load -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  {% if site.ads.enabled or site.show_ads %}
+  <!-- Preconnect to Google AdSense -->
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  {% endif %}
 
   <!-- Jekyll SEO Plugin Tags -->
   {% seo %}
+
+  <!-- Article Published Time Meta Tag -->
+  {% if page.date %}
+  <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+  <meta property="article:author" content="{{ site.author.name }}">
+  {% endif %}
 
   <!-- Stylesheet with Cache Buster -->
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ site.time | date: '%s' }}">
@@ -18,24 +51,10 @@
   <!-- Feed Meta Plugin Tags -->
   {% feed_meta %}
 
-  {% assign ads_on = site.ads.enabled | default: site.show_ads %}
-  {% if ads_on and site.ads.client_id and site.ads.client_id != "" %}
+  {% if site.ads.enabled and site.ads.client_id and site.ads.client_id != "" %}
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.ads.client_id }}" crossorigin="anonymous"></script>
   {% endif %}
-
-  <!-- Prevent theme flashing during initial render -->
-  <script>
-    (function() {
-      const savedTheme = localStorage.getItem('theme');
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-        document.documentElement.classList.add('dark-theme');
-      } else {
-        document.documentElement.classList.remove('dark-theme');
-      }
-    })();
-  </script>
 
   <!-- Main JavaScript File with Cache Buster -->
   <script src="{{ '/assets/js/main.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>

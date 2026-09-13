@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /search.json
 
-Sitemap: https://blog.example.com/sitemap.xml
+Sitemap: https://kiennt308.github.io/ntk/sitemap.xml

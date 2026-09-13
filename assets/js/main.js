@@ -663,62 +663,66 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================================================
      15. Mermaid Diagram Auto-Renderer & Interactive Zoom Lightbox
      ========================================================================== */
-  function initMermaidDiagrams() {
+  async function initMermaidDiagrams() {
     if (typeof mermaid === 'undefined') return;
 
     const mermaidCodes = document.querySelectorAll(
       'code.language-mermaid, pre.language-mermaid, div.language-mermaid pre code, .highlighter-rouge.language-mermaid pre code, .language-mermaid pre'
     );
 
-    if (mermaidCodes.length > 0) {
-      mermaidCodes.forEach((codeEl) => {
-        const rawContent = codeEl.textContent || codeEl.innerText;
-        const container = codeEl.closest('.highlighter-rouge') || codeEl.closest('pre') || codeEl;
+    if (mermaidCodes.length === 0) {
+      attachMermaidLightbox();
+      return;
+    }
 
-        const mermaidWrapper = document.createElement('div');
-        mermaidWrapper.className = 'mermaid-wrapper';
+    const isDark = document.documentElement.classList.contains('dark-theme');
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? 'dark' : 'default',
+      themeVariables: {
+        darkMode: isDark,
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+      },
+      securityLevel: 'loose'
+    });
 
-        const mermaidInner = document.createElement('div');
-        mermaidInner.className = 'mermaid';
-        mermaidInner.textContent = rawContent.trim();
+    for (let i = 0; i < mermaidCodes.length; i++) {
+      const codeEl = mermaidCodes[i];
+      const rawContent = codeEl.textContent || codeEl.innerText;
+      const container = codeEl.closest('.highlighter-rouge') || codeEl.closest('pre') || codeEl;
 
-        const zoomHint = document.createElement('button');
-        zoomHint.className = 'mermaid-zoom-btn';
-        zoomHint.type = 'button';
-        zoomHint.setAttribute('aria-label', 'Phóng to sơ đồ');
-        zoomHint.title = 'Bấm để phóng to và tương tác với sơ đồ';
-        zoomHint.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><span>Phóng to</span>';
+      const mermaidWrapper = document.createElement('div');
+      mermaidWrapper.className = 'mermaid-wrapper';
 
-        mermaidWrapper.appendChild(mermaidInner);
-        mermaidWrapper.appendChild(zoomHint);
+      const mermaidInner = document.createElement('div');
+      mermaidInner.className = 'mermaid';
+      const renderId = 'mermaid-svg-' + i + '-' + Math.floor(Math.random() * 10000);
 
-        if (container && container.parentNode) {
-          container.parentNode.replaceChild(mermaidWrapper, container);
-        }
-      });
+      const zoomHint = document.createElement('button');
+      zoomHint.className = 'mermaid-zoom-btn';
+      zoomHint.type = 'button';
+      zoomHint.setAttribute('aria-label', 'Phóng to sơ đồ');
+      zoomHint.title = 'Bấm để phóng to và tương tác với sơ đồ';
+      zoomHint.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><span>Phóng to</span>';
 
-      const isDark = document.documentElement.classList.contains('dark-theme');
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: isDark ? 'dark' : 'default',
-        themeVariables: {
-          darkMode: isDark,
-          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-        },
-        securityLevel: 'loose'
-      });
+      mermaidWrapper.appendChild(mermaidInner);
+      mermaidWrapper.appendChild(zoomHint);
+
+      if (container && container.parentNode) {
+        container.parentNode.replaceChild(mermaidWrapper, container);
+      }
 
       try {
-        mermaid.run().then(() => {
-          attachMermaidLightbox();
-        });
+        const { svg } = await mermaid.render(renderId, rawContent.trim());
+        mermaidInner.innerHTML = svg;
       } catch (err) {
-        console.warn('Mermaid rendering notice:', err);
+        console.warn('Mermaid render error on diagram ' + i + ':', err);
+        // Clean fallback in case of parser warning
+        mermaidInner.textContent = rawContent.trim();
       }
-    } else {
-      // If already rendered (e.g. static div.mermaid)
-      attachMermaidLightbox();
     }
+
+    attachMermaidLightbox();
   }
 
   // Lightbox implementation with Zoom, Pan, Mousewheel, and Keyboard controls

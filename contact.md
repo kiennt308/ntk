@@ -21,13 +21,13 @@ permalink: /contact.html
       <div class="card" style="padding: 2rem; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
-            <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: {{ channel.icon_bg }}; color: {{ channel.icon_color }}; display: flex; align-items: center; justify-content: center;">
-              {% include icon.html name=channel.icon size=24 %}
+            <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: {{ channel.icon_bg }}; color: {{ channel.icon_color }}; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
+              {% include icon.html name=channel.icon size=22 %}
             </div>
             <span class="badge {{ channel.badge_class }}">{{ channel.badge }}</span>
           </div>
           <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; color: var(--text-primary);">{{ channel.title }}</h3>
-          <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem;">
             {{ channel.desc }}
           </p>
         </div>

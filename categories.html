@@ -18,20 +18,37 @@ permalink: /categories.html
   <!-- Topic Anchor Cloud -->
   <div class="filter-bar" style="justify-content: center; margin-bottom: 3.5rem; gap: 0.65rem;">
     {% for category in site.categories %}
-      <a href="#{{ category[0] | downcase }}" class="filter-btn" style="text-transform: capitalize;">
-        {{ category[0] }} <span style="opacity: 0.7; font-size: 0.75rem; margin-left: 0.25rem;">({{ category[1] | size }})</span>
+      {% assign current_topic = site.topics | where: "category_name", category[0] | first %}
+      <a href="#{{ category[0] | downcase }}" class="filter-btn" style="text-transform: capitalize; display: inline-flex; align-items: center; gap: 0.45rem;">
+        {% if current_topic %}
+          {% include icon.html name=current_topic.icon size=15 %}
+        {% else %}
+          {% include icon.html name="book" size=15 %}
+        {% endif %}
+        <span>{{ category[0] }}</span>
+        <span style="opacity: 0.7; font-size: 0.75rem; margin-left: 0.15rem;">({{ category[1] | size }})</span>
       </a>
     {% endfor %}
   </div>
 
   <!-- Dynamic Topic Pillar Sections -->
   {% for category in site.categories %}
+    {% assign current_topic = site.topics | where: "category_name", category[0] | first %}
     <section id="{{ category[0] | downcase }}" style="margin-bottom: 4rem; scroll-margin-top: calc(var(--header-height) + 1.5rem); background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-sm);">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;">
-        <h2 style="font-size: 1.6rem; margin: 0; text-transform: capitalize; display: flex; align-items: center; gap: 0.5rem;">
-          <span>{{ category[0] }}</span>
-        </h2>
-        <span class="badge badge--primary">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--accent-primary); flex-shrink: 0;">
+            {% if current_topic %}
+              {% include icon.html name=current_topic.icon size=20 %}
+            {% else %}
+              {% include icon.html name="book" size=20 %}
+            {% endif %}
+          </div>
+          <h2 style="font-size: 1.6rem; margin: 0; text-transform: capitalize;">
+            {{ category[0] }}
+          </h2>
+        </div>
+        <span class="badge {{ current_topic.badge_class | default: 'badge--primary' }}">
           {{ category[1] | size }} {% if category[1].size == 1 %}{{ page_cfg.unit_guide_single | default: "Guide" }}{% else %}{{ page_cfg.unit_guide_plural | default: "Guides" }}{% endif %}
         </span>
       </div>

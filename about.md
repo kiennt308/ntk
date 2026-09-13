@@ -25,14 +25,26 @@ permalink: /about.html
     <div style="font-size: 0.95rem; color: var(--accent-primary); font-weight: 600; margin-bottom: 0.65rem;">
       {{ site.author.subtitle }}
     </div>
-    <div style="font-size: 0.875rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 1.25rem;">
-      <span>📍 {{ site.author.location }}</span>
-      <span>✉️ <a href="mailto:{{ site.author.email }}" style="color: inherit;">{{ site.author.email }}</a></span>
+    <div style="font-size: 0.875rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center;">
+      <span style="display: inline-flex; align-items: center; gap: 0.35rem;">
+        {% include icon.html name="map-pin" size=14 %}
+        <span>{{ site.author.location }}</span>
+      </span>
+      <span style="display: inline-flex; align-items: center; gap: 0.35rem;">
+        {% include icon.html name="mail" size=14 %}
+        <a href="mailto:{{ site.author.email }}" style="color: inherit;">{{ site.author.email }}</a>
+      </span>
       {% if site.social.github %}
-        <span>🐙 <a href="https://github.com/{{ site.social.github }}" target="_blank" rel="noopener noreferrer" style="color: inherit;">github.com/{{ site.social.github }}</a></span>
+        <span style="display: inline-flex; align-items: center; gap: 0.35rem;">
+          {% include icon.html name="github" size=14 %}
+          <a href="https://github.com/{{ site.social.github }}" target="_blank" rel="noopener noreferrer" style="color: inherit;">github.com/{{ site.social.github }}</a>
+        </span>
       {% endif %}
       {% if site.social.linkedin %}
-        <span>💼 <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer" style="color: inherit;">linkedin.com/in/{{ site.social.linkedin }}</a></span>
+        <span style="display: inline-flex; align-items: center; gap: 0.35rem;">
+          {% include icon.html name="briefcase" size=14 %}
+          <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer" style="color: inherit;">linkedin.com/in/{{ site.social.linkedin }}</a>
+        </span>
       {% endif %}
     </div>
   </div>
@@ -44,13 +56,20 @@ permalink: /about.html
 {{ about.background.intro | markdownify }}
 
 <h3>{{ about.background.focus_heading }}</h3>
-<ul>
+<ul style="list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 0.75rem;">
   {% for item in about.background.focus_items %}
-    <li><strong>{{ item.title }}</strong> {{ item.desc }}</li>
+    <li style="display: flex; align-items: flex-start; gap: 0.65rem;">
+      <span style="color: var(--accent-primary); margin-top: 0.2rem; flex-shrink: 0;">
+        {% include icon.html name=item.icon size=18 %}
+      </span>
+      <div>
+        <strong>{{ item.title }}</strong> {{ item.desc }}
+      </div>
+    </li>
   {% endfor %}
 </ul>
 
-<h3>{{ about.background.principles_heading }}</h3>
+<h3 style="margin-top: 2rem;">{{ about.background.principles_heading }}</h3>
 <ul>
   {% for p in about.background.principles %}
     <li><strong>{{ p.title }}</strong> {{ p.desc }}</li>
@@ -65,8 +84,13 @@ permalink: /about.html
 <div class="grid grid--2col" style="gap: 1.25rem; margin: 2rem 0;">
   {% for comp in about.competencies.items %}
     <div class="card" style="padding: 1.5rem;">
-      <h4 style="margin: 0 0 0.75rem 0; font-size: 1.05rem; color: var(--text-primary);">{{ comp.title }}</h4>
-      <p style="font-size: 0.925rem; margin-bottom: 0; color: var(--text-secondary);">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <span style="color: var(--accent-primary); display: flex; align-items: center;">
+          {% include icon.html name=comp.icon size=18 %}
+        </span>
+        <h4 style="margin: 0; font-size: 1.05rem; color: var(--text-primary);">{{ comp.title }}</h4>
+      </div>
+      <p style="font-size: 0.925rem; margin-bottom: 0; color: var(--text-secondary); line-height: 1.6;">
         {{ comp.skills }}
       </p>
     </div>
@@ -104,8 +128,9 @@ permalink: /about.html
   
   <!-- Education Card -->
   <div class="card" style="padding: 1.75rem;">
-    <h3 style="margin-top: 0; font-size: 1.2rem; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-      {{ about.education_and_certifications.education.title }}
+    <h3 style="margin-top: 0; font-size: 1.2rem; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+      {% include icon.html name="book" size=18 %}
+      <span>{{ about.education_and_certifications.education.title }}</span>
     </h3>
     <div style="margin-top: 1rem;">
       <strong>{{ about.education_and_certifications.education.degree }}</strong>
@@ -120,12 +145,16 @@ permalink: /about.html
 
   <!-- Certifications Card -->
   <div class="card" style="padding: 1.75rem;">
-    <h3 style="margin-top: 0; font-size: 1.2rem; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-      {{ about.education_and_certifications.certifications.title }}
+    <h3 style="margin-top: 0; font-size: 1.2rem; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+      {% include icon.html name="shield" size=18 %}
+      <span>{{ about.education_and_certifications.certifications.title }}</span>
     </h3>
-    <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
+    <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.9rem;">
       {% for cert in about.education_and_certifications.certifications.items %}
-        <div>{{ cert }}</div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="var(--accent-emerald)" stroke-width="2.5" style="flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>{{ cert }}</span>
+        </div>
       {% endfor %}
     </div>
   </div>
@@ -134,10 +163,10 @@ permalink: /about.html
 
 <!-- Research Publications -->
 {% if about.education_and_certifications.research %}
-  <h3>{{ about.education_and_certifications.research.title }}</h3>
-  <ul>
+  <h3 style="margin-top: 2rem;">{{ about.education_and_certifications.research.title }}</h3>
+  <ul style="display: flex; flex-direction: column; gap: 0.5rem;">
     {% for pub in about.education_and_certifications.research.items %}
-      <li>📄 <strong>{{ pub.title }}</strong> {{ pub.name }}</li>
+      <li><strong>{{ pub.title }}</strong> {{ pub.name }}</li>
     {% endfor %}
   </ul>
 {% endif %}
@@ -147,7 +176,9 @@ permalink: /about.html
 <!-- Download Resume & Call to Action Box -->
 {% assign resume = about.resume_download %}
 <div id="resume-download" class="card" style="margin-top: 3.5rem; padding: 2.5rem; text-align: center; background: linear-gradient(135deg, var(--bg-surface), var(--bg-subtle)); border: 1px solid rgba(var(--accent-primary-rgb), 0.35); box-shadow: var(--shadow-lg);">
-  <div style="font-size: 2.25rem; margin-bottom: 0.5rem;">📄</div>
+  <div style="margin-bottom: 0.75rem; color: var(--accent-primary); display: flex; justify-content: center;">
+    {% include icon.html name="book" size=36 %}
+  </div>
   <h2 style="font-size: 1.85rem; margin-top: 0; margin-bottom: 0.5rem;">{{ resume.title }}</h2>
   <p style="color: var(--text-secondary); max-width: 580px; margin: 0 auto 1.75rem auto; font-size: 1.05rem;">
     {{ resume.description }}

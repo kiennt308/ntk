@@ -68,8 +68,9 @@ layout: default
             </span>
           {% endif %}
           {% if page.series %}
-            <span class="badge badge--amber">
-              Series: {{ page.series }}
+            <span class="badge badge--amber" style="display: inline-flex; align-items: center; gap: 0.35rem;">
+              {% include icon.html name="book" size=12 %}
+              <span>Series: {{ page.series }}</span>
             </span>
           {% endif %}
         </div>
@@ -109,7 +110,10 @@ layout: default
           <summary class="series-box-summary">
             <div class="series-box-header" style="margin-bottom: 0;">
               <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="series-box-badge">{{ page_cfg.learning_path_series_badge }}</span>
+                <span class="series-box-badge" style="display: inline-flex; align-items: center; gap: 0.35rem;">
+                  {% include icon.html name="book" size=14 %}
+                  <span>{{ page_cfg.learning_path_series_badge }}</span>
+                </span>
                 <span class="series-box-title">{{ page.series }}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 0.65rem;">

@@ -68,7 +68,7 @@ permalink: /
       <!-- Dynamic Topic Pillars from _config.yml -->
       {% for topic in site.topics %}
         <a href="{{ '/categories.html' | relative_url }}#{{ topic.id }}" class="pillar-card">
-          <div class="pillar-icon">{{ topic.icon }}</div>
+          <div class="pillar-icon">{% include icon.html name=topic.icon size=24 %}</div>
           <h3 class="pillar-title">{{ topic.title }}</h3>
           <p class="pillar-desc">{{ topic.description }}</p>
           <div class="pillar-footer">
@@ -81,7 +81,7 @@ permalink: /
       <!-- Complete Topic Hub Link -->
       {% if home.pillars_section.hub_card %}
         <a href="{{ home.pillars_section.hub_card.url | relative_url }}" class="pillar-card" style="background: var(--bg-subtle);">
-          <div class="pillar-icon">{{ home.pillars_section.hub_card.icon }}</div>
+          <div class="pillar-icon">{% include icon.html name=home.pillars_section.hub_card.icon size=24 %}</div>
           <h3 class="pillar-title">{{ home.pillars_section.hub_card.title }}</h3>
           <p class="pillar-desc">{{ home.pillars_section.hub_card.desc }}</p>
           <div class="pillar-footer">

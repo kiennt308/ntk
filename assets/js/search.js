@@ -35,7 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!query) {
       searchResults.innerHTML = `
         <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">⌨️</div>
+          <div style="margin-bottom: 0.75rem; color: var(--text-muted); display: flex; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M6 12h.001M18 12h.001M8 16h8"/></svg>
+          </div>
           <p>Start typing keywords to search the engineering documentation...</p>
         </div>
       `;
@@ -62,7 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (results.length === 0) {
       searchResults.innerHTML = `
         <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg);">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+          <div style="margin-bottom: 0.75rem; color: var(--text-muted); display: flex; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
           <h3 style="margin: 0 0 0.5rem 0;">No matching articles found</h3>
           <p style="color: var(--text-secondary);">Try broader keywords or browse by topics on the home page.</p>
         </div>

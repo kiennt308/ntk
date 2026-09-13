@@ -52,8 +52,9 @@ permalink: /categories.html
                 {{ post.title }}
               </a>
               {% if post.series %}
-                <span style="font-size: 0.775rem; color: var(--accent-amber); font-weight: 600;">
-                  📚 {{ page_cfg.series_prefix | default: "Series:" }} {{ post.series }}{% if post.series_order %} ({{ page_cfg.part_prefix | default: "Part" }} {{ post.series_order }}){% endif %}
+                <span style="font-size: 0.775rem; color: var(--accent-amber); font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem;">
+                  {% include icon.html name="book" size=13 %}
+                  <span>{{ page_cfg.series_prefix | default: "Series:" }} {{ post.series }}{% if post.series_order %} ({{ page_cfg.part_prefix | default: "Part" }} {{ post.series_order }}){% endif %}</span>
                 </span>
               {% endif %}
             </div>

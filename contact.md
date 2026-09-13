@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Contact"
+title: "{{ site.contact_page.title | default: 'Contact' }}"
 permalink: /contact.html
 ---
 
@@ -8,7 +8,7 @@ permalink: /contact.html
 
 <div style="text-align: center; max-width: 650px; margin: 0 auto 3.5rem auto;">
   <span class="badge badge--primary" style="margin-bottom: 0.75rem;">{{ contact.badge | default: "CONTACT & CONNECT" }}</span>
-  <h2 style="font-size: 2.25rem; font-weight: 800; margin-top: 0; margin-bottom: 0.75rem;">{{ contact.title }}</h2>
+  <h2 style="font-size: 2.25rem; font-weight: 800; margin-top: 0; margin-bottom: 0.75rem;">{{ contact.header_title }}</h2>
   <p style="font-size: 1.15rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0;">
     {{ contact.subtitle }}
   </p>
@@ -32,19 +32,21 @@ permalink: /contact.html
       </div>
 
       <div style="padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-        {% if channel.type == "email" %}
-          <a href="mailto:{{ site.author.email }}" style="font-weight: 600; font-size: 1rem;">{{ site.author.email }}</a>
-          <a href="mailto:{{ site.author.email }}" class="btn btn--primary btn--sm">{{ channel.btn_text }}</a>
-        {% elsif channel.type == "linkedin" %}
-          <span style="font-weight: 600; font-size: 1rem; color: var(--text-secondary);">linkedin.com/in/{{ site.social.linkedin }}</span>
-          <a href="https://linkedin.com/in/{{ site.social.linkedin }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm">{{ channel.btn_text }}</a>
-        {% elsif channel.type == "github" %}
-          <span style="font-weight: 600; font-size: 1rem; color: var(--text-secondary);">github.com/{{ site.social.github }}</span>
-          <a href="https://github.com/{{ site.social.github }}" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm">{{ channel.btn_text }}</a>
-        {% elsif channel.type == "about" %}
-          <span style="font-weight: 600; font-size: 0.95rem; color: var(--accent-emerald);">{{ channel.status_text }}</span>
-          <a href="{{ '/about.html' | relative_url }}" class="btn btn--secondary btn--sm">{{ channel.btn_text }}</a>
-        {% endif %}
+        <div>
+          {% if channel.display_url != "" %}
+            <a href="{{ channel.display_url | relative_url }}" {% if channel.is_external %}target="_blank" rel="noopener noreferrer"{% endif %} style="font-weight: 600; font-size: 1rem; {% if channel.display_color %}color: {{ channel.display_color }};{% endif %}">
+              {{ channel.display_label }}
+            </a>
+          {% else %}
+            <span style="font-weight: 600; font-size: 0.95rem; {% if channel.display_color %}color: {{ channel.display_color }};{% endif %}">
+              {{ channel.display_label }}
+            </span>
+          {% endif %}
+        </div>
+
+        <a href="{{ channel.btn_url | relative_url }}" class="btn {{ channel.btn_class | default: 'btn--secondary' }} btn--sm" {% if channel.is_external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+          {{ channel.btn_text }}
+        </a>
       </div>
     </div>
   {% endfor %}

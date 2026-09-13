@@ -244,8 +244,9 @@ about_page:
 # 📬 9. NỘI DUNG TRANG LIÊN HỆ (CONTACT PAGE)
 # ==============================================================================
 contact_page:
+  title: "Get in Touch"
   badge: "CONTACT & CONNECT"
-  title: "Let's Work Together"
+  header_title: "Let's Work Together"
   subtitle: "Have a question about cloud architectures, Kubernetes best practices, or looking for DevOps / SRE consulting? Reach out directly via the channels below."
   channels:
     - title: "Direct Email"
@@ -255,8 +256,13 @@ contact_page:
       icon_bg: "var(--accent-amber-light)"
       icon_color: "var(--accent-amber)"
       desc: "Best for technical inquiries, consulting proposals, or architecture discussions."
+      display_label: "kiennt.sg@gmail.com"
+      display_url: "mailto:kiennt.sg@gmail.com"
       btn_text: "Send Email →"
-      type: "email"
+      btn_url: "mailto:kiennt.sg@gmail.com"
+      btn_class: "btn--primary"
+      is_external: false
+
     - title: "LinkedIn"
       icon: "💼"
       badge: "Network"
@@ -264,8 +270,13 @@ contact_page:
       icon_bg: "var(--accent-cyan-light)"
       icon_color: "var(--accent-cyan)"
       desc: "Connect for professional networking, industry insights, and career collaborations."
+      display_label: "linkedin.com/in/kiennt308"
+      display_url: "https://linkedin.com/in/kiennt308"
       btn_text: "Connect →"
-      type: "linkedin"
+      btn_url: "https://linkedin.com/in/kiennt308"
+      btn_class: "btn--secondary"
+      is_external: true
+
     - title: "GitHub Profile"
       icon: "🐙"
       badge: "Code"
@@ -273,8 +284,13 @@ contact_page:
       icon_bg: "var(--accent-primary-light)"
       icon_color: "var(--accent-primary)"
       desc: "Explore open-source infrastructure scripts, Terraform blueprints, and configurations."
+      display_label: "github.com/kiennt308"
+      display_url: "https://github.com/kiennt308"
       btn_text: "Follow →"
-      type: "github"
+      btn_url: "https://github.com/kiennt308"
+      btn_class: "btn--secondary"
+      is_external: true
+
     - title: "Location & Availability"
       icon: "📍"
       badge: "Available"
@@ -282,9 +298,13 @@ contact_page:
       icon_bg: "var(--accent-emerald-light)"
       icon_color: "var(--accent-emerald)"
       desc: "Based in Vietnam (UTC+7 / ICT). Open for remote advisory, cloud consulting, and technical writing."
-      status_text: "🟢 Open for Consulting"
+      display_label: "🟢 Open for Consulting"
+      display_url: ""
+      display_color: "var(--accent-emerald)"
       btn_text: "View Profile →"
-      type: "about"
+      btn_url: "/about.html"
+      btn_class: "btn--secondary"
+      is_external: false
 
 # ==============================================================================
 # ⚙️ 10. JEKYLL PLUGINS & BUILD SETTINGS

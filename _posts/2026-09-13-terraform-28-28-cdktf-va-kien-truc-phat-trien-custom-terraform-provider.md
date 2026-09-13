@@ -689,5 +689,5 @@ mindmap
 
 - **Quy tắc lựa chọn công cụ**: Sử dụng **HCL thuần** cho 90% các nhu cầu hạ tầng tiêu chuẩn; chỉ chuyển sang **CDKTF** khi cần giải quyết các bài toán logic phức tạp hoặc tích hợp sâu vào quy trình của Software Engineering.
 - **Tiêu chuẩn phát triển Provider**: Luôn sử dụng **Terraform Plugin Framework** thế hệ mới bằng ngôn ngữ Golang để đảm bảo hiệu năng và tính an toàn kiểu dữ liệu.
-- **Bước tiếp theo**: Trong [Bài 29: Tổng Ôn và Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)](./29-tong-on-va-bi-kip-chinh-phuc-chung-chi-terraform-associate-003.md), chúng ta sẽ hệ thống hóa toàn bộ 9 chuyên đề thi, mổ xẻ các câu hỏi bẫy kinh điển và trang bị chiến lược đạt điểm tuyệt đối trong kỳ thi HashiCorp Certified: Terraform Associate!
+- **Bước tiếp theo**: Trong [[Bài 29] Tổng Ôn & Bí Kíp Chinh Phục Chứng Chỉ Terraform Associate (003)](terraform-29-29-tong-on-va-bi-kip-chinh-phuc-chung-chi-terraform-associate-003.html), chúng ta sẽ hệ thống hóa toàn bộ 9 chuyên đề thi, mổ xẻ các câu hỏi bẫy kinh điển và trang bị chiến lược đạt điểm tuyệt đối trong kỳ thi HashiCorp Certified: Terraform Associate!
 {% endraw %}

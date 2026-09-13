@@ -590,5 +590,5 @@ mindmap
 
 - **Quy tắc vàng ứng cứu**: Bình tĩnh điều tra danh tính `Who` trước khi bấm `force-unlock`.
 - **Tiêu chuẩn thiết kế Backend**: 100% S3 State Buckets bắt buộc phải bật **S3 Versioning + S3 Object Lock**.
-- **Bước tiếp theo**: Trong [Bài 27: Quản Trị Hạ Tầng Doanh Nghiệp Với HCP Terraform & Terraform Cloud](./27-quan-tri-ha-tang-doanh-nghiep-voi-hcp-terraform-cloud.md), chúng ta sẽ khám phá nền tảng SaaS Enterprise hàng đầu của HashiCorp với Private Registry, Remote Execution và Quản trị Chi phí chuyên sâu!
+- **Bước tiếp theo**: Trong [[Bài 27] Quản Trị Hạ Tầng Doanh Nghiệp Với HCP Terraform & Terraform Cloud](terraform-27-27-quan-tri-ha-tang-doanh-nghiep-voi-hcp-terraform-cloud.html), chúng ta sẽ khám phá nền tảng SaaS Enterprise hàng đầu của HashiCorp với Private Registry, Remote Execution và Quản trị Chi phí chuyên sâu!
 {% endraw %}

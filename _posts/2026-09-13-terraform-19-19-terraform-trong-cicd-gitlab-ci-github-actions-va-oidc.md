@@ -726,5 +726,5 @@ mindmap
 
 - **Tiêu chuẩn vàng bảo mật**: Khai tử 100% IAM Access Keys tĩnh trên GitHub/GitLab, chuyển đổi toàn bộ sang **OIDC Keyless Authentication**.
 - **Nguyên tắc vận hành**: Không bao giờ áp dụng thay đổi mà không thông qua bước kiểm tra Pull Request và lưu giữ file plan nhị phân `tfplan.binary`.
-- **Bước tiếp theo**: Trong [Bài 20: Quản Lý Secrets và Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh Nghiệp](./20-quan-ly-secrets-va-du-lieu-sensitive-trong-terraform.md), chúng ta sẽ giải quyết triệt để vấn đề rò rỉ mật khẩu trong State file bằng HashiCorp Vault, AWS Secrets Manager và biến số `sensitive = true`!
+- **Bước tiếp theo**: Trong [[Bài 20] Quản Lý Secrets & Dữ Liệu Sensitive Trong Terraform Chuẩn Doanh Nghiệp](terraform-20-20-quan-ly-secrets-va-du-lieu-sensitive-trong-terraform.html), chúng ta sẽ giải quyết triệt để vấn đề rò rỉ mật khẩu trong State file bằng HashiCorp Vault, AWS Secrets Manager và biến số `sensitive = true`!
 {% endraw %}

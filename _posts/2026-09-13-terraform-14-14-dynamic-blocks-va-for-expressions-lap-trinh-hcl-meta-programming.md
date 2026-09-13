@@ -597,5 +597,5 @@ cd .. && rm -rf /tmp/meta-programming-lab
 
 Làm chủ **`dynamic` blocks**, **For Expressions**, **toán tử Ellipsis (`...`)** và **`flatten()`** giúp bạn tự tin xử lý mọi cấu trúc dữ liệu phức tạp nhất, đưa mã nguồn IaC lên tầm cao của sự tinh gọn và linh hoạt.
 
-Trong **[Bài 15: Functions, Type Constraints & Custom Variable Validation Nâng Cao: Làm Chủ can(), try() & Regex](15-functions-type-constraints-va-custom-variable-validation-chuan-enterprise.md)**, chúng ta sẽ khép lại Giai đoạn 3 với những kỹ thuật phòng thủ vững chắc: Xử lý an toàn các giá trị không tồn tại với `try()`, kiểm soát lỗi ngoại lệ với `can()`, và xây dựng bộ quy tắc kiểm định toàn diện chuẩn Enterprise!
+Trong **[[Bài 15] Built-in Functions, Type Constraints & Custom Variable Validation Chuẩn Enterprise](terraform-15-15-functions-type-constraints-va-custom-variable-validation-chuan-enterprise.html)**, chúng ta sẽ khép lại Giai đoạn 3 với những kỹ thuật phòng thủ vững chắc: Xử lý an toàn các giá trị không tồn tại với `try()`, kiểm soát lỗi ngoại lệ với `can()`, và xây dựng bộ quy tắc kiểm định toàn diện chuẩn Enterprise!
 {% endraw %}

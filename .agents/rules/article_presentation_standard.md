@@ -237,3 +237,22 @@ Tất cả 10 câu hỏi trắc nghiệm / tự luận chuyên sâu ở cuối b
   # ==============================================================================
   ```
 - **Line-by-Line Breakdown**: Khối giải thích code từng dòng phải gắn badge cho từng tham số quan trọng: `<span class="badge badge--rose"><code>prevent_destroy = true</code></span>`.
+
+---
+
+## 10. Chuẩn Hóa Liên Kết Bài Học Tiếp Theo (Next Lesson Routing & Internal Links)
+
+Mọi bài viết thuộc một lộ trình (Series) khi giới thiệu bài học kế tiếp trong phần **Tổng Kết & Lộ Trình Bài Học Tiếp Theo** phải tuân thủ nghiêm ngặt quy tắc tạo liên kết nội bộ:
+1. **BẮT BUỘC DÙNG LIÊN KẾT `.html` TƯƠNG ĐỐI**:
+   - Khi dẫn link sang bài học tiếp theo, đường dẫn **PHẢI là tên slug hoàn chỉnh kết thúc bằng `.html`** (ví dụ: `[Tên Bài Học](terraform-02-02-giai-ma-workflow-init-plan-apply-two-phase-execution-dag.html)`).
+   - ❌ **Tuyệt đối KHÔNG** dẫn link tới tệp nguồn Markdown `.md` (ví dụ: `(./02-giai-ma...md)` hoặc `(02-giai-ma...md)`) vì trên website đã biên dịch của Jekyll, người dùng bấm vào sẽ bị lỗi **404 Not Found**.
+   - ❌ **Tuyệt đối KHÔNG** viết tên bài mà quên bọc cặp ngoặc tròn chứa URL `[Bài 02: Tên Bài]`.
+2. **Cấu trúc mẫu chuẩn trong khối Callout TIP**:
+   ```markdown
+   > [!TIP]
+   > **BÀI HỌC TIẾP THEO:**
+   > Trong **[[Bài 02] Giải Mã Workflow Init, Plan, Apply - Cơ Chế Two-Phase Execution & Đồ Thị DAG Chuyên Sâu](terraform-02-02-giai-ma-workflow-init-plan-apply-two-phase-execution-dag.html)**, chúng ta sẽ...
+   ```
+3. **Bài tổng kết / Cuối series (Finale)**:
+   - Bài cuối cùng dẫn link quay trở lại **Bài 01** để ôn tập hoặc dẫn về **Topic Hub** (`/categories.html#terraform`).
+

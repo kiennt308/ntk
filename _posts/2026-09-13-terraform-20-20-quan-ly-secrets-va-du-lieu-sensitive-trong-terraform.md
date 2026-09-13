@@ -662,5 +662,5 @@ mindmap
 
 - **Quy tắc sinh tồn**: Coi `terraform.tfstate` là một tài liệu mật cấp độ tối cao. Bất kỳ ai kiểm soát State đều kiểm soát toàn bộ hạ tầng doanh nghiệp của bạn.
 - **Tiêu chuẩn thiết kế**: Không bao giờ hardcode mật khẩu, luôn sử dụng **AWS Secrets Manager / Vault** và chuyển dịch dần sang **Ephemeral Values** của Terraform 1.10+.
-- **Bước tiếp theo**: Trong [Bài 21: Kiểm Thử Hạ Tầng: terraform test, TFLint, Trivy và Validate](./21-kiem-thu-ha-tang-terraform-test-tflint-trivy-va-validate.md), chúng ta sẽ khám phá framework kiểm thử hạ tầng tích hợp sẵn `terraform test` và bộ công cụ Static Analysis đa tầng!
+- **Bước tiếp theo**: Trong [[Bài 21] Kiểm Thử Hạ Tầng: Làm Chủ terraform test, TFLint, Trivy & Static Code Analysis](terraform-21-21-kiem-thu-ha-tang-terraform-test-tflint-trivy-va-validate.html), chúng ta sẽ khám phá framework kiểm thử hạ tầng tích hợp sẵn `terraform test` và bộ công cụ Static Analysis đa tầng!
 {% endraw %}

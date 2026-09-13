@@ -559,5 +559,5 @@ cd .. && rm -rf /tmp/backend-lab
 
 Thiết lập một hệ thống **Remote State Backend** vững chắc với S3, DynamoDB State Locking và chiến lược nạp cấu hình động `-backend-config` là bước bảo vệ tối quan trọng giúp đội ngũ kỹ thuật tự tin mở rộng quy mô mà không bao giờ lo lắng về Race Condition hay mất mát dữ liệu State.
 
-Trong **[Bài 08: Phẫu Thuật State Chuyên Sâu: Kỹ Thuật State mv, rm, replace & Declarative Import Khôi Phục Hạ Tầng](08-phau-thuat-state-state-mv-rm-replace-declarative-import-giai-cuu-ha-tang.md)**, chúng ta sẽ bước vào thế giới của những kỹ thuật giải cứu hạ tầng đỉnh cao: Đổi tên tài nguyên không gây recreate với `state mv`, tách tài nguyên ra khỏi quản lý với `state rm`, và làm chủ khối `import` khai báo mới nhất trong Terraform 1.5+!
+Trong **[[Bài 08] Phẫu Thuật State: Làm Chủ terraform state mv, rm, replace & Declarative Import Cứu Hộ Hạ Tầng](terraform-08-08-phau-thuat-state-state-mv-rm-replace-declarative-import-giai-cuu-ha-tang.html)**, chúng ta sẽ bước vào thế giới của những kỹ thuật giải cứu hạ tầng đỉnh cao: Đổi tên tài nguyên không gây recreate với `state mv`, tách tài nguyên ra khỏi quản lý với `state rm`, và làm chủ khối `import` khai báo mới nhất trong Terraform 1.5+!
 {% endraw %}

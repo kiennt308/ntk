@@ -625,5 +625,5 @@ Tư duy <b style="color: var(--accent-primary);">Declarative Desired State</b> l
 
 > [!TIP]
 > **BÀI HỌC TIẾP THEO:**
-> Trong **[Bài 02] Giải Mã Workflow Init, Plan, Apply - Cơ Chế Two-Phase Execution & Đồ Thị DAG Chuyên Sâu**, chúng ta sẽ mở nắp "cỗ máy bên trong" của Terraform Core: Khám phá cách đồ thị có hướng không chu trình (**DAG**) được xây dựng, cơ chế Provider Plugin RPC qua gRPC và cách tối ưu hóa hiệu năng song song với `-parallelism`.
+> Trong **[[Bài 02] Giải Mã Workflow Init, Plan, Apply - Cơ Chế Two-Phase Execution & Đồ Thị DAG Chuyên Sâu](terraform-02-02-giai-ma-workflow-init-plan-apply-two-phase-execution-dag.html)**, chúng ta sẽ mở nắp "cỗ máy bên trong" của Terraform Core: Khám phá cách đồ thị có hướng không chu trình (**DAG**) được xây dựng, cơ chế Provider Plugin RPC qua gRPC và cách tối ưu hóa hiệu năng song song với `-parallelism`.
 {% endraw %}

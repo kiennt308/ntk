@@ -580,5 +580,5 @@ Hiểu rõ cơ chế <b style="color: var(--accent-primary);">Two-Phase Executio
 
 > [!TIP]
 > **BÀI HỌC TIẾP THEO:**
-> Trong **[Bài 03: Tối Ưu Cú Pháp HCL: Xử Lý Dynamic Types, Expressions, Built-in Functions & Meta-Arguments Chuẩn Enterprise](./03-toi-uu-cu-phap-hcl-xu-ly-dynamic-type-expressions.md)**, chúng ta sẽ đi sâu vào nghệ thuật lập trình HCL: Làm chủ hệ thống kiểu dữ liệu động, biểu thức điều kiện tam nguyên, các hàm tích hợp sẵn (Built-in Functions) và siêu tham số vòng lặp meta-arguments.
+> Trong **[[Bài 03] Tối Ưu Cú Pháp HCL: Làm Chủ Dynamic Type, Heredoc, For Expressions & Type Constraints](terraform-03-03-toi-uu-cu-phap-hcl-xu-ly-dynamic-type-expressions.html)**, chúng ta sẽ đi sâu vào nghệ thuật lập trình HCL: Làm chủ hệ thống kiểu dữ liệu động, biểu thức điều kiện tam nguyên, các hàm tích hợp sẵn (Built-in Functions) và siêu tham số vòng lặp meta-arguments.
 {% endraw %}

@@ -612,5 +612,5 @@ mindmap
 
 - **Tiêu chuẩn vận hành hiện đại**: Chuyển đổi từ mô hình tự quản lý S3 Backend sang **HCP Terraform Workspaces** để đạt được tính minh bạch, kiểm soát chi phí và bảo mật tuyệt đối.
 - **Tiêu chuẩn Module Doanh Nghiệp**: 100% Shared Modules phải được xuất bản và quản trị phiên bản thông qua **Private Module Registry**.
-- **Bước tiếp theo**: Trong [Bài 28: CDKTF và Kiến Trúc Phát Triển Custom Terraform Provider](./28-cdktf-va-kien-truc-phat-trien-custom-terraform-provider.md), chúng ta sẽ bước ra khỏi giới hạn của HCL để viết hạ tầng bằng Python/TypeScript với CDKTF và tự lập trình một Terraform Provider tùy biến bằng ngôn ngữ Golang!
+- **Bước tiếp theo**: Trong [[Bài 28] CDKTF & Kiến Trúc Phát Triển Custom Terraform Provider](terraform-28-28-cdktf-va-kien-truc-phat-trien-custom-terraform-provider.html), chúng ta sẽ bước ra khỏi giới hạn của HCL để viết hạ tầng bằng Python/TypeScript với CDKTF và tự lập trình một Terraform Provider tùy biến bằng ngôn ngữ Golang!
 {% endraw %}

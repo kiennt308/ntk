@@ -688,5 +688,5 @@ mindmap
 
 - **Quy tắc bất biến**: Tuyệt đối không dùng `remote-exec` để cài đặt phần mềm trên Production. Hãy đóng gói sẵn vào AMI/Image bằng **Packer** hoặc chuyển giao cho **Cloud-init / Ansible**.
 - **Tiêu chuẩn Terraform 1.4+**: Xóa bỏ vĩnh viễn `null_resource` khỏi codebase và chuyển sang sử dụng `terraform_data`.
-- **Bước tiếp theo**: Trong [Bài 18: Provider Alias, Multi-Region và Multi-Account Enterprise Architecture](./18-provider-alias-multi-region-va-multi-account-enterprise-architecture.md), chúng ta sẽ khám phá cách quản trị hạ tầng xuyên lục địa (Multi-Region Disaster Recovery) và mở rộng mô hình Multi-Account chuẩn AWS Landing Zone!
+- **Bước tiếp theo**: Trong [[Bài 18] Provider Alias, Multi-Region & Multi-Account Enterprise Architecture](terraform-18-18-provider-alias-multi-region-va-multi-account-enterprise-architecture.html), chúng ta sẽ khám phá cách quản trị hạ tầng xuyên lục địa (Multi-Region Disaster Recovery) và mở rộng mô hình Multi-Account chuẩn AWS Landing Zone!
 {% endraw %}

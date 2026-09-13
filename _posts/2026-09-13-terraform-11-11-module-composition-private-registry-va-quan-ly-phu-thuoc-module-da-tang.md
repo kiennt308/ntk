@@ -588,5 +588,5 @@ cd .. && rm -rf /tmp/composition-lab
 
 Làm chủ nghệ thuật **Ghép Nối Module Phẳng (Flat Module Composition)** và kiến trúc phân tầng đa lớp giúp bạn thiết kế những hệ sinh thái hạ tầng đám mây đồ sộ, linh hoạt và sẵn sàng mở rộng cho hàng trăm dịch vụ vi mô.
 
-Trong **[Bài 12: Quản Trị Đa Môi Trường: So Sánh Thực Chiến Terraform Workspaces vs Directory Layout vs Terragrunt](12-quan-tri-da-moi-truong-terraform-workspaces-vs-directory-layout-terragrunt.md)**, chúng ta sẽ bước vào cuộc tranh luận kiến trúc kinh điển nhất thế giới DevOps: Khi nào nên dùng Workspaces, khi nào nên chia thư mục File-based Layout, và tại sao các tập đoàn hàng đầu lại lựa chọn Terragrunt!
+Trong **[[Bài 12] Quản Trị Đa Môi Trường: Terraform Workspaces vs Directory Layout & Terragrunt So Sánh Thực Chiến](terraform-12-12-quan-tri-da-moi-truong-terraform-workspaces-vs-directory-layout-terragrunt.html)**, chúng ta sẽ bước vào cuộc tranh luận kiến trúc kinh điển nhất thế giới DevOps: Khi nào nên dùng Workspaces, khi nào nên chia thư mục File-based Layout, và tại sao các tập đoàn hàng đầu lại lựa chọn Terragrunt!
 {% endraw %}

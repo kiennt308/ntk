@@ -540,5 +540,5 @@ mindmap
 
 ```
 
-- **Bước tiếp theo**: Trong [Bài 31: Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu](./31-tong-hop-cau-hoi-phong-van-terraform-devops-chuyen-sau-30-buoi.md), chúng ta sẽ tổng hợp trọn bộ các câu hỏi phỏng vấn hóc búa nhất từ các tập đoàn công nghệ hàng đầu (FAANG/Big Tech) để giúp bạn tự tin chinh phục mọi buổi phỏng vấn vị trí Senior Cloud / DevOps / SRE Architect!
+- **Bước tiếp theo**: Trong [[Bài 31] Tuyển Tập 100+ Câu Hỏi Phỏng Vấn Terraform & DevOps Chuyên Sâu (30 Buổi)](terraform-31-31-tong-hop-cau-hoi-phong-van-terraform-devops-chuyen-sau-30-buoi.html), chúng ta sẽ tổng hợp trọn bộ các câu hỏi phỏng vấn hóc búa nhất từ các tập đoàn công nghệ hàng đầu (FAANG/Big Tech) để giúp bạn tự tin chinh phục mọi buổi phỏng vấn vị trí Senior Cloud / DevOps / SRE Architect!
 {% endraw %}

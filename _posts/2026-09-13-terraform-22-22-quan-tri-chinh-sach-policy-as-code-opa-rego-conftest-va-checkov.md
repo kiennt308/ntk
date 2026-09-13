@@ -646,5 +646,5 @@ mindmap
 
 - **Nguyên tắc bảo vệ Enterprise**: "Trust, but Verify" — Không một đoạn mã Terraform nào được phép chạy `terraform apply` trên Production nếu chưa vượt qua cổng kiểm thử tự động của **Conftest / OPA Policy Engine**.
 - **Quy tắc viết Rego**: Luôn viết thông điệp `msg` trong `deny` thật rõ ràng, chứa mã định danh lỗi (ví dụ: `[TAG-01]`, `[COST-02]`) để lập trình viên biết chính xác vị trí và cách khắc phục.
-- **Bước tiếp theo**: Trong [Bài 23: DRY Terraform Với Terragrunt: Remote State, Inputs và Dependencies](./23-dry-terraform-voi-terragrunt-remote-state-inputs-va-dependencies.md), chúng ta sẽ làm chủ công cụ Terragrunt để xóa bỏ 100% mã nguồn lặp lại (Don't Repeat Yourself) khi quản trị hàng trăm môi trường đa tài khoản!
+- **Bước tiếp theo**: Trong [[Bài 23] DRY Terraform Với Terragrunt: Remote State, Inputs & Dependencies Đa Tầng](terraform-23-23-dry-terraform-voi-terragrunt-remote-state-inputs-va-dependencies.html), chúng ta sẽ làm chủ công cụ Terragrunt để xóa bỏ 100% mã nguồn lặp lại (Don't Repeat Yourself) khi quản trị hàng trăm môi trường đa tài khoản!
 {% endraw %}

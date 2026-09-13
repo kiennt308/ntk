@@ -583,5 +583,5 @@ cd .. && rm -rf /tmp/terraform-state-lab
 
 Làm chủ cấu trúc nội tại của **Terraform State JSON Schema v4**, cơ chế **Drift Detection** và quy trình đối soát an toàn với **`-refresh-only`** là hành trang bắt buộc để bạn bảo vệ và duy trì tính toàn vẹn của hạ tầng đám mây.
 
-Trong **[Bài 07: Remote State Nâng Cao: S3 Backend, DynamoDB State Locking & Chiến Lược Di Trú Backend](07-remote-state-s3-backend-dynamodb-state-locking-di-tru-backend.md)**, chúng ta sẽ bước vào thiết lập hạ tầng lưu trữ State chuẩn Enterprise: Cấu hình mã hóa đa tầng KMS, cơ chế phân xử tương tranh bằng DynamoDB Lock Table và quy trình di trú State không downtime (`terraform init -migrate-state`).
+Trong **[[Bài 07] Remote State Architecture: S3 Backend, DynamoDB State Locking & Di Trú Backend An Toàn](terraform-07-07-remote-state-s3-backend-dynamodb-state-locking-di-tru-backend.html)**, chúng ta sẽ bước vào thiết lập hạ tầng lưu trữ State chuẩn Enterprise: Cấu hình mã hóa đa tầng KMS, cơ chế phân xử tương tranh bằng DynamoDB Lock Table và quy trình di trú State không downtime (`terraform init -migrate-state`).
 {% endraw %}

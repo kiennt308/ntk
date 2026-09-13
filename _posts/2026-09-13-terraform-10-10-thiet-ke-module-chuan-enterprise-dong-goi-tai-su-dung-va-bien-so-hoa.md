@@ -622,5 +622,5 @@ cd .. && rm -rf /tmp/module-lab
 
 Khép lại **Giai Đoạn 2: Quản Trị State & Modules Chuyên Sâu**, bạn đã nắm vững cấu trúc State Schema v4, kỹ thuật Remote Backend S3 + DynamoDB Locking, phẫu thuật State Subcommands, chiến lược chế ngự Drift và nghệ thuật đóng gói Enterprise Module.
 
-Trong **Giai Đoạn 3 (Lập Trình Nâng Cao & Tự Động Hóa Đa Môi Trường)** mở đầu với **[Bài 11: Module Composition & Quản Lý Phụ Thuộc Module Đa Tầng: Private Registry, Git Submodules & Nested Modules](11-module-composition-private-registry-va-quan-ly-phu-thuoc-module-da-tang.md)**, chúng ta sẽ bước vào thế giới của kiến trúc phân tầng: Kỹ thuật kết hợp Module Composition, quản trị Private Module Registry và cách xử lý luồng dữ liệu giữa các module độc lập!
+Trong **Giai Đoạn 3 (Lập Trình Nâng Cao & Tự Động Hóa Đa Môi Trường)** mở đầu với **[[Bài 11] Module Composition & Quản Lý Phụ Thuộc Module Đa Tầng Trong Private Registry](terraform-11-11-module-composition-private-registry-va-quan-ly-phu-thuoc-module-da-tang.html)**, chúng ta sẽ bước vào thế giới của kiến trúc phân tầng: Kỹ thuật kết hợp Module Composition, quản trị Private Module Registry và cách xử lý luồng dữ liệu giữa các module độc lập!
 {% endraw %}

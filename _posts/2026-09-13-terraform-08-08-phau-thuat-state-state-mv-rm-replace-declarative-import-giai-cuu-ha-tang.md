@@ -594,5 +594,5 @@ cd .. && rm -rf /tmp/state-surgery-lab
 
 Làm chủ bộ công cụ **State Subcommands (`mv`, `rm`, `replace`)** và tính năng **Declarative `import {}` Block** biến bạn thành một "bác sĩ phẫu thuật hạ tầng" thực thụ, có khả năng tái cấu trúc và giải cứu mọi hệ sinh thái IaC mà không gây ra bất kỳ giây phút gián đoạn dịch vụ nào.
 
-Trong **[Bài 09: Xử Lý Configuration Drift: Kỹ Thuật Reconcile, Ignore Changes & Chống Thất Thoát Tài Nguyên Mồ Côi](09-xu-ly-drift-ha-tang-refresh-only-reconciliation-va-chong-that-thoat-tai-nguyen.md)**, chúng ta sẽ đi sâu vào nghệ thuật chế ngự Drift: Phân loại Drift ác tính vs lành tính, sử dụng `ignore_changes` chuẩn mực cho Auto-Scaling / Mutating Webhooks và dọn dẹp các tài nguyên mồ côi (Orphaned Resources).
+Trong **[[Bài 09] Xử Lý Drift Hạ Tầng: Refresh-Only, Reconciliation & Chiến Lược Phòng Chống Thất Thoát Tài Nguyên](terraform-09-09-xu-ly-drift-ha-tang-refresh-only-reconciliation-va-chong-that-thoat-tai-nguyen.html)**, chúng ta sẽ đi sâu vào nghệ thuật chế ngự Drift: Phân loại Drift ác tính vs lành tính, sử dụng `ignore_changes` chuẩn mực cho Auto-Scaling / Mutating Webhooks và dọn dẹp các tài nguyên mồ côi (Orphaned Resources).
 {% endraw %}

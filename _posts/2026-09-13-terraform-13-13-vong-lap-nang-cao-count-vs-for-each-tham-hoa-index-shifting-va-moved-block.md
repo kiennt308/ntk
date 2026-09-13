@@ -596,5 +596,5 @@ cd .. && rm -rf /tmp/count-foreach-lab
 
 Hiểu rõ sự khác biệt bản chất giữa **`count`** và **`for_each`**, đồng thời làm chủ kỹ thuật di trú bằng **`moved {}`** giúp bạn loại bỏ vĩnh viễn nỗi sợ hãi "Index Shifting" và tự tin thiết kế những hệ thống co giãn quy mô lớn.
 
-Trong **[Bài 14: Dynamic Blocks & For Expressions: Lập Trình HCL Meta-Programming Cho Cấu Trúc Lồng Nhau Phức Tạp](14-dynamic-blocks-va-for-expressions-lap-trinh-hcl-meta-programming.md)**, chúng ta sẽ bước vào thế giới của siêu lập trình HCL: Cách sinh động các khối lồng nhau `dynamic "ingress"` cho Security Groups, làm phẳng mảng đa cấp với `flatten()`, và xử lý danh sách lồng nhau chuẩn Enterprise!
+Trong **[[Bài 14] Dynamic Blocks & For Expressions: Lập Trình HCL Meta-Programming Chuyên Sâu](terraform-14-14-dynamic-blocks-va-for-expressions-lap-trinh-hcl-meta-programming.html)**, chúng ta sẽ bước vào thế giới của siêu lập trình HCL: Cách sinh động các khối lồng nhau `dynamic "ingress"` cho Security Groups, làm phẳng mảng đa cấp với `flatten()`, và xử lý danh sách lồng nhau chuẩn Enterprise!
 {% endraw %}

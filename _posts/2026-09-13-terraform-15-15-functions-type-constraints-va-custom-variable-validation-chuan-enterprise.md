@@ -890,5 +890,5 @@ mindmap
 
 - **Nguyên tắc vàng**: "Fail Fast, Fail Loudly" — Mọi biến số của Shared Module phải có Type Constraint chi tiết và ít nhất một Custom Validation Rule để bắt lỗi ngay tại máy trạm của Developer trước khi kích hoạt CI/CD Pipeline.
 - **Tiêu chuẩn Error Message**: Luôn viết thông báo lỗi theo công thức: **[Lý do vi phạm] + [Quy định chuẩn] + [Ví dụ giá trị đúng]**.
-- **Bước tiếp theo**: Trong [Bài 16: Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy, ignore_changes](./16-lifecycle-meta-arguments-create-before-destroy-prevent-destroy-ignore-changes.md), chúng ta sẽ khám phá cách can thiệp trực tiếp vào chu kỳ sống của tài nguyên để thực hiện Zero-Downtime Deployment và bảo vệ tài nguyên trọng yếu khỏi nguy cơ vô tình bị xóa sổ!
+- **Bước tiếp theo**: Trong [[Bài 16] Lifecycle Meta-Arguments: create_before_destroy, prevent_destroy & ignore_changes Thực Chiến](terraform-16-16-lifecycle-meta-arguments-create-before-destroy-prevent-destroy-ignore-changes.html), chúng ta sẽ khám phá cách can thiệp trực tiếp vào chu kỳ sống của tài nguyên để thực hiện Zero-Downtime Deployment và bảo vệ tài nguyên trọng yếu khỏi nguy cơ vô tình bị xóa sổ!
 {% endraw %}

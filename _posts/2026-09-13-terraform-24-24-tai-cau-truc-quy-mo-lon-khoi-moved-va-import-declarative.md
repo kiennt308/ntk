@@ -621,5 +621,5 @@ mindmap
 
 - **Tiêu chuẩn Refactoring**: Tuyệt đối không chạy lệnh `terraform state mv` thủ công trên môi trường Production. 100% việc đổi tên và chuyển module phải được định nghĩa bằng **khối `moved`**.
 - **Tiêu chuẩn di trú hạ tầng cũ**: Khai thác sức mạnh của **khối `import`** kết hợp với cờ `-generate-config-out` để chuẩn hóa các tài nguyên legacy vào Terraform.
-- **Bước tiếp theo**: Trong [Bài 25: Quản Trị Blast Radius và Tổ Chức Codebase Hạ Tầng Enterprise](./25-quan-tri-blast-radius-va-to-chuc-codebase-ha-tang-enterprise.md), chúng ta sẽ phân tích chiến lược phân rã Monolith State thành Micro-States để cô lập hoàn toàn phạm vi rủi ro khi có sự cố!
+- **Bước tiếp theo**: Trong [[Bài 25] Quản Trị Blast Radius & Tổ Chức Codebase Hạ Tầng Enterprise](terraform-25-25-quan-tri-blast-radius-va-to-chuc-codebase-ha-tang-enterprise.html), chúng ta sẽ phân tích chiến lược phân rã Monolith State thành Micro-States để cô lập hoàn toàn phạm vi rủi ro khi có sự cố!
 {% endraw %}

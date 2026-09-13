@@ -582,5 +582,5 @@ cd /tmp && rm -rf /tmp/multi-env-lab
 
 Lựa chọn đúng chiến lược quản trị đa môi trường bằng **Directory-Based Layout** kết hợp **Reusable Modules** là tấm khiên an ninh vững chắc bảo vệ hạ tầng Production của doanh nghiệp khỏi mọi nguy cơ nhầm lẫn thao tác.
 
-Trong **[Bài 13: Vòng Lặp Nâng Cao: Count vs For-Each, Thảm Họa Index Shifting & Kỹ Thuật Moved Block](13-vong-lap-nang-cao-count-vs-for-each-tham-hoa-index-shifting-va-moved-block.md)**, chúng ta sẽ đi sâu vào các cơ chế lặp nâng cao: Phân tích thảm họa Index Shifting khi xóa phần tử mảng trong `count`, làm chủ `for_each` với cấu trúc Map/Set và kỹ thuật tái cấu trúc an toàn với khối `moved {}`!
+Trong **[[Bài 13] Vòng Lặp Nâng Cao: count vs for_each, Thảm Họa Index Shifting & Khối moved Cứu Hộ](terraform-13-13-vong-lap-nang-cao-count-vs-for-each-tham-hoa-index-shifting-va-moved-block.html)**, chúng ta sẽ đi sâu vào các cơ chế lặp nâng cao: Phân tích thảm họa Index Shifting khi xóa phần tử mảng trong `count`, làm chủ `for_each` với cấu trúc Map/Set và kỹ thuật tái cấu trúc an toàn với khối `moved {}`!
 {% endraw %}

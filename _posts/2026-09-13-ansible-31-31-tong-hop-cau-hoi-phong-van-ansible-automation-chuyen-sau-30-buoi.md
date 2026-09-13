@@ -6887,7 +6887,7 @@ Khi nhà tuyển dụng phỏng vấn hoặc hội đồng giám khảo chấm t
 Chúc mừng bạn đã hoàn thành xuất sắc 30/30 Buổi học của khóa học **ntkansible**! Dưới đây là 3 bước tiếp theo để bạn nâng tầm sự nghiệp DevOps / SysAdmin / Cloud Engineer:
 
 1. **Bước 1 — Xây dựng Portfolio IaC trên GitHub:** Push toàn bộ bộ 4 Roles Capstone, `site-capstone.yml`, tệp `README.md` hướng dẫn và hình ảnh sơ đồ Mermaid L2 lên kho GitHub cá nhân. Đây là minh chứng vàng cho năng lực thực chiến khi ứng tuyển các vị trí Senior DevOps / Cloud Engineer.
-2. **Bước 2 — Đăng ký và Ôn luyện Kỳ thi RHCE EX294:** Sử dụng tệp [04-blueprint-rhce-ex294.md](file:///d:/ntkall-main/ntkansible/00-tong-quan/04-blueprint-rhce-ex294.md) để rà soát lại 100% các mục tiêu bài thi, tự bấm giờ làm lại kịch bản Capstone Buổi 30 trong 2.5 giờ để sẵn sàng thi đạt RHCE điểm tối đa.
+2. **Bước 2 — Đăng ký và Ôn luyện Kỳ thi RHCE EX294:** Rà soát lại 100% các mục tiêu bài thi RHCE EX294 Blueprint, tự bấm giờ làm lại kịch bản Capstone Buổi 30 trong 2.5 giờ để sẵn sàng thi đạt RHCE điểm tối đa.
 3. **Bước 3 — Mở rộng Hệ sinh thái Tự động hóa:** Tiếp tục nghiên cứu mở rộng tích hợp Ansible với HashiCorp Terraform (khai báo ảo hóa Cloud), Kubernetes / OpenShift (quản lý container orchestration), và Event-Driven Ansible (EDA) để xây dựng hạ tầng tự động hóa tự chữa lành (Self-healing Infrastructure) cấp Doanh nghiệp.
 
 ---

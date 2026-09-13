@@ -632,5 +632,5 @@ mindmap
 
 - **Quy tắc vàng của Terragrunt**: File `terragrunt.hcl` ở các thư mục lá (Leaf Directories) chỉ được phép chứa: `include`, `terraform.source`, `dependency`, và `inputs`. Tuyệt đối không viết logic phức tạp ở tầng lá.
 - **Tiêu chuẩn vận hành**: Luôn khai báo `mock_outputs` cho mọi `dependency` để đảm bảo hệ thống CI/CD có thể chạy `terragrunt run-all plan` trơn tru trên mọi nhánh Pull Request.
-- **Bước tiếp theo**: Trong [Bài 24: Tái Cấu Trúc Quy Mô Lớn: Khối moved và Import Declarative](./24-tai-cau-truc-quy-mo-lon-khoi-moved-va-import-declarative.md), chúng ta sẽ làm chủ khối `moved` (Terraform 1.1+) và khối `import` khai báo (Terraform 1.5+) để thực hiện các cuộc đại phẫu thuật tái cấu trúc hạ tầng mà không gây phá hủy tài nguyên!
+- **Bước tiếp theo**: Trong [[Bài 24] Tái Cấu Trúc Quy Mô Lớn: Khối moved & Import Declarative Không Gây Downtime](terraform-24-24-tai-cau-truc-quy-mo-lon-khoi-moved-va-import-declarative.html), chúng ta sẽ làm chủ khối `moved` (Terraform 1.1+) và khối `import` khai báo (Terraform 1.5+) để thực hiện các cuộc đại phẫu thuật tái cấu trúc hạ tầng mà không gây phá hủy tài nguyên!
 {% endraw %}

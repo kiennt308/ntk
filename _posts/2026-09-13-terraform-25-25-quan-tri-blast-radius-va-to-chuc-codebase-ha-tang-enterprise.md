@@ -626,5 +626,5 @@ mindmap
 
 - **Quy tắc bất biến**: Không bao giờ để tài nguyên Mạng (Network), Lưu trữ (Data) và Ứng dụng (App) sống chung trong một tệp State duy nhất.
 - **Tiêu chuẩn hiệu năng**: Tối ưu hóa kích thước State file sao cho lệnh `terraform plan` luôn hoàn tất dưới 90 giây trong Pipeline CI/CD.
-- **Bước tiếp theo**: Trong [Bài 26: Gỡ Rối State Lock, Apply Nửa Chừng và Cứu Hộ State Corruption](./26-go-roi-state-lock-apply-nua-chung-va-cuu-ho-state-corruption.md), chúng ta sẽ bước vào khóa huấn luyện SRE Cứu hộ thảm họa: giải cứu State bị khóa chết, khôi phục apply dở dang và phục hồi State file bị hỏng!
+- **Bước tiếp theo**: Trong [[Bài 26] Gỡ Rối State Lock, Apply Nửa Chừng & Cứu Hộ State Corruption Thực Chiến](terraform-26-26-go-roi-state-lock-apply-nua-chung-va-cuu-ho-state-corruption.html), chúng ta sẽ bước vào khóa huấn luyện SRE Cứu hộ thảm họa: giải cứu State bị khóa chết, khôi phục apply dở dang và phục hồi State file bị hỏng!
 {% endraw %}

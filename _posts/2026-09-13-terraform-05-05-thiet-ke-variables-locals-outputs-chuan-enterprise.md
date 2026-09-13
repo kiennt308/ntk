@@ -574,5 +574,5 @@ cd .. && rm -rf /tmp/terraform-vars-lab
 
 Khép lại **Giai Đoạn 1: Nền Tảng Cốt Lõi**, bạn đã hoàn toàn làm chủ tư duy Declarative IaC, cơ chế Two-Phase DAG Engine, hệ thống kiểu dữ liệu HCL, nghệ thuật quản trị Dependency và thiết kế Variables/Outputs chuẩn Enterprise.
 
-Trong **Giai Đoạn 2 (Quản Trị State & Modules)** mở đầu với **[Bài 06: Giải Mã Cấu Trúc Terraform State: JSON Schema v4, Serial Counter, Lineage & Cơ Chế Refresh-Only](06-giai-ma-terraform-state-cau-truc-json-v4-drift-detection-refresh-only.md)**, chúng ta sẽ bước vào "trái tim" của mọi hệ thống Terraform: Phẫu thuật từng trường dữ liệu trong tệp State JSON v4, giải mã các tham số bí mật `serial`, `lineage`, và cách giải cứu hạ tầng khi State File bị phân mảnh!
+Trong **Giai Đoạn 2 (Quản Trị State & Modules)** mở đầu với **[[Bài 06] Giải Mã Terraform State: Cấu Trúc JSON v4, Drift Detection & Refresh-Only Workflow](terraform-06-06-giai-ma-terraform-state-cau-truc-json-v4-drift-detection-refresh-only.html)**, chúng ta sẽ bước vào "trái tim" của mọi hệ thống Terraform: Phẫu thuật từng trường dữ liệu trong tệp State JSON v4, giải mã các tham số bí mật `serial`, `lineage`, và cách giải cứu hạ tầng khi State File bị phân mảnh!
 {% endraw %}

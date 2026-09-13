@@ -661,5 +661,5 @@ Làm chủ cú pháp **HCL**, hệ thống **Type Constraints**, kỹ thuật **
 
 > [!TIP]
 > **BÀI HỌC TIẾP THEO:**
-> Trong **[Bài 04: Đồ Thị Phụ Thuộc (Dependency Graph): Quản Lý Phụ Thuộc Tường Minh, Ngầm Định & Xử Lý Lỗi Vòng Lặp Tuần Hoàn (Cycle)](./04-dependency-graph-dag-quan-ly-phu-thuoc-tuong-minh-ngam-dinh.md)**, chúng ta sẽ chuyên sâu vào việc xử lý các tình huống phức tạp nhất của đồ thị DAG: Tách rời tài nguyên với Security Group Rules hai chiều, kỹ thuật phá vỡ Cycle và tối ưu hóa thứ tự triển khai tài nguyên đa tầng.
+> Trong **[[Bài 04] Làm Chủ Dependency Graph (DAG): Quản Lý Phụ Thuộc Tường Minh vs Ngầm Định & Data Sources](terraform-04-04-dependency-graph-dag-quan-ly-phu-thuoc-tuong-minh-ngam-dinh.html)**, chúng ta sẽ chuyên sâu vào việc xử lý các tình huống phức tạp nhất của đồ thị DAG: Tách rời tài nguyên với Security Group Rules hai chiều, kỹ thuật phá vỡ Cycle và tối ưu hóa thứ tự triển khai tài nguyên đa tầng.
 {% endraw %}

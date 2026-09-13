@@ -731,5 +731,5 @@ mindmap
 
 - **Quy tắc an toàn Production**: Mọi cơ sở dữ liệu (RDS, Mongo, Redis, ElasticSearch) và S3 Data Lake bắt buộc phải có `prevent_destroy = true`.
 - **Quy tắc Zero-Downtime**: Mọi Web Server, ASG, Launch Template, Target Group bắt buộc phải có `create_before_destroy = true` kết hợp với `name_prefix`.
-- **Bước tiếp theo**: Trong [Bài 17: Provisioners, terraform_data và Chuyển Đổi State Không Phá Hủy Hạ Tầng](./17-provisioners-terraform-data-va-chuyen-doi-state-khong-pha-huy-ha-tang.md), chúng ta sẽ phân tích lý do HashiCorp khuyến cáo hạn chế `local-exec`/`remote-exec`, cách thay thế hoàn hảo bằng `terraform_data`, và các kỹ thuật chạy script an toàn chuẩn Cloud-init.
+- **Bước tiếp theo**: Trong [[Bài 17] Provisioners, terraform_data & Chuyển Đổi State Không Phá Hủy Hạ Tầng](terraform-17-17-provisioners-terraform-data-va-chuyen-doi-state-khong-pha-huy-ha-tang.html), chúng ta sẽ phân tích lý do HashiCorp khuyến cáo hạn chế `local-exec`/`remote-exec`, cách thay thế hoàn hảo bằng `terraform_data`, và các kỹ thuật chạy script an toàn chuẩn Cloud-init.
 {% endraw %}

@@ -702,5 +702,5 @@ mindmap
 
 - **Quy tắc thiết kế Child Module**: Luôn giữ Child Module "vô tính" (Provider-agnostic), chỉ khai báo `configuration_aliases` và nhận provider instance từ Root Module.
 - **Tiêu chuẩn bảo mật Multi-Account**: 100% kết nối xuyên tài khoản phải thông qua **IAM AssumeRole** và có chính sách Session Name tường minh để phục vụ kiểm toán CloudTrail.
-- **Bước tiếp theo**: Trong [Bài 19: Terraform trong CI/CD: GitLab CI, GitHub Actions và OIDC Authentication](./19-terraform-trong-cicd-gitlab-ci-github-actions-va-oidc.md), chúng ta sẽ tự động hóa hoàn toàn quy trình Plan/Apply và loại bỏ vĩnh viễn Long-lived Cloud Credentials bằng OpenID Connect (OIDC)!
+- **Bước tiếp theo**: Trong [[Bài 19] Terraform Trong CI/CD: Tự Động Hóa Pipeline Với GitLab CI, GitHub Actions & OIDC](terraform-19-19-terraform-trong-cicd-gitlab-ci-github-actions-va-oidc.html), chúng ta sẽ tự động hóa hoàn toàn quy trình Plan/Apply và loại bỏ vĩnh viễn Long-lived Cloud Credentials bằng OpenID Connect (OIDC)!
 {% endraw %}

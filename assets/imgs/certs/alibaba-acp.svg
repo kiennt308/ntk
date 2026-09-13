@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <defs>
+    <linearGradient id="aliGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5722"/>
+      <stop offset="100%" stop-color="#D84315"/>
+    </linearGradient>
+  </defs>
+  <polygon points="150,15 265,80 265,220 150,285 35,220 35,80" fill="url(#aliGrad2)" stroke="#FFCCBC" stroke-width="4"/>
+  <polygon points="150,28 252,87 252,213 150,272 48,213 48,87" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+  
+  <text x="150" y="75" text-anchor="middle" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="15" letter-spacing="1.5">ALIBABA CLOUD</text>
+  <text x="150" y="115" text-anchor="middle" fill="#FFF3E0" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="14">CERTIFIED</text>
+  <text x="150" y="162" text-anchor="middle" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="2">ACP</text>
+  
+  <rect x="65" y="185" width="170" height="32" rx="6" fill="#37474F"/>
+  <text x="150" y="206" text-anchor="middle" fill="#FFCCBC" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="14" letter-spacing="1.5">PROFESSIONAL</text>
+  
+  <path d="M135,248 C135,240 142,235 150,235 C158,235 165,240 165,248 Z" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+</svg>

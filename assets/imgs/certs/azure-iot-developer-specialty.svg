@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <defs>
+    <linearGradient id="azureGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#005A9E"/>
+      <stop offset="100%" stop-color="#001B3A"/>
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#0097A7"/>
+    </linearGradient>
+  </defs>
+  <polygon points="150,15 265,80 265,220 150,285 35,220 35,80" fill="url(#azureGrad3)" stroke="#00E5FF" stroke-width="4"/>
+  <polygon points="150,28 252,87 252,213 150,272 48,213 48,87" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+  
+  <g transform="translate(136, 52)">
+    <rect x="0" y="0" width="12" height="12" fill="#F25022"/>
+    <rect x="15" y="0" width="12" height="12" fill="#7FBA00"/>
+    <rect x="0" y="15" width="12" height="12" fill="#00A4EF"/>
+    <rect x="15" y="15" width="12" height="12" fill="#FFB900"/>
+  </g>
+
+  <text x="150" y="105" text-anchor="middle" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="13" letter-spacing="1">MICROSOFT CERTIFIED</text>
+  <text x="150" y="132" text-anchor="middle" fill="#00E5FF" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="16">Azure IoT Developer</text>
+  
+  <rect x="70" y="165" width="160" height="30" rx="6" fill="url(#tealGrad)"/>
+  <text x="150" y="186" text-anchor="middle" fill="#001B3A" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="14" letter-spacing="1.5">SPECIALTY</text>
+  
+  <g fill="#00E5FF" transform="translate(145, 218)">
+    <path d="M0,8 L3,0 L6,8 L0,3 L7,3 Z" transform="scale(1.4)"/>
+  </g>
+</svg>

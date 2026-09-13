@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <defs>
+    <linearGradient id="ibmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1261FE"/>
+      <stop offset="100%" stop-color="#001D6C"/>
+    </linearGradient>
+  </defs>
+  <polygon points="150,15 265,80 265,220 150,285 35,220 35,80" fill="url(#ibmGrad)" stroke="#78A9FF" stroke-width="4"/>
+  <polygon points="150,28 252,87 252,213 150,272 48,213 48,87" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  
+  <!-- IBM Logo Text -->
+  <text x="150" y="78" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="4">IBM</text>
+  
+  <text x="150" y="125" text-anchor="middle" fill="#A6C8FF" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="15" letter-spacing="1">PROFESSIONAL</text>
+  <text x="150" y="155" text-anchor="middle" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="20">IT Scrum Master</text>
+  
+  <rect x="70" y="188" width="160" height="28" rx="5" fill="#0043CE"/>
+  <text x="150" y="207" text-anchor="middle" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="12" letter-spacing="1.5">CERTIFICATE</text>
+  
+  <!-- Agile Sprint Loop Icon -->
+  <path d="M130,240 A18,18 0 1,1 165,252 L172,246 M165,252 L172,258" fill="none" stroke="#78A9FF" stroke-width="3" stroke-linecap="round"/>
+</svg>

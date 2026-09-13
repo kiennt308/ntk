@@ -161,13 +161,13 @@ permalink: /about.html
 <div class="grid grid--2col" style="gap: 1.5rem; margin: 1.5rem 0 2.5rem 0;">
   {% for edu in about.education_and_certifications.education.degrees %}
     <div class="card" style="padding: 1.75rem;">
-      <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.65rem;">
-        <div style="width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--accent-primary); flex-shrink: 0;">
-          {% include icon.html name="book" size=18 %}
+      <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+        <div style="width: 46px; height: 46px; border-radius: var(--radius-md); background: var(--bg-subtle); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; padding: 4px; flex-shrink: 0; box-shadow: var(--shadow-sm);">
+          <img src="{{ '/assets/imgs/logobachkhoasang.png' | relative_url }}" alt="Bach Khoa University" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
         <div style="flex: 1;">
-          <h4 style="margin: 0; font-size: 1.05rem; color: var(--text-primary);">{{ edu.degree }}</h4>
-          <span class="badge badge--primary" style="font-size: 0.72rem; margin-top: 0.25rem;">{{ edu.period }}</span>
+          <h4 style="margin: 0; font-size: 1.05rem; color: var(--text-primary); line-height: 1.35;">{{ edu.degree }}</h4>
+          <span class="badge badge--primary" style="font-size: 0.72rem; margin-top: 0.35rem;">{{ edu.period }}</span>
         </div>
       </div>
       <div>
@@ -184,27 +184,37 @@ permalink: /about.html
 
 <!-- Certifications Grid -->
 <h3>{{ about.education_and_certifications.certifications.title }}</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; margin: 1.5rem 0 2.5rem 0;">
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.25rem; margin: 1.5rem 0 2.5rem 0;">
   {% for cert in about.education_and_certifications.certifications.items %}
-    <div class="card" style="padding: 1.15rem 1.35rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.5rem;">
-      <div>
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.35rem;">
-          <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); line-height: 1.35;">
+    <div class="card cert-card" style="padding: 1.25rem; display: flex; align-items: center; gap: 1.15rem; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+      <!-- Badge Image Container -->
+      <div style="width: 72px; height: 72px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 0.35rem; box-shadow: var(--shadow-sm);">
+        {% if cert.badge_image %}
+          <img src="{{ cert.badge_image | relative_url }}" alt="{{ cert.name }}" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));" loading="lazy">
+        {% else %}
+          {% include icon.html name="shield" size=32 %}
+        {% endif %}
+      </div>
+
+      <!-- Cert Info -->
+      <div style="flex: 1; min-width: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.35rem; margin-bottom: 0.25rem;">
+          <h4 style="font-size: 0.95rem; font-weight: 750; color: var(--text-primary); margin: 0; line-height: 1.35;">
             {{ cert.name }}
-          </div>
-          <span class="badge {% if cert.badge == 'Active' %}badge--emerald{% elsif cert.badge == 'Verified' %}badge--cyan{% elsif cert.badge == 'Trainer' %}badge--amber{% else %}badge--secondary{% endif %}" style="font-size: 0.68rem; flex-shrink: 0;">
+          </h4>
+          <span class="badge {% if cert.badge == 'Active' %}badge--emerald{% elsif cert.badge == 'Verified' %}badge--cyan{% elsif cert.badge == 'Trainer' %}badge--amber{% else %}badge--secondary{% endif %}" style="font-size: 0.65rem; flex-shrink: 0;">
             {{ cert.badge }}
           </span>
         </div>
-        <div style="font-size: 0.825rem; color: var(--accent-primary); font-weight: 600;">
+        <div style="font-size: 0.825rem; color: var(--accent-primary); font-weight: 600; margin-bottom: 0.35rem;">
           {{ cert.issuer }}
         </div>
-      </div>
-      <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; justify-content: space-between; border-top: 1px dashed var(--border-color); padding-top: 0.45rem; margin-top: 0.25rem;">
-        <span>{{ cert.period }}</span>
-        {% if cert.id %}
-          <span title="Credential ID" style="font-family: var(--font-mono); font-size: 0.72rem; opacity: 0.8;">ID: {{ cert.id | truncate: 12 }}</span>
-        {% endif %}
+        <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border-color); padding-top: 0.35rem; gap: 0.5rem; flex-wrap: wrap;">
+          <span>{{ cert.period }}</span>
+          {% if cert.id %}
+            <span title="Credential ID: {{ cert.id }}" style="font-family: var(--font-mono); font-size: 0.72rem; opacity: 0.85;">ID: {{ cert.id | truncate: 14 }}</span>
+          {% endif %}
+        </div>
       </div>
     </div>
   {% endfor %}

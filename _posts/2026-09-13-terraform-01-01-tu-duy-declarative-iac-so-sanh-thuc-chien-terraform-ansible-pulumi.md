@@ -52,14 +52,19 @@ flowchart TB
         D3 --> D4["🎯 Đạt Chuẩn Tuyệt Đối & Tự Phục Hồi"]
     end
 
-    style IMP fill:#fff5f5,stroke:#f43f5e,stroke-width:1.5px
-    style DEC fill:#f0fdf4,stroke:#10b981,stroke-width:1.5px
-    style I_ERR fill:#fef2f2,stroke:#ef4444,stroke-width:2px
-    style I_OK fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px
-    style D1 fill:#f8fafc,stroke:#64748b,stroke-width:1.5px
-    style D2 fill:#eff6ff,stroke:#3b82f6,stroke-width:2px
-    style D3 fill:#e0f2fe,stroke:#0284c7,stroke-width:1.5px
-    style D4 fill:#ecfdf5,stroke:#059669,stroke-width:2px
+    style IMP fill:none,stroke:#f43f5e,stroke-width:1.5px
+    style DEC fill:none,stroke:#10b981,stroke-width:1.5px
+    style I1 fill:none,stroke:#94a3b8,stroke-width:1.5px
+    style I2 fill:none,stroke:#f59e0b,stroke-width:1.5px
+    style I3 fill:none,stroke:#94a3b8,stroke-width:1.5px
+    style I4 fill:none,stroke:#94a3b8,stroke-width:1.5px
+    style I5 fill:none,stroke:#f59e0b,stroke-width:1.5px
+    style I_ERR fill:none,stroke:#ef4444,stroke-width:2px
+    style I_OK fill:none,stroke:#22c55e,stroke-width:1.5px
+    style D1 fill:none,stroke:#64748b,stroke-width:1.5px
+    style D2 fill:none,stroke:#3b82f6,stroke-width:2px
+    style D3 fill:none,stroke:#0284c7,stroke-width:1.5px
+    style D4 fill:none,stroke:#059669,stroke-width:2px
 ```
 
 ### 1.1. Bản Chất của Phương Pháp Imperative (Mệnh Lệnh)
@@ -113,21 +118,21 @@ flowchart TD
     APPLY --> CLOUD
     APPLY --> NEW_STATE
 
-    style Inputs fill:#f8fafc,stroke:#94a3b8,stroke-width:1.5px
-    style Core fill:#eff6ff,stroke:#3b82f6,stroke-width:1.5px
-    style Outputs fill:#f0fdf4,stroke:#10b981,stroke-width:1.5px
+    style Inputs fill:none,stroke:#94a3b8,stroke-width:1.5px
+    style Core fill:none,stroke:#3b82f6,stroke-width:1.5px
+    style Outputs fill:none,stroke:#10b981,stroke-width:1.5px
 
-    style HCL fill:#ffffff,stroke:#6366f1,stroke-width:2px
-    style STATE fill:#ffffff,stroke:#f59e0b,stroke-width:2px
-    style CLOUD fill:#ffffff,stroke:#0ea5e9,stroke-width:2px
+    style HCL fill:none,stroke:#6366f1,stroke-width:2px
+    style STATE fill:none,stroke:#f59e0b,stroke-width:2px
+    style CLOUD fill:none,stroke:#0ea5e9,stroke-width:2px
 
-    style REFRESH fill:#ffffff,stroke:#3b82f6,stroke-width:1.5px
-    style DIFF fill:#ffffff,stroke:#8b5cf6,stroke-width:2px
-    style DAG fill:#ffffff,stroke:#ec4899,stroke-width:1.5px
+    style REFRESH fill:none,stroke:#3b82f6,stroke-width:1.5px
+    style DIFF fill:none,stroke:#8b5cf6,stroke-width:2px
+    style DAG fill:none,stroke:#ec4899,stroke-width:1.5px
 
-    style PLAN fill:#ffffff,stroke:#f59e0b,stroke-width:2px
-    style APPLY fill:#ffffff,stroke:#10b981,stroke-width:2px
-    style NEW_STATE fill:#ffffff,stroke:#059669,stroke-width:2px
+    style PLAN fill:none,stroke:#f59e0b,stroke-width:2px
+    style APPLY fill:none,stroke:#10b981,stroke-width:2px
+    style NEW_STATE fill:none,stroke:#059669,stroke-width:2px
 ```
 
 ---
@@ -366,11 +371,11 @@ flowchart TD
     C --> D
     D --> E
 
-    style A fill:#fff1f2,stroke:#f43f5e,stroke-width:2px
-    style B fill:#fffbeb,stroke:#f59e0b,stroke-width:2px
-    style C fill:#f8fafc,stroke:#64748b,stroke-width:1.5px
-    style D fill:#fef3c7,stroke:#d97706,stroke-width:2px
-    style E fill:#fee2e2,stroke:#dc2626,stroke-width:2.5px
+    style A fill:none,stroke:#f43f5e,stroke-width:2px
+    style B fill:none,stroke:#f59e0b,stroke-width:2px
+    style C fill:none,stroke:#64748b,stroke-width:1.5px
+    style D fill:none,stroke:#d97706,stroke-width:2px
+    style E fill:none,stroke:#dc2626,stroke-width:2.5px
 ```
 
 ### 5-Whys Root Cause Analysis:

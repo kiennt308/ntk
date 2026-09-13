@@ -876,7 +876,11 @@ document.addEventListener('DOMContentLoaded', () => {
       theme: isDark ? 'dark' : 'default',
       themeVariables: {
         darkMode: isDark,
-        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+        background: 'transparent',
+        mainBkg: 'transparent',
+        nodeBkg: 'transparent',
+        clusterBkg: 'transparent'
       },
       securityLevel: 'loose'
     });

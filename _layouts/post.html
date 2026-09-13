@@ -66,7 +66,7 @@ layout: default
       <meta itemprop="position" content="3" />
     </span>
     <span class="breadcrumbs-sep">/</span>
-    <span style="color: var(--text-secondary); max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ page.title }}</span>
+    <span style="color: var(--text-secondary); max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" aria-current="page" title="{{ page.title | escape }}">{{ page.title }}</span>
   </nav>
 
   <div class="article-layout">
@@ -118,6 +118,27 @@ layout: default
           </div>
         {% endif %}
       </header>
+
+      <!-- TL;DR Key Takeaways Callout Box (BUG-201) -->
+      {% if page.tldr %}
+        <div class="tldr-box">
+          <div class="tldr-box__title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span>TL;DR - Key Takeaways</span>
+          </div>
+          {% if page.tldr.first %}
+            <ul>
+              {% for point in page.tldr %}
+                <li>{{ point }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p style="margin:0; font-size:0.95rem; color:var(--text-secondary);">{{ page.tldr }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
 
       <!-- Series Tracker Callout Box -->
       {% if page.series %}

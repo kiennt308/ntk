@@ -276,7 +276,11 @@ document.addEventListener('DOMContentLoaded', () => {
       copyBtn.addEventListener('click', () => {
         const code = wrapper.querySelector('pre code') || wrapper.querySelector('pre');
         if (code) {
-          const rawText = code.innerText;
+          let rawText = code.innerText;
+          // Strip bash prompt ($ or #) when copying commands (BUG-202)
+          if (['BASH', 'SHELL', 'ZSH'].includes(displayLang)) {
+            rawText = rawText.split('\n').map(line => line.replace(/^[$#]\s+/, '')).join('\n');
+          }
           copyTextToClipboard(rawText).then(() => {
             copyBtn.querySelector('span').textContent = 'Copied!';
             copyBtn.style.color = '#34d399';
@@ -294,6 +298,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       headerEl.appendChild(copyBtn);
       wrapper.insertBefore(headerEl, wrapper.firstChild);
+    }
+
+    // Code Block Collapse for long snippets (> 35 lines) (BUG-203)
+    const preEl = wrapper.querySelector('pre');
+    if (preEl && preEl.innerText.split('\n').length > 35) {
+      wrapper.classList.add('code-collapsed');
+      const expandBtn = document.createElement('div');
+      expandBtn.className = 'code-expand-btn';
+      expandBtn.innerHTML = '<button class="btn btn--secondary btn--sm" type="button" style="font-size:0.8rem; padding:0.35rem 0.85rem;">Expand Code ▾</button>';
+      expandBtn.querySelector('button').addEventListener('click', () => {
+        wrapper.classList.remove('code-collapsed');
+        expandBtn.remove();
+      });
+      wrapper.appendChild(expandBtn);
     }
   });
 
@@ -568,5 +586,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(() => {});
       }
     });
+  });
+
+  /* ==========================================================================
+     12. Global Keyboard Shortcut for Search (Ctrl+K / Cmd+K: BUG-215, BUG-232)
+     ========================================================================== */
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      const searchInput = document.getElementById('search-input') || document.getElementById('blog-live-search');
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.select();
+      } else {
+        const searchLink = document.querySelector('a[href*="search"]');
+        if (searchLink) searchLink.click();
+      }
+    }
+  });
+
+  /* ==========================================================================
+     13. Copy Email Address Quick Action (BUG-234)
+     ========================================================================== */
+  const copyEmailButtons = document.querySelectorAll('.btn-copy-email');
+  copyEmailButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = btn.getAttribute('data-email') || 'kiennt.sg@gmail.com';
+      copyTextToClipboard(email).then(() => {
+        showToast(`Email copied: ${email}`);
+      }).catch(() => {
+        window.location.href = `mailto:${email}`;
+      });
+    });
+  });
+
+  /* ==========================================================================
+     14. Network Offline / Online Toast Indicator for PWA (BUG-297)
+     ========================================================================== */
+  window.addEventListener('offline', () => {
+    showToast('You are currently offline. Cached articles remain accessible.');
+  });
+  window.addEventListener('online', () => {
+    showToast('Internet connection restored.');
   });
 });

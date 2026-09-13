@@ -2637,6 +2637,24 @@ mark.search-highlight {
   ry: 6px;
 }
 
+/* ZERO SOLID FILL FOR ALL MERMAID NODES & DECISION RHOMBUS SHAPES */
+.mermaid .node polygon,
+.mermaid polygon.label-container,
+.mermaid .decision polygon,
+.mermaid .question polygon,
+.mermaid g.decision polygon,
+.mermaid [class*="decision"] polygon,
+.mermaid-lightbox-content .node polygon,
+.mermaid-lightbox-content polygon.label-container,
+.mermaid-lightbox-content .decision polygon,
+.mermaid-lightbox-content .question polygon,
+.mermaid-lightbox-content g.decision polygon,
+.mermaid-lightbox-content [class*="decision"] polygon {
+  fill: transparent !important;
+  stroke: var(--accent-amber, #f59e0b) !important;
+  stroke-width: 1.75px !important;
+}
+
 /* ZERO SOLID FILL FOR ALL MERMAID SUBGRAPHS / CLUSTERS */
 .mermaid .cluster rect,
 .mermaid .cluster polygon,

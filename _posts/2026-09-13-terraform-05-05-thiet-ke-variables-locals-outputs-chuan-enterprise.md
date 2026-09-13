@@ -168,6 +168,7 @@ flowchart LR
     style CLI_SAFE fill:none,stroke:#3b82f6,stroke-width:2px
     style SECRET fill:none,stroke:#0ea5e9,stroke-width:2px
     style CLI_DANGER fill:none,stroke:#10b981,stroke-width:2px
+    style MASK fill:none,stroke:#f59e0b,stroke-width:2px
 ```
 
 ---

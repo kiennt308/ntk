@@ -806,9 +806,22 @@ document.addEventListener('DOMContentLoaded', () => {
           clonedSvg.style.display = 'block';
           clonedSvg.style.background = 'transparent';
 
-          // Zero Solid Fill: Sanitize any dark or opaque fills on nodes, clusters, and actors
+          // Zero Solid Fill: Sanitize any dark or opaque fills on nodes, clusters, polygons, and actors
           clonedSvg.querySelectorAll('rect, polygon, circle, ellipse, path').forEach(el => {
-            const fill = el.getAttribute('fill');
+            const tagName = el.tagName.toLowerCase();
+            const fill = el.getAttribute('fill') || '';
+            const style = el.getAttribute('style') || '';
+
+            // Handle polygon / rhombus / decision shapes
+            if (tagName === 'polygon' || el.classList.contains('label-container')) {
+              el.setAttribute('fill', 'transparent');
+              el.style.setProperty('fill', 'transparent', 'important');
+              if (!el.getAttribute('stroke') && !style.includes('stroke:')) {
+                el.setAttribute('stroke', '#f59e0b');
+                el.style.setProperty('stroke', '#f59e0b', 'important');
+              }
+            }
+
             if (fill && (
               fill.toLowerCase() === '#000000' || 
               fill.toLowerCase() === '#000' || 
@@ -821,7 +834,13 @@ document.addEventListener('DOMContentLoaded', () => {
               fill.toLowerCase() === '#ececff' ||
               fill.toLowerCase() === 'black'
             )) {
-              el.setAttribute('fill', 'none');
+              el.setAttribute('fill', 'transparent');
+              el.style.setProperty('fill', 'transparent', 'important');
+            }
+
+            // If inline style has solid fill, clean it
+            if (style.includes('fill: #1f2020') || style.includes('fill: rgb(31, 32, 32)') || style.includes('fill: #000')) {
+              el.style.setProperty('fill', 'transparent', 'important');
             }
           });
 
@@ -1019,6 +1038,15 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const { svg } = await mermaid.render(renderId, rawContent.trim());
         mermaidInner.innerHTML = svg;
+        
+        // Zero Solid Fill: Sanitize polygon and decision node shapes
+        const svgEl = mermaidInner.querySelector('svg');
+        if (svgEl) {
+          svgEl.querySelectorAll('polygon').forEach(poly => {
+            poly.setAttribute('fill', 'transparent');
+            poly.style.setProperty('fill', 'transparent', 'important');
+          });
+        }
       } catch (err) {
         console.warn('Mermaid render error on diagram ' + i + ':', err);
         mermaidInner.textContent = rawContent.trim();

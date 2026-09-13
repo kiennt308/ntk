@@ -88,10 +88,11 @@ Sử dụng các biến CSS theme-aware thay vì hardcode mã màu:
 Mọi sơ đồ Mermaid (bao gồm `flowchart`, `graph`, và `sequenceDiagram`) phải tuân thủ nghiêm ngặt các quy tắc sau:
 
 ### 5.1. Quy chuẩn chung & Lightbox Modal Zoom
-1. **Khử hoàn toàn nền đặc (Zero Solid Fill)**: Mọi khối hình (Nodes), hộp Actor, và đặc biệt là **khung bao Subgraph / Clusters (`subgraph ... end`)** đều phải trong suốt 100% (`fill:none` hoặc `fill:transparent`). Tuyệt đối không để sót background màu đen (`#000000`, `#1f2020`) hay màu xám đặc khi hiển thị bình thường cũng như khi phóng to trong Lightbox Zoom Modal.
+1. **Khử hoàn toàn nền đặc (Zero Solid Fill)**: Mọi khối hình (Nodes), hình thoi điều kiện (Decision Rhombus `ID{"..."}` / `<polygon>`), hộp Actor, và đặc biệt là **khung bao Subgraph / Clusters (`subgraph ... end`)** đều phải trong suốt 100% (`fill:none` hoặc `fill:transparent`). Tuyệt đối không để sót background màu đen (`#000000`, `#1f2020`) hay màu xám đặc khi hiển thị bình thường cũng như khi phóng to trong Lightbox Zoom Modal.
 2. **Khung bao Subgraph / Cluster**: Viền khung subgraph sử dụng nét đứt nhẹ nhàng (`stroke-dasharray: 4, 4`), màu viền `--border-color` (`#334155`), bo góc `rx: 8px` và tiêu đề subgraph in hoa đậm nét (`font-weight: 700`, `letter-spacing: 0.04em`).
-3. **Tăng cường độ tương phản (High Contrast)**: Phông chữ trong sơ đồ sử dụng màu `--text-primary` (`#f8fafc` trên nền tối, `#0f172a` trên nền sáng) với độ dày chữ `font-weight: 600 - 700`.
-4. **Ngắt dòng thông minh**: Dùng `<br/>` để chia text trong các khối dài thành 2–3 dòng gọn gàng, tránh làm khối bị quá dài theo chiều ngang.
+3. **Hình thoi quyết định (Decision / Rhombus Nodes)**: Bắt buộc sử dụng nền trong suốt `fill:none` hoặc `fill:transparent`, viền màu nổi bật (`stroke: var(--accent-amber)` hoặc `#f59e0b`, `stroke-width: 1.75px`) để đảm bảo độ tương phản cao trên cả nền sáng và nền tối.
+4. **Tăng cường độ tương phản (High Contrast)**: Phông chữ trong sơ đồ sử dụng màu `--text-primary` (`#f8fafc` trên nền tối, `#0f172a` trên nền sáng) với độ dày chữ `font-weight: 600 - 700`.
+5. **Ngắt dòng thông minh**: Dùng `<br/>` để chia text trong các khối dài thành 2–3 dòng gọn gàng, tránh làm khối bị quá dài theo chiều ngang.
 
 ### 5.2. Quy chuẩn dành riêng cho Sequence Diagrams
 - **Actors / Participants**: Hộp actor phải có viền bo tròn (`rx: 8px`), viền màu kỹ thuật (Primary Blue `#38bdf8` / `#0284c7`), nền trong suốt `fill: transparent`, chữ in đậm dễ đọc.

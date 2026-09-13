@@ -1306,6 +1306,17 @@ details[open] .topic-chevron {
 .series-box summary::-webkit-details-marker {
   display: none;
 }
+.series-chevron {
+  transition: transform var(--transition-base);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+details.series-box[open] .series-chevron {
+  transform: rotate(180deg);
+  color: var(--accent-primary);
+}
 .series-box__content {
   margin-top: 1.25rem;
   padding-top: 1rem;

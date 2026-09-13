@@ -140,18 +140,23 @@ layout: default
         </div>
       {% endif %}
 
-      <!-- Series Tracker Callout Box -->
+      <!-- Series Tracker Callout Box (Default Collapsed & Sorted by Series Order) -->
       {% if page.series %}
-        {% assign series_posts = site.posts | where: "series", page.series | sort: "date" %}
-        <details class="series-box" open>
+        {% assign series_posts = site.posts | where: "series", page.series | sort: "series_order" %}
+        <details class="series-box">
           <summary class="series-box__header" style="cursor: pointer; list-style: none;">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <span class="badge badge--primary" style="background: rgba(var(--accent-primary-rgb), 0.2); color: var(--accent-primary);">{{ page_cfg.learning_path_series_badge }}</span>
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <span class="badge badge--primary" style="background: rgba(var(--accent-primary-rgb), 0.2); color: var(--accent-primary);">{{ page_cfg.learning_path_series_badge | default: "Learning Path Series" }}</span>
               <strong style="color: var(--text-primary);">{{ page.series }}</strong>
             </div>
-            <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
-              {{ series_posts.size }} {{ page_cfg.parts_unit }} ▾
-            </span>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                {{ series_posts.size }} {{ page_cfg.parts_unit | default: "Parts" }}
+              </span>
+              <span class="series-chevron">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
           </summary>
           <div class="series-box__content">
             <ul class="series-list">
@@ -159,10 +164,10 @@ layout: default
                 <li class="series-item {% if s_post.url == page.url %}series-item--active{% endif %}">
                   {% if s_post.url == page.url %}
                     <span class="series-item__bullet">●</span>
-                    <strong style="color: var(--text-primary);">
+                    <strong style="color: var(--text-primary); flex: 1;">
                       Part {{ s_post.series_order | default: forloop.index }}: {{ s_post.title }}
                     </strong>
-                    <span class="series-item__current">{{ page_cfg.current_article_note }}</span>
+                    <span class="series-item__current">{{ page_cfg.current_article_note | default: "Current Reading" }}</span>
                   {% else %}
                     <span class="series-item__bullet">○</span>
                     <a href="{{ s_post.url | relative_url }}">

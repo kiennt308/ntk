@@ -2672,7 +2672,7 @@ mark.search-highlight {
   align-items: center;
   justify-content: center;
   position: relative;
-  background: var(--bg-page);
+  background: var(--bg-surface);
   cursor: grab;
 }
 
@@ -2681,19 +2681,20 @@ mark.search-highlight {
 }
 
 .mermaid-lightbox-content {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   transform-origin: center center;
   transition: transform 0.08s ease-out;
-  padding: 2rem;
+  padding: 3rem;
+  margin: auto;
 }
 
 .mermaid-lightbox-content svg {
   max-width: none !important;
   max-height: none !important;
   user-select: none;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.12));
 }
 
 .mermaid-lightbox-hint {

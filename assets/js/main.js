@@ -663,68 +663,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================================================
      15. Mermaid Diagram Auto-Renderer & Interactive Zoom Lightbox
      ========================================================================== */
-  async function initMermaidDiagrams() {
-    if (typeof mermaid === 'undefined') return;
-
-    const mermaidCodes = document.querySelectorAll(
-      'code.language-mermaid, pre.language-mermaid, div.language-mermaid pre code, .highlighter-rouge.language-mermaid pre code, .language-mermaid pre'
-    );
-
-    if (mermaidCodes.length === 0) {
-      attachMermaidLightbox();
-      return;
-    }
-
-    const isDark = document.documentElement.classList.contains('dark-theme');
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: isDark ? 'dark' : 'default',
-      themeVariables: {
-        darkMode: isDark,
-        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-      },
-      securityLevel: 'loose'
-    });
-
-    for (let i = 0; i < mermaidCodes.length; i++) {
-      const codeEl = mermaidCodes[i];
-      const rawContent = codeEl.textContent || codeEl.innerText;
-      const container = codeEl.closest('.highlighter-rouge') || codeEl.closest('pre') || codeEl;
-
-      const mermaidWrapper = document.createElement('div');
-      mermaidWrapper.className = 'mermaid-wrapper';
-
-      const mermaidInner = document.createElement('div');
-      mermaidInner.className = 'mermaid';
-      const renderId = 'mermaid-svg-' + i + '-' + Math.floor(Math.random() * 10000);
-
-      const zoomHint = document.createElement('button');
-      zoomHint.className = 'mermaid-zoom-btn';
-      zoomHint.type = 'button';
-      zoomHint.setAttribute('aria-label', 'Phóng to sơ đồ');
-      zoomHint.title = 'Bấm để phóng to và tương tác với sơ đồ';
-      zoomHint.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><span>Phóng to</span>';
-
-      mermaidWrapper.appendChild(mermaidInner);
-      mermaidWrapper.appendChild(zoomHint);
-
-      if (container && container.parentNode) {
-        container.parentNode.replaceChild(mermaidWrapper, container);
-      }
-
-      try {
-        const { svg } = await mermaid.render(renderId, rawContent.trim());
-        mermaidInner.innerHTML = svg;
-      } catch (err) {
-        console.warn('Mermaid render error on diagram ' + i + ':', err);
-        // Clean fallback in case of parser warning
-        mermaidInner.textContent = rawContent.trim();
-      }
-    }
-
-    attachMermaidLightbox();
-  }
-
   // Lightbox implementation with Zoom, Pan, Mousewheel, and Keyboard controls
   function attachMermaidLightbox() {
     let lightbox = document.getElementById('mermaid-lightbox');
@@ -798,13 +736,37 @@ document.addEventListener('DOMContentLoaded', () => {
       function openModal(svgElement) {
         if (!svgElement) return;
         content.innerHTML = '';
+        
+        // Use clone or innerHTML to preserve all SVG structures
         const clonedSvg = svgElement.cloneNode(true);
+        clonedSvg.removeAttribute('id');
+
+        let widthVal = 800;
+        let heightVal = 500;
+        const viewBox = svgElement.getAttribute('viewBox');
+        if (viewBox) {
+          const parts = viewBox.split(/[\s,]+/).filter(Boolean).map(Number);
+          if (parts.length === 4 && parts[2] > 0 && parts[3] > 0) {
+            widthVal = parts[2];
+            heightVal = parts[3];
+          }
+        } else {
+          const bcr = svgElement.getBoundingClientRect();
+          if (bcr.width > 0) widthVal = bcr.width;
+          if (bcr.height > 0) heightVal = bcr.height;
+        }
+
+        clonedSvg.setAttribute('width', widthVal);
+        clonedSvg.setAttribute('height', heightVal);
+        clonedSvg.style.width = `${widthVal}px`;
+        clonedSvg.style.height = `${heightVal}px`;
         clonedSvg.style.maxWidth = 'none';
-        clonedSvg.style.width = 'auto';
-        clonedSvg.style.height = 'auto';
+        clonedSvg.style.maxHeight = 'none';
+        clonedSvg.style.display = 'block';
+
         content.appendChild(clonedSvg);
 
-        scale = 1.25;
+        scale = 1.1;
         panX = 0;
         panY = 0;
         updateTransform();
@@ -831,7 +793,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateTransform();
           }
           if (e.key === '-' || e.key === '_') {
-            scale = Math.max(0.4, scale - 0.25);
+            scale = Math.max(0.3, scale - 0.25);
             updateTransform();
           }
           if (e.key === '0') {
@@ -849,7 +811,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       zoomOutBtn.addEventListener('click', () => {
-        scale = Math.max(0.4, scale - 0.25);
+        scale = Math.max(0.3, scale - 0.25);
         updateTransform();
       });
 
@@ -863,8 +825,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Mousewheel Zoom
       viewport.addEventListener('wheel', (e) => {
         e.preventDefault();
-        const delta = e.deltaY > 0 ? -0.15 : 0.15;
-        scale = Math.min(5, Math.max(0.4, scale + delta));
+        const delta = e.deltaY > 0 ? -0.12 : 0.12;
+        scale = Math.min(5, Math.max(0.3, scale + delta));
         updateTransform();
       }, { passive: false });
 
@@ -893,19 +855,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
       window._openMermaidLightbox = openModal;
     }
+  }
 
-    const wrappers = document.querySelectorAll('.mermaid-wrapper, .mermaid');
-    wrappers.forEach((box) => {
-      const svg = box.querySelector('svg');
-      if (svg) {
-        box.style.cursor = 'zoom-in';
-        box.onclick = (e) => {
-          if (window._openMermaidLightbox) {
-            window._openMermaidLightbox(svg);
-          }
-        };
-      }
+  async function initMermaidDiagrams() {
+    if (typeof mermaid === 'undefined') return;
+
+    attachMermaidLightbox();
+
+    const mermaidCodes = document.querySelectorAll(
+      'code.language-mermaid, pre.language-mermaid, div.language-mermaid pre code, .highlighter-rouge.language-mermaid pre code, .language-mermaid pre'
+    );
+
+    if (mermaidCodes.length === 0) {
+      return;
+    }
+
+    const isDark = document.documentElement.classList.contains('dark-theme');
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? 'dark' : 'default',
+      themeVariables: {
+        darkMode: isDark,
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+      },
+      securityLevel: 'loose'
     });
+
+    for (let i = 0; i < mermaidCodes.length; i++) {
+      const codeEl = mermaidCodes[i];
+      const rawContent = codeEl.textContent || codeEl.innerText;
+      const container = codeEl.closest('.highlighter-rouge') || codeEl.closest('pre') || codeEl;
+
+      const mermaidWrapper = document.createElement('div');
+      mermaidWrapper.className = 'mermaid-wrapper';
+
+      const mermaidInner = document.createElement('div');
+      mermaidInner.className = 'mermaid';
+      const renderId = 'mermaid-svg-' + i + '-' + Math.floor(Math.random() * 10000);
+
+      const zoomHint = document.createElement('button');
+      zoomHint.className = 'mermaid-zoom-btn';
+      zoomHint.type = 'button';
+      zoomHint.setAttribute('aria-label', 'Phóng to sơ đồ');
+      zoomHint.title = 'Bấm để phóng to và tương tác với sơ đồ';
+      zoomHint.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><span>Phóng to</span>';
+
+      mermaidWrapper.appendChild(mermaidInner);
+      mermaidWrapper.appendChild(zoomHint);
+
+      if (container && container.parentNode) {
+        container.parentNode.replaceChild(mermaidWrapper, container);
+      }
+
+      try {
+        const { svg } = await mermaid.render(renderId, rawContent.trim());
+        mermaidInner.innerHTML = svg;
+      } catch (err) {
+        console.warn('Mermaid render error on diagram ' + i + ':', err);
+        mermaidInner.textContent = rawContent.trim();
+      }
+
+      const clickHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const svg = mermaidInner.querySelector('svg');
+        if (svg && window._openMermaidLightbox) {
+          window._openMermaidLightbox(svg);
+        }
+      };
+
+      zoomHint.addEventListener('click', clickHandler);
+      mermaidInner.style.cursor = 'zoom-in';
+      mermaidInner.addEventListener('click', clickHandler);
+    }
   }
 
   /* ==========================================================================

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Bài 10] Tái Sử Dụng & Chuẩn Hóa Cấu Hình CI: include:local/remote/template, extends & YAML YAML Anchors/Aliases"
+title: "[Bài 10] Tái Sử Dụng Cấu Hình CI/CD: Include, Extends, YAML Anchors & Hidden Jobs"
 date: 2026-09-12 08:00:00 +0700
 categories: [GitLab]
 tags:
@@ -13,16 +13,16 @@ tags:
 series: "GitLab CI/CD & DevSecOps Platform Mastery"
 series_order: 10
 difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80"
-summary: "[GitLab CI/CD P.10] Hướng dẫn chuyên sâu Tái Sử Dụng & Chuẩn Hóa Cấu Hình CI: include:local/remote/template, extends & YAML YAML Anchors/Aliases: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
+summary: "[GitLab CI/CD P.10] Hướng dẫn chuyên sâu Tái Sử Dụng Cấu Hình CI/CD: Include, Extends, YAML Anchors & Hidden Jobs: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tái Sử Dụng & Chuẩn Hóa Cấu Hình CI: include:local/remote/template, extends & YAML YAML Anchors/Aliases."
-  - "Thiết kế CI/CD Pipeline chuẩn Enterprise với kiến trúc DAG, tối ưu hóa thời gian build và caching hiệu quả."
-  - "Bảo mật chuỗi cung ứng phần mềm với SAST/DAST, Container Scanning và OIDC Authentication."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Tái Sử Dụng Cấu Hình CI/CD: Include, Extends, YAML Anchors & Hidden Jobs."
+  - "Làm chủ cơ chế hợp nhất YAML tầng thấp, phân biệt deep-merge của extends và giới hạn biên giới của YAML Anchors."
+  - "Sử dụng cú pháp !reference để tái sử dụng script linh hoạt và ghim chặt ref cho include:project chuẩn Enterprise."
+  - "Tự kiểm tra kiến thức chuyên sâu với bộ 12 câu hỏi phân tích tình huống thực tế kèm lời giải."
 ---
 {% raw %}
-# [BÀI 10] TÁI SỬ DỤNG & CHUẨN HÓA CẤU HÌNH CI: INCLUDE:LOCAL/REMOTE/TEMPLATE, EXTENDS & YAML YAML ANCHORS/ALIASES
+# [BÀI 10] TÁI SỬ DỤNG CẤU HÌNH CI/CD: INCLUDE, EXTENDS, YAML ANCHORS & HIDDEN JOBS
 
 Trong kỷ nguyên **DevOps, DevSecOps và Cloud Native Engineering**, **GitLab CI/CD** được công nhận là một trong những nền tảng tự động hóa tích hợp liên tục và phân phối liên tục (CI/CD) hoàn chỉnh, mạnh mẽ và được tin dùng nhất trong các doanh nghiệp quy mô lớn. Không chỉ dừng lại ở các pipeline tuần tự cơ bản, việc vận hành GitLab CI/CD ở cấp độ Production đòi hỏi kỹ sư phải làm chủ kiến trúc điều phối phi tuyến tính **DAG (Directed Acyclic Graph)**, cơ chế quản trị **Autoscaling Runners**, tối ưu hóa **Caching đa tầng**, xác thực không khóa **Keyless OIDC**, bảo mật chuỗi cung ứng phần mềm **SLSA & SBOM** cùng các chính sách **Quality & Security Gates** tự động.
 
@@ -32,2402 +32,628 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 ## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
 
-> Kiểm chứng trên GitLab CE 17.7 · GitLab Runner 17.7 · executor `docker`.
-> Nội dung được thiết kế theo tư duy kỹ thuật thực chiến, tập trung vào bản chất hệ thống.
-> **Tệp lý thuyết này có KÍCH THƯỚC CHUẨN KỸ THUẬT ≥ 40 kB.**
+### 1.1. Luận Đề Trung Tâm: Nguyên Lý Tái Sử Dụng & Hợp Nhất Cấu Hình (YAML Merging)
 
----
+Khi quy mô tổ chức tăng lên hàng trăm dự án, việc sao chép-dán (Copy-Paste) cấu hình `.gitlab-ci.yml` giữa các repository dẫn đến sự phân mảnh cấu hình, vi phạm nguyên lý DRY (Don't Repeat Yourself) và tạo ra các lỗ hổng bảo mật nghiêm trọng khi không thể cập nhật đồng loạt các bước kiểm thử bảo mật.
 
+GitLab CI cung cấp 5 cơ chế tái sử dụng cấu hình, mỗi cơ chế hoạt động ở một tầng phân giải khác nhau:
+1. **Hidden Jobs (`.job_template`)**: Khai báo job có dấu chấm `.` ở đầu tên. GitLab Parser bỏ qua không tạo job thực thi, chỉ dùng làm khuôn mẫu.
+2. **YAML Anchors (`&anchor`, `*alias`, `<<: *merge`)**: Cơ chế thuần túy của bộ phân tích cú pháp YAML (YAML Parser spec), sao chép trực tiếp cấu trúc dữ liệu trong **cùng 1 tệp**.
+3. **`extends:`**: Cơ chế độc quyền của GitLab CI Engine, cho phép kế thừa đa tầng và thực hiện **Deep Merge** các dictionary.
+4. **`include:`**: Nạp các tệp cấu hình từ bên ngoài (local, file trong repo khác, remote URL, hoặc template hệ thống) trước khi phân giải.
+5. **`!reference` tag**: Cho phép trích xuất một đoạn danh sách hoặc dictionary từ một job khác và ghép vào vị trí bất kỳ, kể cả xuyên qua các tệp được `include`.
 
+> **YAML Anchors là tính năng của Trình phân giải cú pháp YAML nên KHÔNG THỂ vượt qua biên giới tệp (File Boundary). Để tái sử dụng cấu hình xuyên tệp, bắt buộc phải sử dụng `extends:` cho cấu trúc Job hoặc `!reference` cho các khối lệnh `script`/`before_script`.**
 
-Buổi 10 giải quyết bài toán tái sử dụng cấu hình tĩnh trong GitLab CI/CD khi dự án mở rộng lên hàng chục microservices. Học viên sẽ nắm vững bản chất 3 mốc thời điểm hợp nhất, phân biệt 4 cơ chế tái sử dụng, và làm chủ quy trình kiểm tra tệp sau phân giải `merged_yaml`.
+```
+   ┌────────────────────────────────────────────────────────────────────────┐
+   │                  YAML COMPILATION & EXPANSION PIPELINE                 │
+   ├────────────────────────────────────────────────────────────────────────┤
+   │                                                                        │
+   │  [ Pha 1: Nạp Include ]                                                │
+   │  GitLab nạp tối đa 150 file include (local, project, remote, template) │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Pha 2: Phân giải YAML thuần & Anchors ]                             │
+   │  YAML parser xử lý các anchor trong từng file đơn lẻ                   │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Pha 3: Phân giải extends & Deep-merge ]                             │
+   │  Hợp nhất các thuộc tính kế thừa (Map merge, List REPLACE)             │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Pha 4: Phân giải !reference tags ]                                  │
+   │  Trích xuất và chèn các mảng script từ template vào vị trí gọi         │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Pha 5: Sinh tệp Hợp nhất Hoàn chỉnh (Merged YAML DOM) ]             │
+   │  Kiểm tra kích thước tối đa 5MB và gửi cho Pipeline Scheduler          │
+   │                                                                        │
+   └────────────────────────────────────────────────────────────────────────┘
+```
 
 ```mermaid
 graph TD
-    t0["Thời điểm 1 (t0): YAML Parser"] -->|"Hợp nhất YAML Anchor & Alias"| t1["Thời điểm 2 (t1): GitLab Includer"]
-    t1 -->|"Gộp local, project, remote, template"| t2["Thời điểm 3 (t2): GitLab Resolver"]
-    t2 -->|"Xử lý extends & !reference"| MY["merged_yaml (Bức tranh sự thật)"]
+    subgraph INGESTION["1. Thu Thập & Nạp Tệp (Include Engine)"]
+        LOCAL["include:local (Cùng Repo)"]
+        PROJ["include:project (Repo Template Trung Tâm)"]
+        REMOTE["include:remote (HTTP URL)"]
+        TEMPL["include:template (GitLab Built-in)"]
+    end
+
+    subgraph MERGE_ENGINE["2. Trình Hợp Nhất Cấu Hình (Merger Engine)"]
+        ANCHOR["YAML Anchors &<<:<br/>(Nội bộ 1 file)"]
+        EXTENDS["GitLab extends:<br/>(Deep-merge Dictionary, Replace Array)"]
+        REF["!reference ['.job', 'script']<br/>(Cross-file Array Inlining)"]
+    end
+
+    INGESTION --> MERGE_ENGINE
+    MERGE_ENGINE --> FINAL_YAML["Merged YAML AST (Kích thước < 5MB)<br/>-> Đưa vào Scheduler t0"]
 ```
 
----
+### 1.2. Cơ Chế Hợp Nhất Của `extends:`: Deep-merge Mappings vs Replace Sequences
 
+Một trong những cạm bẫy gây đau đầu nhất cho kỹ sư là hiểu sai cơ chế hợp nhất dữ liệu của `extends:`:
 
+1. **Đối với Dictionary / Mappings (Key-Value pairs)** $ightarrow$ **DEEP MERGE**:
+   - Các trường như `variables:`, `rules:`, `artifacts:` được kết hợp giữa job cha và job con. Khóa nào trùng tên ở job con sẽ ghi đè job cha; khóa nào mới sẽ được thêm vào.
+2. **Đối với Arrays / Sequences (Lists)** $ightarrow$ **COMPLETELY REPLACE (Ghi đè toàn bộ)**:
+   - Các trường danh sách như `script:`, `before_script:`, `after_script:`, `tags:` **KHÔNG HỀ ĐƯỢC NỐI TIẾP (Concat)**!
+   - Nếu `.base_job` có `script: [cmd1, cmd2]` và `job_child` có `script: [cmd3]`, thì `job_child` **chỉ chạy duy nhất `cmd3`** (`cmd1` và `cmd2` bị hủy hoàn toàn!).
 
-| # | Mục tiêu năng lực | Hiện vật chứng minh |
-|---|---|---|
-| LĐ1 | Phân biệt chính xác 3 mốc thời điểm hợp nhất (t0, t1, t2) | Script `xem-phan-giai.sh` trích xuất `merged_yaml` |
-| LĐ2 | Phân loại và sử dụng thành thạo 4 loại `include` | Tệp `.gitlab-ci.yml` sử dụng đủ 4 loại `include` |
-| LĐ3 | Tránh bẫy xoá đè mảng `script` của `extends` | Khắc phục sự cố mất bước kiểm tra bảo mật ngầm |
-| LĐ4 | Ghép nối mảng script xuyên tệp bằng `!reference` | Tệp cấu hình chèn script đa tầng thành công |
+### 1.3. Giải Pháp Ghép Nối Script Đa Tầng Bằng `!reference`
 
----
-
-
-
-- Cú pháp YAML cơ bản (`variables`, `stages`, `script`).
-- Khái niệm Job ẩn (ẩn bằng dấu chấm `.job_name`).
-- Kỹ năng thao tác terminal cơ bản (`curl`, `jq`, `yq`).
-
----
-
-
-
-- **YAML Anchor (`&`) & Alias (`*`):** Cơ chế sao chép block dữ liệu của ngôn ngữ YAML nguyên bản, chỉ có tác dụng nội bộ trong 1 tệp.
-- **GitLab Includer:** Engine nạp các tệp cấu hình bên ngoài để ghép thành 1 tệp YAML phẳng.
-- **GitLab Resolver:** Engine xử lý kế thừa `extends` và chèn tham chiếu `!reference`.
-- **`merged_yaml`:** Tệp cấu hình sau khi đã phân giải toàn bộ `include`, `extends`, `!reference`.
-
----
-
-### 1.1. Ba thời điểm hợp nhất & Bức tranh sự thật `merged_yaml`
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Quá trình hợp nhất cấu hình GitLab CI/CD trôi qua đúng 3 thời điểm theo thứ tự cố định: t0 (YAML Parser phân giải Anchor), t1 (GitLab Includer tải các tệp include), t2 (GitLab Resolver xử lý extends và !reference).
-**Giải thích cơ chế ngầm:** Thứ tự này do kiến trúc của GitLab Engine quy định. Việc tách t0, t1, t2 đảm bảo tệp sau phân giải phẳng hoàn toàn trước khi tính toán kế thừa. Trong thực tế, hiểu rõ t0, t1, t2 giúp kỹ sư chẩn đoán chính xác lý do tại sao một thuộc tính bị đè hoặc bị từ chối cú pháp.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng Anchor gọi sang tệp include bị ném lỗi Parser Error `Unknown alias` ở t0 do trình biên dịch YAML chưa hề biết tới tệp include.
-**Minh hoạ.** Dùng `!reference` để gọi phần tử mảng xuyên tệp thay cho Anchor vì `!reference` được phân giải ở t2 sau khi các tệp đã hợp nhất thành một cây YAML phẳng.
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** YAML Anchor (`&anchor` và `*alias`) chỉ có phạm vi hoạt động nội bộ trong duy nhất một tệp YAML văn bản, hoàn toàn bị chặn tại biên giới `include`.
-**Giải thích cơ chế ngầm:** Anchor được phân giải ở t0 bởi trình biên dịch YAML tiêu chuẩn, trước khi tệp include được nạp ở t1. Do đó trình biên dịch YAML không có cách nào truy xuất bộ nhớ sang tệp khác.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `&anchor` ở tệp được include và gọi `*alias` ở tệp `.gitlab-ci.yml` gốc dẫn tới vỡ pipeline ngay khi nộp tệp.
-**Minh hoạ.** Đổi cú pháp sang `!reference [.job_an, script]` để tham chiếu xuyên tệp thành công ở t2 mà không gây ra lỗi Parser Error.
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Tệp `merged_yaml` trích xuất từ REST API `POST /ci/lint` (với `include_merged_yaml: true`) là bức tranh sự thật duy nhất phản ánh cấu hình chạy thực tế của Pipeline.
-**Giải thích cơ chế ngầm:** Đọc tệp thô không thể nhìn thấy các thuộc tính bị trộn hoặc xoá đè ngầm từ các tệp `include` đằng sau, dẫn tới việc đoán mò nguyên nhân sự cố.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tranh luận cảm tính về tính ghi đè mà không trích xuất `merged_yaml`, tiêu tốn hàng giờ thử sai không cần thiết.
-**Minh hoạ.** Chạy `./xem-phan-giai.sh --job my_job` để xem cấu hình cuối cùng được hợp nhất đầy đủ.
-
----
-
-### 1.2. Bốn loại `include` & Quy tắc hợp nhất mức khoá
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Bốn loại `include` (`local`, `project`, `remote`, `template`) có mức độ bảo mật và quyền sở hữu khác nhau; `remote` chứa rủi ro lớn nhất do không để lại vết commit trong Git history.
-**Giải thích cơ chế ngầm:** `remote` tải tệp qua HTTP GET từ mạng bên ngoài, phụ thuộc vào hạ tầng ngoài và dễ bị tấn công chuỗi cung ứng khi máy chủ bên ngoài bị chiếm quyền kiểm soát.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng `include: remote` cho các tệp cấu hình cốt lõi của bản phát hành sản xuất khiến hệ thống bị gián đoạn khi đường truyền mạng ngoài gặp sự cố.
-**Minh hoạ.** Chuyển các tệp remote về `include: project` nội bộ instance và ghim tag phát hành cố định.
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Khi hai tệp có Job trùng tên, GitLab thực hiện trộn ở mức khoá (Key-level merge) và tệp gốc (tệp chứa câu lệnh include) luôn thắng ở các khoá trùng lặp.
-**Giải thích cơ chế ngầm:** Tệp gốc có quyền ưu tiên cao nhất để cho phép người dùng tuỳ biến lại cấu hình từ template mà không làm hỏng các thuộc tính không bị khai báo lại.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Job bị dính các khoá ngầm (như `tags`, `timeout`) từ tệp include do quên khai báo ghi đè hoặc không kiểm tra lại cấu hình sau hợp nhất.
-**Minh hoạ.** Đọc `merged_yaml` để kiểm tra danh sách khoá tồn tại sau khi trộn và xác nhận khoá tệp gốc đã thắng.
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Đường dẫn `include` được phân giải ở t1 nên chỉ chấp nhận biến hệ thống định trước của GitLab hoặc biến CI/CD Group/Project; KHÔNG chấp nhận biến khai báo trong khối `variables:` của tệp `.gitlab-ci.yml`.
-**Giải thích cơ chế ngầm:** Khối `variables:` trong tệp YAML chưa được nạp ở t1 mà chỉ được xử lý ở t2 sau khi quá trình include hoàn tất.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Đường dẫn `include` bị ngắt hoặc lỗi do biến tự định nghĩa bị rỗng khiến tệp include bị bỏ qua hoặc ném lỗi file not found.
-**Minh hoạ.** Chỉ dùng các biến hệ thống chuẩn như `$CI_COMMIT_REF_NAME` hoặc `$CI_PROJECT_PATH` trong đường dẫn include.
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** `include:rules` đóng vai trò là tầng lọc thứ 3 (trước workflow rules và job rules), nếu trả về false thì toàn bộ tệp include bị loại bỏ ở t1.
-**Giải thích cơ chế ngầm:** Giúp tối ưu performance bằng cách ngăn nạp các tệp YAML không cần thiết cho nhánh hiện tại, giảm tải cho bộ nhớ server.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Cả một nhóm job biến mất bất thường do `include:rules` bị đánh giá sai mà không có bất kỳ thông báo lỗi syntax nào.
-**Minh hoạ.** Khai báo `include: - local: '...' rules: - if: '$CI_COMMIT_BRANCH == "main"'`.
-
----
-
-### 1.3. Kế thừa với `extends` & Kỹ thuật `!reference`
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** `extends` thực hiện Trộn sâu (Deep Merge) với thuộc tính từ điển nhưng THAY THẾ HOÀN TOÀN (Array Replacement) đối với thuộc tính mảng (`script`, `before_script`, `tags`).
-**Giải thích cơ chế ngầm:** Tránh xung đột thứ tự các câu lệnh trong mảng executable, đảm bảo mảng của Job con chạy chính xác theo đúng ý đồ của người viết.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Các bước lệnh kiểm tra bảo mật ở Job cha bị xoá sạch ngầm khi Job con khai báo lại `script` làm lộ hổng bảo mật nghiêm trọng.
-**Minh hoạ.** Dùng `!reference` chèn lại mảng script của Job cha vào Job con để giữ lại các bước kiểm tra quan trọng.
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Thẻ `!reference` là cơ chế duy nhất cho phép ghép nối các phần tử mảng từ nhiều nguồn khác nhau vào làm một mảng duy nhất xuyên tệp.
-**Giải thích cơ chế ngầm:** `!reference` hoạt động ở t2 sau khi toàn bộ cây YAML đã được hợp nhất phẳng, cho phép trích xuất chính xác mảng thuộc tính từ bất kỳ job nào.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `extends` với hy vọng nối lệnh script nhưng bị đè mất script cha do nhầm lẫn với cơ chế deep merge.
-**Minh hoạ.** Cú pháp `script: - !reference [.base-job, script] - echo "Step 2"` để nối mảng thành công.
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Chuỗi `extends` lồng nhau chỉ nên duy trì tối đa 2 tầng để tránh quá tải nhận thức và lỗi ghi đè im lặng.
-**Giải thích cơ chế ngầm:** Chuỗi kế thừa quá sâu làm mất khả năng theo dõi luồng dữ liệu của người quản trị, gây khó khăn khi bảo trì mã nguồn CI/CD.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `extends` 4-5 tầng gây khó khăn khi debug thuộc tính bị ghi đè và làm tăng thời gian phân giải cây kế thừa.
-**Minh hoạ.** Refactor chuỗi extends sâu thành 1-2 Job ẩn dùng chung duy nhất để giữ cấu hình phẳng và sạch.
-
----
-
-### 1.4. Ghim phiên bản & Quy trình vận hành
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Việc lựa chọn cơ chế tái sử dụng phải tuân theo 4 câu hỏi định hướng (Có xuyên tệp không? Cần kế thừa cả job hay mảng script? Cần nối hay đè?).
-**Giải thích cơ chế ngầm:** Dùng sai cơ chế gây ra lỗi cú pháp hoặc hành vi hỏng ngầm không mong muốn trong pipeline sản xuất.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng Anchor cho tệp include hoặc dùng `extends` để nối script dẫn tới vỡ pipeline hoặc xoá đè dữ liệu.
-**Minh hoạ.** Tra cứu bảng ma trận chọn cơ chế trước khi viết tệp cấu hình để chọn đúng công cụ kỹ thuật.
-
-**Nguyên lý cốt lõi:**
-**Phát biểu.** Mọi câu lệnh `include:project` và `include:remote` bắt buộc phải ghim phiên bản cố định bằng Git Tag hoặc Commit SHA ngắn.
-**Giải thích cơ chế ngầm:** Trỏ vào `ref: main` làm vỡ tính tái lập của Pipeline khi tệp nguồn bị chỉnh sửa bởi team khác mà không có thông báo trước.
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Cùng 1 Commit SHA ở repo chính cho ra 2 kết quả pipeline khác nhau ở 2 lần chạy do tệp include nguồn bị sửa ngầm.
-**Minh hoạ.** Khai báo `include: - project: 'shared/repo' ref: 'v1.0.0' file: 'build.yml'`.
-
----
-
-## Đưa vào việc thật
-
-Khi tiếp quản một repository CI/CD mới trong doanh nghiệp, kỹ sư DevOps cần thực hiện quy trình 3 bước chẩn đoán:
-1. **Bước 1:** Trích xuất tệp phân giải phẳng `merged_yaml` bằng script `./xem-phan-giai.sh` gọi REST API `POST /ci/lint` với cờ `include_merged_yaml: true`.
-2. **Bước 2:** Quét audit các đường dẫn `include:project` và `include:remote` chưa ghim phiên bản cố định bằng script `./dem-include.sh`.
-3. **Bước 3:** Kiểm tra rà soát các Job sử dụng `extends` mà có khai báo lại thuộc tính mảng `script` để ngăn chặn bẫy xoá đè bước lệnh kiểm tra bảo mật ngầm.
-
----
-
-## KHÔNG nên dùng
-
-1. **KHÔNG DÙNG YAML Anchor cho các tệp cấu hình dùng chung xuyên tệp:** Anchor bị giới hạn bởi biên giới 1 tệp văn bản duy nhất (t0).
-2. **KHÔNG DÙNG `include:remote` cho các tệp cấu hình cốt lõi của bản phát hành sản xuất:** Remote bao hàm rủi ro bảo mật mạng và không để lại vết commit trong Git history.
-3. **KHÔNG DÙNG `extends` vượt quá 2 tầng lồng nhau:** Gây quá tải nhận thức và làm tăng nguy cơ ghi đè thuộc tính im lặng.
-
----
-
-## Bẫy hay gặp
-
-| # | Tình huống bẫy | Nguyên nhân cốt lõi | Quy tắc khắc phục |
-|---|---|---|---|
-| 1 | Lỗi `Unknown alias` khi gọi Anchor | Anchor được phân giải ở t0 trước khi include được nạp ở t1 | Chuyển sang dùng `!reference` (QT 4.2) |
-| 2 | Mất các bước lệnh bảo mật ở Job cha | `extends` thực hiện Array Replacement đối với mảng `script` | Dùng `!reference` chèn lại script (QT 6.1) |
-| 3 | Job bị dính Runner Tag ngoài ý muốn | Trộn thuộc tính mức khoá giữ lại khoá chưa bị ghi đè | Đọc `merged_yaml` để audit (QT 5.2) |
-| 4 | Pipeline chạy 2 kết quả khác nhau trên cùng 1 commit | Đường dẫn `include` dùng `ref: main` không ghim tag | Ghim `ref` cố định bằng Git Tag (QT 7.2) |
-
----
-
-## Câu hỏi tự kiểm tra
-
-1. Ba thời điểm hợp nhất cấu hình GitLab CI/CD (t0, t1, t2) xử lý những từ khoá nào?
-2. Tại sao mảng `script` ở Job cha bị xoá sạch khi Job con sử dụng `extends` khai báo lại `script`?
-3. Làm thế nào để nối 3 mảng `script` từ 3 tệp cấu hình khác nhau vào 1 Job duy nhất?
-
----
-
-## Tài liệu tham khảo
-
-- GitLab CI/CD `include` syntax reference: https://docs.gitlab.com/ee/ci/yaml/includes.html
-- GitLab CI/CD `extends` keyword documentation: https://docs.gitlab.com/ee/ci/yaml/#extends
-- GitLab CI/CD `!reference` custom YAML tag: https://docs.gitlab.com/ee/ci/yaml/yaml_optimization.html#reference-tags
-- Enterprise CI/CD Pipeline Architecture Best Practices.
-
----
-
-## Chi tiết phân tích chuyên sâu các trường hợp biên và cơ chế vận hành
-
-### A. Phân tích chi tiết 3 thời điểm hợp nhất t0, t1, t2
-
-Để hiểu sâu sắc lý do tại sao các lỗi cấu hình xảy ra, chúng ta cần phân tích luồng xử lý bên trong GitLab Rails Backend khi nhận được một sự kiện Git Push:
-
-1. **Giai đoạn t0 (YAML Parser Phase):**
-   - Trình biên dịch YAML (Standard YAML Engine) đọc tệp `.gitlab-ci.yml` thô.
-   - Các cú pháp đánh dấu Anchor `&name` và gọi Alias `*name` được thay thế trực tiếp trong bộ nhớ (In-memory string replacement).
-   - Nếu trong cùng 1 tệp có Alias trỏ đến Anchor không tồn tại, trình biên dịch báo lỗi Parser Error ngay lập tức.
-   - Do chưa nạp các tệp ngoài, bất kỳ Alias nào trỏ đến Anchor ở tệp khác sẽ bị coi là Undefined Anchor.
-
-2. **Giai đoạn t1 (GitLab Includer Phase):**
-   - Engine đọc khối `include:` trong tệp chính.
-   - Đánh giá điều kiện `include:rules`. Nếu `rules` trả về `false`, tệp include bị bỏ qua.
-   - Tải tệp từ các nguồn: `local` (từ cùng repo Git), `project` (từ repo khác qua REST/Gitaly), `remote` (qua HTTP GET), `template` (từ đĩa cứng server GitLab).
-   - Quá trình nạp này diễn ra đệ quy (Recursive inclusion) cho đến khi đạt trần giới hạn tham chiếu của Instance (thường là 150-100 tệp).
-   - Ghép toàn bộ nội dung các tệp thu được thành 1 cây YAML phẳng duy nhất.
-
-3. **Giai đoạn t2 (GitLab Resolver Phase):**
-   - Engine duyệt qua cây YAML phẳng để xử lý khối `extends:`.
-   - Tính toán thứ tự phụ thuộc của chuỗi kế thừa (Dependency Graph).
-   - Thực hiện trộn thuộc tính: Từ điển được Deep Merge, Mảng bị Array Replacement.
-   - Giải mã các thẻ `!reference [.job_name, attribute]` và chèn giá trị mảng vào vị trí tham chiếu.
-   - Kiểm tra tính hợp lệ cuối cùng của Pipeline Schema. Nếu hợp lệ, lưu kết quả thành `merged_yaml` và chuyển tiếp cho Runner Scheduler.
-
-### B. Chi tiết ma trận 4 câu hỏi chọn cơ chế tái sử dụng
-
-Khi cần thiết kế lại một module cấu hình CI/CD dùng chung, kỹ sư DevOps sử dụng bảng ma trận câu hỏi sau:
-
-```bash
-                                  MA TRẬN CHỌN CƠ CHẾ TÁI SỬ DỤNG
-                                  
-                       ┌──────────────────────────────────────────────┐
-                       │  Cấu hình cần dùng lại nằm ở đâu?           │
-                       └──────────────────────┬───────────────────────┘
-                                              │
-                       ┌──────────────────────┴───────────────────────┐
-                       │                                              │
-               [Nội bộ 1 tệp]                                   [Xuyên nhiều tệp]
-                       │                                              │
-        ┌──────────────┴──────────────┐                ┌──────────────┴──────────────┐
-        │ Cần copy toàn bộ hay từng   │                │ Cần kế thừa cả Job hay chỉ   │
-        │ phần thuộc tính?            │                │ mảng script?                │
-        └───────┬──────────────┬──────┘                └───────┬──────────────┬──────┘
-                │              │                               │              │
-           [Toàn bộ]      [Từng mảng]                      [Cả Job]      [Mảng script]
-                │              │                               │              │
-                ▼              ▼                               ▼              ▼
-           YAML Anchor    !reference                        extends       !reference
-           (& / *)                                                        
-```
-
-### C. Mẫu kịch bản Bash tự động hóa việc Audit tệp cấu hình
-
-Học viên có thể tích hợp kịch bản Bash sau vào các quy trình kiểm thử tự động (Git Commit Hooks) của doanh nghiệp:
-
-```bash
-#!/usr/bin/env bash
-# File: ci-audit-helper.sh
-set -uo pipefail
-
-echo "======================================================================"
-echo "=== KIỂM TRA TỰ ĐỘNG QUY TẮC CẤU HÌNH GITLAB CI ==="
-echo "======================================================================"
-
-EXIT_CODE=0
-
-# 1. Kiểm tra include chưa ghim ref
-UNPINNED=$(grep -nE 'ref: *(main|master|HEAD)' .gitlab-ci.yml || true)
-if [ -n "$UNPINNED" ]; then
-  echo "[LỖI - QT 7.2] Phát hiện include chưa ghim ref cố định:"
-  echo "$UNPINNED"
-  EXIT_CODE=1
-else
-  echo "[ĐẠT - QT 7.2] 100% include đã được ghim ref an toàn."
-fi
-
-# 2. Kiểm tra include:remote
-REMOTE_INC=$(grep -nE 'include:.*remote| - remote:' .gitlab-ci.yml || true)
-if [ -n "$REMOTE_INC" ]; then
-  echo "[CẢNH BÁO - QT 5.1] Phát hiện include:remote chứa rủi ro mạng:"
-  echo "$REMOTE_INC"
-else
-  echo "[ĐẠT - QT 5.1] Không sử dụng include:remote."
-fi
-
-exit $EXIT_CODE
-```
-
-### D. Chi tiết bảng tổng hợp đối chiếu 6 chế độ hỏng im lặng
-
-Trong thực tế vận hành hạ tầng CI/CD, có 6 chế độ hỏng im lặng liên quan tới `include`, `extends` và Anchor mà kỹ sư DevOps cần ghi nhớ:
-
-1. **Bẫy Array Replacement của `extends`:** Khi Job con kế thừa Job cha và khai báo lại mảng `script`, mảng `script` ở Job cha bị xoá đè hoàn toàn mà không phát ra bất kỳ cảnh báo nào từ GitLab Engine.
-2. **Khoá thừa tồn tại ngầm trong Key-level merge:** Khi tệp gốc và tệp include trùng tên Job, các khoá ở tệp include không được khai báo lại ở tệp gốc (như `tags`, `timeout`) vẫn tiếp tục tồn tại âm thầm trong Job cuối cùng.
-3. **Biến môi trường trong `include` bị rỗng:** Khai báo biến tự định nghĩa trong đường dẫn `include` bị đánh giá là chuỗi rỗng ở t1, khiến tệp include không nạp được hoặc nạp sai đường dẫn.
-4. **`include:rules` loại bỏ toàn bộ tệp:** Điều kiện `include:rules` sai khiến toàn bộ tệp YAML và các job bên trong bị loại bỏ khỏi Pipeline mà không thông báo lỗi syntax.
-5. **Cấu hình không tái lập do `ref: main`:** Việc không ghim `ref` khiến cùng một Git Commit SHA ở repo chính sinh ra các Pipeline có hành vi khác nhau khi tệp nguồn ở repo shared bị thay đổi.
-6. **Lồng `extends` quá sâu:** Kế thừa lồng qua 4-5 tầng làm biến đổi giá trị thuộc tính qua từng nấc mà người đọc không thể suy ra bằng mắt thường nếu không dùng `merged_yaml`.
-
-### E. Hướng dẫn chi tiết từng bước trích xuất `merged_yaml` từ terminal
-
-Để hỗ trợ học viên thực hiện thành thạo việc chẩn đoán cấu hình, dưới đây là mã nguồn kịch bản chi tiết cùng giải thích từng dòng lệnh trong `xem-phan-giai.sh`:
-
-```bash
-#!/usr/bin/env bash
-# File: xem-phan-giai.sh
-# Mục đích: Gọi REST API /ci/lint để trích xuất tệp YAML sau phân giải (merged_yaml)
-
-set -uo pipefail
-
-# Nạp các thông số xác thực API và ID của dự án
-. "$HOME/.gitlab-lab.env"
-. "$HOME/lab10/moi-truong.env"
-
-FILTER_JOB=""
-if [ "${1:-}" == "--job" ]; then
-  FILTER_JOB="${2:-}"
-fi
-
-# Thiết lập Header cho cờ xác thực GitLab Token
-H=(--header "PRIVATE-TOKEN: $GITLAB_TOKEN" --header "Content-Type: application/json")
-URL="$GITLAB/api/v4/projects/$PID_MAIN/ci/lint"
-
-# Thực hiện POST request yêu cầu GitLab phân giải toàn bộ tệp include và extends
-RAW=$(curl -sf "${H[@]}" --data '{"include_merged_yaml": true}' "$URL")
-VALID=$(echo "$RAW" | jq -r .valid)
-
-if [ "$VALID" != "true" ]; then
-  echo "STATUS: INVALID"
-  echo "$RAW" | jq .errors
-  exit 1
-fi
-
-# Trích xuất chuỗi merged_yaml và lưu ra tệp tạm
-MERGED=$(echo "$RAW" | jq -r .merged_yaml)
-echo "$MERGED" > /tmp/current_merged.yml
-
-# Hiển thị kết quả lọc theo Job bằng công cụ yq
-if [ -n "$FILTER_JOB" ]; then
-  echo "STATUS: VALID (FILTERED: $FILTER_JOB)"
-  yq ".[\"$FILTER_JOB\"]" /tmp/current_merged.yml
-else
-  echo "STATUS: VALID"
-  cat /tmp/current_merged.yml
-fi
-```
-
-### F. Phân tích chi tiết quy trình refactor chuỗi `extends` phức tạp
-
-Khi làm việc với các hệ thống kế thừa hạ tầng cũ, học viên thường gặp các chuỗi `extends` chéo nhau rất phức tạp. Quy trình refactor từng bước chuẩn hóa bao gồm:
-
-1. **Tạo mốc điểm tựa (Baseline):** Lưu tệp `merged_yaml` hiện tại của toàn bộ dự án làm file đối chứng `baseline_merged.yml`.
-2. **Nhóm thuộc tính chung:** Phân tích các khối `variables`, `services`, `before_script` lặp lại giữa các Job để gom thành các Job ẩn độc lập có tính năng đơn lẻ (Single Responsibility Principle).
-3. **Phẳng hoá chuỗi kế thừa:** Chuyển đổi các cấu trúc kế thừa nhiều tầng (`A -> B -> C -> Job`) thành cấu trúc gộp mảng 1 tầng duy nhất (`Job extends [A, B, C]`).
-4. **Đối chiếu sai lệch (Diffing):** Chạy lệnh `diff -u baseline_merged.yml new_merged.yml`. Nếu không xuất hiện bất kỳ dòng sai lệch nào ngoài khoảng trắng hay thứ tự khoá không quan trọng, quá trình refactor được công nhận thành công 100%.
-
----
-
-## §13. Bảng quy đổi tổng hợp các tình huống sử dụng thực tế
-
-| Bài toán thiết kế | Cơ chế khuyên dùng | Mã Quy tắc kỹ thuật | Lý do lựa chọn |
-|---|---|---|---|
-| Tái sử dụng mảng script nội bộ trong 1 tệp | YAML Anchor (`&`/`*`) | **QT 4.1**, **QT 4.2** | Cú pháp ngắn gọn, nạp nhanh ở t0 |
-| Kế thừa toàn bộ thuộc tính Job trong 1 repo | `extends` | **QT 6.1**, **QT 6.3** | Trộn từ điển sâu, cú pháp sạch |
-| Dùng lại template cấu hình từ repo central | `include: project` | **QT 5.1**, **QT 7.2** | Phân quyền an toàn, ghim được Tag |
-| Ghép 3 đoạn script từ 3 tệp include khác nhau | `!reference` | **QT 6.2** | Nối mảng thành công ở t2 |
-| Loại bỏ tệp include trên nhánh tính năng | `include: rules` | **QT 5.4** | Lọc tệp ngay từ bước nạp t1 |
-
----
-
-## §14. Hướng dẫn chuyên sâu về tối ưu hoá hiệu năng phân giải YAML
-
-Khi số lượng microservices trong tập đoàn tăng lên hàng trăm dự án, việc tải và phân giải tệp YAML có thể ảnh hưởng trực tiếp tới độ trễ khởi tạo Pipeline. Dưới đây là các kỹ thuật tối ưu hóa hiệu năng:
-
-### 14.1. Hạn chế sử dụng `include: remote` qua mạng Internet
-
-Mỗi lệnh `include: remote` buộc GitLab Server phải khởi tạo một HTTP GET Connection đến máy chủ bên ngoài. Độ trễ mạng (Network Latency) có thể làm tăng thời gian phân giải thêm từ 300ms đến 2 giây cho mỗi tệp. Cách xử lý khuyến nghị:
-- Chuyển toàn bộ các tệp cấu hình từ xa về một repository trung tâm nội bộ (`include: project`).
-- Sử dụng cơ chế Git Caching của GitLab Instance để truy xuất tệp trực tiếp từ đĩa đệm địa phương.
-
-### 14.2. Tránh việc nạp đệ quy lồng nhau quá sâu (Nested Inclusion)
-
-Khi tệp A `include` tệp B, tệp B lại `include` tệp C, đệ quy nạp tệp làm cây phụ thuộc bị phình to và tăng thời gian duyệt cây ở giai đoạn t1.
-- Nguyên tắc thiết kế: Giữ mô hình nạp dạng sao (Star Topology), nghĩa là tệp chính `.gitlab-ci.yml` đóng vai trò điều phối nạp trực tiếp tất cả các tệp con mà không thông qua tệp trung gian.
-
----
-
-## §15. Kiến trúc phân tầng cấu hình CI/CD trong Doanh nghiệp lớn
-
-Doanh nghiệp chuẩn hoá hạ tầng CI/CD thường chia cấu hình thành 3 tầng độc lập:
-
-1. **Tầng Nền tảng (Platform Layer):** Được quản lý bởi đội ngũ DevOps/SRE central, chứa các Job mẫu như Security Scanning, SAST, DAST, Compliance Checking. Tầng này được đóng gói trong repo `devops/ci-templates` và ghim tag phát hành cố định (`ref: 'v2.1.0'`).
-2. **Tầng Khung ứng dụng (Framework Layer):** Chứa các quy trình build/test chuẩn cho từng ngôn ngữ (Java Maven, Node.js, Python, Go). Được quản lý bởi các Tech Lead nhóm công nghệ.
-3. **Tầng Dự án cụ thể (Project Layer):** Là tệp `.gitlab-ci.yml` nằm ở gốc các repository microservice. Tệp này chỉ thực hiện nạp các template từ Tầng Nền tảng và Tầng Khung ứng dụng, đồng thời khai báo các biến môi trường đặc thù của dự án.
-
-Mô hình phân tầng này giúp đảm bảo tính đồng nhất bảo mật trên toàn bộ hệ thống, đồng thời cho phép cập nhật cấu hình hàng loạt bằng cách bump tag phiên bản tại tệp chính.
-
----
-
-## §16. Danh mục mẫu cấu hình thực tế cho các ngôn ngữ phổ biến
-
-### 16.1. Mẫu cấu hình dùng chung cho dự án Node.js / React
+Để giữ lại các lệnh chuẩn của template cha và bổ sung thêm các lệnh riêng của job con, GitLab cung cấp cú pháp `!reference`:
 
 ```yaml
-# /templates/node-base.yml
-.node-base:
-  image: node:20-alpine
-  variables:
-    NODE_ENV: "production"
+.security_base:
   before_script:
-    - npm ci --prefer-offline
+    - echo "=== [Enterprise Compliance] Initializing Security Audit ==="
+    - export SCAN_TIMESTAMP=$(date +%s)
+
+deploy_app:
+  extends: .security_base
+  before_script:
+    - !reference [.security_base, before_script] # Giữ lại toàn bộ lệnh của cha
+    - echo "=== [Local Step] Setting up Kubeconfig ===" # Bổ sung lệnh riêng
+  script:
+    - kubectl apply -f deployment.yaml
+```
+
+### 1.4. Ghim Phiên Bản (Pinning Ref) Trong `include:project` Chuẩn Enterprise
+
+Khi sử dụng `include:project`, cấu hình mặc định thường là `ref: main`. Đây là một rủi ro an ninh và ổn định cực lớn: Khi đội ngũ Security/Platform cập nhật template trên nhánh `main`, 500 repository trong công ty có thể bị gãy pipeline đồng loạt.
+
+> **Quy chuẩn Enterprise**: Luôn luôn ghim `ref` bằng **Git Tag phiên bản (SemVer)** hoặc **Commit SHA bất biến** (ví dụ `ref: 'v2.4.0'` hoặc `ref: '8a3f91c'`). Không bao giờ dùng floating branch (`main`, `master`, `latest`) trong môi trường Production.
+
+---
+
+## 2. Bảng So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
+
+| Tiêu chí phân tích | Hidden Jobs (`.job`) | YAML Anchors (`&/*`) | `extends:` | `!reference` tags | `include:project` |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Phạm vi tác dụng** | Toàn bộ các file được nạp | **Chỉ trong 1 file duy nhất** | Xuyên suốt toàn bộ file nạp | Xuyên suốt toàn bộ file nạp | Tải tệp từ repo ngoài |
+| **Cơ chế xử lý Script** | Định nghĩa khuôn mẫu | Ghi đè hoặc thay thế map | **Ghi đè 100% danh sách** | **Ghép nối / Nhúng mảng linh hoạt** | Không can thiệp AST |
+| **Xử lý Mappings/Vars** | Giữ chỗ | Shallow merge (`<<:`) | **Deep merge thông minh** | Trích xuất giá trị đơn | Nạp scope vào root |
+| **Hỗ trợ kế thừa đa cấp** | Có | Dễ gây lỗi cú pháp | Hỗ trợ kế thừa tới 11 tầng | Hỗ trợ lồng nhau | Hỗ trợ nạp lồng tối đa 150 file |
+| **Độ rõ ràng khi Debug** | Cao | Thấp (Dễ rối mắt) | Cao (Hiện rõ trong Merged YAML) | Rất cao | Cần xem source repo |
+| **Giới hạn kỹ thuật** | Phải có tiền tố `.` | Parser chết nếu cross-file | Không nối được array | Không gọi vòng tròn | Giới hạn 150 includes / 5MB |
+| **Trường hợp sử dụng tối ưu** | Khai báo khung cơ sở | Nhóm biến trong 1 file | Kế thừa cấu hình Job hoàn chỉnh | Tái sử dụng đoạn script chuẩn | Quản trị Template tập trung |
+
+---
+
+## 3. Kiến Trúc Triển Khai Chuẩn Production (Architecture Breakdown)
+
+Dưới đây là kiến trúc pipeline mẫu kết hợp **Bộ Template Trung Tâm (Central Template)**, **Kế thừa Đa Tầng `extends:`**, **Nhúng lệnh an toàn `!reference`** và **Ghim phiên bản SemVer**:
+
+```yaml
+# ==============================================================================
+# PIPELINE TÁI SỬ DỤNG CẤU HÌNH ENTERPRISE CHUẨN PLATFORM ENGINEERING
+# ==============================================================================
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+# ------------------------------------------------------------------------------
+# 1. NẠP CÁC TEMPLATE TẬP TRUNG TỪ CENTRAL REPO (Ghim phiên bản v3.2.0)
+# ------------------------------------------------------------------------------
+include:
+  # Nạp template Docker build chuẩn bảo mật từ repo Platform
+  - project: 'devops-platform/ci-templates'
+    ref: 'v3.2.0'
+    file: '/templates/docker-build.yml'
+  # Nạp template quét SAST/DAST chuẩn bảo mật
+  - project: 'devops-platform/ci-templates'
+    ref: 'v3.2.0'
+    file: '/templates/security-scans.yml'
+  # Nạp cấu hình môi trường cục bộ
+  - local: '/.gitlab/ci/variables.yml'
+
+stages:
+  - test
+  - build
+  - security
+  - deploy
+
+# ------------------------------------------------------------------------------
+# 2. LOCAL BASE TEMPLATES: Khuôn mẫu cơ sở cục bộ (Hidden Jobs)
+# ------------------------------------------------------------------------------
+.base_node_job:
+  image: node:20-alpine
+  before_script:
+    - echo "=== [Base Node] Setting up cache & runtime ==="
+    - npm config set registry https://nexus.internal.corp/repository/npm-group/
   cache:
     key:
       files:
         - package-lock.json
     paths:
       - .npm/
-```
+    policy: pull
 
-### 16.2. Mẫu cấu hình dùng chung cho dự án Java Spring Boot / Maven
-
-```yaml
-# /templates/maven-base.yml
-.maven-base:
-  image: maven:3.9-eclipse-temurin-17
-  variables:
-    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-  cache:
-    key: "maven-cache"
-    paths:
-      - .m2/repository
-```
-
----
-
-## §17. Chi tiết minh hoạ phân giải tệp và các tình huống kiểm thử nâng cao
-
-### 17.1. Phân tích chi tiết trường hợp ghim tag phiên bản cho dự án lớn
-
-Trong các tập đoàn lớn, việc quản lý phiên bản các tệp cấu hình dùng chung (`include: project`) đóng vai trò quan trọng như quản lý các thư viện phần mềm (Software Libraries). Khi đội DevOps phát hành một bản cập nhật cho tệp `base-build.yml`:
-- Nếu dự án microservice ghim `ref: 'v1.0.0'`, pipeline của dự án đó sẽ duy trì ổn định tuyệt đối và không bị ảnh hưởng bởi bất kỳ thay đổi nào ở repo trung tâm.
-- Khi cần nâng cấp lên `v1.1.0`, kỹ sư dự án sẽ mở một Merge Request (MR) để thay đổi giá trị `ref: 'v1.0.0'` thành `ref: 'v1.1.0'` trong tệp `.gitlab-ci.yml`.
-- Việc nâng cấp được kiểm thử qua pipeline của MR trước khi merge vào nhánh chính. Quy trình này loại bỏ hoàn toàn các sự cố sập pipeline đột ngột do thay đổi từ xa.
-
-### 17.2. So sánh đối chiếu hiệu năng và dung lượng bộ nhớ giữa các cơ chế
-
-| Tiêu chí so sánh | YAML Anchor (`&`/`*`) | `extends` | `!reference` |
-|---|---|---|---|
-| Mốc xử lý | t0 (Parser Phase) | t2 (Resolver Phase) | t2 (Resolver Phase) |
-| Phạm vi hoạt động | Nội bộ 1 tệp YAML | Xuyên tất cả các tệp include | Xuyên tất cả các tệp include |
-| Loại dữ liệu hỗ trợ | Toàn bộ Block YAML | Cả Job cấu hình | Thuộc tính mảng (`script`, `variables`) |
-| Cơ chế trộn mảng | Thay thế mảng (Replace) | Thay thế mảng (Replace) | Ghép nối mảng (Append / Merge) |
-| Tải trọng bộ nhớ | Nhẹ nhất (In-memory string) | Trung bình (Merge Object Tree) | Trung bình (List Insertion) |
-
----
-
-## §18. Phân tích chi tiết các ca kiểm thử gián đoạn hạ tầng và phương án dự phòng
-
-Trong thực tế vận hành hệ thống CI/CD quy mô lớn, các sự cố gián đoạn hạ tầng mạng hoặc lỗi máy chủ lưu trữ template từ xa có thể làm ngưng trệ toàn bộ hoạt động của hàng trăm developer. Dưới đây là các ca kiểm thử sự cố và giải pháp dự phòng:
-
-### 18.1. Ca sự cố 1: Máy chủ chứa `include: remote` bị đứt kết nối mạng
-
-- **Hiện tượng:** Khi developer đẩy code, pipeline bị treo ở trạng thái `Pending` hoặc ngắt lỗi ngay lập tức với thông báo `Project pipeline script error: Remote file could not be fetched`.
-- **Phân tích kỹ thuật:** Ở thời điểm t1, GitLab Engine gửi yêu cầu HTTP GET tới URL từ xa với thời gian chờ (timeout) mặc định là 10 giây. Nếu máy chủ từ xa không phản hồi, toàn bộ luồng nạp tệp bị huỷ bỏ.
-- **Phương án dự phòng chuẩn:**
-  1. Tuyệt đối không dùng `include: remote` cho các tệp môi trường production.
-  2. Tạo một cron-job đồng bộ tệp từ URL từ xa về một repository nội bộ `devops/mirror-templates` mỗi 6 giờ.
-  3. Chuyển toàn bộ câu lệnh `include: remote` thành `include: project` trỏ vào repo mirror nội bộ.
-
-### 18.2. Ca sự cố 2: Xung đột tên Job khi nạp đồng thời nhiều tệp template
-
-- **Hiện tượng:** Hai tệp template từ 2 đội khác nhau (`security-team.yml` và `qa-team.yml`) đều định nghĩa một Job ẩn có tên trùng nhau là `.base-setup`.
-- **Phân tích kỹ thuật:** Theo quy tắc trộn ở t1 và t2, tệp include nạp sau sẽ âm thầm ghi đè khoá của tệp include nạp trước trong cây YAML phẳng. Điều này làm cho Job ẩn `.base-setup` chứa thuộc tính không nhất quán tùy thuộc vào thứ tự danh sách `include:`.
-- **Phương án dự phòng chuẩn:**
-  1. Đặt tiền tố (Namespace Prefix) cho tất cả các Job ẩn trong tệp template dùng chung.
-  2. Ví dụ: Đội Security dùng `.sec-base-setup`, đội QA dùng `.qa-base-setup`.
-
----
-
-## §19. Hướng dẫn xây dựng hệ thống kiểm tra CI/CD tự động trong Git Commit Hooks
-
-Để ngăn chặn các lỗi cấu hình vỡ pipeline ngay từ máy lập trình viên (Developer Machine), đội ngũ DevOps có thể cài đặt Git Pre-commit Hook tự động chạy kiểm tra trước khi commit code:
-
-```bash
-#!/usr/bin/env bash
-# File: .git/hooks/pre-commit
-# Tự động lint và kiểm tra ghim ref trước khi commit
-
-echo "[HOOK] Đang kiểm tra định dạng tệp .gitlab-ci.yml..."
-
-# 1. Kiểm tra include chưa ghim ref
-UNPINNED=$(grep -nE 'ref: *(main|master|HEAD)' .gitlab-ci.yml || true)
-if [ -n "$UNPINNED" ]; then
-  echo "[LỖI HOOK] Phát hiện include chưa ghim ref cố định:"
-  echo "$UNPINNED"
-  echo "Vui lòng ghim ref bằng Git Tag trước khi commit!"
-  exit 1
-fi
-
-echo "[HOOK] Kiểm tra thành công!"
-exit 0
-```
-
----
-
-## §20. Danh mục các mẫu thông báo lỗi thường gặp và cách xử lý nhanh
-
-| Thông báo lỗi từ GitLab UI | Nguyên nhân kỹ thuật | Lệnh / Thao tác khắc phục |
-|---|---|---|
-| `Include file not found` | Đường dẫn `include: local` không đúng hoặc file chưa commit | Kiểm tra lại đường dẫn tệp trong Git repo |
-| `Project pipeline script error` | Tệp YAML ở tệp include bị lỗi cú pháp thụt lùi dòng | Dùng `yq` hoặc gọi API `/ci/lint` để kiểm lỗi |
-| `Maximum includes depth reached` | Nạp include đệ quy vượt trần giới hạn của Instance | Phẳng hoá danh sách include, bỏ đệ quy lồng |
-| `Reference target not found` | Thẻ `!reference` trỏ tới job ẩn không tồn tại | Kiểm tra lại tên job và thuộc tính trong `!reference` |
-
----
-
-## §21. Phân tích chi tiết quy trình chẩn đoán nâng cao cho Enterprise Pipeline
-
-Khi giải quyết sự cố trên một Pipeline có hơn 20 tệp include với hàng trăm Job:
-
-1. **Bước 1: Trích xuất danh sách tất cả các tệp include bị nạp:**
-   ```bash
-   grep -rE 'include:' .gitlab-ci.yml ci/
-   ```
-2. **Bước 2: Sử dụng `yq` để kiểm tra từng block cấu hình sau phân giải:**
-   ```bash
-   yq '.job_name.variables' /tmp/current_merged.yml
-   ```
-3. **Bước 3: Xác minh đường đi của các thuộc tính mảng `script`:**
-   ```bash
-   yq '.job_name.script' /tmp/current_merged.yml
-   ```
-
-Quy trình 3 bước này giúp loại bỏ 100% việc đoán mò và đưa ra kết luận kỹ thuật chính xác tuyệt đối.
-
----
-
-## §22. Hướng dẫn thiết lập linter tự động trong pipeline CI/CD
-
-Để đảm bảo tính nhất quán cấu hình trên toàn bộ tập đoàn, học viên có thể đưa kịch bản linting vào làm một job trong chính pipeline CI/CD:
-
-```yaml
-# Pipeline tự lint chính tệp cấu hình của nó
-ci-lint-job:
-  stage: .pre
-  image: alpine:latest
+.base_deploy_k8s:
+  image: bitnami/kubectl:1.30
   before_script:
-    - apk add --no-cache curl jq
+    - echo "=== [Base Deploy] Validating Cluster Credentials ==="
+    - : "${KUBECONFIG:?Missing KUBECONFIG variable}"
+    - kubectl version --client=true
+  variables:
+    DEPLOY_STRATEGY: "rolling-update"
+
+# ------------------------------------------------------------------------------
+# 3. CONCRETE JOBS: Kế thừa và sử dụng !reference
+# ------------------------------------------------------------------------------
+unit_test:
+  stage: test
+  extends: .base_node_job
+  before_script:
+    - !reference [.base_node_job, before_script]
+    - echo "=== [Local Hook] Initializing Jest Environment ==="
   script:
-    - |
-      RAW=$(curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-        --header "Content-Type: application/json" \
-        --data '{"include_merged_yaml": true}' \
-        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/ci/lint")
-      VALID=$(echo "$RAW" | jq -r .valid)
-      if [ "$VALID" != "true" ]; then
-        echo "LỖI CẤU HÌNH YAML:"
-        echo "$RAW" | jq .errors
-        exit 1
-      fi
-      echo "Cấu hình CI/CD hợp lệ 100%!"
+    - npm ci --cache .npm --prefer-offline
+    - npm test -- --coverage --ci
+  artifacts:
+    reports:
+      junit: junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+
+# Tái sử dụng template từ Central Repository
+build_container:
+  stage: build
+  extends: .docker_build_template # Kế thừa template từ file include
+  variables:
+    IMAGE_NAME: "internal-registry.corp/core-api"
+    DOCKERFILE_PATH: "Dockerfile"
+
+deploy_staging:
+  stage: deploy
+  extends: .base_deploy_k8s
+  environment:
+    name: staging
+    url: https://api-staging.internal.corp
+  script:
+    - echo "=== Deploying to Staging Namespace ==="
+    - kubectl set image deployment/core-api core-api="${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}" -n staging
+    - kubectl rollout status deployment/core-api -n staging --timeout=120s
 ```
 
 ---
 
-## §23. Kỹ thuật nâng cao: Quản lý biến môi trường trong cấu hình tập trung
-
-Khi thiết kế cấu hình CI/CD tập trung cho hàng trăm ứng dụng, quản lý biến môi trường đóng vai trò quyết định tính linh hoạt:
-
-1. **Đặt tên biến có tiền tố phân vùng (Namespaced Variables):** Tránh trùng tên biến bằng cách sử dụng các tiền tố chuẩn như `GLOBAL_`, `BUILD_`, `DEPLOY_`.
-2. **Không ghi đè biến bí mật trong tệp YAML:** Mọi chứng thư API, mật khẩu phải được lưu ở CI/CD Variables của Group/Project chứ không được khai báo cứng trong tệp include.
-3. **Ưu tiên giá trị mặc định an toàn:** Trong tệp template dùng chung, luôn khởi tạo giá trị mặc định an toàn cho các biến (ví dụ `LOG_LEVEL: "info"`).
-
----
-
-## §24. Phân tích chi tiết quy trình quản lý vòng đời tệp template CI/CD
-
-Để quản lý bền vững hàng trăm tệp cấu hình CI/CD dùng chung trong tập đoàn, đội ngũ DevOps áp dụng quy trình quản lý vòng đời 4 giai đoạn:
-
-1. **Giai đoạn Thiết kế (Design Phase):** Khai báo các Job ẩn chuẩn hóa, đặt tên tiền tố rõ ràng, sử dụng `!reference` cho các khối mảng script.
-2. **Giai đoạn Thử nghiệm (Staging Phase):** Đẩy tệp cấu hình lên branch `develop` của repo `devops/ci-templates`, ghim `ref: 'develop'` trên một số dự án thử nghiệm để đánh giá tác động.
-3. **Giai đoạn Đóng gói & Phát hành (Release Phase):** Tạo Git Tag cố định (ví dụ `v1.2.0`) trên repo central, gửi thông báo thay đổi (Changelog) cho các đội phát triển.
-4. **Giai đoạn Bỏ hối (Deprecation Phase):** Khi có phiên bản mới `v2.0.0` chứa Breaking Changes, duy trì hỗ trợ phiên bản cũ `v1.2.0` trong 6 tháng trước khi xoá bỏ hoàn toàn.
-
----
-
-## §25. Bảng tổng hợp đối soát ngân sách thời gian 60 phút
-
-Dưới đây là bảng phân bổ chi tiết ngân sách thời gian 60 phút cho từng phần của khối lý thuyết kỹ thuật Buổi 10:
-
-| Phần | Nội dung bài giảng | Thời gian phân bổ |
-|---|---|---|
-| **§0 - §3** | Khởi động bài học, mục tiêu năng lực, thuật ngữ và sơ đồ tổng quan | 10 phút |
-| **§4** | Ba thời điểm hợp nhất (t0, t1, t2) và REST API `/ci/lint` (`merged_yaml`) | 15 phút |
-| **§5** | Phân loại 4 loại `include` và quy tắc hợp nhất ở cấp độ khoá | 15 phút |
-| **§6 - §7** | Cơ chế `extends`, bẫy mảng bị thay thế, `!reference` và ghim `ref` | 15 phút |
-| **§8 - §12** | Đưa vào việc thật, bẫy hay gặp, câu hỏi tự kiểm tra và kết luận | 5 phút |
-| **Tổng** | **Khối lý thuyết kỹ thuật hoàn chỉnh** | **60 phút (**60'**)** |
-
----
-
-## §26. Lộ trình phát triển từ Buổi 10 lên Buổi 11
-
-Sau khi hoàn thành Buổi 10, học viên đã làm chủ việc chia nhỏ và tái sử dụng các tệp cấu hình tĩnh. Tuy nhiên, phương pháp `include` tĩnh vẫn tồn tại các hạn chế:
-1. Không thể truyền tham số đầu vào với kiểu dữ liệu cố định (Input validation).
-2. Phụ thuộc vào việc đặt tên biến môi trường toàn cục dễ gây xung đột.
-3. Không có nơi tập trung để tìm kiếm và phát hành các module cấu hình tiêu chuẩn trong toàn tập đoàn.
-
-Ở Buổi 11 tiếp theo (**CI/CD Components & Catalog**), chúng ta sẽ nâng cấp các tệp `include` tĩnh này thành các **CI/CD Components** chính quy, có khai báo `spec:inputs`, có kiểm tra giá trị mặc định, và được xuất bản lên **GitLab CI/CD Catalog** dùng chung cho toàn doanh nghiệp.
-
----
-
-## §27. Tổng kết bài học lý thuyết Buổi 10
-
-Thông qua khối lý thuyết Buổi 10, học viên đã được trang bị nền tảng kiến thức vững chắc về:
-- Bản chất 3 mốc thời điểm hợp nhất (t0, t1, t2) điều khiển toàn bộ luồng nạp và kế thừa.
-- Cách sử dụng REST API `/ci/lint` để trích xuất `merged_yaml` — bức tranh sự thật duy nhất của Pipeline.
-- Kỹ thuật kết hợp `include`, `extends`, `!reference` và YAML Anchor một cách chính xác, tránh hoàn toàn các bẫy xoá đè mảng hay lỗi biên giới tệp.
-- Nguyên tắc ghim phiên bản `ref` bằng Tag/SHA để đảm bảo 100% tính tái lập cho hạ tầng CI/CD doanh nghiệp.
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
-> [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên môi trường GitLab Community / Enterprise Edition cùng các GitLab Runner cô lập (Docker / Kubernetes Executor). Hãy đảm bảo bạn đã chuẩn bị môi trường thử nghiệm và cấu hình quyền truy cập cần thiết.
-
-## Khối thực hành — 150 phút (**150'**)
-
-> Kiểm chứng trên GitLab CE 17.7 · GitLab Runner 17.7 · executor `docker`.
-> Mọi lệnh bash chạy trực tiếp trên terminal. Mọi tệp YAML được tạo trong repository `lab10-include`.
-> **Tệp thực hành này có KÍCH THƯỚC CHUẨN KỸ THUẬT ≥ 45 kB, gồm 5 BƯỚC THỰC HÀNH VÀ 12 CHECKPOINT KIỂM CHỨNG TỰ ĐỘNG.**
-
----
-
-
-
-| Bước Lab | Nội dung thực hành | Mã QT kiểm chứng | Mốc Checkpoint |
-|---|---|---|---|
-| **Bước 1** | Bốn loại `include` & đọc `merged_yaml` qua `xem-phan-giai.sh` | **QT 5.1**, **QT 4.3** | `CHECKPOINT 1`, `CHECKPOINT 2` |
-| **Bước 2** | `extends` thay mảng & bẫy khoá thừa từ tệp `include` | **QT 6.1**, **QT 5.2** | `CHECKPOINT 3`, `CHECKPOINT 4`, `CHECKPOINT 5` |
-| **Bước 3** | Anchor hỏng xuyên tệp `include` & `!reference` nối mảng | **QT 4.1**, **QT 4.2**, **QT 6.2** | `CHECKPOINT 6`, `CHECKPOINT 7` |
-| **Bước 4** | `extends` 4 tầng · `include:rules` · biến trong path · 2 trần | **QT 5.3**, **QT 5.4**, **QT 6.3** | `CHECKPOINT 8`, `CHECKPOINT 9`, `CHECKPOINT 10` |
-| **Bước 5** | Ghim `ref` tránh hỏng ngầm & bảng tra chọn cơ chế | **QT 7.1**, **QT 7.2** | `CHECKPOINT 11` |
-| **Dọn dẹp** | Nộp sản phẩm hiện vật và dọn tài nguyên lab | — | `CHECKPOINT 12` |
-
----
-
-
+## 4. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
 ```mermaid
 graph TD
-    MainRepo["Project Main: lab10-include (.gitlab-ci.yml)"] -->|"include: local"| LocalFile["ci/templates/local-build.yml"]
-    MainRepo -->|"include: project ref: v1.1.0"| SharedRepo["Project Shared: lab10-cau-hinh-chung"]
-    MainRepo -->|"include: template"| GitLabTemplate["Getting-Started.gitlab-ci.yml"]
-    MainRepo -->|"POST /ci/lint"| APIEngine["GitLab POST /ci/lint Engine"]
-    APIEngine -->|"Trả về"| MergedYAML["merged_yaml (Bức tranh sự thật)"]
+    INC["Sự Cố: Khối before_script chuẩn bảo mật bị bỏ qua hoàn toàn"]
+    W1["Tại sao bị bỏ qua? Job con ghi đè before_script của job cha"]
+    W2["Tại sao lại ghi đè? extends: thay thế hoàn toàn các trường kiểu Array"]
+    W3["Tại sao kỹ sư không biết? Tưởng rằng extends sẽ tự nối mảng như biến môi trường"]
+    W4["Tại sao không kiểm tra? Không kiểm tra tệp Merged YAML sau khi nạp"]
+    W5["Giải pháp cốt lõi: Sử dụng cú pháp !reference để nhúng tường minh before_script cha"]
+    
+    INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-```bash
-                                  HẠ TẦNG THỰC HÀNH BUỔI 10
+### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
 
-   ┌────────────────────────────────────────────────────────────────────────────────────────┐
-   │                               GITLAB INSTANCE LOCAL                                    │
-   │                                                                                        │
-   │   ┌─────────────────────────────────┐           ┌──────────────────────────────────┐   │
-   │   │  Project 1: lab10-include       │           │ Project 2: lab10-cau-hinh-chung  │   │
-   │   │  (Main Project)                 │           │ (Shared Config Repository)       │   │
-   │   │                                 │           │                                  │   │
-   │   │  .gitlab-ci.yml                 │◄─include──│ Tag v1.0.0:                      │   │
-   │   │  ci/templates/local-build.yml   │ project   │   - templates/base-build.yml     │   │
-   │   │  xem-phan-giai.sh               │           │ Tag v1.1.0:                      │   │
-   │   │  dem-include.sh                 │           │   - templates/base-build.yml     │   │
-   │   └─────────────────────────────────┘           └──────────────────────────────────┘   │
-   │                    │                                                                   │
-   │                    │ include: remote (HTTP raw)                                        │
-   │                    ▼                                                                   │
-   │   ┌─────────────────────────────────┐                                                  │
-   │   │  GitLab Local Raw Endpoint       │                                                  │
-   │   │  (http://localhost/raw/...)     │                                                  │
-   │   └─────────────────────────────────┘                                                  │
-   └────────────────────────────────────────────────────────────────────────────────────────┘
-                                                │
-                                                │ POST /api/v4/projects/:id/ci/lint
-                                                ▼
-                               ┌──────────────────────────────────┐
-                               │  POST /ci/lint Engine            │
-                               │  Trả về: merged_yaml chuẩn mực   │
-                               └──────────────────────────────────┘
-```
+#### Cạm bẫy 1: Dùng YAML Anchor (`*alias`) gọi sang file được Include
+- **Hiện tượng**: GitLab Parser báo lỗi: `unknown alias 'base_template'` ngay khi khởi tạo pipeline.
+- **Nguyên nhân tầng sâu**: YAML Anchor chỉ được phân tích bên trong phạm vi 1 tệp vật lý duy nhất. Parser không giữ bảng ký hiệu anchor khi nhảy sang file `include:`.
+- **Cách gỡ rối**: Chuyển toàn bộ các định nghĩa dùng chung sang `extends:` hoặc `!reference`.
+
+#### Cạm bẫy 2: Bị mất lệnh kiểm thử do `extends:` ghi đè mảng `script:`
+- **Hiện tượng**: Template gốc có bước kiểm tra bảo mật `script: [scan_deps.sh]`. Job con khai báo `extends: .base` và `script: [npm test]`. Khi chạy, bước `scan_deps.sh` hoàn toàn biến mất.
+- **Nguyên nhân**: `extends:` áp dụng quy tắc **Replace** cho toàn bộ các trường dạng danh sách (list/array).
+- **Biện pháp**: Sử dụng `!reference [.base, script]` bên trong danh sách lệnh của job con.
+
+#### Cạm bẫy 3: Đứt gãy hàng loạt Pipeline do dùng `ref: main` cho Central Template
+- **Hiện tượng**: Sáng thứ Hai, 80 dự án trong công ty bị đỏ pipeline dù không ai sửa code.
+- **Nguyên nhân**: Team DevOps cập nhật template trên repo trung tâm, sửa đổi cú pháp mà các repo cũ chưa kịp thích ứng.
+- **Biện pháp**: Luôn ghim cố định `ref: 'v1.2.0'` (SemVer tags) hoặc commit SHA bất biến.
+
+#### Cạm bẫy 4: Vượt trần giới hạn 150 Includes hoặc lỗi vòng lặp
+- **Hiện tượng**: Pipeline từ chối khởi tạo với lỗi `Maximum of 150 includes exceeded` hoặc `Include loop detected`.
+- **Nguyên nhân**: File A include File B, File B lại include ngược lại File A hoặc lạm dụng include lồng nhau quá sâu.
+- **Biện pháp**: Tái cấu trúc theo mô hình phẳng (Flat template hierarchy), tập hợp các include vào một file master duy nhất.
+
+#### Cạm bẫy 5: Job mẫu vô tình bị thực thi do quên dấu chấm `.`
+- **Hiện tượng**: Job `base_build` chạy và báo lỗi thiếu biến môi trường, dù nó chỉ được tạo ra với mục đích làm template.
+- **Nguyên nhân**: Quên thêm dấu chấm `.` ở đầu tên job (`base_build` thay vì `.base_build`).
+- **Biện pháp**: Luôn đặt tiền tố `.` cho mọi Hidden Job khuôn mẫu.
 
 ---
 
-## §L2. Năm Quyết định Thiết kế Kiến trúc Lab
+## 5. Hands-on Lab: Tái Sử Dụng Cấu Hình CI/CD Toàn Diện (8 Bước Chuẩn)
 
-1. **Mọi kết luận của buổi này đọc từ `merged_yaml`, không từ việc chạy job:** Ba thời điểm hợp nhất xảy ra **trước** khi có job nào được tạo ra; việc chờ chạy job để suy ra hợp nhất là đi đường vòng và tạo ra tín hiệu nhiễu. Đây là lý do buổi này có ít lượt tạo pipeline nhất nhưng 100% đo đạc chính xác bằng `xem-phan-giai.sh`. Việc đọc trực tiếp từ API `/ci/lint` đảm bảo phản hồi tức thì dưới 1 giây mà không tiêu tốn tài nguyên chạy runner.
-2. **`include:remote` trỏ vào chính GitLab lab local, không ra Internet:** Học viên phải nhìn thấy rủi ro của `remote` bằng cách tự tay đổi nội dung URL giữa hai lần chạy mà không phụ thuộc vào hạ tầng mạng bên ngoài. Việc này giúp buổi thực hành hoàn toàn cô lập, chạy tốt kể cả trong môi trường offline không có kết nối Internet.
-3. **Repo `lab10-cau-hinh-chung` có sẵn 2 Git Tag (`v1.0.0` và `v1.1.0`):** Bài thực hành ghim phiên bản chỉ có ý nghĩa khi có sẵn 2 tag để đối chứng sự thay đổi giữa hai phiên bản cấu hình. Học viên sẽ được chứng kiến việc nâng cấp từ `v1.0.0` sang `v1.1.0` tác động chính xác thế nào đến cấu hình cuối cùng.
-4. **Ca đối chứng Anchor-qua-include đặt ở Bước 3, sau khi đã quen `merged_yaml`:** Anchor hỏng xuyên tệp là ca **ồn ào** duy nhất (báo Parser Error); đặt nó sớm sẽ khiến học viên lầm tưởng GitLab luôn báo lỗi rõ ràng — kết luận sai với 6 ca im lặng còn lại.
-5. **Bước 4 sinh 150 tệp include bằng bash script:** Trần giới hạn `include` là loại đại lượng (c) và cách duy nhất đo trần thật của instance là chạm tới nó; việc sinh tự động giúp dọn dẹp sạch sẽ ở cuối buổi mà không làm rác mã nguồn repository.
-
----
-
-## §L3. Bước 1 — Bốn loại `include`, và đọc tệp SAU PHÂN GIẢI (30 phút)
-
-### 1.1. Chuẩn bị môi trường & Tạo hai Repository
-
-Tạo 2 project trên GitLab local:
-1. `lab10-include` (dùng làm repo chính).
-2. `lab10-cau-hinh-chung` (dùng làm repo nguồn cho `include:project`).
-
-Chạy lệnh terminal khởi tạo:
-
-```bash
-cd "$HOME"
-mkdir -p lab10 && cd lab10
-
-# Khởi tạo biến môi trường cho các kịch bản lab
-cat << 'EOF' > moi-truong.env
-export NS="root"
-export PJ_MAIN="lab10-include"
-export PJ_SHARED="lab10-cau-hinh-chung"
-EOF
-
-. moi-truong.env
-. "$HOME/.gitlab-lab.env"
-
-# Tạo project lab10-cau-hinh-chung trên GitLab CE
-RES_SHARED=$(curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-  --data "name=$PJ_SHARED&visibility=public" \
-  "$GITLAB/api/v4/projects")
-PID_SHARED=$(echo "$RES_SHARED" | jq -r .id)
-
-# Tạo project lab10-include trên GitLab CE
-RES_MAIN=$(curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-  --data "name=$PJ_MAIN&visibility=public" \
-  "$GITLAB/api/v4/projects")
-PID_MAIN=$(echo "$RES_MAIN" | jq -r .id)
-
-echo "export PID_MAIN=$PID_MAIN" >> moi-truong.env
-echo "export PID_SHARED=$PID_SHARED" >> moi-truong.env
-
-echo "Đã tạo thành công 2 Project: Main (PID: $PID_MAIN), Shared (PID: $PID_SHARED)"
+```
+   ┌────────────────────────────────────────────────────────────────────────┐
+   │                  LAB ARCHITECTURE: CONFIGURATION REUSE                 │
+   ├────────────────────────────────────────────────────────────────────────┤
+   │                                                                        │
+   │  [ Bước 1: Tạo Hidden Jobs Khuôn Mẫu Cục Bộ (.base_job) ]             │
+   │  Xây dựng các job ẩn làm template chung cho toàn bộ pipeline           │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Bước 2: Kế Thừa Cấu Hình Với extends: & Deep-merge ]                │
+   │  Thực nghiệm cơ chế gộp variables và kiểm tra deep-merge               │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Bước 3: Kiểm Chứng Giới Hạn Của YAML Anchors ]                      │
+   │  Tái hiện lỗi Anchor cross-file và hiểu rõ biên giới tệp               │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Bước 4: Tách Modular Template Với 4 Kiểu include: ]                 │
+   │  Phân rã cấu hình thành local, file, template và remote                │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Bước 5: Ghim Phiên Bản SemVer Cho include:project ]                 │
+   │  Cấu hình nạp template từ repository trung tâm an toàn                 │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Bước 6: Ghép Nối Kịch Bản Lệnh Bằng !reference ]                    │
+   │  Kế thừa before_script và script đa tầng không bị ghi đè               │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Bước 7: Kiểm Tra Merged YAML Hoàn Chỉnh Qua CI Lint API ]           │
+   │  Đọc toàn bộ cấu trúc DOM sau phân giải của GitLab Server              │
+   │                         │                                              │
+   │                         ▼                                              │
+   │  [ Bước 8: Dọn Dẹp Môi Trường & Đo Lường Độ Rút Gọn ]                  │
+   │  Tổng kết độ tinh gọn của mã nguồn CI/CD sau khi chuẩn hóa             │
+   │                                                                        │
+   └────────────────────────────────────────────────────────────────────────┘
 ```
 
-Kết quả mong đợi từ terminal:
-```text
-Đã tạo thành công 2 Project: Main (PID: 101), Shared (PID: 102)
-```
+### Bước 1: Tạo Hidden Jobs Khuôn Mẫu Cục Bộ (`.base_job`)
+Tạo một `.gitlab-ci.yml` chứa các Hidden Job cơ sở.
 
-### 1.2. Đẩy nội dung cho Repo Shared (`lab10-cau-hinh-chung`)
-
-Tạo tệp cấu hình mẫu và ghim 2 tag `v1.0.0` và `v1.1.0`:
-
-```bash
-cd "$HOME/lab10"
-rm -rf shared-repo && git clone "$GITLAB_URL/$NS/$PJ_SHARED.git" shared-repo
-cd shared-repo
-
-mkdir -p templates
-cat << 'EOF' > templates/base-build.yml
-shared-build-job:
-  stage: build
+```yaml
+# Hidden job khuôn mẫu (Không được Runner kích hoạt trực tiếp)
+.base_job:
   image: alpine:3.20
   variables:
-    SHARED_VER: "1.0.0"
-  script:
-    - echo "Executing Shared Build Template v1.0.0"
-EOF
-
-git add .
-git commit -m "feat: Add base-build template v1.0.0"
-git push origin main
-git tag v1.0.0
-git push origin v1.0.0
-
-# Tạo phiên bản v1.1.0 nâng cấp với các thuộc tính bổ sung
-cat << 'EOF' > templates/base-build.yml
-shared-build-job:
-  stage: build
-  image: alpine:3.20
-  variables:
-    SHARED_VER: "1.1.0"
-    NEW_FEATURE: "enabled"
-  script:
-    - echo "Executing Shared Build Template v1.1.0"
-EOF
-
-git add .
-git commit -m "feat: Upgrade base-build template to v1.1.0"
-git push origin main
-git tag v1.1.0
-git push origin v1.1.0
-
-echo "Đã tạo thành công 2 tag v1.0.0 và v1.1.0 cho repo shared!"
-```
-
-### 1.3. Tạo công cụ `xem-phan-giai.sh` trong repo chính
-
-Chuyển sang repo `lab10-include` và tạo script trích xuất `merged_yaml` gọi REST API `POST /ci/lint`:
-
-```bash
-cd "$HOME/lab10"
-rm -rf main-repo && git clone "$GITLAB_URL/$NS/$PJ_MAIN.git" main-repo
-cd main-repo
-
-cat << 'EOF' > xem-phan-giai.sh
-#!/usr/bin/env bash
-set -uo pipefail
-
-. "$HOME/.gitlab-lab.env"
-. "$HOME/lab10/moi-truong.env"
-
-FILTER_JOB=""
-if [ "${1:-}" == "--job" ]; then
-  FILTER_JOB="${2:-}"
-fi
-
-H=(--header "PRIVATE-TOKEN: $GITLAB_TOKEN" --header "Content-Type: application/json")
-URL="$GITLAB/api/v4/projects/$PID_MAIN/ci/lint"
-
-RAW=$(curl -sf "${H[@]}" --data '{"include_merged_yaml": true}' "$URL")
-VALID=$(echo "$RAW" | jq -r .valid)
-
-if [ "$VALID" != "true" ]; then
-  echo "STATUS: INVALID"
-  echo "$RAW" | jq .errors
-  exit 1
-fi
-
-MERGED=$(echo "$RAW" | jq -r .merged_yaml)
-echo "$MERGED" > /tmp/current_merged.yml
-
-if [ -n "$FILTER_JOB" ]; then
-  echo "STATUS: VALID (FILTERED: $FILTER_JOB)"
-  yq ".[\"$FILTER_JOB\"]" /tmp/current_merged.yml
-else
-  echo "STATUS: VALID"
-  cat /tmp/current_merged.yml
-fi
-EOF
-
-chmod +x xem-phan-giai.sh
-```
-
-### 1.4. Cấu hình 4 loại `include` trong `.gitlab-ci.yml`
-
-Tạo tệp `local` nội bộ và cấu hình tệp `.gitlab-ci.yml` sử dụng đủ 4 loại `include`:
-
-```bash
-mkdir -p ci/templates
-cat << 'EOF' > ci/templates/local-build.yml
-local-job:
-  stage: build
-  script:
-    - echo "Local Include Executed"
-EOF
-
-cat << EOF > .gitlab-ci.yml
-include:
-  # 1. Local (Nội bộ repo)
-  - local: '/ci/templates/local-build.yml'
-
-  # 2. Project (Ghim ref v1.0.0 từ repo shared)
-  - project: '$NS/$PJ_SHARED'
-    ref: 'v1.0.0'
-    file: '/templates/base-build.yml'
-
-  # 3. Template (Mẫu chuẩn có sẵn của GitLab CE)
-  - template: 'Getting-Started.gitlab-ci.yml'
-
-stages:
-  - build
-  - test
-  - deploy
-EOF
-
-git add .
-git commit -m "feat: Setup 4 include types and xem-phan-giai.sh"
-git push origin main
-```
-
----
-
-### **CHECKPOINT 1 — KIỂM TRA 4 LOẠI INCLUDE VA XEM-PHAN-GIAI.SH**
-
-Chạy kịch bản kiểm tra tự động xem API `/ci/lint` hợp nhất đúng các tệp `include`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh > /tmp/cp1_output.txt
-
-if grep -q "STATUS: VALID" /tmp/cp1_output.txt && grep -q "shared-build-job" /tmp/cp1_output.txt && grep -q "local-job" /tmp/cp1_output.txt; then
-  echo "CHECKPOINT 1: ĐẠT"
-else
-  echo "CHECKPOINT 1: LỖI"
-fi
-```
-
-Output kỳ vọng từ terminal:
-```text
-STATUS: VALID
-stages:
-  - build
-  - test
-  - deploy
-local-job:
-  stage: build
-  script:
-    - echo "Local Include Executed"
-shared-build-job:
-  stage: build
-  image: alpine:3.20
-  variables:
-    SHARED_VER: "1.0.0"
-  script:
-    - echo "Executing Shared Build Template v1.0.0"
-CHECKPOINT 1: ĐẠT
-```
-
----
-
-### **CHECKPOINT 2 — KIỂM TRA LỌC JOB DÙNG YQ TRONG XEM-PHAN-GIAI.SH**
-
-Chạy kịch bản kiểm tra tính năng lọc đúng 1 job duy nhất bằng cờ `--job`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh --job shared-build-job > /tmp/cp2_output.txt
-
-if grep -q "SHARED_VER: \"1.0.0\"" /tmp/cp2_output.txt; then
-  echo "CHECKPOINT 2: ĐẠT"
-else
-  echo "CHECKPOINT 2: LỖI"
-fi
-```
-
-Output kỳ vọng từ terminal:
-```text
-STATUS: VALID (FILTERED: shared-build-job)
-stage: build
-image: alpine:3.20
-variables:
-  SHARED_VER: "1.0.0"
-script:
-  - echo "Executing Shared Build Template v1.0.0"
-CHECKPOINT 2: ĐẠT
-```
-
----
-
-## §L4. Bước 2 — Ca 1 và Ca 3: `extends` thay mảng · khoá còn sót (35 phút)
-
-### 2.1. Tái hiện Ca 1: `extends` THAY THẾ mảng `script` (hỏng im lặng)
-
-Thêm một job ẩn `.base-audit` có 2 dòng `script` quan trọng (Audit + Security). Job `app-build` kế thừa bằng `extends` và khai báo lại `script` 1 dòng:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-cat << 'EOF' >> .gitlab-ci.yml
-
-.base-audit:
-  variables:
-    ENV_TYPE: "production"
-    SCAN_LEVEL: "deep"
-  script:
-    - echo "CRITICAL STEP 1: Security Audit Scan"
-    - echo "CRITICAL STEP 2: Compliance Check"
-
-app-build:
-  extends: .base-audit
-  variables:
-    SCAN_LEVEL: "quick"
-  script:
-    - echo "STEP 3: Compile Source Code"
-EOF
-
-git add .gitlab-ci.yml
-git commit -m "test: Demonstrate extends array replacement flaw"
-git push origin main
-```
-
-Trích xuất `merged_yaml` để chứng minh `script` của job cha bị xoá sạch:
-
-```bash
-./xem-phan-giai.sh --job app-build
-```
-
-Chi tiết phân tích log trích xuất từ `/ci/lint`:
-- Thuộc tính `variables` kiểu từ điển (dictionary): `ENV_TYPE: production` từ `.base-audit` được giữ lại, `SCAN_LEVEL` bị ghi đè từ `deep` sang `quick`. Đây là cơ chế **Trộn sâu (Deep Merge)**.
-- Thuộc tính `script` kiểu mảng (array): `CRITICAL STEP 1` và `CRITICAL STEP 2` bị xoá bỏ hoàn toàn. Chỉ còn duy nhất `STEP 3: Compile Source Code`. Đây là cơ chế **Thay thế mảng (Array Replacement)**.
-
----
-
-### **CHECKPOINT 3 — KIỂM TRA THAY THẾ MẢNG SCRIPT CỦA EXTENDS**
-
-Kịch bản kiểm chứng: job `app-build` giữ lại biến `ENV_TYPE` (từ điển trộn) nhưng bị XOÁ mất `CRITICAL STEP 1` (mảng bị thay thế):
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh --job app-build > /tmp/cp3_output.txt
-
-if grep -q "ENV_TYPE: production" /tmp/cp3_output.txt && ! grep -q "CRITICAL STEP 1" /tmp/cp3_output.txt; then
-  echo "CHECKPOINT 3: ĐẠT"
-else
-  echo "CHECKPOINT 3: LỖI"
-fi
-```
-
-Output kỳ vọng từ terminal:
-```text
-STATUS: VALID (FILTERED: app-build)
-variables:
-  ENV_TYPE: production
-  SCAN_LEVEL: quick
-script:
-  - echo "STEP 3: Compile Source Code"
-CHECKPOINT 3: ĐẠT
-```
-
----
-
-### 2.2. Tái hiện Ca 3: Khoá thừa từ tệp `include` vẫn tồn tại ngầm
-
-Tệp được `include` có khai báo khoá `tags: [production-runner]`. Tệp gốc khai báo lại job `app-test` nhưng chỉ ghi đè `script` và `image` mà quên không xoá khoá `tags`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-cat << 'EOF' > ci/templates/test-base.yml
-app-test:
-  stage: test
-  image: node:16
-  tags:
-    - production-runner
-  variables:
-    TEST_DB: "postgres_local"
-  script:
-    - npm test
-EOF
-
-cat << 'EOF' >> .gitlab-ci.yml
-
-include:
-  - local: '/ci/templates/test-base.yml'
-
-app-test:
-  image: node:18
-  script:
-    - echo "Override script only"
-EOF
-
-git add .
-git commit -m "test: Demonstrate leftover key-level merge"
-git push origin main
-```
-
----
-
-### **CHECKPOINT 4 — KIỂM TRA TRỘN KHOÁ VÀ TỆP GỐC THẮNG KHOÁ TRÙNG**
-
-Chạy kịch bản kiểm tra: `image` bị ghi đè thành `node:18` (tệp gốc thắng), nhưng khoá `tags: production-runner` từ tệp include vẫn âm thầm tồn tại:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh --job app-test > /tmp/cp4_output.txt
-
-if grep -q "image: node:18" /tmp/cp4_output.txt && grep -q "production-runner" /tmp/cp4_output.txt; then
-  echo "CHECKPOINT 4: ĐẠT"
-else
-  echo "CHECKPOINT 4: LỖI"
-fi
-```
-
-Output kỳ vọng từ terminal:
-```text
-STATUS: VALID (FILTERED: app-test)
-stage: test
-image: node:18
-tags:
-  - production-runner
-variables:
-  TEST_DB: postgres_local
-script:
-  - echo "Override script only"
-CHECKPOINT 4: ĐẠT
-```
-
----
-
-### **CHECKPOINT 5 — KIỂM TRA BIẾN TRỘN SÂU (DEEP MERGE) TRONG EXTENDS**
-
-Kịch bản kiểm chứng: Biến `ENV_TYPE: production` từ `.base-audit` và `SCAN_LEVEL: quick` từ `app-build` cùng tồn tại trong `app-build`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh --job app-build > /tmp/cp5_output.txt
-
-if grep -q "ENV_TYPE: production" /tmp/cp5_output.txt && grep -q "SCAN_LEVEL: quick" /tmp/cp5_output.txt; then
-  echo "CHECKPOINT 5: ĐẠT"
-else
-  echo "CHECKPOINT 5: LỖI"
-fi
-```
-
----
-
-## §L5. Bước 3 — Ca 2: Anchor chết ở biên giới; `!reference` nối được (30 phút)
-
-### 3.1. Thử nghiệm Ca đối chứng: YAML Anchor qua biên giới `include` (PHẢI THẤT BẠI)
-
-Tạo Anchor trong tệp include và dùng Alias ở tệp gốc:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-cat << 'EOF' > ci/templates/anchor-base.yml
-.anchor-job: &global_anchor
+    RETRIES: "3"
+    ENVIRONMENT: "dev"
   before_script:
-    - echo "Anchor Before Script"
-EOF
-
-cat << 'EOF' > .gitlab-ci.yml
-include:
-  - local: '/ci/templates/anchor-base.yml'
-
-failed-job:
-  <<: *global_anchor
-  script:
-    - echo "Fail test"
-EOF
-
-git add .
-git commit -m "test: Anchor cross include border should fail"
-git push origin main
-```
-
-Kiểm tra kết quả với `xem-phan-giai.sh` -> Báo `STATUS: INVALID` và lỗi `Unknown alias`:
-
-```bash
-./xem-phan-giai.sh || true
-```
-
----
-
-### **CHECKPOINT 6 — KIỂM TRA ANCHOR HỎNG XUYÊN TỆP INCLUDE (STATUS INVALID)**
-
-Kịch bản kiểm chứng: API `/ci/lint` phải trả về `STATUS: INVALID` với lỗi alias không tìm thấy:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh > /tmp/cp6_output.txt 2>&1 || true
-
-if grep -q "STATUS: INVALID" /tmp/cp6_output.txt || grep -q "Unknown alias" /tmp/cp6_output.txt; then
-  echo "CHECKPOINT 6: ĐẠT"
-else
-  echo "CHECKPOINT 6: LỖI"
-fi
-```
-
-Output kỳ vọng từ terminal:
-```text
-STATUS: INVALID
-[
-  "jobs:failed-job config key may not be used with undefined anchor 'global_anchor'"
-]
-CHECKPOINT 6: ĐẠT
-```
-
----
-
-### 3.2. Sửa lại bằng `!reference`: Nối mảng thành công xuyên tệp `include`
-
-Khôi phục tệp cấu hình chuẩn và chuyển sang dùng `!reference`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-cat << 'EOF' > ci/templates/ref-base.yml
-.setup-header:
-  script:
-    - echo "GLOBAL SETUP: Loading Credentials"
-    - echo "GLOBAL SETUP: Exporting Paths"
-EOF
-
-cat << 'EOF' > .gitlab-ci.yml
-include:
-  - local: '/ci/templates/ref-base.yml'
-
-success-job:
-  stage: build
-  script:
-    - !reference [.setup-header, script]
-    - echo "JOB SCRIPT: Building application binary..."
-EOF
-
-git add .
-git commit -m "fix: Use !reference across include boundary"
-git push origin main
-```
-
----
-
-### **CHECKPOINT 7 — KIỂM TRA !REFERENCE NỐI MẢNG THÀNH CÔNG XUYÊN TỆP**
-
-Chạy kịch bản kiểm tra: `success-job` phải chứa đủ 3 dòng script ghép theo đúng thứ tự:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh --job success-job > /tmp/cp7_output.txt
-
-if grep -q "GLOBAL SETUP: Loading Credentials" /tmp/cp7_output.txt && grep -q "JOB SCRIPT: Building application binary..." /tmp/cp7_output.txt; then
-  echo "CHECKPOINT 7: ĐẠT"
-else
-  echo "CHECKPOINT 7: LỖI"
-fi
-```
-
-Output kỳ vọng từ terminal:
-```text
-STATUS: VALID (FILTERED: success-job)
-stage: build
-script:
-  - echo "GLOBAL SETUP: Loading Credentials"
-  - echo "GLOBAL SETUP: Exporting Paths"
-  - echo "JOB SCRIPT: Building application binary..."
-CHECKPOINT 7: ĐẠT
-```
-
----
-
-## §L6. Bước 4 — `extends` 4 tầng · `include:rules` · biến trong path · 2 trần (30 phút)
-
-### 4.1. Thử nghiệm `extends` 4 tầng và đo trần
-
-Tạo chuỗi `extends` 4 tầng trong tệp `.gitlab-ci.yml`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-cat << 'EOF' >> .gitlab-ci.yml
-
-.level-1:
-  variables:
-    L1_VAR: "level1"
-    FINAL_VAR: "from-l1"
-
-.level-2:
-  extends: .level-1
-  variables:
-    L2_VAR: "level2"
-
-.level-3:
-  extends: .level-2
-  variables:
-    L3_VAR: "level3"
-    FINAL_VAR: "from-l3"
-
-job-level-4:
-  extends: .level-3
-  stage: test
-  script:
-    - echo "Testing 4-level extends chain"
-EOF
-
-git add .gitlab-ci.yml
-git commit -m "test: 4-level extends chain"
-git push origin main
-```
-
----
-
-### **CHECKPOINT 8 — KIỂM TRA PHÂN GIẢI EXTENDS 4 TẦNG**
-
-Kịch bản kiểm chứng: `job-level-4` thu được đầy đủ `L1_VAR`, `L2_VAR`, `L3_VAR` và `FINAL_VAR` có giá trị `from-l3` (tầng 3 ghi đè tầng 1):
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh --job job-level-4 > /tmp/cp8_output.txt
-
-if grep -q "L1_VAR: level1" /tmp/cp8_output.txt && grep -q "FINAL_VAR: from-l3" /tmp/cp8_output.txt; then
-  echo "CHECKPOINT 8: ĐẠT"
-else
-  echo "CHECKPOINT 8: LỖI"
-fi
-```
-
----
-
-### 4.2. Kiểm tra `include:rules` (Tầng lọc thứ 3)
-
-Thêm tệp `deploy-rules.yml` chỉ include khi nhánh là `main`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-cat << 'EOF' > ci/templates/deploy-rules.yml
-deploy-prod-job:
-  stage: deploy
-  script:
-    - echo "Deploying to Production Server..."
-EOF
-
-cat << 'EOF' >> .gitlab-ci.yml
-
-include:
-  - local: '/ci/templates/deploy-rules.yml'
-    rules:
-      - if: '$CI_COMMIT_BRANCH == "main"'
-EOF
-
-git add .
-git commit -m "test: include rules filtering"
-git push origin main
-```
-
----
-
-### **CHECKPOINT 9 — KIỂM TRA INCLUDE:RULES TRONG MERGED YAML**
-
-Chạy kịch bản kiểm tra: tệp `merged_yaml` phải chứa `deploy-prod-job` khi push ở branch `main`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh --job deploy-prod-job > /tmp/cp9_output.txt
-
-if grep -q "Deploying to Production Server..." /tmp/cp9_output.txt; then
-  echo "CHECKPOINT 9: ĐẠT"
-else
-  echo "CHECKPOINT 9: LỖI"
-fi
-```
-
----
-
-### 4.3. Đo trần `include` (150 tệp) bằng Script sinh tự động
-
-Tạo script sinh 150 tệp `include` để kiểm chứng giới hạn tham chiếu của instance:
-
-```bash
-cd "$HOME/lab10/main-repo"
-mkdir -p ci/generated
-
-# Sinh 150 tệp include nhỏ
-for i in $(seq -w 1 150); do
-  cat << EOF > "ci/generated/inc-$i.yml"
-.inc-job-$i:
-  variables:
-    INC_VAL_$i: "$i"
-EOF
-done
-
-# Tạo tệp include chính gom 150 tệp
-cat << 'EOF' > ci/include-150.yml
-include:
-EOF
-
-for i in $(seq -w 1 150); do
-  echo "  - local: '/ci/generated/inc-$i.yml'" >> ci/include-150.yml
-done
-
-cat << 'EOF' >> .gitlab-ci.yml
-
-include:
-  - local: '/ci/include-150.yml'
-EOF
-
-git add .
-git commit -m "test: 150 include files limit test"
-git push origin main
-```
-
----
-
-### **CHECKPOINT 10 — KIỂM TRA PHÂN GIẢI 150 TỆP INCLUDE THÀNH CÔNG**
-
-Kịch bản kiểm tra: `xem-phan-giai.sh` vẫn trả về `STATUS: VALID`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh > /tmp/cp10_output.txt
-
-if grep -q "STATUS: VALID" /tmp/cp10_output.txt; then
-  echo "CHECKPOINT 10: ĐẠT"
-else
-  echo "CHECKPOINT 10: LỖI"
-fi
-```
-
----
-
-## §L7. Bước 5 — Ca 4: `ref` không ghim; bảng chọn cơ chế (15 phút)
-
-### 5.1. Tạo script `dem-include.sh` quét `ref` không ghim
-
-Viết công cụ `dem-include.sh` để đếm số lượng đường dẫn `include` chưa được ghim phiên bản cố định bằng Tag hoặc SHA:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-cat << 'EOF' > dem-include.sh
-#!/usr/bin/env bash
-set -uo pipefail
-
-FILE="${1:-.gitlab-ci.yml}"
-
-UNPINNED=$(grep -nE 'ref: *(main|master|HEAD)' "$FILE" || true)
-UNPINNED_COUNT=$(echo "$UNPINNED" | grep -c . || true)
-
-echo "=================================================="
-echo "=== KIỂM TRA GHIM PHIÊN BẢN (PINNING CHECK) ==="
-echo "=================================================="
-echo "Tệp kiểm tra: $FILE"
-echo "Số lượng include chưa ghim ref (dùng main/master): $UNPINNED_COUNT"
-
-if [ "$UNPINNED_COUNT" -gt 0 ]; then
-  echo "CẢNH BÁO NGUY HIỂM:"
-  echo "$UNPINNED"
-  exit 1
-else
-  echo "AN TOÀN: 100% include đã được ghim phiên bản cố định!"
-fi
-EOF
-
-chmod +x dem-include.sh
-```
-
-### 5.2. Thử nghiệm ca ghim phiên bản `v1.0.0` vs `v1.1.0`
-
-Thay đổi `ref` của `include:project` từ `v1.0.0` sang `v1.1.0` để quan sát sự biến đổi trong `merged_yaml`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-# Cập nhật .gitlab-ci.yml dùng ref: v1.1.0
-sed -i "s/ref: 'v1.0.0'/ref: 'v1.1.0'/g" .gitlab-ci.yml
-
-git add .gitlab-ci.yml
-git commit -m "chore: Bump shared config template ref to v1.1.0"
-git push origin main
-```
-
----
-
-### **CHECKPOINT 11 — KIỂM TRA DEM-INCLUDE.SH VA NÂNG CAP TAG REF V1.1.0**
-
-Kịch bản kiểm chứng: `dem-include.sh` báo AN TOÀN (0 unpinned) và `merged_yaml` chuyển sang `SHARED_VER: "1.1.0"`:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./dem-include.sh .gitlab-ci.yml > /tmp/cp11_dem.txt
-./xem-phan-giai.sh --job shared-build-job > /tmp/cp11_yaml.txt
-
-if grep -q "AN TOÀN: 100% include đã được ghim" /tmp/cp11_dem.txt && grep -q "SHARED_VER: \"1.1.0\"" /tmp/cp11_yaml.txt; then
-  echo "CHECKPOINT 11: ĐẠT"
-else
-  echo "CHECKPOINT 11: LỖI"
-fi
-```
-
----
-
-## §L8. Nộp sản phẩm và dọn dẹp (10 phút)
-
-Dọn dẹp các tệp tạm đã sinh ra ở bước 4 để trả lại repo sạch sẽ:
-
-```bash
-cd "$HOME/lab10/main-repo"
-
-# Xoá bớt thư mục 150 tệp tạm
-rm -rf ci/generated ci/include-150.yml
-sed -i '/include-150.yml/d' .gitlab-ci.yml
-
-git add .
-git commit -m "clean: Remove 150 temporary test include files"
-git push origin main
-```
-
----
-
-### **CHECKPOINT 12 — KIỂM TRA DỌN DẸP HẠ TẦNG VÀ HOÀN THÀNH SẢN PHẨM**
-
-Chạy kịch bản kiểm định cuối cùng:
-
-```bash
-cd "$HOME/lab10/main-repo"
-./xem-phan-giai.sh > /tmp/cp12_output.txt
-
-if grep -q "STATUS: VALID" /tmp/cp12_output.txt && [ ! -d "ci/generated" ]; then
-  echo "CHECKPOINT 12: ĐẠT"
-else
-  echo "CHECKPOINT 12: LỖI"
-fi
-```
-
----
-
-## §L9. Bảng chẩn đoán & Xử lý sự cố Lab
-
-| Triệu chứng sự cố | Nguyên nhân cốt lõi | Quy trình khắc phục |
-|---|---|---|
-| API `/ci/lint` trả `valid: false` với `Unknown alias` | Dùng YAML Anchor (`*alias`) gọi sang tệp được `include` | Chuyển sang dùng `!reference [.job, script]` (QT 4.2) |
-| Lệnh `xem-phan-giai.sh` bị ngắt lỗi jq/yq | Thiếu gói `yq` hoặc định dạng JSON từ API hỏng | Cài đặt `yq` (`pip install yq` hoặc tải binary) |
-| Các bước `script` ở job cha bị biến mất ngầm | Khai báo lại `script` trong job con có `extends` | Dùng `!reference` chèn lại script của job cha (QT 6.1, 6.2) |
-| `include:project` báo `Project not found` | Biến `$NS` hoặc `$PJ_SHARED` bị rỗng/sai đường dẫn | Kiểm tra `moi-truong.env` và private-token (QT 5.1) |
-| Cảnh báo `unpinned include` từ `dem-include.sh` | Đường dẫn `include` dùng `ref: main` | Đổi `ref: 'main'` thành Git Tag cố định như `v1.0.0` (QT 7.2) |
-
----
-
-## §L10. Bài tập mở rộng
-
-### Bài 1: Nối mảng variables bằng thẻ !reference
-Thiết kế một tệp cấu hình trong đó Job con sử dụng `!reference` để kế thừa mảng các biến môi trường hoặc các bước trước `before_script` từ 2 Job mẫu khác nhau mà không làm mất bất kỳ thuộc tính nào.
-
-### Bài 2: Tự động hóa kiểm tra ref unpinned trong pipeline CI/CD
-Tạo một Job kiểm tra trong tệp `.gitlab-ci.yml` sử dụng script `dem-include.sh` để từ chối các Commit Merge Request có chứa câu lệnh `include:project` hoặc `include:remote` sử dụng `ref: main` hoặc `ref: master`.
-
----
-
-## §L11. Hướng dẫn nộp bài thực hành
-
-Học viên đóng gói kết quả thực hành bao gồm:
-1. File log thực thi 12 Checkpoint thành công.
-2. Tệp `/tmp/current_merged.yml` trích xuất từ `xem-phan-giai.sh`.
-3. Mã nguồn tệp `.gitlab-ci.yml` chính hoàn chỉnh.
-
----
-
-## §L12. Bảng tham chiếu hiện vật và kịch bản bổ trợ chi tiết
-
-Để hỗ trợ học viên luyện tập thêm ngoài giờ, kịch bản dưới đây cho phép thiết lập tự động toàn bộ hạ tầng thực hành Buổi 10 chỉ với một câu lệnh đơn duy nhất trên terminal Linux/macOS hoặc Git Bash Windows.
-
-```bash
-#!/usr/bin/env bash
-# File: $HOME/lab10/khoi-tao-nhanh.sh
-set -uo pipefail
-
-echo "======================================================================"
-echo "=== KỊCH BẢN KHỞI TẠO NHANH TOÀN BỘ BÀI LAB BUỔI 10 ==="
-echo "======================================================================"
-
-if [ ! -f "$HOME/.gitlab-lab.env" ]; then
-  echo "LỖI: Không tìm thấy file $HOME/.gitlab-lab.env! Vui lòng hoàn thành Buổi 01 trước."
-  exit 1
-fi
-
-. "$HOME/.gitlab-lab.env"
-
-mkdir -p "$HOME/lab10" && cd "$HOME/lab10"
-
-cat << 'EOF' > moi-truong.env
-export NS="root"
-export PJ_MAIN="lab10-include"
-export PJ_SHARED="lab10-cau-hinh-chung"
-EOF
-
-. moi-truong.env
-
-echo "[1/4] Đang tạo Project Shared trên GitLab..."
-RES_SHARED=$(curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-  --data "name=$PJ_SHARED&visibility=public" \
-  "$GITLAB/api/v4/projects" || true)
-PID_SHARED=$(echo "$RES_SHARED" | jq -r .id)
-
-echo "[2/4] Đang tạo Project Main trên GitLab..."
-RES_MAIN=$(curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-  --data "name=$PJ_MAIN&visibility=public" \
-  "$GITLAB/api/v4/projects" || true)
-PID_MAIN=$(echo "$RES_MAIN" | jq -r .id)
-
-echo "export PID_MAIN=$PID_MAIN" >> moi-truong.env
-echo "export PID_SHARED=$PID_SHARED" >> moi-truong.env
-
-echo "[3/4] Cấu hình Shared Project với 2 Tag v1.0.0 và v1.1.0..."
-rm -rf shared-repo && git clone "$GITLAB_URL/$NS/$PJ_SHARED.git" shared-repo
-cd shared-repo
-mkdir -p templates
-cat << 'EOT' > templates/base-build.yml
-shared-build-job:
-  stage: build
-  image: alpine:3.20
-  variables:
-    SHARED_VER: "1.0.0"
-  script:
-    - echo "Executing Shared Build Template v1.0.0"
-EOT
-git add . && git commit -m "feat: v1.0.0" && git push origin main && git tag v1.0.0 && git push origin v1.0.0
-
-cat << 'EOT' > templates/base-build.yml
-shared-build-job:
-  stage: build
-  image: alpine:3.20
-  variables:
-    SHARED_VER: "1.1.0"
-  script:
-    - echo "Executing Shared Build Template v1.1.0"
-EOT
-git add . && git commit -m "feat: v1.1.0" && git push origin main && git tag v1.1.0 && git push origin v1.1.0
-
-echo "[4/4] Khởi tạo Main Project..."
-cd "$HOME/lab10"
-rm -rf main-repo && git clone "$GITLAB_URL/$NS/$PJ_MAIN.git" main-repo
-cd main-repo
-mkdir -p ci/templates
-cat << 'EOT' > ci/templates/local-build.yml
-local-job:
-  stage: build
-  script:
-    - echo "Local Include Executed"
-EOT
-
-cat << EOT > .gitlab-ci.yml
-include:
-  - local: '/ci/templates/local-build.yml'
-  - project: '$NS/$PJ_SHARED'
-    ref: 'v1.0.0'
-    file: '/templates/base-build.yml'
+    - echo "=== [Framework Base] Running before_script ==="
 
 stages:
   - build
   - test
-  - deploy
-EOT
-
-git add . && git commit -m "feat: initial commit" && git push origin main
-
-echo "======================================================================"
-echo "HOÀN TẤT KHỞI TẠO! Bạn có thể bắt đầu bài thực hành từ Bước 1."
-echo "======================================================================"
 ```
 
----
+> **Checkpoint 1**: Pipeline không tạo ra bất kỳ job nào mang tên `.base_job`.
 
-## §L13. Danh mục đối chiếu các mã lỗi API `/ci/lint` hay gặp
-
-| Mã lỗi / Cụm từ thông báo | Nguyên nhân theo Quy tắc Kỹ thuật | Hướng xử lý |
-|---|---|---|
-| `Unknown alias: anchor_name` | Anchor dùng xuyên qua tệp `include` (QT 4.2) | Thay thế bằng `!reference [.job, script]` |
-| `Local file does not exist` | Tệp `include: local` không có trong repo (QT 5.1) | Kiểm tra lại đường dẫn tệp trong repo |
-| `Project not found` | Repo `include: project` không tồn tại hoặc sai quyền (QT 5.1) | Kiểm tra tên project và Token xác thực |
-| `Key undefined anchor` | Cú pháp `<<: *anchor` trong file con bị thiếu khai báo (QT 4.1) | Khai báo anchor `&anchor` trong cùng 1 file |
-| `Nested reference exceeds depth` | `!reference` lồng nhau vượt quá 10 tầng (QT 6.2) | Giảm độ lồng tham chiếu về ≤ 3 tầng |
-
----
-
-## §L14. Hướng dẫn chi tiết kiểm tra và debug tệp `merged_yaml`
-
-Khi làm việc với các hệ thống CI/CD quy mô lớn, việc trích xuất tệp `merged_yaml` qua API `/ci/lint` là kỹ năng sống còn của kỹ sư DevOps. Dưới đây là các kỹ thuật nâng cao để làm việc với tệp sau phân giải:
-
-### 14.1. Trích xuất danh sách tất cả các Job trong Pipeline
-
-Dùng `yq` để liệt kê toàn bộ danh sách job sau khi đã ghép tất cả các tệp `include`:
-
-```bash
-yq 'keys | .[]' /tmp/current_merged.yml | grep -v '^stages$' | grep -v '^\.'
-```
-
-Ví dụ output nhận được:
-```text
-local-job
-shared-build-job
-app-build
-app-test
-success-job
-job-level-4
-deploy-prod-job
-```
-
-### 14.2. Kiểm tra danh sách Runner Tag của toàn bộ Job
-
-Để đảm bảo không có job nào bị "dính" tag ngoài ý muốn do tệp `include` từ nơi khác chèn vào:
-
-```bash
-yq 'to_entries | .[] | select(.value.tags != null) | [.key, .value.tags]' /tmp/current_merged.yml
-```
-
-Ví dụ output thu được cho thấy `app-test` dính khoá `production-runner`:
-```json
-[
-  "app-test",
-  [
-    "production-runner"
-  ]
-]
-```
-
-### 14.3. Kiểm tra biến môi trường cuối cùng của từng Job
-
-Để xem biến môi trường cuối cùng (sau khi đã thực hiện deep merge từ `include` và `extends`):
-
-```bash
-yq '.app-build.variables' /tmp/current_merged.yml
-```
-
-Ví dụ output:
-```yaml
-ENV_TYPE: production
-SCAN_LEVEL: quick
-```
-
-Việc này giúp kỹ sư DevOps trả lời ngay lập tức câu hỏi "Job này đang nhận giá trị biến nào khi chạy" mà không phải tốn thời gian lật tìm qua 5-6 tệp YAML khác nhau.
-
----
-
-## §L15. Chi tiết mã nguồn các tệp cấu hình mẫu đầy đủ
-
-Để giúp học viên đối chiếu trong trường hợp gặp sự cố định dạng tệp, dưới đây là toàn bộ mã nguồn mẫu hoàn chỉnh của các tệp cấu hình được tạo ra trong bài thực hành:
-
-### 15.1. Mã nguồn hoàn chỉnh tệp `.gitlab-ci.yml` ở cuối Bước 5
+### Bước 2: Kế Thừa Cấu Hình Với `extends:` & Deep-merge
+Tạo job con kế thừa từ `.base_job` và bổ sung thêm biến mới.
 
 ```yaml
-# .gitlab-ci.yml - Complete Buổi 10 Configuration
-stages:
-  - build
-  - test
-  - deploy
-
-include:
-  # 1. Local include
-  - local: '/ci/templates/local-build.yml'
-  - local: '/ci/templates/test-base.yml'
-  - local: '/ci/templates/ref-base.yml'
-  - local: '/ci/templates/deploy-rules.yml'
-    rules:
-      - if: '$CI_COMMIT_BRANCH == "main"'
-
-  # 2. Project include with pinned tag ref v1.1.0
-  - project: 'root/lab10-cau-hinh-chung'
-    ref: 'v1.1.0'
-    file: '/templates/base-build.yml'
-
-  # 3. Template include
-  - template: 'Getting-Started.gitlab-ci.yml'
-
-.base-audit:
-  variables:
-    ENV_TYPE: "production"
-    SCAN_LEVEL: "deep"
-  script:
-    - echo "CRITICAL STEP 1: Security Audit Scan"
-    - echo "CRITICAL STEP 2: Compliance Check"
-
-app-build:
-  extends: .base-audit
-  variables:
-    SCAN_LEVEL: "quick"
-  script:
-    - echo "STEP 3: Compile Source Code"
-
-app-test:
-  image: node:18
-  script:
-    - echo "Override script only"
-
-success-job:
+build_app:
   stage: build
+  extends: .base_job
+  variables:
+    APP_TARGET: "web-portal" # Thêm biến mới
+    ENVIRONMENT: "production" # Ghi đè biến của cha
   script:
-    - !reference [.setup-header, script]
-    - echo "JOB SCRIPT: Building application binary..."
-
-.level-1:
-  variables:
-    L1_VAR: "level1"
-    FINAL_VAR: "from-l1"
-
-.level-2:
-  extends: .level-1
-  variables:
-    L2_VAR: "level2"
-
-.level-3:
-  extends: .level-2
-  variables:
-    L3_VAR: "level3"
-    FINAL_VAR: "from-l3"
-
-job-level-4:
-  extends: .level-3
-  stage: test
-  script:
-    - echo "Testing 4-level extends chain"
+    - echo "Environment is: ${ENVIRONMENT}"
+    - echo "Retries count: ${RETRIES}"
+    - echo "App Target: ${APP_TARGET}"
 ```
 
----
+> **Checkpoint 2**: Chạy job `build_app`. Log in ra `ENVIRONMENT=production` (ghi đè thành công) và `RETRIES=3` (kế thừa thành công từ cha qua Deep-merge).
 
-## §L16. Phân tích chi tiết quy trình chẩn đoán lỗi hợp nhất bằng terminal
-
-Khi gặp bất kỳ sự cố vỡ pipeline nào liên quan tới cú pháp YAML hoặc không nhận biến, học viên thực hiện quy trình chẩn đoán 4 bước:
-
-1. **Bước 1: Trích xuất lỗi từ REST API:**
-   ```bash
-   curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-     --header "Content-Type: application/json" \
-     --data '{"include_merged_yaml": true}' \
-     "$GITLAB/api/v4/projects/$PID_MAIN/ci/lint" | jq .errors
-   ```
-2. **Bước 2: Kiểm tra cú pháp thụt lùi dòng bằng `yq`:**
-   ```bash
-   yq eval .gitlab-ci.yml
-   ```
-3. **Bước 3: Đánh giá mảng biến đã qua Deep Merge:**
-   ```bash
-   yq '.job_name.variables' /tmp/current_merged.yml
-   ```
-4. **Bước 4: Kiểm tra danh sách script chèn qua `!reference`:**
-   ```bash
-   yq '.job_name.script' /tmp/current_merged.yml
-   ```
-
----
-
-## §L17. Bảng đối soát ngân sách thời gian 150 phút Thực hành
-
-| Phần lab | Nội dung chi tiết | Thời lượng phân bổ |
-|---|---|---|
-| **L1 - L2** | Khởi tạo hạ tầng, đọc 5 quyết định thiết kế kiến trúc | 10 phút |
-| **L3 (Bước 1)** | Bốn loại include & trích xuất merged_yaml qua xem-phan-giai.sh | 30 phút |
-| **L4 (Bước 2)** | Ca 1 và Ca 3: extends thay mảng & bẫy khoá thừa từ include | 35 phút |
-| **L5 (Bước 3)** | Ca 2: Anchor chết ở biên giới & !reference nối mảng thành công | 30 phút |
-| **L6 (Bước 4)** | extends 4 tầng, include:rules, biến trong path & đo 2 trần | 30 phút |
-| **L7 (Bước 5)** | Ghim ref tránh hỏng ngầm & kiểm tra dem-include.sh | 15 phút |
-| **L8** | Nộp sản phẩm hiện vật và dọn dẹp tài nguyên lab | 10 phút |
-| **Tổng** | **Khối thực hành lab hoàn chỉnh (12 Checkpoint)** | **150 phút (**150'**)** |
-
----
-
-## §L18. Quy trình tích hợp kiểm soát chất lượng CI/CD tự động trong Doanh nghiệp
-
-Trong môi trường làm việc thực tế tại các tập đoàn công nghệ lớn, việc kiểm soát cú pháp tệp cấu hình CI/CD không chỉ dừng lại ở terminal của cá nhân lập trình viên. Đội ngũ DevOps/SRE thường xây dựng quy trình tự động化 3 tầng kiểm soát:
-
-1. **Tầng 1 - Local Git Pre-commit Hook:** Tệp script chạy trước mỗi lệnh `git commit` trên máy developer để ngăn chặn việc commit các tệp `.gitlab-ci.yml` có lỗi cú pháp hoặc chưa ghim tag ref.
-2. **Tầng 2 - Pipeline Self-Linting Job:** Một Job chạy trong giai đoạn `.pre` của chính Pipeline để gọi API `/ci/lint` kiểm tra tệp `merged_yaml` ngay khi có sự kiện Push.
-3. **Tầng 3 - Centralized Audit Dashboard:** Một kịch bản Python/Bash chạy định kỳ 24h quét toàn bộ các Repository trong GitLab Group để phát hiện các tệp `include:remote` chứa rủi ro bảo mật mạng hoặc các đường dẫn `include:project` dùng `ref: main`.
-
-```bash
-#!/usr/bin/env bash
-# File: enterprise-ci-auditor.sh
-# Mục đích: Quét toàn bộ project trong Group để audit việc ghim tag ref
-
-set -uo pipefail
-
-. "$HOME/.gitlab-lab.env"
-
-echo "=== ĐANG QUÉT TOÀN BỘ PROJECT TRONG INSTANCE ==="
-
-PROJECTS=$(curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$GITLAB/api/v4/projects?per_page=100")
-
-echo "$PROJECTS" | jq -c '.[]' | while read -r proj; do
-  PID=$(echo "$proj" | jq -r .id)
-  PNAME=$(echo "$proj" | jq -r .path_with_namespace)
-
-  # Tải tệp .gitlab-ci.yml thô của project
-  RAW_CI=$(curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "$GITLAB/api/v4/projects/$PID/repository/files/.gitlab-ci.yml/raw?ref=main" || true)
-
-  if [ -n "$RAW_CI" ]; then
-    UNPINNED=$(echo "$RAW_CI" | grep -nE 'ref: *(main|master|HEAD)' || true)
-    if [ -n "$UNPINNED" ]; then
-      echo "[CẢNH BÁO - $PNAME] Phát hiện include chưa ghim tag ref:"
-      echo "$UNPINNED"
-    else
-      echo "[OK - $PNAME] Tất cả include đã ghim tag an toàn."
-    fi
-  fi
-done
-```
-
----
-
-## §L19. Danh mục 5 bài học thực chiến rút ra từ bài lab Buổi 10
-
-1. **Bài học 1 (Luôn dùng `merged_yaml` làm điểm tựa):** Đừng bao giờ phỏng đoán hành vi ghi đè của GitLab CI chỉ bằng cách đọc mắt qua tệp thô. Luôn trích xuất `merged_yaml` qua API REST `/ci/lint` để có câu trả lời chính xác 100%.
-2. **Bài học 2 (Cảnh giác với mảng bị thay thế trong `extends`):** Khi sử dụng `extends`, hãy nhớ rằng từ điển được gộp sâu nhưng mảng script bị thay thế hoàn toàn. Sử dụng `!reference` nếu muốn giữ lại hoặc nối mảng script của Job cha.
-3. **Bài học 3 (Không dùng YAML Anchor xuyên tệp):** YAML Anchor chỉ tồn tại nội bộ trong 1 tệp văn bản. Mọi nhu cầu tham chiếu phần tử mảng xuyên tệp `include` phải được thực hiện bằng thẻ `!reference`.
-4. **Bài học 4 (Ghim tag ref cố định cho 100% `include:project`):** Không bao giờ dùng `ref: main` hoặc `ref: master` cho các tệp include từ repo khác. Ghim tag phiên bản là điều kiện bắt buộc để đảm bảo tính tái lập của Pipeline.
-5. **Bài học 5 (Tránh lồng `extends` và `include` quá 2 tầng):** Mặc dù GitLab cho phép đệ quy sâu, việc duy trì cấu hình phẳng 1-2 tầng giúp giữ mã nguồn CI/CD sạch sẽ, dễ đọc và dễ bảo trì cho cả đội ngũ.
-
----
-
-## §L20. Hướng dẫn chi tiết từng bước xây dựng kịch bản kiểm thử Linting tự động
-
-Học viên có thể tích hợp kịch bản kiểm thử sau vào repository của doanh nghiệp để tự động hoá 100% việc kiểm thử cú pháp:
-
-```bash
-#!/usr/bin/env bash
-# File: ci-auto-linter.sh
-# Mục đích: Lint tệp .gitlab-ci.yml trực tiếp qua GitLab API
-
-set -uo pipefail
-
-if [ ! -f "$HOME/.gitlab-lab.env" ]; then
-  echo "LỖI: Không tìm thấy file cấu hình xác thực API!"
-  exit 1
-fi
-
-. "$HOME/.gitlab-lab.env"
-
-echo "=== ĐANG KIỂM TRẢ CÚ PHÁP GITLAB CI ==="
-
-RESPONSE=$(curl -sf --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-  --header "Content-Type: application/json" \
-  --data '{"include_merged_yaml": true}' \
-  "$GITLAB/api/v4/projects/$PID_MAIN/ci/lint")
-
-IS_VALID=$(echo "$RESPONSE" | jq -r .valid)
-
-if [ "$IS_VALID" == "true" ]; then
-  echo "[SUCCESS] Cấu hình GitLab CI hợp lệ 100%!"
-  exit 0
-else
-  echo "[FAILURE] Phát hiện lỗi cú pháp YAML:"
-  echo "$RESPONSE" | jq .errors
-  exit 1
-fi
-```
-
----
-
-## §L21. Phân tích chi tiết quy trình refactor hệ thống CI/CD di sản (Legacy Refactoring)
-
-Khi nhận bàn giao một dự án cũ có cấu hình CI/CD phình to hàng ngàn dòng:
-
-1. **Bước 1: Trích xuất mốc chuẩn (Baseline Extraction):** Chạy kịch bản `./xem-phan-giai.sh` để lưu toàn bộ `merged_yaml` hiện tại ra tệp đối chứng `legacy_baseline.yml`.
-2. **Bước 2: Tách nhỏ thành các module chức năng (Modularization):** Tạo thư mục `ci/templates/` và tách các khối Job mẫu theo từng tính năng (Build, Test, SAST, Deploy) vào các tệp riêng lẻ.
-3. **Bước 3: Chuẩn hoá kết nối bằng `include: local` và `!reference`:** Nạp các tệp module từ tệp chính `.gitlab-ci.yml` và dùng `!reference` để ghép mảng script.
-4. **Bước 4: Kiểm tra không sai lệch (Zero-Diff Verification):** Trích xuất `merged_yaml` mới ra tệp `new_merged.yml` và chạy `diff -u legacy_baseline.yml new_merged.yml`. Đảm bảo 0% sai lệch cấu hình.
-
----
-
-## §L22. Hướng dẫn nâng cao: Quản lý biến môi trường trong môi trường Multi-Environment
-
-Khi triển khai các tệp cấu hình dùng chung cho nhiều môi trường khác nhau (Staging, UAT, Production):
-
-1. **Tạo các tệp biến môi trường riêng biệt:**
-   - `/ci/env/staging.yml`
-   - `/ci/env/production.yml`
-2. **Sử dụng `include:rules` để nạp tệp biến phù hợp theo nhánh:**
-   ```yaml
-   include:
-     - local: '/ci/env/staging.yml'
-       rules:
-         - if: '$CI_COMMIT_BRANCH == "develop"'
-     - local: '/ci/env/production.yml'
-       rules:
-         - if: '$CI_COMMIT_BRANCH == "main"'
-   ```
-3. **Kiểm tra kết quả phân giải bằng `xem-phan-giai.sh`:** Trích xuất tệp `merged_yaml` cho từng nhánh để đảm bảo các biến môi trường được nạp chính xác và không bị dính chéo giữa các môi trường.
-
----
-
-## §L23. Chi tiết hướng dẫn bảo trì và đóng gói artifact sau bài lab
-
-Sau khi hoàn thành 12 Checkpoint tự động của bài lab Buổi 10, học viên thực hiện quy trình đóng gói và sao lưu hiện vật:
-
-1. **Sao lưu tệp `merged_yaml` chuẩn:** Lưu tệp `/tmp/current_merged.yml` vào thư mục `artifacts/` của dự án với tên `buoi-10-merged-final.yml`.
-2. **Tạo báo cáo kiểm định 12 Checkpoint:** Lưu toàn bộ log đầu ra của terminal khi chạy 12 checkpoint vào tệp `checkpoints-report.log`.
-3. **Đẩy mã nguồn sạch lên Git:** Commit và Push toàn bộ thay đổi lên branch `main` của repo `lab10-include`.
-
----
-
-## §L24. Lời kết và chuyển giao Buổi 11
-
-Hoàn thành Buổi 10 đánh dấu cột mốc quan trọng trong việc làm chủ cú pháp và các kỹ thuật tái sử dụng cấu hình tĩnh trong GitLab CI. Ở Buổi 11 tiếp theo (**CI/CD Components & Catalog**), học viên sẽ nâng tầm các mẫu tệp cấu hình đơn lẻ này thành các **CI/CD Components** có phiên bản, có đầu vào khai báo kiểu dữ liệu rõ ràng (Inputs validation), và được xuất bản lên **GitLab CI/CD Catalog** nội bộ của doanh nghiệp.
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-Dưới đây là bộ câu hỏi phỏng vấn thực chiến dành cho các vị trí **DevOps Engineer**, **DevSecOps Specialist** và **Platform Infrastructure Lead**, giúp bạn tự đánh giá độ sâu hiểu biết và rèn luyện phản xạ giải quyết vấn đề hệ thống:
-
-> Tệp vấn đáp và BTVN này có KÍCH THƯỚC CHUẨN KỸ THUẬT ≥ 25 kB.
-> Gồm 12 câu hỏi vấn đáp chuyên sâu, 4 câu chốt phỏng vấn (§V3) và 3 bài tập về nhà chuẩn bị cho Buổi 11.
-
----
-
-## §V1. Danh mục 12 câu hỏi Vấn đáp Kỹ thuật
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Trong GitLab CI/CD có 4 cơ chế tái sử dụng cấu hình (<code>include</code>, <code>extends</code>, YAML Anchor <code>&</code>/<code>*</code>, <code>!reference</code>) và chúng trải qua 3 thời điểm hợp nhất cố định theo thứ tự:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Thời điểm 1 (t0 - YAML Parser Phase):</b> YAML Parser phân giải cú pháp cơ bản nội trong tệp đơn độc. YAML Anchor <code>&</code> và Alias <code>*</code> được hợp nhất ở thời điểm này.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Thời điểm 2 (t1 - GitLab Includer Phase):</b> GitLab nạp toàn bộ các tệp từ danh sách <code>include</code> (<code>local</code>, <code>project</code>, <code>remote</code>, <code>template</code>) để tạo thành một tệp YAML phân giải phẳng duy nhất (<code>merged_yaml</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Thời điểm 3 (t2 - GitLab Resolver Phase):</b> Engine xử lý các từ khoá nâng cao của GitLab như <code>extends</code> và thẻ custom <code>!reference</code> trên cây YAML đã phẳng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Sự phân tách 3 thời điểm này giải thích tại sao YAML Anchor không bao giờ hoạt động xuyên qua các tệp <code>include</code> (vì Anchor chết ở t0 trước khi <code>include</code> được nạp ở t1), và tại sao <code>!reference</code> cùng <code>extends</code> lại hoạt động tốt xuyên qua tệp (vì chúng được xử lý ở t2 sau khi tất cả các tệp đã hợp nhất).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Nhầm lẫn thứ tự xử lý dẫn đến các lỗi cấu hình tai hại. Kỹ sư DevOps phải thuộc lòng sơ đồ 3 thời điểm hợp nhất để chẩn đoán chính xác lý do tại sao một thuộc tính bị ghi đè hoặc bị từ chối cú pháp.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 4.1</b>.</div>
+### Bước 3: Kiểm Chứng Giới Hạn Của YAML Anchors
+Tạo một tệp cấu hình con `templates/anchors.yml` chứa Anchor và cố gắng gọi từ file chính để quan sát lỗi.
 
 ```yaml
-# Sơ đồ minh hoạ 3 thời điểm phân giải hợp nhất
-# t0 (YAML Parser): Phân giải Anchor & Alias nội bộ trong tệp
-.base: &local_anchor
-  image: alpine:latest
+# templates/anchors.yml
+.anchor_template: &anchor_def
+  script:
+    - echo "Running from Anchor"
+```
 
-# t1 (GitLab Includer): Tải tệp include và ghép thành 1 file phẳng
+Khi gọi `*anchor_def` từ file `.gitlab-ci.yml` chính, GitLab báo lỗi `unknown alias`.
+Khắc phục bằng cách chuyển đổi sang `extends: .anchor_template`.
+
+> **Checkpoint 3**: Khẳng định YAML Anchor vô hiệu khi gọi xuyên tệp, `extends:` hoạt động chính xác.
+
+### Bước 4: Tách Modular Template Với 4 Kiểu `include:`
+Tổ chức lại cấu hình pipeline theo dạng module tách biệt.
+
+```yaml
 include:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/ci/templates/base.yml'</div>
-
-# t2 (GitLab Resolver): Phân giải extends và !reference trên file phẳng
-my-job:
-  extends: .remote_base
-  script:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• !reference [.setup-script, script]</div>
+  - local: '/templates/stages.yml'
+  - local: '/templates/build.yml'
+  - local: '/templates/test.yml'
 ```
 
----
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Mảng <code>script</code> của Job ẩn (Job cha) sẽ bị <b style="color: var(--accent-primary);">XOÁ SẠCH VÀ THAY THẾ HOÀN TOÀN</b> bởi mảng <code>script</code> mới khai báo ở Job con, chứ <b style="color: var(--accent-primary);">KHÔNG PHẢI ĐƯỢC NỐI (APPEND)</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Quy tắc hợp nhất thuộc tính của <code>extends</code> quy định:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tất cả các thuộc tính dạng <b style="color: var(--accent-primary);">từ điển (Dictionary/Hash)</b> như <code>variables</code>, <code>services</code>, <code>cache</code> sẽ được thực hiện <b style="color: var(--accent-primary);">Trộn sâu (Deep Merge)</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tất cả các thuộc tính dạng <b style="color: var(--accent-primary);">mảng (Array/Sequence)</b> như <code>script</code>, <code>before_script</code>, <code>after_script</code>, <code>tags</code>, <code>image</code> (nếu là list) sẽ bị <b style="color: var(--accent-primary);">Thay thế toàn bộ (Array Replacement)</b> bởi đối tượng kế thừa.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Đây là bẫy hỏng ngầm im lặng nguy hiểm nhất trong GitLab CI. Một Job cha định nghĩa bước kiểm tra bảo mật <code>script: [audit_scan, SAST]</code>; một Job con kế thừa nhưng chỉ viết <code>script: [npm run build]</code>. Hệ thống sẽ im lặng xoá bỏ 2 bước bảo mật mà không phát ra bất kỳ cảnh báo hay lỗi cú pháp nào!</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 6.1</b>.</div>
+Tạo tệp `templates/stages.yml`:
 
 ```yaml
-# Minh hoạ cơ chế Array Replacement của extends
-.base-audit:
-  variables:
-    ENV: "prod"               # Từ điển -> Được giữ lại (Deep Merge)
-  script:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Critical Audit 1" # Mảng -> BỊ XOÁ BỎ HOÀN TOÀN</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Critical Audit 2" # Mảng -> BỊ XOÁ BỎ HOÀN TOÀN</div>
-
-app-build:
-  extends: .base-audit
-  script:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Build app only"   # Mảng mới này thay thế toàn bộ script của cha!</div>
+stages:
+  - compile
+  - verify
 ```
 
----
-</div>
-</details>
+> **Checkpoint 4**: GitLab tự động gộp cả 3 tệp local thành một pipeline hoàn chỉnh tại $t_0$.
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> <b style="color: var(--accent-primary);">KHÔNG THỂ</b>. YAML Anchor chỉ có phạm vi hoạt động trong <b style="color: var(--accent-primary);">duy nhất 1 tệp văn bản YAML đơn độc</b> và hoàn toàn bất lực khi gọi xuyên tệp <code>include</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Cú pháp Anchor <code>&</code> và Alias <code>*</code> là tiêu chuẩn của trình biên dịch YAML gốc (YAML Spec Level), được xử lý tại <b style="color: var(--accent-primary);">Thời điểm 1 (t0 - YAML Parser Phase)</b>. Lúc này, GitLab Engine chưa hề kích hoạt module <code>include</code> (chạy ở t1). Do đó khi Parser đọc tới Alias <code>*anchor</code> ở tệp chính, nó không thể tìm thấy định nghĩa <code>&anchor</code> nằm ở tệp phụ và sẽ ném lỗi Parser Error: <code>Unknown alias</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Để tái sử dụng các đoạn mã <code>script</code> hoặc cấu hình xuyên tệp <code>include</code>, giải pháp thay thế chuẩn xác 100% là chuyển sang dùng thẻ <code>!reference [.job_an, script]</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 4.2</b>.</div>
+### Bước 5: Ghim Phiên Bản SemVer Cho `include:project`
+Khai báo nạp template từ repository bảo mật tập trung với Tag phiên bản cố định.
 
 ```yaml
-# File /templates/anchor.yml:
-.base-script: &my_anchor
+include:
+  - project: 'security/compliance-templates'
+    ref: 'v1.4.2' # Ghim chặt phiên bản
+    file: '/scans/sast.yml'
+```
+
+> **Checkpoint 5**: Pipeline nạp chính xác phiên bản `v1.4.2`, bảo vệ hệ thống khỏi các thay đổi đột ngột trên nhánh `main` của template repo.
+
+### Bước 6: Ghép Nối Kịch Bản Lệnh Bằng `!reference`
+Tích hợp cú pháp `!reference` để giữ lại `before_script` của template cha và chèn thêm lệnh cục bộ.
+
+```yaml
+.audit_template:
   before_script:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Setup env"</div>
+    - echo "=== [Security Audit] Starting Token Verification ==="
 
-# File .gitlab-ci.yml main:
-include:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/templates/anchor.yml'</div>
-
-my-job:
-  <<: *my_anchor # LỖI BÁO NGAY: jobs:my-job config key may not be used with undefined anchor 'my_anchor'
+execute_integration_test:
+  stage: verify
+  extends: .audit_template
+  before_script:
+    - !reference [.audit_template, before_script]
+    - echo "=== [Local Test] Preparing Database Fixtures ==="
   script:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Run job"</div>
+    - echo "Running Integration Tests..."
 ```
 
----
-</div>
-</details>
+> **Checkpoint 6**: Xem log của `execute_integration_test`: Cả hai thông báo của `Security Audit` và `Local Test` đều xuất hiện đầy đủ theo đúng thứ tự.
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Lệnh terminal đầu tiên cần chạy là trích xuất tệp sau phân giải <code>merged_yaml</code> qua API REST <code>/ci/lint</code> bằng cờ <code>include_merged_yaml: true</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b></div>
-  ```bash
-  curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-       --header "Content-Type: application/json" \
-       --data '{"include_merged_yaml": true}' \
-       "https://gitlab.example.com/api/v4/projects/:id/ci/lint" | jq -r .merged_yaml
-  ```
-  Tệp <code>merged_yaml</code> là bức tranh sự thật duy nhất phản ánh chính xác cấu hình cuối cùng mà GitLab Engine nạp vào Pipeline. Đọc tệp <code>.gitlab-ci.yml</code> thô sẽ không bao giờ phát hiện được các thuộc tính bị ghi đè ngầm từ các tệp <code>include</code> đằng sau.
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Dừng ngay lập tức mọi cuộc tranh luận tính phỏng đoán. 100% nguyên nhân ghi đè "không ăn" sẽ lộ diện trong 3 giây khi kiểm tra tệp <code>merged_yaml</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 4.3</b>.</div>
+### Bước 7: Kiểm Tra Merged YAML Hoàn Chỉnh Qua CI Lint API
+Sử dụng REST API để xem toàn bộ cấu trúc YAML sau khi GitLab Server phân giải tất cả các `include`, `extends` và `!reference`.
 
----
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Trộn ở <b style="color: var(--accent-primary);">mức khoá (Key-level merge)</b> và <b style="color: var(--accent-primary);">tệp gốc (tệp chứa câu lệnh include) BẮT BUỘC THẮNG</b> ở tất cả các khoá trùng lặp.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu tệp <code>include</code> khai báo <code>app-build</code> có: <code>image: node:16</code>, <code>tags: [runner-1]</code>, <code>script: [build.sh]</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tệp gốc khai báo <code>app-build</code> có: <code>image: node:18</code>, <code>script: [new_build.sh]</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kết quả hợp nhất: <code>image</code> nhận <code>node:18</code> (gốc thắng), <code>script</code> nhận <code>[new_build.sh]</code> (gốc thắng), nhưng khoá <code>tags: [runner-1]</code> ở tệp include không bị khai báo lại ở tệp gốc nên <b style="color: var(--accent-primary);">VẪN ÂM THẦM TỒN TẠI</b> trong Job cuối cùng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Đây là nguyên nhân khiến Job bị dính các thuộc tính thù hình (như <code>tags</code>, <code>retry</code>, <code>timeout</code>) từ tệp template dùng chung mà người viết tệp gốc không hề hay biết.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 5.2</b>.</div>
-
----
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Bắt buộc sử dụng thẻ <b style="color: var(--accent-primary);"><code>!reference</code></b>. Cả <code>extends</code> và YAML Anchor đều không thể nối ghép các phần tử mảng từ 3 nguồn khác nhau vào 1 mảng duy nhất.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Cú pháp khai báo:</div>
-  ```yaml
-  include:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/templates/step1.yml'</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/templates/step2.yml'</div>
-
-  main-build-job:
-    stage: build
-    script:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• !reference [.setup-step, script]</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• !reference [.compile-step, script]</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Step 3: Finalizing Package"</div>
-  ```
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Thẻ <code>!reference</code> giải quyết triệt để hạn chế của <code>extends</code>, cho phép ghép nối linh hoạt các đoạn mã script nhỏ thành một chuỗi thực thi hoàn chỉnh theo đúng thứ tự mong muốn mà không lo bị xoá đè mảng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 6.2</b> và <b style="color: var(--accent-primary);">QT 7.1</b>.</div>
-
----
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Do tệp cấu hình có sử dụng đường dẫn <code>include:project</code> hoặc <code>include:remote</code> mà <b style="color: var(--accent-primary);">KHÔNG GHIM PHIÊN BẢN (Unpinned Reference)</b>, ví dụ trỏ vào branch <code>ref: main</code> hoặc <code>ref: HEAD</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Khi <code>ref</code> trỏ vào <code>main</code>, nội dung tệp ở repo nguồn có thể bị chỉnh sửa bởi team khác bất kỳ lúc nào. Khi Pipeline ở repo chính kích hoạt, GitLab sẽ tải phiên bản mới nhất ở thời điểm <code>t1</code>. Do đó, mặc dù Commit SHA ở repo chính không hề thay đổi, nội dung cấu hình bị <code>include</code> đã bị biến đổi hoàn toàn.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Đây là vi phạm nghiêm trọng tính tái lập (Reproducibility) trong CI/CD. Quy định bắt buộc: Mọi câu lệnh <code>include:project</code> hoặc <code>remote</code> phải ghim <code>ref</code> bằng <b style="color: var(--accent-primary);">Git Tag (ví dụ <code>ref: 'v1.2.0'</code>)</b> hoặc <b style="color: var(--accent-primary);">Commit SHA ngắn</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 7.2</b> và <b style="color: var(--accent-primary);">QT 5.1</b>.</div>
-
-```yaml
-# NGUY HIỂM: Không ghim phiên bản ref cố định
-include:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• project: 'shared/ci-templates'</div>
-    ref: 'main' # CẤM: Nội dung có thể đổi bất cứ lúc nào!
-    file: '/build.yml'
-
-# CHUẨN AN TOÀN: Ghim phiên bản ref bằng Git Tag cố định
-include:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• project: 'shared/ci-templates'</div>
-    ref: 'v1.2.0' # CHUẨN: Đảm bảo 100% tính tái lập!
-    file: '/build.yml'
+```bash
+curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}"   "${GITLAB_URL}/api/v4/projects/${PID}/ci/lint?include_merged_yaml=true" | jq -r .merged_yaml
 ```
 
----
-</div>
-</details>
+> **Checkpoint 7**: Lệnh in ra toàn bộ nội dung cây cấu hình hợp nhất (Merged YAML DOM). Kích thước file nhỏ gọn và các tham chiếu đã được thế giá trị đầy đủ.
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <code>include: local</code>: Quyền sở hữu 100% nội bộ repo. An toàn tuyệt đối, có đầy đủ vết Git log.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <code>include: project</code>: Quyền sở hữu thuộc về team khác trong cùng GitLab Instance. An toàn cao, kiểm soát được qua phân quyền dự án.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <code>include: template</code>: Quyền sở hữu thuộc về nhà phát triển GitLab CE/EE. An toàn, tuân theo phiên bản nâng cấp của hệ thống GitLab.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <code>include: remote</code>: Quyền sở hữu thuộc về bên thứ ba trên Internet/mạng ngoài. <b style="color: var(--accent-primary);">Rủi ro bảo mật lớn nhất</b> vì không có vết commit trong Git history và phụ thuộc vào hạ tầng mạng bên ngoài.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> <code>include:remote</code> thực hiện một HTTP GET request tự do. Nếu server ngoài bị tấn công chiếm quyền (Supply Chain Attack) hoặc bị gián đoạn mạng, toàn bộ pipeline doanh nghiệp sẽ bị độc hại hoặc ngưng trệ.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Trong môi trường ngân hàng/bảo mật cao, cờ cấu hình <code>remote_includes_allowed</code> bị cấm hẳn. 100% tệp cấu hình dùng chung phải đưa về <code>include:project</code> hoặc <code>local</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 5.1</b>.</div>
+### Bước 8: Dọn Dẹp Môi Trường & Đo Lường Độ Rút Gọn
+Xóa các thư mục template thử nghiệm và lưu lại mẫu kiến trúc chuẩn.
 
-```yaml
-# 4 loại include và mức độ tin cậy bảo mật
-include:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/ci/templates/build.yml'               # High Security (In-repo)</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• project: 'devops/shared-templates'            # High Security (Internal Instance)</div>
-    ref: 'v1.0.0'
-    file: '/templates/node.yml'
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• template: 'Jobs/Build.gitlab-ci.yml'           # Trusted (Vendor Provided)</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• remote: 'https://cdn.company.com/ci/base.yml'   # LOW SECURITY (External Network)</div>
+```bash
+rm -rf templates/
+echo "CI/CD template reuse architecture verified successfully."
 ```
 
+> **Checkpoint 8**: Pipeline đạt chuẩn Enterprise DRY, giảm 65% số dòng mã lặp lại giữa các dự án.
+
 ---
-</div>
+
+## 6. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Chuyên Sâu (Self-Check Q&A)
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q01</span>
+    <span>Tại sao YAML Anchors (&/<<:/*) không thể sử dụng để tái sử dụng cấu hình xuyên qua các tệp được nạp bằng include:? Giải pháp thay thế là gì?</span>
+  </summary>
+  <div class="qa-body">
+    <p><strong>Nguyên nhân</strong>: YAML Anchors là tính năng được định nghĩa ở tầng phân tích cú pháp tĩnh của chuẩn YAML (YAML 1.2 Parser Specification). Trình phân giải YAML xử lý từng tệp văn bản độc lập tại bộ nhớ đệm trước khi cơ chế <code>include:</code> của GitLab CI hợp nhất chúng. Bảng ký hiệu Anchor bị hủy ngay khi kết thúc việc đọc tệp chứa nó.</p>
+    <p><strong>Giải pháp thay thế</strong>: Sử dụng <strong><code>extends:</code></strong> để kế thừa cấu trúc Job hoàn chỉnh hoặc <strong><code>!reference</code> tags</strong> để nhúng các mảng script xuyên tệp.</p>
+  </div>
 </details>
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q02</span>
+    <span>Phân tích chi tiết sự khác nhau về cơ chế hợp nhất giữa Dictionary (Mappings) và List (Sequences) khi sử dụng <code>extends:</code> trong GitLab CI.</span>
+  </summary>
+  <div class="qa-body">
+    <p>Khi Job con kế thừa từ Job cha qua <code>extends:</code>:</p>
+    <ul>
+      <li><strong>Dictionary / Mappings (như <code>variables:</code>, <code>rules:</code>, <code>artifacts:</code>)</strong>: Được thực hiện <strong>Deep Merge</strong>. Các key ở Job cha được giữ lại; nếu Job con khai báo trùng key thì giá trị của Job con sẽ ghi đè Job cha; key mới ở Job con được bổ sung vào.</li>
+      <li><strong>List / Sequences (như <code>script:</code>, <code>before_script:</code>, <code>after_script:</code>, <code>tags:</code>)</strong>: Được thực hiện <strong>Complete Replacement (Ghi đè toàn bộ)</strong>. Toàn bộ danh sách của Job cha bị xóa bỏ và thay thế 100% bằng danh sách khai báo tại Job con.</li>
+    </ul>
   </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Do thuộc tính <b style="color: var(--accent-primary);"><code>include:rules</code></b> được khai báo tại đường dẫn <code>include</code> tệp đó ở tệp chính bị đánh giá kết quả là <code>false</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> <code>include:rules</code> đóng vai trò là <b style="color: var(--accent-primary);">tầng lọc thứ 3</b> trong hệ thống GitLab CI. Thứ tự lọc 3 tầng như sau:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Tầng 1: <code>include:rules</code> (nếu trả về <code>false</code>, tệp YAML đó bị bỏ qua hoàn toàn ở thời điểm t1, tất cả job trong tệp bị xoá sạch).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Tầng 2: <code>workflow:rules</code> (lọc cấp độ Pipeline ở thời điểm t2).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Tầng 3: <code>job:rules</code> (lọc cấp độ từng Job riêng lẻ).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Khi chẩn đoán lý do một loạt job không xuất hiện, luôn kiểm tra điều kiện <code>include:rules</code> tại tệp chính trước khi lật tìm <code>rules</code> bên trong từng job.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 5.4</b>.</div>
+</details>
 
-```yaml
-# Ví dụ include:rules loại bỏ toàn bộ file cấu hình
-include:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/ci/templates/deploy-prod.yml'</div>
-    rules:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• if: '$CI_COMMIT_BRANCH == "main"' # Nếu push branch develop, file này BỊ BỎ QUA HOÀN TOÀN</div>
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q03</span>
+    <span>Cú pháp <code>!reference</code> trong GitLab CI giải quyết hạn chế nào của <code>extends:</code>? Cho ví dụ minh họa.</span>
+  </summary>
+  <div class="qa-body">
+    <p><strong>Hạn chế giải quyết</strong>: <code>!reference</code> giải quyết triệt để hạn chế ghi đè mất danh sách lệnh của <code>extends:</code>. Nó cho phép lập trình viên "chắp vá" hoặc bổ sung thêm các lệnh shell cục bộ vào danh sách lệnh chuẩn mực của Template cha mà không làm mất đi các lệnh bảo mật có sẵn.</p>
+    <p><strong>Ví dụ</strong>:</p>
+    <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">test_job</span><span class="pi">:</span>
+  <span class="na">extends</span><span class="pi">:</span> <span class="s">.base_compliance_template</span>
+  <span class="na">before_script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="kt">!reference</span> <span class="pi">[</span><span class="nv">.base_compliance_template</span><span class="pi">,</span> <span class="nv">before_script</span><span class="pi">]</span>
+    <span class="pi">-</span> <span class="s">echo "Additional local setup..."</span>
+</code></pre></div>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q04</span>
+    <span>Tại sao việc sử dụng <code>ref: main</code> (hoặc <code>latest</code>) trong <code>include:project</code> bị xem là một Anti-Pattern nghiêm trọng trong môi trường Doanh nghiệp?</span>
+  </summary>
+  <div class="qa-body">
+    <p>Bởi vì <code>main</code> là một <strong>Floating Branch (Nhánh biến động)</strong>. Khi đội ngũ Platform / DevOps cập nhật template trung tâm (thêm công cụ mới, đổi cú pháp, tăng yêu cầu bảo mật), thay đổi này lập tức áp dụng ngay lập tức cho tất cả các dự án trong công ty mà không có quá trình thử nghiệm hay cảnh báo trước.</p>
+    <p>Hậu quả là hàng trăm pipeline của các dự án khác có thể bị gãy đồng loạt, làm tê liệt quy trình phát hành phần mềm. Quy chuẩn bắt buộc là phải ghim <code>ref: 'v1.2.0'</code> (Immutable SemVer Tag) hoặc Commit SHA cố định.</p>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q05</span>
+    <span>Phân biệt 4 phương thức nạp tệp của <code>include:</code> (local, project, remote, template) và trường hợp sử dụng tối ưu của từng loại.</span>
+  </summary>
+  <div class="qa-body">
+    <p><strong>4 phương thức <code>include:</code></strong>:</p>
+    <ol>
+      <li><strong><code>include:local</code></strong>: Nạp file trong cùng repository. Tối ưu cho việc module hóa tệp CI dài thành nhiều tệp nhỏ theo stage/service.</li>
+      <li><strong><code>include:project</code> (kèm <code>file:</code> & <code>ref:</code>)</strong>: Nạp file từ một repository khác trong cùng GitLab Instance. Tối ưu cho việc quản lý <em>Central Template Repository</em> của doanh nghiệp.</li>
+      <li><strong><code>include:remote</code></strong>: Tải file qua HTTP/HTTPS URL từ bên ngoài. Dùng khi tích hợp công cụ từ SaaS của bên thứ ba (yêu cầu mạng mở).</li>
+      <li><strong><code>include:template</code></strong>: Nạp các template được đóng gói sẵn của GitLab (như Auto DevOps, SAST.gitlab-ci.yml).</li>
+    </ol>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q06</span>
+    <span>GitLab áp dụng những giới hạn trần kỹ thuật nào đối với tính năng <code>include:</code> và <code>Merged YAML</code>?</span>
+  </summary>
+  <div class="qa-body">
+    <p>Các giới hạn trần bao gồm:</p>
+    <ul>
+      <li><strong>Số lượng tệp Include tối đa</strong>: <strong>150 tệp</strong> lồng nhau cho một pipeline.</li>
+      <li><strong>Dung lượng tối đa của tệp Merged YAML</strong>: <strong>5 MB</strong> (sau khi đã phân giải toàn bộ các include và expand extends).</li>
+      <li><strong>Số tầng kế thừa tối đa của <code>extends:</code></strong>: <strong>11 tầng</strong> lồng nhau.</li>
+      <li><strong>Chống vòng lặp (Circular Dependency)</strong>: GitLab Parser tự động phát hiện và ngắt nếu phát hiện vòng lặp include giữa các tệp.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q07</span>
+    <span>Làm thế nào để truyền biến động vào đường dẫn của <code>include:</code>? Tính năng này có bị hạn chế gì không?</span>
+  </summary>
+  <div class="qa-body">
+    <p>Có thể dùng biến trong <code>include</code>, ví dụ: <code>include: 'templates/$CI_COMMIT_BRANCH.yml'</code>.</p>
+    <p><strong>Hạn chế nghiêm ngặt</strong>: Tại thời điểm nạp <code>include</code> ($t_0$), chỉ có các <strong>Predefined Variables cơ bản</strong> (như <code>CI_COMMIT_REF_NAME</code>, <code>CI_PROJECT_ID</code>) hoặc các biến được truyền từ Pipeline Trigger mới khả dụng. Các biến sinh ra trong quá trình chạy (như biến <code>dotenv</code> hoặc biến sinh từ script) <strong>HOÀN TOÀN KHÔNG THỂ</strong> dùng trong đường dẫn <code>include:</code>.</p>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q08</span>
+    <span>Điều kiện <code>rules:</code> bên trong khối <code>include:</code> hoạt động như thế nào? Nêu một trường hợp ứng dụng thực tế.</span>
+  </summary>
+  <div class="qa-body">
+    <p><strong>Cơ chế</strong>: Cho phép nạp một tệp cấu hình có điều kiện. Nếu biểu thức trong <code>rules:</code> đánh giá là <code>false</code>, tệp cấu hình đó sẽ bị bỏ qua hoàn toàn, không đưa các job bên trong vào pipeline.</p>
+    <p><strong>Ứng dụng thực tế</strong>: Chỉ nạp bộ template kiểm thử hiệu năng tải nặng (Performance/Load Test) khi commit chạy trên nhánh <code>release/*</code> hoặc khi có tag phiên bản:</p>
+    <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">include</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">local</span><span class="pi">:</span> <span class="s1">'</span><span class="s">ci/load-tests.yml'</span>
+    <span class="na">rules</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">if</span><span class="pi">:</span> <span class="s1">'</span><span class="s">$CI_COMMIT_TAG'</span>
+</code></pre></div>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q09</span>
+    <span>Làm sao để một Hidden Job (`.job_template`) có thể kế thừa từ một Hidden Job khác? Cho ví dụ về kế thừa đa tầng.</span>
+  </summary>
+  <div class="qa-body">
+    <p>Hoàn toàn có thể dùng <code>extends:</code> giữa các Hidden Job với nhau để xây dựng kiến trúc phân tầng OOP (Object-Oriented Pipeline):</p>
+    <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="c1"># Tầng 1: Base hạ tầng</span>
+<span class="na">.base_runner</span><span class="pi">:</span>
+  <span class="na">tags</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">k8s-runner</span><span class="pi">]</span>
+
+<span class="c1"># Tầng 2: Base ngôn ngữ (Kế thừa tầng 1)</span>
+<span class="na">.base_python</span><span class="pi">:</span>
+  <span class="na">extends</span><span class="pi">:</span> <span class="s">.base_runner</span>
+  <span class="na">image</span><span class="pi">:</span> <span class="s">python:3.12-alpine</span>
+
+<span class="c1"># Tầng 3: Job thực thi thực tế (Kế thừa tầng 2)</span>
+<span class="na">pytest_job</span><span class="pi">:</span>
+  <span class="na">extends</span><span class="pi">:</span> <span class="s">.base_python</span>
+  <span class="na">script</span><span class="pi">:</span> <span class="pi">[</span><span class="s">pytest</span><span class="pi">]</span>
+</code></pre></div>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q10</span>
+    <span>Giải thích ý nghĩa của API endpoint `/ci/lint?include_merged_yaml=true` trong việc gỡ rối cấu hình CI/CD phức tạp.</span>
+  </summary>
+  <div class="qa-body">
+    <p>Khi sử dụng hàng chục tệp <code>include</code> kết hợp <code>extends</code> và <code>!reference</code>, việc đọc mã nguồn rời rạc rất dễ gây nhầm lẫn về cấu hình cuối cùng mà Runner sẽ nhận được.</p>
+    <p>Gọi API <code>GET /projects/:id/ci/lint?include_merged_yaml=true</code> sẽ yêu cầu GitLab Parser thực thi toàn bộ chu trình biên dịch và trả về <strong>Toàn bộ tài liệu YAML hợp nhất (Merged DOM)</strong> dưới dạng một chuỗi văn bản duy nhất. Đây là công cụ chẩn đoán số 1 để xác minh cấu hình thực tế.</p>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q11</span>
+    <span>Khi nào nên dùng mảng nhiều phần tử trong `extends:` (Multiple Inheritance)? Cần chú ý điều gì về thứ tự ưu tiên?</span>
+  </summary>
+  <div class="qa-body">
+    <p><strong>Khi nào dùng</strong>: Khi một Job cần kế thừa thuộc tính từ nhiều khuôn mẫu khác nhau (ví dụ vừa kế thừa cấu hình môi trường <code>.staging_env</code> vừa kế thừa cấu hình docker <code>.docker_builder</code>): <code>extends: [.staging_env, .docker_builder]</code>.</p>
+    <p><strong>Thứ tự ưu tiên</strong>: Các template được liệt kê <strong>từ trái qua phải</strong>; template đứng sau sẽ ghi đè các thuộc tính trùng tên của template đứng trước, và bản thân Job con sẽ có quyền ghi đè cao nhất lên tất cả các template cha.</p>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary class="qa-summary">
+    <span class="qa-num-badge">Q12</span>
+    <span>So sánh mô hình tái sử dụng truyền thống (Include + Extends) với mô hình hiện đại GitLab CI/CD Components (Catalog).</span>
+  </summary>
+  <div class="qa-body">
+    <p><strong>Mô hình truyền thống (Include + Extends)</strong>:</p>
+    <ul>
+      <li><em>Hạn chế</em>: Không có kiểm tra kiểu dữ liệu đầu vào (Input validation), dễ xung đột tên biến toàn cục, không có tài liệu chuẩn hóa, khó kiểm soát phiên bản độc lập.</li>
+    </ul>
+    <p><strong>Mô hình hiện đại GitLab CI/CD Components</strong>:</p>
+    <ul>
+      <li><em>Ưu điểm</em>: Đóng gói thành các đơn vị chức năng độc lập (Lego blocks) có định nghĩa <strong>Inputs/Parameters tường minh với kiểu dữ liệu và giá trị mặc định</strong>. Được phát hành và lập chỉ mục trên <strong>CI/CD Catalog</strong> với SemVer release, giúp chia sẻ an toàn và trực quan trong toàn doanh nghiệp.</li>
+    </ul>
+  </div>
+</details>
+
+---
+
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+
+### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
+
+```
+                          TÁI SỬ DỤNG CẤU HÌNH CI/CD ENTERPRISE
+                                           │
+     ┌───────────────────┬─────────────────┴─────────────────┬───────────────────┐
+     ▼                   ▼                                   ▼                   ▼
+[ EXTENDS: DEEP MERGE ]  [ !REFERENCE TAGS ]            [ INCLUDE & PINNING ] [ MERGED YAML API ]
+Kế thừa cấu hình Job     Nhúng mảng lệnh script         include:project       /ci/lint API
+Deep-merge Map/Vars      Bảo toàn before_script cha     Luôn ghim SemVer Tag  Đọc cây DOM sau gộp
+Ghi đè 100% Lists        Không bị biên giới tệp chặn    Không dùng ref: main  Kích thước tối đa 5MB
 ```
 
----
-</div>
-</details>
+- **Lựa chọn đúng công cụ**: Dùng `extends:` cho cấu trúc tổng thể của Job, dùng `!reference` cho các khối lệnh shell và dùng `include:project` để tập trung hóa template.
+- **Tuân thủ quy tắc bất biến**: Luôn ghim phiên bản (Pinning SemVer tags) cho các template dùng chung để bảo vệ hệ thống khỏi các sự cố vỡ pipeline diện rộng.
+- **Chẩn đoán qua Merged YAML**: Sử dụng API `/ci/lint` để kiểm tra toàn bộ cây DOM sau phân giải trước khi triển khai thực tế.
 
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">ĐƯỢC PHÉP:</b> Chỉ có các biến hệ thống định trước của GitLab (như <code>$CI_COMMIT_REF_NAME</code>, <code>$CI_PROJECT_PATH</code>, <code>$CI_COMMIT_SHA</code>) và các biến khai báo ở cấp độ Instance/Group/Project CI/CD Variables.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">KHÔNG ĐƯỢC PHÉP:</b> Tất cả các biến môi trường được khai báo trong khối <code>variables:</code> của tệp <code>.gitlab-ci.yml</code> hoặc các biến sinh ra từ job runtime.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Do <code>include</code> được phân giải tại <b style="color: var(--accent-primary);">Thời điểm 2 (t1 - GitLab Includer Phase)</b>. Lúc này GitLab Engine chưa hề nạp hay phân giải khối <code>variables:</code> của tệp <code>.gitlab-ci.yml</code> (vốn được xử lý ở t2).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thực tế DevOps:</b> Không bao giờ cố gắng dùng một biến tự định nghĩa ở đầu tệp <code>.gitlab-ci.yml</code> để truyền vào đường dẫn <code>include: local: "/ci/$MY_CUSTOM_PATH/build.yml"</code>. Đường dẫn sẽ bị ngắt do biến rỗng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 5.3</b>.</div>
+### 7.2. Lộ Trình Bài Học Tiếp Theo
 
-```yaml
-# LỖI THƯỜNG GẶP:
-variables:
-  MY_TEMPLATE_DIR: "node-v18"
+Ở bài học tiếp theo, chúng ta sẽ bước lên chuẩn mực cao nhất của tái sử dụng cấu hình trong GitLab CI/CD: **GitLab CI/CD Components & CI/CD Catalog** — biến các đoạn YAML rời rạc thành các thành phần đóng gói có kiểm soát tham số đầu vào và chia sẻ toàn doanh nghiệp.
 
-include:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• local: '/ci/templates/$MY_TEMPLATE_DIR/build.yml' # KHÔNG CHẠY ĐƯỢC! $MY_TEMPLATE_DIR bị rỗng ở t1.</div>
-```
-
----
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Đánh giá đây là <b style="color: var(--accent-primary);">MÃ NGUỒN XẤU (Code Smell)</b> cần phải refactor rút gọn về <b style="color: var(--accent-primary);">tối đa 2 tầng</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích kỹ thuật:</b> Mặc dù trần kỹ thuật của GitLab cho phép <code>extends</code> lồng nhau tới 11 tầng, nhưng trần nhận thức của con người bị quá tải sau 2 tầng. Với chuỗi 4 tầng, việc theo dõi thuộc tính nào bị ghi đè hay biến nào bị thay thế là cực kỳ phức tạp và dễ gây ra sai sót im lặng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy trình xử lý:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Trích xuất <code>merged_yaml</code> hiện tại để làm mốc đối chứng chuẩn.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Gộp các thuộc tính dùng chung từ <code>job-a</code>, <code>job-b</code>, <code>job-c</code> vào 1-2 Job ẩn chuẩn duy nhất (ví dụ <code>.base-runner-config</code> và <code>.base-script-setup</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Cho <code>job-d</code> <code>extends</code> trực tiếp danh sách mảng 2 job ẩn đó: <code>extends: [.base-runner-config, .base-script-setup]</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> Trích xuất lại <code>merged_yaml</code> và đảm bảo kết quả 100% khớp với mốc ban đầu.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 6.3</b> và <b style="color: var(--accent-primary);">QT 7.1</b>.</div>
-
-```yaml
-# TRƯỚC REFACTOR (4 TẦNG - SAI PHONG CÁCH):
-.level-1: { variables: { L1: "1" } }
-.level-2: { extends: .level-1, variables: { L2: "2" } }
-.level-3: { extends: .level-2, variables: { L3: "3" } }
-my-job:   { extends: .level-3, script: ["echo test"] }
-
-# SAU REFACTOR (DUY NHẤT 1 TẦNG - CHUẨN DOANH NGHIỆP):
-.base-config:
-  variables:
-    L1: "1"
-    L2: "2"
-    L3: "3"
-
-my-job:
-  extends: .base-config
-  script:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• echo "Clean and maintainable"</div>
-```
-
----
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý cốt lõi:</b> Quy trình 4 bước chuyên nghiệp gồm: Trích xuất <code>merged_yaml</code> -> Quét ghim phiên bản -> Kiểm tra mảng bị thay thế -> Xác minh biến môi trường hợp nhất.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy trình 4 bước chi tiết:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Bước 1 (Trích xuất Bức tranh Sự thật):</b> Chạy <code>xem-phan-giai.sh --job <tên_job></code> gọi API <code>POST /ci/lint</code> với param <code>include_merged_yaml: true</code>. Đọc trực tiếp cấu hình Job từ tệp <code>/tmp/current_merged.yml</code> thu được.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Bước 2 (Audit Ghim phiên bản):</b> Chạy lệnh quét <code>dem-include.sh</code> hoặc <code>grep -nE 'ref: *(main|master|HEAD)' .gitlab-ci.yml</code> để phát hiện các tệp <code>include</code> chưa ghim tag, đảm bảo cấu hình không bị biến đổi ngầm ngoài ý muốn.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Bước 3 (Kiểm tra Bẫy mảng bị thay):</b> Kiểm tra xem Job có sử dụng <code>extends</code> hay không. Nếu có, so sánh đối chiếu mảng <code>script</code> của Job cha và Job con trong <code>merged_yaml</code> để xác nhận không có bước lệnh quan trọng nào bị xoá đè ngầm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Bước 4 (Xác minh thẻ <code>!reference</code> và Biến hợp nhất):</b> Đọc danh sách biến <code>variables:</code> đã qua deep merge trong <code>merged_yaml</code> và kiểm tra các chuỗi script được chèn vào qua <code>!reference</code> để chốt danh sách câu lệnh bash chính xác 100% sẽ thực thi trên Runner.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tham chiếu quy tắc:</b> Đối chiếu <b style="color: var(--accent-primary);">QT 4.3</b>, <b style="color: var(--accent-primary);">QT 4.1</b>, <b style="color: var(--accent-primary);">QT 5.2</b>, <b style="color: var(--accent-primary);">QT 6.1</b>.</div>
-
----
-</div>
-</details>
-
-## §V2. Bảng tổng hợp đối chiếu mã quy tắc với 12 câu vấn đáp
-
-| Câu hỏi | Mã Quy tắc kỹ thuật chính | Mức độ quan trọng | Mục tiêu kiểm tra |
-|---|---|---|---|
-| **Câu 1** | **QT 4.1** | 🔥 Câu tủ | 3 thời điểm hợp nhất (t0, t1, t2) |
-| **Câu 2** | **QT 6.1** | 🔥 Câu tủ | Bẫy xoá đè mảng `script` của `extends` |
-| **Câu 3** | **QT 4.2** | ★★★ | Biên giới hoạt động của YAML Anchor |
-| **Câu 4** | **QT 4.3** | ★★★ | Phương pháp chẩn đoán bằng `merged_yaml` |
-| **Câu 5** | **QT 5.2** | ★★★ | Quy tắc hợp nhất mức khoá và tệp gốc thắng |
-| **Câu 6** | **QT 6.2**, **QT 7.1** | ★★★ | Kỹ thuật ghép nối mảng bằng `!reference` |
-| **Câu 7** | **QT 7.2**, **QT 5.1** | ★★★ | Rủi ro không ghim phiên bản `ref` |
-| **Câu 8** | **QT 5.1** | ★★ | Phân loại 4 loại `include` theo bảo mật |
-| **Câu 9** | **QT 5.4** | ★★★ | Cơ chế tầng lọc thứ 3 của `include:rules` |
-| **Câu 10** | **QT 5.3** | ★★ | Phạm vi biến môi trường trong đường dẫn `include` |
-| **Câu 11** | **QT 6.3**, **QT 7.1** | ★★★ | Giới hạn độ sâu `extends` và quy trình refactor |
-| **Câu 12** | **QT 4.3**, **QT 4.1**, **QT 5.2** | 🔥 Câu tủ | Quy trình chẩn đoán 4 bước cho repo sản xuất |
-
----
-
-## §V3. Câu chốt để nói khi phỏng vấn
-
-| # | Ý cốt lõi phỏng vấn | Con số hoặc cơ chế bắt buộc phải phát biểu |
-|---|---|---|
-| **1** | **Ba thời điểm hợp nhất quyết định mọi hành vi** | Có **4** cơ chế dùng lại nhưng chỉ trôi qua **3** thời điểm hợp nhất cố định: parser YAML (t0) -> ghép tệp include (t1) -> phân giải của GitLab engine (t2). |
-| **2** | **Từ điển trộn sâu, mảng bị thay thế toàn bộ** | `extends` thực hiện trộn từ điển nhưng **thay thế hoàn toàn mảng**. Đã từng thấy `script` từ **3** dòng bị rút xuống **1** dòng với **0** cảnh báo — ô im lặng nguy hiểm nhất. |
-| **3** | **Bức tranh sự thật nằm ở tệp sau phân giải** | Tệp thật sự chạy là `merged_yaml`. **1** lệnh `POST /ci/lint` giải quyết được 30 phút tranh luận cảm tính về cú pháp ghi đè. |
-| **4** | **`ref` không ghim là cấu hình không thể tái lập** | `ref: main` nghĩa là "bất cứ thứ gì đang ở đầu nhánh đó". Cùng **1** Git commit SHA nhưng cho ra **2** kết quả pipeline khác nhau nếu tệp include bị sửa đổi ngầm. |
-
----
-
-## §V4. BTVN 4 — Ba câu hỏi chuẩn bị cho Buổi 11
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<code>include</code> hiện tại <b style="color: var(--accent-primary);">không</b> hỗ trợ truyền tham số trực tiếp, mọi giá trị tuỳ biến đều phải đi qua biến môi trường. Hãy phân tích <b style="color: var(--accent-primary);">ba</b> điểm yếu lớn nhất của việc dùng biến môi trường làm giao diện truyền dữ liệu (ví dụ: gõ sai tên biến, thiếu giá trị mặc định, không kiểm tra được kiểu dữ liệu). Từ đó dự đoán cơ chế nào ở Buổi 11 sẽ giải quyết triệt để vấn đề này.
-
-<b style="color: var(--accent-primary);">Gợi ý phân tích chi tiết:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">Gõ sai tên biến (Typo risk):</b> Không có linter nào cảnh báo nếu người dùng truyền <code>VAR_DEPLOY_ENV</code> thay vì <code>DEPLOY_ENV</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">Thiếu giá trị mặc định (Missing Defaults):</b> Người dùng quên truyền biến sẽ khiến job bị sập ở runtime do biến rỗng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">Không kiểm tra được kiểu (No Type Checking):</b> Không thể bắt buộc một biến phải là <code>boolean</code>, <code>number</code> hay thuộc danh sách <code>enum</code> cho phép.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">4.</b> <b style="color: var(--accent-primary);">Cơ chế Buổi 11:</b> Khái niệm <b style="color: var(--accent-primary);"><code>spec:inputs</code></b> trong <b style="color: var(--accent-primary);">CI/CD Components</b> sẽ giải quyết triệt để cả 3 điểm yếu này nhờ giao diện tham số khai báo kiểu cứng.</div>
-
----
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Việc ghim <code>ref</code> bằng Git Tag đòi hỏi phải có quy trình phát hành và nâng cấp phiên bản rõ ràng. Hãy xây dựng một quy tắc đánh số phiên bản Semantic Versioning (<code>vX.Y.Z</code>) áp dụng cho tệp cấu hình CI/CD dùng chung, và định nghĩa rõ ràng thế nào là một <b style="color: var(--accent-primary);">Thay thế phá vỡ (Breaking Change)</b> đối với tệp cấu hình CI/CD.
-
-<b style="color: var(--accent-primary);">Gợi ý phân tích chi tiết:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> <b style="color: var(--accent-primary);">MAJOR (X):</b> Khi có Breaking Change — xoá tên job, đổi tên biến bắt buộc, thay đổi hành vi mặc định của pipeline khiến các repo đằng sau bị ngắt ngầm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> <b style="color: var(--accent-primary);">MINOR (Y):</b> Khi bổ sung tính năng mới không phá vỡ — thêm job ẩn mới, hỗ trợ thêm tùy chọn biến mới với giá trị mặc định tương thích ngược.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> <b style="color: var(--accent-primary);">PATCH (Z):</b> Khi sửa lỗi nhỏ (bug fixes) — tối ưu câu lệnh bash, sửa hình ảnh docker image tag nhỏ không ảnh hưởng cú pháp.</div>
-
----
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Nếu bạn cung cấp cho các team phát triển một Job mẫu qua <code>extends</code>, họ chỉ cần khai báo lại thuộc tính <code>script</code> là toàn bộ các bước kiểm tra bảo mật ở Job cha bị xoá sạch. Làm thế nào để thiết kế một cấu hình CI/CD dùng chung mà người dùng <b style="color: var(--accent-primary);">KHÔNG THỂ XOÁ HOẶC PHÁ BỎ</b> các bước kiểm tra lõi của bạn? Hãy ghi lại dự đoán của bạn trước khi bước vào Buổi 11.
-
-<b style="color: var(--accent-primary);">Gợi ý phân tích chi tiết:</b>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">1.</b> Không cho phép kế thừa tự do bằng <code>extends</code> đối với các job bảo mật.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">2.</b> Ép buộc các job bảo mật chạy ở một <b style="color: var(--accent-primary);">Stage cố định</b> độc lập (ví dụ <code>.pre</code> hoặc <code>security-audit</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-cyan);"><b style="color: var(--accent-cyan);">3.</b> Sử dụng <b style="color: var(--accent-primary);">CI/CD Components</b> kết hợp với <b style="color: var(--accent-primary);">Required Pipeline Configurations</b> ở cấp độ Group/Instance của GitLab để đóng đóng băng hoàn toàn luồng kiểm soát.</div>
+> [!TIP]
+> **Khám phá bài học tiếp theo**: [Bài 11: Hiện Đại Hóa CI/CD Với GitLab CI/CD Components & CI/CD Catalog](gitlab-11-11-components-va-catalog.html)
 {% endraw %}
-</div>
-</details>

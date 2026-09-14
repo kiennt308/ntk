@@ -45,7 +45,7 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 > **Chuẩn mực bảo mật cấp doanh nghiệp bắt buộc phải loại bỏ hoàn toàn Docker-in-Docker và Socket Mounting, chuyển dịch sang các công cụ Rootless OCI Image Builders như Google Kaniko hoặc Red Hat Buildah, cho phép biên dịch và đẩy container image mà không cần đặc quyền root hay bất kỳ tiến trình nền daemon nào.**
 
-```
+```text
        SO SÁNH CƠ CHẾ VẬN HÀNH GIỮA DOCKER DAEMON VÀ ROOTLESS KANIKO
 
   [ Truyền Thống: Docker-in-Docker ]               [ Hiện Đại: Rootless Kaniko / Buildah ]
@@ -140,8 +140,7 @@ build_kaniko_rootless:
   before_script:
     # Thiết lập file cấu hình xác thực cho Kaniko
     - mkdir -p /kaniko/.docker
-    - echo "{"auths":{"${CI_REGISTRY}":{"auth":"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '
-')"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - >-
       /kaniko/executor
@@ -177,7 +176,9 @@ RUN go mod download
 COPY . .
 
 # Biên dịch Binary Tĩnh không phụ thuộc CGO
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build     -ldflags="-s -w -extldflags '-static'"     -o /app/bin/server ./cmd/server
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags="-s -w -extldflags '-static'" \
+    -o /app/bin/server ./cmd/server
 
 # -------------------------------------------------------------
 # Stage 2: Minimal Distroless / Scratch Runtime Stage
@@ -201,47 +202,67 @@ ENTRYPOINT ["/app/server"]
 
 ## 4. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
-### 4.1. Sự Cố Thực Tế: Kaniko OOM Killed Khi Quét Snapshot Thư Mục Nặng
-
-> **Bối Cảnh**: Một pipeline đóng gói ứng dụng Node.js Monorepo sử dụng Kaniko bị sập ngắt quãng với mã lỗi `command terminated with exit code 137` (OOM - Out of Memory) khi container pod chạm ngưỡng giới hạn 4GB RAM.
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│ 1. Tại sao Job Kaniko bị thoát mã lỗi 137?                              │
-│    -> Pod bị Kubernetes OOMKiller tiêu diệt do tiêu tốn vượt 4GB RAM.   │
-│                                                                         │
-│ 2. Tại sao Kaniko lại tiêu tốn nhiều RAM bất thường?                   │
-│    -> Kaniko phải nạp hàng trăm ngàn tệp vào RAM trong bước Snapshot.   │
-│                                                                         │
-│ 3. Tại sao có hàng trăm ngàn tệp cần snapshot?                          │
-│    -> Thư mục node_modules và .git/ khổng lồ bị sao chép vào context.   │
-│                                                                         │
-│ 4. Tại sao .git và node_modules thừa lại lọt vào context?               │
-│    -> Dự án không tạo tệp .dockerignore tại thư mục gốc.                │
-│                                                                         │
-│ 5. NGUYÊN NHÂN CỐT LÕI (Root Cause):                                   │
-│    -> Thiếu tệp .dockerignore và cấu hình cờ snapshot mặc định không    │
-│       tối ưu (thiếu cờ --snapshot-mode=redo và --compressed-caching).  │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    INC["Sự Cố: Kaniko Job bị OOM Killed (Exit code 137) khi đóng gói Node.js Monorepo"]
+    W1["Tại sao bị OOM Killed? Pod vượt quá ngưỡng giới hạn 4GB RAM được cấp phát"]
+    W2["Tại sao Kaniko tốn hơn 4GB RAM? Kaniko nạp hàng trăm ngàn tệp vào RAM để snapshot"]
+    W3["Tại sao lại có hàng trăm ngàn tệp? Thư mục node_modules và .git/ bị copy vào context"]
+    W4["Tại sao .git và node_modules lọt vào? Dự án thiếu tệp .dockerignore ở thư mục gốc"]
+    W5["Giải pháp cốt lõi: Tạo .dockerignore nghiêm ngặt và thêm cờ --snapshot-mode=redo --compressed-caching=false"]
+    
+    INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.2. Giải Pháp Khắc Phục Triệt Để
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 06:20 AM</span> Một pipeline đóng gói ứng dụng Node.js Monorepo sử dụng Google Kaniko trên Kubernetes Runner bị sập ngắt quãng với mã lỗi `command terminated with exit code 137` (OOM - Out of Memory) khi container pod chạm ngưỡng giới hạn 4GB RAM được cấp phát trong Resource Limit.
 
-1. **Thiết lập tệp `.dockerignore` nghiêm ngặt**:
-   ```
-   .git
-   .gitlab-ci.yml
-   node_modules
-   npm-debug.log
-   dist
-   coverage
-   .turbo
-   ```
-2. **Thêm cờ tối ưu RAM cho Kaniko**:
-   - `--snapshot-mode=redo`: Chỉ snapshot các tệp có timestamp thay đổi thay vì so sánh toàn bộ byte hash.
-   - `--compressed-caching=false`: Giảm áp lực nén zip trên RAM của runner.
+### Hậu Quả & Log Lỗi Thực Tế:
+Job build container image bị hủy đột ngột, làm gián đoạn toàn bộ luồng triển khai phát hành:
+
+```text
+$ /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --destination "${IMAGE_TAG}"
+INFO[0001] Resolved base image node:20-alpine to node:20-alpine
+INFO[0003] Taking snapshot of full filesystem...
+INFO[0025] Resolving paths for COPY . .
+INFO[0048] Taking snapshot of files...
+command terminated with exit code 137
+ERROR: Job failed: command terminated with exit code 137 (OOMKilled)
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Job Kaniko bị thoát mã lỗi 137?** &rarr; Kubernetes OOMKiller đã tiêu diệt container pod do mức tiêu thụ bộ nhớ RAM thực tế vượt quá 4GB limit.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Kaniko lại tiêu tốn lượng RAM khổng lồ như vậy?** &rarr; Trình Snapshotting của Kaniko phải quét và lưu trữ metadata/băm của hàng trăm ngàn tệp tin vào RAM ở lệnh `COPY . .`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao lại có hàng trăm ngàn tệp tin cần snapshot?** &rarr; Toàn bộ thư mục lịch sử Git khổng lồ `.git/` và các thư mục phụ thuộc cục bộ `node_modules/` bị sao chép trực tiếp vào build context.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao `.git/` và `node_modules/` lại lọt vào context?** &rarr; Dự án không có tệp cấu hình `.dockerignore` tại thư mục gốc của repository.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để**: Khởi tạo tệp `.dockerignore` loại bỏ `.git`, `node_modules`, `coverage`, đồng thời thêm cờ `--snapshot-mode=redo` (chỉ theo dõi mtime) và `--compressed-caching=false` để giảm áp lực bộ nhớ RAM cho Kaniko.
+
+### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+
+#### Cạm bẫy 1: Sự cố rò rỉ socket root `/var/run/docker.sock` trên Multi-tenant Runner
+- **Hiện tượng**: Một job CI của developer có thể thực hiện lệnh `docker run` chiếm quyền root máy chủ host của công ty.
+- **Nguyên nhân tầng sâu**: Runner sử dụng Docker executor và mount trực tiếp socket Docker của host.
+- **Cách gỡ rối**: Chuyển ngay sang sử dụng Kaniko hoặc Buildah trên Kubernetes Runner không phân quyền (Non-root).
+
+#### Cạm bẫy 2: Image Kaniko không có shell bị lỗi khi chạy `before_script`
+- **Hiện tượng**: Job CI báo lỗi `exec: "/bin/sh": stat /bin/sh: no such file or directory`.
+- **Nguyên nhân**: Sử dụng image `gcr.io/kaniko-project/executor:latest` (Distroless không shell).
+- **Biện pháp**: Luôn sử dụng image có hậu tố `-debug` (ví dụ: `executor:v1.20.0-debug`) và khai báo `entrypoint: [""]`.
+
+#### Cạm bẫy 3: Rò rỉ thông tin xác thực Registry trong Image History
+- **Hiện tượng**: Kẻ xấu dùng lệnh `docker history` đọc được toàn bộ API token hoặc token gitlab do truyền qua `ARG`.
+- **Nguyên nhân**: Sử dụng lệnh `ARG DOCKER_AUTH` trong Dockerfile.
+- **Biện pháp**: Cấu hình xác thực qua tệp `/kaniko/.docker/config.json` ở Userspace thay vì truyền vào Dockerfile.
+
+#### Cạm bẫy 4: Kích thước Image phình to hàng trăm MB do để sót Compiler
+- **Hiện tượng**: Image runtime chứa cả gcc, g++, build-essential và mã nguồn thô.
+- **Nguyên nhân**: Viết Dockerfile đơn tầng (Single-stage).
+- **Biện pháp**: Sử dụng Multi-stage Dockerfile với Runtime Base Image là `gcr.io/distroless/static-debian12:nonroot` hoặc `alpine`.
+
+#### Cạm bẫy 5: Không tận dụng Remote Cache khiến build image tốn 10 phút
+- **Hiện tượng**: Mỗi lần chạy CI, Kaniko đều tải lại toàn bộ package và biên dịch lại từ đầu.
+- **Nguyên nhân**: Không bật cờ `--cache=true` và thiếu `--cache-repo`.
+- **Biện pháp**: Bổ sung `--cache=true --cache-repo=$CI_REGISTRY_IMAGE/cache --cache-ttl=168h`.
 
 ---
 
@@ -253,7 +274,7 @@ ENTRYPOINT ["/app/server"]
 - Cấu hình pipeline GitLab CI/CD chạy Kaniko Rootless build.
 - Bật tính năng Remote Registry Layer Caching và kiểm tra hiệu năng.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB KANIKO TRÊN GITLAB RUNNER
 
       [ GitLab Runner Pod (Rootless) ]
@@ -317,7 +338,7 @@ go 1.22
 ```
 
 #### Bước 3: Tạo Tệp `.dockerignore` Loại Bỏ Rác Context
-```
+```text
 .git
 .gitlab-ci.yml
 *.md
@@ -357,8 +378,7 @@ build_container_image:
     entrypoint: [""]
   before_script:
     - mkdir -p /kaniko/.docker
-    - echo "{"auths":{"${CI_REGISTRY}":{"auth":"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '
-')"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - >-
       /kaniko/executor
@@ -383,7 +403,7 @@ build_container_image:
 - Sửa đổi nội dung `fmt.Fprintf` trong `main.go`.
 - Chạy lại pipeline.
 - Quan sát log bước `COPY go.mod ./` và `RUN go mod download`:
-  ```bash
+  ```text
   INFO[0003] Found cached layer, skipping execution!
   INFO[0003] Using cache for COPY go.mod ./
   INFO[0004] Using cache for RUN go mod download
@@ -414,10 +434,15 @@ security_scan:
     <span class="qa-num-badge">Q01</span>
     <span>Tại sao gắn socket `/var/run/docker.sock` vào CI Runner lại là một lỗ hổng bảo mật nghiêm trọng (Critical Risk)?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Bản chất nguy hiểm:</strong></p>
     <p>Tiến trình <code>dockerd</code> trên máy Host chạy với đặc quyền <code>root</code> cao nhất. Khi gắn docker socket vào bên trong runner container, container đó có toàn quyền ra lệnh cho daemon host. Kẻ xấu có thể thực thi lệnh:</p>
-    <pre><code>docker run -v /:/host-root alpine chroot /host-root rm -rf /</code></pre>
+    <div class="language-bash highlighter-rouge"><pre class="highlight"><code>docker run -v /:/host-root alpine chroot /host-root rm -rf /
+</code></pre></div>
     <p>Lệnh này sẽ chiếm quyền điều khiển toàn bộ hệ điều hành Host, đọc toàn bộ biến môi trường bí mật của các job khác đang chạy chung máy chủ và phá hủy toàn bộ hạ tầng.</p>
   </div>
 </details>
@@ -427,7 +452,11 @@ security_scan:
     <span class="qa-num-badge">Q02</span>
     <span>Sự khác biệt cốt lõi giữa cơ chế Snapshot của Kaniko và cơ chế Copy-on-Write (CoW) của Docker daemon là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>So sánh cơ chế:</strong></p>
     <ul>
       <li><strong>Docker Daemon</strong>: Sử dụng kernel driver chuyên dụng (OverlayFS) để tạo các tầng mount ảo. Mọi thao tác ghi tệp diễn ra tức thì ở tầng CoW trên cùng với hiệu năng native.</li>
@@ -441,7 +470,11 @@ security_scan:
     <span class="qa-num-badge">Q03</span>
     <span>Tại sao hình ảnh Kaniko chính thức có hậu tố `-debug` (ví dụ: `gcr.io/kaniko-project/executor:debug`) thường được dùng trong GitLab CI?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải thích kỹ thuật:</strong></p>
     <p>Image Kaniko tiêu chuẩn (không có nhãn debug) là một Distroless image tối giản chỉ chứa đúng binary <code>/kaniko/executor</code> và <em>không có bất kỳ shell nào</em> (không có <code>/bin/sh</code> hay <code>/bin/bash</code>). Do GitLab Runner yêu cầu một shell để thực thi các khối <code>before_script</code> và <code>script</code>, nên bắt buộc phải sử dụng phiên bản <code>-debug</code> (chứa Busybox shell).</p>
   </div>
@@ -452,15 +485,20 @@ security_scan:
     <span class="qa-num-badge">Q04</span>
     <span>Làm thế nào để truyền cờ xác thực nhiều Container Registry cùng lúc vào Kaniko?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp:</strong></p>
     <p>Tạo cấu trúc JSON chuẩn tại tệp <code>/kaniko/.docker/config.json</code> chứa nhiều khóa trong mảng <code>auths</code>, ví dụ vừa xác thực GitLab Registry để push, vừa xác thực Docker Hub / Harbor nội bộ để pull base image:</p>
-    <pre><code>{
-  "auths": {
-    "https://index.docker.io/v1/": { "auth": "&lt;base64-dockerhub-token&gt;" },
-    "registry.gitlab.corp.internal": { "auth": "&lt;base64-gitlab-token&gt;" }
-  }
-}</code></pre>
+    <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"auths"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"https://index.docker.io/v1/"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"auth"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;base64-dockerhub-token&gt;"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"registry.gitlab.corp.internal"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"auth"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;base64-gitlab-token&gt;"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
   </div>
 </details>
 
@@ -469,7 +507,11 @@ security_scan:
     <span class="qa-num-badge">Q05</span>
     <span>Cờ `--cache-repo` trong Kaniko có tác dụng gì và tại sao nên tách riêng cache repository?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Phân tích:</strong></p>
     <p><code>--cache-repo</code> chỉ định vị trí trên Container Registry dùng để lưu trữ các intermediate layers được cache. Việc tách riêng kho cache (ví dụ: <code>my-image/cache</code>) giúp:</p>
     <ul>
@@ -484,7 +526,11 @@ security_scan:
     <span class="qa-num-badge">Q06</span>
     <span>Khi nào nên sử dụng Buildah thay vì Kaniko trong hạ tầng CI/CD?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên tắc chọn lựa:</strong></p>
     <ul>
       <li>Chọn <strong>Kaniko</strong> khi hạ tầng chạy trên Kubernetes thuần và pipeline chỉ cần build từ tệp <code>Dockerfile</code> tiêu chuẩn.</li>
@@ -498,7 +544,11 @@ security_scan:
     <span class="qa-num-badge">Q07</span>
     <span>Tại sao cần khai báo `entrypoint: [""]` khi khai báo image Kaniko trong GitLab CI?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Bản chất:</strong></p>
     <p>Mặc định image Kaniko định nghĩa Entrypoint là <code>/kaniko/executor</code>. Nếu không ghi đè bằng <code>entrypoint: [""]</code>, GitLab Runner sẽ không thể gọi <code>/bin/sh</code> để truyền các tập lệnh script của job vào container, dẫn đến lỗi job thất bại ngay khi khởi động.</p>
   </div>
@@ -509,7 +559,11 @@ security_scan:
     <span class="qa-num-badge">Q08</span>
     <span>Làm thế nào để tối ưu hóa thứ tự các câu lệnh trong Dockerfile để đạt tỷ lệ Cache Hit cao nhất?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên tắc vàng:</strong></p>
     <ol>
       <li>Đặt các lệnh ít thay đổi nhất lên đầu (Base Image, cài đặt OS packages, biến ENV).</li>
@@ -524,7 +578,11 @@ security_scan:
     <span class="qa-num-badge">Q09</span>
     <span>Distroless Image là gì và tại sao nó là tiêu chuẩn vàng cho Security trong Dockerfile?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Khái niệm:</strong></p>
     <p>Distroless Images (do Google khởi xướng) chỉ chứa duy nhất ứng dụng của bạn và các runtime dependencies tối thiểu (như glibc, ca-certificates). Nó <em>không chứa package manager (apt/apk), không chứa shell (bash/sh), không chứa các tiện ích Linux phổ biến (curl/wget/netcat)</em>. Kẻ tấn công nếu khai thác được lỗi ứng dụng cũng không thể mở reverse shell hay tải payload độc hại vào container.</p>
   </div>
@@ -535,7 +593,11 @@ security_scan:
     <span class="qa-num-badge">Q10</span>
     <span>Làm sao để build Container Image đa kiến trúc CPU (Multi-arch ARM64/AMD64) bằng Kaniko hoặc Docker Buildx?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Kỹ thuật:</strong></p>
     <ul>
       <li>Với <strong>Kaniko</strong>: Chạy job song song trên 2 runner vật lý riêng biệt (1 runner x86_64 và 1 runner ARM64), sau đó dùng <code>manifest-tool</code> hoặc <code>docker manifest create</code> để gộp thành 1 OCI Multi-Arch Manifest duy nhất.</li>
@@ -549,7 +611,11 @@ security_scan:
     <span class="qa-num-badge">Q11</span>
     <span>Tại sao không nên sử dụng tag `:latest` để deploy trong môi trường Production?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Rủi ro:</strong></p>
     <ul>
       <li>Tag <code>:latest</code> là tag có thể bị ghi đè (Mutable tag), phá vỡ tính bất biến (Immutability) của bản phát hành.</li>
@@ -564,7 +630,11 @@ security_scan:
     <span class="qa-num-badge">Q12</span>
     <span>Làm cách nào để ngăn chặn rò rỉ Build Secrets (như SSH Keys, NPM Tokens) trong các layer của Container Image?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp:</strong></p>
     <ol>
       <li>Tuyệt đối không dùng <code>ARG</code> hoặc <code>ENV</code> để truyền API Keys/SSH Keys vì chúng sẽ bị lưu vĩnh viễn trong Image Metadata history.</li>
@@ -586,7 +656,7 @@ security_scan:
 
 ### 7.2. Sơ Đồ Tư Duy Hệ Thống Container CI/CD (Mindmap)
 
-```
+```text
                      HỆ THỐNG CONTAINER IMAGE CI/CD TOÀN DIỆN
                                        │
         ┌──────────────────────────────┼──────────────────────────────┐

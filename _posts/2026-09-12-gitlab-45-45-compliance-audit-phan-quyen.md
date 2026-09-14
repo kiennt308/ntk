@@ -43,7 +43,7 @@ Trong một tổ chức quy mô lớn, việc sử dụng 5 vai trò mặc đị
 
 > **Mô hình quản trị doanh nghiệp hiện đại kết hợp: Custom Roles (phân quyền mịn theo từng chức năng), Service Accounts (tài khoản bot độc lập không gắn với con người), SAML SSO/SCIM Sync (tự động thu hồi quyền khi nhân sự nghỉ việc), IP Allowlisting và Audit Events Streaming thời gian thực sang hệ thống SIEM tập trung.**
 
-```
+```text
        HỆ THỐNG QUẢN TRỊ DANH TÍNH & KIỂM TOÁN DOANH NGHIỆP
 
   [ Enterprise IdP: Okta / Entra ID ]

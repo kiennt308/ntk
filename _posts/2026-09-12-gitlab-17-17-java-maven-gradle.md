@@ -42,7 +42,7 @@ Java là xương sống của các hệ thống tài chính, ngân hàng và th�
 
 > **Một Pipeline Java Enterprise chuẩn mực bắt buộc phải di dời kho lưu trữ cục bộ (`.m2/repository` hoặc `.gradle/caches`) vào bên trong `$CI_PROJECT_DIR`, tắt hoàn toàn Daemon trên CI (`--no-daemon`), sử dụng cờ `--release` để đảm bảo an toàn nhị phân và chuyển đổi JaCoCo sang Cobertura XML.**
 
-```
+```text
    KIẾN TRÚC BIÊN DỊCH JAVA MULTI-MODULE CHUẨN ENTERPRISE
    
    GitLab Runner Container (OpenJDK 21 Alpine)
@@ -205,7 +205,10 @@ publish_jib_container:
   script:
     - echo "=== [Stage Publish] Building Distroless OCI Image with Jib ==="
     # Jib tự động đóng gói Java layer và đẩy trực tiếp lên Registry không cần Docker daemon
-    - mvn $MAVEN_CLI_OPTS compile jib:build         -Dimage="${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"         -Djib.to.auth.username="${CI_REGISTRY_USER}"         -Djib.to.auth.password="${CI_REGISTRY_PASSWORD}"
+    - mvn $MAVEN_CLI_OPTS compile jib:build \
+        -Dimage="${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}" \
+        -Djib.to.auth.username="${CI_REGISTRY_USER}" \
+        -Djib.to.auth.password="${CI_REGISTRY_PASSWORD}"
 ```
 
 ---
@@ -224,7 +227,28 @@ graph TD
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 06:15 AM</span> Ngay sau khi bản phát hành Spring Boot mới được deploy lên môi trường Production Java 17, hệ thống xử lý giao dịch bị crash hàng loạt với ngoại lệ `java.lang.NoSuchMethodError: java.lang.String.stripIndent()`, dù toàn bộ pipeline CI/CD trước đó đều xanh 100%.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+Production Pods liên tục crashloop với thông báo lỗi runtime thiếu phương thức:
+
+```text
+2026-09-12 06:15:32.410 ERROR [payments-service] [main] o.s.boot.SpringApplication: Application run failed
+java.lang.NoSuchMethodError: 'java.lang.String java.lang.String.stripIndent()'
+    at com.corp.payments.util.TemplateRenderer.render(TemplateRenderer.java:45)
+    at com.corp.payments.PaymentsApplication.main(PaymentsApplication.java:28)
+Pod status: CrashLoopBackOff (Restart Count: 5)
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Production JVM ném lỗi `NoSuchMethodError`?** Phương thức `String.stripIndent()` được gọi trong code nhưng không tồn tại trên Java 17 JRE của môi trường Production.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lập trình viên sử dụng được hàm này?** Phương thức này được bổ sung trong Java 21; lập trình viên dùng máy local cài JDK 21 nên IDE tự động gợi ý hàm.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao pipeline CI không phát hiện ra lỗi khi biên dịch?** Runner sử dụng Docker Image chứa JDK 21 và `pom.xml` chỉ cấu hình `-source 17 -target 17`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao `-target 17` không báo lỗi?** Thuộc tính `-target 17` chỉ hạ phiên bản Bytecode xuống mức 55 nhưng vẫn liên kết với thư viện chuẩn (Bootclasspath) của JDK 21 đang cài trên máy.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để:** Cấu hình `<release>17</release>` trong `maven-compiler-plugin`. Cờ `--release` ép javac liên kết chính xác với chữ ký API của Java 17, chặn đứng lỗi ngay tại thời điểm biên dịch trên CI.
+
+### Phân Tích 5 Cạm Bẫy Phổ Biến Nhất:
 
 #### Cạm bẫy 1: Maven tải lại toàn bộ dependencies mỗi lần chạy do thiếu Cache Relocation
 - **Hiện tượng**: Job Maven mất 4 phút tải thư viện dù đã khai báo `cache: paths: [".m2/"]`.
@@ -255,7 +279,7 @@ graph TD
 
 ## 5. Hands-on Lab: Xây Dựng CI/CD Pipeline Java Enterprise Tối Ưu (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                  LAB ARCHITECTURE: JAVA ENTERPRISE CI                  │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -413,7 +437,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q01</span>
     <span>Tại sao cần sử dụng cờ `--release 17` thay vì `-source 17 -target 17` khi biên dịch Java bằng JDK 21 trong CI/CD?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Sự khác biệt bản chất</strong>:</p>
     <ul>
       <li><code>-source 17 -target 17</code>: Chỉ kiểm tra cú pháp và sinh ra bytecode tương thích với Java 17, nhưng <strong>vẫn liên kết với thư viện chuẩn (Bootclasspath/rt.jar) của JDK 21</strong>. Lập trình viên có thể gọi nhầm các API mới của Java 21 mà compiler không báo lỗi, dẫn đến crash <code>NoSuchMethodError</code> khi chạy trên Production Java 17.</li>
@@ -427,7 +455,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q02</span>
     <span>Tại sao trong môi trường CI/CD Container, việc sử dụng Gradle Daemon (`--daemon`) bị coi là một Anti-Pattern nguy hiểm?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Gradle Daemon được thiết kế để duy trì một tiến trình JVM chạy nền liên tục nhằm tận dụng Hot-JIT compilation cho các lập trình viên trên máy cá nhân.</p>
     <p>Trong môi trường CI/CD Container (Ephemeral Runners): Mỗi Job chạy trong một container tạm thời và container sẽ bị hủy sau khi xong. Daemon chạy ngầm sẽ chiếm dụng 1.5GB - 3GB RAM không tự giải phóng, làm cạn kiệt bộ nhớ máy chủ Runner và khiến Kubernetes kích hoạt <strong>OOM Killer (Exit code 137)</strong>. Luôn luôn phải dùng <strong><code>--no-daemon</code></strong> trong CI.</p>
   </div>
@@ -438,7 +470,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q03</span>
     <span>Hai tùy chọn `-B` và `-ntp` trong câu lệnh Maven mang lại lợi ích gì cho hiệu năng và khả năng quan sát của Pipeline?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong><code>-B</code> (Batch Mode)</strong>: Chạy ở chế độ không tương tác, vô hiệu hóa việc hỏi input người dùng, tối ưu hóa hiển thị cho máy móc.</p>
     <p><strong><code>-ntp</code> (No Transfer Progress)</strong>: Tắt hoàn toàn việc in tiến trình tải từng byte của các tệp JAR phụ thuộc. Lệnh này giúp giảm tới <strong>90% dung lượng tệp Trace Log</strong>, giảm tải cho API Server của GitLab và tăng từ 15% đến 25% tốc độ thực thi của Job.</p>
   </div>
@@ -449,7 +485,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q04</span>
     <span>Google Jib giúp giải quyết những thách thức nào khi đóng gói Docker Image cho ứng dụng Java trong CI/CD?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Các lợi ích vượt trội của Google Jib</strong>:</p>
     <ol>
       <li><strong>Rootless 100%</strong>: Jib tự xây dựng cấu trúc OCI Image trực tiếp từ Java bytecode và đẩy lên Registry mà <strong>không cần cài đặt Docker daemon hay cấp quyền <code>privileged</code></strong>.</li>
@@ -464,7 +504,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q05</span>
     <span>Làm thế nào để hiển thị báo cáo Độ phủ kiểm thử JaCoCo (Code Coverage) trực tiếp trên GitLab Merge Request Widget?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>GitLab chỉ hỗ trợ phân tích định dạng báo cáo <strong>Cobertura XML</strong>. Để hiển thị JaCoCo:</p>
     <ol>
       <li>Chạy bài test và sinh báo cáo JaCoCo: <code>mvn test jacoco:report</code> (tạo ra <code>target/site/jacoco/jacoco.xml</code>).</li>
@@ -486,11 +530,15 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q06</span>
     <span>Cơ chế Maven Reactor trong dự án Multi-Module hoạt động như thế nào và các cờ `-pl` / `-am` có ý nghĩa gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Maven Reactor</strong> phân tích cây phụ thuộc giữa các module trong dự án để quyết định thứ tự biên dịch hợp lý.</p>
     <p><strong>Ý nghĩa các cờ</strong>:</p>
     <ul>
-      <li><code>-pl <module-name></code> (Project List): Chỉ định biên dịch duy nhất module mục tiêu.</li>
+      <li><code>-pl &lt;module-name&gt;</code> (Project List): Chỉ định biên dịch duy nhất module mục tiêu.</li>
       <li><code>-am</code> (Also Make): Yêu cầu Maven tự động tìm và biên dịch toàn bộ các module phụ thuộc (Upstream dependencies) mà module mục tiêu cần.</li>
     </ul>
     <p>Kết hợp <code>mvn test -pl order-service -am</code> giúp tăng tốc độ kiểm thử trong Monorepo bằng cách chỉ test đúng service bị thay đổi và các thư viện liên quan.</p>
@@ -502,7 +550,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q07</span>
     <span>Làm thế nào để cấu hình an toàn cho việc xác thực với Private Maven Repository (Nexus / Artifactory) trong GitLab CI?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Sử dụng tính năng <strong>CI/CD File-type Variable</strong> để tạo tệp <code>settings.xml</code> chứa thông tin xác thực từ các biến Masked:</p>
     <div class="language-bash highlighter-rouge"><pre class="highlight"><code>mvn <span class="nv">$MAVEN_CLI_OPTS</span> <span class="nt">-s</span> <span class="s2">"</span><span class="nv">$CI_SETTINGS_XML</span><span class="s2">"</span> deploy
 </code></pre></div>
@@ -515,7 +567,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q08</span>
     <span>Sự khác biệt giữa Maven Surefire Plugin và Maven Failsafe Plugin trong chu trình kiểm thử CI/CD là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Surefire Plugin</strong>: Được thiết kế để chạy <strong>Unit Tests</strong> trong stage <code>test</code>. Nếu có bất kỳ bài test nào bị fail, Surefire sẽ dừng tiến trình build ngay lập tức.</p>
     <p><strong>Failsafe Plugin</strong>: Được thiết kế để chạy <strong>Integration Tests</strong> trong stage <code>integration-test</code> và <code>verify</code>. Nếu có bài test bị fail, Failsafe vẫn cho phép tiến trình chạy tiếp giai đoạn <code>post-integration-test</code> để thực hiện dọn dẹp tài nguyên (tắt Database container, đóng port) trước khi chính thức đánh dấu Job thất bại ở bước <code>verify</code>.</p>
   </div>
@@ -526,7 +582,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q09</span>
     <span>Tại sao cần cấu hình `-Djava.awt.headless=true` trong môi trường CI/CD Java?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Môi trường Linux Container của Runner không có giao diện đồ họa (Headless environment, không có X11 server hoặc màn hình hiển thị). Nếu một thư viện trong dự án (như công cụ sinh biểu đồ, vẽ captcha hoặc xử lý ảnh) cố gắng khởi tạo Java AWT GUI context, JVM sẽ ném ra lỗi <code>java.awt.HeadlessException</code>.</p>
     <p>Truyền <code>-Djava.awt.headless=true</code> chỉ thị cho JVM sử dụng engine đồ họa phần mềm thuần túy trên bộ nhớ, ngăn chặn hoàn toàn lỗi crash.</p>
   </div>
@@ -537,7 +597,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q10</span>
     <span>Làm thế nào để xử lý việc tải lại các gói phụ thuộc `SNAPSHOT` mới nhất trong Maven mà không cần xóa toàn bộ Cache?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Sử dụng cờ <strong><code>-U</code> (hoặc <code>--update-snapshots</code>)</strong> trong câu lệnh Maven: <code>mvn clean test -U</code>.</p>
     <p>Cờ này ép buộc Maven kiểm tra metadata trên Remote Repository và tải về các bản build SNAPSHOT mới nhất nếu có, trong khi vẫn giữ nguyên và tái sử dụng toàn bộ các bản Release JAR ổn định đã có trong cache.</p>
   </div>
@@ -548,7 +612,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q11</span>
     <span>Chiến lược tối ưu hóa Base Docker Image cho ứng dụng Spring Boot Production là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Chiến lược tối ưu 3 lớp:</strong></p>
     <ol>
       <li>Sử dụng <strong>Distroless Image</strong> (như <code>gcr.io/distroless/java17-debian12</code>) hoặc <strong>Eclipse Temurin JRE Alpine</strong> (chỉ chứa Java Runtime, loại bỏ Compiler và Shell).</li>
@@ -563,7 +631,11 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
     <span class="qa-num-badge">Q12</span>
     <span>Trình bày phương pháp phân mảnh kiểm thử song song (Parallel Sharding) cho một bộ Test Suite Java đồ sộ (hơn 5000 test cases) trong GitLab CI.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp phân mảnh thông minh:</strong></p>
     <ol>
       <li>Sử dụng cấu hình <code>parallel: 4</code> của GitLab CI.</li>
@@ -582,7 +654,7 @@ echo "Java Enterprise CI/CD Pipeline successfully verified."
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                        CI/CD JAVA ENTERPRISE CHUẨN MỰC
                                       │
      ┌───────────────────┬────────────┴───────────────┬───────────────────┐

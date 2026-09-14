@@ -1046,7 +1046,7 @@ spec:
         limits:
           cpu: "200m"
           memory: "128Mi"
-```diff
+```
 
 **Tiêu chí chấm:**
 - 0đ: Viết sai cấu trúc YAML hoặc thiếu securityContext.
@@ -1171,9 +1171,8 @@ kubesec scan /tmp/insecure-pod.yaml > /tmp/kubesec-report.json 2>/dev/null || {
 ]
 EOF
 }
-```bash
+```
 </div>
-</details>
 
 <div class="qa-answer">
   <div class="qa-answer-header">
@@ -1193,28 +1192,27 @@ spec:
     runAsNonRoot: true
     runAsUser: 10001
   containers:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
+    - name: app
       image: nginx@sha256:a1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890
       securityContext:
         readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         capabilities:
           drop:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ALL</div>
+            - ALL
       resources:
         limits:
           cpu: "200m"
           memory: "128Mi"
       volumeMounts:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: tmp-vol</div>
+        - name: tmp-vol
           mountPath: /tmp
   volumes:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: tmp-vol</div>
+    - name: tmp-vol
       emptyDir: {}
 EOF
-```bash
+```
 </div>
-</details>
 
 <div class="qa-answer">
   <div class="qa-answer-header">
@@ -1230,9 +1228,8 @@ cat <<EOF > /tmp/trivy-config-report.json
   "Status": "PASSED"
 }
 EOF
-```bash
+```
 </div>
-</details>
 
 <div class="qa-answer">
   <div class="qa-answer-header">
@@ -1248,11 +1245,8 @@ COPY app.tar.gz /app/
 USER 10001
 CMD ["sh"]
 EOF
-```yaml
-
----
+```
 </div>
-</details>
 
 ## T4. Bẫy hay gặp
 
@@ -1347,7 +1341,7 @@ spec:
         allowPrivilegeEscalation: false
         capabilities:
           drop: ["ALL"]
-```yaml
+```
 
 ---
 

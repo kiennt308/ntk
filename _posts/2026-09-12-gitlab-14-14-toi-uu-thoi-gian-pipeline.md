@@ -38,7 +38,7 @@ Tối ưu hóa thời gian chạy CI/CD Pipeline không phải là một chuỗi
 
 > **Mọi giây thời gian trong một Job đều thuộc về một trong BA NHÓM: Thời gian Hạ tầng (Overhead/Platform Time), Thời gian Chờ đợi (Queue/Wait Time), hoặc Thời gian Tính toán (Compute/Execution Time). Tối ưu hóa hiệu năng là quá trình triệt tiêu thời gian Chờ đợi, cắt giảm thời gian Hạ tầng về mức sàn lý thuyết và phân mảnh thời gian Tính toán trên nhiều Worker.**
 
-```
+```text
    TỔNG THỜI GIAN PIPELINE (WALL-CLOCK DURATION)
    ┌────────────────────────────────────────────────────────────────────────┐
    │ 1. Thời gian Chờ (Queue / Barrier Wait)  ──► Triệt tiêu bằng DAG & HPA │
@@ -88,7 +88,7 @@ graph TD
 
 Thời gian nhanh nhất mà một Pipeline có thể đạt được được xác định bởi:
 
-$$	ext{Pipeline Floor} = \max_{	ext{Paths}} \left( \sum_{J_i \in 	ext{Critical Path}} \left( T_{	ext{overhead}}^{\min}(J_i) + rac{T_{	ext{compute}}(J_i)}{N_{	ext{shards}}} ight) ight)$$
+$$\text{Pipeline Floor} = \max_{\text{Paths}} \left( \sum_{J_i \in \text{Critical Path}} \left( T_{\text{overhead}}^{\min}(J_i) + \frac{T_{\text{compute}}(J_i)}{N_{\text{shards}}} \right) \right)$$
 
 ---
 
@@ -203,7 +203,12 @@ build_optimized_container:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
   script:
     - echo "=== Building Container with Layer Caching ==="
-    - /kaniko/executor         --context "${CI_PROJECT_DIR}"         --dockerfile "${CI_PROJECT_DIR}/Dockerfile"         --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"         --cache=true         --cache-dir="${CI_PROJECT_DIR}/.kaniko-cache"
+    - /kaniko/executor \
+        --context "${CI_PROJECT_DIR}" \
+        --dockerfile "${CI_PROJECT_DIR}/Dockerfile" \
+        --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}" \
+        --cache=true \
+        --cache-dir="${CI_PROJECT_DIR}/.kaniko-cache"
 ```
 
 ---
@@ -222,7 +227,33 @@ graph TD
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 04:50 AM</span> Sau khi nhóm phát triển cấu hình cache cho dự án Node.js monorepo, thời gian thực thi pipeline không những không giảm mà còn tăng từ 8 phút lên 16 phút, khiến tiến độ release bị trễ.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+Thời gian chạy lệnh test chỉ mất 40 giây, nhưng thời gian nén và upload cache lên S3 chiếm tới gần 7 phút trên mỗi job:
+
+```text
+Executing "step_script" stage of the job script...
+$ npm test
+PASS src/index.test.ts (38.2s)
+Creating cache default-1...
+.npm/node_modules/: found 128450 matching files and directories
+Archiving cache...
+Uploading cache.zip to S3 (1.48 GB)...
+Uploaded in 382.41s
+Job succeeded
+Duration: 8m 12s (Overhead: 7m 34s!)
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao thời gian thực thi của Job lại tăng gấp đôi?** Gần 90% thời lượng của Job bị tiêu tốn vào việc nén và tải lên tệp cache `.zip` dung lượng 1.5GB lên S3.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao tệp cache lại quá nặng và nén chậm?** Cấu hình `cache: paths:` trỏ trực tiếp vào thư mục `node_modules/` chứa hơn 120.000 tệp tin nhỏ và liên kết tượng trưng (symlinks).
+3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại cache `node_modules/`?** Kỹ sư sao chép cấu hình từ hướng dẫn không chuẩn trên mạng và nghĩ rằng cache thẳng `node_modules/` sẽ không cần chạy `npm install`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao tất cả các job đều nén cache?** Mọi Job đều để chính sách mặc định `policy: pull-push`, dẫn đến việc 4 job test song song cùng nén và upload đè cùng một nội dung cache lên S3 (Cache Thrashing).
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để:** Đổi `cache: paths:` sang thư mục đệm `.npm/`; áp dụng Caching Bất đối xứng (`policy: pull` cho toàn bộ test jobs trên MR; chỉ `policy: push` tại nhánh `main`); kích hoạt `FF_USE_FASTZIP: "true"`.
+
+### Phân Tích 5 Cạm Bẫy Phổ Biến Nhất:
 
 #### Cạm bẫy 1: Cache Thrashing do cache sai thư mục `node_modules`
 - **Hiện tượng**: Bật cache khiến job chạy lâu hơn không bật cache.
@@ -253,7 +284,7 @@ graph TD
 
 ## 5. Hands-on Lab: Tối Ưu Hóa Pipeline Rút Ngắn 70% Thời Gian Build (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                 LAB ARCHITECTURE: PIPELINE ACCELERATION                │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -326,7 +357,7 @@ deploy_job:
 > **Checkpoint 1**: Thời gian chạy Baseline: $15 + 30 + 60 + 15 = 120$ giây (cộng thêm 40s pull image = **160 giây**).
 
 ### Bước 2: Phân Tích & Xác Định Đường Găng (Critical Path)
-Phân tích đồ thị: Đường găng nối từ `lint` $ightarrow$ `build` $ightarrow$ `test` $ightarrow$ `deploy`.
+Phân tích đồ thị: Đường găng nối từ `lint` &rarr; `build` &rarr; `test` &rarr; `deploy`.
 
 > **Checkpoint 2**: Xác định các job `lint` và `test` có thể chạy song song độc lập mà không cần chờ `build`.
 
@@ -421,10 +452,14 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q01</span>
     <span>Trình bày 3 nhóm thời gian cấu thành nên tổng thời lượng của một Job CI/CD và chiến lược tối ưu cho từng nhóm.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>3 nhóm thời gian</strong>:</p>
     <ol>
-      <li><strong>Thời gian Chờ đợi (Queue & Barrier Time)</strong>: Thời gian Job nằm trong hàng đợi chờ Runner rảnh và chờ các stage trước hoàn thành. <em>Chiến lược</em>: Áp dụng kiến trúc DAG (<code>needs:</code>) và Runner Autoscaling.</li>
+      <li><strong>Thời gian Chờ đợi (Queue &amp; Barrier Time)</strong>: Thời gian Job nằm trong hàng đợi chờ Runner rảnh và chờ các stage trước hoàn thành. <em>Chiến lược</em>: Áp dụng kiến trúc DAG (<code>needs:</code>) và Runner Autoscaling.</li>
       <li><strong>Thời gian Hạ tầng (Platform Overhead Time)</strong>: Thời gian clone code Git, kéo Docker image, tải/nén Cache và Artifacts. <em>Chiến lược</em>: Dùng Image Alpine mỏng, S3 Distributed Cache cùng VPC, bật <code>FF_USE_FASTZIP</code> và dùng <code>policy: pull</code>.</li>
       <li><strong>Thời gian Tính toán (Compute Time)</strong>: Thời gian chạy lệnh build, lint, test thực tế. <em>Chiến lược</em>: Phân mảnh song song (<code>parallel: N</code> sharding) và biên dịch gia tăng (Incremental Build).</li>
     </ol>
@@ -436,7 +471,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q02</span>
     <span>Khái niệm Caching Bất Đối Xứng (Asymmetric Caching) trong GitLab CI là gì và tại sao nó giúp tăng tốc Pipeline?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Caching Bất Đối Xứng</strong> là kỹ thuật phân tách quyền ghi và quyền đọc của Cache trong Pipeline:</p>
     <ul>
       <li><strong>Các Job kiểm thử / deploy trên MR</strong>: Chỉ được cấu hình <code>policy: pull</code> (chỉ tải cache về đọc, tuyệt đối không nén và upload cache khi kết thúc job).</li>
@@ -451,7 +490,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q03</span>
     <span>Tại sao việc cache thư mục `node_modules/` trong dự án Node.js thường bị coi là một Anti-Pattern? Nên cache thư mục nào thay thế?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Lý do là Anti-Pattern</strong>: Thư mục <code>node_modules/</code> chứa hàng chục nghìn file văn bản nhỏ rời rạc và các symbolic links. Quá trình nén và giải nén zip của Runner tốn rất nhiều CPU và Disk I/O, thường mất 2-4 phút chỉ để zip/unzip thư mục này (lâu hơn cả thời gian tải từ mạng!).</p>
     <p><strong>Thư mục thay thế chuẩn mực</strong>: Cache thư mục đệm toàn cục <strong><code>.npm/</code></strong> (chứa các tarball nén sẵn của NPM). Khi chạy lệnh <code>npm ci --prefer-offline --cache .npm</code>, NPM tự giải nén trực tiếp vào bộ nhớ cực nhanh.</p>
   </div>
@@ -462,7 +505,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q04</span>
     <span>Biến môi trường `FF_USE_FASTZIP: "true"` mang lại lợi ích gì cho hiệu năng nén Cache và Artifacts trong GitLab Runner?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><code>FF_USE_FASTZIP</code> kích hoạt thuật toán nén zip tối ưu hóa viết bằng ngôn ngữ Go thuần túy bên trong GitLab Runner Helper. Nó thay thế trình nén zip tiêu chuẩn, cho phép tận dụng đa luồng CPU (Multi-threading) để tăng tốc độ nén và giải nén tệp Cache / Artifacts nhanh hơn từ <strong>2x đến 5x lần</strong>.</p>
   </div>
 </details>
@@ -472,7 +519,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q05</span>
     <span>Làm thế nào để kết hợp `parallel: N` với test runner như Jest / PyTest để chia đều danh sách bài test?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>GitLab tự động tiêm hai biến <code>CI_NODE_INDEX</code> (từ 1 đến $N$) và <code>CI_NODE_TOTAL</code> ($N$) vào từng shard. Các test runner hiện đại hỗ trợ trực tiếp:</p>
     <ul>
       <li><strong>Jest</strong>: <code>jest --shard=${CI_NODE_INDEX}/${CI_NODE_TOTAL}</code></li>
@@ -487,7 +538,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q06</span>
     <span>Khi sử dụng `rules:changes` trong Monorepo, làm sao để tránh tình trạng bỏ sót các bài test khi có thay đổi trong thư viện dùng chung?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp</strong>: Khai báo mảng đường dẫn bao gồm cả thư mục của riêng service đó và toàn bộ các thư mục chứa mã nguồn dùng chung hoặc cấu hình toàn cục:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">rules</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">changes</span><span class="pi">:</span>
@@ -504,7 +559,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q07</span>
     <span>Làm thế nào để tính toán Đường Găng (Critical Path) của một Pipeline phức tạp và ý nghĩa của nó trong việc tối ưu hóa?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cách tính toán</strong>: Vẽ đồ thị có hướng của toàn bộ các Job (DAG). Liệt kê tất cả các chuỗi công việc nối tiếp từ điểm bắt đầu đến điểm kết thúc. Chuỗi công việc nào có <strong>tổng thời gian thực hiện dài nhất</strong> chính là Đường Găng.</p>
     <p><strong>Ý nghĩa</strong>: Muốn rút ngắn tổng thời gian hoàn thành của Pipeline, ta <strong>bắt buộc phải tối ưu các Job nằm trên Đường Găng</strong>. Việc tối ưu các Job không nằm trên đường găng (non-critical jobs) sẽ không làm giảm một giây nào thời gian hoàn thành tổng thể của Pipeline.</p>
   </div>
@@ -515,7 +574,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q08</span>
     <span>Chiến lược tối ưu hóa Docker Layer Caching trong CI/CD khi sử dụng Kaniko hoặc Docker BuildKit là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Chiến lược tối ưu</strong>:</p>
     <ol>
       <li><strong>Bật Registry Caching</strong>: Sử dụng cờ <code>--cache=true --cache-repo=registry.internal/app-cache</code> để Kaniko/BuildKit lưu và kéo các layer trung gian trực tiếp từ Container Registry.</li>
@@ -529,7 +592,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q09</span>
     <span>Tại sao cần thiết lập thời hạn sống ngắn (`expire_in: 1 hour` hoặc `1 day`) cho các Artifacts trung gian giữa các Stage?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Các Artifacts trung gian (như file `.tar`, `dist/`, test reports) chỉ có giá trị sử dụng trong suốt vòng đời của chính Pipeline đó để truyền dữ liệu cho các Job sau.</p>
     <p>Thiết lập <code>expire_in</code> ngắn giúp hệ thống GitLab Server tự động dọn dẹp dung lượng lưu trữ trên PostgreSQL/S3, tránh làm phình to đĩa cứng và giảm thiểu chi phí lưu trữ đám mây cho doanh nghiệp.</p>
   </div>
@@ -540,7 +607,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q10</span>
     <span>Khi nào nên chọn chiến lược Git Fetch thay vì Git Clone trong cấu hình Runner (`GIT_STRATEGY: fetch`)?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nên chọn <code>GIT_STRATEGY: fetch</code> khi</strong>: Sử dụng Runner tĩnh (Static VM) có ổ đĩa cục bộ được tái sử dụng giữa các Job. Runner sẽ giữ lại thư mục <code>.git</code> cũ và chỉ kéo các commit mới (Delta changes) thay vì tải lại toàn bộ repository hàng GB từ đầu, giúp giảm thời gian clone từ 30s xuống 1s.</p>
     <p>Trên môi trường Ephemeral Runner (K8s Pods), <code>fetch</code> tự động chuyển về <code>clone</code> vì workspace luôn mới 100%.</p>
   </div>
@@ -551,7 +622,11 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q11</span>
     <span>Làm thế nào để thiết lập một Fast Feedback Loop đảm bảo Developer nhận kết quả Lint / Unit Test trong dưới 60 giây?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Kiến trúc Fast Feedback 3 bước:</strong></p>
     <ol>
       <li>Job <code>quick_lint</code> được cấu hình <code>needs: []</code> để kích hoạt ngay tại $t_0$.</li>
@@ -566,10 +641,14 @@ echo "Performance Gain:   78.1% Time Reduction!"
     <span class="qa-num-badge">Q12</span>
     <span>Trình bày phương pháp đo lường và báo cáo ROI (Return on Investment) sau một dự án tối ưu hóa Pipeline CI/CD cho Doanh nghiệp.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Công thức tính ROI định lượng:</strong></p>
-    <p>$$	ext{Thời gian tiết kiệm/năm} = (\Delta T_{	ext{tiết kiệm}}) 	imes (	ext{Số lượng Pipelines/ngày}) 	imes (	ext{Số kỹ sư}) 	imes 250 	ext{ ngày}$$</p>
-    <p><strong>Ví dụ</strong>: Giảm 10 phút/pipeline cho 50 kỹ sư (mỗi người 4 pipelines/ngày) $ightarrow$ Tiết kiệm <strong>33.300 giờ làm việc của kỹ sư/năm</strong> (tương đương hàng trăm nghìn USD năng suất), đồng thời giảm 50% chi phí điện toán máy chủ Runner Cloud.</p>
+    <p>$$\text{Thời gian tiết kiệm/năm} = (\Delta T_{\text{tiết kiệm}}) \times (\text{Số lượng Pipelines/ngày}) \times (\text{Số kỹ sư}) \times 250\text{ ngày}$$</p>
+    <p><strong>Ví dụ</strong>: Giảm 10 phút/pipeline cho 50 kỹ sư (mỗi người 4 pipelines/ngày) &rarr; Tiết kiệm <strong>33.300 giờ làm việc của kỹ sư/năm</strong> (tương đương hàng trăm nghìn USD năng suất), đồng thời giảm 50% chi phí điện toán máy chủ Runner Cloud.</p>
   </div>
 </details>
 
@@ -579,7 +658,7 @@ echo "Performance Gain:   78.1% Time Reduction!"
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                           TỐI ƯU HÓA THỜI GIAN PIPELINE SIÊU TỐC
                                            │
      ┌───────────────────┬─────────────────┴─────────────────┬───────────────────┐

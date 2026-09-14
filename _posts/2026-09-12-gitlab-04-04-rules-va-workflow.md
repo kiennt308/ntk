@@ -38,7 +38,7 @@ Khác biệt bản chất giữa hệ thống CI/CD khai báo tĩnh (Declarative
 
 > **`rules` được GitLab CI Parser đánh giá ĐÚNG MỘT LẦN duy nhất tại thời điểm pipeline được khởi tạo ($t_0$), hoàn toàn không phải lúc job sắp sửa được Runner bốc chạy.**
 
-```
+```text
    t0: SỰ KIỆN KÍCH HOẠT (git push / MR / tag / schedule / API / Webhook)
         │
         ├─► [TẦNG 1] workflow:rules đánh giá
@@ -110,7 +110,7 @@ Bốn loại biểu thức điều kiện trong một rule:
 | **Tác động lên Downstream** | **Không chặn** (DAG tự động co gọn) | Phụ thuộc vào `allow_failure` | **Chặn hoàn toàn** các job phụ thuộc |
 | **Phân loại rủi ro sự cố** | **Silent Drop** (Cực kỳ nguy hiểm nếu là Gate) | Chờ phê duyệt nghiệp vụ | Thất bại chuẩn mực (Fast fail) |
 
-### 2.2. Ma Trận Bảng Chân Trị 6 Nguồn Kích Hoạt $	imes$ Điều Kiện Rules
+### 2.2. Ma Trận Bảng Chân Trị 6 Nguồn Kích Hoạt $\times$ Điều Kiện Rules
 
 Bảng chân trị thực nghiệm đo đạc hành vi thực tế của các biểu thức rules phổ biến trên 6 nguồn kích hoạt pipeline:
 
@@ -133,7 +133,7 @@ Khi một nhánh tính năng đang mở Merge Request và tiếp tục được 
 1. Pipeline nguồn `push`: Chạy trên context của branch.
 2. Pipeline nguồn `merge_request_event`: Chạy trên context của MR (có các biến `$CI_MERGE_REQUEST_*`).
 
-```
+```text
                     SỰ KIỆN: GIT PUSH LÊN NHÁNH ĐANG CÓ MR MỞ
                                        │
                 ┌──────────────────────┴──────────────────────┐
@@ -250,7 +250,7 @@ deploy-to-production:
 
 ### 4.1. Incident 1: Security Gate Biến Mất Im Lặng Do Sử Dụng `rules:changes` Trên Lịch Trình
 
-```
+```text
                         SỰ CỐ SILENT SECURITY DROP
   ┌────────────────────────────────────────────────────────────────────────┐
   │ Job SAST Security Scanner: Cấu hình `rules:changes: [src/**]`          │
@@ -793,8 +793,8 @@ rules:
     </div>
     <p><b>3 trường hợp sai lệch kinh điển của `changes`</b>:</p>
     <ol>
-      <li><b>Nhánh mới tạo (New branch)</b>: Do chưa có commit trước đó trên branch, GitLab Runner coi <i>toàn bộ tệp tin trong repository đều bị thay đổi</i> $ightarrow$ Chạy thừa toàn bộ các job.</li>
-      <li><b>Pipeline theo lịch (Schedule)</b>: Không có commit diff nào được tạo ra tại thời điểm schedule chạy $ightarrow$ <code>changes</code> trả về <code>false</code> $ightarrow$ Bỏ qua toàn bộ các job.</li>
+      <li><b>Nhánh mới tạo (New branch)</b>: Do chưa có commit trước đó trên branch, GitLab Runner coi <i>toàn bộ tệp tin trong repository đều bị thay đổi</i> $ightarrow$ Chạy thừa toàn bộ các job.</li>
+      <li><b>Pipeline theo lịch (Schedule)</b>: Không có commit diff nào được tạo ra tại thời điểm schedule chạy $ightarrow$ <code>changes</code> trả về <code>false</code> $ightarrow$ Bỏ qua toàn bộ các job.</li>
       <li><b>Push nhiều commit cùng lúc</b>: Diff chỉ so sánh giữa HEAD và commit trước đợt push, có thể bỏ sót các trạng thái trung gian.</li>
     </ol>
     <p><b>Tại sao không dùng cho Security Gate</b>: Tính bất đối xứng của rủi ro. Job build chạy thừa chỉ tốn 30s Runner, nhưng Security Gate bị biến mất im lặng sẽ tạo ra lỗ hổng bảo mật nghiêm trọng trên Production mà không ai hay biết.</p>
@@ -815,7 +815,7 @@ rules:
     <ul>
       <li><b>Phạm vi kiểm soát</b>: <code>workflow:rules</code> kiểm soát sự tồn tại của <i>toàn bộ Pipeline instance</i>; <code>rules</code> kiểm soát sự xuất hiện của <i>từng Job đơn lẻ</i>.</li>
       <li><b>Thứ tự thực thi</b>: <code>workflow:rules</code> luôn được đánh giá <b>trước</b>. Nếu tầng này không cho phép, Parser hủy ngay lập tức và không bao giờ đọc đến <code>rules</code> của từng job.</li>
-      <li><b>Giá trị chẩn đoán</b>: Khi job không chạy, bước 1 là kiểm tra xem có pipeline nào được tạo không. Nếu không có pipeline $ightarrow$ Lỗi tại tầng <code>workflow:rules</code>; nếu có pipeline nhưng thiếu job $ightarrow$ Lỗi tại <code>rules</code> của job đó.</li>
+      <li><b>Giá trị chẩn đoán</b>: Khi job không chạy, bước 1 là kiểm tra xem có pipeline nào được tạo không. Nếu không có pipeline &rarr; Lỗi tại tầng <code>workflow:rules</code>; nếu có pipeline nhưng thiếu job &rarr; Lỗi tại <code>rules</code> của job đó.</li>
     </ul>
   </div>
 </details>
@@ -871,9 +871,9 @@ rules:
     <p><b>Hai giả thuyết chính</b>:</p>
     <ol>
       <li><b>Giả thuyết A (Bị chặn ở Tầng 1)</b>: Khối <code>workflow:rules</code> không có rule nào khớp với sự kiện push hiện tại, hoặc rơi vào <code>when: never</code>.</li>
-      <li><b>Giả thuyết B (0 Job $ightarrow$ 0 Pipeline)</b>: <code>workflow:rules</code> cho qua, nhưng toàn bộ các job trong file đều bị <code>rules</code> riêng lẻ từ chối. GitLab không tạo pipeline rỗng.</li>
+      <li><b>Giả thuyết B (0 Job &rarr; 0 Pipeline)</b>: <code>workflow:rules</code> cho qua, nhưng toàn bộ các job trong file đều bị <code>rules</code> riêng lẻ từ chối. GitLab không tạo pipeline rỗng.</li>
     </ol>
-    <p><b>Cách phân biệt bằng API</b>: Gọi endpoint <code>POST /api/v4/projects/:id/ci/lint</code>. Nếu mảng <code>.jobs</code> rỗng $ightarrow$ Giả thuyết B. Nếu mảng <code>.jobs</code> có phần tử nhưng pipeline thực tế không sinh ra $ightarrow$ Giả thuyết A.</p>
+    <p><b>Cách phân biệt bằng API</b>: Gọi endpoint <code>POST /api/v4/projects/:id/ci/lint</code>. Nếu mảng <code>.jobs</code> rỗng &rarr; Giả thuyết B. Nếu mảng <code>.jobs</code> có phần tử nhưng pipeline thực tế không sinh ra &rarr; Giả thuyết A.</p>
   </div>
 </details>
 
@@ -889,8 +889,8 @@ rules:
     </div>
     <p><b>Quy trình 4 bước chuẩn đoán chuyên sâu</b>:</p>
     <ol>
-      <li><b>Bước 1: Kiểm tra sự tồn tại của Pipeline Instance</b>: Có pipeline nào được sinh ra cho commit SHA đó không? Nếu không có $ightarrow$ Rà soát ngay khối <code>workflow:rules</code>.</li>
-      <li><b>Bước 2: Kiểm tra sự hiện diện trong Job List API</b>: Gọi <code>GET /pipelines/:id/jobs</code>. Nếu Job X không có tên trong danh sách $ightarrow$ Job đã bị <code>rules</code> loại bỏ (Omitted) tại $t_0$.</li>
+      <li><b>Bước 1: Kiểm tra sự tồn tại của Pipeline Instance</b>: Có pipeline nào được sinh ra cho commit SHA đó không? Nếu không có &rarr; Rà soát ngay khối <code>workflow:rules</code>.</li>
+      <li><b>Bước 2: Kiểm tra sự hiện diện trong Job List API</b>: Gọi <code>GET /pipelines/:id/jobs</code>. Nếu Job X không có tên trong danh sách &rarr; Job đã bị <code>rules</code> loại bỏ (Omitted) tại $t_0$.</li>
       <li><b>Bước 3: Xác định trạng thái Runtime</b>: Nếu Job X có trong danh sách nhưng không chạy, kiểm tra xem nó đang ở trạng thái <code>manual</code> (chờ bấm) hay <code>skipped</code> (do job upstream bị failed).</li>
       <li><b>Bước 4: Đối soát Bảng chân trị</b>: Nếu bị Omitted, xác định giá trị <code>CI_PIPELINE_SOURCE</code> của pipeline và duyệt từng dòng trong mảng <code>rules</code> của Job X từ trên xuống dưới để tìm ra rule đầu tiên bị fail hoặc bị che khuất bởi nguyên tắc First-match-wins.</li>
     </ol>

@@ -38,7 +38,7 @@ Trong thiết kế hệ thống CI/CD, sai lầm gây tốn kém thời gian g�
 
 > **`artifacts` là HỢP ĐỒNG BẮT BUỘC: Dữ liệu được đẩy lên Server GitLab, có cam kết bảo toàn, kiểm chứng được qua API và tính vào dung lượng dự án. `cache` là KHOẢN ĐẦU TƯ TỐI ƯU: Dữ liệu lưu tại Runner/S3, KHÔNG có cam kết bảo toàn, và Runner không bao giờ báo lỗi khi trượt cache.**
 
-```
+```text
    Server GitLab ──┐  artifacts: Upload ở cuối Job A ──▶ Download ở đầu Job B
                    │  ĐƯỢC ĐẢM BẢO · Có Metadata DB · Kiểm chứng qua API HTTP 200/404
                    │
@@ -52,8 +52,8 @@ Trong thiết kế hệ thống CI/CD, sai lầm gây tốn kém thời gian g�
    - `artifacts` được Runner nén và gửi qua HTTP REST API lên Coordinator (GitLab Server/Object Storage) ở Pha 8. GitLab tạo bản ghi trong bảng `ci_job_artifacts` của PostgreSQL, gắn thời hạn `expire_in` và cấp endpoint `GET /projects/:id/jobs/:id/artifacts`.
    - `cache` được lưu trực tiếp trên đĩa cục bộ của Runner hoặc S3 bucket thông qua Runner Cache Driver. Server GitLab hoàn toàn không quản lý nội dung cache.
 2. **Hành vi khi thiếu dữ liệu**:
-   - Nếu Job B cần artifact từ Job A mà Job A fail $ightarrow$ Job B bị block hoặc fail ở Pha 5.
-   - Nếu Job B trượt cache $ightarrow$ Runner in 1 dòng `No URL provided, cache will not be downloaded` và tiếp tục chạy `script` bình thường với **0 dòng error**.
+   - Nếu Job B cần artifact từ Job A mà Job A fail &rarr; Job B bị block hoặc fail ở Pha 5.
+   - Nếu Job B trượt cache &rarr; Runner in 1 dòng `No URL provided, cache will not be downloaded` và tiếp tục chạy `script` bình thường với **0 dòng error**.
 
 ```mermaid
 graph TD
@@ -73,7 +73,7 @@ graph TD
 
 Khi một Runner tiếp nhận job từ hàng đợi, thứ tự thực thi chuẩn xác tại workspace diễn ra như sau:
 
-```
+```text
   ┌────────────────────────────────────────────────────────────────────────┐
   │                   RUNNER WORKSPACE RESTORATION ORDER                   │
   ├────────────────────────────────────────────────────────────────────────┤
@@ -126,7 +126,7 @@ Khi một Runner tiếp nhận job từ hàng đợi, thứ tự thực thi chu�
 
 | Cú pháp khai báo | Nguồn tải Artifacts | Ảnh hưởng Thứ tự DAG | Byte truyền tải | Thời gian tải ước tính |
 |---|---|---|---|---|
-| *Mặc định (Không khai báo)* | **Toàn bộ job ở mọi stage trước đó** | Giữ nguyên Stage Barrier | $\sum 	ext{Tất cả Artifacts}$ | Rất chậm (Tải dư thừa) |
+| *Mặc định (Không khai báo)* | **Toàn bộ job ở mọi stage trước đó** | Giữ nguyên Stage Barrier | $\sum \text{Tất cả Artifacts}$ | Rất chậm (Tải dư thừa) |
 | `dependencies: [job_a]` | **Chỉ tải duy nhất từ `job_a`** | Giữ nguyên Stage Barrier | Chỉ dung lượng `job_a` | Nhanh |
 | `dependencies: []` | **Tắt hoàn toàn việc tải (0 job)** | Giữ nguyên Stage Barrier | **Chính xác 0 byte** | **0 giây** |
 | `needs: [job_a]` | **Chỉ tải từ `job_a`** | **Phá vỡ Stage, chạy ngay khi `job_a` xong** | Chỉ dung lượng `job_a` | Tối ưu tuyệt đối |
@@ -140,7 +140,7 @@ Khi một Runner tiếp nhận job từ hàng đợi, thứ tự thực thi chu�
 
 Trong môi trường Autoscaling Runners (Kubernetes/Docker Machine), mỗi job chạy trên một node/pod tạm thời (ephemeral). Nếu không có Distributed Cache, tỷ lệ trúng cache rơi về $1/N$ ($N$ là số node). Kiến trúc chuẩn Enterprise sử dụng MinIO S3 làm bộ nhớ đệm dùng chung:
 
-```
+```text
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                       ENTERPRISE DISTRIBUTED CACHING ARCHITECTURE                      │
   ├────────────────────────────────────────────────────────────────────────────────────────┤
@@ -274,7 +274,7 @@ package-release-bundle:
 
 ### 4.1. Incident 1: Sự Cố Triển Khai Bundle Cũ Lên Production Do Xung Đột Cache và Artifacts
 
-```
+```text
                       SỰ CỐ STALE BUNDLE DEPLOYMENT
   ┌────────────────────────────────────────────────────────────────────────┐
   │ Job Build: Khai báo `cache: paths: [dist/]` VÀ `artifacts: paths: [dist/]` │
@@ -679,8 +679,8 @@ echo "Lab 05 storage resources cleaned up successfully."
     </ul>
     <p><b>Quy tắc 1 câu hỏi để lựa chọn</b>: <i>"Job phía sau sẽ <b>SAI</b> (Fail) nếu thiếu nó, hay chỉ chạy <b>CHẬM</b> hơn?"</i></p>
     <ul>
-      <li>Nếu thiếu mà SAI $ightarrow$ Dùng <code>artifacts</code> (Ví dụ: <code>dist/</code>, binary, test report).</li>
-      <li>Nếu thiếu mà chỉ CHẬM (có thể tự tải/cài lại từ lockfile) $ightarrow$ Dùng <code>cache</code> (Ví dụ: <code>node_modules/</code>, <code>~/.m2</code>).</li>
+      <li>Nếu thiếu mà SAI &rarr; Dùng <code>artifacts</code> (Ví dụ: <code>dist/</code>, binary, test report).</li>
+      <li>Nếu thiếu mà chỉ CHẬM (có thể tự tải/cài lại từ lockfile) &rarr; Dùng <code>cache</code> (Ví dụ: <code>node_modules/</code>, <code>~/.m2</code>).</li>
     </ul>
   </div>
 </details>
@@ -793,11 +793,11 @@ echo "Lab 05 storage resources cleaned up successfully."
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
     <p><b>Phương trình sổ thu chi</b>:</p>
-    $$	ext{Lợi nhuận mỗi lần chạy} = p 	imes (T_{	ext{rebuild}} - T_{	ext{restore}}) - T_{	ext{archive}}$$
-    <p>Với cache 380MB thực nghiệm: $T_{	ext{rebuild}} = 95s$, $T_{	ext{archive}} = 61s$, $T_{	ext{restore}} = 44s$.</p>
+    $$\text{Lợi nhuận mỗi lần chạy} = p \times (T_{\text{rebuild}} - T_{\text{restore}}) - T_{\text{archive}}$$
+    <p>Với cache 380MB thực nghiệm: $T_{\text{rebuild}} = 95s$, $T_{\text{archive}} = 61s$, $T_{\text{restore}} = 44s$.</p>
     <ul>
       <li>Lợi nhuận mỗi lần Hit: $95s - 44s = \mathbf{+51s}$.</li>
-      <li>Số lần Hit để hòa vốn: $	ext{Break-even} = rac{T_{	ext{archive}}}{	ext{Lợi nhuận Hit}} = rac{61}{51} pprox \mathbf{2 	ext{ lần}}$.</li>
+      <li>Số lần Hit để hòa vốn: $\text{Break-even} = \frac{T_{\text{archive}}}{\text{Lợi nhuận Hit}} = \frac{61}{51} \approx \mathbf{2 \ lần}$.</li>
     </ul>
     <p><i>Kết luận</i>: Nếu khóa cache bám theo `package-lock.json` (tỷ lệ trúng 95%), chỉ sau 2 lần chạy pipeline, hệ thống đã hoàn vốn chi phí nén 61s và bắt đầu tiết kiệm 51s cho mỗi pipeline tiếp theo trong ngày.</p>
   </div>
@@ -815,7 +815,7 @@ echo "Lab 05 storage resources cleaned up successfully."
     </div>
     <p><b>Hai vấn đề được giải quyết</b>:</p>
     <ol>
-      <li><b>Triệt tiêu lãng phí thời gian nén</b>: Mặc định (<code>pull-push</code>), mọi job đều nén và upload lại cache ở cuối job. Khi có 3 job test chạy song song, <code>policy: pull</code> loại bỏ hoàn toàn pha nén 61s ở cả 3 job $ightarrow$ <b>Tiết kiệm $3 	imes 61s = \mathbf{183s}$ thời gian máy</b>.</li>
+      <li><b>Triệt tiêu lãng phí thời gian nén</b>: Mặc định (<code>pull-push</code>), mọi job đều nén và upload lại cache ở cuối job. Khi có 3 job test chạy song song, <code>policy: pull</code> loại bỏ hoàn toàn pha nén 61s ở cả 3 job &rarr; <b>Tiết kiệm $3 \times 61s = \mathbf{183s}$ thời gian máy</b>.</li>
       <li><b>Ngăn ngừa Race Condition ghi đè</b>: Khi 3 job song song cùng đẩy cache lên S3, job nào kết thúc sau cùng sẽ ghi đè lên các job trước. <code>policy: pull</code> đảm bảo chỉ có duy nhất job `build` có quyền ghi đè cache.</li>
     </ol>
   </div>
@@ -876,13 +876,12 @@ echo "Lab 05 storage resources cleaned up successfully."
     </div>
     <p><b>Cây quyết định 3 câu hỏi theo thứ tự</b>:</p>
     <ol>
-      <li><i>Câu 1: Job sau SAI nếu thiếu nó, hay chỉ CHẬM hơn?</i> $ightarrow$ SAI: <code>artifacts</code>.</li>
-      <li><i>Câu 2: Có thể tái tạo từ lockfile trong Git không?</i> $ightarrow$ CÓ: <code>cache</code>.</li>
-      <li><i>Câu 3: Có người/hệ thống ngoài pipeline cần đọc không?</i> $ightarrow$ CÓ: <code>artifacts</code> (Ghi đè câu 2).</li>
+      <li><i>Câu 1: Job sau SAI nếu thiếu nó, hay chỉ CHẬM hơn?</i> &rarr; SAI: <code>artifacts</code>.</li>
+      <li><i>Câu 2: Có thể tái tạo từ lockfile trong Git không?</i> &rarr; CÓ: <code>cache</code>.</li>
+      <li><i>Câu 3: Có người/hệ thống ngoài pipeline cần đọc không?</i> &rarr; CÓ: <code>artifacts</code> (Ghi đè câu 2).</li>
     </ol>
     <p><b>Phân loại chi tiết</b>:</p>
     <ul>
-      <li><code>dist/</code>: Dừng ở Câu 1 $ightarrow$ <b>Artifacts</b> (Deploy sai nếu thiếu).</li>
       <li><code>node_modules/</code> & <code>~/.m2/repository</code>: Dừng ở Câu 2 $ightarrow$ <b>Cache</b> (Tái tạo được từ lockfile).</li>
       <li><code>junit.xml</code> & <code>sbom.cdx.json</code>: Dừng ở Câu 3 $ightarrow$ <b>Artifacts</b> (Reviewer và Security Auditor cần kiểm chứng qua API).</li>
     </ul>

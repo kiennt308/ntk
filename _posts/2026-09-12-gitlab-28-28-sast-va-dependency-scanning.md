@@ -44,7 +44,7 @@ Trong chu trình phát triển phần mềm truyền thống, kiểm tra an ninh
 
 > **Giải pháp DevSecOps chuẩn mực là "Shift-Left Security" — đưa các công cụ phân tích mã nguồn tĩnh (SAST) và quét phụ thuộc (Dependency Scanning / SCA) vào chạy tự động ngay trên mỗi commit và Merge Request của GitLab CI/CD, biến bảo mật thành phản hồi tức thì cho lập trình viên.**
 
-```
+```text
        MÔ HÌNH SHIFT-LEFT SECURITY TRONG GITLAB CI/CD PIPELINE
 
     Commit Code ──► [ Stage: security_scan ] ─────────────────────────┐
@@ -175,37 +175,36 @@ trivy_dependency_scan:
 
 ## 4. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
-### 4.1. Sự Cố Thực Tế: Pipeline Bị Tắc Nghẽn Do Hàng Trăm Cảnh Báo Giả (False Positives)
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 09:20 AM</span> Một ngân hàng tích hợp công cụ SAST quét toàn bộ 50 microservices với bộ quy tắc mặc định cực kỳ nghiêm ngặt. Hàng ngày có hơn 400 cảnh báo bảo mật được sinh ra, nhưng hơn 90% là cảnh báo giả (ví dụ: cảnh báo SQL injection trong các tệp test mock hoặc chuỗi regex cố định). Lập trình viên bị quá tải, bắt đầu nhấn nút "Bỏ qua" (Dismiss) hàng loạt, dẫn đến việc lọt một lỗ hổng RCE thực sự lên môi trường Production.
 
-> **Bối Cảnh**: Một ngân hàng tích hợp công cụ SAST quét toàn bộ 50 microservices với bộ quy tắc mặc định cực kỳ nghiêm ngặt. Hàng ngày có hơn 400 cảnh báo bảo mật được sinh ra, nhưng hơn 90% là cảnh báo giả (ví dụ: cảnh báo SQL injection trong các tệp test mock hoặc chuỗi regex cố định). Lập trình viên bị quá tải, bắt đầu nhấn nút "Bỏ qua" (Dismiss) hàng loạt, dẫn đến việc lọt một lỗ hổng RCE thực sự lên môi trường Production.
+### Hậu Quả & Log Lỗi Thực Tế:
+Hệ thống ngập trong cảnh báo giả khiến đội ngũ kỹ sư mất khả năng nhận biết rủi ro thực tế, lọt lỗ hổng nghiêm trọng vào nhánh production:
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│ 1. Tại sao lỗ hổng RCE nghiêm trọng bị lọt lên Production?              │
-│    -> Kỹ sư đã bấm Dismiss cảnh báo mà không đọc kỹ nội dung.           │
-│                                                                         │
-│ 2. Tại sao kỹ sư lại bấm Dismiss hàng loạt một cách vô trách nhiệm?    │
-│    -> Họ bị hội chứng "Bội thực cảnh báo" (Alert Fatigue) vì quá nhiều │
-│       cảnh báo giả xuất hiện mỗi ngày.                                  │
-│                                                                         │
-│ 3. Tại sao hệ thống lại sinh ra quá nhiều cảnh báo giả?                 │
-│    -> Công cụ SAST quét cả thư mục /test, /mocks, và các tệp script mẫu.│
-│                                                                         │
-│ 4. Tại sao các thư mục test không được loại trừ khỏi phạm vi quét?      │
-│    -> Không cấu hình tệp lọc ruleset và thiếu quy trình Triage chuẩn.   │
-│                                                                         │
-│ 5. NGUYÊN NHÂN CỐT LÕI (Root Cause):                                   │
-│    -> Áp dụng bộ quy tắc SAST cứng nhắc mà không tinh chỉnh ngữ cảnh    │
-│       (Context-aware Tuning) và thiếu cơ chế phân loại cảnh báo.       │
-└─────────────────────────────────────────────────────────────────────────┘
+```text
+[semgrep-sast] › ⚠  WARNING: 428 findings identified across 50 repositories.
+[semgrep-sast] › ℹ  Rule 'detect-sql-concat' triggered in /tests/mocks/user_mock.go:142
+[semgrep-sast] › ℹ  Rule 'hardcoded-credentials' triggered in /docs/samples/auth_example.py:18
+[dev-triage]   › ⚡  Action: Developer dismissed 420 findings as "False Positive" in batch.
+[production]   › ❌  CRITICAL SECURITY INCIDENT: Unauthenticated RCE exploited on /api/v1/render
+[production]   › ❌  Vulnerability origin: Command injection in template engine (server.js:88) merged 2 days ago without review!
 ```
 
-### 4.2. Giải Pháp Khắc Phục Triệt Để
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> Tại sao lỗ hổng RCE nghiêm trọng bị lọt lên Production?  
+   &rarr; Do kỹ sư phát triển đã bấm Dismiss hàng loạt các cảnh báo bảo mật trong Merge Request mà không đọc kỹ chi tiết từng tệp.
+2. <span class="badge badge--primary">Why 2</span> Tại sao kỹ sư lại bấm Dismiss hàng loạt một cách thiếu thận trọng?  
+   &rarr; Do họ bị hội chứng "Bội thực cảnh báo" (Alert Fatigue) vì mỗi lần build lại xuất hiện hơn 400 cảnh báo giả.
+3. <span class="badge badge--primary">Why 3</span> Tại sao hệ thống lại sinh ra quá nhiều cảnh báo giả vô nghĩa?  
+   &rarr; Do công cụ SAST quét toàn bộ thư mục `/test`, `/mocks`, `/docs` và các tệp script mẫu không chạy trên môi trường thực tế.
+4. <span class="badge badge--primary">Why 4</span> Tại sao các thư mục test và mock không được loại trừ khỏi phạm vi phân tích?  
+   &rarr; Do dự án chưa cấu hình tệp ignore `.semgrepignore` và thiếu quy trình Triage / Security Policy phân cấp độ tin cậy.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> Áp dụng bộ quy tắc SAST mặc định cứng nhắc mà không tinh chỉnh theo ngữ cảnh (Context-aware Tuning), thiếu tệp `.semgrepignore` loại trừ mã kiểm thử và thiếu cơ chế phân tách giữa cảnh báo thông tin với Security Gate chặn merge.
+
+### Giải Pháp Khắc Phục Triệt Để:
 
 1. **Cấu hình loại trừ thư mục kiểm thử trong `.semgrepignore`**:
-   ```
+   ```text
    tests/
    **/*_test.go
    **/*.spec.ts
@@ -224,7 +223,7 @@ trivy_dependency_scan:
 - Quan sát Semgrep phát hiện chính xác dòng mã nguồn có lỗ hổng.
 - Khắc phục lỗ hổng bằng Parameterized Queries và nâng cấp dependency an toàn.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB SAST & DEPENDENCY SCANNING
 
    [ Vulnerable Node.js App ]
@@ -290,7 +289,7 @@ app.listen(3000, () => console.log('Server started on port 3000'));
 ```
 
 #### Bước 3: Tạo Tệp Bỏ Qua `.semgrepignore`
-```
+```text
 node_modules/
 dist/
 coverage/
@@ -341,7 +340,7 @@ trivy_sca:
 
 #### Bước 6: Đẩy Mã Nguồn Lên GitLab & Quan Sát Kết Quả Báo Lỗi
 - Job `semgrep_sast` phát hiện lỗi:
-  ```
+  ```text
   app.js:14: detect-pg-sqli-string-concat
   Phát hiện lỗ hổng SQL Injection: Không ghép chuỗi vào truy vấn db.query()!
   ```
@@ -385,14 +384,20 @@ git push origin main
     <span>Cơ chế "Dataflow Taint Tracking" trong các công cụ SAST hiện đại hoạt động như thế nào?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Nguyên lý hoạt động:</strong></p>
-    <p>Taint Tracking mô phỏng luồng dữ liệu truyền qua ứng dụng qua 3 khái niệm:</p>
-    <ul>
-      <li><strong>Source</strong>: Nơi tiếp nhận dữ liệu không đáng tin cậy từ người dùng (ví dụ: <code>req.query</code>, <code>req.body</code>, headers). Dữ liệu này bị đánh dấu là "Tainted" (bị nhiễm bẩn).</li>
-      <li><strong>Sanitizer</strong>: Các hàm làm sạch dữ liệu (như ép kiểu số <code>parseInt()</code>, mã hóa HTML hoặc dùng ORM Parameterization).</li>
-      <li><strong>Sink</strong>: Điểm thực thi nhạy cảm trong hệ thống (như <code>db.query()</code>, <code>eval()</code>, <code>exec()</code>).</li>
-    </ul>
-    <p>Nếu dữ liệu từ Source đi thẳng tới Sink mà không qua bất kỳ Sanitizer nào, SAST sẽ kết luận chính xác 100% có lỗ hổng bảo mật.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Nguyên lý hoạt động:</strong></p>
+      <p>Taint Tracking mô phỏng luồng dữ liệu truyền qua ứng dụng qua 3 khái niệm:</p>
+      <ul>
+        <li><strong>Source</strong>: Nơi tiếp nhận dữ liệu không đáng tin cậy từ người dùng (ví dụ: <code>req.query</code>, <code>req.body</code>, headers). Dữ liệu này bị đánh dấu là "Tainted" (bị nhiễm bẩn).</li>
+        <li><strong>Sanitizer</strong>: Các hàm làm sạch dữ liệu (như ép kiểu số <code>parseInt()</code>, mã hóa HTML hoặc dùng ORM Parameterization).</li>
+        <li><strong>Sink</strong>: Điểm thực thi nhạy cảm trong hệ thống (như <code>db.query()</code>, <code>eval()</code>, <code>exec()</code>).</li>
+      </ul>
+      <p>Nếu dữ liệu từ Source đi thẳng tới Sink mà không qua bất kỳ Sanitizer nào, SAST sẽ kết luận chính xác 100% có lỗ hổng bảo mật.</p>
+    </div>
   </div>
 </details>
 
@@ -402,8 +407,14 @@ git push origin main
     <span>Tại sao nên sử dụng báo cáo chuẩn định dạng `gl-sast-report.json` trong GitLab CI?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Lợi ích tích hợp:</strong></p>
-    <p>Khi khai báo tệp báo cáo trong khối <code>artifacts:reports:sast: gl-sast-report.json</code>, GitLab Server sẽ tự động phân tích cú pháp JSON này và hiển thị danh sách các lỗ hổng mới trực tiếp ngay trong giao diện <strong>Merge Request Security Widget</strong>. Nhờ đó, Reviewer có thể thấy ngay lập tức commit mới thêm vào những lỗ hổng nào mà không cần tải log hay đọc file thô.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Lợi ích tích hợp:</strong></p>
+      <p>Khi khai báo tệp báo cáo trong khối <code>artifacts:reports:sast: gl-sast-report.json</code>, GitLab Server sẽ tự động phân tích cú pháp JSON này và hiển thị danh sách các lỗ hổng mới trực tiếp ngay trong giao diện <strong>Merge Request Security Widget</strong>. Nhờ đó, Reviewer có thể thấy ngay lập tức commit mới thêm vào những lỗ hổng nào mà không cần tải log hay đọc file thô.</p>
+    </div>
   </div>
 </details>
 
@@ -413,11 +424,17 @@ git push origin main
     <span>Sự khác biệt giữa lỗ hổng trực tiếp (Direct Dependency) và lỗ hổng gián tiếp (Transitive Dependency) là gì?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Phân tích:</strong></p>
-    <ul>
-      <li><strong>Direct Dependency</strong>: Là thư viện được bạn khai báo trực tiếp trong tệp cấu hình (ví dụ <code>express</code> trong <code>package.json</code>).</li>
-      <li><strong>Transitive Dependency</strong>: Là thư viện mà thư viện của bạn phụ thuộc vào (ví dụ <code>express</code> phụ thuộc vào <code>body-parser</code>, <code>body-parser</code> phụ thuộc vào <code>qs</code>). Hơn 70% lỗ hổng bảo mật trong ứng dụng thực tế xuất phát từ các transitive dependencies nằm sâu 3-4 tầng.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Phân tích:</strong></p>
+      <ul>
+        <li><strong>Direct Dependency</strong>: Là thư viện được bạn khai báo trực tiếp trong tệp cấu hình (ví dụ <code>express</code> trong <code>package.json</code>).</li>
+        <li><strong>Transitive Dependency</strong>: Là thư viện mà thư viện của bạn phụ thuộc vào (ví dụ <code>express</code> phụ thuộc vào <code>body-parser</code>, <code>body-parser</code> phụ thuộc vào <code>qs</code>). Hơn 70% lỗ hổng bảo mật trong ứng dụng thực tế xuất phát từ các transitive dependencies nằm sâu 3-4 tầng.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -427,12 +444,18 @@ git push origin main
     <span>Làm thế nào để xử lý một lỗ hổng trong Transitive Dependency khi tác giả của Direct Dependency chưa phát hành bản vá?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Chiến lược khắc phục:</strong></p>
-    <ol>
-      <li>Sử dụng tính năng <strong>Overrides / Resolutions</strong> trong tệp <code>package.json</code> (đối với NPM/Yarn/PNPM) để ép buộc toàn bộ cây phụ thuộc dùng phiên bản vá lỗi của transitive package.</li>
-      <li>Tạm thời thay thế direct package bằng một thư viện khác tương đương.</li>
-      <li>Áp dụng WAF (Web Application Firewall) hoặc Virtual Patching tại tầng Ingress để chặn mẫu khai thác trong lúc chờ bản vá chính thức.</li>
-    </ol>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Chiến lược khắc phục:</strong></p>
+      <ol>
+        <li>Sử dụng tính năng <strong>Overrides / Resolutions</strong> trong tệp <code>package.json</code> (đối với NPM/Yarn/PNPM) để ép buộc toàn bộ cây phụ thuộc dùng phiên bản vá lỗi của transitive package.</li>
+        <li>Tạm thời thay thế direct package bằng một thư viện khác tương đương.</li>
+        <li>Áp dụng WAF (Web Application Firewall) hoặc Virtual Patching tại tầng Ingress để chặn mẫu khai thác trong lúc chờ bản vá chính thức.</li>
+      </ol>
+    </div>
   </div>
 </details>
 
@@ -442,13 +465,19 @@ git push origin main
     <span>Tại sao quét SAST không thể thay thế hoàn toàn việc kiểm thử DAST và Penetration Testing?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Giới hạn của SAST:</strong></p>
-    <p>SAST chỉ nhìn thấy mã nguồn tĩnh, nó hoàn toàn "mù" đối với:</p>
-    <ul>
-      <li>Các cấu hình sai lệch trong môi trường triển khai thực tế (Misconfigurations ở Nginx, Kubernetes RBAC, IAM roles).</li>
-      <li>Các lỗi logic kinh doanh phức tạp (Business Logic Flaws) như chuyển khoản tiền âm hoặc bypass quy trình thanh toán.</li>
-      <li>Các lỗ hổng phát sinh từ tương tác động giữa nhiều microservices lúc runtime.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Giới hạn của SAST:</strong></p>
+      <p>SAST chỉ nhìn thấy mã nguồn tĩnh, nó hoàn toàn "mù" đối với:</p>
+      <ul>
+        <li>Các cấu hình sai lệch trong môi trường triển khai thực tế (Misconfigurations ở Nginx, Kubernetes RBAC, IAM roles).</li>
+        <li>Các lỗi logic kinh doanh phức tạp (Business Logic Flaws) như chuyển khoản tiền âm hoặc bypass quy trình thanh toán.</li>
+        <li>Các lỗ hổng phát sinh từ tương tác động giữa nhiều microservices lúc runtime.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -458,8 +487,14 @@ git push origin main
     <span>Làm sao để cấu hình SonarQube Quality Gate tự động chặn Merge Request khi không đạt tiêu chuẩn?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Cấu hình:</strong></p>
-    <p>Sử dụng tính năng <strong>SonarQube GitLab Integration (PR Decoration)</strong>. Trong pipeline CI, thêm cờ <code>-Dsonar.qualitygate.wait=true</code> vào lệnh <code>sonar-scanner</code>. Runner sẽ giữ kết nối và chờ SonarQube Server tính toán. Nếu điểm Coverage dưới 80% hoặc có 1 lỗi bảo mật mới, SonarQube sẽ trả về mã lỗi và GitLab tự động khóa không cho merge.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Cấu hình:</strong></p>
+      <p>Sử dụng tính năng <strong>SonarQube GitLab Integration (PR Decoration)</strong>. Trong pipeline CI, thêm cờ <code>-Dsonar.qualitygate.wait=true</code> vào lệnh <code>sonar-scanner</code>. Runner sẽ giữ kết nối và chờ SonarQube Server tính toán. Nếu điểm Coverage dưới 80% hoặc có 1 lỗi bảo mật mới, SonarQube sẽ trả về mã lỗi và GitLab tự động khóa không cho merge.</p>
+    </div>
   </div>
 </details>
 
@@ -469,8 +504,14 @@ git push origin main
     <span>Khái niệm "License Compliance Scanning" là gì và tại sao doanh nghiệp lại cực kỳ quan tâm?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Ý nghĩa pháp lý:</strong></p>
-    <p>Một số giấy phép mã nguồn mở có tính chất "lây nhiễm" (Copyleft licenses như GPL-3.0, AGPL). Nếu lập trình viên vô tình import một thư viện GPL vào phần mềm thương mại đóng gói của công ty, về mặt pháp lý công ty có thể bị kiện buộc phải công khai toàn bộ mã nguồn độc quyền của mình. License Compliance Scanning quét phát hiện và chặn các thư viện có giấy phép không tương thích ngay trên CI.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Ý nghĩa pháp lý:</strong></p>
+      <p>Một số giấy phép mã nguồn mở có tính chất "lây nhiễm" (Copyleft licenses như GPL-3.0, AGPL). Nếu lập trình viên vô tình import một thư viện GPL vào phần mềm thương mại đóng gói của công ty, về mặt pháp lý công ty có thể bị kiện buộc phải công khai toàn bộ mã nguồn độc quyền của mình. License Compliance Scanning quét phát hiện và chặn các thư viện có giấy phép không tương thích ngay trên CI.</p>
+    </div>
   </div>
 </details>
 
@@ -480,12 +521,18 @@ git push origin main
     <span>Làm thế nào để quản lý ngoại lệ bảo mật (Security Exceptions / Vulnerability Dismissal) một cách minh bạch?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Quy trình Enterprise:</strong></p>
-    <ul>
-      <li>Không cho phép developer tự ý xóa cảnh báo.</li>
-      <li>Yêu cầu tạo một bản ghi <strong>Vulnerability Exception Ticket</strong> trên hệ thống quản lý rủi ro (Jira/ServiceNow), có chữ ký phê duyệt của Security Lead.</li>
-      <li>Ghi nhận lý do kỹ thuật (ví dụ: endpoint chỉ chạy trong mạng nội bộ cô lập) và đặt thời hạn hết hạn ngoại lệ (Expiry Date, ví dụ: 30 ngày) để bắt buộc xem xét lại.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Quy trình Enterprise:</strong></p>
+      <ul>
+        <li>Không cho phép developer tự ý xóa cảnh báo.</li>
+        <li>Yêu cầu tạo một bản ghi <strong>Vulnerability Exception Ticket</strong> trên hệ thống quản lý rủi ro (Jira/ServiceNow), có chữ ký phê duyệt của Security Lead.</li>
+        <li>Ghi nhận lý do kỹ thuật (ví dụ: endpoint chỉ chạy trong mạng nội bộ cô lập) và đặt thời hạn hết hạn ngoại lệ (Expiry Date, ví dụ: 30 ngày) để bắt buộc xem xét lại.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -495,12 +542,18 @@ git push origin main
     <span>Tại sao công cụ Semgrep lại được ưa chuộng hơn các công cụ SAST truyền thống (như Fortify, Checkmarx)?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Ưu điểm vượt trội:</strong></p>
-    <ul>
-      <li><strong>Tốc độ thực thi</strong>: Quét hàng trăm ngàn dòng code chỉ trong vài chục giây thay vì hàng giờ.</li>
-      <li><strong>Cú pháp viết luật đơn giản</strong>: Viết rules bằng chính cú pháp mã nguồn thực tế kết hợp YAML, bất kỳ developer nào cũng có thể tự viết thêm luật riêng cho công ty mà không cần học ngôn ngữ đặc tả phức tạp.</li>
-      <li><strong>Tích hợp CI nhẹ nhàng</strong>: Đóng gói dưới dạng 1 binary hoặc 1 Docker image siêu nhẹ.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Ưu điểm vượt trội:</strong></p>
+      <ul>
+        <li><strong>Tốc độ thực thi</strong>: Quét hàng trăm ngàn dòng code chỉ trong vài chục giây thay vì hàng giờ.</li>
+        <li><strong>Cú pháp viết luật đơn giản</strong>: Viết rules bằng chính cú pháp mã nguồn thực tế kết hợp YAML, bất kỳ developer nào cũng có thể tự viết thêm luật riêng cho công ty mà không cần học ngôn ngữ đặc tả phức tạp.</li>
+        <li><strong>Tích hợp CI nhẹ nhàng</strong>: Đóng gói dưới dạng 1 binary hoặc 1 Docker image siêu nhẹ.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -510,11 +563,17 @@ git push origin main
     <span>Làm thế nào để tối ưu hóa thời gian quét Dependency Scanning trong các dự án Monorepo lớn?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Giải pháp:</strong></p>
-    <ul>
-      <li>Cache cơ sở dữ liệu lỗ hổng (Vulnerability Database) của Trivy giữa các lần chạy job để tránh việc tải lại 50MB dữ liệu CVE từ Internet mỗi lần.</li>
-      <li>Kết hợp <code>rules:changes</code> để chỉ quét các thư mục con có tệp <code>package.json</code>, <code>pom.xml</code> hoặc <code>go.sum</code> thực sự bị thay đổi trong commit.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Giải pháp:</strong></p>
+      <ul>
+        <li>Cache cơ sở dữ liệu lỗ hổng (Vulnerability Database) của Trivy giữa các lần chạy job để tránh việc tải lại 50MB dữ liệu CVE từ Internet mỗi lần.</li>
+        <li>Kết hợp <code>rules:changes</code> để chỉ quét các thư mục con có tệp <code>package.json</code>, <code>pom.xml</code> hoặc <code>go.sum</code> thực sự bị thay đổi trong commit.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -524,12 +583,18 @@ git push origin main
     <span>Sự cố: Job SAST báo lỗi "Out of Memory" khi quét repository có dung lượng mã nguồn lớn (> 500MB). Xử lý thế nào?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Khắc phục:</strong></p>
-    <ol>
-      <li>Thêm tệp <code>.semgrepignore</code> loại bỏ các tệp build outputs, bundle minified files (<code>*.min.js</code>), thư mục tài liệu và assets hình ảnh.</li>
-      <li>Tăng giới hạn bộ nhớ của Runner Pod trong Kubernetes.</li>
-      <li>Chạy Semgrep với cờ giới hạn số tiến trình song song: <code>--max-target-bytes=5000000 -j 2</code>.</li>
-    </ol>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Khắc phục:</strong></p>
+      <ol>
+        <li>Thêm tệp <code>.semgrepignore</code> loại bỏ các tệp build outputs, bundle minified files (<code>*.min.js</code>), thư mục tài liệu và assets hình ảnh.</li>
+        <li>Tăng giới hạn bộ nhớ của Runner Pod trong Kubernetes.</li>
+        <li>Chạy Semgrep với cờ giới hạn số tiến trình song song: <code>--max-target-bytes=5000000 -j 2</code>.</li>
+      </ol>
+    </div>
   </div>
 </details>
 
@@ -539,8 +604,14 @@ git push origin main
     <span>Khái niệm "Vulnerability Exploitability eXchange (VEX)" giải quyết vấn đề gì trong DevSecOps?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Ý nghĩa của VEX:</strong></p>
-    <p>VEX là một định dạng tài liệu đi kèm với SBOM, cho phép nhà phát triển tuyên bố chính thức rằng: Mặc dù container có chứa một thư viện dính CVE X, nhưng ứng dụng <em>hoàn toàn không bị ảnh hưởng (Not Affected)</em> vì mã nguồn không hề gọi tới hàm bị lỗi đó. Máy quét bảo mật khi đọc tệp VEX sẽ tự động bỏ qua cảnh báo này, loại bỏ triệt để cảnh báo rác.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Ý nghĩa của VEX:</strong></p>
+      <p>VEX là một định dạng tài liệu đi kèm với SBOM, cho phép nhà phát triển tuyên bố chính thức rằng: Mặc dù container có chứa một thư viện dính CVE X, nhưng ứng dụng <em>hoàn toàn không bị ảnh hưởng (Not Affected)</em> vì mã nguồn không hề gọi tới hàm bị lỗi đó. Máy quét bảo mật khi đọc tệp VEX sẽ tự động bỏ qua cảnh báo này, loại bỏ triệt để cảnh báo rác.</p>
+    </div>
   </div>
 </details>
 
@@ -556,7 +627,7 @@ git push origin main
 
 ### 7.2. Sơ Đồ Tư Duy Hệ Thống SAST & SCA (Mindmap)
 
-```
+```text
                        BẢO MẬT MÃ NGUỒN VÀ PHỤ THUỘC (SAST & SCA)
                                            │
         ┌──────────────────────────────────┼──────────────────────────────────┐

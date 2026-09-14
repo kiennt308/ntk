@@ -49,7 +49,7 @@ Cách làm này là nguyên nhân của hơn **70% các vụ rò rỉ bảo mậ
 
 > **Giải pháp tối thượng chuẩn Zero-Trust là "Keyless OIDC Cloud Federation": GitLab CI/CD đóng vai trò là một OIDC Identity Provider (IdP). Khi Job chạy, nó sẽ sinh một JSON Web Token (JWT) ngắn hạn được ký mật mã. Các nhà cung cấp Cloud (AWS, GCP, Azure) sẽ xác thực chữ ký này qua mạng Internet công khai và cấp phát Token truy cập tạm thời (Short-lived Session Token, TTL 15-60 phút) mà không cần lưu trữ bất kỳ mật khẩu nào trên GitLab!**
 
-```
+```text
        QUY TRÌNH XÁC THỰC LIÊN BANG OIDC GIỮA GITLAB CI VÀ CÁC CLOUD PROVIDERS
 
                  ┌──────────────────────────────────────────────┐

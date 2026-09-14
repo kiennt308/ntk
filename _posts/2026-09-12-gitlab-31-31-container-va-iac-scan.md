@@ -48,7 +48,7 @@ Tuy nhiên, theo các báo cáo bảo mật đám mây, hơn **85% các vụ xâ
 
 > **Chiến lược DevSecOps hiện đại bắt buộc phải thực thi "Static Analysis for Infrastructure" — phân tích kiểm tra mọi tệp IaC (Checkov, KICS) và quét toàn bộ tầng OCI Image Layers (Trivy) trước khi thực hiện `terraform apply` hoặc `helm upgrade`, đồng thời đẩy toàn bộ dữ liệu phát hiện về nền tảng quản trị lỗ hổng tập trung DefectDojo.**
 
-```
+```text
        QUY TRÌNH QUÉT AN NINH CONTAINER & IAC TRONG GITLAB CI/CD
 
   [ Git Commit: Terraform & Dockerfile ]

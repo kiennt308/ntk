@@ -22,7 +22,7 @@ description: "Cẩm nang khắc phục sự cố CI/CD toàn diện: Phương ph
 
 Khi một GitLab Runner nhận một Job từ GitLab Server (qua giao thức gRPC / HTTP long-polling), quá trình thực thi trải qua 6 giai đoạn nghiêm ngặt. Việc xác định chính xác **giai đoạn xảy ra lỗi** là chìa khóa để cô lập nguyên nhân:
 
-```
+```text
 +---------------------------------------------------------------------------------------------------+
 |                                  GITLAB JOB EXECUTION LIFECYCLE                                   |
 +---------------------------------------------------------------------------------------------------+
@@ -57,7 +57,7 @@ Linux Process Exit Code tuân theo chuẩn POSIX. Khi một tiến trình bị t
 
 $$	ext{Exit Code} = 128 + 	ext{Signal Number}$$
 
-```
+```text
 +---------------------------------------------------------------------------------------------------+
 |                                  POSIX PROCESS EXIT CODE TAXONOMY                                 |
 +---------------------------------------------------------------------------------------------------+
@@ -90,7 +90,7 @@ $$	ext{Exit Code} = 128 + 	ext{Signal Number}$$
 
 Mô hình kiến trúc giám sát và xử lý sự cố khẩn cấp cho hệ thống GitLab CI/CD:
 
-```
+```text
 +---------------------------------------------------------------------------------------------------+
 |                            PRODUCTION TROUBLESHOOTING ARCHITECTURE                                |
 +---------------------------------------------------------------------------------------------------+
@@ -121,7 +121,7 @@ Mô hình kiến trúc giám sát và xử lý sự cố khẩn cấp cho hệ t
 
 ### Sự cố thực tế: Toàn bộ pipeline triển khai Microservices đồng loạt tê liệt do lỗi "Job Token Permission Denied" và "Docker Daemon Out of Space"
 
-```
+```text
 [SỰ CỐ PIPELINE OUTAGE]
   |
   +---> 100% CI/CD Pipelines của 35 Microservices thất bại ở stage "Build & Security Scan".

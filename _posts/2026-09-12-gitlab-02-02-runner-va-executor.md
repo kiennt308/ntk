@@ -37,7 +37,7 @@ Một Job CI/CD trong thực tế luôn được chi phối bởi **HAI TỆP C�
 1. **`.gitlab-ci.yml` (Người viết Pipeline):** Xác định Job *LÀM GÌ* (câu lệnh `script`, image yêu cầu, artifacts cần giữ lại, điều kiện `rules`).
 2. **`config.toml` (Người vận hành Runner / Platform Engineer):** Xác định Job *CHẠY Ở ĐÂU VÀ VỚI QUYỀN GÌ* (loại Executor, thư mục volume mount, phân bổ CPU/RAM, hạn mức `concurrent`, cấu hình mạng).
 
-```yaml
+```text
   NGƯỜI VIẾT PIPELINE                          NGƯỜI VẬN HÀNH RUNNER
   .gitlab-ci.yml                               config.toml
   ├── job làm gì (script)                      ├── executor nào (shell/docker/k8s)
@@ -183,10 +183,10 @@ flowchart TD
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. <span class="badge badge--primary">Why 1</span> **Tại sao Job đọc được file nhạy cảm trên máy chủ host?** $ightarrow$ Vì Job đã khởi tạo một container mới và mount toàn bộ thư mục gốc `/` của host.
-2. <span class="badge badge--primary">Why 2</span> **Tại sao Job lại có quyền ra lệnh cho Docker Engine của host?** $ightarrow$ Vì trong `config.toml`, kỹ sư hạ tầng đã cấu hình `volumes = ["/var/run/docker.sock:/var/run/docker.sock"]`.
-3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại mount Docker Socket vào Runner?** $ightarrow$ Để tiện cho việc chạy lệnh `docker build` (Docker-in-Docker) mà không cần cài đặt phức tạp.
-4. <span class="badge badge--primary">Why 4</span> **Tại sao MR của người ngoài lại được chạy trên Runner này?** $ightarrow$ Vì Runner này được đăng ký ở cấp **Instance (Shared Runner)** mở cho mọi repository.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Job đọc được file nhạy cảm trên máy chủ host?** &rarr; Vì Job đã khởi tạo một container mới và mount toàn bộ thư mục gốc `/` của host.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Job lại có quyền ra lệnh cho Docker Engine của host?** &rarr; Vì trong `config.toml`, kỹ sư hạ tầng đã cấu hình `volumes = ["/var/run/docker.sock:/var/run/docker.sock"]`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại mount Docker Socket vào Runner?** &rarr; Để tiện cho việc chạy lệnh `docker build` (Docker-in-Docker) mà không cần cài đặt phức tạp.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao MR của người ngoài lại được chạy trên Runner này?** &rarr; Vì Runner này được đăng ký ở cấp **Instance (Shared Runner)** mở cho mọi repository.
 5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
    - Xóa bỏ ngay lập tức việc mount `/var/run/docker.sock` trên Shared Runners.
    - Chuyển sang sử dụng **Kaniko** hoặc **Buildah (Rootless)** để build Docker image mà không cần Docker daemon.
@@ -492,7 +492,7 @@ docker exec -it gitlab-runner-lab gitlab-runner unregister --all-runners
     </div>
     <div><b>Đáp án chuẩn:</b> Quy trình 3 nhịp chuẩn hóa:</div>
     <div>• <b>Nhịp 1 — Xác định Pha trong Log (10 giây):</b> Tìm dòng tiêu đề pha cuối cùng trước khi lỗi. Nếu không có dòng <code>Executing "step_script"</code> &rarr; Lệnh chưa từng chạy, lỗi 100% thuộc về hạ tầng Runner.</div>
-    <div>• <b>Nhịp 2 — Ánh xạ sang Tệp:</b> Pha 1 (`prepare_executor`), Pha 2 (`prepare_script`), và phần lớn Pha 3 (`get_sources`) thuộc quyền quản lý của <code>config.toml</code>. Các pha từ 4 đến 8 thuộc về <code>.gitlab-ci.yml</code>.</div>
+    <div>• <b>Nhịp 2 — Ánh xạ sang Tệp:</b> Pha 1 (<code>prepare_executor</code>), Pha 2 (<code>prepare_script</code>), và phần lớn Pha 3 (<code>get_sources</code>) thuộc quyền quản lý của <code>config.toml</code>. Các pha từ 4 đến 8 thuộc về <code>.gitlab-ci.yml</code>.</div>
     <div>• <b>Nhịp 3 — Kiểm tra Job Pending không có log:</b> Kiểm tra 3 điều kiện Runner (Online, Not Paused, Tag Match) qua API và kiểm tra sự kiện K8s cluster nếu dùng K8s executor.</div>
     <div>Ý nghĩa: Tiết kiệm 80% thời gian debug và luôn liên hệ đúng đầu mối kỹ thuật phụ trách.</div>
     <div style="margin-top: 0.5rem;"><b style="color: var(--accent-cyan);">&bull; Tiêu chí chấm điểm:</b> 0: Đọc log tìm chữ ERROR &bull; 1: Biết phân loại pha &bull; 2: Nêu đúng 3 nhịp &bull; 3: Trình bày xuất sắc quy trình 3 nhịp kèm số liệu 3/8 pha và kỹ năng xử lý job pending.</div>

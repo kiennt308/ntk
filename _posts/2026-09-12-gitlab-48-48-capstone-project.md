@@ -24,7 +24,7 @@ description: "Đồ án tốt nghiệp thực chiến: Tự tay thiết kế và
 
 Hệ thống CI/CD & DevSecOps hoàn chỉnh cho doanh nghiệp vận hành theo mô hình chuỗi cung ứng phần mềm an toàn (Secure Software Supply Chain - SLSA Level 3):
 
-```
+```text
 +---------------------------------------------------------------------------------------------------+
 |                           ENTERPRISE DEVSECOPS CAPSTONE ARCHITECTURE                              |
 +---------------------------------------------------------------------------------------------------+
@@ -91,7 +91,7 @@ $$	ext{Total Execution Time} = \max\left(T_{	ext{SecGates}}, T_{	ext{BuildBacken
 
 Cấu trúc thư mục chuẩn của Monorepo Enterprise Capstone Project:
 
-```
+```text
 capstone-enterprise-system/
 ├── .gitlab-ci.yml                      # Main Root Pipeline
 ├── .gitlab/
@@ -129,7 +129,7 @@ capstone-enterprise-system/
 
 ### Sự cố thực tế: Bản phát hành Capstone gây tê liệt cổng thanh toán Production do lỗi Bypass Security Gate và lệch phiên bản GitOps
 
-```
+```text
 [SỰ CỐ KHẨN CẤP PRODUCTION]
   |
   +---> Ứng dụng thanh toán gặp lỗi CrashLoopBackOff trên Production sau khi Merge Request được duyệt.

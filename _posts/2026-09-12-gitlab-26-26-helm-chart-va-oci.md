@@ -48,8 +48,8 @@ Trong lịch sử, Helm yêu cầu một máy chủ HTTP riêng biệt và một
 
 > **Chuẩn OCI (Open Container Initiative) hiện đại đã thống nhất toàn bộ hạ tầng phân phối. Helm Chart giờ đây được đóng gói và lưu trữ trực tiếp dưới dạng OCI Artifacts bên trong GitLab Package/Container Registry hoặc Harbor, cho phép đồng nhất quy trình xác thực, kiểm soát quyền truy cập và kiểm tra tính toàn vẹn.**
 
-```
-       QUY TRÌNH PHÂN PHỐI HELM CHAT QUA GIAO THỨC CHUẨN OCI
+```text
+       QUY TRÌNH PHÂN PHỐI HELM CHART QUA GIAO THỨC CHUẨN OCI
 
   [ Mã Nguồn Helm Chart ] ──► [ helm lint & kubeconform ] ──► [ helm package ]
                                                                      │
@@ -171,36 +171,66 @@ publish_oci_chart:
 
 ## 4. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
-### 4.1. Sự Cố Thực Tế: Deploy Nhầm Cấu Hình Do Trùng Version Của Helm Chart
-
-> **Bối Cảnh**: Một kỹ sư sửa đổi cấu hình Port trong `templates/service.yaml` nhưng quên tăng số `version` trong `Chart.yaml` (vẫn giữ nguyên `1.0.0`). Khi chạy pipeline, bản build mới bị ghi đè ngầm hoặc bị ArgoCD bỏ qua không đồng bộ, dẫn đến toàn bộ hệ thống frontend không thể kết nối tới backend sau khi release.
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│ 1. Tại sao Kubernetes cluster không nhận cấu hình Service mới?          │
-│    -> ArgoCD và Helm coi phiên bản 1.0.0 là đã tồn tại và bỏ qua.       │
-│                                                                         │
-│ 2. Tại sao lại coi là đã tồn tại khi code template đã thay đổi?         │
-│    -> Tệp Chart.yaml không được cập nhật số phiên bản SemVer mới.      │
-│                                                                         │
-│ 3. Tại sao kỹ sư lại quên nâng số phiên bản Chart?                      │
-│    -> Quy trình cập nhật phiên bản hoàn toàn thủ công bằng mắt thường.  │
-│                                                                         │
-│ 4. Tại sao Pipeline CI không phát hiện ra việc trùng phiên bản?         │
-│    -> Không có bước kiểm thử tự động Chart Testing (ct lint).           │
-│                                                                         │
-│ 5. NGUYÊN NHÂN CỐT LÕI (Root Cause):                                   │
-│    -> Thiếu công cụ tự động kiểm soát phiên bản (Version Validation Gate)│
-│       và chưa bật cơ chế OCI Tag Immutability trên Registry.           │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    INC["Sự Cố: Cụm Kubernetes Production deploy nhầm cấu hình cũ do trùng số Version của Helm Chart"]
+    W1["Tại sao Kubernetes không nhận cấu hình Service mới? ArgoCD và Helm coi phiên bản 1.0.0 đã được cài đặt và bỏ qua"]
+    W2["Tại sao lại coi là đã tồn tại khi template đã sửa? Tệp Chart.yaml không được cập nhật số phiên bản SemVer mới"]
+    W3["Tại sao kỹ sư lại quên nâng số phiên bản Chart? Quy trình cập nhật phiên bản hoàn toàn thủ công bằng mắt"]
+    W4["Tại sao Pipeline CI không phát hiện ra việc trùng phiên bản? Pipeline thiếu bước kiểm thử tự động Chart Testing (ct lint)"]
+    W5["Giải pháp cốt lõi: Tích hợp ct lint bắt buộc trong Merge Request và bật OCI Tag Immutability"]
+    
+    INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.2. Giải Pháp Khắc Phục Triệt Để
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 06:35 AM</span> Một kỹ sư sửa đổi cấu hình Port trong `templates/service.yaml` nhưng quên tăng số `version` trong `Chart.yaml` (vẫn giữ nguyên `1.0.0`). Khi chạy pipeline, bản build mới bị ghi đè ngầm hoặc bị ArgoCD bỏ qua không đồng bộ, dẫn đến toàn bộ hệ thống frontend không thể kết nối tới backend sau khi release.
 
-1. **Bắt buộc kiểm tra phiên bản qua `ct lint` trong MR**: Bất kỳ sự thay đổi nào trong thư mục `charts/` mà không tăng `version` trong `Chart.yaml` sẽ khiến pipeline Merge Request thất bại ngay lập tức.
-2. **Kích hoạt Tag Immutability**: Đảm bảo Registry từ chối lệnh `helm push` nếu Chart Version đã tồn tại trước đó.
+### Hậu Quả & Log Lỗi Thực Tế:
+Hệ thống Frontend mất kết nối hoàn toàn tới Microservices Backend, gây lỗi 502 Bad Gateway:
+
+```text
+$ helm upgrade --install core-service oci://registry.corp.internal/charts/core-service --version 1.0.0
+Release "core-service" has been upgraded. Happy Helming!
+$ kubectl get svc core-service -o jsonpath='{.spec.ports[0].port}'
+8080
+# Lỗi: Cổng mới mong muốn là 9090 nhưng Kubernetes vẫn giữ nguyên cổng cũ 8080 do Chart version 1.0.0 không đổi!
+ERROR [Incident-781]: Ingress upstream timed out connecting to core-service:8080 (Service listening on port 9090).
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Kubernetes cluster không nhận cấu hình Service mới?** &rarr; ArgoCD và Helm Client coi phiên bản Chart `1.0.0` là đã tồn tại và không thực hiện render lại các template đã thay đổi.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lại coi là đã tồn tại khi code template đã thay đổi?** &rarr; Tệp `Chart.yaml` không được cập nhật số phiên bản SemVer mới (`version: 1.0.1`).
+3. <span class="badge badge--primary">Why 3</span> **Tại sao kỹ sư lại quên nâng số phiên bản Chart?** &rarr; Quy trình cập nhật phiên bản hoàn toàn thủ công bằng mắt thường và không có công cụ tự động kiểm tra.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao Pipeline CI không phát hiện ra việc trùng phiên bản?** &rarr; Pipeline không có bước kiểm thử tự động Chart Testing (`ct lint` so khớp với main branch).
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để**: Tích hợp công cụ `ct lint` trong Merge Request Pipeline để chặn merge nếu chưa tăng `version` trong `Chart.yaml`, đồng thời bật cơ chế **OCI Tag Immutability** trên Registry.
+
+### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+
+#### Cạm bẫy 1: Sự cố `values.yaml` bị sai kiểu dữ liệu làm sập Pod
+- **Hiện tượng**: Truyền port dạng chuỗi `"8080"` thay vì số nguyên `8080` khiến Kubernetes API từ chối manifest.
+- **Nguyên nhân tầng sâu**: Thiếu tệp `values.schema.json` kiểm soát schema.
+- **Cách gỡ rối**: Sử dụng `helm schema-gen` để tạo JSON Schema và kiểm tra tự động trước khi deploy.
+
+#### Cạm bẫy 2: Lộ mật khẩu Database dạng Plaintext trong `values.yaml`
+- **Hiện tượng**: Mật khẩu root database bị commit lên Git repository.
+- **Nguyên nhân**: Viết trực tiếp credentials vào tệp values mà không mã hóa.
+- **Biện pháp**: Sử dụng External Secrets Operator (ESO) hoặc mã hóa với SOPS/Helm-Secrets.
+
+#### Cạm bẫy 3: Helm Upgrade thất bại do sửa đổi trường bất biến (Immutable Fields)
+- **Hiện tượng**: `helm upgrade` báo lỗi `cannot patch "..." with kind Deployment: field is immutable`.
+- **Nguyên nhân**: Sửa đổi trường `spec.selector.matchLabels` sau khi Deployment đã được tạo.
+- **Biện pháp**: Thêm cờ `--force` hoặc xóa deployment cũ trước khi nâng cấp.
+
+#### Cạm bẫy 4: Kéo Subchart bị lỗi khi mất kết nối Internet
+- **Hiện tượng**: Job build bị fail vì không thể kết nối tới `charts.bitnami.com`.
+- **Nguyên nhân**: Khai báo HTTP URL thay vì lưu trữ bản sao Subchart trên Private OCI Registry nội bộ.
+- **Biện pháp**: Chuyển toàn bộ dependencies sang `oci://registry.corp.internal/charts/...`.
+
+#### Cạm bẫy 5: Nhầm lẫn giữa Chart Version và AppVersion
+- **Hiện tượng**: Sửa logic code ứng dụng nhưng lại tăng Chart Version lớn, làm nhiễu loạn lịch sử release của hạ tầng.
+- **Nguyên nhân**: Không phân tách rạch ròi giữa bản phát hành hạ tầng (`version`) và bản phát hành mã nguồn (`appVersion`).
+- **Biện pháp**: Độc lập hóa chu kỳ release của Helm Chart và Application Docker Image.
 
 ---
 
@@ -212,7 +242,7 @@ publish_oci_chart:
 - Thiết lập pipeline kiểm thử và đóng gói tự động.
 - Đẩy Chart lên GitLab OCI Registry và cài đặt thử nghiệm từ máy khách.
 
-```
+```text
        MÔ HÌNH THỰC HÀNH LAB HELM OCI PACKAGE TRÊN GITLAB CI
 
      [ charts/web-api/ ]
@@ -380,7 +410,11 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q01</span>
     <span>Tại sao Helm chuyển hướng từ HTTP Chart Repository sang OCI Registry trong Helm v3?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Lý do kiến trúc:</strong></p>
     <ul>
       <li>Loại bỏ tệp chỉ mục đơn điểm nghẽn <code>index.yaml</code> (dễ xảy ra race conditions khi nhiều người cùng push).</li>
@@ -395,10 +429,14 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q02</span>
     <span>Sự khác biệt cốt lõi giữa Helm và Kustomize là gì? Khi nào nên phối hợp cả hai?</span>
   </summary>
-  <div class="qa-body">
-    <p><strong>So sánh & Phối hợp:</strong></p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><strong>So sánh &amp; Phối hợp:</strong></p>
     <ul>
-      <li><strong>Helm</strong>: Mạnh về đóng gói ứng dụng (Packaging), tái sử dụng với các tham số biến đổi (Templating), quản lý vòng đời phát hành (Release history & Rollback).</li>
+      <li><strong>Helm</strong>: Mạnh về đóng gói ứng dụng (Packaging), tái sử dụng với các tham số biến đổi (Templating), quản lý vòng đời phát hành (Release history &amp; Rollback).</li>
       <li><strong>Kustomize</strong>: Mạnh về tùy biến cấu hình theo môi trường (Overlays patching) mà không làm biến dạng manifest gốc, hoàn toàn không cần học cú pháp template Go.</li>
       <li><strong>Mô hình phối hợp</strong>: Sử dụng Helm Chart làm Base Template chuẩn cho toàn công ty, sau đó tại mỗi cụm GitOps sử dụng Kustomize để patch các giá trị đặc thù của hạ tầng.</li>
     </ul>
@@ -410,7 +448,11 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q03</span>
     <span>Làm thế nào để xác thực giá trị đầu vào của `values.yaml` nhằm tránh lỗi cấu hình lúc deploy?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp:</strong></p>
     <p>Tạo tệp <strong><code>values.schema.json</code></strong> tuân thủ chuẩn JSON Schema trong thư mục gốc của Chart. Khi người dùng chạy lệnh <code>helm install</code> hoặc <code>helm lint</code>, Helm sẽ tự động đối soát các kiểu dữ liệu (kiểm tra kiểu số, regex chuỗi, các trường bắt buộc). Nếu vi phạm, quá trình cài đặt sẽ bị chặn ngay tại máy khách trước khi gửi payload lên Kubernetes API Server.</p>
   </div>
@@ -421,7 +463,11 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q04</span>
     <span>Cơ chế "Chart Testing (ct)" hoạt động như thế nào trong GitLab CI?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cơ chế:</strong></p>
     <p>Công cụ <code>ct</code> (do Helm maintain) phân tích Git Diff giữa branch hiện tại và nhánh đích. Nó tự động kiểm tra xem các chart bị sửa đổi có được tăng số phiên bản SemVer hay không, thực thi <code>helm lint</code>, và có thể tự động tạo một cụm Kubernetes ảo (Kind cluster) ngay trong CI để chạy thử <code>helm install</code> và <code>helm test</code> nhằm xác thực khả năng chạy thực tế của Chart.</p>
   </div>
@@ -432,13 +478,18 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q05</span>
     <span>Làm thế nào để quản lý các Chart con phụ thuộc (Subcharts / Dependencies) trong OCI Helm?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cấu hình:</strong></p>
     <p>Khai báo khối <code>dependencies</code> trong tệp <code>Chart.yaml</code> với đường dẫn giao thức <code>oci://</code>:</p>
-    <pre><code>dependencies:
-  - name: redis
-    version: "18.0.0"
-    repository: "oci://registry-1.docker.io/bitnamicharts"</code></pre>
+    <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">dependencies</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">redis</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">18.0.0"</span>
+    <span class="na">repository</span><span class="pi">:</span> <span class="s2">"</span><span class="s">oci://registry-1.docker.io/bitnamicharts"</span>
+</code></pre></div>
     <p>Sau đó chạy lệnh <code>helm dependency update</code> trong CI để kéo các tệp phụ thuộc về thư mục <code>charts/</code>.</p>
   </div>
 </details>
@@ -448,7 +499,11 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q06</span>
     <span>Tại sao lệnh `helm push` lại cần đường dẫn `oci://` và không chấp nhận `https://`?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Bản chất kỹ thuật:</strong></p>
     <p>Giao thức <code>oci://</code> báo hiệu cho Helm Client biết cần tương tác với máy chủ thông qua <strong>OCI Distribution Specification API</strong> (đẩy các blob layer và OCI manifest), thay vì gửi HTTP POST multipart/form-data truyền thống của máy chủ web cũ.</p>
   </div>
@@ -459,10 +514,15 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q07</span>
     <span>Làm cách nào để ký số (Sign) một Helm Chart được lưu trữ trên OCI Registry?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Phương pháp:</strong></p>
     <p>Vì Helm Chart trên OCI có manifest tương tự Container Image, bạn có thể sử dụng công cụ <strong>Sigstore Cosign</strong> để ký số trực tiếp:</p>
-    <pre><code>cosign sign --key cosign.key registry.corp/charts/web-api:1.0.0</code></pre>
+    <div class="language-bash highlighter-rouge"><pre class="highlight"><code>cosign sign --key cosign.key registry.corp/charts/web-api:1.0.0
+</code></pre></div>
     <p>Công cụ Kyverno hoặc Gatekeeper trên cụm K8s có thể kiểm tra chữ ký này trước khi cho phép triển khai.</p>
   </div>
 </details>
@@ -472,7 +532,11 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q08</span>
     <span>Sự khác biệt giữa câu lệnh `helm template` và `helm install --dry-run` là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Phân tích:</strong></p>
     <ul>
       <li><code>helm template</code>: Biên dịch thuần túy cục bộ tại máy khách (Client-side rendering). Không cần kết nối tới cụm K8s và không kiểm tra được sự tồn tại của các CRD (Custom Resource Definitions) trên cụm.</li>
@@ -486,7 +550,11 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q09</span>
     <span>Làm sao để cấu hình Secrets trong Helm Chart mà không bị lộ mật khẩu dạng bản rõ trên Git?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Chiến lược Enterprise:</strong></p>
     <ol>
       <li>Tuyệt đối không lưu mật khẩu trong <code>values.yaml</code>.</li>
@@ -501,7 +569,11 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q10</span>
     <span>Làm thế nào để viết Unit Test cho logic của Helm Templates?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp:</strong></p>
     <p>Sử dụng plugin <strong>`helm-unittest`</strong>. Tạo các tệp kiểm thử YAML trong thư mục <code>tests/</code> để định nghĩa các trường hợp kiểm thử (test cases) đối soát xem khi truyền các bộ <code>values.yaml</code> khác nhau thì manifest sinh ra có đúng số lượng replicas, đúng tên container và đúng cổng mạng hay không.</p>
   </div>
@@ -512,8 +584,12 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q11</span>
     <span>Sự cố: Lệnh `helm upgrade` thất bại báo lỗi `cannot patch "..." with kind Deployment: field is immutable`. Xử lý thế nào?</span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Nguyên nhân & Khắc phục:</strong></p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><strong>Nguyên nhân &amp; Khắc phục:</strong></p>
     <ul>
       <li><strong>Nguyên nhân</strong>: Kubernetes không cho phép sửa đổi một số trường bất biến sau khi tạo (ví dụ: trường <code>spec.selector.matchLabels</code> của Deployment hoặc <code>spec.clusterIP</code> của Service).</li>
       <li><strong>Khắc phục</strong>: Thêm cờ <code>--force</code> vào lệnh helm upgrade để xóa và tạo lại đối tượng (có thể gây gián đoạn dịch vụ ngắn), hoặc rollback lại cấu hình selector cũ và thực hiện di chuyển namespace mới.</li>
@@ -526,14 +602,19 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
     <span class="qa-num-badge">Q12</span>
     <span>Làm thế nào để đồng bộ tự động Helm OCI Chart sang GitOps Engine như ArgoCD?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cấu hình ArgoCD Application:</strong></p>
     <p>Trong tệp cấu hình <code>Application.yaml</code> của ArgoCD, định nghĩa source trực tiếp từ OCI Registry:</p>
-    <pre><code>spec:
-  source:
-    chart: web-api
-    repoURL: registry.gitlab.corp.internal/platform/web-api/charts
-    targetRevision: 1.0.0</code></pre>
+    <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">spec</span><span class="pi">:</span>
+  <span class="na">source</span><span class="pi">:</span>
+    <span class="na">chart</span><span class="pi">:</span> <span class="s">web-api</span>
+    <span class="na">repoURL</span><span class="pi">:</span> <span class="s">registry.gitlab.corp.internal/platform/web-api/charts</span>
+    <span class="na">targetRevision</span><span class="pi">:</span> <span class="s">1.0.0</span>
+</code></pre></div>
     <p>ArgoCD sẽ tự động theo dõi và cập nhật khi có bản release mới được phát hành.</p>
   </div>
 </details>
@@ -550,7 +631,7 @@ helm install test-release oci://registry.gitlab.corp.internal/platform/web-api/c
 
 ### 7.2. Sơ Đồ Tư Duy Hệ Thống Phân Phối Helm OCI (Mindmap)
 
-```
+```text
                      HỆ THỐNG PHÂN PHỐI HELM OCI TOÀN DIỆN
                                        │
         ┌──────────────────────────────┼──────────────────────────────┐

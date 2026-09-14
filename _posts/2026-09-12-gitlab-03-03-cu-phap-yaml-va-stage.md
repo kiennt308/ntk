@@ -38,7 +38,7 @@ Trong thiết kế hệ thống CI/CD với GitLab, sai lầm phổ biến nhấ
 
 > **`stage` là một hàng rào thời gian (synchronization barrier), hoàn toàn không phải là kênh vận chuyển dữ liệu và không tự động cấp phát tài nguyên song song.**
 
-```
+```text
    HIỂU SAI (Rất phổ biến)               HIỂU ĐÚNG (Chuẩn kiến trúc)
    stage: build ──dữ liệu──▶ stage: test    stage chỉ là HÀNG RÀO ĐỒNG BỘ THỜI GIAN
         │                                    ├── Dữ liệu luân chuyển qua Artifacts / S3 Cache
@@ -110,7 +110,7 @@ Bất kỳ khóa cấp trên cùng nào có tên bắt đầu bằng ký tự d�
 
 Một trong những cơ chế dễ gây hiểu lầm nhất ở tầng thấp là cách GitLab Runner thực thi các khối script trong một job:
 
-```
+```text
   ┌─────────────────────────────────────────────────────────────┐
   │                    SHELL SESSION A                          │
   │  ┌───────────────────────┐     ┌─────────────────────────┐  │
@@ -175,7 +175,7 @@ Khi cùng một thuộc tính được khai báo ở nhiều nơi, quy tắc b�
 
 Một pipeline đạt chuẩn Enterprise cần tách bạch rõ ràng giữa các giai đoạn kiểm soát an ninh đầu vào (`.pre`), các luồng build/test song song, và cổng tổng hợp số liệu an ninh (`.post`).
 
-```
+```text
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                            PIPELINE EXECUTION ARCHITECTURE                             │
   ├────────────────────────────────────────────────────────────────────────────────────────┤
@@ -332,7 +332,7 @@ telemetry-dora-collection:
 
 ### 4.1. Incident 1: Pipeline Xanh Ảo Nhưng Gói Deployment Rỗng (Silent Artifact Loss)
 
-```
+```text
                        SỰ CỐ SILENT ARTIFACT LOSS
   ┌────────────────────────────────────────────────────────────────────────┐
   │ Dòng 3 script: cd services/payment                                     │
@@ -791,13 +791,13 @@ echo "Lab 03 resources cleaned up successfully."
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="6 9 12 15 18 9"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
     <p>Thời gian hoàn thành stage dao động từ <b>30 giây đến 180 giây</b>, hoàn toàn phụ thuộc vào năng lực xử lý đồng thời của hạ tầng Runner:</p>
     <ul>
-      <li><b>Trường hợp tối ưu (Song song hoàn toàn)</b>: Nếu Runner có <code>concurrent >= 6</code> và đủ tài nguyên CPU/RAM, 6 job chạy đồng thời $ightarrow$ Thời gian stage = $\max(t_1, \dots, t_6) pprox \mathbf{30s}$.</li>
-      <li><b>Trường hợp xấu nhất (Tuần tự hóa)</b>: Nếu Runner có <code>concurrent = 1</code>, 6 job phải xếp hàng nối đuôi nhau $ightarrow$ Thời gian stage = $\sum_{i=1}^{6} t_i = 6 	imes 30 = \mathbf{180s}$.</li>
+      <li><b>Trường hợp tối ưu (Song song hoàn toàn)</b>: Nếu Runner có <code>concurrent &gt;= 6</code> và đủ tài nguyên CPU/RAM, 6 job chạy đồng thời &rarr; Thời gian stage = $\max(t_1, \dots, t_6) \approx \mathbf{30s}$.</li>
+      <li><b>Trường hợp xấu nhất (Tuần tự hóa)</b>: Nếu Runner có <code>concurrent = 1</code>, 6 job phải xếp hàng nối đuôi nhau &rarr; Thời gian stage = $\sum_{i=1}^{6} t_i = 6 \times 30 = \mathbf{180s}$.</li>
     </ul>
     <p><i>Kết luận</i>: <code>stage</code> chỉ cấp phép chạy song song, <code>config.toml</code> của Runner mới quyết định mức độ song song thực tế.</p>
   </div>
@@ -810,11 +810,11 @@ echo "Lab 03 resources cleaned up successfully."
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="6 9 12 15 18 9"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
     <p><b>Định nghĩa toán học</b>:</p>
-    $$	ext{Barrier Waste} = 	ext{Tổng thời gian Pipeline} - 	ext{Đường găng dữ liệu thật (Critical Path)}$$
+    $$\text{Barrier Waste} = \text{Tổng thời gian Pipeline} - \text{Đường găng dữ liệu thật (Critical Path)}$$
     <ul>
       <li><b>Đường găng dữ liệu thật</b>: Chuỗi phụ thuộc artifacts dài nhất từ job khởi tạo đến job kết thúc. Đây là giới hạn vật lý tối thiểu mà pipeline không thể chạy nhanh hơn.</li>
       <li><b>Lãng phí hàng rào</b>: Tổng thời gian các job hạ nguồn phải chờ đợi vô ích các job khác trong cùng stage hoàn thành, mặc dù giữa chúng không hề có quan hệ phụ thuộc dữ liệu.</li>
@@ -830,7 +830,7 @@ echo "Lab 03 resources cleaned up successfully."
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="6 9 12 15 18 9"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
     <p><b>Đặc tính kỹ thuật</b>: <code>.pre</code> và <code>.post</code> là hai stage dựng sẵn luôn tồn tại mà không cần khai báo trong mảng <code>stages:</code>. Job thuộc <code>.pre</code> luôn chạy trước mọi stage; Job thuộc <code>.post</code> luôn chạy sau cùng.</p>
@@ -849,7 +849,7 @@ echo "Lab 03 resources cleaned up successfully."
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="6 9 12 15 18 9"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
     <p><b>Cơ chế phân tách Shell</b>: 3 khối lệnh chạy trong đúng <b>2 phiên shell độc lập</b>:</p>
@@ -857,7 +857,7 @@ echo "Lab 03 resources cleaned up successfully."
       <li><b>Shell Session 1</b>: Nối chung <code>before_script</code> và <code>script</code>. Các biến môi trường <code>export</code>, alias, hàm shell và thay đổi thư mục (<code>cd</code>) ở <code>before_script</code> đều được giữ nguyên trong <code>script</code>.</li>
       <li><b>Shell Session 2</b>: Dành riêng cho <code>after_script</code>. Chạy trong một process mới hoàn toàn, không thừa hưởng biến môi trường trong Session 1 và working directory luôn reset về <code>$CI_PROJECT_DIR</code>. Khối này luôn được kích hoạt kể cả khi Session 1 bị fail (non-zero exit code).</li>
     </ul>
-    <p><b>Phương pháp truyền dữ liệu</b>: Để truyền trạng thái hoặc biến từ <code>script</code> sang <code>after_script</code>, bắt buộc phải <b>ghi ra tệp vật lý</b> trên workspace (ví dụ: <code>echo "STATUS=FAIL" > /tmp/status.txt</code> hoặc ghi vào tệp trong <code>$CI_PROJECT_DIR</code>) để <code>after_script</code> đọc lại.</p>
+    <p><b>Phương pháp truyền dữ liệu</b>: Để truyền trạng thái hoặc biến từ <code>script</code> sang <code>after_script</code>, bắt buộc phải <b>ghi ra tệp vật lý</b> trên workspace (ví dụ: <code>echo "STATUS=FAIL" &gt; /tmp/status.txt</code> hoặc ghi vào tệp trong <code>$CI_PROJECT_DIR</code>) để <code>after_script</code> đọc lại.</p>
   </div>
 </details>
 
@@ -868,13 +868,13 @@ echo "Lab 03 resources cleaned up successfully."
   </summary>
   <div class="qa-answer">
     <div class="qa-answer-header">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="6 9 12 15 18 9"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <p><b>Cơ chế gây lỗi</b>: Toàn bộ mảng <code>script: [...]</code> được runner ghép thành một tệp shell script liên tục. Lệnh <code>cd subfolder</code> ở dòng $k$ làm thay đổi current working directory cho toàn bộ các dòng $k+1, \dots$. Khi job kết thúc, bước <code>upload_artifacts</code> tìm kiếm đường dẫn từ gốc <code>$CI_PROJECT_DIR</code>, không tìm thấy file và mặc định tạo file zip rỗng $ightarrow$ Job xanh nhưng artifact không có dữ liệu.</p>
+    <p><b>Cơ chế gây lỗi</b>: Toàn bộ mảng <code>script: [...]</code> được runner ghép thành một tệp shell script liên tục. Lệnh <code>cd subfolder</code> ở dòng $k$ làm thay đổi current working directory cho toàn bộ các dòng $k+1, \dots$. Khi job kết thúc, bước <code>upload_artifacts</code> tìm kiếm đường dẫn từ gốc <code>$CI_PROJECT_DIR</code>, không tìm thấy file và mặc định tạo file zip rỗng &rarr; Job xanh nhưng artifact không có dữ liệu.</p>
     <p><b>3 Giải pháp phòng ngừa chuẩn</b>:</p>
     <ol>
-      <li><b>Sử dụng Subshell</b>: Cô lập lệnh thay đổi thư mục trong ngoặc đơn: <code>(cd subfolder && npm run build)</code> để không làm ảnh hưởng context ngoài.</li>
+      <li><b>Sử dụng Subshell</b>: Cô lập lệnh thay đổi thư mục trong ngoặc đơn: <code>(cd subfolder &amp;&amp; npm run build)</code> để không làm ảnh hưởng context ngoài.</li>
       <li><b>Sử dụng biến gốc tuyệt đối</b>: Luôn tham chiếu đường dẫn với biến hệ thống <code>$CI_PROJECT_DIR/subfolder/dist</code> hoặc <code>cd "$CI_PROJECT_DIR"</code> trước khi kết thúc job.</li>
       <li><b>Assertion bắt buộc</b>: Đặt lệnh kiểm tra sự tồn tại và dung lượng file trước khi thoát: <code>test -s dist/app.js || { echo "ASSERTION FAILED"; exit 1; }</code>.</li>
     </ol>
@@ -910,7 +910,7 @@ echo "Lab 03 resources cleaned up successfully."
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
     </div>
-    <p><b>Quy tắc ưu tiên</b>: Giá trị khai báo <b>trong chính Job (Nấc 3) sẽ thắng</b> theo nguyên tắc "Gần Job nhất thì thắng". Thứ tự từ thấp đến cao: <code>config.toml</code> (Runner) $ightarrow$ <code>default:</code> (Pipeline) $ightarrow$ Khai báo trong <code>Job</code>.</p>
+    <p><b>Quy tắc ưu tiên</b>: Giá trị khai báo <b>trong chính Job (Nấc 3) sẽ thắng</b> theo nguyên tắc "Gần Job nhất thì thắng". Thứ tự từ thấp đến cao: <code>config.toml</code> (Runner) &rarr; <code>default:</code> (Pipeline) &rarr; Khai báo trong <code>Job</code>.</p>
     <p><b>Cơ chế ghi đè</b>: Áp dụng cơ chế <b>Thay thế toàn bộ (Full Replacement)</b>, hoàn toàn không có sự kế thừa hay nối chuỗi (Merge):</p>
     <ul>
       <li>Nếu <code>default:</code> khai báo <code>before_script: [echo "A"]</code> và Job khai báo <code>before_script: [echo "B"]</code>, job sẽ chỉ chạy duy nhất lệnh <code>echo "B"</code>.</li>
@@ -953,13 +953,13 @@ echo "Lab 03 resources cleaned up successfully."
     <ol>
       <li><b>Nhịp 1: Lập bản đồ phụ thuộc dữ liệu (Data Dependency Mapping)</b>: Trả lời câu hỏi <i>"Job này thực sự cần artifact từ những job nào?"</i> để vẽ ra <b>Đường găng dữ liệu thật (Critical Path)</b>.</li>
       <li><b>Nhịp 2: Định lượng Lãng phí hàng rào (Barrier Waste Calculation)</b>:
-      $$	ext{Lãng phí} = 	ext{Tổng thời gian Pipeline} - 	ext{Thời gian Critical Path}$$
-      Nếu lãng phí lớn $ightarrow$ Chuyển dịch ngay sang mô hình DAG với từ khóa <code>needs: [...]</code>.</li>
+      $$\text{Barrier Waste} = \text{Tổng thời gian Pipeline} - \text{Thời gian Critical Path}$$
+      Nếu lãng phí lớn &rarr; Chuyển dịch ngay sang mô hình DAG với từ khóa <code>needs: [...]</code>.</li>
       <li><b>Nhịp 3: Phân loại và tối ưu tầng hạ tầng/cấu hình</b>:
         <ul>
-          <li>Nếu <code>queued_duration</code> cao $ightarrow$ Runner thiếu slot, cần tăng <code>concurrent</code> hoặc cấu hình Autoscaling Runner.</li>
-          <li>Nếu pha <code>download_artifacts</code> tốn thời gian $ightarrow$ Thêm <code>dependencies: []</code> cho các job độc lập.</li>
-          <li>Nếu pha tải package dependency chậm $ightarrow$ Tối ưu phân tầng Distributed Cache (S3/MinIO) và fallback key.</li>
+          <li>Nếu <code>queued_duration</code> cao &rarr; Runner thiếu slot, cần tăng <code>concurrent</code> hoặc cấu hình Autoscaling Runner.</li>
+          <li>Nếu pha <code>download_artifacts</code> tốn thời gian &rarr; Thêm <code>dependencies: []</code> cho các job độc lập.</li>
+          <li>Nếu pha tải package dependency chậm &rarr; Tối ưu phân tầng Distributed Cache (S3/MinIO) và fallback key.</li>
         </ul>
       </li>
     </ol>

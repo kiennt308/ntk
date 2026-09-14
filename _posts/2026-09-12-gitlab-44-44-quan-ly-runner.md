@@ -46,7 +46,7 @@ Nếu hạ tầng GitLab Runner không được thiết kế kiến trúc chuẩ
 
 > **Kiến trúc quản trị Runner quy mô Enterprise bắt buộc phải chuyển dịch sang mô hình "Autoscaling Cloud-Native Runner Fleets": Sử dụng GitLab Runner Kubernetes Executor kết hợp với Just-in-Time Node Autoscaling (Karpenter), phân vùng Runner theo Group/Tags, và lưu trữ bộ nhớ đệm phân tán trên cụm MinIO S3 nội bộ.**
 
-```
+```text
        KIẾN TRÚC RUNNER FLEET CO GIÃN TỰ ĐỘNG (Kubernetes & Karpenter)
 
   [ 1.000+ Jobs Kích Hoạt Đồng Thời Từ GitLab Server ]

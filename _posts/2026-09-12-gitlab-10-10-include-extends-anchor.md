@@ -45,7 +45,7 @@ GitLab CI cung cấp 5 cơ chế tái sử dụng cấu hình, mỗi cơ chế h
 
 > **YAML Anchors là tính năng của Trình phân giải cú pháp YAML nên KHÔNG THỂ vượt qua biên giới tệp (File Boundary). Để tái sử dụng cấu hình xuyên tệp, bắt buộc phải sử dụng `extends:` cho cấu trúc Job hoặc `!reference` cho các khối lệnh `script`/`before_script`.**
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                  YAML COMPILATION & EXPANSION PIPELINE                 │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -95,9 +95,9 @@ graph TD
 
 Một trong những cạm bẫy gây đau đầu nhất cho kỹ sư là hiểu sai cơ chế hợp nhất dữ liệu của `extends:`:
 
-1. **Đối với Dictionary / Mappings (Key-Value pairs)** $ightarrow$ **DEEP MERGE**:
+1. **Đối với Dictionary / Mappings (Key-Value pairs)** &rarr; **DEEP MERGE**:
    - Các trường như `variables:`, `rules:`, `artifacts:` được kết hợp giữa job cha và job con. Khóa nào trùng tên ở job con sẽ ghi đè job cha; khóa nào mới sẽ được thêm vào.
-2. **Đối với Arrays / Sequences (Lists)** $ightarrow$ **COMPLETELY REPLACE (Ghi đè toàn bộ)**:
+2. **Đối với Arrays / Sequences (Lists)** &rarr; **COMPLETELY REPLACE (Ghi đè toàn bộ)**:
    - Các trường danh sách như `script:`, `before_script:`, `after_script:`, `tags:` **KHÔNG HỀ ĐƯỢC NỐI TIẾP (Concat)**!
    - Nếu `.base_job` có `script: [cmd1, cmd2]` và `job_child` có `script: [cmd3]`, thì `job_child` **chỉ chạy duy nhất `cmd3`** (`cmd1` và `cmd2` bị hủy hoàn toàn!).
 
@@ -256,7 +256,32 @@ graph TD
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 02:40 AM</span> Tại một tập đoàn tài chính, đội bảo mật thông báo các bản dựng phát hành lên production đã bypass hoàn toàn bước quét chữ ký số và token verification trong `before_script` của khuôn mẫu `.compliance_base`.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+Job deploy thực thi thành công nhưng không có bất kỳ dòng log kiểm tra bảo mật nào được chạy:
+
+```text
+Running with gitlab-runner 17.1.0 on k8s-runner-7b89f
+Preparing the "kubernetes" executor...
+Using Kubernetes namespace: gitlab-runners
+Using Kubernetes executor with image alpine:3.20 ...
+Executing "step_script" stage of the job script...
+$ echo "=== [Local Step] Deploying directly to Cluster ==="
+$ kubectl apply -f deployment.yaml
+deployment.apps/payments-service configured
+Job succeeded
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao bước kiểm tra bảo mật không chạy?** Vì job `deploy_prod` định nghĩa `before_script` riêng, ghi đè toàn bộ `before_script` của template cha `.compliance_base`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lại bị ghi đè?** Cơ chế `extends:` của GitLab CI chỉ thực hiện Deep Merge cho Dictionary (Map); đối với List/Array (`script`, `before_script`), nó thực hiện **Complete Replacement** (ghi đè 100%).
+3. <span class="badge badge--primary">Why 3</span> **Tại sao lập trình viên không nhận biết được hành vi này?** Lập trình viên suy diễn sai rằng `extends:` sẽ tự động ghép nối mảng (Array Concat) giống như cách nó gộp các cặp `variables:`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao không phát hiện trước khi đưa lên production?** Nhóm phát triển không kiểm tra tệp cấu hình hợp nhất thông qua tính năng CI Lint / Merged YAML API trước khi commit.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để:** Bắt buộc sử dụng cú pháp `!reference [.compliance_base, before_script]` bên trong mảng `before_script` của job con để nhúng tường minh toàn bộ tập lệnh của cha; tích hợp CI Lint gate trong merge request.
+
+### Phân Tích 5 Cạm Bẫy Phổ Biến Nhất:
 
 #### Cạm bẫy 1: Dùng YAML Anchor (`*alias`) gọi sang file được Include
 - **Hiện tượng**: GitLab Parser báo lỗi: `unknown alias 'base_template'` ngay khi khởi tạo pipeline.
@@ -287,7 +312,7 @@ graph TD
 
 ## 5. Hands-on Lab: Tái Sử Dụng Cấu Hình CI/CD Toàn Diện (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                  LAB ARCHITECTURE: CONFIGURATION REUSE                 │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -457,9 +482,13 @@ echo "CI/CD template reuse architecture verified successfully."
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q01</span>
-    <span>Tại sao YAML Anchors (&/<<:/*) không thể sử dụng để tái sử dụng cấu hình xuyên qua các tệp được nạp bằng include:? Giải pháp thay thế là gì?</span>
+    <span>Tại sao YAML Anchors (&amp;/&lt;&lt;:/*) không thể sử dụng để tái sử dụng cấu hình xuyên qua các tệp được nạp bằng include:? Giải pháp thay thế là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên nhân</strong>: YAML Anchors là tính năng được định nghĩa ở tầng phân tích cú pháp tĩnh của chuẩn YAML (YAML 1.2 Parser Specification). Trình phân giải YAML xử lý từng tệp văn bản độc lập tại bộ nhớ đệm trước khi cơ chế <code>include:</code> của GitLab CI hợp nhất chúng. Bảng ký hiệu Anchor bị hủy ngay khi kết thúc việc đọc tệp chứa nó.</p>
     <p><strong>Giải pháp thay thế</strong>: Sử dụng <strong><code>extends:</code></strong> để kế thừa cấu trúc Job hoàn chỉnh hoặc <strong><code>!reference</code> tags</strong> để nhúng các mảng script xuyên tệp.</p>
   </div>
@@ -470,7 +499,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q02</span>
     <span>Phân tích chi tiết sự khác nhau về cơ chế hợp nhất giữa Dictionary (Mappings) và List (Sequences) khi sử dụng <code>extends:</code> trong GitLab CI.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Khi Job con kế thừa từ Job cha qua <code>extends:</code>:</p>
     <ul>
       <li><strong>Dictionary / Mappings (như <code>variables:</code>, <code>rules:</code>, <code>artifacts:</code>)</strong>: Được thực hiện <strong>Deep Merge</strong>. Các key ở Job cha được giữ lại; nếu Job con khai báo trùng key thì giá trị của Job con sẽ ghi đè Job cha; key mới ở Job con được bổ sung vào.</li>
@@ -484,7 +517,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q03</span>
     <span>Cú pháp <code>!reference</code> trong GitLab CI giải quyết hạn chế nào của <code>extends:</code>? Cho ví dụ minh họa.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Hạn chế giải quyết</strong>: <code>!reference</code> giải quyết triệt để hạn chế ghi đè mất danh sách lệnh của <code>extends:</code>. Nó cho phép lập trình viên "chắp vá" hoặc bổ sung thêm các lệnh shell cục bộ vào danh sách lệnh chuẩn mực của Template cha mà không làm mất đi các lệnh bảo mật có sẵn.</p>
     <p><strong>Ví dụ</strong>:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">test_job</span><span class="pi">:</span>
@@ -501,7 +538,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q04</span>
     <span>Tại sao việc sử dụng <code>ref: main</code> (hoặc <code>latest</code>) trong <code>include:project</code> bị xem là một Anti-Pattern nghiêm trọng trong môi trường Doanh nghiệp?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Bởi vì <code>main</code> là một <strong>Floating Branch (Nhánh biến động)</strong>. Khi đội ngũ Platform / DevOps cập nhật template trung tâm (thêm công cụ mới, đổi cú pháp, tăng yêu cầu bảo mật), thay đổi này lập tức áp dụng ngay lập tức cho tất cả các dự án trong công ty mà không có quá trình thử nghiệm hay cảnh báo trước.</p>
     <p>Hậu quả là hàng trăm pipeline của các dự án khác có thể bị gãy đồng loạt, làm tê liệt quy trình phát hành phần mềm. Quy chuẩn bắt buộc là phải ghim <code>ref: 'v1.2.0'</code> (Immutable SemVer Tag) hoặc Commit SHA cố định.</p>
   </div>
@@ -512,11 +553,15 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q05</span>
     <span>Phân biệt 4 phương thức nạp tệp của <code>include:</code> (local, project, remote, template) và trường hợp sử dụng tối ưu của từng loại.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>4 phương thức <code>include:</code></strong>:</p>
     <ol>
       <li><strong><code>include:local</code></strong>: Nạp file trong cùng repository. Tối ưu cho việc module hóa tệp CI dài thành nhiều tệp nhỏ theo stage/service.</li>
-      <li><strong><code>include:project</code> (kèm <code>file:</code> & <code>ref:</code>)</strong>: Nạp file từ một repository khác trong cùng GitLab Instance. Tối ưu cho việc quản lý <em>Central Template Repository</em> của doanh nghiệp.</li>
+      <li><strong><code>include:project</code> (kèm <code>file:</code> &amp; <code>ref:</code>)</strong>: Nạp file từ một repository khác trong cùng GitLab Instance. Tối ưu cho việc quản lý <em>Central Template Repository</em> của doanh nghiệp.</li>
       <li><strong><code>include:remote</code></strong>: Tải file qua HTTP/HTTPS URL từ bên ngoài. Dùng khi tích hợp công cụ từ SaaS của bên thứ ba (yêu cầu mạng mở).</li>
       <li><strong><code>include:template</code></strong>: Nạp các template được đóng gói sẵn của GitLab (như Auto DevOps, SAST.gitlab-ci.yml).</li>
     </ol>
@@ -528,7 +573,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q06</span>
     <span>GitLab áp dụng những giới hạn trần kỹ thuật nào đối với tính năng <code>include:</code> và <code>Merged YAML</code>?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Các giới hạn trần bao gồm:</p>
     <ul>
       <li><strong>Số lượng tệp Include tối đa</strong>: <strong>150 tệp</strong> lồng nhau cho một pipeline.</li>
@@ -544,7 +593,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q07</span>
     <span>Làm thế nào để truyền biến động vào đường dẫn của <code>include:</code>? Tính năng này có bị hạn chế gì không?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Có thể dùng biến trong <code>include</code>, ví dụ: <code>include: 'templates/$CI_COMMIT_BRANCH.yml'</code>.</p>
     <p><strong>Hạn chế nghiêm ngặt</strong>: Tại thời điểm nạp <code>include</code> ($t_0$), chỉ có các <strong>Predefined Variables cơ bản</strong> (như <code>CI_COMMIT_REF_NAME</code>, <code>CI_PROJECT_ID</code>) hoặc các biến được truyền từ Pipeline Trigger mới khả dụng. Các biến sinh ra trong quá trình chạy (như biến <code>dotenv</code> hoặc biến sinh từ script) <strong>HOÀN TOÀN KHÔNG THỂ</strong> dùng trong đường dẫn <code>include:</code>.</p>
   </div>
@@ -555,7 +608,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q08</span>
     <span>Điều kiện <code>rules:</code> bên trong khối <code>include:</code> hoạt động như thế nào? Nêu một trường hợp ứng dụng thực tế.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cơ chế</strong>: Cho phép nạp một tệp cấu hình có điều kiện. Nếu biểu thức trong <code>rules:</code> đánh giá là <code>false</code>, tệp cấu hình đó sẽ bị bỏ qua hoàn toàn, không đưa các job bên trong vào pipeline.</p>
     <p><strong>Ứng dụng thực tế</strong>: Chỉ nạp bộ template kiểm thử hiệu năng tải nặng (Performance/Load Test) khi commit chạy trên nhánh <code>release/*</code> hoặc khi có tag phiên bản:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">include</span><span class="pi">:</span>
@@ -571,7 +628,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q09</span>
     <span>Làm sao để một Hidden Job (`.job_template`) có thể kế thừa từ một Hidden Job khác? Cho ví dụ về kế thừa đa tầng.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Hoàn toàn có thể dùng <code>extends:</code> giữa các Hidden Job với nhau để xây dựng kiến trúc phân tầng OOP (Object-Oriented Pipeline):</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="c1"># Tầng 1: Base hạ tầng</span>
 <span class="na">.base_runner</span><span class="pi">:</span>
@@ -595,7 +656,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q10</span>
     <span>Giải thích ý nghĩa của API endpoint `/ci/lint?include_merged_yaml=true` trong việc gỡ rối cấu hình CI/CD phức tạp.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Khi sử dụng hàng chục tệp <code>include</code> kết hợp <code>extends</code> và <code>!reference</code>, việc đọc mã nguồn rời rạc rất dễ gây nhầm lẫn về cấu hình cuối cùng mà Runner sẽ nhận được.</p>
     <p>Gọi API <code>GET /projects/:id/ci/lint?include_merged_yaml=true</code> sẽ yêu cầu GitLab Parser thực thi toàn bộ chu trình biên dịch và trả về <strong>Toàn bộ tài liệu YAML hợp nhất (Merged DOM)</strong> dưới dạng một chuỗi văn bản duy nhất. Đây là công cụ chẩn đoán số 1 để xác minh cấu hình thực tế.</p>
   </div>
@@ -606,7 +671,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q11</span>
     <span>Khi nào nên dùng mảng nhiều phần tử trong `extends:` (Multiple Inheritance)? Cần chú ý điều gì về thứ tự ưu tiên?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Khi nào dùng</strong>: Khi một Job cần kế thừa thuộc tính từ nhiều khuôn mẫu khác nhau (ví dụ vừa kế thừa cấu hình môi trường <code>.staging_env</code> vừa kế thừa cấu hình docker <code>.docker_builder</code>): <code>extends: [.staging_env, .docker_builder]</code>.</p>
     <p><strong>Thứ tự ưu tiên</strong>: Các template được liệt kê <strong>từ trái qua phải</strong>; template đứng sau sẽ ghi đè các thuộc tính trùng tên của template đứng trước, và bản thân Job con sẽ có quyền ghi đè cao nhất lên tất cả các template cha.</p>
   </div>
@@ -617,7 +686,11 @@ echo "CI/CD template reuse architecture verified successfully."
     <span class="qa-num-badge">Q12</span>
     <span>So sánh mô hình tái sử dụng truyền thống (Include + Extends) với mô hình hiện đại GitLab CI/CD Components (Catalog).</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Mô hình truyền thống (Include + Extends)</strong>:</p>
     <ul>
       <li><em>Hạn chế</em>: Không có kiểm tra kiểu dữ liệu đầu vào (Input validation), dễ xung đột tên biến toàn cục, không có tài liệu chuẩn hóa, khó kiểm soát phiên bản độc lập.</li>
@@ -635,7 +708,7 @@ echo "CI/CD template reuse architecture verified successfully."
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                           TÁI SỬ DỤNG CẤU HÌNH CI/CD ENTERPRISE
                                            │
      ┌───────────────────┬─────────────────┴─────────────────┬───────────────────┐

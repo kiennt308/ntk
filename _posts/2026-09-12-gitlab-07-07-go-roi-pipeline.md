@@ -38,7 +38,7 @@ Khi một pipeline bị lỗi (đỏ) hoặc tệ hơn là "xanh mà không depl
 
 > **Mọi sự cố trong quá trình thực thi Job đều quy về việc xác định chính xác: Lỗi xảy ra ở PHA NÀO trong 8 pha của Runner, và thuộc về TRỤC DỮ LIỆU NÀO trong 4 đường vào (Mã nguồn Git, Caching, Artifacts, hoặc Biến môi trường). Không bao giờ đoán mò lỗi khi chưa đọc trường `failure_reason` từ REST API.**
 
-```
+```text
    MA TRẬN CHẨN ĐOÁN SỰ CỐ CI/CD (4 TRỤC DỮ LIỆU × 8 PHA THỰC THI)
    
                      [ Cột 1: GIT ]      [ Cột 2: CACHE ]    [ Cột 3: ARTIFACT ]   [ Cột 4: BIẾN ]
@@ -79,9 +79,9 @@ Khi một Job thất bại, GitLab Server ghi nhận mã lỗi chuẩn hóa tron
 
 Nhiều kỹ sư thắc mắc tại sao cấu hình `timeout: 2h` trong `.gitlab-ci.yml` nhưng job vẫn bị ngắt đột ngột sau đúng 10 phút. Đó là do nguyên tắc **Giá trị nhỏ nhất luôn thắng (Strict Minimum Rule)**:
 
-$$	ext{Effective Timeout} = \min(	ext{Job YAML Timeout}, 	ext{Project CI/CD Timeout}, 	ext{Runner Timeout})$$
+$$\text{Effective Timeout} = \min(\text{Job YAML Timeout}, \text{Project CI/CD Timeout}, \text{Runner Timeout})$$
 
-```
+```text
    ┌────────────────────────────────────────────────────────┐
    │ Project Settings Timeout (VD: 10 phút) ──────────────┐ │
    │                                                      │ │
@@ -241,47 +241,74 @@ deploy_production:
 ```mermaid
 graph TD
     INC["Sự Cố: Pipeline bị treo vĩnh viễn ở trạng thái Pending (Stuck > 30 phút)"]
-    W1["Tại sao Pending? Không có Runner nào nhặt Job từ hàng đợi"]
-    W2["Tại sao Runner không nhặt? Runner kiểm tra thấy Tags của Job không khớp"]
-    W3["Tại sao không khớp? Job khai báo 'tags: [docker-gpu]' nhưng Runner chỉ có tag 'docker'"]
-    W4["Tại sao lại khai báo sai? Copy-paste cấu hình YAML từ dự án khác mà không kiểm tra cấu hình Runner"]
-    W5["Giải pháp cốt lõi: Kiểm tra API 'failure_reason: stuck_or_timeout_failure' và thiết lập default tags hợp lệ"]
+    W1["Tại sao Pending? &rarr; Không có Runner nào nhặt Job từ hàng đợi"]
+    W2["Tại sao Runner không nhặt? &rarr; Runner kiểm tra thấy Tags của Job không khớp"]
+    W3["Tại sao không khớp? &rarr; Job khai báo 'tags: [docker-gpu]' nhưng Runner chỉ có tag 'docker'"]
+    W4["Tại sao lại khai báo sai? &rarr; Copy-paste cấu hình YAML từ dự án khác mà không kiểm tra cấu hình Runner"]
+    W5["Biện pháp: Kiểm tra API 'failure_reason: stuck_or_timeout_failure' và thiết lập default tags hợp lệ"]
     
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### 4.1. Incident 1: Pipeline Bị Treo Vĩnh Viễn Ở Trạng Thái Pending Do Sai Lệch Runner Tag
 
-#### Cạm bẫy 1: Pipeline bị kẹt ở trạng thái Pending vô tận (Runner Tag Mismatch)
-- **Hiện tượng**: Lập trình viên bấm Run Pipeline hoặc push code, giao diện hiển thị biểu tượng bánh răng xoay `pending` suốt 40 phút mà không chạy.
-- **Nguyên nhân tầng sâu**: Job định nghĩa `tags: [k8s-runner]`. Tuy nhiên, Runner của Project/Group lại được cấu hình cờ `Untagged jobs only` hoặc chỉ có tag `docker-standard`. Không có Runner nào đủ điều kiện nhận job.
-- **Cách gỡ rối**: Kiểm tra nhanh qua API: `curl "$GITLAB/api/v4/projects/$PID/jobs/$JOB_ID"` thấy `failure_reason: stuck_or_timeout_failure`. Vào Settings > CI/CD > Runners để gắn tag tương ứng.
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 09:30 AM</span> — Sau khi một lập trình viên merge branch tính năng mới vào `main`, toàn bộ đội ngũ phát hiện pipeline deploy bị kẹt ở trạng thái `pending` suốt 45 phút, chặn đứng mọi bản release tiếp theo của dự án.
 
-#### Cạm bẫy 2: Job bị hủy ở phút thứ 10 dù YAML đã khai báo `timeout: 1h`
-- **Hiện tượng**: Job build Docker image lớn mất 12 phút, bị GitLab Runner ngắt với thông báo `Job failed: execution took longer than 10m0s seconds`.
-- **Nguyên nhân**: Quản trị viên Project đã đặt giới hạn **Timeout = 10m** trong mục Settings > CI/CD > General pipelines. Theo quy tắc giá trị nhỏ nhất, cấu hình trong YAML bị vô hiệu hóa.
-- **Biện pháp**: Tăng Project Timeout trên Web UI lên 60m hoặc tối ưu Docker multi-stage cache để giảm thời gian build xuống dưới 5m.
+### Hậu Quả & Log Lỗi Thực Tế:
+```text
+$ curl -s --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+    "https://gitlab.internal.corp/api/v4/projects/105/jobs/48201" | jq .
+{
+  "id": 48201,
+  "status": "pending",
+  "stage": "deploy",
+  "name": "deploy_prod",
+  "failure_reason": "stuck_or_timeout_failure",
+  "tag_list": ["k8s-prod-gpu"],
+  "allow_failure": false
+}
+WARNING: This job is stuck because you don't have any active runners online with any of these tags assigned to them: k8s-prod-gpu
+```
 
-#### Cạm bẫy 3: Race condition làm hỏng dữ liệu khi hai người cùng merge vào `main`
-- **Hiện tượng**: Hai lập trình viên A và B cùng merge code có migration database. Cả hai job deploy chạy song song, ghi đè lock và làm database rơi vào trạng thái corrupt.
-- **Nguyên nhân**: Không sử dụng `resource_group`. Mặc định GitLab CI cho phép các job của các pipeline khác nhau chạy đồng thời nếu Runner có đủ executor.
-- **Biện pháp**: Bắt buộc thêm `resource_group: <resource_name>` vào tất cả các job deploy và database migration.
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Job deploy không được Runner nào xử lý?** &rarr; Không có bất kỳ GitLab Runner nào đang online sở hữu tag `k8s-prod-gpu`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao job lại yêu cầu tag `k8s-prod-gpu`?** &rarr; Kỹ sư copy đoạn mã mẫu từ một dự án AI/ML khác mà quên sửa lại danh sách `tags:` phù hợp với hạ tầng deploy web.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Runner có sẵn trong nhóm không tự động nhận job?** &rarr; Tất cả Runner chung trong Group đều đang cấu hình tùy chọn `Untagged jobs only: true`, nghĩa là chúng từ chối nhận các job có gắn tag chỉ định.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao hệ thống không cảnh báo ngay khi tạo pipeline?** &rarr; GitLab coi trạng thái thiếu Runner phù hợp là tạm thời (chờ Runner online) nên để Job ở hàng đợi `pending` cho đến khi chạm trần timeout.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
+   - <span class="badge badge--emerald">Tag Standardization</span>: Chuẩn hóa hệ thống Runner Tags toàn doanh nghiệp (`docker-standard`, `k8s-general`, `heavy-build`).
+   - <span class="badge badge--cyan">doc-pha.sh Tooling</span>: Dùng script chẩn đoán tự động kiểm tra `failure_reason: stuck_or_timeout_failure` để thông báo qua Slack/Telegram sau 2 phút pending.
 
-#### Cạm bẫy 4: Job xanh nhưng deploy nhầm phiên bản cũ (Silent Failure do Typo Artifacts)
-- **Hiện tượng**: Job compile build ra file `target/app-v2.jar`. Nhưng trong `artifacts:paths` lại ghi nhầm `target/app.jar`. Job sau vẫn tìm thấy file cũ còn sót từ cache đĩa và deploy ứng dụng cũ.
-- **Nguyên nhân**: Thiếu assertion kiểm tra checksum hoặc hash của artifact tại job tiêu thụ.
-- **Biện pháp**: Thêm chốt chặn `test -f target/app-v2.jar || exit 1` và in commit SHA vào file metadata.
+### 4.2. Incident 2: Race Condition Làm Hỏng Dữ Liệu Khi Hai Người Cùng Merge Vào `main`
 
-#### Cạm bẫy 5: Lãng phí 400% tài nguyên Runner vì thiếu `interruptible`
-- **Hiện tượng**: Lập trình viên push liên tục 5 commit sửa lỗi chính tả trong 2 phút. Runner khởi tạo 5 pipeline độc lập chạy cùng lúc, làm nghẽn hàng đợi của toàn bộ công ty.
-- **Nguyên nhân**: Không cấu hình `interruptible: true` trong `default:` hoặc job template.
-- **Biện pháp**: Bật `interruptible: true` cho tất cả các stage kiểm thử và biên dịch.
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 03:45 PM</span> — Hai kỹ sư A và B được phê duyệt MR cùng lúc và nhấn nút Merge cách nhau 10 giây. Cả hai pipeline deploy cùng khởi chạy song song và thực thi lệnh Database Migration, dẫn đến việc database bị khóa cứng và schema rơi vào trạng thái xung đột (Deadlock & Schema Corruption).
+
+### Hậu Quả & Log Lỗi Thực Tế:
+```text
+$ flyway migrate
+Flyway Community Edition 10.4.1 by Redgate
+Database: jdbc:postgresql://postgres-prod.internal:5432/app_db (PostgreSQL 16.2)
+ERROR: Lock wait timeout exceeded; try restarting transaction
+ERROR: Table 'schema_version' is currently locked by another concurrent migration process (Job ID: 48205)!
+ERROR: Job failed: exit code 1
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao lệnh database migration bị fail với mã lock wait timeout?** &rarr; Tiến trình migration của Pipeline B cố gắng chiếm lock trên bảng `schema_version` trong khi Pipeline A đang nắm giữ độc quyền lock đó.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao hai pipeline lại chạy migration đồng thời trên cùng môi trường?** &rarr; GitLab CI mặc định cho phép các job thuộc nhiều pipeline khác nhau chạy song song nếu hệ thống có đủ Runner executor.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao cấu hình YAML không ngăn chặn việc này?** &rarr; Job `db_migration` không được gán từ khóa `resource_group: production_db_lock`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao các đợt release trước đây không gặp sự cố này?** &rarr; Trước đây đội ngũ release tuần tự bằng tay, sự cố chỉ bộc lộ khi chuyển sang quy trình tự động hóa kích hoạt merge liên tục.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
+   - <span class="badge badge--rose">Resource Group Locking</span>: Bắt buộc khai báo `resource_group: <environment_lock>` cho mọi job deploy hạ tầng, database migration hoặc tác vụ ghi trạng thái.
+   - <span class="badge badge--emerald">Non-interruptible Guards</span>: Đặt `interruptible: false` cho toàn bộ các job can thiệp dữ liệu để ngăn ngừa ngắt đột ngột.
 
 ---
 
 ## 5. Hands-on Lab: Gỡ Rối Pipeline & Khắc Phục Sự Cố Toàn Diện (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                    LAB ARCHITECTURE: TROUBLESHOOTING                   │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -334,7 +361,8 @@ TOKEN="${GITLAB_TOKEN:?Missing GITLAB_TOKEN}"
 PID="${PID:?Missing PID}"
 
 echo "=== Querying Job ${JOB_ID} Status & Failure Reason ==="
-JOB_INFO=$(curl --silent --header "PRIVATE-TOKEN: ${TOKEN}"   "${GITLAB_URL}/api/v4/projects/${PID}/jobs/${JOB_ID}")
+JOB_INFO=$(curl --silent --header "PRIVATE-TOKEN: ${TOKEN}" \
+  "${GITLAB_URL}/api/v4/projects/${PID}/jobs/${JOB_ID}")
 
 STATUS=$(echo "${JOB_INFO}" | jq -r '.status')
 FAILURE_REASON=$(echo "${JOB_INFO}" | jq -r '.failure_reason // "none"')
@@ -350,7 +378,8 @@ echo "Duration:       ${DURATION} seconds"
 
 if [ "${STATUS}" = "failed" ]; then
   echo "--- Fetching Last 20 lines of Trace Log ---"
-  curl --silent --header "PRIVATE-TOKEN: ${TOKEN}"     "${GITLAB_URL}/api/v4/projects/${PID}/jobs/${JOB_ID}/trace" | tail -n 20
+  curl --silent --header "PRIVATE-TOKEN: ${TOKEN}" \
+    "${GITLAB_URL}/api/v4/projects/${PID}/jobs/${JOB_ID}/trace" | tail -n 20
 fi
 EOF
 
@@ -496,70 +525,124 @@ echo "Runbook & Diagnostic tooling standard verified."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q01</span>
-    <span>Khi một Job trong GitLab CI bị kẹt ở trạng thái Pending vô tận, quy trình chẩn đoán 3 bước chuẩn xác nhất là gì?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q01</span>
+      <span>Khi một Job trong GitLab CI bị kẹt ở trạng thái Pending vô tận, quy trình chẩn đoán 3 bước chuẩn xác nhất là gì?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Quy trình chẩn đoán 3 bước:</strong></p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Quy trình chẩn đoán 3 bước:</b></p>
     <ol>
-      <li><strong>Kiểm tra Tags và Runner Scope</strong>: So sánh danh sách <code>tags:</code> trong Job YAML với danh sách tags của các Runner đang online trong <em>Settings > CI/CD > Runners</em>. Kiểm tra xem Runner có bị khóa (Locked to Project) hay tắt cờ <em>Indicate whether this runner can pick up jobs that do not have tags</em> hay không.</li>
-      <li><strong>Kiểm tra Hàng đợi Runner Concurrency</strong>: Kiểm tra xem tất cả các slot thực thi của Runner (<code>concurrent</code> trong <code>config.toml</code>) đã bị chiếm dụng bởi các job dài hạn khác hay chưa.</li>
-      <li><strong>Truy vấn REST API</strong>: Gọi <code>GET /projects/:id/jobs/:job_id</code> kiểm tra trường <code>failure_reason</code>. Nếu trả về <code>stuck_or_timeout_failure</code>, 100% nguyên nhân nằm ở việc không có Runner khả dụng đáp ứng điều kiện tag/quyền.</li>
+      <li><b>Kiểm tra Tags và Runner Scope</b>: So sánh danh sách <code>tags:</code> trong Job YAML với danh sách tags của các Runner đang online trong <i>Settings &gt; CI/CD &gt; Runners</i>. Kiểm tra xem Runner có bị khóa (Locked to Project) hay tắt cờ <i>Indicate whether this runner can pick up jobs that do not have tags</i> hay không.</li>
+      <li><b>Kiểm tra Hàng đợi Runner Concurrency</b>: Kiểm tra xem tất cả các slot thực thi của Runner (<code>concurrent</code> trong <code>config.toml</code>) đã bị chiếm dụng bởi các job dài hạn khác hay chưa.</li>
+      <li><b>Truy vấn REST API</b>: Gọi <code>GET /projects/:id/jobs/:job_id</code> kiểm tra trường <code>failure_reason</code>. Nếu trả về <code>stuck_or_timeout_failure</code>, 100% nguyên nhân nằm ở việc không có Runner khả dụng đáp ứng điều kiện tag/quyền.</li>
     </ol>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q02</span>
-    <span>Giải thích nguyên tắc phân cấp Timeout giữa Project Settings, Runner Config và Job YAML. Trường hợp nào Job bị hủy sớm hơn cấu hình trong YAML?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q02</span>
+      <span>Giải thích nguyên tắc phân cấp Timeout giữa Project Settings, Runner Config và Job YAML. Trường hợp nào Job bị hủy sớm hơn cấu hình trong YAML?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Nguyên tắc phân cấp Timeout</strong>: Áp dụng quy tắc <strong>Strict Minimum Rule (Giá trị nhỏ nhất luôn có hiệu lực tuyệt đối)</strong>:</p>
-    <p>$$	ext{Timeout Thực Tế} = \min(	ext{Job YAML Timeout}, 	ext{Project Timeout}, 	ext{Runner Timeout})$$</p>
-    <p><strong>Trường hợp bị hủy sớm</strong>: Nếu trong <code>.gitlab-ci.yml</code> đặt <code>timeout: 2h</code> nhưng trên giao diện Project Settings chỉ đặt <code>Timeout: 10m</code> (hoặc Runner <code>config.toml</code> đặt <code>output_limit/timeout</code> thấp), Runner sẽ hủy Job sau đúng 10 phút. YAML không bao giờ có thể mở rộng timeout vượt quá trần quy định của Project và Runner.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Nguyên tắc phân cấp Timeout</b>: Áp dụng quy tắc <b>Strict Minimum Rule (Giá trị nhỏ nhất luôn có hiệu lực tuyệt đối)</b>:</p>
+    <p>$$\text{Timeout Thực Tế} = \min(\text{Job YAML Timeout}, \text{Project Timeout}, \text{Runner Timeout})$$</p>
+    <p><b>Trường hợp bị hủy sớm</b>: Nếu trong <code>.gitlab-ci.yml</code> đặt <code>timeout: 2h</code> nhưng trên giao diện Project Settings chỉ đặt <code>Timeout: 10m</code> (hoặc Runner <code>config.toml</code> đặt <code>output_limit/timeout</code> thấp), Runner sẽ hủy Job sau đúng 10 phút. YAML không bao giờ có thể mở rộng timeout vượt quá trần quy định của Project và Runner.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q03</span>
-    <span>Tính năng <code>resource_group</code> giải quyết vấn đề gì trong triển khai Continuous Deployment? Phân biệt với <code>concurrency</code> của Runner.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q03</span>
+      <span>Tính năng <code>resource_group</code> giải quyết vấn đề gì trong triển khai Continuous Deployment? Phân biệt với <code>concurrency</code> của Runner.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Vấn đề giải quyết</strong>: <code>resource_group</code> áp dụng cơ chế <strong>Mutual Exclusion (Khóa loại trừ lẫn nhau)</strong> ở cấp độ logic Pipeline. Nó đảm bảo tại một thời điểm chỉ có <em>duy nhất một job thuộc cùng resource_group</em> được phép chạy trên toàn hệ thống GitLab, ngăn chặn hoàn toàn hiện tượng Race Condition khi nhiều lập trình viên cùng merge code gây xung đột database migration hoặc triển khai hạ tầng Terraform.</p>
-    <p><strong>Khác biệt với Concurrency</strong>: <code>concurrency</code> trong <code>config.toml</code> của Runner chỉ giới hạn số lượng container tối đa Runner có thể spawn song song trên máy chủ vật lý, hoàn toàn không quan tâm đến logic nghiệp vụ hay xung đột dữ liệu giữa các job.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Vấn đề giải quyết</b>: <code>resource_group</code> áp dụng cơ chế <b>Mutual Exclusion (Khóa loại trừ lẫn nhau)</b> ở cấp độ logic Pipeline. Nó đảm bảo tại một thời điểm chỉ có <i>duy nhất một job thuộc cùng resource_group</i> được phép chạy trên toàn hệ thống GitLab, ngăn chặn hoàn toàn hiện tượng Race Condition khi nhiều lập trình viên cùng merge code gây xung đột database migration hoặc triển khai hạ tầng Terraform.</p>
+    <p><b>Khác biệt với Concurrency</b>: <code>concurrency</code> trong <code>config.toml</code> của Runner chỉ giới hạn số lượng container tối đa Runner có thể spawn song song trên máy chủ vật lý, hoàn toàn không quan tâm đến logic nghiệp vụ hay xung đột dữ liệu giữa các job.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q04</span>
-    <span>Khi nào nên và KHÔNG NÊN sử dụng <code>interruptible: true</code>? Cho ví dụ thực tế.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q04</span>
+      <span>Khi nào nên và KHÔNG NÊN sử dụng <code>interruptible: true</code>? Cho ví dụ thực tế.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>NÊN dùng khi</strong>: Các job thuộc stage kiểm thử mã nguồn, linting, unit test, build docker image trên các nhánh tính năng (Feature Branches / Merge Requests). Khi lập trình viên push commit mới, các job cũ không còn giá trị và cần được hủy ngay lập tức để giải phóng tài nguyên Runner.</p>
-    <p><strong>KHÔNG ĐƯỢC dùng khi</strong>: Các job mang tính chất ghi dữ liệu hoặc triển khai như <strong>Database Migration</strong>, <strong>Terraform Apply</strong>, <strong>Deploy Production</strong>, hoặc <strong>Release Tagging</strong>. Nếu ngắt giữa chừng, hệ thống có thể rơi vào trạng thái corrupt dữ liệu hoặc triển khai dở dang không thể rollback.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>NÊN dùng khi</b>: Các job thuộc stage kiểm thử mã nguồn, linting, unit test, build docker image trên các nhánh tính năng (Feature Branches / Merge Requests). Khi lập trình viên push commit mới, các job cũ không còn giá trị và cần được hủy ngay lập tức để giải phóng tài nguyên Runner.</p>
+    <p><b>KHÔNG ĐƯỢC dùng khi</b>: Các job mang tính chất ghi dữ liệu hoặc triển khai như <b>Database Migration</b>, <b>Terraform Apply</b>, <b>Deploy Production</b>, hoặc <b>Release Tagging</b>. Nếu ngắt giữa chừng, hệ thống có thể rơi vào trạng thái corrupt dữ liệu hoặc triển khai dở dang không thể rollback.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q05</span>
-    <span>Tại sao không nên cấu hình <code>retry: when: [script_failure]</code> cho các job Unit Test hoặc Linting?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q05</span>
+      <span>Tại sao không nên cấu hình <code>retry: when: [script_failure]</code> cho các job Unit Test hoặc Linting?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p>Bởi vì <code>script_failure</code> đại diện cho <strong>Lỗi logic mã nguồn người dùng</strong> (Exit code != 0). Mã nguồn bị sai cú pháp hoặc thuật toán hỏng có tính chất tiền định (deterministic): Chạy 1 lần hay retry 10 lần trong cùng điều kiện thì kết quả vẫn thất bại.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p>Bởi vì <code>script_failure</code> đại diện cho <b>Lỗi logic mã nguồn người dùng</b> (Exit code != 0). Mã nguồn bị sai cú pháp hoặc thuật toán hỏng có tính chất tiền định (deterministic): Chạy 1 lần hay retry 10 lần trong cùng điều kiện thì kết quả vẫn thất bại.</p>
     <p>Cấu hình retry cho <code>script_failure</code> chỉ gây lãng phí thời gian pipeline, nghẽn tài nguyên Runner của các thành viên khác và làm sai lệch chỉ số DORA Lead Time for Changes.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q06</span>
-    <span>Trường hợp <code>failure_reason: runner_system_failure</code> thường do những nguyên nhân hạ tầng nào gây ra?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q06</span>
+      <span>Trường hợp <code>failure_reason: runner_system_failure</code> thường do những nguyên nhân hạ tầng nào gây ra?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Các nguyên nhân hạ tầng phổ biến bao gồm:</p>
     <ul>
       <li>Hết dung lượng đĩa cứng trên máy chủ Runner (<code>no space left on device</code>).</li>
@@ -572,38 +655,65 @@ echo "Runbook & Diagnostic tooling standard verified."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q07</span>
-    <span>Lệnh <code>after_script</code> có chạy khi các lệnh trong <code>script</code> bị thất bại (Exit code != 0) không? Nó có làm thay đổi trạng thái Pass/Fail của Job không?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q07</span>
+      <span>Lệnh <code>after_script</code> có chạy khi các lệnh trong <code>script</code> bị thất bại (Exit code != 0) không? Nó có làm thay đổi trạng thái Pass/Fail của Job không?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>CÓ CHẠY</strong>: <code>after_script</code> luôn được Runner thực thi ngay cả khi <code>before_script</code> hoặc <code>script</code> chính bị fail (trừ trường hợp Job bị timeout hoặc cancel bởi người dùng).</p>
-    <p><strong>KHÔNG THAY ĐỔI ĐƯỢC TRẠNG THÁI</strong>: Mã thoát (Exit code) của các lệnh trong <code>after_script</code> không ảnh hưởng đến trạng thái cuối cùng của Job. Nếu <code>script</code> bị đỏ, dù <code>after_script</code> chạy thành công 100% thì Job vẫn được đánh dấu là FAILED.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>CÓ CHẠY</b>: <code>after_script</code> luôn được Runner thực thi ngay cả khi <code>before_script</code> hoặc <code>script</code> chính bị fail (trừ trường hợp Job bị timeout hoặc cancel bởi người dùng).</p>
+    <p><b>KHÔNG THAY ĐỔI ĐƯỢC TRẠNG THÁI</b>: Mã thoát (Exit code) của các lệnh trong <code>after_script</code> không ảnh hưởng đến trạng thái cuối cùng của Job. Nếu <code>script</code> bị đỏ, dù <code>after_script</code> chạy thành công 100% thì Job vẫn được đánh dấu là FAILED.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q08</span>
-    <span>Làm thế nào để phát hiện một Job "Xanh giả tạo" (Green build) trong khi bản build thực chất bị lỗi hoặc không tạo ra artifact?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q08</span>
+      <span>Làm thế nào để phát hiện một Job "Xanh giả tạo" (Green build) trong khi bản build thực chất bị lỗi hoặc không tạo ra artifact?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p>Áp dụng các kỹ thuật phòng thủ <strong>Fail-Fast Assertions</strong>:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p>Áp dụng các kỹ thuật phòng thủ <b>Fail-Fast Assertions</b>:</p>
     <ol>
-      <li><strong>Kiểm tra mã thoát lệnh</strong>: Đảm bảo không sử dụng <code>|| true</code> hoặc chôn vùi mã lỗi sau các lệnh pipe (sử dụng <code>set -o pipefail</code> ở đầu script).</li>
-      <li><strong>Khẳng định sự tồn tại của File Output</strong>: Sử dụng <code>test -s target/app.jar || (echo "Artifact missing!" && exit 1)</code>.</li>
-      <li><strong>Xác thực Checksum</strong>: Sinh mã SHA256 cho artifact và kiểm tra lại ở đầu job tiêu thụ kế tiếp.</li>
+      <li><b>Kiểm tra mã thoát lệnh</b>: Đảm bảo không sử dụng <code>|| true</code> hoặc chôn vùi mã lỗi sau các lệnh pipe (sử dụng <code>set -o pipefail</code> ở đầu script).</li>
+      <li><b>Khẳng định sự tồn tại của File Output</b>: Sử dụng <code>test -s target/app.jar || (echo "Artifact missing!" &amp;&amp; exit 1)</code>.</li>
+      <li><b>Xác thực Checksum</b>: Sinh mã SHA256 cho artifact và kiểm tra lại ở đầu job tiêu thụ kế tiếp.</li>
     </ol>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q09</span>
-    <span>Interactive Web Terminal trong GitLab CI hoạt động theo nguyên lý nào và yêu cầu cấu hình gì ở phía Runner?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q09</span>
+      <span>Interactive Web Terminal trong GitLab CI hoạt động theo nguyên lý nào và yêu cầu cấu hình gì ở phía Runner?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Nguyên lý</strong>: Tạo một kết nối WebSocket trực tiếp hai chiều giữa trình duyệt người dùng qua GitLab Server tới GitLab Runner, mở một phiên tương tác shell (<code>/bin/sh</code> hoặc <code>/bin/bash</code>) bên trong container đang thực thi job.</p>
-    <p><strong>Yêu cầu cấu hình</strong>:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Nguyên lý</b>: Tạo một kết nối WebSocket trực tiếp hai chiều giữa trình duyệt người dùng qua GitLab Server tới GitLab Runner, mở một phiên tương tác shell (<code>/bin/sh</code> hoặc <code>/bin/bash</code>) bên trong container đang thực thi job.</p>
+    <p><b>Yêu cầu cấu hình</b>:</p>
     <ul>
       <li>Runner sử dụng executor <code>docker</code>, <code>kubernetes</code> hoặc <code>shell</code>.</li>
       <li>Trong <code>config.toml</code> của Runner, khối <code>[session_server]</code> phải được cấu hình với <code>listen_address</code> và <code>advertise_address</code> hợp lệ.</li>
@@ -614,23 +724,41 @@ echo "Runbook & Diagnostic tooling standard verified."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q10</span>
-    <span>Phân biệt sự khác nhau giữa <code>dependencies: []</code> và <code>needs: []</code> trong việc kiểm soát tải artifacts.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q10</span>
+      <span>Phân biệt sự khác nhau giữa <code>dependencies: []</code> và <code>needs: []</code> trong việc kiểm soát tải artifacts.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong><code>dependencies: []</code></strong>: Chỉ kiểm soát <em>việc tải artifacts</em> trong mô hình tuần tự theo stage. <code>dependencies: []</code> chỉ thị cho Job không tải bất kỳ artifact nào từ các job thuộc các stage trước đó, giúp tăng tốc độ khởi động job.</p>
-    <p><strong><code>needs: []</code></strong>: Kiểm soát cả <em>đồ thị thực thi DAG (Directed Acyclic Graph) lẫn artifacts</em>. Khai báo <code>needs: []</code> chỉ thị cho Job thực thi ngay lập tức ở thời điểm $t_0$ khi pipeline vừa khởi tạo mà không cần chờ các stage trước hoàn thành, đồng thời không tải bất kỳ artifact nào.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b><code>dependencies: []</code></b>: Chỉ kiểm soát <i>việc tải artifacts</i> trong mô hình tuần tự theo stage. <code>dependencies: []</code> chỉ thị cho Job không tải bất kỳ artifact nào từ các job thuộc các stage trước đó, giúp tăng tốc độ khởi động job.</p>
+    <p><b><code>needs: []</code></b>: Kiểm soát cả <i>đồ thị thực thi DAG (Directed Acyclic Graph) lẫn artifacts</i>. Khai báo <code>needs: []</code> chỉ thị cho Job thực thi ngay lập tức ở thời điểm t0 khi pipeline vừa khởi tạo mà không cần chờ các stage trước hoàn thành, đồng thời không tải bất kỳ artifact nào.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q11</span>
-    <span>Khi một Job bị ngắt với thông báo <code>exit code 137</code>, nguyên nhân gốc rễ là gì và cách giải quyết trong GitLab CI?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q11</span>
+      <span>Khi một Job bị ngắt với thông báo <code>exit code 137</code>, nguyên nhân gốc rễ là gì và cách giải quyết trong GitLab CI?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Nguyên nhân</strong>: <code>Exit code 137</code> tương ứng với tín hiệu <code>SIGKILL (128 + 9)</code> do <strong>Linux OOM (Out Of Memory) Killer</strong> kích hoạt khi tiến trình bên trong container sử dụng vượt quá giới hạn RAM được cấp phát của Runner máy chủ hoặc Kubernetes Pod Resource Limit.</p>
-    <p><strong>Giải pháp</strong>:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Nguyên nhân</b>: <code>Exit code 137</code> tương ứng với tín hiệu <code>SIGKILL (128 + 9)</code> do <b>Linux OOM (Out Of Memory) Killer</b> kích hoạt khi tiến trình bên trong container sử dụng vượt quá giới hạn RAM được cấp phát của Runner máy chủ hoặc Kubernetes Pod Resource Limit.</p>
+    <p><b>Giải pháp</b>:</p>
     <ul>
       <li>Tăng thông số <code>memory_limit</code> trong <code>config.toml</code> của Runner hoặc Kubernetes Resource Requests/Limits.</li>
       <li>Cấu hình giới hạn bộ nhớ của ứng dụng/trình biên dịch (ví dụ <code>NODE_OPTIONS="--max-old-space-size=4096"</code> hoặc <code>JAVA_OPTS="-Xmx4g"</code>).</li>
@@ -640,16 +768,25 @@ echo "Runbook & Diagnostic tooling standard verified."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q12</span>
-    <span>Chiến lược thiết kế Pipeline để vừa đảm bảo tốc độ phản hồi nhanh cho Developer vừa bảo đảm độ ổn định cho Release là gì?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q12</span>
+      <span>Chiến lược thiết kế Pipeline để vừa đảm bảo tốc độ phản hồi nhanh cho Developer vừa bảo đảm độ ổn định cho Release là gì?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Chiến lược tối ưu chuẩn Enterprise:</strong></p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Chiến lược tối ưu chuẩn Enterprise:</b></p>
     <ol>
-      <li><strong>Phân tách Pipeline theo ngữ cảnh (Workflow Rules)</strong>: MR Pipeline chỉ chạy Fast Feedback (Lint, Test song song dưới 5 phút, <code>interruptible: true</code>); Main Pipeline chạy Full E2E & Security Scans.</li>
-      <li><strong>Kiến trúc DAG phi tuần tự (<code>needs</code>)</strong>: Cho phép các job độc lập chạy song song không phụ thuộc ranh giới stage.</li>
-      <li><strong>Tự phục hồi hạ tầng</strong>: Áp dụng <code>retry: when: [runner_system_failure, stuck_or_timeout_failure]</code>.</li>
-      <li><strong>Bảo vệ môi trường Deploy</strong>: Sử dụng <code>resource_group</code> để chống race condition và cấu hình <code>manual</code> approval gate cho môi trường Production.</li>
+      <li><b>Phân tách Pipeline theo ngữ cảnh (Workflow Rules)</b>: MR Pipeline chỉ chạy Fast Feedback (Lint, Test song song dưới 5 phút, <code>interruptible: true</code>); Main Pipeline chạy Full E2E &amp; Security Scans.</li>
+      <li><b>Kiến trúc DAG phi tuần tự (<code>needs</code>)</b>: Cho phép các job độc lập chạy song song không phụ thuộc ranh giới stage.</li>
+      <li><b>Tự phục hồi hạ tầng</b>: Áp dụng <code>retry: when: [runner_system_failure, stuck_or_timeout_failure]</code>.</li>
+      <li><b>Bảo vệ môi trường Deploy</b>: Sử dụng <code>resource_group</code> để chống race condition và cấu hình <code>manual</code> approval gate cho môi trường Production.</li>
     </ol>
   </div>
 </details>
@@ -660,7 +797,7 @@ echo "Runbook & Diagnostic tooling standard verified."
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                           CHIẾN LƯỢC GỠ RỐI & ĐIỀU PHỐI CI/CD
                                            │
      ┌───────────────────┬─────────────────┴─────────────────┬───────────────────┐

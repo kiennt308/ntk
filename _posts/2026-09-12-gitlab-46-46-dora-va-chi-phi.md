@@ -22,7 +22,7 @@ description: "Làm chủ 4 chỉ số DORA (Deployment Frequency, Lead Time for 
 
 Đo lường hiệu suất kỹ thuật phần mềm (Software Delivery Performance) theo chuẩn DORA (DevOps Research and Assessment) không chỉ là vẽ biểu đồ quản lý, mà là thiết lập một hệ thống **Event-Driven Telemetry** thu thập và phân tích trạng thái phát hành từ mã nguồn đến môi trường Production.
 
-```
+```text
 +---------------------------------------------------------------------------------------------------+
 |                                GITLAB DORA TELEMETRY EVENT STREAM                                 |
 +---------------------------------------------------------------------------------------------------+

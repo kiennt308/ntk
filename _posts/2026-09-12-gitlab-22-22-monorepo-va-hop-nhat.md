@@ -46,7 +46,7 @@ Tuy nhiên, nếu cấu hình CI/CD theo phương pháp ngây thơ (Naive CI - c
 
 > **Giải pháp kiến trúc chuẩn Production là kết hợp Graph-Aware Build Tools (Turborepo, Nx, Bazel) với tính năng Dynamic Parent-Child Pipeline và Selective Execution (rules:changes) của GitLab CI/CD, biến pipeline thành một đồ thị động chỉ biên dịch những module thực sự bị ảnh hưởng.**
 
-```
+```text
        SƠ ĐỒ ĐỒ THỊ PHỤ THUỘC & THỰC THI CHỌN LỌC (Monorepo Dependency Graph)
 
            ┌───────────────────────────────────────────────┐
@@ -122,7 +122,7 @@ GitLab CI cung cấp từ khóa `rules:changes` để kiểm tra sự thay đổ
 | **Hỗ Trợ Đa Ngôn Ngữ** | Mọi ngôn ngữ (File-based) | Chủ yếu JS / TS / Go cơ bản | Polyglot (JS, Python, Go, Java, Rust) | Đa ngôn ngữ tuyệt đối (C++, Java, Go, v.v.) |
 | **Cơ Chế Caching** | GitLab Runner Cache (Archive tgz) | Remote Cache (HTTP API / MinIO S3) | Nx Cloud / S3 Custom Remote Cache | Bazel Remote Build Execution (RBE) Cache |
 | **Khả Năng Tách Biệt Job** | Phải cấu hình thủ công trong root YAML | 1 Job điều phối hoặc tách theo target | Tự sinh Dynamic Child Pipeline JSON/YAML | Tự động phân tán actions đến worker cluster |
-| **Tốc Độ Khởi Tạo CI** | Tức thì | Rất nhanh (< 2s phân tích) | Nhanh (< 5s đồ thị) | Trung bình (Cần nạp Workspace Analysis) |
+| **Tốc Độ Khởi Tạo CI** | Tức thì | Rất nhanh (&lt; 2s phân tích) | Nhanh (&lt; 5s đồ thị) | Trung bình (Cần nạp Workspace Analysis) |
 | **Chi Phí Vận Hành** | Thấp nhất | Thấp (Tự host MinIO S3) | Trung bình - Cao (Nx Enterprise) | Rất cao (Đội ngũ Tooling chuyên trách) |
 
 ---
@@ -131,7 +131,7 @@ GitLab CI cung cấp từ khóa `rules:changes` để kiểm tra sự thay đổ
 
 ### 3.1. Cấu Trúc Thư Mục Monorepo Chuẩn Enterprise
 
-```
+```text
 monorepo-enterprise/
 ├── .gitlab-ci.yml                   # Root Orchestrator Pipeline
 ├── turbo.json                       # Turborepo Task Pipeline & Cache Configuration
@@ -212,50 +212,69 @@ run_affected_applications:
 
 ## 4. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
-### 4.1. Sự Cố Thực Tế: Cache Poisoning & Rò Rỉ Biến Môi Trường Giữa Các Ứng Dụng
-
-> **Bối Cảnh**: Một công ty fintech vận hành Monorepo với 15 microservices. Sau khi bật Remote Cache cho Turborepo/Nx, service thanh toán `payment-service` bất ngờ deploy nhầm cấu hình URL sandbox của `web-portal` lên production, khiến toàn bộ giao dịch thanh toán thất bại!
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│ 1. Tại sao payment-service dùng URL sandbox?                            │
-│    -> Do binary build được lấy trực tiếp từ Remote Cache hit.           │
-│                                                                         │
-│ 2. Tại sao Remote Cache lại trả về artifact chứa URL sai?               │
-│    -> Hash của build task trùng khớp giữa job web và payment!           │
-│                                                                         │
-│ 3. Tại sao Hash trùng khi mã nguồn và cấu hình hai service khác nhau?    │
-│    -> Tệp turbo.json không khai báo các biến môi trường đặc thù vào env.│
-│                                                                         │
-│ 4. Tại sao biến môi trường không được tính vào Cache Key?               │
-│    -> Turborepo mặc định chỉ băm nội dung file mã nguồn, bỏ qua các     │
-│       biến ENV nội bộ nếu không liệt kê trong trường "env" của config.  │
-│                                                                         │
-│ 5. NGUYÊN NHÂN CỐT LÕI (Root Cause):                                   │
-│    -> Thiếu chính sách cô lập Namespace Cache Key và không bật chế độ   │
-│       Strict Hash Invalidation theo từng Target Application.            │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    INC["Sự Cố: Service payment-service deploy nhầm URL sandbox của web-portal lên production sau khi bật Remote Cache"]
+    W1["Tại sao payment-service dùng URL sandbox? Binary build được lấy trực tiếp từ Remote Cache hit"]
+    W2["Tại sao Remote Cache lại trả về artifact sai? Hash của build task trùng khớp giữa job web và payment"]
+    W3["Tại sao Hash trùng khi hai service khác nhau? File turbo.json không khai báo các biến môi trường đặc thù vào env"]
+    W4["Tại sao biến môi trường không được tính vào Cache Key? Turborepo mặc định chỉ băm nội dung mã nguồn file"]
+    W5["Giải pháp cốt lõi: Khai báo tường minh danh sách biến env trong turbo.json và bật HMAC Signature Key"]
+    
+    INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.2. Giải Pháp Khắc Phục Triệt Để
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 06:15 AM</span> Một công ty fintech vận hành Monorepo với 15 microservices. Sau khi kích hoạt tính năng Remote Cache phân tán cho Turborepo/Nx nhằm rút ngắn thời gian CI, microservice xử lý thanh toán `payment-service` bất ngờ deploy nhầm cấu hình URL sandbox của ứng dụng `web-portal` lên môi trường Production, khiến toàn bộ giao dịch thanh toán của khách hàng bị từ chối.
 
-1. **Khai báo tường minh biến môi trường trong `turbo.json`**:
-   ```json
-   {
-     "$schema": "https://turbo.build/schema.json",
-     "tasks": {
-       "build": {
-         "dependsOn": ["^build"],
-         "inputs": ["src/**", "package.json", "tsconfig.json"],
-         "outputs": ["dist/**", ".next/**"],
-         "env": ["NODE_ENV", "API_GATEWAY_URL", "APP_ENV", "DATABASE_URL"]
-       }
-     }
-   }
-   ```
-2. **Ký số Cache Artifacts**: Sử dụng biến `TURBO_REMOTE_CACHE_SIGNATURE_KEY` với thuật toán HMAC-SHA256 để chống giả mạo hoặc ghi đè artifact từ runner kém bảo mật.
+### Hậu Quả & Log Lỗi Thực Tế:
+Toàn bộ giao dịch trên Production bị chuyển hướng vào môi trường Sandbox giả lập, gây gián đoạn thanh toán nghiêm trọng:
+
+```text
+$ turbo run build --filter=payment-service
+• Packages in scope: payment-service
+• Running build in 1 packages
+• Remote computation caching enabled (MinIO S3)
+payment-service:build: cache hit, replaying logs 23ms [CACHED]
+payment-service:build: Output files restored from remote cache
+payment-service:build: API_GATEWAY_URL set to https://sandbox-api.corp.internal/v1
+payment-service:build: Build finished successfully.
+ERROR [ProductionAlert]: Payment gateway transaction rejected: Invalid endpoint URL (Sandbox detected in Production).
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao `payment-service` lại sử dụng URL endpoint của môi trường sandbox?** &rarr; Tệp nhị phân build của `payment-service` được khôi phục trực tiếp từ một bản ghi Remote Cache Hit trước đó thay vì được biên dịch mới.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Remote Cache lại trả về artifact chứa URL sai cấu hình?** &rarr; Mã băm (Cache Hash Key) được sinh ra từ task build của job `payment-service` bị trùng lặp với hash của một tác vụ build frontend `web-portal` đã chạy trên nhánh staging.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Hash lại trùng khi hai dịch vụ có mã nguồn và cấu hình môi trường khác nhau?** &rarr; Tệp cấu hình `turbo.json` không khai báo các biến môi trường đặc thù (`API_GATEWAY_URL`, `APP_ENV`, `DATABASE_URL`) vào danh sách theo dõi của task `build`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao Turborepo không tự động đưa tất cả biến môi trường vào Cache Key?** &rarr; Theo thiết kế, Turborepo chỉ tự động băm nội dung các tệp mã nguồn khai báo trong `inputs` và chỉ băm các biến môi trường được liệt kê tường minh trong trường `"env": [...]` để tránh invalidation không cần thiết.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để**: Khai báo đầy đủ các biến môi trường runtime trong mảng `"env"` của `turbo.json`, đồng thời thiết lập biến ký số bảo mật `TURBO_REMOTE_CACHE_SIGNATURE_KEY` với thuật toán HMAC-SHA256 để chống ô nhiễm cache (Cache Poisoning) giữa các môi trường.
+
+### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+
+#### Cạm bẫy 1: Sự cố `rules:changes` bỏ sót commit trong Push Pipeline
+- **Hiện tượng**: Sửa file trong thư viện `packages/shared-auth`, push commit lên branch nhưng job của các `apps/` tiêu thụ không được kích hoạt.
+- **Nguyên nhân tầng sâu**: `rules:changes` trên push event chỉ so khớp `HEAD~1`, nếu commit sửa thư viện nằm ở vị trí cũ hơn thì diff bị bỏ qua.
+- **Cách gỡ rối**: Thêm `compare_to: 'refs/heads/main'` hoặc chuyển sang sử dụng Graph-aware tools (Turborepo/Nx).
+
+#### Cạm bẫy 2: Hiện tượng Phantom Dependencies giữa các packages
+- **Hiện tượng**: Ứng dụng chạy test thành công trên máy tính cá nhân nhưng bị lỗi `Cannot find module` trên CI Runner.
+- **Nguyên nhân**: Package sử dụng thư viện ngầm thông qua cơ chế hoisted `node_modules` của npm/yarn mà không khai báo trong `package.json` của chính nó.
+- **Biện pháp**: Chuyển sang sử dụng `pnpm` với cấu trúc symlink cô lập hoàn toàn các module.
+
+#### Cạm bẫy 3: Xung đột Lockfile liên tục giữa các nhóm phát triển
+- **Hiện tượng**: Hàng chục kỹ sư merge code đồng thời gây ra tình trạng xung đột `package-lock.json` triền miên.
+- **Nguyên nhân**: Quá nhiều ứng dụng dùng chung 1 lockfile mà không có cơ chế merge train tự động.
+- **Biện pháp**: Sử dụng GitLab Merge Trains kết hợp công cụ `pnpm dedupe`.
+
+#### Cạm bẫy 4: Runner bị tràn bộ nhớ đĩa cứng ("No space left on device")
+- **Hiện tượng**: Các job Monorepo bị crash giữa chừng vì ổ cứng của Runner đầy 100%.
+- **Nguyên nhân**: Mỗi job clone toàn bộ Monorepo và tải hàng chục gigabyte `node_modules` và build cache cục bộ mà không dọn dẹp.
+- **Biện pháp**: Sử dụng Git Shallow Clone `GIT_DEPTH: 50`, chuyển cache sang Remote S3 và thiết lập `expire_in` ngắn cho intermediate artifacts.
+
+#### Cạm bẫy 5: Child Pipeline bị xanh giả tạo do thiếu `strategy: depend`
+- **Hiện tượng**: Job con trong Child Pipeline bị fail nhưng Merge Request vẫn báo Pass và cho phép merge code.
+- **Nguyên nhân**: Trigger job ở Parent Pipeline mặc định không chờ kết quả của Child Pipeline.
+- **Biện pháp**: Bắt buộc thêm `strategy: depend` vào khối `trigger:` của Parent Pipeline.
 
 ---
 
@@ -267,7 +286,7 @@ run_affected_applications:
 - Tự động sinh Child Pipeline chỉ chạy test & build cho ứng dụng bị ảnh hưởng.
 - Tích hợp Remote Cache mô phỏng và xuất báo cáo kiểm thử.
 
-```
+```text
        MÔ HÌNH THỰC HÀNH LAB MONOREPO TRÊN GITLAB RUNNER
 
       [ Root GitLab Repository ]
@@ -450,7 +469,7 @@ default:
 #### Bước 8: Kiểm Tra Chức Năng Remote Cache Hit
 - Chạy lại pipeline lần 2 không thay đổi code.
 - Quan sát console log của Turborepo:
-  ```bash
+  ```text
   >>> FULL TURBO
   web-portal:build: cache hit, replaying logs 23ms [CACHED]
   Tasks:    1 successful, 1 total
@@ -470,7 +489,11 @@ default:
     <span class="qa-num-badge">Q01</span>
     <span>Tại sao sử dụng `rules:changes` đơn thuần trong Monorepo lớn lại không đủ tối ưu và tiềm ẩn rủi ro?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Bản chất kỹ thuật:</strong></p>
     <ul>
       <li><code>rules:changes</code> chỉ thực hiện so khớp chuỗi đường dẫn tệp (Pattern Matching). Nó hoàn toàn "mù" về đồ thị phụ thuộc mã nguồn (Dependency Graph).</li>
@@ -485,7 +508,11 @@ default:
     <span class="qa-num-badge">Q02</span>
     <span>Làm thế nào để truyền biến và artifacts giữa Parent Pipeline và Child Pipeline trong Monorepo?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp chuẩn:</strong></p>
     <ul>
       <li>Sử dụng từ khóa <code>trigger:include:artifact</code> kết hợp với <code>needs: [generate_job]</code> để nạp file YAML được sinh ra động từ stage trước.</li>
@@ -500,7 +527,11 @@ default:
     <span class="qa-num-badge">Q03</span>
     <span>Cơ chế "Hermetic Build" trong Bazel là gì và tại sao nó đảm bảo tính đúng đắn 100% khi build Monorepo?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Bản chất:</strong></p>
     <p>Hermetic Build (Build cách ly tuyệt đối) là cơ chế mà quá trình biên dịch diễn ra trong một Sandbox hoàn toàn kín. Quá trình này không được phép truy cập mạng Internet, không phụ thuộc vào các công cụ hay biến môi trường ngầm định của máy chủ Host. Tất cả dependencies (kể cả compiler, SDK) đều phải được khai báo tường minh kèm mã băm SHA256. Do đó, với cùng một tập input, kết quả build đảm bảo giống nhau 100% bất kể chạy trên Runner nào.</p>
   </div>
@@ -511,7 +542,11 @@ default:
     <span class="qa-num-badge">Q04</span>
     <span>Phân biệt chiến lược Versioning: Independent Versioning vs Fixed (Synchronized) Versioning trong Monorepo?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Phân tích so sánh:</strong></p>
     <ul>
       <li><strong>Independent Versioning</strong>: Mỗi application/package có số phiên bản SemVer độc lập (ví dụ: <code>web-portal@2.1.0</code>, <code>order-api@1.0.4</code>). Phù hợp cho kiến trúc Microservices độc lập về chu kỳ phát hành.</li>
@@ -525,12 +560,16 @@ default:
     <span class="qa-num-badge">Q05</span>
     <span>Làm thế nào để bảo mật Remote Cache trong Turborepo/Nx trên hệ thống GitLab Runner nội bộ?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Kiến trúc bảo mật:</strong></p>
     <ol>
       <li>Triển khai máy chủ Remote Cache nội bộ (như MinIO S3 hoặc duendesoftware/turbo-cache-server) trong mạng riêng Private VPC.</li>
       <li>Cấu hình HMAC Signature Verification bằng biến <code>TURBO_REMOTE_CACHE_SIGNATURE_KEY</code> để ký số mọi cache tarball trước khi tải lên.</li>
-      <li>Phân quyền: Chỉ các pipeline chạy trên protected branches (`main`, `release/*`) mới có quyền ghi (Write/Upload) vào Remote Cache; các nhánh PR/MR của developer chỉ có quyền đọc (Read-only Cache) để chống Cache Poisoning.</li>
+      <li>Phân quyền: Chỉ các pipeline chạy trên protected branches (<code>main</code>, <code>release/*</code>) mới có quyền ghi (Write/Upload) vào Remote Cache; các nhánh PR/MR của developer chỉ có quyền đọc (Read-only Cache) để chống Cache Poisoning.</li>
     </ol>
   </div>
 </details>
@@ -540,7 +579,11 @@ default:
     <span class="qa-num-badge">Q06</span>
     <span>Khi nào nên chọn Dynamic Child Pipeline thay vì Multi-Project Pipeline trong Monorepo?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên tắc quyết định:</strong></p>
     <ul>
       <li><strong>Dynamic Child Pipeline</strong>: Phù hợp nhất cho Monorepo vì tất cả mã nguồn nằm chung 1 repository. Cho phép sinh cấu trúc pipeline động ngay trong phiên làm việc, giữ trạng thái MR trực quan trên một màn hình dashboard duy nhất.</li>
@@ -554,7 +597,11 @@ default:
     <span class="qa-num-badge">Q07</span>
     <span>Làm sao để xử lý xung đột `package-lock.json` hoặc `pnpm-lock.yaml` liên tục trong Monorepo có 50+ engineers?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp kỹ thuật:</strong></p>
     <ul>
       <li>Chuyển sang dùng <code>pnpm</code> với cờ <code>dedupe-peer-dependents=true</code> và cơ chế Content-addressable store.</li>
@@ -569,7 +616,11 @@ default:
     <span class="qa-num-badge">Q08</span>
     <span>Tại sao cần cờ `strategy: depend` khi khai báo trigger Child Pipeline trong GitLab CI?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cơ chế:</strong></p>
     <p>Mặc định, khi một trigger job kích hoạt child pipeline, nó sẽ chuyển sang trạng thái <code>success</code> ngay lập tức mà không đợi child pipeline chạy xong. Khi thêm <code>strategy: depend</code>, trigger job ở parent pipeline sẽ giữ trạng thái <code>running</code> và phản chiếu chính xác kết quả cuối cùng (passed hoặc failed) của toàn bộ child pipeline, ngăn chặn việc merge code khi các kiểm thử con bị lỗi.</p>
   </div>
@@ -580,7 +631,11 @@ default:
     <span class="qa-num-badge">Q09</span>
     <span>Làm thế nào để cấu hình Git Shallow Clone tối ưu cho Monorepo lớn có lịch sử commit nặng?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Kỹ thuật tối ưu:</strong></p>
     <ul>
       <li>Thiết lập <code>variables: GIT_DEPTH: 50</code> để runner chỉ clone 50 commit gần nhất thay vì toàn bộ lịch sử gigabytes.</li>
@@ -594,7 +649,11 @@ default:
     <span class="qa-num-badge">Q10</span>
     <span>Cơ chế "Task Pipeline" trong Turborepo giải quyết bài toán phụ thuộc thứ tự build như thế nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cơ chế hoạt động:</strong></p>
     <p>Ký hiệu <code>"dependsOn": ["^build"]</code> trong <code>turbo.json</code> chỉ định rằng trước khi build package hiện tại, Turborepo bắt buộc phải hoàn thành task build của tất cả các package mà nó phụ thuộc trực tiếp theo đồ thị topo. Các package độc lập ở cùng tầng sẽ được tự động thực thi song song (Parallel execution) tối đa theo số lượng CPU Cores của máy chủ.</p>
   </div>
@@ -605,7 +664,11 @@ default:
     <span class="qa-num-badge">Q11</span>
     <span>Làm cách nào để ngăn chặn hiện tượng "Phantom Dependencies" trong Monorepo JavaScript?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp:</strong></p>
     <p>Sử dụng <strong>pnpm</strong> thay vì npm/yarn v1. pnpm sử dụng cấu trúc thư mục <code>node_modules</code> dạng non-flat (symlink-based). Một ứng dụng sẽ không thể <code>import</code> một thư viện nếu thư viện đó không được khai báo tường minh trong chính tệp <code>package.json</code> của nó, loại bỏ hoàn toàn lỗi "chạy được ở local nhưng lỗi trên CI runner".</p>
   </div>
@@ -616,7 +679,11 @@ default:
     <span class="qa-num-badge">Q12</span>
     <span>Một sự cố CI/CD Monorepo: Runner báo lỗi "No space left on device" do quá nhiều node_modules và build cache. Xử lý thế nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Chiến lược xử lý hạ tầng:</strong></p>
     <ol>
       <li>Chuyển sang sử dụng Docker Volume chuyên dụng hoặc Kubernetes EmptyDir SSD cho workspace.</li>
@@ -639,7 +706,7 @@ default:
 
 ### 7.2. Sơ Đồ Tư Duy Hệ Thống Monorepo CI/CD (Mindmap)
 
-```
+```text
                        KIẾN TRÚC MONOREPO CI/CD TOÀN DIỆN
                                        │
         ┌──────────────────────────────┼──────────────────────────────┐

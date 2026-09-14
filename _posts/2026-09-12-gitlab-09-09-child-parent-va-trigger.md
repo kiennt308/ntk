@@ -41,7 +41,7 @@ Khi các tổ chức chuyển đổi sang mô hình **Monorepo** (chứa hàng c
 
 > **Kiến trúc Child/Parent Pipelines và Multi-Project Triggers chia nhỏ hệ thống điều phối thành các đồ thị độc lập. Cầu nối giữa các tầng là `Bridge Job` — một loại job đặc biệt chạy trực tiếp trên GitLab Server mà không tiêu tốn tài nguyên của Runner.**
 
-```
+```text
    PARENT PIPELINE (Điều phối trung tâm / Monorepo Coordinator)
    ├── [ Job: Detect Changes ] (Sinh dynamic config / Phân tích git diff)
    │
@@ -55,7 +55,7 @@ Khi các tổ chức chuyển đổi sang mô hình **Monorepo** (chứa hàng c
 ```mermaid
 graph TD
     subgraph PARENT_PIPELINE["Parent Pipeline (Orchestrator)"]
-        GEN["generate-ci (Job)"] -->|Artifact: child.yml| BR1["trigger-child (Bridge Job)"]
+        GEN["generate-ci (Job)"] -->|"Artifact: child.yml"| BR1["trigger-child (Bridge Job)"]
         BR2["trigger-deploy (Bridge Job)"]
     end
 
@@ -67,8 +67,8 @@ graph TD
         D1["k8s-helm-apply"]
     end
 
-    BR1 -->|strategy: depend| CHILD_PIPELINE
-    BR2 -->|trigger:project| DOWNSTREAM_PROJECT
+    BR1 -->|"strategy: depend"| CHILD_PIPELINE
+    BR2 -->|"trigger:project"| DOWNSTREAM_PROJECT
 ```
 
 ### 1.2. Bản Chất Kỹ Thuật Của Bridge Job & Chiến Lược `strategy: depend`
@@ -77,8 +77,8 @@ graph TD
    - Khi một job chứa từ khóa `trigger:`, GitLab xem đây là một Bridge Job.
    - Server GitLab tự quản lý vòng đời của Bridge Job ở tầng PostgreSQL/Redis mà không gửi yêu cầu nhặt job (job polling request) xuống GitLab Runner.
 2. **Chiến Lược Đồng Bộ `strategy: depend`**:
-   - **Mặc định (Fire-and-forget)**: Bridge Job hoàn thành ngay khi Child Pipeline vừa được kích hoạt thành công. Nếu Child Pipeline sau đó bị FAILED, Parent Pipeline vẫn hiển thị màu XANH (Green) $ightarrow$ Nguy hiểm cho các pipeline deploy tự động.
-   - **`strategy: depend` (Đồng bộ hai chiều)**: Bridge Job sẽ giữ trạng thái `running` và chờ toàn bộ Child Pipeline kết thúc. Nếu Child Pipeline FAILED $ightarrow$ Bridge Job lập tức FAILED $ightarrow$ Toàn bộ Parent Pipeline bị đánh dấu FAILED.
+   - **Mặc định (Fire-and-forget)**: Bridge Job hoàn thành ngay khi Child Pipeline vừa được kích hoạt thành công. Nếu Child Pipeline sau đó bị FAILED, Parent Pipeline vẫn hiển thị màu XANH (Green) &rarr; Nguy hiểm cho các pipeline deploy tự động.
+   - **`strategy: depend` (Đồng bộ hai chiều)**: Bridge Job sẽ giữ trạng thái `running` và chờ toàn bộ Child Pipeline kết thúc. Nếu Child Pipeline FAILED &rarr; Bridge Job lập tức FAILED &rarr; Toàn bộ Parent Pipeline bị đánh dấu FAILED.
 
 ### 1.3. Pipeline Động (Dynamic Child Pipelines) & Điểm $t_0$ Thứ Hai
 
@@ -218,47 +218,70 @@ trigger_gitops_deploy:
 ```mermaid
 graph TD
     INC["Sự Cố: Pipeline Deploy Production chạy thành công nhưng bản build con bị lỗi"]
-    W1["Tại sao Deploy chạy khi con lỗi? Bridge Job của Parent báo màu XANH"]
-    W2["Tại sao Bridge Job xanh? Nó hoàn thành ngay khi vừa gửi lệnh trigger"]
-    W3["Tại sao nó không đợi con hoàn thành? Thiếu từ khóa 'strategy: depend'"]
-    W4["Tại sao lại thiếu? Kỹ sư dùng cấu hình trigger mặc định (Fire-and-forget)"]
-    W5["Giải pháp cốt lõi: Bắt buộc khai báo 'strategy: depend' trên toàn bộ Bridge Jobs quan trọng"]
+    W1["Tại sao Deploy chạy khi con lỗi? &rarr; Bridge Job của Parent báo màu XANH"]
+    W2["Tại sao Bridge Job xanh? &rarr; Nó hoàn thành ngay khi vừa gửi lệnh trigger"]
+    W3["Tại sao nó không đợi con hoàn thành? &rarr; Thiếu từ khóa 'strategy: depend'"]
+    W4["Tại sao lại thiếu? &rarr; Kỹ sư dùng cấu hình trigger mặc định (Fire-and-forget)"]
+    W5["Biện pháp: Bắt buộc khai báo 'strategy: depend' trên toàn bộ Bridge Jobs quan trọng"]
     
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### 4.1. Incident 1: Parent Pipeline Báo Xanh Giả Tạo Dù Child Pipeline Bị Lỗi
 
-#### Cạm bẫy 1: Parent Pipeline hiển thị Green giả tạo dù Child Pipeline bị Đỏ
-- **Hiện tượng**: Lập trình viên thấy Parent Pipeline báo Xanh hoàn toàn. Tuy nhiên, khi kiểm tra hệ thống thì các microservice bên trong Child Pipeline đã bị crash do unit test fail.
-- **Nguyên nhân tầng sâu**: Mặc định, Bridge Job trong GitLab CI hoạt động theo cơ chế **Fire-and-Forget (Bắn và Quên)**. Nó lập tức trả về Exit Code 0 sau khi gửi yêu cầu khởi tạo Child Pipeline thành công.
-- **Cách gỡ rối**: Bắt buộc thêm `strategy: depend` vào khối `trigger:`.
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 08:30 PM</span> — Hệ thống CI/CD thông báo bản release v3.2 đã sẵn sàng deploy lên Production. Tuy nhiên, khi truy cập vào microservice Auth sau deploy, dịch vụ bị sập hoàn toàn do module thanh toán bị gãy ở tầng kiểm thử đơn vị trong Child Pipeline.
 
-#### Cạm bẫy 2: Lỗi cú pháp YAML động làm gãy Bridge Job tại $t_0$
-- **Hiện tượng**: Job sinh YAML chạy thành công, nhưng Bridge Job kích hoạt Child Pipeline lập tức báo lỗi: `Downstream pipeline could not be created: YAML invalid`.
-- **Nguyên nhân**: Script sinh YAML tự động tạo ra thụt lề sai (indentation error) hoặc quên khai báo `stages:` hợp lệ.
-- **Biện pháp**: Sử dụng thư viện YAML parser chuẩn (như `PyYAML` hoặc `yq`) và gọi API CI Lint để kiểm tra trước khi chuyển giao cho Bridge Job.
+### Hậu Quả & Log Lỗi Thực Tế:
+```text
+Parent Pipeline #9821: Status PASSED (Green)
+├── analyze (passed)
+├── trigger_services_pipeline (passed in 2s)
+└── trigger_gitops_deploy (passed in 15s)
 
-#### Cạm bẫy 3: Multi-Project Trigger bị từ chối với lỗi HTTP 403 Forbidden
-- **Hiện tượng**: Job trigger sang repository hạ tầng báo lỗi: `Downstream pipeline could not be created: Insufficient permissions to trigger downstream pipeline`.
-- **Nguyên nhân**: Tính năng **CI/CD Job Token Access Control** của project đích đang được bật, và project nguồn chưa được thêm vào danh sách Allowlist.
-- **Biện pháp**: Vào Project đích > Settings > CI/CD > Token Access > Thêm path của project nguồn vào danh sách được cấp quyền.
+Child Pipeline #9822 (Downstream of #9821): Status FAILED (Red)
+├── test-auth (passed)
+└── test-payment (FAILED: Exit code 1 - Assertion error: token format invalid)
+```
 
-#### Cạm bẫy 4: Vòng lặp trigger vô tận (Infinite Pipeline Loop)
-- **Hiện tượng**: Project A trigger Project B, sau đó Project B chạy xong lại có webhook hoặc trigger ngược lại Project A, làm cạn kiệt tài nguyên CI.
-- **Nguyên nhân**: Thiếu chốt chặn điều kiện nguồn `rules: - if: '$CI_PIPELINE_SOURCE == "pipeline"' when: never`.
-- **Biện pháp**: Ràng buộc nguồn pipeline trong khối `workflow: rules:`.
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Parent Pipeline chuyển sang trạng thái XANH dù test trong Child bị đỏ?** &rarr; Bridge Job `trigger_services_pipeline` hoàn thành và trả về Exit Code 0 ngay sau khi gửi yêu cầu tạo Child Pipeline thành công.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao Bridge Job không theo dõi tiến độ chạy của con?** &rarr; Khối cấu hình `trigger:` thiếu chỉ thị `strategy: depend`.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao lập trình viên không cấu hình `strategy: depend`?** &rarr; Lập trình viên nhầm tưởng cơ chế trigger mặc định sẽ tự động đồng bộ kết quả giữa hai đồ thị.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao bước deploy GitOps ở downstream vẫn diễn ra?** &rarr; Stage `trigger_external` chỉ phụ thuộc vào trạng thái thành công của `trigger_services_pipeline` ở Parent.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
+   - <span class="badge badge--emerald">Enforce strategy: depend</span>: Bắt buộc áp dụng `strategy: depend` trên mọi Bridge Job điều phối kiểm thử hoặc đóng gói.
+   - <span class="badge badge--cyan">CI Policy Gate</span>: Chặn đứng các MR thiếu `strategy: depend` thông qua quy tắc kiểm tra pipeline tự động.
 
-#### Cạm bẫy 5: Lộ biến nhạy cảm khi kế thừa toàn bộ biến sang Child Pipeline
-- **Hiện tượng**: Secret của toàn bộ Parent Pipeline bị rò rỉ sang Child Pipeline của các team phát triển bên ngoài.
-- **Nguyên nhân**: Sử dụng mặc định `inherit:variables: true` khiến toàn bộ biến môi trường bị clone sang.
-- **Biện pháp**: Cấu hình `inherit:variables: false` hoặc chỉ liệt kê danh sách biến cần thiết: `inherit:variables: [APP_ENV, REGISTRY_URL]`.
+### 4.2. Incident 2: Multi-Project Trigger Bị Từ Chối Với Mã Lỗi HTTP 403 Forbidden
+
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 02:10 PM</span> — Đội ngũ phát triển ứng dụng không thể kích hoạt pipeline deploy tự động sang repository GitOps trung tâm `infrastructure/gitops-fleet` sau khi cập nhật phiên bản GitLab mới.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+```text
+$ git push origin main
+Triggering downstream project: infrastructure/gitops-fleet (branch: main)
+ERROR: Downstream pipeline could not be created:
+ERROR: 403 Forbidden - Insufficient permissions to trigger downstream pipeline via CI_JOB_TOKEN.
+ERROR: Project 'apps/backend' is not in the allowlist of 'infrastructure/gitops-fleet'.
+ERROR: Job failed: exit code 1
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Bridge Job trigger sang repo GitOps bị từ chối với mã 403?** &rarr; GitLab Server từ chối quyền truy cập của `CI_JOB_TOKEN` gửi từ repository nguồn `apps/backend`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao `CI_JOB_TOKEN` trước đây vẫn hoạt động mà nay bị chặn?** &rarr; GitLab phiên bản mới tự động kích hoạt chính sách bảo mật **CI/CD Job Token Allowlist** mặc định cho toàn bộ project.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao repository `apps/backend` chưa được cấp quyền?** &rarr; Quản trị viên chưa thêm path của project ứng dụng vào danh sách Token Access Control của repo hạ tầng.
+4. <span class="badge badge--primary">Why 4</span> **Tính năng này bảo vệ điều gì?** &rarr; Ngăn chặn các repository không tin cậy hoặc token bị chiếm quyền trong cùng GitLab Instance tùy tiện kích hoạt deploy hạ tầng.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
+   - <span class="badge badge--rose">Job Token Allowlist</span>: Truy cập Settings > CI/CD > Job Token Permissions của project đích và allowlist chính xác các upstream projects.
+   - <span class="badge badge--emerald">Service Account Scoping</span>: Sử dụng Project Access Token chuyên dụng cho các trigger liên tổ chức.
 
 ---
 
 ## 5. Hands-on Lab: Điều Phối Child/Parent & Multi-Project Pipelines (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                 LAB ARCHITECTURE: MULTI-TIER PIPELINES                 │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -407,7 +430,10 @@ Tích hợp bước xác thực linting trước khi truyền sang Bridge Job.
 
 ```bash
 # Kiểm tra cú pháp YAML sinh ra qua API
-curl --header "Content-Type: application/json"   --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}"   --data "{"content": $(jq -Rs . < dynamic-billing.yml)}"   "${GITLAB_URL}/api/v4/ci/lint" | jq .valid
+curl --header "Content-Type: application/json" \
+  --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+  --data "{\"content\": $(jq -Rs . < dynamic-billing.yml)}" \
+  "${GITLAB_URL}/api/v4/ci/lint" | jq .valid
 ```
 
 > **Checkpoint 5**: Lệnh trả về `true`, khẳng định tệp YAML an toàn để nạp vào hệ thống điều phối.
@@ -459,65 +485,119 @@ echo "Child/Parent orchestration pattern verified successfully."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q01</span>
-    <span>Bridge Job trong GitLab CI là gì? Nó có tiêu tốn tài nguyên CPU/RAM của GitLab Runner không?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q01</span>
+      <span>Bridge Job trong GitLab CI là gì? Nó có tiêu tốn tài nguyên CPU/RAM của GitLab Runner không?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Bridge Job</strong> là một loại job đặc biệt trong GitLab CI không chứa khối <code>script:</code> thực thi mà chứa từ khóa <code>trigger:</code> để khởi tạo một Child Pipeline hoặc Multi-Project Downstream Pipeline.</p>
-    <p><strong>Không tiêu tốn Runner</strong>: Bridge Job được điều phối và quản lý trạng thái hoàn toàn bởi GitLab Server (thông qua database và tiến trình Sidekiq nội bộ). Nó không gửi yêu cầu thực thi xuống Runner daemon, do đó không tiêu tốn CPU/RAM hay chiếm slot đồng thời của hệ thống Runner.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Bridge Job</b> là một loại job đặc biệt trong GitLab CI không chứa khối <code>script:</code> thực thi mà chứa từ khóa <code>trigger:</code> để khởi tạo một Child Pipeline hoặc Multi-Project Downstream Pipeline.</p>
+    <p><b>Không tiêu tốn Runner</b>: Bridge Job được điều phối và quản lý trạng thái hoàn toàn bởi GitLab Server (thông qua database và tiến trình Sidekiq nội bộ). Nó không gửi yêu cầu thực thi xuống Runner daemon, do đó không tiêu tốn CPU/RAM hay chiếm slot đồng thời của hệ thống Runner.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q02</span>
-    <span>Tại sao cần sử dụng <code>strategy: depend</code> trong cấu hình trigger của Bridge Job? Hậu quả nếu bỏ quên từ khóa này là gì?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q02</span>
+      <span>Tại sao cần sử dụng <code>strategy: depend</code> trong cấu hình trigger của Bridge Job? Hậu quả nếu bỏ quên từ khóa này là gì?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Mục đích</strong>: <code>strategy: depend</code> ép Bridge Job phải chờ cho đến khi Downstream/Child Pipeline chạy xong hoàn toàn, và đồng bộ trạng thái: Nếu Child FAILED thì Bridge Job và Parent Pipeline cũng bị FAILED.</p>
-    <p><strong>Hậu quả nếu thiếu</strong>: Mặc định cơ chế là <em>Fire-and-forget</em>, Bridge Job sẽ chuyển màu XANH (Success) ngay khi vừa gửi lệnh trigger thành công. Nếu các job test/build trong Child Pipeline bị lỗi đỏ sau đó, Parent Pipeline vẫn hiển thị XANH, dẫn đến việc các bước deploy tự động tiếp theo vẫn chạy trên bản build hỏng.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Mục đích</b>: <code>strategy: depend</code> ép Bridge Job phải chờ cho đến khi Downstream/Child Pipeline chạy xong hoàn toàn, và đồng bộ trạng thái: Nếu Child FAILED thì Bridge Job và Parent Pipeline cũng bị FAILED.</p>
+    <p><b>Hậu quả nếu thiếu</b>: Mặc định cơ chế là <i>Fire-and-forget</i>, Bridge Job sẽ chuyển màu XANH (Success) ngay khi vừa gửi lệnh trigger thành công. Nếu các job test/build trong Child Pipeline bị lỗi đỏ sau đó, Parent Pipeline vẫn hiển thị XANH, dẫn đến việc các bước deploy tự động tiếp theo vẫn chạy trên bản build hỏng.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q03</span>
-    <span>Giải thích khái niệm "Thời điểm $t_0$ thứ hai" trong Dynamic Child Pipelines và lợi ích lớn nhất của nó so với Pipeline tĩnh thông thường.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q03</span>
+      <span>Giải thích khái niệm "Thời điểm t0 thứ hai" trong Dynamic Child Pipelines và lợi ích lớn nhất của nó so với Pipeline tĩnh thông thường.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Khái niệm</strong>: Trong pipeline đơn khối thông thường, thời điểm $t_0$ (thời điểm Server phân tích cú pháp YAML và đánh giá <code>rules:</code>) chỉ diễn ra 1 lần duy nhất khi commit được push lên. Trong Dynamic Child Pipeline, thời điểm $t_0$ của Child Pipeline diễn ra <strong>tại thời điểm Bridge Job được kích hoạt (Runtime)</strong>.</p>
-    <p><strong>Lợi ích lớn nhất</strong>: Các biến môi trường sinh ra trong quá trình chạy của Parent Pipeline (ví dụ: biến <code>dotenv</code>, kết quả phân tích git diff) có thể được nạp vào Child Pipeline và <strong>được đánh giá trực tiếp trong mệnh đề <code>rules:</code> của Child</strong> — điều hoàn toàn bất khả thi trong pipeline tĩnh.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Khái niệm</b>: Trong pipeline đơn khối thông thường, thời điểm t0 (thời điểm Server phân tích cú pháp YAML và đánh giá <code>rules:</code>) chỉ diễn ra 1 lần duy nhất khi commit được push lên. Trong Dynamic Child Pipeline, thời điểm t0 của Child Pipeline diễn ra <b>tại thời điểm Bridge Job được kích hoạt (Runtime)</b>.</p>
+    <p><b>Lợi ích lớn nhất</b>: Các biến môi trường sinh ra trong quá trình chạy của Parent Pipeline (ví dụ: biến <code>dotenv</code>, kết quả phân tích git diff) có thể được nạp vào Child Pipeline và <b>được đánh giá trực tiếp trong mệnh đề <code>rules:</code> của Child</b> — điều hoàn toàn bất khả thi trong pipeline tĩnh.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q04</span>
-    <span>Phân biệt bản chất kỹ thuật giữa Static Child Pipeline và Dynamic Child Pipeline.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q04</span>
+      <span>Phân biệt bản chất kỹ thuật giữa Static Child Pipeline và Dynamic Child Pipeline.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Static Child Pipeline</strong>: File cấu hình YAML con đã tồn tại sẵn trong repository (ví dụ <code>services/order/.gitlab-ci.yml</code>). Khối trigger trỏ trực tiếp tới đường dẫn file tĩnh: <code>trigger: include: path/to/file.yml</code>.</p>
-    <p><strong>Dynamic Child Pipeline</strong>: File cấu hình YAML con <em>chưa hề tồn tại trước đó</em>. Nó được sinh ra động bởi một job trước đó trong Parent Pipeline (thông qua script Python/Bash phân tích mã nguồn) và lưu thành một file artifact. Khối trigger nạp file artifact này để khởi tạo pipeline: <code>trigger: include: [{ artifact: gen.yml, job: gen_job }]</code>.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Static Child Pipeline</b>: File cấu hình YAML con đã tồn tại sẵn trong repository (ví dụ <code>services/order/.gitlab-ci.yml</code>). Khối trigger trỏ trực tiếp tới đường dẫn file tĩnh: <code>trigger: include: path/to/file.yml</code>.</p>
+    <p><b>Dynamic Child Pipeline</b>: File cấu hình YAML con <i>chưa hề tồn tại trước đó</i>. Nó được sinh ra động bởi một job trước đó trong Parent Pipeline (thông qua script Python/Bash phân tích mã nguồn) và lưu thành một file artifact. Khối trigger nạp file artifact này để khởi tạo pipeline: <code>trigger: include: [{ artifact: gen.yml, job: gen_job }]</code>.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q05</span>
-    <span>Làm thế nào để tải Artifacts từ Parent Pipeline xuống Child Pipeline và ngược lại?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q05</span>
+      <span>Làm thế nào để tải Artifacts từ Parent Pipeline xuống Child Pipeline và ngược lại?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Từ Parent xuống Child</strong>: Trong Child Pipeline, sử dụng <code>needs:pipeline:job_name</code> hoặc sử dụng cơ chế truyền biến dotenv từ Parent.</p>
-    <p><strong>Từ Child lên Parent</strong>: Cấu hình <code>needs: [{ pipeline: $CI_PIPELINE_ID, job: child_job }]</code> trong các job tiếp theo của Parent Pipeline sau khi Bridge Job hoàn tất với <code>strategy: depend</code>.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Từ Parent xuống Child</b>: Trong Child Pipeline, sử dụng <code>needs:pipeline:job_name</code> hoặc sử dụng cơ chế truyền biến dotenv từ Parent.</p>
+    <p><b>Từ Child lên Parent</b>: Cấu hình <code>needs: [{ pipeline: $CI_PIPELINE_ID, job: child_job }]</code> trong các job tiếp theo của Parent Pipeline sau khi Bridge Job hoàn tất với <code>strategy: depend</code>.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q06</span>
-    <span>Thuộc tính <code>inherit:variables:</code> có tác dụng gì trong việc kiểm soát bảo mật giữa Parent và Child Pipelines?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q06</span>
+      <span>Thuộc tính <code>inherit:variables:</code> có tác dụng gì trong việc kiểm soát bảo mật giữa Parent và Child Pipelines?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Mặc định (<code>inherit:variables: true</code>), toàn bộ biến môi trường của Parent Pipeline sẽ tự động được truyền sang Child Pipeline.</p>
     <p>Để bảo vệ các Secrets nhạy cảm (như Master Database Password, Production API Keys) không bị rò rỉ sang các Child Pipeline của các microservice không liên quan, ta sử dụng <code>inherit:variables: false</code> hoặc chỉ định danh sách biến tối thiểu được phép kế thừa: <code>inherit:variables: [APP_ENV, REGISTRY_URL]</code>.</p>
   </div>
@@ -525,21 +605,39 @@ echo "Child/Parent orchestration pattern verified successfully."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q07</span>
-    <span>Khi thực hiện Multi-Project Trigger sang repository khác, lỗi HTTP 403 / 404 thường do nguyên nhân gì và khắc phục như thế nào?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q07</span>
+      <span>Khi thực hiện Multi-Project Trigger sang repository khác, lỗi HTTP 403 / 404 thường do nguyên nhân gì và khắc phục như thế nào?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Nguyên nhân</strong>: Do cơ chế bảo mật <strong>CI/CD Job Token Access Control</strong> của GitLab. Mặc định, một dự án không cho phép các dự án khác tùy tiện kích hoạt pipeline hoặc truy cập tài nguyên của nó thông qua <code>CI_JOB_TOKEN</code>.</p>
-    <p><strong>Khắc phục</strong>: Truy cập vào Project đích > <em>Settings > CI/CD > Job Token Permissions (hoặc Token Access)</em> > Thêm đường dẫn (Project Path) của Project nguồn vào danh sách Allowlist được cấp quyền.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Nguyên nhân</b>: Do cơ chế bảo mật <b>CI/CD Job Token Access Control</b> của GitLab. Mặc định, một dự án không cho phép các dự án khác tùy tiện kích hoạt pipeline hoặc truy cập tài nguyên của nó thông qua <code>CI_JOB_TOKEN</code>.</p>
+    <p><b>Khắc phục</b>: Truy cập vào Project đích &gt; <i>Settings &gt; CI/CD &gt; Job Token Permissions (hoặc Token Access)</i> &gt; Thêm đường dẫn (Project Path) của Project nguồn vào danh sách Allowlist được cấp quyền.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q08</span>
-    <span>Làm thế nào để ngăn chặn hiện tượng Vòng Lặp Vô Tận (Infinite Pipeline Loop) trong Multi-Project Triggers?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q08</span>
+      <span>Làm thế nào để ngăn chặn hiện tượng Vòng Lặp Vô Tận (Infinite Pipeline Loop) trong Multi-Project Triggers?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Sử dụng các điều kiện lọc nguồn pipeline chặt chẽ trong khối <code>workflow: rules:</code>:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">workflow</span><span class="pi">:</span>
   <span class="na">rules</span><span class="pi">:</span>
@@ -553,10 +651,19 @@ echo "Child/Parent orchestration pattern verified successfully."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tại sao cần chạy bước kiểm tra cú pháp (CI Lint) trước khi kích hoạt Dynamic Child Pipeline?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q09</span>
+      <span>Tại sao cần chạy bước kiểm tra cú pháp (CI Lint) trước khi kích hoạt Dynamic Child Pipeline?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Bởi vì tệp YAML được sinh ra bằng mã code runtime (Python/Bash). Nếu code có bug sinh ra cú pháp YAML không hợp lệ (sai thụt lề, thiếu trường bắt buộc), Bridge Job sẽ bị crash ngay lập tức tại thời điểm nạp file với thông báo lỗi rất khó theo dõi.</p>
     <p>Gọi API <code>POST /api/v4/ci/lint</code> giúp kiểm tra tính hợp lệ của tệp YAML ngay trong job sinh file, giúp fail-fast và cung cấp log lỗi cú pháp chi tiết cho lập trình viên.</p>
   </div>
@@ -564,27 +671,45 @@ echo "Child/Parent orchestration pattern verified successfully."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q10</span>
-    <span>Một Child Pipeline có thể tiếp tục kích hoạt một Child Pipeline khác (Grandchild Pipeline) không? GitLab giới hạn bao nhiêu tầng?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q10</span>
+      <span>Một Child Pipeline có thể tiếp tục kích hoạt một Child Pipeline khác (Grandchild Pipeline) không? GitLab giới hạn bao nhiêu tầng?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>CÓ THỂ</strong>. GitLab CI hỗ trợ phân cấp đa tầng (Parent $ightarrow$ Child $ightarrow$ Grandchild).</p>
-    <p><strong>Giới hạn</strong>: GitLab áp dụng giới hạn trần mặc định là <strong>2 tầng lồng nhau (2 levels of pipeline nesting)</strong> trên các phiên bản tiêu chuẩn để bảo vệ hiệu năng của cơ sở dữ liệu và tránh quá tải hệ thống điều phối Sidekiq.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>CÓ THỂ</b>. GitLab CI hỗ trợ phân cấp đa tầng (Parent &rarr; Child &rarr; Grandchild).</p>
+    <p><b>Giới hạn</b>: GitLab áp dụng giới hạn trần mặc định là <b>2 tầng lồng nhau (2 levels of pipeline nesting)</b> trên các phiên bản tiêu chuẩn để bảo vệ hiệu năng của cơ sở dữ liệu và tránh quá tải hệ thống điều phối Sidekiq.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q11</span>
-    <span>So sánh kiến trúc Monorepo dùng Child Pipelines với mô hình Monorepo dùng cấu hình <code>rules:changes</code> đơn khối.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q11</span>
+      <span>So sánh kiến trúc Monorepo dùng Child Pipelines với mô hình Monorepo dùng cấu hình <code>rules:changes</code> đơn khối.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Mô hình đơn khối với <code>rules:changes</code></strong>:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Mô hình đơn khối với <code>rules:changes</code></b>:</p>
     <ul>
-      <li>Dễ cấu hình lúc ban đầu nhưng file YAML sẽ phình to mất kiểm soát khi số lượng service tăng lên (> 20 services).</li>
-      <li>Toàn bộ đồ thị job vẫn phải được parse tại $t_0$, làm chậm thời gian khởi tạo pipeline của mọi commit.</li>
+      <li>Dễ cấu hình lúc ban đầu nhưng file YAML sẽ phình to mất kiểm soát khi số lượng service tăng lên (&gt; 20 services).</li>
+      <li>Toàn bộ đồ thị job vẫn phải được parse tại t0, làm chậm thời gian khởi tạo pipeline của mọi commit.</li>
     </ul>
-    <p><strong>Mô hình Child Pipelines</strong>:</p>
+    <p><b>Mô hình Child Pipelines</b>:</p>
     <ul>
       <li>Cô lập hoàn toàn trách nhiệm: Mỗi service sở hữu một tệp YAML riêng biệt, team nào quản lý service đó.</li>
       <li>Giao diện trực quan: GitLab gom nhóm các job của từng service vào từng ô Downstream gọn gàng, giảm rối mắt cho lập trình viên.</li>
@@ -594,16 +719,25 @@ echo "Child/Parent orchestration pattern verified successfully."
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q12</span>
-    <span>Trình bày chiến lược điều phối triển khai Microservices an toàn từ Repository Code sang Repository GitOps bằng Multi-Project Triggers.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q12</span>
+      <span>Trình bày chiến lược điều phối triển khai Microservices an toàn từ Repository Code sang Repository GitOps bằng Multi-Project Triggers.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Chiến lược chuẩn Enterprise:</strong></p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Chiến lược chuẩn Enterprise:</b></p>
     <ol>
-      <li><strong>Code Repo (Upstream)</strong>: Build Docker Image, gắn tag <code>IMAGE_TAG=$CI_COMMIT_SHORT_SHA</code>, đẩy lên Container Registry.</li>
-      <li><strong>Bridge Trigger</strong>: Kích hoạt downstream sang <code>infrastructure/gitops-fleet</code>, truyền biến <code>SERVICE_NAME</code> và <code>NEW_TAG</code>.</li>
-      <li><strong>GitOps Repo (Downstream)</strong>: Nhận biến, tự động cập nhật file Kubernetes Manifest / Helm Values, commit vào nhánh <code>main</code> để ArgoCD / FluxCD đồng bộ vào Cluster.</li>
-      <li><strong>Đồng bộ kết quả</strong>: Sử dụng <code>strategy: depend</code> để đảm bảo quá trình đồng bộ GitOps thành công trước khi kết thúc pipeline của nhà phát triển.</li>
+      <li><b>Code Repo (Upstream)</b>: Build Docker Image, gắn tag <code>IMAGE_TAG=$CI_COMMIT_SHORT_SHA</code>, đẩy lên Container Registry.</li>
+      <li><b>Bridge Trigger</b>: Kích hoạt downstream sang <code>infrastructure/gitops-fleet</code>, truyền biến <code>SERVICE_NAME</code> và <code>NEW_TAG</code>.</li>
+      <li><b>GitOps Repo (Downstream)</b>: Nhận biến, tự động cập nhật file Kubernetes Manifest / Helm Values, commit vào nhánh <code>main</code> để ArgoCD / FluxCD đồng bộ vào Cluster.</li>
+      <li><b>Đồng bộ kết quả</b>: Sử dụng <code>strategy: depend</code> để đảm bảo quá trình đồng bộ GitOps thành công trước khi kết thúc pipeline của nhà phát triển.</li>
     </ol>
   </div>
 </details>
@@ -614,14 +748,14 @@ echo "Child/Parent orchestration pattern verified successfully."
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                             ĐIỀU PHỐI PIPELINE ĐA TẦNG
                                          │
      ┌───────────────────┬───────────────┴───────────────┬───────────────────┐
      ▼                   ▼                               ▼                   ▼
 [ BRIDGE JOBS ]     [ STRATEGY: DEPEND ]          [ DYNAMIC PIPELINES ] [ CI_JOB_TOKEN ]
 Chạy trên Server    Đồng bộ trạng thái 2 chiều    Sinh YAML lúc runtime Bảo mật Multi-Project
-Không tốn Runner    Bắt lỗi đỏ từ Child pipeline  Tận dụng $t_0$ thứ hai Allowlist phân quyền
+Không tốn Runner    Bắt lỗi đỏ từ Child pipeline  Tận dụng t0 thứ hai   Allowlist phân quyền
 ```
 
 - **Tách nhỏ đồ thị điều phối**: Sử dụng Child Pipelines để chia nhỏ Monorepo thành các module dễ quản lý và tăng tốc độ xử lý.

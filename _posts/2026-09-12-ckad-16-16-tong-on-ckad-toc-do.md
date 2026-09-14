@@ -1371,7 +1371,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1386,7 +1386,7 @@ kubectl create cronjob daily-backup --image=busybox --schedule="0 0 * * *" --dry
 
 # Imperative Secret Creation
 kubectl create secret generic db-pass --from-literal=password=SuperSecret123
-```yaml
+```
 
 ---
 

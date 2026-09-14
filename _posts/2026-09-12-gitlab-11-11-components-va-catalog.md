@@ -42,7 +42,7 @@ Trước GitLab 16.0, việc tái sử dụng cấu hình CI/CD hoàn toàn dự
 
 > **GitLab CI/CD Components biến các đoạn mã YAML rời rạc thành các đơn vị đóng gói độc lập (Lego Blocks) có giao diện hợp đồng tường minh (`spec:inputs`), kiểm tra kiểu dữ liệu tĩnh tại thời điểm biên dịch AST và được lập chỉ mục trên CI/CD Catalog toàn doanh nghiệp.**
 
-```
+```text
    TRUYỀN THỐNG (include:project)                HIỆN ĐẠI (GitLab CI/CD Components)
    
    ┌───────────────────────────────┐              ┌─────────────────────────────────────────┐
@@ -53,7 +53,7 @@ Trước GitLab 16.0, việc tái sử dụng cấu hình CI/CD hoàn toàn dự
    │   - project: 'devops/tpl'     │     đồng     │     inputs:                             │
    │     file: 'docker.yml'        │              │       image_name: "my-app"              │
    │                               │              │       dockerfile: "Dockerfile.prod"     │
-   └───────────────────────────────┘              └─────────────────────────────────────────┘
+   │ └───────────────────────────────┘              └─────────────────────────────────────────┘
                                                                │ Kiểm tra kiểu dữ liệu
                                                                ▼ (Type / Options / Regex)
                                                   ┌─────────────────────────────────────────┐
@@ -108,7 +108,7 @@ Một điểm cốt lõi về mặt kỹ thuật:
 
 Cấu trúc thư mục chuẩn của một Component Repository:
 
-```
+```text
 ├── README.md                 # Tài liệu hướng dẫn sử dụng (Bắt buộc để hiện lên Catalog)
 ├── LICENSE.md                # Giấy phép
 ├── .gitlab-ci.yml            # Pipeline kiểm thử và release component
@@ -188,14 +188,20 @@ spec:
     - echo "Dockerfile:    $[[ inputs.dockerfile_path ]]"
     # Tạo thư mục cấu hình auth cho Docker Registry
     - mkdir -p /kaniko/.docker
-    - echo "{"auths":{"$CI_REGISTRY":{"auth":"$(printf "%s:%s" "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | base64 | tr -d '
-')"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(printf "%s:%s" "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     # Thực thi lệnh Kaniko biên dịch không cần quyền root daemon
     - |
       if [ "$[[ inputs.push_to_registry ]]" = "true" ]; then
-        /kaniko/executor           --context "${CI_PROJECT_DIR}"           --dockerfile "${CI_PROJECT_DIR}/$[[ inputs.dockerfile_path ]]"           --destination "$CI_REGISTRY_IMAGE/$[[ inputs.image_name ]]:$[[ inputs.image_tag ]]"           --cache=$KANIKO_CACHE
+        /kaniko/executor \
+          --context "${CI_PROJECT_DIR}" \
+          --dockerfile "${CI_PROJECT_DIR}/$[[ inputs.dockerfile_path ]]" \
+          --destination "$CI_REGISTRY_IMAGE/$[[ inputs.image_name ]]:$[[ inputs.image_tag ]]" \
+          --cache=$KANIKO_CACHE
       else
-        /kaniko/executor           --context "${CI_PROJECT_DIR}"           --dockerfile "${CI_PROJECT_DIR}/$[[ inputs.dockerfile_path ]]"           --no-push
+        /kaniko/executor \
+          --context "${CI_PROJECT_DIR}" \
+          --dockerfile "${CI_PROJECT_DIR}/$[[ inputs.dockerfile_path ]]" \
+          --no-push
       fi
 ```
 
@@ -233,7 +239,26 @@ graph TD
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 03:15 AM</span> Trong đợt phát hành khẩn cấp phiên bản mới, pipeline của dịch vụ thanh toán bị từ chối tạo ngay lập tức với lỗi `inputs:build_engine: value 'fast' is not in options list`.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+GitLab không sinh ra bất kỳ job nào và báo lỗi cú pháp ngay trên giao diện Merge Request:
+
+```text
+Status: Failed to create pipeline
+Error: Included component '$CI_SERVER_FQDN/platform-components/container-tools/docker-build@1.3.0' validation failed:
+- input 'build_engine': value 'fast' is not allowed. Valid options: ['kaniko', 'docker-dind', 'buildah']
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao pipeline không được tạo?** Trình phân giải AST của GitLab phát hiện input `build_engine` nhận giá trị không hợp lệ so với schema đã định nghĩa.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lập trình viên lại cấu hình `build_engine: "fast"`?** Kỹ sư dự án nhầm lẫn giữa tham số của component mới với biến môi trường cũ tự tạo trước đây (`FAST_BUILD=true`).
+3. <span class="badge badge--primary">Why 3</span> **Tại sao không có cảnh báo trước runtime?** Trước đây, các template kiểu cũ chỉ dùng biến toàn cục không có schema, dẫn đến việc gõ sai biến vẫn chạy và âm thầm dùng giá trị fallback hoặc lỗi ở runtime sau 10 phút chạy.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao lỗi bị chặn ngay tại thời điểm submit MR?** Tính năng Component với `spec:inputs` thực hiện thẩm định kiểu dữ liệu tĩnh tại thời điểm nạp cú pháp ($t_0$).
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để:** Sửa cấu hình `build_engine: "kaniko"` theo đúng hợp đồng của Component; sử dụng CI/CD Catalog README làm tài liệu tra cứu hợp đồng tham số chuẩn cho toàn bộ team.
+
+### Phân Tích 5 Cạm Bẫy Phổ Biến Nhất:
 
 #### Cạm bẫy 1: Xung đột tên Job khi gọi một Component nhiều lần
 - **Hiện tượng**: Khi gọi component `docker-build` 2 lần (cho backend và frontend), pipeline chỉ hiển thị 1 job duy nhất và đè cấu hình của nhau.
@@ -264,7 +289,7 @@ graph TD
 
 ## 5. Hands-on Lab: Xây Dựng & Phát Hành CI/CD Components Lên Catalog (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                  LAB ARCHITECTURE: CI/CD COMPONENTS                    │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -358,7 +383,9 @@ Tạo tệp `.gitlab-ci.yml` bên trong repo component để tự test chính n�
 stages:
   - test
   - release
+```
 
+```yaml
 include:
   - local: 'templates/trivy-scan.yml'
     inputs:
@@ -429,7 +456,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q01</span>
     <span>GitLab CI/CD Components là gì và giải quyết những nhược điểm cố hữu nào của cơ chế include/extends truyền thống?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>GitLab CI/CD Components</strong> là các khối cấu hình CI/CD đóng gói có thể tái sử dụng, được định nghĩa với giao diện tham số đầu vào tường minh (<code>spec:inputs</code>) và được quản lý phiên bản theo chuẩn Semantic Versioning trên <strong>CI/CD Catalog</strong>.</p>
     <p><strong>Nhược điểm giải quyết</strong>:</p>
     <ul>
@@ -445,7 +476,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q02</span>
     <span>Phân biệt bản chất giữa cú pháp nội suy $[[ inputs.param ]] và biến môi trường shell thông thường $PARAM.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong><code>$[[ inputs.param ]]</code> (Interpolation tại compile-time)</strong>:</p>
     <ul>
       <li>Được phân giải và thay thế tĩnh trực tiếp vào cây cú pháp YAML (AST) tại Server GitLab tại thời điểm $t_0$.</li>
@@ -464,7 +499,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q03</span>
     <span>Khối <code>spec:inputs</code> hỗ trợ những kiểu dữ liệu (types) nào và các thuộc tính ràng buộc kiểm tra hợp lệ nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Các kiểu dữ liệu hỗ trợ</strong>: <code>string</code>, <code>number</code>, <code>boolean</code>, <code>array</code>.</p>
     <p><strong>Các thuộc tính ràng buộc</strong>:</p>
     <ul>
@@ -481,7 +520,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q04</span>
     <span>Làm thế nào để xuất bản (Publish) một repository Component lên Enterprise CI/CD Catalog?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Quy trình 3 bước xuất bản</strong>:</p>
     <ol>
       <li><strong>Cấu trúc chuẩn</strong>: Repository phải chứa tệp <code>README.md</code> mô tả và thư mục <code>templates/</code> chứa các tệp component YAML.</li>
@@ -496,7 +539,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q05</span>
     <span>Làm thế nào để tránh xung đột tên Job khi một dự án nạp cùng một Component nhiều lần với các bộ inputs khác nhau?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp</strong>: Tác giả Component phải thiết kế tên Job động bằng cách sử dụng nội suy <code>inputs</code>, thường là thêm tham số <code>job_prefix</code> hoặc kết hợp tên môi trường:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="s">"$[[ inputs.job_prefix ]]-deploy"</span><span class="pi">:</span>
   <span class="na">stage</span><span class="pi">:</span> <span class="s">$[[ inputs.stage ]]</span>
@@ -511,7 +558,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q06</span>
     <span>Sự khác nhau giữa việc tham chiếu phiên bản `@~latest`, `@1`, `@1.2` và `@1.2.3` khi sử dụng Component là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Ý nghĩa các cú pháp tham chiếu</strong>:</p>
     <ul>
       <li><code>@1.2.3</code> (Full Pinning): Cố định chính xác bản vá (Patch level), an toàn nhất, 0% rủi ro thay đổi ngoài ý muốn.</li>
@@ -527,7 +578,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q07</span>
     <span>Một Component có thể tiếp tục nạp (include) một Component khác lồng nhau không?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>CÓ THỂ</strong>. GitLab hỗ trợ <strong>Nested Components (Component lồng nhau)</strong>. Một Component cha có thể sử dụng từ khóa <code>include: component: ...</code> để nạp các Sub-components con và chuyển tiếp các giá trị <code>inputs</code> tương ứng xuống dưới.</p>
     <p>Quy tắc này giúp xây dựng các bộ giải pháp phức hợp (như Full DevSecOps Pipeline Component bao gồm Lint + Build + Test + Scan + Deploy).</p>
   </div>
@@ -538,7 +593,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q08</span>
     <span>Làm thế nào để viết kịch bản kiểm thử tự động (Unit Test / Integration Test) cho chính một CI/CD Component trước khi Release?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Bên trong repository của Component, tạo tệp <code>.gitlab-ci.yml</code> thực hiện 2 giai đoạn:</p>
     <ol>
       <li><strong>Test Stage</strong>: Nạp chính các template trong thư mục <code>templates/</code> bằng <code>include: local</code> với nhiều bộ test cases khác nhau (test input mặc định, test override options, test edge cases).</li>
@@ -552,7 +611,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q09</span>
     <span>Khi nào nên đóng gói Component thành nhiều tệp (Multi-file Component) trong thư mục `templates/`?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Nên tách thành <strong>Multi-file Components</strong> khi một repository quản lý một nhóm các công cụ có liên quan chặt chẽ nhưng người dùng có thể muốn sử dụng riêng lẻ từng phần (ví dụ repo <code>cloud-tools</code>):</p>
     <ul>
       <li><code>templates/aws-deploy.yml</code> (gọi qua <code>component: org/cloud-tools/aws-deploy@1.0.0</code>)</li>
@@ -568,7 +631,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q10</span>
     <span>Tại sao nói cơ chế nội suy $[[ inputs ]] giúp loại bỏ hoàn toàn nguy cơ Shell Injection trong CI/CD Pipeline?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Trong cách làm cũ, nếu nối chuỗi tham số qua biến môi trường để chạy lệnh: <code>eval "build.sh $USER_INPUT"</code>, attacker có thể truyền <code>USER_INPUT="test; rm -rf /"</code> để thực thi mã độc.</p>
     <p>Với CI/CD Components, <code>$[[ inputs.param ]]</code> được xử lý ở tầng AST Parser với kiểm tra kiểu dữ liệu tĩnh (Regex/Options). Nếu input chứa ký tự nguy hiểm không khớp Regex, pipeline bị hủy ngay lập tức tại $t_0$ trước khi bất kỳ shell process nào được khởi tạo trên Runner.</p>
   </div>
@@ -579,7 +646,11 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q11</span>
     <span>Làm thế nào để thiết lập phân quyền truy cập (Access Control) cho CI/CD Catalog trong môi trường Private Enterprise?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Phân quyền Catalog</strong> tuân theo cấu trúc phân quyền của GitLab Project:</p>
     <ul>
       <li>Nếu dự án Component được đặt ở mức <strong>Internal</strong>: Toàn bộ nhân viên đăng nhập trong cụm GitLab đều có thể duyệt Catalog và sử dụng Component.</li>
@@ -594,13 +665,17 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
     <span class="qa-num-badge">Q12</span>
     <span>Trình bày quy trình chuyển đổi một hệ thống CI/CD Doanh nghiệp từ Legacy Templates sang CI/CD Components Catalog theo chuẩn Platform Engineering.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Lộ trình chuyển đổi 4 giai đoạn chuẩn Enterprise:</strong></p>
     <ol>
-      <li><strong>Audit & Standardize</strong>: Rà soát toàn bộ các tệp <code>.gitlab-ci.yml</code> di sản, gom nhóm các tác vụ lặp lại (Docker, SAST, Deploy K8s, Notify).</li>
-      <li><strong>Author & Validate</strong>: Xây dựng các Component Repository riêng biệt, định nghĩa tường minh <code>spec:inputs</code> có type và regex ràng buộc, viết Unit Test kiểm thử component.</li>
+      <li><strong>Audit &amp; Standardize</strong>: Rà soát toàn bộ các tệp <code>.gitlab-ci.yml</code> di sản, gom nhóm các tác vụ lặp lại (Docker, SAST, Deploy K8s, Notify).</li>
+      <li><strong>Author &amp; Validate</strong>: Xây dựng các Component Repository riêng biệt, định nghĩa tường minh <code>spec:inputs</code> có type và regex ràng buộc, viết Unit Test kiểm thử component.</li>
       <li><strong>Publish to Catalog</strong>: Tạo Tag SemVer <code>v1.0.0</code> và xuất bản lên Private CI/CD Catalog kèm tài liệu README chi tiết.</li>
-      <li><strong>Migration & Deprecation</strong>: Hướng dẫn các App Team đổi từ <code>include:project</code> sang <code>include:component</code> với SemVer ghim (<code>@1.0.0</code>), đặt lịch vô hiệu hóa các template cũ sau 6 tháng.</li>
+      <li><strong>Migration &amp; Deprecation</strong>: Hướng dẫn các App Team đổi từ <code>include:project</code> sang <code>include:component</code> với SemVer ghim (<code>@1.0.0</code>), đặt lịch vô hiệu hóa các template cũ sau 6 tháng.</li>
     </ol>
   </div>
 </details>
@@ -611,7 +686,7 @@ echo "CI/CD Component architecture and Catalog publishing verified 100%."
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                             GITLAB CI/CD COMPONENTS & CATALOG
                                            │
      ┌───────────────────┬─────────────────┴─────────────────┬───────────────────┐

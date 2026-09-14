@@ -44,7 +44,7 @@ Trong giai đoạn đầu của container hóa, các nhóm kỹ sư thường ch
 
 > **Một Container Image chuẩn Enterprise hiện đại phải đạt 4 tiêu chuẩn vàng: Dung lượng siêu mỏng (dưới 30MB nhờ Scratch/Distroless), Tương thích đa kiến trúc CPU (Native ARM64 Graviton & AMD64), Kèm theo danh mục thành phần máy đọc được (SBOM), và Có chứng thực nguồn gốc xuất xứ bất biến (SLSA Provenance).**
 
-```
+```text
     CƠ CHẾ OCI MANIFEST LIST ĐA KIẾN TRÚC & PHÁT HÀNH SBOM ĐI KÈM
 
                     [ OCI Image Index / Manifest List ]
@@ -140,8 +140,7 @@ build_amd64:
     entrypoint: [""]
   before_script:
     - mkdir -p /kaniko/.docker
-    - echo "{"auths":{"${CI_REGISTRY}":{"auth":"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '
-')"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - >-
       /kaniko/executor
@@ -159,8 +158,7 @@ build_arm64:
     entrypoint: [""]
   before_script:
     - mkdir -p /kaniko/.docker
-    - echo "{"auths":{"${CI_REGISTRY}":{"auth":"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '
-')"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - >-
       /kaniko/executor
@@ -209,39 +207,65 @@ generate_and_scan_sbom:
 
 ## 4. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
-### 4.1. Sự Cố Thực Tế: Ứng Dụng Go Crash Với Lỗi "No such file or directory" Trên Scratch Image
-
-> **Bối Cảnh**: Một kỹ sư DevOps đóng gói microservice Go bằng Scratch Image để tối ưu dung lượng (chỉ 12MB). Tuy nhiên, khi Pod deploy lên cụm Kubernetes Production, container liên tục rơi vào trạng thái `CrashLoopBackOff` với lỗi bí ẩn `exec /app/server: no such file or directory` dù file binary chắc chắn tồn tại!
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│ 1. Tại sao container bị CrashLoopBackOff báo không tìm thấy tệp?        │
-│    -> Linux Dynamic Linker không tìm thấy Dynamic Interpreter (ld-linux)│
-│                                                                         │
-│ 2. Tại sao lại cần Dynamic Linker khi binary đã được copy vào?         │
-│    -> Binary được biên dịch phụ thuộc thư viện động libc của máy build. │
-│                                                                         │
-│ 3. Tại sao Scratch Image lại thiếu Dynamic Linker?                      │
-│    -> Scratch là Image hoàn toàn rỗng, không chứa libc hay linker nào.  │
-│                                                                         │
-│ 4. Tại sao lệnh build Go lại tạo ra dynamic binary?                     │
-│    -> Mặc định Go bật cờ CGO_ENABLED=1 khi import thư viện net hoặc os. │
-│                                                                         │
-│ 5. NGUYÊN NHÂN CỐT LÕI (Root Cause):                                   │
-│    -> Không cấu hình cờ CGO_ENABLED=0 và thiếu flags liên kết tĩnh      │
-│       -ldflags="-extldflags '-static'" khi biên dịch cho Scratch Image. │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    INC["Sự Cố: Container Go chạy trên Scratch Base Image liên tục bị CrashLoopBackOff với lỗi 'No such file or directory'"]
+    W1["Tại sao báo No such file dù binary có trong container? Linux Kernel không tìm thấy Dynamic Interpreter (ld-linux.so)"]
+    W2["Tại sao binary lại tìm Dynamic Interpreter? File binary được biên dịch ở chế độ Dynamic Linking phụ thuộc glibc"]
+    W3["Tại sao Scratch Image lại thiếu tệp này? Scratch là Image hoàn toàn rỗng, không chứa libc hay bất kỳ file hệ thống nào"]
+    W4["Tại sao trình biên dịch Go lại bật Dynamic Linking? Mặc định CGO_ENABLED=1 khi import thư viện net hoặc os"]
+    W5["Giải pháp cốt lõi: Thiết lập CGO_ENABLED=0 kết hợp -ldflags='-s -w -extldflags -static'"]
+    
+    INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.2. Giải Pháp Khắc Phục Triệt Để
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 06:30 AM</span> Một kỹ sư DevOps đóng gói microservice Go bằng Scratch Image để tối ưu dung lượng (chỉ 12MB). Tuy nhiên, khi Pod deploy lên cụm Kubernetes Production, container liên tục rơi vào trạng thái `CrashLoopBackOff` với thông báo lỗi bí ẩn `exec /app/server: no such file or directory` dù file binary chắc chắn đã được copy vào `/app/server`!
 
-1. **Biên dịch Tĩnh Tuyệt Đối (Pure Static Binary)**:
-   ```bash
-   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build      -a -ldflags="-s -w -extldflags '-static'"      -o /app/server .
-   ```
-2. **Bổ sung CA-Certificates và Timezone**: Nếu ứng dụng cần gọi HTTPS ra bên ngoài hoặc xử lý múi giờ, cần copy tệp `/etc/ssl/certs/ca-certificates.crt` và `/usr/share/zoneinfo` từ builder stage vào scratch runtime.
+### Hậu Quả & Log Lỗi Thực Tế:
+Pod không thể khởi chạy, Kubernetes liên tục restart container:
+
+```text
+$ kubectl logs pod/user-auth-service-589f7b-9xk2p
+standard_init_linux.go:228: exec user process caused: no such file or directory
+$ docker run --rm registry.corp/user-auth:v1.2.0
+docker: Error response from daemon: failed to create shim task: OCI runtime create failed: 
+runc create failed: unable to start container process: exec: "/app/server": stat /app/server: no such file or directory: unknown.
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao container bị CrashLoopBackOff báo không tìm thấy tệp?** &rarr; Trình nạp thực thi của Linux Kernel không tìm thấy tệp Dynamic Linker Interpreter (ví dụ `/lib64/ld-linux-x86-64.so.2`) được khai báo trong ELF binary.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lại cần Dynamic Linker khi binary đã được copy vào?** &rarr; File binary được biên dịch ở chế độ liên kết động (Dynamic Linking), phụ thuộc vào thư viện C chuẩn `glibc` của máy host.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Scratch Image lại thiếu Dynamic Linker?** &rarr; `FROM scratch` là một filesystem hoàn toàn rỗng 0 Byte, không chứa bất kỳ tệp hệ điều hành, thư viện `.so` hay dynamic linker nào.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao lệnh build Go lại tạo ra dynamic binary?** &rarr; Trình biên dịch Go tự động bật cờ `CGO_ENABLED=1` khi mã nguồn import các package hệ thống như `net` (để dùng resolver cgo) hoặc `os/user`.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để**: Luôn khai báo biến môi trường `CGO_ENABLED=0` kết hợp các cờ liên kết tĩnh hoàn toàn `-ldflags="-s -w -extldflags '-static'"` khi biên dịch nhị phân cho Scratch / Distroless Base Image.
+
+### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+
+#### Cạm bẫy 1: Thiếu CA-Certificates khiến HTTPS Request trong Container bị lỗi x509
+- **Hiện tượng**: Ứng dụng chạy trên Scratch báo lỗi `x509: certificate signed by unknown authority` khi gọi API thanh toán.
+- **Nguyên nhân tầng sâu**: Scratch image không có kho chứng chỉ gốc Root CA.
+- **Cách gỡ rối**: Chuyển sang `distroless/static:nonroot` (đã nhúng sẵn CA certs) hoặc copy `/etc/ssl/certs/ca-certificates.crt` từ builder stage sang.
+
+#### Cạm bẫy 2: Build Multi-Arch bằng QEMU bị chậm gấp 10 lần
+- **Hiện tượng**: Job build image ARM64 trên runner x86 qua QEMU mất 25 phút thay vì 2 phút.
+- **Nguyên nhân**: QEMU Emulation phải dịch động từng lệnh assembly CPU.
+- **Biện pháp**: Sử dụng GitLab Runner Tags gắn trực tiếp vào máy chủ vật lý ARM64 (AWS Graviton) để build Native ARM64.
+
+#### Cạm bẫy 3: Ứng dụng Node.js/Python bị lỗi khi chạy trên Alpine do thiếu Musl C-Wheels
+- **Hiện tượng**: `npm install` hoặc `pip install` bị fail vì các thư viện C-Extensions chỉ hỗ trợ `glibc`.
+- **Nguyên nhân**: Alpine sử dụng `musl libc` không tương thích với các binary wheels biên dịch sẵn manylinux.
+- **Biện pháp**: Sử dụng Base Image `distroless/nodejs20-debian12` hoặc `python:3.12-slim` (Debian-based glibc).
+
+#### Cạm bẫy 4: Thiếu thông tin Timezone khiến log trong container bị sai giờ
+- **Hiện tượng**: Log trong container luôn hiển thị giờ UTC, không định dạng được giờ địa phương.
+- **Nguyên nhân**: Base image tối giản không chứa gói dữ liệu múi giờ `/usr/share/zoneinfo`.
+- **Biện pháp**: Sử dụng `distroless` (đã kèm tzdata) hoặc copy `zoneinfo` từ builder stage.
+
+#### Cạm bẫy 5: Lỗi không thể debug pod trên Kubernetes vì container không có shell
+- **Hiện tượng**: Kỹ sư chạy `kubectl exec -it <pod> -- sh` bị báo lỗi `OCI runtime exec failed: exec: "sh": executable file not found`.
+- **Nguyên nhân**: Distroless loại bỏ hoàn toàn `/bin/sh` để bảo mật.
+- **Biện pháp**: Sử dụng tính năng `kubectl debug <pod> --image=busybox:latest --target=<container>` để gắn Ephemeral Container debug an toàn.
 
 ---
 
@@ -253,7 +277,7 @@ generate_and_scan_sbom:
 - Biên dịch image siêu nhẹ dưới 15MB.
 - Tự động sinh SBOM chuẩn CycloneDX bằng công cụ Syft trong GitLab CI.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB DISTROLESS IMAGE & SBOM GENERATION
 
     [ Go Source Code ] ──► [ Builder Stage: Compile Static CGO_ENABLED=0 ]
@@ -312,7 +336,7 @@ go 1.22
 ```
 
 #### Bước 3: Tạo Tệp `.dockerignore`
-```
+```text
 .git
 .gitlab-ci.yml
 *.md
@@ -331,7 +355,9 @@ RUN go mod download
 COPY . .
 
 # Biên dịch Static Binary loại bỏ Debug Symbols (-s -w)
-RUN CGO_ENABLED=0 GOOS=linux go build     -ldflags="-s -w -extldflags '-static'"     -o /out/server .
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-s -w -extldflags '-static'" \
+    -o /out/server .
 
 # Stage 2: Distroless Non-Root Runtime
 FROM gcr.io/distroless/static-debian12:nonroot
@@ -364,8 +390,7 @@ build_distroless_image:
     entrypoint: [""]
   before_script:
     - mkdir -p /kaniko/.docker
-    - echo "{"auths":{"${CI_REGISTRY}":{"auth":"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '
-')"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - >-
       /kaniko/executor
@@ -382,8 +407,7 @@ generate_sbom:
   needs: ["build_distroless_image"]
   before_script:
     - mkdir -p /root/.docker
-    - echo "{"auths":{"${CI_REGISTRY}":{"auth":"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '
-')"}}}" > /root/.docker/config.json
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /root/.docker/config.json
   script:
     - syft "${IMAGE_TAG}" -o cyclonedx-json > gl-sbom-report.json
     - syft "${IMAGE_TAG}" -o table
@@ -445,7 +469,11 @@ git push origin main
     <span class="qa-num-badge">Q01</span>
     <span>Tại sao Distroless Image lại an toàn hơn đáng kể so với Alpine Linux dù dung lượng tương đương?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Phân tích bảo mật:</strong></p>
     <ul>
       <li>Alpine Linux vẫn là một bản phân phối hoàn chỉnh chứa Busybox shell (<code>/bin/sh</code>) và trình quản lý gói (<code>apk</code>). Nếu kẻ tấn công phát hiện lỗi Remote Code Execution (RCE) trong ứng dụng, chúng có thể dùng <code>/bin/sh</code> để thực thi lệnh hoặc cài thêm các công cụ độc hại (nmap, curl, netcat).</li>
@@ -459,7 +487,11 @@ git push origin main
     <span class="qa-num-badge">Q02</span>
     <span>Sự khác biệt giữa chuẩn SBOM SPDX và CycloneDX là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>So sánh chuẩn:</strong></p>
     <ul>
       <li><strong>SPDX (Software Package Data Exchange)</strong>: Chuẩn của Linux Foundation, tập trung mạnh vào việc tuân thủ bản quyền phần mềm (Open Source License Compliance) và quản trị sở hữu trí tuệ (IP).</li>
@@ -473,7 +505,11 @@ git push origin main
     <span class="qa-num-badge">Q03</span>
     <span>Làm thế nào để debug một container Distroless khi nó không có Shell và không thể `docker exec`?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp trong Kubernetes:</strong></p>
     <p>Sử dụng tính năng <strong>Kubernetes Ephemeral Containers</strong>: Lệnh <code>kubectl debug -it &lt;pod-name&gt; --image=busybox:latest --target=&lt;container-name&gt;</code> sẽ gắn tạm thời một container debug (chứa đầy đủ shell và công cụ mạng) vào chung Process Namespace của Pod Distroless mà không cần sửa đổi hay khởi động lại Pod.</p>
   </div>
@@ -484,7 +520,11 @@ git push origin main
     <span class="qa-num-badge">Q04</span>
     <span>Cơ chế QEMU Emulation trong Docker Buildx hoạt động như thế nào khi build Multi-Arch?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Bản chất kỹ thuật:</strong></p>
     <p>QEMU dịch động các câu lệnh CPU Assembly của kiến trúc đích (ví dụ: ARM64) sang kiến trúc của máy chủ Host (ví dụ: x86_64). Điều này cho phép một máy chủ x86 có thể build image ARM64 mà không cần chip ARM vật lý. Tuy nhiên, do phải dịch từng lệnh CPU, tốc độ build qua QEMU có thể chậm hơn từ <strong>3x đến 10x lần</strong> so với build Native.</p>
   </div>
@@ -495,7 +535,11 @@ git push origin main
     <span class="qa-num-badge">Q05</span>
     <span>Tại sao cờ `CGO_ENABLED=0` lại bắt buộc khi build binary Go chạy trên Scratch Image?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên lý:</strong></p>
     <p>Khi <code>CGO_ENABLED=1</code>, trình biên dịch Go sử dụng thư viện C tiêu chuẩn (glibc) của hệ điều hành host để xử lý một số tính năng mạng và DNS. Binary sinh ra sẽ là dạng Dynamic ELF phụ thuộc vào sự tồn tại của tệp <code>/lib64/ld-linux-x86-64.so.2</code>. Trên Scratch Image không có tệp này, dẫn đến lỗi crash ngay khi khởi động.</p>
   </div>
@@ -506,7 +550,11 @@ git push origin main
     <span class="qa-num-badge">Q06</span>
     <span>SLSA Framework Level 3 yêu cầu những tiêu chí cốt lõi nào trong hệ thống CI/CD?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Tiêu chí SLSA Level 3:</strong></p>
     <ol>
       <li><strong>Hạ tầng Build Cách Ly (Isolated Build Platform)</strong>: Môi trường build là môi trường tạm thời (Ephemeral) và được kiểm soát hoàn toàn.</li>
@@ -521,10 +569,15 @@ git push origin main
     <span class="qa-num-badge">Q07</span>
     <span>Làm sao để nhúng chứng chỉ SSL/TLS CA-Certificates vào container Scratch Image?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp:</strong></p>
     <p>Trong Multi-Stage Dockerfile, cài đặt gói <code>ca-certificates</code> ở builder stage, sau đó dùng lệnh:</p>
-    <pre><code>COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/</code></pre>
+    <div class="language-dockerfile highlighter-rouge"><pre class="highlight"><code><span class="k">COPY</span><span class="s"> --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/</span>
+</code></pre></div>
     <p>sang Scratch runtime stage để ứng dụng có thể thực hiện các cuộc gọi HTTPS bảo mật.</p>
   </div>
 </details>
@@ -534,7 +587,11 @@ git push origin main
     <span class="qa-num-badge">Q08</span>
     <span>Cơ chế "OCI Manifest List / Image Index" giải quyết bài toán đa nền tảng như thế nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cơ chế:</strong></p>
     <p>OCI Image Index là một tệp JSON metadata đại diện chứa danh sách các image con kèm thông số kiến trúc (<code>os: linux, architecture: amd64</code> và <code>os: linux, architecture: arm64</code>). Khi máy khách chạy lệnh <code>docker pull my-app:latest</code>, Docker Engine tự động đọc thông tin phần cứng của máy và chỉ tải về đúng image con tương thích mà không cần người dùng phải chọn thủ công.</p>
   </div>
@@ -545,7 +602,11 @@ git push origin main
     <span class="qa-num-badge">Q09</span>
     <span>Làm thế nào để loại bỏ Debug Symbols trong binary để giảm kích thước tối đa?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Kỹ thuật:</strong></p>
     <ul>
       <li>Với Go: Thêm flags <code>-ldflags="-s -w"</code> (<code>-s</code>: bỏ bảng ký hiệu symbol table, <code>-w</code>: bỏ thông tin debug DWARF). Giúp giảm 30-40% kích thước binary.</li>
@@ -559,7 +620,11 @@ git push origin main
     <span class="qa-num-badge">Q10</span>
     <span>Cosign đính kèm tệp SBOM vào Container Registry như thế nào mà không làm hỏng Image?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cơ chế:</strong></p>
     <p>Cosign sử dụng định dạng <strong>OCI Artifact Tagging</strong>. Khi chạy lệnh <code>cosign attach sbom --sbom sbom.json my-registry/my-image:v1.0</code>, Cosign sẽ đẩy SBOM dưới dạng một OCI layer đặc biệt và gắn tag dẫn xuất có định dạng <code>sha256-&lt;image-digest&gt;.sbom</code> trên cùng registry, hoàn toàn không làm thay đổi SHA digest của image gốc.</p>
   </div>
@@ -570,7 +635,11 @@ git push origin main
     <span class="qa-num-badge">Q11</span>
     <span>Sự cố: Image build bằng Alpine bị chậm hiệu năng khi xử lý tính toán số học đa luồng. Tại sao?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên nhân:</strong></p>
     <p>Alpine sử dụng <code>musl libc</code> với cơ chế cấp phát bộ nhớ mặc định đơn giản, không tối ưu cho kiến trúc đa lõi (Multi-core High Concurrency) như <code>glibc</code> hoặc các bộ cấp phát hiện đại (Jemalloc, TCMalloc). Giải pháp là chuyển sang <strong>Distroless Debian</strong> hoặc link ứng dụng tĩnh với <code>mimalloc / jemalloc</code>.</p>
   </div>
@@ -581,7 +650,11 @@ git push origin main
     <span class="qa-num-badge">Q12</span>
     <span>Làm cách nào để ngăn chặn lập trình viên vô tình chạy container bằng user `root` trên Kubernetes?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Chính sách bảo mật đa tầng:</strong></p>
     <ol>
       <li>Trong Dockerfile: Luôn khai báo <code>USER nonroot:nonroot</code> (UID 65532).</li>
@@ -603,7 +676,7 @@ git push origin main
 
 ### 7.2. Sơ Đồ Tư Duy Tối Ưu Hóa Container (Mindmap)
 
-```
+```text
                        TỐI ƯU HÓA CONTAINER IMAGE CHUYÊN SÂU
                                          │
         ┌────────────────────────────────┼────────────────────────────────┐

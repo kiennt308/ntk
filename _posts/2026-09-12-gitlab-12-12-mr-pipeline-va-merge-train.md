@@ -39,11 +39,11 @@ Một trong những vấn đề gây đau đầu nhất trong các tổ chức c
 Nguyên nhân gốc rễ là **Xung đột ngữ nghĩa (Semantic Conflict)**:
 - MR A xóa hoặc đổi tên một hàm trong module A (Code của A test độc lập vẫn đúng).
 - MR B thêm một tính năng mới gọi hàm đó trong module B (Code của B tạo nhánh từ `main` cũ nên vẫn thấy hàm đó và test pass).
-- Khi cả hai được merge vào `main`, Git Merge thành công về mặt cú pháp văn bản (không có text conflict), nhưng khi biên dịch, chương trình bị lỗi thiếu hàm $ightarrow$ Hệ thống CI trên `main` bị gãy!
+- Khi cả hai được merge vào `main`, Git Merge thành công về mặt cú pháp văn bản (không có text conflict), nhưng khi biên dịch, chương trình bị lỗi thiếu hàm &rarr; Hệ thống CI trên `main` bị gãy!
 
 > **Kiểm thử trên nhánh tính năng đơn lẻ (Branch Pipeline) là chưa đủ. Để đảm bảo nhánh `main` luôn luôn xanh 100%, hệ thống CI/CD bắt buộc phải kiểm thử TRÊN KẾT QUẢ HỢP NHẤT GIẢ ĐỊNH (Merged Results) và xếp hàng gộp mã suy đoán liên hoàn (Merge Trains).**
 
-```
+```text
    TRƯỜNG HỢP BRANCH PIPELINE THÔNG THƯỜNG (Nguy cơ vỡ nhánh Main)
    
    main (Commit 0) ───────────────────────────────────────────────────────────► MAIN BỊ ĐỎ!
@@ -221,7 +221,32 @@ graph TD
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 03:45 AM</span> Sau khi chuyển đổi dự án sang sử dụng Merge Request Pipelines, toàn bộ hạ tầng Runner của công ty rơi vào tình trạng tắc nghẽn nghiêm trọng (Queue time tăng vọt từ 2 giây lên 18 phút).
+
+### Hậu Quả & Log Lỗi Thực Tế:
+Mỗi khi lập trình viên đẩy một commit mới lên nhánh tính năng, giao diện GitLab sinh ra đồng thời hai pipeline độc lập thực thi cùng một khối lệnh:
+
+```text
+Pipeline #10482: Branch Pipeline for branch 'feat-auth' (Status: Running)
+- Job: lint (running)
+- Job: test (running)
+
+Pipeline #10483: Detached Merge Request Pipeline for MR !45 (Status: Running)
+- Job: lint (running)
+- Job: test (running)
+
+Result: Resource consumption doubled; 100% Runner concurrency saturated!
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao có hai pipeline chạy đồng thời cho cùng một commit?** Một pipeline được kích hoạt bởi sự kiện push lên nhánh (`push`), và một pipeline được kích hoạt bởi sự kiện Merge Request (`merge_request_event`).
+2. <span class="badge badge--primary">Why 2</span> **Tại sao GitLab không tự động chọn một loại pipeline?** Cơ chế mặc định của GitLab CI xử lý độc lập giữa các nguồn kích hoạt trừ khi có chỉ thị luồng điều phối tường minh.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao nhóm phát triển không cấu hình loại trừ?** Nhóm chưa thiết lập khối `workflow: rules:` ở cấp độ gốc của file `.gitlab-ci.yml`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao không phát hiện trước khi triển khai toàn công ty?** Dự án thử nghiệm ban đầu có ít commit nên không nhận thấy hiện tượng tăng tải cục bộ trên cụm Runner.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để:** Bổ sung ngay khối `workflow: rules:` chuẩn với điều kiện `if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS' when: never` để triệt tiêu 100% Branch Pipeline khi MR đã mở.
+
+### Phân Tích 5 Cạm Bẫy Phổ Biến Nhất:
 
 #### Cạm bẫy 1: Sự cố "Duplicate Pipelines" gây lãng phí gấp đôi tài nguyên
 - **Hiện tượng**: Khi tạo Merge Request, giao diện GitLab hiển thị 2 thanh tiến trình pipeline chạy song song cho cùng 1 commit: một pipeline `branch` và một pipeline `detached`.
@@ -252,7 +277,7 @@ graph TD
 
 ## 5. Hands-on Lab: Cấu Hình MR Pipelines & Merge Trains Thực Chiến (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                  LAB ARCHITECTURE: MR & MERGE TRAINS                   │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -390,7 +415,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q01</span>
     <span>Trình bày khái niệm "Xung đột ngữ nghĩa" (Semantic Conflict) trong Git và giải thích tại sao Branch Pipeline thông thường không thể phát hiện được lỗi này?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Xung đột ngữ nghĩa</strong> xảy ra khi hai nhánh tính năng (MR A và MR B) thay đổi các phần code phụ thuộc nhau nhưng không sửa trùng dòng văn bản nào. Git có thể gộp văn bản (Text merge) thành công 100% không báo lỗi, nhưng khi chạy thực tế thì code bị lỗi logic hoặc biên dịch thất bại.</p>
     <p><strong>Branch Pipeline không thể phát hiện</strong> vì nó chỉ kiểm thử độc lập commit trên nhánh tính năng dựa trên điểm phân nhánh cũ của `main`, hoàn toàn không biết đến những thay đổi của các MR khác vừa được gộp vào `main` trước nó.</p>
   </div>
@@ -401,7 +430,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q02</span>
     <span>Merged Results Pipeline trong GitLab CI hoạt động theo nguyên lý nào? Nó sử dụng Git Ref nào để kiểm thử?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên lý</strong>: Khi có commit mới trên MR, GitLab Server tự động thực hiện một thao tác gộp ngầm (Ephemeral Merge) giữa commit mới nhất của nhánh nguồn (Source branch) và commit mới nhất của nhánh đích (Target branch).</p>
     <p><strong>Git Ref sử dụng</strong>: Kết quả gộp ảo được lưu trữ tại ref đặc biệt: <strong><code>refs/merge-requests/:id/merge</code></strong>. GitLab Runner sẽ fetch ref này về để chạy kiểm thử, đảm bảo kết quả test phản ánh chính xác trạng thái của nhánh `main` sau khi merge.</p>
   </div>
@@ -412,7 +445,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q03</span>
     <span>Merge Trains là gì và cơ chế "Suy đoán song song" (Speculative Parallel Execution) trong Merge Trains hoạt động ra sao?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Merge Trains</strong> là hàng đợi gộp mã tự động tuần tự dành cho các dự án có tần suất merge cao.</p>
     <p><strong>Cơ chế suy đoán song song</strong>: Thay vì chờ từng MR chạy xong mới cho MR tiếp theo chạy, Merge Train kiểm thử đồng thời nhiều MR trong hàng đợi dựa trên giả định:</p>
     <ul>
@@ -429,7 +466,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q04</span>
     <span>Điều gì xảy ra nếu một Toa tàu ở giữa hàng đợi Merge Train bị FAILED kiểm thử?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Khi một toa tàu (ví dụ MR B) bị lỗi kiểm thử:</p>
     <ol>
       <li>GitLab tự động <strong>loại bỏ (eject/drop) MR B</strong> ra khỏi hàng đợi Merge Train và thông báo cho tác giả sửa lỗi.</li>
@@ -444,7 +485,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q05</span>
     <span>Giải thích nguyên nhân xảy ra lỗi "Duplicate Pipelines" (2 pipeline chạy cùng lúc cho 1 commit) và viết khối `workflow: rules:` để xử lý triệt để.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên nhân</strong>: Mặc định GitLab kích hoạt <em>Branch Pipeline</em> cho mọi push event. Khi có MR mở, GitLab tiếp tục kích hoạt thêm <em>Merge Request Pipeline</em> (Detached pipeline), dẫn đến việc 2 pipeline cùng chạy song song cho 1 commit.</p>
     <p><strong>Khối <code>workflow: rules:</code> chuẩn mực</strong>:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">workflow</span><span class="pi">:</span>
@@ -462,7 +507,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q06</span>
     <span>Tại sao các biến Protected (Protected Variables) không khả dụng trong Merged Results Pipeline của một nhánh tính năng thông thường?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Bởi vì nhánh tính năng (Feature branch do lập trình viên tạo) là một <strong>Non-Protected Ref</strong>. Để bảo vệ các bí mật nhạy cảm (như Production Deploy Key) không bị đánh cắp bởi mã độc được push lên feature branch, GitLab Server áp dụng chính sách bảo mật nghiêm ngặt: <em>Chỉ nạp biến Protected cho các pipeline chạy trên Protected Branch hoặc Protected Tag</em>.</p>
     <p>Merged Results Pipeline dù gộp ảo với `main` nhưng vẫn thuộc ngữ cảnh thực thi của MR nên không được cấp biến Protected.</p>
   </div>
@@ -473,7 +522,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q07</span>
     <span>Chiến lược Fast-forward Merge kết hợp Semi-linear History trong GitLab CI mang lại lợi ích gì cho việc quản trị lịch sử Git?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Lợi ích</strong>:</p>
     <ul>
       <li><strong>Lịch sử Git tuyến tính tuyệt đối (Linear History)</strong>: Không có các commit gộp rác (Merge bubble / Spaghetti merge commits), giúp việc tra cứu lịch sử qua <code>git log --graph</code> và <code>git bisect</code> tìm lỗi cực kỳ dễ dàng.</li>
@@ -487,7 +540,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q08</span>
     <span>Làm thế nào để chỉ định một Job CHỈ ĐƯỢC CHẠY trong ngữ cảnh của Merge Request Pipeline mà không chạy trên nhánh main?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Sử dụng biến điều kiện <strong><code>$CI_PIPELINE_SOURCE == "merge_request_event"</code></strong> hoặc biến <strong><code>$CI_MERGE_REQUEST_IID</code></strong> trong khối <code>rules:</code> của Job:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">mr_only_security_scan</span><span class="pi">:</span>
   <span class="na">stage</span><span class="pi">:</span> <span class="s">test</span>
@@ -504,7 +561,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q09</span>
     <span>Tính năng "Auto-merge" (Merge when pipeline succeeds) hoạt động như thế nào khi kết hợp với Merge Trains?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Khi lập trình viên bấm <strong>"Set to auto-merge"</strong> (hoặc Add to merge train):</p>
     <ol>
       <li>GitLab đưa MR vào vị trí tiếp theo của đoàn tàu Merge Train.</li>
@@ -519,7 +580,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q10</span>
     <span>Khi một Pipeline trên Merge Request bị FAILED, làm thế nào để ngăn chặn lập trình viên cố tình bấm nút "Merge" thủ công?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Trong mục <strong>Settings > Merge requests</strong> của GitLab Project, kích hoạt thiết lập <strong>"Pipelines must succeed"</strong> (Tất cả pipeline phải thành công).</p>
     <p>Khi bật cờ này, nút "Merge" sẽ bị khóa cứng (bị disable) hoàn toàn nếu pipeline gần nhất của MR bị FAILED hoặc đang chạy dở, loại bỏ 100% rủi ro con người bấm gộp mã lỗi.</p>
   </div>
@@ -530,7 +595,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q11</span>
     <span>Làm thế nào để tạo Review Apps (Môi trường kiểm thử giao diện tạm thời) gắn liền với vòng đời của Merge Request?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Sử dụng từ khóa <code>environment:</code> kết hợp với biến <code>$CI_MERGE_REQUEST_IID</code>:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">deploy_review</span><span class="pi">:</span>
   <span class="na">stage</span><span class="pi">:</span> <span class="s">deploy</span>
@@ -557,7 +626,11 @@ echo "Main branch stability verified at 100% Green builds."
     <span class="qa-num-badge">Q12</span>
     <span>Trình bày chiến lược tổng thể để tối ưu hóa DORA Lead Time for Changes bằng cách kết hợp Merged Results, Merge Trains và Auto-canceling.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Chiến lược tối ưu hóa toàn diện:</strong></p>
     <ol>
       <li><strong>Triệt tiêu thời gian chờ vô ích</strong>: Bật <code>interruptible: true</code> để tự động hủy các build cũ khi lập trình viên liên tục push commit mới lên MR.</li>
@@ -573,7 +646,7 @@ echo "Main branch stability verified at 100% Green builds."
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                             CHIẾN LƯỢC KIỂM THỬ TRƯỚC MERGE
                                            │
      ┌───────────────────┬─────────────────┴─────────────────┬───────────────────┐

@@ -36,9 +36,9 @@ Bài viết chuyên sâu này sẽ đồng hành cùng bạn mổ xẻ toàn di�
 
 Trong các tập đoàn công nghệ lớn, kiến trúc microservices thường sử dụng nhiều ngôn ngữ khác nhau (**Polyglot Architecture**): Node.js/TypeScript cho Frontend/BFF, Java Spring Boot / Go cho Backend Core, Python cho AI/Data, .NET Core cho Enterprise Services và PHP cho Web Portals. Nếu mỗi ngôn ngữ tự viết một pipeline với các stage và quy ước khác nhau, đội ngũ Platform và Security sẽ hoàn toàn mất khả năng kiểm soát chất lượng.
 
-> **Một Khung Chuẩn CI/CD Đa Ngôn Ngữ (Polyglot CI/CD Framework) thiết lập một HỢP ĐỒNG 4 GIAI ĐOẠN BẤT BIẾN (Lint $ightarrow$ Test $ightarrow$ Build $ightarrow$ Publish) cho tất cả các ngôn ngữ, đồng thời chuẩn hóa cơ chế di dời vị trí lưu đệm (Cache Relocation) để khắc phục giới hạn workspace của GitLab Runner.**
+> **Một Khung Chuẩn CI/CD Đa Ngôn Ngữ (Polyglot CI/CD Framework) thiết lập một HỢP ĐỒNG 4 GIAI ĐOẠN BẤT BIẾN (Lint &rarr; Test &rarr; Build &rarr; Publish) cho tất cả các ngôn ngữ, đồng thời chuẩn hóa cơ chế di dời vị trí lưu đệm (Cache Relocation) để khắc phục giới hạn workspace của GitLab Runner.**
 
-```
+```text
    HỢP ĐỒNG 4 GIAI ĐOẠN ĐA NGÔN NGỮ (Polyglot 4-Stage Lifecycle)
    
    ┌────────────────────────────────────────────────────────────────────────┐
@@ -73,7 +73,7 @@ graph TD
 
 ### 1.2. Kỹ Thuật Di Dời Bộ Nhớ Đệm (Cache Relocation Mechanics)
 
-Quy tắc cốt lõi của GitLab Runner: **Runner CHỈ NÉN VÀ LƯU CACHE CÁC ĐƯỜNG DẪN NẰM BÊN TRONG THƯ MỤC DỰ ÁN (`$CI_PROJECT_DIR`)**. Mặc định, mọi package manager của các ngôn ngữ đều lưu cache tại thư mục Home của người dùng (`~/.m2`, `~/.cache`, `~/.npm`), vốn nằm ngoài `$CI_PROJECT_DIR` $ightarrow$ Runner sẽ bỏ qua im lặng không báo lỗi nhưng **Cache Hit Rate luôn bằng 0%**!
+Quy tắc cốt lõi của GitLab Runner: **Runner CHỈ NÉN VÀ LƯU CACHE CÁC ĐƯỜNG DẪN NẰM BÊN TRONG THƯ MỤC DỰ ÁN (`$CI_PROJECT_DIR`)**. Mặc định, mọi package manager của các ngôn ngữ đều lưu cache tại thư mục Home của người dùng (`~/.m2`, `~/.cache`, `~/.npm`), vốn nằm ngoài `$CI_PROJECT_DIR` &rarr; Runner sẽ bỏ qua im lặng không báo lỗi nhưng **Cache Hit Rate luôn bằng 0%**!
 
 Bảng cấu hình biến môi trường chuẩn để di dời cache vào `$CI_PROJECT_DIR`:
 
@@ -207,7 +207,31 @@ graph TD
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 05:15 AM</span> Nhóm phát triển backend Java phản ánh dù đã khai báo `cache: paths: ["~/.m2/repository"]` trong file CI, mỗi lần chạy job `mvn test` hệ thống vẫn tải lại toàn bộ Spring Boot dependencies từ Maven Central mất hơn 4 phút.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+GitLab Runner log đưa ra cảnh báo bị bỏ qua và không lưu lại bất kỳ byte cache nào:
+
+```text
+Executing "step_script" stage of the job script...
+$ mvn test
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/...
+[INFO] Downloaded from central: (540 MB in 240s)
+Creating cache default-1...
+WARNING: ~/.m2/repository: no matching files. Skipping.
+No URL provided, cache will not be uploaded to S3.
+Job succeeded. Duration: 5m 12s
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Maven tải lại toàn bộ dependencies từ Internet?** Runner bị Cache Miss 100% tại mọi lần chạy do không tìm thấy tệp cache trên S3.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao không có cache trên S3?** Ở job trước đó, Runner in thông báo `WARNING: ~/.m2/repository: no matching files` và bỏ qua việc upload cache.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao Runner không tìm thấy thư mục `~/.m2/repository`?** Runner chỉ theo dõi các đường dẫn con bên trong thư mục làm việc của dự án (`$CI_PROJECT_DIR`), trong khi dấu ngã `~` trỏ ra `/root/` bên ngoài workspace.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao Maven lại lưu thư viện tại `/root/.m2`?** Maven mặc định lưu local repository tại home directory của người dùng hiện tại nếu không được chỉ định tham số ghi đè.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để:** Áp dụng kỹ thuật Cache Relocation: Khai báo biến `MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"` và cấu hình `cache: paths: [".m2/repository/"]`.
+
+### Phân Tích 5 Cạm Bẫy Phổ Biến Nhất:
 
 #### Cạm bẫy 1: Cache đặt ngoài phạm vi workspace khiến Runner bỏ qua im lặng
 - **Hiện tượng**: Khai báo `cache: paths: ["~/.cache/pip"]`, job chạy xanh nhưng mỗi lần chạy Pip đều tải lại toàn bộ packages từ đầu.
@@ -238,7 +262,7 @@ graph TD
 
 ## 5. Hands-on Lab: Xây Dựng Framework CI/CD Đa Ngôn Ngữ Chuẩn Hóa (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                 LAB ARCHITECTURE: POLYGLOT FRAMEWORK                   │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -408,7 +432,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q01</span>
     <span>Tại sao GitLab Runner mặc định bỏ qua các thư mục Cache như `~/.m2` hoặc `~/.cache`? Kỹ thuật Cache Relocation giải quyết vấn đề này như thế nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên nhân</strong>: Để đảm bảo tính cô lập và an toàn bảo mật, GitLab Runner áp dụng quy tắc nghiêm ngặt: <em>Chỉ nén và lưu trữ các tệp nằm bên trong thư mục làm việc của dự án (<code>$CI_PROJECT_DIR</code>)</em>. Mọi đường dẫn nằm ngoài phạm vi này (như thư mục user home <code>/root/</code> hoặc <code>/home/user/</code>) đều bị Runner bỏ qua.</p>
     <p><strong>Kỹ thuật Cache Relocation</strong>: Sử dụng các biến môi trường hoặc cờ cấu hình chính thức của từng Package Manager để <strong>ép buộc vị trí lưu đệm dời vào bên trong <code>$CI_PROJECT_DIR</code></strong> (ví dụ: <code>npm_config_cache="$CI_PROJECT_DIR/.npm"</code> hoặc <code>-Dmaven.repo.local="$CI_PROJECT_DIR/.m2"</code>).</p>
   </div>
@@ -419,7 +447,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q02</span>
     <span>Trình bày 4 Stage bất biến trong Hợp đồng Khung chuẩn CI/CD Đa ngôn ngữ (Polyglot Framework) và trách nhiệm của từng Stage.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>4 Stage bất biến</strong>:</p>
     <ol>
       <li><strong>Stage <code>lint</code></strong>: Kiểm tra chất lượng cú pháp tĩnh, quy chuẩn đặt tên và formatting mã nguồn (Fail-fast).</li>
@@ -435,7 +467,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q03</span>
     <span>Làm thế nào để GitLab Merge Request Widget tự động nhận diện và hiển thị Báo cáo Kết quả Kiểm thử (Test Report) và Độ phủ Code (Code Coverage)?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Trong cấu hình của Job test, sử dụng khối <strong><code>artifacts:reports:</code></strong>:</p>
     <ul>
       <li><strong>Test Report</strong>: Khai báo <code>artifacts:reports:junit: path/to/junit.xml</code>. GitLab sẽ tự động parse file XML để hiển thị danh sách các bài test Pass/Fail trên MR.</li>
@@ -449,7 +485,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q04</span>
     <span>Tại sao cần sử dụng cơ chế Dynamic Cache Key dựa trên Hash của Tệp Khóa (`key: files: [lockfile]`) thay vì dùng chuỗi tĩnh?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Sử dụng <code>key: files: [package-lock.json]</code> (hoặc <code>pom.xml</code>, <code>go.sum</code>):</p>
     <ul>
       <li><strong>Tự động xoay vòng Cache khi cập nhật thư viện</strong>: Khi lập trình viên sửa đổi dependency (thêm thư viện mới), mã SHA của tệp lockfile thay đổi, sinh ra một cache key hoàn toàn mới. Job sẽ tải thư viện mới từ Internet và lưu thành bản cache mới.</li>
@@ -463,7 +503,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q05</span>
     <span>Làm sao để cấu hình tối ưu hóa Caching cho dự án Go (Golang) trong GitLab CI? Cần lưu ý 2 thư mục đệm nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Trình biên dịch Go sử dụng 2 thư mục đệm khác nhau:</p>
     <ol>
       <li><code>GOMODCACHE</code>: Lưu trữ các thư viện bên thứ ba tải về (Modules).</li>
@@ -478,7 +522,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q06</span>
     <span>Trong dự án Java Maven, tùy chọn `-Dmaven.repo.local` mang lại ý nghĩa gì và cần kết hợp cờ nào để tránh in log tải thư viện tràn màn hình?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong><code>-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository</code></strong>: Chỉ định thư mục lưu trữ cục bộ các tệp JAR phụ thuộc nằm trong workspace để Runner có thể nén cache.</p>
     <p><strong>Cờ chống tràn log</strong>: Sử dụng cờ <strong><code>--batch-mode</code> (hoặc <code>-B</code>)</strong> và <strong><code>-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn</code></strong> để tắt thông báo tải từng byte của Maven, giúp log gọn gàng và tăng 15% tốc độ thực thi.</p>
   </div>
@@ -489,7 +537,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q07</span>
     <span>Làm thế nào để xử lý sự cố Out-Of-Memory (OOM) khi biên dịch ứng dụng Java hoặc Node.js trong môi trường Container Runner?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Giải pháp</strong>: Thiết lập giới hạn bộ nhớ tối đa cho JVM và Node.js nhỏ hơn giới hạn RAM của Container:</p>
     <ul>
       <li><strong>Java</strong>: Cấu hình <code>MAVEN_OPTS: "-Xmx2048m -XX:+UseContainerSupport"</code> (chỉ cho phép JVM chiếm tối đa 2GB RAM).</li>
@@ -504,7 +556,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q08</span>
     <span>Sự khác biệt giữa việc biên dịch nhị phân tĩnh (Static Binary) trong Go với `CGO_ENABLED=0` và biên dịch động (Dynamic Binary) trong CI/CD là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong><code>CGO_ENABLED=0</code> (Biên dịch tĩnh)</strong>: Nhúng toàn bộ các thư viện C runtime cần thiết vào trong tệp thực thi duy nhất. Binary có thể chạy trên bất kỳ container nào (kể cả Image rỗng <code>scratch</code> hoặc <code>alpine</code> siêu nhẹ 5MB) mà không cần cài đặt thư viện <code>libc</code> hay <code>glibc</code>.</p>
     <p><strong>Biên dịch động (CGO_ENABLED=1)</strong>: Binary phụ thuộc vào các file <code>.so</code> chia sẻ của hệ điều hành trên Runner, dễ bị lỗi <em>"file not found"</em> khi copy sang container môi trường khác.</p>
   </div>
@@ -515,7 +571,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q09</span>
     <span>Làm thế nào để tái sử dụng một Khung Template Đa Ngôn Ngữ tập trung trên hàng trăm Repository thông qua `include:project`?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Lưu tệp <code>polyglot-framework.yml</code> tại repository trung tâm <code>devops/ci-templates</code>. Tại các repository ứng dụng, lập trình viên chỉ cần nạp và kế thừa:</p>
     <div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="na">include</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">project</span><span class="pi">:</span> <span class="s1">'</span><span class="s">devops/ci-templates'</span>
@@ -535,7 +595,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q10</span>
     <span>Tại sao cần chạy lệnh `set -o pipefail` ở đầu mọi script shell trong các Job biên dịch đa ngôn ngữ?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Mặc định trong shell POSIX, mã thoát (Exit code) của một lệnh pipe (ví dụ: <code>pytest | tee test.log</code>) được quyết định bởi <strong>lệnh cuối cùng</strong> trong chuỗi pipe (ở đây là <code>tee</code>, vốn luôn trả về 0).</p>
     <p>Nếu không có <code>set -o pipefail</code>, bài test dù bị fail (Exit code != 0) thì lệnh <code>tee</code> vẫn trả về 0 khiến Job được đánh dấu XANH giả tạo. Bật <code>set -o pipefail</code> đảm bảo nếu bất kỳ lệnh nào trong pipeline bị lỗi, toàn bộ chuỗi lệnh sẽ trả về mã lỗi.</p>
   </div>
@@ -546,8 +610,12 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q11</span>
     <span>Chiến lược quản trị bí mật bảo mật (Secrets Management) khi nạp package từ Private Package Registry (Nexus / Artifactory) trong CI/CD là gì?</span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Chiến lược chuẩn</strong>: Không bao giờ commit thông tin đăng nhập vào mã nguồn repository. Sử dụng biến môi trường Masked & Protected (ví dụ <code>$NEXUS_AUTH_TOKEN</code>) và tự động sinh tệp cấu hình auth tạm thời trong <code>before_script</code>:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><strong>Chiến lược chuẩn</strong>: Không bao giờ commit thông tin đăng nhập vào mã nguồn repository. Sử dụng biến môi trường Masked &amp; Protected (ví dụ <code>$NEXUS_AUTH_TOKEN</code>) và tự động sinh tệp cấu hình auth tạm thời trong <code>before_script</code>:</p>
     <div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">echo</span> <span class="s2">"//nexus.corp/repository/npm/:_authToken=</span><span class="k">${</span><span class="nv">NEXUS_AUTH_TOKEN</span><span class="k">}</span><span class="s2">"</span> <span class="o">&gt;</span> .npmrc
 </code></pre></div>
     <p>Tệp <code>.npmrc</code> chỉ tồn tại tạm thời trong RAM/đĩa của Job và tự biến mất khi kết thúc.</p>
@@ -559,7 +627,11 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
     <span class="qa-num-badge">Q12</span>
     <span>Trình bày phương pháp thiết kế Khung CI/CD cho Doanh nghiệp vừa hỗ trợ linh hoạt cho từng team vừa đảm bảo chuẩn mực Compliance bảo mật.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Mô hình "Paved Road / Golden Path":</strong></p>
     <ol>
       <li><strong>Tập trung hóa các yêu cầu bắt buộc (Hard Compliance Gates)</strong>: Các bước quét SAST, DAST, Secret Scan, Dependency Check được khóa cứng trong các Hidden Templates dùng chung.</li>
@@ -575,7 +647,7 @@ echo "Enterprise Polyglot CI/CD Framework successfully verified and published."
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                           KHUNG CI/CD ĐA NGÔN NGỮ (POLYGLOT)
                                            │
      ┌───────────────────┬─────────────────┴─────────────────┬───────────────────┐
@@ -586,7 +658,7 @@ lint -> test         Di dời vào $CI_PROJECT_DIR        JUnit XML cho test    
 Hợp đồng bất biến    python: .cache/, go: .go/         Hiển thị trên MR UI   Chặn 100% xanh giả tạo
 ```
 
-- **Thống nhất hợp đồng 4 giai đoạn**: Áp dụng quy chuẩn Lint $ightarrow$ Test $ightarrow$ Build $ightarrow$ Publish cho toàn bộ hệ thống microservices.
+- **Thống nhất hợp đồng 4 giai đoạn**: Áp dụng quy chuẩn Lint &rarr; Test &rarr; Build &rarr; Publish cho toàn bộ hệ thống microservices.
 - **Làm chủ Cache Relocation**: Luôn đưa thư mục đệm của Package Manager vào bên trong `$CI_PROJECT_DIR` để đảm bảo tỉ lệ trúng cache tối đa.
 - **Chuẩn hóa báo cáo chất lượng**: Xuất dữ liệu kiểm thử theo định dạng chuẩn JUnit XML và Cobertura Coverage để tích hợp trực tiếp vào GitLab MR Widget.
 

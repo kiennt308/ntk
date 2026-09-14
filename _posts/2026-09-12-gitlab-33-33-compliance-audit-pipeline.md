@@ -44,7 +44,7 @@ Trong các tổ chức quy mô hàng trăm hoặc hàng ngàn lập trình viên
 
 > **Giải pháp là kiến trúc "Centralized Security Policy Management" của GitLab: Đội ngũ Security thiết lập các chính sách Scan Execution Policies và Compliance Frameworks tại cấp Group cha cao nhất. Các chính sách này sẽ được ép ngầm (Injected) vào pipeline của mọi repository con mà lập trình viên không có quyền chỉnh sửa, vô hiệu hóa hay bỏ qua.**
 
-```
+```text
        CƠ CHẾ ÉP BUỘC CHÍNH SÁCH BẢO MẬT TẬP TRUNG (GitLab Security Policies)
 
       [ Group Level: Security Policy Project ] (Chỉ Security Team có quyền sửa)

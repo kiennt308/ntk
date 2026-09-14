@@ -37,7 +37,7 @@ Một Job trong GitLab CI/CD **không bao giờ chạy trực tiếp "bên trong
 
 Mọi tài nguyên và dữ liệu mà Job cần chỉ có thể đi vào thông qua **BỐN ĐƯỜNG VÀO** và rời khỏi Job thông qua **HAI ĐƯỜNG RA**. Tuyệt đối không tồn tại đường thứ năm:
 
-```bash
+```text
         BỐN ĐƯỜNG VÀO                MÔI TRƯỜNG DÙNG MỘT LẦN            HAI ĐƯỜNG RA
    ┌──────────────────────┐        ┌────────────────────────┐      ┌──────────────────┐
    │ 1. git clone/fetch   │───────▶│                        │─────▶│ 1. artifacts     │
@@ -250,10 +250,10 @@ flowchart TD
 ```
 
 ### 5-Whys Root Cause Analysis:
-1. <span class="badge badge--primary">Why 1</span> **Tại sao Production bị trắng trang?** $ightarrow$ Vì file `dist/index.js` không tồn tại trong gói deploy artifact.
-2. <span class="badge badge--primary">Why 2</span> **Tại sao file không tồn tại mà Job build vẫn Xanh?** $ightarrow$ Vì lệnh `npm run build` không ném ra mã thoát lỗi và GitLab Runner upload gói rỗng vẫn coi là thành công.
-3. <span class="badge badge--primary">Why 3</span> **Tại sao lệnh build lỗi mà exit code vẫn là 0?** $ightarrow$ Do script build trong `package.json` nuốt lỗi qua pipe: `vite build | tee build.log` mà không bật `pipefail`.
-4. <span class="badge badge--primary">Why 4</span> **Tại sao GitLab CI không kiểm tra sự tồn tại của artifact trước khi upload?** $ightarrow$ Vì GitLab thiết kế mặc định nếu mẫu `paths` không khớp thì coi như bỏ qua mà không làm fail job.
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Production bị trắng trang?** &rarr; Vì file `dist/index.js` không tồn tại trong gói deploy artifact.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao file không tồn tại mà Job build vẫn Xanh?** &rarr; Vì lệnh `npm run build` không ném ra mã thoát lỗi và GitLab Runner upload gói rỗng vẫn coi là thành công.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao lệnh build lỗi mà exit code vẫn là 0?** &rarr; Do script build trong `package.json` nuốt lỗi qua pipe: `vite build | tee build.log` mà không bật `pipefail`.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao GitLab CI không kiểm tra sự tồn tại của artifact trước khi upload?** &rarr; Vì GitLab thiết kế mặc định nếu mẫu `paths` không khớp thì coi như bỏ qua mà không làm fail job.
 5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
    - Kích hoạt chế độ kiểm tra nghiêm ngặt `set -euo pipefail` trong `before_script`.
    - Bổ sung **Assertions** bắt buộc bằng `test -s dist/index.js` ngay sau bước build.

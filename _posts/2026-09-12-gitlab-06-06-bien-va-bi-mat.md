@@ -38,7 +38,7 @@ Trong thiết kế hệ thống CI/CD, biến môi trường (Environment Variab
 
 > **Biến trong GitLab CI đến từ CHÍN nguồn khác nhau, và thứ tự ưu tiên giữa chúng là thuộc tính của NỀN TẢNG (Platform Rule), không phải của tệp `.gitlab-ci.yml`. Do đó, không ai có thể xác định giá trị thực tế của một biến chỉ bằng cách đọc mã nguồn YAML — mọi xung đột giá trị đều phải được phân giải qua hệ thống phân cấp 9 nấc.**
 
-```
+```text
    NẤC CAO GHI ĐÈ NẤC THẤP (Highest Precedence Overrides Lowest):
    
    ┌─── [ Nấc 1: Pipeline Variables ] ───────────────────────────────────────────┐
@@ -109,14 +109,14 @@ graph TD
         P9["9. Predefined variables<br/>(CI_COMMIT_SHA, CI_JOB_ID)"]
     end
 
-    P1 -->|Overrides| P2
-    P2 -->|Overrides| P3
-    P3 -->|Overrides| P4
-    P4 -->|Overrides| P5
-    P5 -->|Overrides| P6
-    P6 -->|Overrides| P7
-    P7 -->|Overrides| P8
-    P8 -->|Overrides| P9
+    P1 -->|"Ghi đè"| P2
+    P2 -->|"Ghi đè"| P3
+    P3 -->|"Ghi đè"| P4
+    P4 -->|"Ghi đè"| P5
+    P5 -->|"Ghi đè"| P6
+    P6 -->|"Ghi đè"| P7
+    P7 -->|"Ghi đè"| P8
+    P8 -->|"Ghi đè"| P9
     P9 --> RUNNER_ENV["Runner Execution Environment<br/>(/bin/sh export ENV)"]
 ```
 
@@ -136,7 +136,7 @@ Nhiều kỹ sư nhầm lẫn giữa tính chất `Masked` (che giấu) và `Pro
    - **Cơ chế**: Khi pipeline khởi tạo trên một nhánh tính năng thông thường (`feature/*`), GitLab Server **hoàn toàn loại bỏ biến Protected khỏi payload gửi cho Runner**.
    - **Hậu quả nếu cấu hình sai**: Khi job deploy chạy trên feature branch, biến password/token mang giá trị rỗng (`""`), dẫn đến câu lệnh deploy không xác thực được hoặc fail âm thầm nếu script không kiểm tra biến rỗng.
 
-```
+```text
    PROTECTED BRANCH (main / tag v1.0.0) ───► GitLab Server GỬI biến Protected ───► Job nhận đủ Secrets
    
    FEATURE BRANCH (feat/login)         ───► GitLab Server CẮT BỎ biến Protected ──► Job nhận giá trị RỖNG
@@ -147,14 +147,14 @@ Nhiều kỹ sư nhầm lẫn giữa tính chất `Masked` (che giấu) và `Pro
 GitLab CI hỗ trợ hai kiểu biến:
 - **Kiểu `Variable`**: Runner export trực tiếp vào môi trường shell: `export API_KEY="my-secret-token"`. Truy cập qua `$API_KEY`.
 - **Kiểu `File`**: Runner ghi nội dung của biến vào một tệp tạm trên đĩa (thường nằm tại `/tmp/builds/...` hoặc `$CI_PROJECT_DIR.tmp/`) và gán **đường dẫn tuyệt đối của tệp** vào tên biến: `export KUBECONFIG="/builds/org/repo.tmp/KUBECONFIG"`.
-  - Nếu gọi `echo $KUBECONFIG` $ightarrow$ Kết quả in ra đường dẫn `/builds/org/repo.tmp/KUBECONFIG`.
-  - Nếu muốn đọc nội dung $ightarrow$ Bắt buộc dùng `cat "$KUBECONFIG"` hoặc truyền trực tiếp đường dẫn vào cờ CLI: `kubectl --kubeconfig "$KUBECONFIG" get nodes`.
+  - Nếu gọi `echo $KUBECONFIG` &rarr; Kết quả in ra đường dẫn `/builds/org/repo.tmp/KUBECONFIG`.
+  - Nếu muốn đọc nội dung &rarr; Bắt buộc dùng `cat "$KUBECONFIG"` hoặc truyền trực tiếp đường dẫn vào cờ CLI: `kubectl --kubeconfig "$KUBECONFIG" get nodes`.
 
 ### 1.4. Mở Rộng Biến (Variable Expansion) & Cờ `expand: false`
 
 Mặc định, GitLab CI sẽ tự động mở rộng (evaluate) các ký tự `$` trong giá trị biến:
 - Nếu bạn khai báo `DATABASE_URL="postgres://$DB_USER:$DB_PASS@$DB_HOST:5432/$DB_NAME"`, GitLab sẽ thế giá trị của `$DB_USER`, `$DB_PASS` vào trước khi truyền cho Runner.
-- **Rủi ro**: Nếu mật khẩu của bạn vô tình chứa ký tự `$`, ví dụ `p@ss$word123`, GitLab sẽ cố gắng tìm biến tên là `$word123` (vốn rỗng) và biến mật khẩu thành `p@ss123` $ightarrow$ Đăng nhập thất bại (401 Unauthorized) dù bạn nhìn chuỗi secret gốc hoàn toàn đúng!
+- **Rủi ro**: Nếu mật khẩu của bạn vô tình chứa ký tự `$`, ví dụ `p@ss$word123`, GitLab sẽ cố gắng tìm biến tên là `$word123` (vốn rỗng) và biến mật khẩu thành `p@ss123` &rarr; Đăng nhập thất bại (401 Unauthorized) dù bạn nhìn chuỗi secret gốc hoàn toàn đúng!
 - **Giải pháp**: Bật thuộc tính `expand: false` trong Settings > CI/CD Variables hoặc trong file YAML để vô hiệu hóa tính năng tự thế ký tự `$`.
 
 ---
@@ -164,7 +164,7 @@ Mặc định, GitLab CI sẽ tự động mở rộng (evaluate) các ký tự 
 | Tiêu chí phân tích | Plain CI/CD Variable | Masked Variable | Protected Variable | File-type Variable | HashiCorp Vault / OIDC Token |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Vị trí lưu trữ** | GitLab PostgreSQL DB | GitLab PostgreSQL DB | GitLab PostgreSQL DB | Runner Temp Disk (`.tmp/`) | External Vault / Keyless JWT |
-| **Cách truyền vào Job** | Env var (`export VAR=...`) | Env var (`export VAR=...`) | Env var (chỉ trên protected ref) | Env var chứa File Path | ID Token OIDC $ightarrow$ Đổi STS token ngắn hạn |
+| **Cách truyền vào Job** | Env var (`export VAR=...`) | Env var (`export VAR=...`) | Env var (chỉ trên protected ref) | Env var chứa File Path | ID Token OIDC &rarr; Đổi STS token ngắn hạn |
 | **Bảo vệ Log Stream** | ❌ Hiển thị thô trong log | ✅ Tự thế bằng `[MASKED]` | ❌ Không bảo vệ log | ✅ Masked nếu đường dẫn hợp lệ | ✅ Secret ngắn hạn tự hủy |
 | **Bảo vệ Nhánh Rẽ (Branches)** | ❌ Có mặt ở mọi branch | ❌ Có mặt ở mọi branch | ✅ Chỉ xuất hiện trên Protected | Tùy chọn (Protected File) | ✅ Policy ràng buộc theo `sub` claim |
 | **Hỗ trợ định dạng dài/Multi-line** | ⚠️ Dễ lỗi xuống dòng | ❌ Giới hạn format (no spaces) | ⚠️ Dễ lỗi xuống dòng | ✅ Chuyên dụng cho RSA key, Kubeconfig, JSON | ✅ Quản lý secret dạng JSON payload |
@@ -304,51 +304,74 @@ deploy_production:
 
 ```mermaid
 graph TD
-    INC1["Sự Cố 1: Token chính xác nhưng API luôn trả về HTTP 401 Unauthorized"]
-    W11["Tại sao API báo 401? Token bị Server từ chối"]
-    W12["Tại sao Token bị từ chối? Chuỗi hash MD5/SHA gửi đi không khớp"]
-    W13["Tại sao không khớp? Token có chứa ký tự xuống dòng tàng hình \n ở cuối (1-byte trailing newline)"]
-    W14["Tại sao có \n? Kỹ sư copy từ terminal/web và nhấn Enter khi dán vào ô Variable"]
-    W15["Giải pháp cốt lõi: Dùng 'od -c' hoặc 'tr -d \r\n' và đo độ dài chuỗi bằng '${#TOKEN}'"]
+    INC1["Sự Cố: Token chính xác 100% nhưng API Gateway luôn trả về HTTP 401"]
+    W11["Tại sao API báo 401? &rarr; Token xác thực bị Server từ chối"]
+    W12["Tại sao Token bị từ chối? &rarr; Chuỗi hash SHA-256 gửi đi trong Header không khớp"]
+    W13["Tại sao không khớp? &rarr; Token chứa 1 byte xuống dòng tàng hình \n ở cuối"]
+    W14["Tại sao có byte \n? &rarr; Kỹ sư copy từ terminal/web và nhấn Enter khi dán vào Web UI"]
+    W15["Biện pháp: Dùng od -c kiểm tra, tr -d '\r\n' làm sạch và assert ${#TOKEN}"]
     
     INC1 --> W11 --> W12 --> W13 --> W14 --> W15
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### 4.1. Incident 1: Token Xác Thực Bị Lỗi 401 Unauthorized Do Ký Tự Tàng Hình (Invisible Bytes)
 
-#### Cạm bẫy 1: Ký tự tàng hình (Trailing Newline / Carriage Return) gây lỗi 401 Unauthorized
-- **Hiện tượng**: Token xác thực API hoặc Private Key SSH được nhập vào UI GitLab. Khi job chạy lệnh `curl -H "Authorization: Bearer $TOKEN"` thì API Gateway của bên thứ ba trả về `401 Unauthorized`.
-- **Nguyên nhân tầng sâu**: Khi copy-paste qua giao diện web hoặc text editor, ký tự xuống dòng `
-` (0x0A) hoặc `
-` (0x0D 0x0A) được đính kèm vào cuối chuỗi. Lệnh `echo $TOKEN` thông thường sẽ che giấu byte này.
-- **Cách gỡ rối**: Chạy `printf "%s" "$TOKEN" | od -c` để kiểm tra từng byte thô hoặc khử sạch bằng: `CLEAN_TOKEN=$(printf "%s" "$TOKEN" | tr -d '
-')`.
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 02:15 AM</span> — Kỹ sư trực On-call nhận cảnh báo pipeline deploy khẩn cấp lên Kubernetes staging bị fail liên tục ở bước xác thực API Gateway, dù biến `PROD_DEPLOY_TOKEN` vừa được cập nhật lại chính xác từ hệ thống quản lý mật khẩu nội bộ.
 
-#### Cạm bẫy 2: Biến `Masked` bị rò rỉ qua Artifacts, Base64 và URL Parameters
-- **Hiện tượng**: Kỹ sư tin rằng khi đánh dấu `Masked`, biến sẽ an toàn tuyệt đối. Tuy nhiên, attacker hoặc audit team phát hiện secret xuất hiện nguyên vẹn trong tệp artifacts hoặc log của bên thứ ba.
-- **Nguyên nhân**: Runner chỉ lọc chuỗi regex trên **STDOUT/STDERR của Job Trace**. Nếu job thực hiện `echo "$SECRET" > secret.txt` rồi đưa vào `artifacts:paths`, tệp text này được gửi nguyên vẹn lên server. Tương tự, nếu lệnh chạy mã hóa base64 `echo "$SECRET" | base64`, chuỗi base64 không khớp với giá trị gốc nên Runner không thể mask.
-- **Biện pháp**: Không bao giờ ghi secret ra artifact; sử dụng HashiCorp Vault OIDC để secret chỉ tồn tại trong RAM của tiến trình.
+### Hậu Quả & Log Lỗi Thực Tế:
+```text
+$ curl -s -f -X POST "https://api.internal.corp/v1/deploy" \
+    -H "Authorization: Bearer ${PROD_DEPLOY_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{"release": "'"${DYNAMIC_APP_VERSION}"'"}'
+HTTP/1.1 401 Unauthorized
+Date: Mon, 12 Sep 2026 19:15:22 GMT
+Content-Type: application/json
+{"error": "invalid_token", "error_description": "The access token signature is invalid or malformed"}
+ERROR: Job failed: exit code 22
+```
 
-#### Cạm bẫy 3: Xung đột mức độ ưu tiên: Sửa YAML không tác dụng
-- **Hiện tượng**: Kỹ sư sửa `variables: DB_HOST: "new-db.internal"` trong `.gitlab-ci.yml`, nhưng khi job chạy vẫn kết nối tới `old-db.internal`.
-- **Nguyên nhân**: Tại mục **Settings > CI/CD > Variables** của Project (Nấc 2) hoặc Group (Nấc 3) đã khai báo sẵn biến `DB_HOST`. Theo bảng ưu tiên 9 nấc, Project Variable luôn ghi đè Job/Root YAML Variables (Nấc 6 & 7).
-- **Biện pháp**: Dùng GitLab API kiểm tra toàn bộ biến tồn tại ở Project/Group scope: `curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" "https://gitlab.example.com/api/v4/projects/:id/variables"`.
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao API Gateway từ chối xác thực với mã 401?** &rarr; Chữ ký băm HMAC của access token không khớp với bản ghi trên Identity Provider.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao chuỗi băm không khớp dù token được copy chính xác?** &rarr; Chuỗi token truyền trong header HTTP có độ dài 41 ký tự thay vì 40 ký tự chuẩn.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao token lại bị dư 1 ký tự?** &rarr; Ký tự thứ 41 là byte xuống dòng tàng hình `\n` (0x0A) nằm ở cuối chuỗi.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao ký tự xuống dòng lại lọt vào biến GitLab?** &rarr; Khi kỹ sư copy từ terminal bằng phím chuột hoặc ấn Enter khi dán vào form **Settings > CI/CD > Variables**, ký tự newline bị lưu nguyên vẹn vào database. Lệnh `echo $TOKEN` thông thường không hiển thị được byte này.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
+   - <span class="badge badge--emerald">Input Sanitization</span>: Luôn khử sạch ký tự xuống dòng trước khi sử dụng: `CLEAN_TOKEN=$(printf "%s" "$PROD_DEPLOY_TOKEN" | tr -d '\r\n')`.
+   - <span class="badge badge--cyan">Byte Audit</span>: Sử dụng `printf "%s" "$VAR" | od -c` để soi rõ từng byte nhị phân thô khi gỡ rối.
+   - <span class="badge badge--amber">Length Assertion</span>: Kiểm tra độ dài chuỗi bằng `${#PROD_DEPLOY_TOKEN}` ngay trong `before_script`.
 
-#### Cạm bẫy 4: Job deploy chạy trên feature branch nhận biến Protected rỗng
-- **Hiện tượng**: Pipeline trên MR chạy job build/test xanh, nhưng job deploy thử nghiệm báo lỗi authentication failed hoặc kết nối rỗng.
-- **Nguyên nhân**: Biến credentials được tích chọn `Protected`. GitLab không truyền biến này vào các pipeline khởi tạo từ branch chưa được cấu hình `Protected Branch`.
-- **Biện pháp**: Phân chia rõ ràng môi trường: staging dùng non-protected credentials, production dùng protected credentials kèm theo ràng buộc `rules: - if: '$CI_COMMIT_REF_PROTECTED == "true"'`.
+### 4.2. Incident 2: Rò Rỉ Secret Ra Ngoài Do Hiểu Nhầm Về Cơ Chế Masked Variables
 
-#### Cạm bẫy 5: Mật khẩu chứa ký tự `$` bị cắt cụt do Variable Expansion
-- **Hiện tượng**: Mật khẩu phức hợp sinh từ generator có dạng `Str0ng$P@ss` khi truyền vào database migration tool bị báo sai mật khẩu.
-- **Nguyên nhân**: GitLab CI ngầm hiểu `$P` là một biến và thế giá trị rỗng vào, khiến chuỗi thực tế gửi tới database là `Str0ng@ss`.
-- **Biện pháp**: Tắt cơ chế expand trong UI Variable (`expand: false`) hoặc khai báo trong YAML với `expand: false`.
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 10:45 AM</span> — Bộ phận Security phát hiện Private API Token cấp Production bị gửi kèm trong tệp artifact log `debug-info.tar.gz` được công khai cho toàn bộ thành viên dự án tải về, dù biến này đã được bật cờ `Masked`.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+```text
+$ tar -ztvf debug-info.tar.gz
+-rw-r--r-- root/root        1024 2026-09-12 10:40 payload.json
+-rw-r--r-- root/root        2048 2026-09-12 10:40 auth_headers.txt
+
+$ cat auth_headers.txt
+Authorization: Bearer glpat-SecretLiveProdMasterKey999888
+X-Vault-Token: s.vJ8x999332110022AAABBB
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao token xuất hiện rõ ràng trong artifact dù đã bật Masked?** &rarr; Cơ chế `Masked` của GitLab Runner chỉ can thiệp vào luồng STDOUT/STDERR của Job Trace, hoàn toàn không quét hay che giấu nội dung tệp lưu trong `artifacts:paths`.
+2. <span class="badge badge--primary">Why 2</span> **Tại sao script lại ghi token vào tệp artifact?** &rarr; Job chạy một shell script debug trung gian xuất toàn bộ HTTP request headers ra file `auth_headers.txt` để phục vụ audit downstream.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao quá trình review MR không phát hiện ra?** &rarr; Lập trình viên nhầm tưởng rằng "đã bật Masked thì biến sẽ an toàn ở mọi nơi".
+4. <span class="badge badge--primary">Why 4</span> **Có trường hợp nào khác Masked bị vô hiệu hóa?** &rarr; Khi token được mã hóa Base64 (`echo -n $TOKEN | base64`) hoặc đưa vào URL query params bị encode `urlencode($TOKEN)`, chuỗi băm thay đổi khiến bộ lọc regex của Runner bỏ qua và in thẳng ra log.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Biện pháp khắc phục chuẩn SRE:**
+   - <span class="badge badge--rose">Zero Secret in Artifacts</span>: Nghiêm cấm ghi bất kỳ file nào chứa secret vào đường dẫn gom artifact.
+   - <span class="badge badge--emerald">OIDC Keyless Identity</span>: Chuyển đổi sang Vault OIDC hoặc Cloud IAM Role để sử dụng short-lived tokens thay vì lưu static token vĩnh viễn trong CI/CD Variables.
 
 ---
 
 ## 5. Hands-on Lab: Quản Lý Biến & Bảo Mật Secrets Toàn Diện (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                     LAB ARCHITECTURE: SECRETS & VARS                   │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -392,7 +415,10 @@ Tạo repository kiểm thử và tạo biến Project qua REST API để đối
 
 ```bash
 # Khởi tạo biến Project qua API
-curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}"   "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables"   --form "key=TEST_OVERRIDE"   --form "value=PROJECT_LEVEL_VALUE"
+curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+  "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables" \
+  --form "key=TEST_OVERRIDE" \
+  --form "value=PROJECT_LEVEL_VALUE"
 ```
 
 Tạo `.gitlab-ci.yml` kiểm chứng độ ưu tiên:
@@ -420,7 +446,11 @@ Cấu hình một biến Protected và kiểm tra hành vi khi chạy trên feat
 
 ```bash
 # Tạo biến PROTECTED qua API
-curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}"   "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables"   --form "key=PROD_SECRET_KEY"   --form "value=super-secret-key-12345"   --form "protected=true"
+curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+  "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables" \
+  --form "key=PROD_SECRET_KEY" \
+  --form "value=super-secret-key-12345" \
+  --form "protected=true"
 ```
 
 Tạo branch `feat/test-secret` và đẩy pipeline:
@@ -446,7 +476,11 @@ Thực nghiệm khả năng che giấu của `masked` trong các tình huống o
 
 ```bash
 # Tạo biến MASKED
-curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}"   "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables"   --form "key=MY_API_TOKEN"   --form "value=glpat-abcdef1234567890"   --form "masked=true"
+curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+  "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables" \
+  --form "key=MY_API_TOKEN" \
+  --form "value=glpat-abcdef1234567890" \
+  --form "masked=true"
 ```
 
 Thực thi kiểm tra trong YAML:
@@ -475,9 +509,13 @@ Tạo File-type variable chứa cấu hình SSH Private Key và kiểm tra cách
 
 ```bash
 # Tạo biến dạng File qua API
-curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}"   "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables"   --form "key=SSH_PRIVATE_KEY"   --form "value=-----BEGIN OPENSSH PRIVATE KEY-----
+curl --request POST --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+  "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables" \
+  --form "key=SSH_PRIVATE_KEY" \
+  --form "value=-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
------END OPENSSH PRIVATE KEY-----"   --form "variable_type=file"
+-----END OPENSSH PRIVATE KEY-----" \
+  --form "variable_type=file"
 ```
 
 Kiểm tra trong YAML:
@@ -496,8 +534,7 @@ test_file_variable:
 > **Checkpoint 4**: `echo ${SSH_PRIVATE_KEY}` in ra đường dẫn `/builds/group/project.tmp/SSH_PRIVATE_KEY`. Lệnh `test -f` xác nhận tệp tồn tại trên đĩa của container.
 
 ### Bước 5: Bắt bẫy Ký Tự Tàng Hình (Invisible Bytes) & Variable Expansion
-Viết script tự động phát hiện ký tự xuống dòng `
-` và xử lý biến chứa dấu `$`.
+Viết script tự động phát hiện ký tự xuống dòng `\n` và `\r\n` và xử lý biến chứa dấu `$`.
 
 ```yaml
 test_special_characters:
@@ -574,7 +611,8 @@ Xóa toàn bộ các biến kiểm thử khỏi GitLab Project qua API.
 ```bash
 # Xóa các biến test sau khi hoàn thành lab
 for VAR_NAME in "TEST_OVERRIDE" "PROD_SECRET_KEY" "MY_API_TOKEN" "SSH_PRIVATE_KEY"; do
-  curl --request DELETE --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}"     "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables/${VAR_NAME}"
+  curl --request DELETE --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+    "${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/variables/${VAR_NAME}"
   echo "Deleted test variable: ${VAR_NAME}"
 done
 ```
@@ -587,64 +625,100 @@ done
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q01</span>
-    <span>Trình bày chính xác thứ tự ưu tiên 9 nấc biến trong GitLab CI/CD và nêu một tình huống thực tế giải quyết bằng bảng này.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q01</span>
+      <span>Trình bày chính xác thứ tự ưu tiên 9 nấc biến trong GitLab CI/CD và nêu một tình huống thực tế giải quyết bằng bảng này.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Thứ tự ưu tiên từ cao nhất xuống thấp nhất:</strong></p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Thứ tự ưu tiên từ cao nhất xuống thấp nhất:</b></p>
     <ol>
-      <li><strong>Pipeline Variables</strong> (Trigger API, Web UI Run Pipeline, Scheduled Pipeline).</li>
-      <li><strong>Project CI/CD Variables</strong> (Settings > CI/CD > Variables của Project).</li>
-      <li><strong>Group CI/CD Variables</strong> (Kế thừa từ Group cha / Subgroup).</li>
-      <li><strong>Instance CI/CD Variables</strong> (Admin Area của cụm GitLab).</li>
-      <li><strong>Dotenv Variables</strong> (Sinh từ <code>artifacts:reports:dotenv</code> của job trước qua DAG/needs).</li>
-      <li><strong>Job-level Variables</strong> (Khai báo trong khối <code>variables:</code> của Job trong YAML).</li>
-      <li><strong>Root-level Variables</strong> (Khai báo trong khối <code>variables:</code> toàn cục ở đầu YAML).</li>
-      <li><strong>Deployment Variables</strong> (Biến tự sinh từ Kubernetes integration hoặc Environment settings).</li>
-      <li><strong>Predefined Variables</strong> (Hệ thống biến định sẵn như <code>CI_COMMIT_SHA</code>, <code>CI_JOB_ID</code>).</li>
+      <li><b>Pipeline Variables</b> (Trigger API, Web UI Run Pipeline, Scheduled Pipeline).</li>
+      <li><b>Project CI/CD Variables</b> (Settings &gt; CI/CD &gt; Variables của Project).</li>
+      <li><b>Group CI/CD Variables</b> (Kế thừa từ Group cha / Subgroup).</li>
+      <li><b>Instance CI/CD Variables</b> (Admin Area của cụm GitLab).</li>
+      <li><b>Dotenv Variables</b> (Sinh từ <code>artifacts:reports:dotenv</code> của job trước qua DAG/needs).</li>
+      <li><b>Job-level Variables</b> (Khai báo trong khối <code>variables:</code> của Job trong YAML).</li>
+      <li><b>Root-level Variables</b> (Khai báo trong khối <code>variables:</code> toàn cục ở đầu YAML).</li>
+      <li><b>Deployment Variables</b> (Biến tự sinh từ Kubernetes integration hoặc Environment settings).</li>
+      <li><b>Predefined Variables</b> (Hệ thống biến định sẵn như <code>CI_COMMIT_SHA</code>, <code>CI_JOB_ID</code>).</li>
     </ol>
-    <p><strong>Tình huống thực tế:</strong> Kỹ sư sửa URL database trong <code>.gitlab-ci.yml</code> nhưng job chạy vẫn trỏ về database cũ. Tra cứu bảng cho thấy một biến cùng tên đã được set trong Project Variables (Nấc 2), do Nấc 2 cao hơn Nấc 6/7 trong YAML nên giá trị trong YAML bị bỏ qua hoàn toàn.</p>
+    <p><b>Tình huống thực tế:</b> Kỹ sư sửa URL database trong <code>.gitlab-ci.yml</code> nhưng job chạy vẫn trỏ về database cũ. Tra cứu bảng cho thấy một biến cùng tên đã được set trong Project Variables (Nấc 2), do Nấc 2 cao hơn Nấc 6/7 trong YAML nên giá trị trong YAML bị bỏ qua hoàn toàn.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q02</span>
-    <span>Phân biệt bản chất kỹ thuật giữa Masked Variables và Protected Variables.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q02</span>
+      <span>Phân biệt bản chất kỹ thuật giữa Masked Variables và Protected Variables.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Hai cơ chế giải quyết hai bài toán hoàn toàn độc lập:</p>
     <ul>
-      <li><strong>Masked Variables</strong>: Bảo vệ <em>luồng hiển thị log (Job Trace)</em>. Runner stream log qua bộ lọc regex để thay thế chuỗi ký tự secret bằng <code>[MASKED]</code>. Biến vẫn được truyền vào mọi branch/job.</li>
-      <li><strong>Protected Variables</strong>: Bảo vệ <em>phạm vi thực thi (Execution Scope)</em>. GitLab Server chỉ nạp biến này vào payload gửi cho Runner khi pipeline chạy trên Protected Branch (ví dụ <code>main</code>) hoặc Protected Tag. Trên feature branch, biến hoàn toàn không tồn tại (mang giá trị rỗng).</li>
+      <li><b>Masked Variables</b>: Bảo vệ <i>luồng hiển thị log (Job Trace)</i>. Runner stream log qua bộ lọc regex để thay thế chuỗi ký tự secret bằng <code>[MASKED]</code>. Biến vẫn được truyền vào mọi branch/job.</li>
+      <li><b>Protected Variables</b>: Bảo vệ <i>phạm vi thực thi (Execution Scope)</i>. GitLab Server chỉ nạp biến này vào payload gửi cho Runner khi pipeline chạy trên Protected Branch (ví dụ <code>main</code>) hoặc Protected Tag. Trên feature branch, biến hoàn toàn không tồn tại (mang giá trị rỗng).</li>
     </ul>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q03</span>
-    <span>Tại sao biến được đánh dấu Masked vẫn có thể bị lộ ra ngoài? Nêu 3 con đường rò rỉ điển hình.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q03</span>
+      <span>Tại sao biến được đánh dấu Masked vẫn có thể bị lộ ra ngoài? Nêu 3 con đường rò rỉ điển hình.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Runner chỉ áp dụng bộ lọc regex đối với chuỗi STDOUT/STDERR thô. Biến Masked sẽ bị lộ qua:</p>
     <ol>
-      <li><strong>Job Artifacts</strong>: Nếu script thực hiện <code>echo $MASKED_SECRET > output.txt</code> và đưa vào <code>artifacts:paths</code>, file này được upload nguyên vẹn lên server và bất kỳ ai có quyền Developer đều tải về đọc được.</li>
-      <li><strong>Encoding / Hashing</strong>: Nếu script encode chuỗi thành Base64 (<code>echo -n $SECRET | base64</code>) hoặc URL-encode, chuỗi sau khi encode có hash khác chuỗi gốc nên bộ lọc Runner bỏ qua và in thẳng ra log.</li>
-      <li><strong>Gửi qua Network Payload</strong>: Nếu dùng <code>curl -X POST -d "$SECRET" https://external-api.com</code> với cờ verbose <code>curl -v</code> hoặc log proxy bên ngoài, secret sẽ bị ghi nhận ở server đích.</li>
+      <li><b>Job Artifacts</b>: Nếu script thực hiện <code>echo $MASKED_SECRET &gt; output.txt</code> và đưa vào <code>artifacts:paths</code>, file này được upload nguyên vẹn lên server và bất kỳ ai có quyền Developer đều tải về đọc được.</li>
+      <li><b>Encoding / Hashing</b>: Nếu script encode chuỗi thành Base64 (<code>echo -n $SECRET | base64</code>) hoặc URL-encode, chuỗi sau khi encode có hash khác chuỗi gốc nên bộ lọc Runner bỏ qua và in thẳng ra log.</li>
+      <li><b>Gửi qua Network Payload</b>: Nếu dùng <code>curl -X POST -d "$SECRET" https://external-api.com</code> với cờ verbose <code>curl -v</code> hoặc log proxy bên ngoài, secret sẽ bị ghi nhận ở server đích.</li>
     </ol>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q04</span>
-    <span>Khi nào bắt buộc phải dùng biến dạng File-type thay vì String Variable thông thường? Cho ví dụ.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q04</span>
+      <span>Khi nào bắt buộc phải dùng biến dạng File-type thay vì String Variable thông thường? Cho ví dụ.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p>Nên và bắt buộc dùng <strong>File-type Variable</strong> khi:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p>Nên và bắt buộc dùng <b>File-type Variable</b> khi:</p>
     <ul>
-      <li>Dữ liệu nhạy cảm có cấu trúc nhiều dòng (multi-line), chứa ký tự ngắt dòng đặc biệt hoặc ký tự nhạy cảm shell như: <strong>SSH Private Key (RSA/Ed25519)</strong>, <strong>SSL Certificates</strong>, <strong>Kubeconfig YAML</strong>, hoặc <strong>GCP Service Account JSON Key</strong>.</li>
+      <li>Dữ liệu nhạy cảm có cấu trúc nhiều dòng (multi-line), chứa ký tự ngắt dòng đặc biệt hoặc ký tự nhạy cảm shell như: <b>SSH Private Key (RSA/Ed25519)</b>, <b>SSL Certificates</b>, <b>Kubeconfig YAML</b>, hoặc <b>GCP Service Account JSON Key</b>.</li>
       <li>Các công cụ CLI yêu cầu truyền cờ trỏ tới đường dẫn file thay vì chuỗi text (ví dụ <code>kubectl --kubeconfig "$KUBECONFIG"</code> hoặc <code>docker login --password-stdin</code>).</li>
       <li>Tránh lỗi shell quoting và escape ký tự đặc biệt khi truyền nội dung dài qua lệnh <code>export</code>.</li>
     </ul>
@@ -653,28 +727,44 @@ done
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q05</span>
-    <span>Giải thích nguyên nhân một Personal Access Token hoặc API Key dù copy chính xác 100% vẫn gây lỗi 401 Unauthorized trong CI/CD.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q05</span>
+      <span>Giải thích nguyên nhân một Personal Access Token hoặc API Key dù copy chính xác 100% vẫn gây lỗi 401 Unauthorized trong CI/CD.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p>Nguyên nhân phổ biến nhất là <strong>Ký tự tàng hình (Trailing Invisible Bytes)</strong>: Khi copy token từ web UI hoặc terminal, thao tác bôi đen hoặc nhấn phím Enter vô tình chèn thêm ký tự xuống dòng <code>
-</code> (0x0A) hoặc Carriage Return <code></code> (0x0D) vào cuối chuỗi trong ô cấu hình Variable của GitLab.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p>Nguyên nhân phổ biến nhất là <b>Ký tự tàng hình (Trailing Invisible Bytes)</b>: Khi copy token từ web UI hoặc terminal, thao tác bôi đen hoặc nhấn phím Enter vô tình chèn thêm ký tự xuống dòng <code>\n</code> (0x0A) hoặc Carriage Return <code>\r\n</code> (0x0D 0x0A) vào cuối chuỗi trong ô cấu hình Variable của GitLab.</p>
     <p>Khi gửi HTTP Request qua <code>curl -H "Authorization: Bearer $TOKEN"</code>, ký tự xuống dòng làm hỏng HTTP Header hoặc bị Server xác thực từ chối vì chuỗi hash token không khớp.</p>
-    <p><strong>Khắc phục</strong>: Dùng <code>printf "%s" "$TOKEN" | od -c</code> để kiểm tra và dùng <code>tr -d '
-'</code> để khử sạch ký tự thừa trước khi gọi API.</p>
+    <p><b>Khắc phục</b>: Dùng <code>printf "%s" "$TOKEN" | od -c</code> để kiểm tra và dùng <code>tr -d '\r\n'</code> để khử sạch ký tự thừa trước khi gọi API.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q06</span>
-    <span>Biến sinh ra từ <code>artifacts:reports:dotenv</code> có thể dùng trong mệnh đề <code>rules:</code> của job sau không? Tại sao?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q06</span>
+      <span>Biến sinh ra từ <code>artifacts:reports:dotenv</code> có thể dùng trong mệnh đề <code>rules:</code> của job sau không? Tại sao?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>KHÔNG THỂ</strong>. Bởi vì:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>KHÔNG THỂ</b>. Bởi vì:</p>
     <ul>
-      <li>Mệnh đề <code>rules:</code> được GitLab Server tính toán và đánh giá tại <strong>thời điểm tạo pipeline (Pipeline Creation Time - $t_0$)</strong> để quyết định đưa những job nào vào đồ thị thực thi.</li>
-      <li>Trong khi đó, biến trong <code>dotenv</code> chỉ được sinh ra tại <strong>thời điểm Job trước chạy xong trên Runner (Runtime)</strong>. Tại $t_0$, Job trước chưa hề chạy nên Server không thể biết giá trị của biến dotenv để đánh giá <code>rules:</code>.</li>
+      <li>Mệnh đề <code>rules:</code> được GitLab Server tính toán và đánh giá tại <b>thời điểm tạo pipeline (Pipeline Creation Time - t0)</b> để quyết định đưa những job nào vào đồ thị thực thi.</li>
+      <li>Trong khi đó, biến trong <code>dotenv</code> chỉ được sinh ra tại <b>thời điểm Job trước chạy xong trên Runner (Runtime)</b>. Tại t0, Job trước chưa hề chạy nên Server không thể biết giá trị của biến dotenv để đánh giá <code>rules:</code>.</li>
       <li>Biến Dotenv chỉ có giá trị bên trong <code>before_script</code>, <code>script</code>, và <code>after_script</code> của các downstream jobs có phụ thuộc (<code>needs</code>/<code>dependencies</code>).</li>
     </ul>
   </div>
@@ -682,50 +772,86 @@ done
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q07</span>
-    <span>Thuộc tính <code>expand: false</code> có ý nghĩa gì và trong trường hợp nào bắt buộc phải kích hoạt?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q07</span>
+      <span>Thuộc tính <code>expand: false</code> có ý nghĩa gì và trong trường hợp nào bắt buộc phải kích hoạt?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Ý nghĩa</strong>: <code>expand: false</code> chỉ thị cho GitLab CI không tự động phân tích và thế (expand) các ký tự <code>$</code> xuất hiện trong giá trị của biến.</p>
-    <p><strong>Trường hợp bắt buộc dùng</strong>: Khi giá trị biến chứa mật khẩu phức tạp hoặc chuỗi regex có chứa ký tự <code>$</code> (ví dụ: <code>P@ssw$rd!2026</code> hoặc token mã hóa). Nếu không tắt expand, GitLab sẽ coi <code>$rd</code> là tên của một biến môi trường khác, tự động thay thế bằng chuỗi rỗng khiến mật khẩu bị biến dạng thành <code>P@ssw!2026</code> dẫn đến lỗi xác thực.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Ý nghĩa</b>: <code>expand: false</code> chỉ thị cho GitLab CI không tự động phân tích và thế (expand) các ký tự <code>$</code> xuất hiện trong giá trị của biến.</p>
+    <p><b>Trường hợp bắt buộc dùng</b>: Khi giá trị biến chứa mật khẩu phức tạp hoặc chuỗi regex có chứa ký tự <code>$</code> (ví dụ: <code>P@ssw$rd!2026</code> hoặc token mã hóa). Nếu không tắt expand, GitLab sẽ coi <code>$rd</code> là tên của một biến môi trường khác, tự động thay thế bằng chuỗi rỗng khiến mật khẩu bị biến dạng thành <code>P@ssw!2026</code> dẫn đến lỗi xác thực.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q08</span>
-    <span>Bật biến <code>CI_DEBUG_TRACE=true</code> mang lại lợi ích gì và tiềm ẩn nguy cơ an ninh nghiêm trọng nào?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q08</span>
+      <span>Bật biến <code>CI_DEBUG_TRACE=true</code> mang lại lợi ích gì và tiềm ẩn nguy cơ an ninh nghiêm trọng nào?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>Lợi ích</strong>: Kích hoạt chế độ debug chi tiết tầng Shell execution (tương đương <code>set -x</code> trong bash), in toàn bộ từng dòng lệnh shell cùng giá trị biến đã được phân giải ra console log giúp kỹ sư gỡ rối pipeline cực nhanh.</p>
-    <p><strong>Nguy cơ an ninh</strong>: <code>CI_DEBUG_TRACE</code> sẽ in toàn bộ giá trị biến môi trường trong quá trình gán lệnh. Mặc dù Runner cố gắng mask các biến đã đánh dấu, nhưng các biến không được mask (hoặc các biến bị encode/cắt chuỗi trong script) sẽ bị lộ 100% dạng clear-text trên Web UI log, bất kỳ ai có quyền xem pipeline đều thấy được secrets.</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>Lợi ích</b>: Kích hoạt chế độ debug chi tiết tầng Shell execution (tương đương <code>set -x</code> trong bash), in toàn bộ từng dòng lệnh shell cùng giá trị biến đã được phân giải ra console log giúp kỹ sư gỡ rối pipeline cực nhanh.</p>
+    <p><b>Nguy cơ an ninh</b>: <code>CI_DEBUG_TRACE</code> sẽ in toàn bộ giá trị biến môi trường trong quá trình gán lệnh. Mặc dù Runner cố gắng mask các biến đã đánh dấu, nhưng các biến không được mask (hoặc các biến bị encode/cắt chuỗi trong script) sẽ bị lộ 100% dạng clear-text trên Web UI log, bất kỳ ai có quyền xem pipeline đều thấy được secrets.</p>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q09</span>
-    <span>Làm thế nào để truyền biến từ Parent Pipeline sang Downstream / Child Pipeline một cách bảo mật?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q09</span>
+      <span>Làm thế nào để truyền biến từ Parent Pipeline sang Downstream / Child Pipeline một cách bảo mật?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Có 3 cách chính:</p>
     <ol>
-      <li><strong>Dùng <code>trigger:include:</code> kết hợp <code>variables:</code></strong>: Khai báo tường minh danh sách biến trong job trigger.</li>
-      <li><strong>Sử dụng <code>inherit:variables: true/false</code></strong>: Mặc định child pipeline kế thừa toàn bộ biến từ parent. Có thể giới hạn bằng <code>inherit:variables: [VAR1, VAR2]</code> để tránh lộ secrets không cần thiết.</li>
-      <li><strong>Truyền qua <code>artifacts:reports:dotenv</code></strong>: Job tạo dotenv file, sau đó job trigger dùng <code>needs: [job_dotenv]</code> để nạp toàn bộ biến động sang child pipeline.</li>
+      <li><b>Dùng <code>trigger:include:</code> kết hợp <code>variables:</code></b>: Khai báo tường minh danh sách biến trong job trigger.</li>
+      <li><b>Sử dụng <code>inherit:variables: true/false</code></b>: Mặc định child pipeline kế thừa toàn bộ biến từ parent. Có thể giới hạn bằng <code>inherit:variables: [VAR1, VAR2]</code> để tránh lộ secrets không cần thiết.</li>
+      <li><b>Truyền qua <code>artifacts:reports:dotenv</code></b>: Job tạo dotenv file, sau đó job trigger dùng <code>needs: [job_dotenv]</code> để nạp toàn bộ biến động sang child pipeline.</li>
     </ol>
   </div>
 </details>
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q10</span>
-    <span>Tại sao hệ thống Predefined Variables (CI_*) lại được xếp ở nấc ưu tiên THẤP NHẤT (Nấc 9)? Ý đồ thiết kế của GitLab là gì?</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q10</span>
+      <span>Tại sao hệ thống Predefined Variables (CI_*) lại được xếp ở nấc ưu tiên THẤP NHẤT (Nấc 9)? Ý đồ thiết kế của GitLab là gì?</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p>Việc xếp Predefined Variables ở nấc thấp nhất là một <strong>chủ đích thiết kế linh hoạt (Design by Intent)</strong> của GitLab:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p>Việc xếp Predefined Variables ở nấc thấp nhất là một <b>chủ đích thiết kế linh hoạt (Design by Intent)</b> của GitLab:</p>
     <ul>
-      <li>Cho phép kỹ sư và hệ thống CI có thể <strong>Mock hoặc Override</strong> các biến hệ thống khi cần thiết (ví dụ: ghi đè <code>CI_ENVIRONMENT_NAME</code> hoặc <code>CI_APPLICATION_TAG</code> trong các kịch bản test đặc biệt, giả lập pipeline môi trường khác).</li>
+      <li>Cho phép kỹ sư và hệ thống CI có thể <b>Mock hoặc Override</b> các biến hệ thống khi cần thiết (ví dụ: ghi đè <code>CI_ENVIRONMENT_NAME</code> hoặc <code>CI_APPLICATION_TAG</code> trong các kịch bản test đặc biệt, giả lập pipeline môi trường khác).</li>
       <li>Đảm bảo các cấu hình tường minh của lập trình viên trong YAML hoặc Project Settings luôn có quyền quyết định cao hơn các giá trị tự động suy diễn của hệ thống.</li>
     </ul>
   </div>
@@ -733,16 +859,25 @@ done
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q11</span>
-    <span>Viết một đoạn script Shell chuẩn Enterprise để áp dụng cơ chế Fail-fast Assertion kiểm tra biến rỗng trước khi chạy lệnh phá hủy.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q11</span>
+      <span>Viết một đoạn script Shell chuẩn Enterprise để áp dụng cơ chế Fail-fast Assertion kiểm tra biến rỗng trước khi chạy lệnh phá hủy.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p>Đoạn script chuẩn sử dụng cú pháp <strong>POSIX Parameter Expansion</strong>:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p>Đoạn script chuẩn sử dụng cú pháp <b>POSIX Parameter Expansion</b>:</p>
     <div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># Kiểm tra biến bắt buộc - Dừng ngay lập tức nếu biến chưa khai báo hoặc rỗng</span>
 : <span class="s2">"${DEPLOY_ENVIRONMENT:?FATAL: DEPLOY_ENVIRONMENT is not set}"</span>
 : <span class="s2">"${DATABASE_PASSWORD:?FATAL: DATABASE_PASSWORD is not set}"</span>
 
-<span class="c"># Khẳng định biến File tồn tại và có dung lượng > 0 byte</span>
+<span class="c"># Khẳng định biến File tồn tại và có dung lượng &gt; 0 byte</span>
 : <span class="s2">"${KUBECONFIG:?FATAL: KUBECONFIG variable is missing}"</span>
 <span class="nb">test</span> -s <span class="s2">"${KUBECONFIG}"</span> <span class="o">||</span> <span class="o">(</span><span class="nb">echo</span> <span class="s2">"FATAL: Kubeconfig file is empty or missing"</span> <span class="o">&gt;&amp;</span>2 <span class="o">&amp;&amp;</span> <span class="nb">exit </span>1<span class="o">)</span>
 
@@ -754,19 +889,28 @@ done
 
 <details class="qa-card">
   <summary class="qa-summary">
-    <span class="qa-num-badge">Q12</span>
-    <span>So sánh việc lưu trữ Secret trong GitLab CI Variables với giải pháp HashiCorp Vault / AWS Secrets Manager kết hợp OIDC.</span>
+    <div class="qa-summary-left">
+      <span class="qa-num-badge">Q12</span>
+      <span>So sánh việc lưu trữ Secret trong GitLab CI Variables với giải pháp HashiCorp Vault / AWS Secrets Manager kết hợp OIDC.</span>
+    </div>
+    <span class="qa-chevron">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </span>
   </summary>
-  <div class="qa-body">
-    <p><strong>GitLab CI Variables (Static Secrets)</strong>:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p><b>GitLab CI Variables (Static Secrets)</b>:</p>
     <ul>
-      <li><em>Ưu điểm</em>: Dễ cấu hình, không cần hạ tầng phụ trợ, sẵn có trên giao diện web.</li>
-      <li><em>Nhược điểm</em>: Secret tĩnh (Static Long-lived Credentials), khó xoay vòng (rotation), có nguy cơ rò rỉ qua log/artifacts, phân quyền thô theo mức độ Project/Group.</li>
+      <li><i>Ưu điểm</i>: Dễ cấu hình, không cần hạ tầng phụ trợ, sẵn có trên giao diện web.</li>
+      <li><i>Nhược điểm</i>: Secret tĩnh (Static Long-lived Credentials), khó xoay vòng (rotation), có nguy cơ rò rỉ qua log/artifacts, phân quyền thô theo mức độ Project/Group.</li>
     </ul>
-    <p><strong>HashiCorp Vault / Cloud Secrets qua OIDC (Dynamic Keyless Secrets)</strong>:</p>
+    <p><b>HashiCorp Vault / Cloud Secrets qua OIDC (Dynamic Keyless Secrets)</b>:</p>
     <ul>
-      <li><em>Ưu điểm</em>: Chuẩn Zero Trust Enterprise. Không lưu trữ bất kỳ secret tĩnh nào trên GitLab. Job sử dụng <code>CI_JOB_JWT_V2</code> (ID Token OIDC) để xác thực với Vault/AWS STS và nhận về <strong>Temporary Credentials có thời hạn 15-60 phút</strong>. Tự động thu hồi, phân quyền chi tiết theo từng commit SHA, branch, project path.</li>
-      <li><em>Nhược điểm</em>: Cần thiết lập hạ tầng OIDC Trust và quản trị cụm Vault / IAM Roles.</li>
+      <li><i>Ưu điểm</i>: Chuẩn Zero Trust Enterprise. Không lưu trữ bất kỳ secret tĩnh nào trên GitLab. Job sử dụng <code>CI_JOB_JWT_V2</code> (ID Token OIDC) để xác thực với Vault/AWS STS và nhận về <b>Temporary Credentials có thời hạn 15-60 phút</b>. Tự động thu hồi, phân quyền chi tiết theo từng commit SHA, branch, project path.</li>
+      <li><i>Nhược điểm</i>: Cần thiết lập hạ tầng OIDC Trust và quản trị cụm Vault / IAM Roles.</li>
     </ul>
   </div>
 </details>
@@ -777,7 +921,7 @@ done
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                               QUẢN TRỊ BIẾN & SECRETS
                                          │
      ┌───────────────────┬───────────────┴───────────────┬───────────────────┐

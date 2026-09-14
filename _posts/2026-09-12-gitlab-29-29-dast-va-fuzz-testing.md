@@ -46,7 +46,7 @@ Những lỗ hổng mà SAST hoàn toàn bất lực bao gồm:
 
 > **Giải pháp là triển khai DAST (Dynamic Application Security Testing) kết hợp API Fuzzing trực tiếp trên các môi trường Review Apps hoặc Ephemeral Staging trong GitLab CI/CD, đóng vai trò như một Hacker mũ trắng tự động tấn công thăm dò ứng dụng trước khi chuyển sang Production.**
 
-```
+```text
        MÔ HÌNH HOẠT ĐỘNG DAST & API FUZZING TRONG GITLAB CI
 
     [ Deploy Review App / Service Container ] (http://review-app:8080)
@@ -135,6 +135,7 @@ stages:
   - test
   - deploy_review
   - dast_security
+  - quality_gate
 
 variables:
   REVIEW_APP_URL: "http://review-target:8080"
@@ -205,33 +206,32 @@ api_fuzzing_scan:
 
 ## 4. Phân Tích Cạm Bẫy Thực Chiến (5-Whys Incident Analysis)
 
-### 4.1. Sự Cố Thực Tế: DAST Active Scan Xóa Sạch Cơ Sở Dữ Liệu Staging Trong Đêm
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 02:00 AM</span> Một đội ngũ kỹ sư bật tính năng ZAP Full Active Scan chạy định kỳ vào 02:00 AM trên môi trường Staging. Sáng hôm sau, toàn bộ dữ liệu mẫu trong cơ sở dữ liệu Staging bị xóa sạch, và hàng ngàn email rác chứa chuỗi XSS payload đã tự động gửi tới email của các đối tác thử nghiệm tích hợp.
 
-> **Bối Cảnh**: Một đội ngũ kỹ sư bật tính năng ZAP Full Active Scan chạy định kỳ vào 02:00 AM trên môi trường Staging. Sáng hôm sau, toàn bộ dữ liệu mẫu trong cơ sở dữ liệu Staging bị xóa sạch, và hàng ngàn email rác chứa chuỗi XSS payload đã tự động gửi tới email của các đối tác thử nghiệm tích hợp.
+### Hậu Quả & Log Lỗi Thực Tế:
+Dữ liệu Staging bị xóa trắng, dịch vụ email bên thứ ba bị khóa tài khoản do phát tán thư rác độc hại:
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    PHÂN TÍCH NGUYÊN NHÂN GỐC RỄ (5-WHYS)                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│ 1. Tại sao toàn bộ dữ liệu Staging bị xóa và gửi email rác?             │
-│    -> ZAP Active Scanner đã kích hoạt các nút "Delete All" và "Send Mail"│
-│                                                                         │
-│ 2. Tại sao ZAP Scanner lại click vào các nút nguy hiểm đó?              │
-│    -> Spider của ZAP tự động duyệt mọi Form và gọi HTTP DELETE/POST.    │
-│                                                                         │
-│ 3. Tại sao ZAP lại có quyền gọi các API nhạy cảm này?                   │
-│    -> Kỹ sư đã nạp token quyền Admin tối cao cho Scanner.               │
-│                                                                         │
-│ 4. Tại sao không có giới hạn đường dẫn quét cho ZAP?                    │
-│    -> Không cấu hình danh sách URL loại trừ (Exclude URLs Regex).        │
-│                                                                         │
-│ 5. NGUYÊN NHÂN CỐT LÕI (Root Cause):                                   │
-│    -> Chạy Active DAST Scan trên môi trường dùng chung mà không cô lập  │
-│       hạ tầng Ephemeral và không Mock các dịch vụ thứ ba (SendGrid/SMS).│
-└─────────────────────────────────────────────────────────────────────────┘
+```text
+[zap-active-scan] › ⚡  Injected payload '<script>alert(1)</script>' into form '/api/v1/users/invite'
+[app-service]     › ℹ  Dispatched 2,450 invitation emails to external partner domains via SendGrid API
+[zap-active-scan] › ⚡  Executed HTTP DELETE on '/api/v1/system/purge-database'
+[app-database]    › ❌  FATAL: 18,200 records dropped from tables: users, accounts, transactions
+[sendgrid-alert]  › ❌  ACCOUNT SUSPENDED: Violation of anti-spam and malicious content policy detected!
 ```
 
-### 4.2. Giải Pháp Khắc Phục Triệt Để
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> Tại sao toàn bộ dữ liệu Staging bị xóa và gửi hàng ngàn email rác ra ngoài?  
+   &rarr; Do công cụ ZAP Active Scanner đã tự động kích hoạt các API nguy hiểm như `purge-database` và `invite`.
+2. <span class="badge badge--primary">Why 2</span> Tại sao ZAP Scanner lại thực thi được các hành động phá hoại đó?  
+   &rarr; Do Spider của ZAP tự động duyệt mọi Form và gửi các HTTP POST/DELETE với quyền hạn cao nhất.
+3. <span class="badge badge--primary">Why 3</span> Tại sao ZAP lại có quyền gọi các API quản trị nhạy cảm này?  
+   &rarr; Do kỹ sư đã nạp token quyền Admin tối cao cho Scanner để quét sâu mà không giới hạn scope.
+4. <span class="badge badge--primary">Why 4</span> Tại sao không có danh sách giới hạn đường dẫn quét cho ZAP?  
+   &rarr; Do không cấu hình tệp Context File với biểu thức chính quy loại trừ các URL nguy hiểm (Exclude URLs Regex).
+5. <span class="badge badge--emerald">Root Cause Remedy</span> Chạy Active DAST Scan trực tiếp trên môi trường dùng chung thay vì môi trường Ephemeral Container tạm thời, đồng thời không Mock các dịch vụ thứ ba (SendGrid/SMS) và thiếu danh sách Exclude URLs bảo vệ endpoint phá hủy.
+
+### Giải Pháp Khắc Phục Triệt Để:
 
 1. **Sử dụng Ephemeral Service Container trong CI**: Chỉ chạy DAST trên các container tạm thời sinh ra trong chính Job Runner, dữ liệu chỉ lưu trong RAM (SQLite/In-memory DB) và tự hủy khi Job kết thúc.
 2. **Cấu hình danh sách URL loại trừ (Exclude URLs)**:
@@ -250,7 +250,7 @@ api_fuzzing_scan:
 - Chạy công cụ OWASP ZAP Baseline Scan để phát hiện các lỗ hổng cấu hình.
 - Bổ sung Security Headers Middleware và xác minh pipeline vượt qua kiểm tra an ninh.
 
-```
+```text
        QUY TRÌNH THỰC HÀNH LAB DAST ZAP SCAN TRÊN GITLAB CI
 
      [ Job Runner Pod ]
@@ -331,8 +331,7 @@ build_app_image:
     entrypoint: [""]
   before_script:
     - mkdir -p /kaniko/.docker
-    - echo "{"auths":{"${CI_REGISTRY}":{"auth":"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '
-')"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - >-
       /kaniko/executor
@@ -433,8 +432,14 @@ git push origin main
     <span>Tại sao DAST thường sinh ra ít cảnh báo giả hơn so với SAST?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Bản chất:</strong></p>
-    <p>DAST kiểm thử ứng dụng từ bên ngoài như một kẻ tấn công thực sự. Khi DAST báo cáo một lỗ hổng (ví dụ: SQLi hoặc XSS), điều đó đồng nghĩa với việc DAST đã gửi một payload thực tế và nhận lại phản hồi chứng minh payload đó đã được thực thi thành công trong hệ thống. Do đó, tính xác thực của cảnh báo DAST cực kỳ cao và hiếm khi là cảnh báo giả.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Bản chất:</strong></p>
+      <p>DAST kiểm thử ứng dụng từ bên ngoài như một kẻ tấn công thực sự. Khi DAST báo cáo một lỗ hổng (ví dụ: SQLi hoặc XSS), điều đó đồng nghĩa với việc DAST đã gửi một payload thực tế và nhận lại phản hồi chứng minh payload đó đã được thực thi thành công trong hệ thống. Do đó, tính xác thực của cảnh báo DAST cực kỳ cao và hiếm khi là cảnh báo giả.</p>
+    </div>
   </div>
 </details>
 
@@ -444,9 +449,21 @@ git push origin main
     <span>Làm thế nào để cấu hình OWASP ZAP quét được các API yêu cầu xác thực JWT Bearer Token?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Giải pháp:</strong></p>
-    <p>Sử dụng tùy chọn <code>-z</code> hoặc cấu hình tệp <code>replacer</code> của ZAP để tự động chèn HTTP Header <code>Authorization: Bearer &lt;TOKEN&gt;</code> vào mọi request trước khi gửi đi:</p>
-    <pre><code>zap-api-scan.py -t http://target/openapi.json -f openapi   -z "-config replacer.full_list(0).description=auth       -config replacer.full_list(0).enabled=true       -config replacer.full_list(0).matchtype=REQ_HEADER       -config replacer.full_list(0).matchstr=Authorization       -config replacer.full_list(0).regex=false       -config replacer.full_list(0).replacement='Bearer eyJhbGciOi...'"</code></pre>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Giải pháp:</strong></p>
+      <p>Sử dụng tùy chọn <code>-z</code> hoặc cấu hình tệp <code>replacer</code> của ZAP để tự động chèn HTTP Header <code>Authorization: Bearer &lt;TOKEN&gt;</code> vào mọi request trước khi gửi đi:</p>
+      <pre><code>zap-api-scan.py -t http://target/openapi.json -f openapi \
+  -z "-config replacer.full_list(0).description=auth \
+      -config replacer.full_list(0).enabled=true \
+      -config replacer.full_list(0).matchtype=REQ_HEADER \
+      -config replacer.full_list(0).matchstr=Authorization \
+      -config replacer.full_list(0).regex=false \
+      -config replacer.full_list(0).replacement='Bearer eyJhbGciOi...'"</code></pre>
+    </div>
   </div>
 </details>
 
@@ -456,11 +473,17 @@ git push origin main
     <span>Sự khác biệt giữa ZAP Spider truyền thống và ZAP AJAX Spider là gì?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>So sánh:</strong></p>
-    <ul>
-      <li><strong>Traditional Spider</strong>: Chỉ phân tích mã HTML tĩnh để tìm thẻ <code>&lt;a href&gt;</code> và <code>&lt;form action&gt;</code>. Không thể tìm thấy các đường dẫn được render động bằng JavaScript trong các ứng dụng SPA (React, Angular, Vue).</li>
-      <li><strong>AJAX Spider</strong>: Khởi chạy một trình duyệt Headless thực sự (Chromium/Firefox), thực thi JavaScript và giả lập click chuột vào các nút bấm để khám phá toàn bộ các DOM events và API calls ngầm.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>So sánh:</strong></p>
+      <ul>
+        <li><strong>Traditional Spider</strong>: Chỉ phân tích mã HTML tĩnh để tìm thẻ <code>&lt;a href&gt;</code> và <code>&lt;form action&gt;</code>. Không thể tìm thấy các đường dẫn được render động bằng JavaScript trong các ứng dụng SPA (React, Angular, Vue).</li>
+        <li><strong>AJAX Spider</strong>: Khởi chạy một trình duyệt Headless thực sự (Chromium/Firefox), thực thi JavaScript và giả lập click chuột vào các nút bấm để khám phá toàn bộ các DOM events và API calls ngầm.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -470,12 +493,18 @@ git push origin main
     <span>Tại sao không nên chạy Active DAST Scan trực tiếp trên cơ sở dữ liệu Production?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Rủi ro nghiêm trọng:</strong></p>
-    <ol>
-      <li><strong>Làm hỏng dữ liệu (Data Corruption)</strong>: Active Scanner gửi các ký tự đặc biệt có thể làm sai lệch thông tin đơn hàng hoặc xóa nhầm bản ghi của khách hàng thật.</li>
-      <li><strong>Gây nghẽn hệ thống (DoS)</strong>: Scanner gửi hàng chục ngàn requests đồng thời có thể làm cạn kiệt tài nguyên CPU/RAM của server.</li>
-      <li><strong>Kích hoạt dịch vụ bên ngoài ngoài ý muốn</strong>: Vô tình gửi SMS, Email hoặc trừ tiền thẻ tín dụng thật qua Payment Gateway.</li>
-    </ol>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Rủi ro nghiêm trọng:</strong></p>
+      <ol>
+        <li><strong>Làm hỏng dữ liệu (Data Corruption)</strong>: Active Scanner gửi các ký tự đặc biệt có thể làm sai lệch thông tin đơn hàng hoặc xóa nhầm bản ghi của khách hàng thật.</li>
+        <li><strong>Gây nghẽn hệ thống (DoS)</strong>: Scanner gửi hàng chục ngàn requests đồng thời có thể làm cạn kiệt tài nguyên CPU/RAM của server.</li>
+        <li><strong>Kích hoạt dịch vụ bên ngoài ngoài ý muốn</strong>: Vô tình gửi SMS, Email hoặc trừ tiền thẻ tín dụng thật qua Payment Gateway.</li>
+      </ol>
+    </div>
   </div>
 </details>
 
@@ -485,8 +514,14 @@ git push origin main
     <span>Cơ chế API Fuzzing phát hiện lỗi "Unhandled Exceptions (500)" giúp ích gì cho bảo mật?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Ý nghĩa an ninh:</strong></p>
-    <p>Khi một API trả về HTTP 500 thay vì HTTP 400 (Bad Request), điều đó chứng minh ứng dụng không có cơ chế Validation đầu vào chặt chẽ. Lỗi 500 thường làm lộ thông tin nhạy cảm qua Stack Trace (tên bảng DB, đường dẫn tệp mã nguồn, phiên bản framework) và có thể bị kẻ tấn công khai thác sâu hơn để gây Denial of Service (DoS) hoặc Remote Code Execution (RCE).</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Ý nghĩa an ninh:</strong></p>
+      <p>Khi một API trả về HTTP 500 thay vì HTTP 400 (Bad Request), điều đó chứng minh ứng dụng không có cơ chế Validation đầu vào chặt chẽ. Lỗi 500 thường làm lộ thông tin nhạy cảm qua Stack Trace (tên bảng DB, đường dẫn tệp mã nguồn, phiên bản framework) và có thể bị kẻ tấn công khai thác sâu hơn để gây Denial of Service (DoS) hoặc Remote Code Execution (RCE).</p>
+    </div>
   </div>
 </details>
 
@@ -496,12 +531,18 @@ git push origin main
     <span>Làm thế nào để tối ưu hóa thời gian chạy DAST trong pipeline CI dưới 5 phút?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Chiến lược tối ưu:</strong></p>
-    <ul>
-      <li>Trên mỗi Merge Request: Chỉ chạy <strong>DAST Baseline (Passive Scan)</strong> kết hợp quét cấu hình Headers/Cookies.</li>
-      <li>Chỉ quét các Endpoint bị thay đổi: Cung cấp danh sách URL mục tiêu cụ thể thay vì để Spider cào toàn bộ trang web.</li>
-      <li>Chuyển toàn bộ các bài quét <strong>Active Scan toàn diện (Full Scan)</strong> sang chạy dạng Nightly Schedule Pipeline vào ban đêm.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Chiến lược tối ưu:</strong></p>
+      <ul>
+        <li>Trên mỗi Merge Request: Chỉ chạy <strong>DAST Baseline (Passive Scan)</strong> kết hợp quét cấu hình Headers/Cookies.</li>
+        <li>Chỉ quét các Endpoint bị thay đổi: Cung cấp danh sách URL mục tiêu cụ thể thay vì để Spider cào toàn bộ trang web.</li>
+        <li>Chuyển toàn bộ các bài quét <strong>Active Scan toàn diện (Full Scan)</strong> sang chạy dạng Nightly Schedule Pipeline vào ban đêm.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -511,8 +552,14 @@ git push origin main
     <span>Cờ `-I` trong lệnh `zap-baseline.py` có ý nghĩa gì?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Ý nghĩa:</strong></p>
-    <p>Cờ <code>-I</code> (Ignore Warnings) yêu cầu script ZAP không trả về mã lỗi thất bại (Non-zero Exit Code) khi chỉ phát hiện các cảnh báo (Warnings). Điều này giúp pipeline tiếp tục thực thi để hoàn tất việc xuất báo cáo artifact mà không làm sập pipeline đột ngột.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Ý nghĩa:</strong></p>
+      <p>Cờ <code>-I</code> (Ignore Warnings) yêu cầu script ZAP không trả về mã lỗi thất bại (Non-zero Exit Code) khi chỉ phát hiện các cảnh báo (Warnings). Điều này giúp pipeline tiếp tục thực thi để hoàn tất việc xuất báo cáo artifact mà không làm sập pipeline đột ngột.</p>
+    </div>
   </div>
 </details>
 
@@ -522,8 +569,14 @@ git push origin main
     <span>Làm sao để cấu hình DAST quét ứng dụng phía sau mạng riêng nội bộ (Private VPC) của công ty?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Kiến trúc:</strong></p>
-    <p>Sử dụng <strong>GitLab Self-Hosted Runner</strong> được triển khai trực tiếp bên trong cùng mạng Private VPC hoặc Kubernetes Cluster của ứng dụng. Job DAST sẽ phân giải DNS nội bộ (ví dụ: <code>http://order-service.internal.svc.cluster.local</code>) và thực hiện quét trực tiếp mà không cần mở cổng ra Internet.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Kiến trúc:</strong></p>
+      <p>Sử dụng <strong>GitLab Self-Hosted Runner</strong> được triển khai trực tiếp bên trong cùng mạng Private VPC hoặc Kubernetes Cluster của ứng dụng. Job DAST sẽ phân giải DNS nội bộ (ví dụ: <code>http://order-service.internal.svc.cluster.local</code>) và thực hiện quét trực tiếp mà không cần mở cổng ra Internet.</p>
+    </div>
   </div>
 </details>
 
@@ -533,8 +586,14 @@ git push origin main
     <span>Khái niệm "DAST Context File" trong OWASP ZAP được dùng để làm gì?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Mục đích:</strong></p>
-    <p>Context File (định dạng <code>.context</code>) lưu trữ toàn bộ cấu hình nâng cao của phiên quét: Định nghĩa cấu trúc ứng dụng, quy tắc đăng nhập tự động (Authentication Method), cơ chế nhận diện phiên làm việc (Session Management), danh sách Regex các URL cần quét (Include) và các URL cấm quét (Exclude).</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Mục đích:</strong></p>
+      <p>Context File (định dạng <code>.context</code>) lưu trữ toàn bộ cấu hình nâng cao của phiên quét: Định nghĩa cấu trúc ứng dụng, quy tắc đăng nhập tự động (Authentication Method), cơ chế nhận diện phiên làm việc (Session Management), danh sách Regex các URL cần quét (Include) và các URL cấm quét (Exclude).</p>
+    </div>
   </div>
 </details>
 
@@ -544,8 +603,14 @@ git push origin main
     <span>Làm thế nào để kiểm thử bảo mật cho giao thức GraphQL bằng DAST?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Phương pháp:</strong></p>
-    <p>Nạp lược đồ GraphQL (GraphQL Schema hoặc tệp Introspection Query JSON) vào ZAP hoặc công cụ GraphQL Fuzzer (như InQL). Scanner sẽ phân tích toàn bộ Queries và Mutations, sau đó tự động thử nghiệm các cuộc tấn công đặc thù của GraphQL như: Tấn công đệ quy sâu (Circular Query / Deep Nesting DoS), Field Suggestion Information Leak, và Bypassing Authorization.</p>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Phương pháp:</strong></p>
+      <p>Nạp lược đồ GraphQL (GraphQL Schema hoặc tệp Introspection Query JSON) vào ZAP hoặc công cụ GraphQL Fuzzer (như InQL). Scanner sẽ phân tích toàn bộ Queries và Mutations, sau đó tự động thử nghiệm các cuộc tấn công đặc thù của GraphQL như: Tấn công đệ quy sâu (Circular Query / Deep Nesting DoS), Field Suggestion Information Leak, và Bypassing Authorization.</p>
+    </div>
   </div>
 </details>
 
@@ -555,11 +620,17 @@ git push origin main
     <span>Sự cố: Job DAST thất bại với lỗi "Connection Refused" khi kết nối tới Service Container. Xử lý thế nào?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Nguyên nhân & Khắc phục:</strong></p>
-    <ul>
-      <li><strong>Nguyên nhân</strong>: Ứng dụng trong Service Container mất vài giây để khởi động xong, hoặc đang lắng nghe trên địa chỉ <code>127.0.0.1</code> thay vì <code>0.0.0.0</code>.</li>
-      <li><strong>Khắc phục</strong>: Đảm bảo ứng dụng bind cổng <code>0.0.0.0:8080</code>, đặt đúng <code>alias</code> cho service trong YAML, và thêm lệnh <code>sleep 5</code> hoặc vòng lặp <code>curl --retry</code> để chờ service sẵn sàng trước khi gọi scanner.</li>
-    </ul>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Nguyên nhân & Khắc phục:</strong></p>
+      <ul>
+        <li><strong>Nguyên nhân</strong>: Ứng dụng trong Service Container mất vài giây để khởi động xong, hoặc đang lắng nghe trên địa chỉ <code>127.0.0.1</code> thay vì <code>0.0.0.0</code>.</li>
+        <li><strong>Khắc phục</strong>: Đảm bảo ứng dụng bind cổng <code>0.0.0.0:8080</code>, đặt đúng <code>alias</code> cho service trong YAML, và thêm lệnh <code>sleep 5</code> hoặc vòng lặp <code>curl --retry</code> để chờ service sẵn sàng trước khi gọi scanner.</li>
+      </ul>
+    </div>
   </div>
 </details>
 
@@ -569,12 +640,18 @@ git push origin main
     <span>Làm cách nào để tích hợp DAST vào quy trình Continuous Deployment (CD) cho môi trường Review Apps?</span>
   </summary>
   <div class="qa-body">
-    <p><strong>Quy trình:</strong></p>
-    <ol>
-      <li>Stage <code>deploy_review</code>: Tự động deploy nhánh tính năng lên một Namespace Kubernetes tạm thời (ví dụ: <code>review-mr-123.example.com</code>).</li>
-      <li>Stage <code>dast</code>: Trỏ biến <code>DAST_WEBSITE</code> vào URL Review App và kích hoạt ZAP quét tự động.</li>
-      <li>Stage <code>cleanup_review</code>: Xóa môi trường Review App sau khi quét xong hoặc khi MR được đóng.</li>
-    </ol>
+    <div class="qa-answer">
+      <div class="qa-answer-header">
+        <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+      </div>
+      <p><strong>Quy trình:</strong></p>
+      <ol>
+        <li>Stage <code>deploy_review</code>: Tự động deploy nhánh tính năng lên một Namespace Kubernetes tạm thời (ví dụ: <code>review-mr-123.example.com</code>).</li>
+        <li>Stage <code>dast</code>: Trỏ biến <code>DAST_WEBSITE</code> vào URL Review App và kích hoạt ZAP quét tự động.</li>
+        <li>Stage <code>cleanup_review</code>: Xóa môi trường Review App sau khi quét xong hoặc khi MR được đóng.</li>
+      </ol>
+    </div>
   </div>
 </details>
 
@@ -590,7 +667,7 @@ git push origin main
 
 ### 7.2. Sơ Đồ Tư Duy Hệ Thống DAST & Fuzzing (Mindmap)
 
-```
+```text
                        KIỂM THỬ AN NINH ĐỘNG (DAST & FUZZING)
                                          │
         ┌────────────────────────────────┼────────────────────────────────┐

@@ -41,7 +41,7 @@ Hệ sinh thái JavaScript/TypeScript là môi trường có tốc độ phát t
 
 > **Một Pipeline Node.js/TypeScript chuẩn Production bắt buộc phải thực thi cài đặt bất biến (`npm ci` hoặc `pnpm install --frozen-lockfile`), tách biệt hoàn toàn pha Type-checking (`tsc --noEmit`) với pha Bundling, và quản trị bộ nhớ đệm `.npm` / `.pnpm-store` dựa trên mã băm Hash của Lockfile.**
 
-```
+```text
    CHU TRÌNH BIÊN DỊCH TYPESCRIPT SIÊU TỐC (Decoupled TypeScript CI)
    
    Commit Code ──► [ Stage: fast_check ] ──┬──► [ Job: lint (ESLint) ] ──► (20s)
@@ -214,7 +214,11 @@ publish_docker_image:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
   script:
     - echo "=== Building Distroless Container Image ==="
-    - /kaniko/executor         --context "${CI_PROJECT_DIR}"         --dockerfile "${CI_PROJECT_DIR}/Dockerfile"         --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"         --cache=true
+    - /kaniko/executor \
+        --context "${CI_PROJECT_DIR}" \
+        --dockerfile "${CI_PROJECT_DIR}/Dockerfile" \
+        --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}" \
+        --cache=true
 ```
 
 ---
@@ -233,7 +237,33 @@ graph TD
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 05:40 AM</span> Trong đợt merge mã nguồn monorepo lớn, job biên dịch TypeScript `compile_bundle` bị dừng đột ngột với thông báo lỗi V8 Engine Heap Overflow, làm tê liệt quy trình phát hành bản vá giao diện.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+Tiến trình Node.js cạn kiệt bộ nhớ Heap và bị crash ngay giữa pha phân tích Abstract Syntax Tree:
+
+```text
+<--- Last few GCs --->
+[14:0x7f8a9000] 45120 ms: Mark-sweep 1392.4 (1430.5) -> 1385.1 (1431.2) MB, 842.1 / 0.0 ms (average mu = 0.124, current mu = 0.012) allocation failure
+[14:0x7f8a9000] 46012 ms: Mark-sweep 1398.2 (1431.2) -> 1392.8 (1433.0) MB, 892.0 / 0.0 ms (average mu = 0.068, current mu = 0.008) allocation failure
+
+<--- JS stacktrace --->
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+1: 0xb7b420 node::Abort() [node]
+2: 0xa8ea9b node::FatalError(char const*, char const*) [node]
+3: 0xd389e2 v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, bool) [node]
+ERROR: Job failed: exit code 134
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Job bị thoát với exit code 134?** Tiến trình V8 JavaScript Engine bị cạn kiệt bộ nhớ Heap (`JavaScript heap out of memory`).
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lại chạm trần bộ nhớ Heap?** Mặc định Node.js 64-bit trên Linux chỉ cấp phát trần heap giới hạn ở mức 1.4GB - 1.7GB RAM.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao dự án cần nhiều hơn 1.7GB RAM?** Dự án Monorepo chứa hơn 200.000 dòng code TypeScript; quá trình phân giải cây kiểu dữ liệu tĩnh của `tsc` và Vite Bundle yêu cầu khoảng 2.8GB RAM.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao không nâng trần bộ nhớ?** Nhóm phát triển chưa khai báo biến môi trường `NODE_OPTIONS` trong tệp cấu hình CI.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để:** Bổ sung biến môi trường toàn cục `NODE_OPTIONS: "--max-old-space-size=4096"` để nâng trần V8 Heap lên 4GB; đồng thời cấu hình Kubernetes Runner Pod cấp phát tối thiểu 6GB RAM.
+
+### Phân Tích 5 Cạm Bẫy Phổ Biến Nhất:
 
 #### Cạm bẫy 1: Sự cố `npm install` ngầm sửa đổi lockfile làm sai lệch môi trường
 - **Hiện tượng**: Pipeline pass nhưng khi deploy ứng dụng bị crash do thư viện bên thứ ba tự ý nhảy lên phiên bản mới có breaking change.
@@ -264,7 +294,7 @@ graph TD
 
 ## 5. Hands-on Lab: Tối Ưu Hóa CI/CD Cho Node.js & TypeScript (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                  LAB ARCHITECTURE: NODE.JS & TYPESCRIPT                │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -434,7 +464,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q01</span>
     <span>Tại sao lệnh `npm install` bị nghiêm cấm sử dụng trong môi trường CI/CD chuyên nghiệp? So sánh với `npm ci`.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Lý do cấm <code>npm install</code></strong>:</p>
     <ul>
       <li>Nó có tính chất <em>Bất định (Non-deterministic)</em>: Nó có thể tự động cài đặt các bản vá mới hơn của thư viện nếu trong <code>package.json</code> dùng ký tự <code>^</code> hoặc <code>~</code>, và âm thầm cập nhật đè lên <code>package-lock.json</code> bên trong container.</li>
@@ -449,7 +483,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q02</span>
     <span>Tại sao nên tách biệt bước kiểm tra kiểu dữ liệu (`tsc --noEmit`) thành một Job độc lập ở stage sớm thay vì để bundler thực hiện?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Lợi ích của việc phân tách</strong>:</p>
     <ol>
       <li><strong>Fast Feedback Loop</strong>: Job <code>tsc --noEmit</code> chạy siêu tốc tại $t_0$ và phản hồi lỗi Type cho lập trình viên trong dưới 30 giây.</li>
@@ -463,7 +501,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q03</span>
     <span>Bẫy tệp đệm `.tsbuildinfo` trong chế độ biên dịch `tsc -b` (Build Mode) là gì và cách phòng tránh trong CI/CD?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Hiện tượng bẫy</strong>: <code>tsc -b</code> sinh ra tệp <code>.tsbuildinfo</code> để ghi nhớ trạng thái biên dịch của từng file. Nếu tệp này được lưu vào GitLab Cache và nạp sang một nhánh khác hoặc một commit mới, TypeScript có thể bị "đánh lừa" rằng các tệp mã nguồn chưa thay đổi và <strong>bỏ qua không biên dịch các file vừa sửa</strong>, dẫn đến việc sản phẩm đầu ra chứa code cũ.</p>
     <p><strong>Cách phòng tránh</strong>: Luôn xóa sạch tệp <code>.tsbuildinfo</code> trước khi chạy production build hoặc không đưa tệp này vào danh sách <code>cache: paths:</code> dùng chung xuyên nhánh.</p>
   </div>
@@ -474,7 +516,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q04</span>
     <span>Làm thế nào để cấu hình Cache hiệu quả cho PNPM trong GitLab CI? Cần lưu ý biến môi trường nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>PNPM sử dụng cơ chế Content-Addressable Store. Để Runner lưu đệm được store này:</p>
     <ol>
       <li>Chỉ định thư mục store nằm bên trong workspace: <code>pnpm config set store-dir "$CI_PROJECT_DIR/.pnpm-store"</code>.</li>
@@ -489,10 +535,14 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q05</span>
     <span>Vitest vượt trội hơn Jest như thế nào khi chạy trong môi trường CI/CD Container?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Ưu điểm vượt trội của Vitest trong CI</strong>:</p>
     <ul>
-      <li><strong>Native ESM & TypeScript Support</strong>: Sử dụng chung cấu hình và pipeline transform của Vite/ESBuild, không cần qua bước biên dịch <code>ts-jest</code> hay <code>babel-jest</code> cồng kềnh.</li>
+      <li><strong>Native ESM &amp; TypeScript Support</strong>: Sử dụng chung cấu hình và pipeline transform của Vite/ESBuild, không cần qua bước biên dịch <code>ts-jest</code> hay <code>babel-jest</code> cồng kềnh.</li>
       <li><strong>Khởi động tức thì (Zero Cold-Start Overhead)</strong>: Tốc độ khởi chạy test suite nhanh hơn Jest từ 2x đến 4x lần.</li>
       <li><strong>Hỗ trợ Sharding tích hợp sẵn</strong>: Hỗ trợ trực tiếp cờ <code>--shard=1/4</code> tương thích hoàn hảo với <code>parallel: 4</code> của GitLab CI.</li>
     </ul>
@@ -504,7 +554,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q06</span>
     <span>Nguyên nhân gây ra lỗi `JavaScript heap out of memory` trong CI Pipeline và cách khắc phục triệt để là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên nhân</strong>: Mặc định trên hệ điều hành 64-bit, V8 Engine của Node.js giới hạn trần bộ nhớ Heap khoảng 1.4GB - 1.7GB. Khi phân tích dự án Monorepo hoặc build bundle lớn, tiến trình vượt quá ngưỡng này và bị V8 cưỡng chế crash.</p>
     <p><strong>Khắc phục</strong>: Cấu hình biến môi trường toàn cục <strong><code>NODE_OPTIONS: "--max-old-space-size=4096"</code></strong> (tăng trần Heap lên 4GB) trong tệp <code>.gitlab-ci.yml</code>, đồng thời đảm bảo Kubernetes Runner Pod có <code>memory_limit</code> tối thiểu 5GB.</p>
   </div>
@@ -515,7 +569,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q07</span>
     <span>Làm thế nào để xuất đồng thời Báo cáo JUnit XML và Báo cáo Cobertura Coverage trong một lần chạy Vitest / Jest?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Cấu hình đa phóng viên (Multiple Reporters) trong câu lệnh thực thi:</p>
     <div class="language-bash highlighter-rouge"><pre class="highlight"><code>npx vitest run <span class="se">\</span>
   --reporter<span class="o">=</span>default <span class="se">\</span>
@@ -531,7 +589,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q08</span>
     <span>Chiến lược Multi-stage Docker Build cho ứng dụng Node.js giúp tối ưu dung lượng Image và tăng cường bảo mật như thế nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Chiến lược 2 giai đoạn (Multi-stage)</strong>:</p>
     <ol>
       <li><strong>Stage 1 (Builder)</strong>: Dùng Node Alpine đầy đủ công cụ, chạy <code>npm ci</code> (bao gồm devDependencies) và thực thi <code>npm run build</code> để sinh ra thư mục <code>dist/</code>.</li>
@@ -546,7 +608,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q09</span>
     <span>Corepack trong Node.js đóng vai trò gì trong việc chuẩn hóa môi trường CI/CD Doanh nghiệp?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Corepack</strong> là công cụ quản lý Package Manager chính thức được tích hợp sẵn từ Node.js 16.9+.</p>
     <p><strong>Vai trò trong CI/CD</strong>: Nó đọc thuộc tính <code>"packageManager": "pnpm@9.10.0"</code> trong tệp <code>package.json</code> và <strong>tự động tải đúng chính xác phiên bản binary</strong> đó để thực thi mà không cần cài đặt thủ công. Điều này đảm bảo 100% mọi thành viên trong team và tất cả máy chủ CI đều sử dụng chung một phiên bản Package Manager duy nhất.</p>
   </div>
@@ -557,7 +623,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q10</span>
     <span>Tại sao cần thêm cờ `--prefer-offline` khi chạy `npm ci` hoặc `pnpm install` trong CI Pipeline?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Cờ <code>--prefer-offline</code> chỉ thị cho Package Manager ưu tiên sử dụng các gói tarball đã có sẵn trong thư mục bộ nhớ đệm cục bộ (<code>.npm/</code> hoặc <code>.pnpm-store/</code> đã được phục hồi từ GitLab Cache) mà <strong>không gửi yêu cầu HTTP kiểm tra phiên bản lên NPM Registry trên Internet</strong>.</p>
     <p>Điều này giúp giảm độ trễ mạng, tránh bị Rate-limit từ NPM và tăng tốc độ cài đặt phụ thuộc thêm từ 30% đến 50%.</p>
   </div>
@@ -568,7 +638,11 @@ echo "Node.js & TypeScript CI/CD Pipeline achieved under 2 minutes duration benc
     <span class="qa-num-badge">Q11</span>
     <span>Làm thế nào để tích hợp Remote Caching của Turborepo / Nx vào GitLab CI để bỏ qua các tác vụ không thay đổi?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Trong Monorepo sử dụng Turborepo hoặc Nx, cấu hình kết nối Remote Cache tới cụm MinIO S3 hoặc Vercel Remote Cache qua các biến môi trường:</p>
     <div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">export </span><span class="nv">TURBO_API</span><span class="o">=</span><span class="s2">"https://turbo-cache.internal.corp"</span>
 <span class="nb">export </span><span class="nv">TURBO_TOKEN</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">TURBO_REMOTE_CACHE_TOKEN</span><span class="k">}</span><span class="s2">"</span>
@@ -584,13 +658,17 @@ pnpm exec turbo run build <span class="nb">test</span>
     <span class="qa-num-badge">Q12</span>
     <span>Trình bày chiến lược thiết kế CI/CD Pipeline cho một ứng dụng Next.js / React Enterprise vừa tối ưu tốc độ vừa đảm bảo chất lượng.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Kiến trúc chuẩn Enterprise:</strong></p>
     <ol>
       <li><strong>Stage Fast Checks</strong>: Chạy song song <code>eslint</code> và <code>tsc --noEmit</code> tại $t_0$ với Base Image Node Alpine.</li>
       <li><strong>Stage Unit Test</strong>: Vitest Sharding 4 shards (<code>parallel: 4</code>), xuất JUnit và Cobertura reports.</li>
       <li><strong>Stage Next.js Build</strong>: Caching thư mục <code>.next/cache</code> dựa trên Git commit SHA, kích hoạt Standalone Output (<code>output: 'standalone'</code> trong <code>next.config.js</code>).</li>
-      <li><strong>Stage Publish</strong>: Đóng gói Docker Image siêu nhẹ dạng Standalone (chỉ copy <code>.next/standalone</code> và <code>public/</code>, dung lượng Image $< 100$ MB).</li>
+      <li><strong>Stage Publish</strong>: Đóng gói Docker Image siêu nhẹ dạng Standalone (chỉ copy <code>.next/standalone</code> và <code>public/</code>, dung lượng Image &lt; 100 MB).</li>
     </ol>
   </div>
 </details>
@@ -601,7 +679,7 @@ pnpm exec turbo run build <span class="nb">test</span>
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                        CI/CD NODE.JS & TYPESCRIPT ENTERPRISE
                                          │
      ┌───────────────────┬───────────────┴───────────────┬───────────────────┐

@@ -46,7 +46,7 @@ Các triệu chứng phổ biến khi thiếu hệ thống Rào chắn định l
 
 > **Giải pháp là thiết lập "Unified Quality & Security Gate Engine" — một trạm kiểm soát tự động đa chiều đặt ở cuối giai đoạn CI, thu thập toàn bộ số liệu (Coverage, SAST, SCA, Secret, Performance, License), đối soát với bộ ngưỡng chấp thuận (Thresholds) và đưa ra quyết định nhị phân: PASS (Cho phép phát hành) hoặc FAIL (Chặn sập pipeline ngay lập tức).**
 
-```
+```text
        KIẾN TRÚC RÀO CHẮN ĐỊNH LƯỢNG 4 CHIỀU (Unified Gate Engine)
 
        ┌────────────────────────────────────────────────────────┐

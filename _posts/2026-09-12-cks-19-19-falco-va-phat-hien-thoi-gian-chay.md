@@ -1211,7 +1211,7 @@ if [ $SCORE -ge 75 ]; then
 else
     echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
 fi
-```yaml
+```
 
 ---
 
@@ -1230,7 +1230,7 @@ falco -r /etc/falco/falco_rules.local.yaml
 
 # Query Syslog Alert Logs
 grep -i "Falco" /var/log/syslog | grep "Critical"
-```yaml
+```
 
 ---
 

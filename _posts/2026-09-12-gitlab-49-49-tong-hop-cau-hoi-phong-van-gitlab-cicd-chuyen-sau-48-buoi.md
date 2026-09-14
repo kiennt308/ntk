@@ -1,9 +1,26 @@
 ---
-title: "Bài 49: Tổng Hợp 100+ Câu Hỏi Phỏng Vấn GitLab CI/CD & DevSecOps Chuyên Sâu 48 Buổi (Master Interview Guide)"
+layout: post
+title: "[Bài 49] Tổng Hợp 100+ Câu Hỏi Phỏng Vấn GitLab CI/CD & DevSecOps Chuyên Sâu 48 Buổi (Master Interview Guide)"
 date: 2026-09-12 00:00:00 +0700
-categories: [GitLab, CI/CD, DevSecOps]
-tags: [GitLab-CI, Interview-Guide, DevSecOps, Architecture, Career, Senior-DevOps, Principal-Engineer]
-description: "Cẩm nang tổng hợp 100+ câu hỏi phỏng vấn kỹ thuật chuyên sâu bao phủ toàn bộ 48 bài học: Từ kiến trúc tầng thấp GitLab Runner, cú pháp pipeline nâng cao, DevSecOps, OIDC Đa đám mây, GitOps đến đo lường DORA và FinOps."
+categories: [GitLab]
+tags:
+  - GitLab
+  - CICD
+  - DevSecOps
+  - Interview-Guide
+  - Architecture
+  - DevOps
+  - Part-49
+series: "GitLab CI/CD & DevSecOps Platform Mastery"
+series_order: 49
+difficulty: Advanced
+thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
+summary: "Cẩm nang tổng hợp 100+ câu hỏi phỏng vấn kỹ thuật chuyên sâu bao phủ toàn bộ 48 bài học: Từ kiến trúc tầng thấp GitLab Runner, cú pháp pipeline nâng cao, DevSecOps, OIDC Đa đám mây, GitOps đến đo lường DORA và FinOps."
+tldr:
+  - "Hệ thống hóa toàn bộ 48 bài học GitLab CI/CD & DevSecOps qua 5 chuyên đề phỏng vấn cốt lõi."
+  - "Làm chủ kiến trúc tầng thấp: Coordinator, Runner Daemon, Ephemeral Containers và OIDC Federation."
+  - "Phân tích sắc bén các bài toán tối ưu hóa Pipeline, Caching đa tầng, bảo mật chuỗi cung ứng SLSA/SBOM."
+  - "Tự tin chinh phục các vòng phỏng vấn kỹ thuật cấp độ Senior DevOps, DevSecOps Architect và Platform Lead."
 ---
 
 {% raw %}
@@ -372,7 +389,7 @@ docker manifest push myrepo/app:v1.0.0</code></pre>
       <li><strong>Exit Code 143 ($128 + 15$)</strong>: Tiến trình bị dừng do Job Timeout, Cancel pipeline hoặc Node Drain.</li>
       <li><strong>Exit Code 127</strong>: Lệnh không tìm thấy trong <code>$PATH</code> hoặc binary thiếu thư viện dynamic linker (glibc vs musl).</li>
     </ul>
-    <p><strong>Quy trình 5 bước SRE</strong>: Observe (Quan sát log & metrics) $ightarrow$ Isolate (Cô lập failure domain) $ightarrow$ Reproduce (Tái hiện lỗi) $ightarrow$ Remediate (Khắc phục nóng) $ightarrow$ Automate (Tự động hóa phòng ngừa qua Alerts/Policy).</p>
+    <p><strong>Quy trình 5 bước SRE</strong>: Observe (Quan sát log & metrics) &rarr; Isolate (Cô lập failure domain) &rarr; Reproduce (Tái hiện lỗi) &rarr; Remediate (Khắc phục nóng) &rarr; Automate (Tự động hóa phòng ngừa qua Alerts/Policy).</p>
   </div>
 </details>
 

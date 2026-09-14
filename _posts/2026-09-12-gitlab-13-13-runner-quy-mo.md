@@ -42,7 +42,7 @@ Khi một doanh nghiệp mở rộng từ 10 lên hàng trăm kỹ sư phát tri
 
 > **Một hạ tầng Runner chuẩn Enterprise phải đạt được 3 tiêu chí: Tự động co giãn theo tải thực tế (Elastic Autoscaling), Cô lập tuyệt đối môi trường thực thi (Ephemeral Workspaces) và Giám sát đo đạc thời gian thực bằng Prometheus Metrics.**
 
-```
+```text
    KIẾN TRÚC RUNNER AUTOSCALING ĐA TẦNG (Enterprise Runner Fleet)
    
    GitLab Server (Coordinator)
@@ -91,20 +91,20 @@ Trong tệp cấu hình `config.toml` của Runner Daemon:
 - **`limit` (Per-runner Limit)**: Giới hạn số lượng job tối đa cho **riêng một khối `[[runners]]` cụ thể** (ví dụ giới hạn riêng cho runner có tag `gpu` hoặc `docker-heavy`).
 - **`request_concurrency`**: Số lượng yêu cầu lấy job đồng thời gửi tới GitLab Server trong mỗi chu kỳ poll.
 
-$$	ext{Active Jobs} \le \min\left(	ext{concurrent}, \sum 	ext{limit}_iight)$$
+$$\text{Active Jobs} \le \min\left(\text{concurrent}, \sum \text{limit}_i\right)$$
 
 ### 1.3. Lý Thuyết Hàng Đợi & Định Luật Little Trong CI/CD
 
-Độ bão hòa của hệ thống Runner được tính toán dựa trên hệ số tải $ho$:
+Độ bão hòa của hệ thống Runner được tính toán dựa trên hệ số tải $\rho$:
 
-$$ho = rac{\lambda}{\mu 	imes C}$$
+$$\rho = \frac{\lambda}{\mu \times C}$$
 
 Trong đó:
 - $\lambda$ (Arrival Rate): Số lượng job mới phát sinh trong 1 phút.
 - $\mu$ (Service Rate): Số lượng job một slot runner có thể hoàn thành trong 1 phút.
 - $C$ (Capacity): Tổng số slot thực thi đồng thời (`concurrent`).
 
-> **Quy luật vận hành**: Nếu hệ số tải $ho > 0.85$, thời gian chờ trong hàng đợi (Queue Duration / Pending Time) sẽ tăng theo cấp số nhân. Một hệ thống CI/CD lý tưởng phải duy trì $ho \le 0.70$ vào giờ cao điểm bằng cơ chế Autoscaling.
+> **Quy luật vận hành**: Nếu hệ số tải $\rho > 0.85$, thời gian chờ trong hàng đợi (Queue Duration / Pending Time) sẽ tăng theo cấp số nhân. Một hệ thống CI/CD lý tưởng phải duy trì $\rho \le 0.70$ vào giờ cao điểm bằng cơ chế Autoscaling.
 
 ### 1.4. Bộ Nhớ Đệm Phân Tán (Distributed S3 / MinIO Cache)
 
@@ -213,7 +213,28 @@ graph TD
     INC --> W1 --> W2 --> W3 --> W4 --> W5
 ```
 
-### 4.1. Phân Tích 5 Cạm Bẫy Phổ Biến Nhất
+### Tình Huống Sự Cố Thực Tế:
+<span class="badge badge--rose">🕒 04:15 AM</span> Toàn bộ các job biên dịch Java Spring Boot trên cụm Kubernetes Runner bị gián đoạn đột ngột giữa chừng với mã lỗi Exit Code 137, khiến pipeline phát hành bản vá bảo mật bị đình trệ.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+Tiến trình Maven build bị hủy diệt ngay tại pha chạy unit tests với thông báo OOM:
+
+```text
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ payments-service ---
+[INFO] Running com.corp.payments.service.TransactionServiceTest
+Killed
+ERROR: Job failed: command terminated with exit code 137
+Pod status: OOMKilled (Container 'build' exceeded memory limit 1073741824 bytes)
+```
+
+### 5-Whys Root Cause Analysis:
+1. <span class="badge badge--primary">Why 1</span> **Tại sao Job bị ngắt với Exit Code 137?** Tiến trình Maven bị Linux Kernel gửi tín hiệu `SIGKILL` do container bị lỗi OOMKilled (Out Of Memory).
+2. <span class="badge badge--primary">Why 2</span> **Tại sao lại chạm trần bộ nhớ?** Container sử dụng vượt quá giới hạn `memory_limit = "1Gi"` được cấu hình trong `config.toml` của Kubernetes Executor.
+3. <span class="badge badge--primary">Why 3</span> **Tại sao tiến trình Java lại ăn quá 1GB RAM?** JVM khởi tạo bộ nhớ Heap mặc định bằng 25% RAM máy chủ Node (Node có 32GB RAM &rarr; JVM cấp 8GB Heap), trong khi Container chỉ được cấp tối đa 1GB.
+4. <span class="badge badge--primary">Why 4</span> **Tại sao không thiết lập cờ khống chế JVM?** Nhóm phát triển chưa khai báo biến môi trường `JAVA_OPTS="-XX:MaxRAMPercentage=75.0"` để JVM nhận thức đúng cgroups của Container.
+5. <span class="badge badge--emerald">Root Cause Remedy</span> **Giải pháp triệt để:** Tăng `memory_limit = "4Gi"` trên Runner Pool cho Java và gắn thẻ `[heavy-build]`; cấu hình biến JVM Container-Aware trong pipeline base template.
+
+### Phân Tích 5 Cạm Bẫy Phổ Biến Nhất:
 
 #### Cạm bẫy 1: Sự cố "Kẹt hàng đợi" do chạm trần `concurrent` trong `config.toml`
 - **Hiện tượng**: Có 20 Runner online nhưng chỉ có 5 Job được chạy, 15 Job còn lại bị kẹt ở trạng thái Pending.
@@ -244,7 +265,7 @@ graph TD
 
 ## 5. Hands-on Lab: Triển Khai & Mở Rộng Quy Mô Runner Tự Động (8 Bước Chuẩn)
 
-```
+```text
    ┌────────────────────────────────────────────────────────────────────────┐
    │                  LAB ARCHITECTURE: RUNNER SCALING                      │
    ├────────────────────────────────────────────────────────────────────────┤
@@ -325,7 +346,11 @@ Cài đặt GitLab Runner trên Kubernetes bằng Helm Chart:
 
 ```bash
 helm repo add gitlab https://charts.gitlab.io
-helm install gitlab-runner gitlab/gitlab-runner   --namespace gitlab-runners   --set gitlabUrl="https://gitlab.example.com"   --set runnerRegistrationToken="glrt-MySecretToken"   --set rbac.create=true
+helm install gitlab-runner gitlab/gitlab-runner \
+  --namespace gitlab-runners \
+  --set gitlabUrl="https://gitlab.example.com" \
+  --set runnerRegistrationToken="glrt-MySecretToken" \
+  --set rbac.create=true
 ```
 
 > **Checkpoint 4**: Khi có Job chạy, Pod Worker tự động được tạo trong namespace `gitlab-runners` và tự biến mất khi Job xong.
@@ -391,7 +416,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q01</span>
     <span>Trình bày sự khác biệt bản chất giữa hai tham số `concurrent` và `limit` trong tệp cấu hình `config.toml` của GitLab Runner.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong><code>concurrent</code> (Cấp toàn cục)</strong>: Quy định tổng số lượng Job tối đa mà <em>toàn bộ tiến trình Runner Manager</em> được phép thực thi đồng thời trên tất cả các Worker/Executor cộng lại.</p>
     <p><strong><code>limit</code> (Cấp từng Runner con)</strong>: Nằm bên trong từng khối <code>[[runners]]</code>, quy định số lượng Job tối đa mà <em>khối Runner cụ thể đó</em> được phép nhận (thường dùng để giới hạn tài nguyên cho các job nặng như Docker build hoặc GPU training).</p>
     <p>Số job thực tế chạy của một runner luôn bị chặn bởi giá trị nhỏ hơn giữa <code>limit</code> của nó và <code>concurrent</code> toàn cục.</p>
@@ -403,7 +432,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q02</span>
     <span>Tại sao trong mô hình Runner Autoscaling (Ephemeral Workers), việc sử dụng Bộ nhớ đệm phân tán (Distributed S3 / MinIO Cache) là bắt buộc?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Trong mô hình Autoscaling (như Kubernetes Pods hoặc AWS EC2 Fleeting), mỗi Job được thực thi trong một môi trường máy ảo hoặc Pod tạm thời (Ephemeral Environment) và môi trường này sẽ bị <strong>hủy diệt hoàn toàn</strong> ngay khi Job kết thúc.</p>
     <p>Nếu dùng Local Disk Cache, dữ liệu cache sẽ biến mất cùng với worker. <strong>Distributed S3 Cache</strong> cho phép lưu trữ tập trung dữ liệu nén trên S3/MinIO bucket dùng chung, giúp Job tiếp theo dù chạy trên bất kỳ worker node nào mới sinh ra cũng đều có thể tải về và giải nén thành công.</p>
   </div>
@@ -414,7 +447,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q03</span>
     <span>Giải thích cơ chế Long Polling của GitLab Runner và ý nghĩa của tham số `check_interval`.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Cơ chế Long Polling</strong>: GitLab Runner gửi một HTTP Request lên GitLab Server hỏi xem có Job mới hay không. Nếu chưa có, kết nối được giữ mở (thường tối đa 50 giây) cho tới khi có Job xuất hiện thì Server đẩy ngay lập tức về cho Runner.</p>
     <p><strong>Ý nghĩa <code>check_interval</code></strong>: Là khoảng thời gian nghỉ (tính bằng giây) giữa các chu kỳ kiểm tra của Runner. Nếu đặt <code>check_interval = 0</code>, Runner sẽ sử dụng giá trị mặc định là 3 giây. Đặt quá nhỏ sẽ gây quá tải CPU cho GitLab Server, đặt quá lớn sẽ làm tăng thời gian chờ của Job trong hàng đợi.</p>
   </div>
@@ -425,14 +462,18 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q04</span>
     <span>Ứng dụng Định luật Little (Little's Law) trong việc tính toán số lượng Runner Slots cần thiết cho một tổ chức như thế nào?</span>
   </summary>
-  <div class="qa-body">
-    <p>Theo <strong>Định luật Little</strong>: $L = \lambda 	imes W$</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p>Theo <strong>Định luật Little</strong>: $L = \lambda \times W$</p>
     <ul>
       <li>$L$: Số lượng Job trung bình đang chạy trong hệ thống tại một thời điểm.</li>
       <li>$\lambda$: Tốc độ phát sinh Job mới trung bình (Arrival rate, ví dụ: 10 jobs/phút vào giờ cao điểm).</li>
       <li>$W$: Thời gian thực thi trung bình của một Job (Duration, ví dụ: 6 phút).</li>
     </ul>
-    <p>Khi đó, số slot Runner tối thiểu cần thiết để không bị nghẽn hàng đợi là: $C \ge L = 10 	imes 6 = 60 	ext{ slots}$.</p>
+    <p>Khi đó, số slot Runner tối thiểu cần thiết để không bị nghẽn hàng đợi là: $C \ge L = 10 \times 6 = 60\text{ slots}$.</p>
   </div>
 </details>
 
@@ -441,7 +482,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q05</span>
     <span>Khi nào nên chọn Kubernetes Executor thay vì Docker Autoscaling với Fleeting/Docker Machine trên AWS/GCP?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nên chọn Kubernetes Executor khi</strong>:</p>
     <ul>
       <li>Doanh nghiệp đã có sẵn hạ tầng cụm Kubernetes (EKS, GKE, On-premise K8s).</li>
@@ -457,7 +502,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q06</span>
     <span>Làm thế nào để giám sát sức khỏe của Runner Fleet bằng Prometheus và các Metrics quan trọng nhất cần Alert là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p>Kích hoạt endpoint <code>listen_address = "0.0.0.0:9252"</code> trong <code>config.toml</code> để Prometheus scrape metrics.</p>
     <p><strong>3 Metrics quan trọng nhất cần thiết lập Cảnh báo (Alert Rules)</strong>:</p>
     <ol>
@@ -473,7 +522,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q07</span>
     <span>Quy trình Graceful Shutdown khi bảo trì hoặc nâng cấp GitLab Runner Daemon diễn ra như thế nào?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Quy trình 3 bước chuẩn</strong>:</p>
     <ol>
       <li>Gửi tín hiệu dừng an toàn: Chạy lệnh <code>gitlab-runner stop</code> (hoặc gửi tín hiệu <code>SIGQUIT</code>).</li>
@@ -488,7 +541,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q08</span>
     <span>Tại sao việc sử dụng cờ `privileged = true` trong Kubernetes Executor tiềm ẩn nguy cơ an ninh nghiêm trọng? Giải pháp thay thế là gì?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguy cơ an ninh</strong>: <code>privileged = true</code> trao toàn bộ quyền root cấp Kernel của Kubernetes Node máy chủ cho Container. Mã độc chạy trong CI Pipeline có thể khai thác để truy cập toàn bộ đĩa cứng của máy chủ, đọc trộm Secrets của các Pod khác trong Cluster hoặc tấn công hạ tầng mạng.</p>
     <p><strong>Giải pháp thay thế</strong>: Sử dụng các công cụ biên dịch Container không cần quyền root (Rootless / Unprivileged Build Tools) như <strong>Google Kaniko</strong>, <strong>RedHat Buildah</strong> hoặc <strong>Sysbox Runtime</strong>.</p>
   </div>
@@ -499,7 +556,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q09</span>
     <span>Giải thích nguyên nhân một Job trên Kubernetes Runner bị lỗi `OOMKilled` và các bước cấu hình khắc phục.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Nguyên nhân</strong>: Dung lượng RAM của tiến trình bên trong container vượt quá ngưỡng <code>memory_limit</code> được cấu hình trong <code>config.toml</code> của Runner. Linux Kernel lập tức kích hoạt OOM Killer để bắn hạ Pod (trả về mã thoát 137).</p>
     <p><strong>Cách khắc phục</strong>:</p>
     <ul>
@@ -514,8 +575,12 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q10</span>
     <span>Làm thế nào để phân bổ Runner chuyên biệt cho từng loại tác vụ (Tag-based Routing) trong quy mô Doanh nghiệp?</span>
   </summary>
-  <div class="qa-body">
-    <p>Sử dụng cơ chế <strong>Runner Tags & Node Selectors</strong>:</p>
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
+    <p>Sử dụng cơ chế <strong>Runner Tags &amp; Node Selectors</strong>:</p>
     <ul>
       <li><strong>Pool 1 (General/Lint)</strong>: Runner nhẹ, CPU thấp, không cần GPU, gắn tag <code>[general, lint]</code>.</li>
       <li><strong>Pool 2 (Heavy Build/Java)</strong>: Runner cấu hình 8 Core / 16GB RAM, SSD NVMe, gắn tag <code>[heavy-build]</code>.</li>
@@ -530,7 +595,11 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
     <span class="qa-num-badge">Q11</span>
     <span>Cơ chế xác thực mới Authentication Token (`glrt-...`) trong GitLab 16+ thay thế Registration Token cũ như thế nào về mặt bảo mật?</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Registration Token cũ</strong>: Dùng chung một chuỗi token tĩnh để đăng ký vô số runner, rất dễ bị lộ và khó thu hồi quyền truy cập khi có sự cố.</p>
     <p><strong>Authentication Token mới (<code>glrt-...</code>)</strong>:</p>
     <ul>
@@ -544,15 +613,19 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
 <details class="qa-card">
   <summary class="qa-summary">
     <span class="qa-num-badge">Q12</span>
-    <span>Trình bày chiến lược tổng thể để thiết kế một Hạ tầng Runner phục vụ 1000 Kỹ sư với SLA thời gian chờ hàng đợi < 10 giây và tối ưu chi phí Cloud.</span>
+    <span>Trình bày chiến lược tổng thể để thiết kế một Hạ tầng Runner phục vụ 1000 Kỹ sư với SLA thời gian chờ hàng đợi &lt; 10 giây và tối ưu chi phí Cloud.</span>
   </summary>
-  <div class="qa-body">
+  <div class="qa-answer">
+    <div class="qa-answer-header">
+      <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
+    </div>
     <p><strong>Kiến trúc chuẩn Enterprise:</strong></p>
     <ol>
       <li><strong>Mô hình Kubernetes Ephemeral Pool</strong>: Triển khai GitLab Runner Operator trên cụm EKS/GKE với Karpenter / Cluster Autoscaler (Scale-to-zero khi không có tải).</li>
       <li><strong>Distributed S3 Cache cục bộ trong cùng VPC</strong>: Tối đa hóa tỉ lệ trúng cache, loại bỏ độ trễ mạng và chi phí Egress.</li>
       <li><strong>Phân tầng Runner Pool</strong>: Tách biệt Pool Dedicated cho nhánh Main/Deploy và Pool Co giãn cho Merge Requests.</li>
-      <li><strong>Giám sát tự động với Prometheus & Grafana</strong>: Cài đặt Auto-scaling trigger dựa trên chỉ số Queue Length và tỷ lệ bão hòa $ho \le 0.70$.</li>
+      <li><strong>Giám sát tự động với Prometheus &amp; Grafana</strong>: Cài đặt Auto-scaling trigger dựa trên chỉ số Queue Length và tỷ lệ bão hòa $\rho \le 0.70$.</li>
     </ol>
   </div>
 </details>
@@ -563,7 +636,7 @@ echo "Runner Fleet Scaling & Management Architecture verified 100%."
 
 ### 7.1. Tóm Tắt Các Điểm Cốt Lõi (Key Takeaways)
 
-```
+```text
                             QUẢN TRỊ & MỞ RỘNG QUY MÔ RUNNER
                                            │
      ┌───────────────────┬─────────────────┴─────────────────┬───────────────────┐

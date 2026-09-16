@@ -1,1514 +1,585 @@
 ---
 layout: post
-title: "[Bài 14] Vòng Đời Của Pod (Pod Lifecycle): InitContainer, RestartPolicy, Liveness vs Readiness & Graceful Shutdown"
-date: 2026-09-12 19:20:00 +0700
-categories: [CKA]
-tags:
-  - CKA
-  - Kubernetes
-  - ClusterAdmin
-  - LinuxFoundation
-  - DevOps
-  - Part-14
+title: "CKA (Bài 14/35) - Vòng Đời Của Pod (Pod Lifecycle): InitContainer, RestartPolicy, Probes & Graceful Shutdown"
+date: 2026-09-12
+categories: [Kubernetes, CKA, Workload, Architecture]
+tags: [cka, pod, pod-lifecycle, init-containers, probes, liveness, readiness, graceful-shutdown]
 series: "CKA Exam & Cluster Admin Mastery"
 series_order: 14
-difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80"
-summary: "[CKA P.14] Hướng dẫn chuyên sâu Vòng Đời Của Pod (Pod Lifecycle): InitContainer, RestartPolicy, Liveness vs Readiness & Graceful Shutdown: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+author: "Nguyen Thao Kien"
+description: "Làm chủ vòng đời toàn diện của Pod trong Kubernetes. Phân tích chi tiết 5 Pod Phases, 4 Pod Conditions, cơ chế Init Containers, bộ 3 Probes (Startup, Liveness, Readiness) và quy trình dừng êm Graceful Shutdown không gián đoạn dịch vụ."
+summary: "Hướng dẫn toàn diện về vòng đời Pod cho CKA và production: phân tích 5 Pod Phases, cơ chế chạy tuần tự của Init Containers, thiết lập bộ 3 Probes (Startup, Liveness, Readiness), và quy trình Graceful Shutdown."
+keywords:
+  - kubernetes pod lifecycle
+  - cka pod lifecycle
+  - liveness vs readiness probe
+  - startup probe kubernetes
+  - init containers kubernetes
+  - pod phase pending running
+  - graceful shutdown terminationGracePeriodSeconds
+image:
+  path: /assets/img/posts/cka/cka-14-pod-lifecycle-banner.png
+  alt: "Mô hình vòng đời Pod trong Kubernetes: Phases, Probes và Graceful Shutdown"
+difficulty: ADVANCED
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Vòng Đời Của Pod (Pod Lifecycle): InitContainer, RestartPolicy, Liveness vs Readiness & Graceful Shutdown."
-  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
-  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Pod trải qua 5 trạng thái cấp cao (Phases): `Pending` -> `Running` -> `Succeeded` / `Failed` (hoặc `Unknown` khi Node mất liên lạc)."
+  - "`initContainers` chạy tuần tự từng container một theo thứ tự khai báo và bắt buộc phải kết thúc thành công (Exit Code 0) trước khi các `containers` chính được khởi chạy song song."
+  - "Bộ 3 Probes phục vụ các mục đích riêng biệt: `startupProbe` bảo vệ ứng dụng khởi động chậm, `livenessProbe` khởi động lại container bị treo (Deadlock), và `readinessProbe` ngắt traffic Service khi container chưa sẵn sàng phục vụ."
+  - "`restartPolicy` (`Always`, `OnFailure`, `Never`) điều khiển hành vi tự phục hồi của Kubelet; khi container liên tục lỗi, Kubelet áp dụng cơ chế hoãn luỹ thừa `CrashLoopBackOff` (10s, 20s, 40s... tối đa 300s)."
+  - "Quy trình dừng êm (Graceful Shutdown): Kubelet kích hoạt `preStop` hook song song với việc EndpointSlice gỡ Pod khỏi Service, sau đó gửi `SIGTERM`, chờ tối đa `terminationGracePeriodSeconds` (mặc định 30s) trước khi cưỡng chế bằng `SIGKILL`."
 ---
+
 {% raw %}
-# [BÀI 14] VÒNG ĐỜI CỦA POD (POD LIFECYCLE): INITCONTAINER, RESTARTPOLICY, LIVENESS VS READINESS & GRACEFUL SHUTDOWN
-
-Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
-
-Bài viết chuyên sâu này sẽ đồng hành cùng bạn giải mã toàn diện bức tranh kiến trúc, phân tích các đánh đổi kỹ thuật thực chiến (Engineering Trade-offs), cung cấp bài thực hành Lab từng bước và bộ câu hỏi phỏng vấn chuẩn Architect / Lead Engineer.
-
----
-
-## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
-| # | Câu hỏi ôn tập | Đáp án chuẩn ngắn gọn (chứa con số / tên lệnh) |
-|---|---|---|
-| 1 | Sự khác nhau về triết lý giữa Helm và Kustomize là gì? | Helm dùng **Go Templating** (`.Values`); Kustomize dùng **Declarative Overlay Patches** (`base/` + `overlays/`) |
-| 2 | Kiến trúc Helm v3 khác Helm v2 điểm nào? | Helm v3 loại bỏ hoàn toàn **Tiller** (**0%** Tiller server-side), gọi API trực tiếp qua Kubeconfig RBAC |
-| 3 | Trình bày 3 phần tử tối thiểu bắt buộc của một Helm Chart. | `Chart.yaml`, `values.yaml`, và thư mục `templates/` (**3** phần tử) |
-| 4 | Lệnh nào dùng để khôi phục ứng dụng về phiên bản Release cũ? | `helm rollback <release-name> <revision-number>` (**1** lệnh) |
-| 5 | Lệnh nào thực thi Kustomize áp dụng cấu hình đè môi trường? | `kubectl apply -k <directory-path>` (cờ **`-k`**) |
-
-
-
-> **Luận đề trung tâm của buổi:**
-> *"Pod là đơn vị triển khai nhỏ nhất trong Kubernetes trải qua 5 trạng thái vòng đời (Pending, Running, Succeeded, Failed, Unknown); trong đó `initContainers` khởi chạy tuần tự và bắt buộc phải kết thúc thành công trước khi các container chính khởi động, `restartPolicy` (Always, OnFailure, Never) điều khiển quy trình tự sửa lỗi của Kubelet, và cơ chế kết thúc êm đẹp (Graceful Shutdown với `terminationGracePeriodSeconds` mặc định 30s) đảm bảo Pod giải phóng tài nguyên an toàn trước khi bị cưỡng chế bằng SIGKILL."*
-
-**Bảng kết quả các buổi trước được dùng lại:**
-
-| Kết quả / Công cụ | Nguồn gốc | Áp dụng vào buổi này |
-|---|---|---|
-| Khái niệm Pod spec và cấu hình container | Buổi 03 `QT 4.1` | Khai báo mảng `initContainers` và `containers` trong Pod spec |
-| Lệnh kiểm tra log và sự cố `kubectl logs` / `describe` | Buổi 02 `QT 5.1` | Chẩn đoán các lý do Pod bị kẹt `CrashLoopBackOff` và exit code 137 |
-| Cấu hình ServiceAccount `serviceAccountName` | Buổi 11 `QT 7.2` | Gán danh tính cho Pod chạy `initContainers` kiểm tra tài nguyên |
-
-Ba câu bài tập về nhà BTVN 4 của buổi 13 đã chuẩn bị sẵn kiến thức cho học viên: Câu 1 phân tích 5 trạng thái vòng đời Pod Phase (`Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`); Câu 2 tìm hiểu cơ chế khởi chạy tuần tự của `initContainers`; Câu 3 phân tích 3 chính sách `restartPolicy` và cơ chế kết thúc êm đẹp Graceful Shutdown.
-
----
-
-
-
-| # | Năng lực đạt được sau buổi học | Hiện vật chứng minh trong bài lab |
-|---|---|---|
-| 1 | Khởi tạo Pod có `initContainers` kiểm tra kết nối mạng trước khi chạy | Tệp `hien-vat/init-pod.yaml` |
-| 2 | Phân tích chính xác mã thoát Exit Code (0, 1, 137, 143) của container | Tệp log `hien-vat/exit-codes-report.txt` |
-| 3 | Cấu hình `restartPolicy: OnFailure` / `Never` cho các Pod dạng Job tính toán | Tệp `hien-vat/batch-pod.yaml` |
-| 4 | Cấu hình `terminationGracePeriodSeconds` và `preStop` hook ngắt êm đẹp | Tệp `hien-vat/graceful-pod.yaml` |
-| 5 | Trích xuất log cũ của container bị crash qua cờ `kubectl logs -p` | Tệp log `hien-vat/crash-previous.log` |
-| 6 | Kiểm thử kịch bản Graceful Shutdown và xóa Pod với script tự động | Script `hien-vat/verify-pod-lifecycle.sh` |
-
----
-
-
-
-| Bắt buộc phải biết | Nguồn tự học nếu thiếu |
-|---|---|
-| Cấu trúc tệp YAML Pod spec cơ bản | Buổi 03 `QT 4.1` |
-| Các câu lệnh kiểm tra trạng thái Pod `kubectl describe` / `logs` | Buổi 02 `QT 5.1` |
-| Khái niệm tín hiệu Linux (`SIGTERM`, `SIGKILL`) | Buổi 01 `QT 4.1` |
-
----
-
-
-
-
-
-| # | Thuật ngữ tiếng Việt | Tiếng Anh tương đương | Ghi chú chuẩn hoá trong thân bài |
-|---|---|---|---|
-| 1 | Trạng thái vòng đời Pod | Pod Phase (`Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`) | 5 trạng thái cấp cao đại diện cho vòng đời Pod |
-| 2 | Trạng thái container | Container State (`Waiting`, `Running`, `Terminated`) | Trạng thái chi tiết của từng container bên trong Pod |
-| 3 | Container khởi tạo | Init Container (`initContainers`) | Container chạy tuần tự hoàn thành trước khi container chính khởi động |
-| 4 | Chính sách khởi động lại | Restart Policy (`Always`, `OnFailure`, `Never`) | Quy tắc điều khiển Kubelet khởi động lại container bị sập |
-| 5 | Thời gian chờ kết thúc êm đẹp | Termination Grace Period (`terminationGracePeriodSeconds`) | Thời gian chờ giữa tín hiệu SIGTERM và SIGKILL (mặc định 30s) |
-| 6 | Tín hiệu ngắt êm đẹp | SIGTERM Signal (Signal 15) | Tín hiệu báo cho ứng dụng tự dọn dẹp kết nối và dừng |
-| 7 | Tín hiệu cưỡng chế tiêu diệt | SIGKILL Signal (Signal 9) | Tín hiệu ngắt kết nối lập tức do Kernel thực thi |
-| 8 | Mã thoát container | Container Exit Code | Số hiệu mã thoát báo lý do container kết thúc (0, 1, 137, 143) |
-| 9 | Lỗi thiếu bộ nhớ bị diệt | OOMKilled (Exit Code 137) | Sự cố container bị Kernel diệt do vượt quá giới hạn RAM limit |
-| 10 | Vòng lặp khởi động lại thất bại | CrashLoopBackOff | Trạng thái Kubelet tạm dừng khởi động lại container liên tục sập |
-| 11 | Móc tiền kết thúc | PreStop Lifecycle Hook | Hành động tùy biến thực thi trước khi gửi tín hiệu SIGTERM |
-| 12 | Thuật toán lùi thời gian khởi động | Exponential Backoff Delay | Thuật toán tăng dần thời gian chờ restart (10s, 20s, 40s... 5 phút) |
-| 13 | Kết thúc cưỡng chế tức thì | Force Deletion (`--force --grace-period=0`) | Lệnh xoá Pod lập tức khỏi etcd không chờ Grace Period |
-| 14 | Container phụ chạy song song | Native Sidecar Containers (Restartable Init) | Tính năng initContainer có `restartPolicy: Always` ở K8s 1.28+ |
-
-
-
-1. **Mô hình "Đội thi công chuẩn bị mặt bằng trước khi bàn giao nhà (InitContainers vs Main Containers)":**
-   `initContainers` giống như Đội thi công chuẩn bị mặt bằng (San lấp mặt bằng -> Đổ móng -> Nối đường điện nước). Mỗi đội làm việc tuần tự từng bước một, đội trước xong hẳn mới tới đội sau. Chỉ khi mặt bằng chuẩn bị 100% xong, Đội nội thất (`main containers`) mới bước vào ở và hoạt động liên tục.
-
-2. **Mô hình "Đồng hồ đếm ngược 30 giây di tản trước khi ngắt điện (Graceful Shutdown)":**
-   Khi Pod bị xoá, Kubelet như người phát chuông báo động `SIGTERM` và bật đồng hồ đếm ngược 30 giây (`terminationGracePeriodSeconds: 30`). Ứng dụng có 30 giây để đóng database connection và trả về HTTP 200 cho request dở dang. Hết 30 giây đếm ngược, Kubelet sẽ tự động cúp cầu dao điện `SIGKILL` tiêu diệt tiến trình.
-
-3. **Mô hình "Lò xo nén tăng thời gian phạt (CrashLoopBackOff)":**
-   Khi container liên tục bị crash exit code 1, Kubelet giống như một chiếc lò xo nén thời gian phạt: Lần 1 sập -> chờ 10s restart; Lần 2 sập -> chờ 20s; Lần 3 sập -> chờ 40s... tối đa nén tới 5 phút. Điều này ngăn việc container hỏng làm quá tải CPU của Node do restart liên tục.
-
----
-
-### 1.1. Tổng quan 5 trạng thái vòng đời của Pod (Pod Phases) (12 phút)
-
-**Nguyên lý cốt lõi:** Vòng đời của một Pod Kubernetes trải qua đúng **5 trạng thái (Phases) chính**: `Pending` (Đang chờ gán node/tải ảnh), `Running` (Đã gán node và ít nhất 1 container đang chạy), `Succeeded` (Tất cả container đã kết thúc thành công exit code 0), `Failed` (Ít nhất 1 container kết thúc thất bại exit code khác 0), và `Unknown` (Mất kết nối với Kubelet).
-
-**Giải thích cơ chế ngầm:** 5 trạng thái này cung cấp cái nhìn tổng quan ở cấp độ đối tượng Pod cho API Server và người quản trị.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Nhầm lẫn giữa Pod Phase `Running` và trạng thái container `Waiting`/`CrashLoopBackOff`.
-
-**Minh hoạ.**
-
-```bash
-# Trích xuất Pod Phase của tất cả Pods trong Namespace default
-kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}'
-```
-
-Con số chốt: **5** trạng thái vòng đời Pod chính thức (`Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`).
-
----
-
-**Nguyên lý cốt lõi:** Mã thoát exit code của container phản ánh chính xác nguyên nhân dừng: `Exit Code 0` (Thành công hoàn toàn), `Exit Code 1/255` (Lỗi ứng dụng bên trong), `Exit Code 137` (Bị diệt do OOMKilled vượt limit RAM hoặc SIGKILL = 128 + 9), và `Exit Code 143` (Dừng êm đẹp do SIGTERM = 128 + 15).
-
-**Giải thích cơ chế ngầm:** Con số exit code được trả về trực tiếp từ Linux Kernel. Đọc đúng exit code giúp kỹ sư khoanh vùng sự cố ngay lập tức mà không phải đoán mò.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc tại sao Pod bị exit code 137 và cố sửa code ứng dụng thay vì tăng giới hạn memory limit.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra exit code và lý do dừng container cũ trong Pod
-kubectl get pod app-pod -o jsonpath='{.status.containerStatuses[0].lastState.terminated.exitCode}'
-```
-
-Con số chốt: **137** là exit code đặc trưng của sự cố OOMKilled (Out Of Memory).
-
----
-
-### 1.2. Cơ chế khởi chạy `initContainers` tuần tự và các ca sử dụng (12 phút)
-
-```mermaid
-graph TD
-    A["Kubelet khởi tạo Pod"] --> B["Chạy initContainer 1 (Ví dụ: Chờ DB ready)"]
-    B -->|"Thành công Exit 0"| C["Chạy initContainer 2 (Ví dụ: Tải file cấu hình)"]
-    C -->|"Thành công Exit 0"| D["Tất cả initContainers hoàn thành 100%"]
-    D --> E["Khởi chạy đồng thời các main containers"]
-    B -->|"Thất bại Exit 1"| F["Restart initContainer 1 theo restartPolicy (Pod Pending)"]
-
-    style A fill:none,stroke:#f57c00,stroke-width:2px
-    style D fill:none,stroke:#0288d1,stroke-width:2px
-    style E fill:none,stroke:#388e3c,stroke-width:2px
-```
-
----
-
-**Nguyên lý cốt lõi:** Các container khai báo trong mảng `spec.initContainers` bắt buộc khởi chạy **tuần tự từng container một** theo đúng thứ tự khai báo trong YAML, và container trước BẮT BUỘC phải kết thúc thành công (`exit code 0`) thì container tiếp theo mới được khởi động.
-
-**Giải thích cơ chế ngầm:** Khác với mảng `containers` chính (khởi chạy đồng thời song song), `initContainers` được thiết kế dành riêng cho các tác vụ chuẩn bị tiền đề (như chờ database ready, tải file certificate, biến đổi cấu hình).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo tác vụ chạy ngầm vĩnh viễn (như web server) vào `initContainers` làm Pod bị kẹt ở `Init:0/1` mãi mãi.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  initContainers:
-  - name: wait-for-db
-    image: busybox:1.36
-    command: ['sh', '-c', 'until nc -z db-service 5432; do sleep 2; done']
-  containers:
-  - name: app
-    image: nginx:1.27-alpine
-```
-
-Con số chốt: **100%** các `initContainers` phải thoát exit code 0 trước khi main containers khởi động.
-
----
-
-**Nguyên lý cốt lõi:** Nếu một `initContainer` bị thất bại (exit code khác 0), Kubelet sẽ liên tục khởi động lại `initContainer` đó theo `restartPolicy` của Pod cho tới khi thành công; và toàn bộ các main containers sẽ KHÔNG BAO GIỜ được khởi tạo.
-
-**Giải thích cơ chế ngầm:** Đảm bảo tính toàn vẹn của ứng dụng: ứng dụng chính sẽ không bao giờ chạy trên một môi trường thiếu điều kiện tiên quyết.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc tại sao main container Nginx không chịu chạy trong khi `initContainer` đang báo lỗi `Init:CrashLoopBackOff`.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra trạng thái chi tiết của initContainers khi Pod bị kẹt
-kubectl get pod app-pod -o jsonpath='{.status.initContainerStatuses[*].state}'
-```
-
-Con số chốt: **0** main container nào được chạy khi có 1 initContainer bị hỏng.
-
----
-
-**Nguyên lý cốt lõi:** Từ Kubernetes v1.28+, tính năng Native Sidecar Containers cho phép khai báo `restartPolicy: Always` bên trong một `initContainer`; giúp container khởi tạo này chạy song song suốt đời Pod như một Sidecar mà không chặn các main containers phía sau.
-
-**Giải thích cơ chế ngầm:** Giải quyết vấn đề thiết kế Sidecar kiểu cũ vốn dễ bị ngắt đột ngột trước khi main container kết thúc.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc vì sao initContainer có cờ `restartPolicy: Always` lại không làm kẹt Pod ở bước init.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  initContainers:
-  - name: log-shipper
-    image: fluentd:v1.16
-    restartPolicy: Always
-```
-
-Con số chốt: **1.28** là phiên bản Kubernetes chính thức hỗ trợ Native Sidecar Containers qua initContainers.
-
----
-
-### 1.3. Ba chính sách khởi động lại `restartPolicy` và thuật toán Exponential Backoff (10 phút)
-
-**Nguyên lý cốt lõi:** Cấu hình `restartPolicy` trong Pod spec gồm đúng **3 giá trị**: `Always` (Mặc định — Kubelet luôn tự khởi động lại container bất kể exit code nào), `OnFailure` (Chỉ khởi động lại khi exit code khác 0), và `Never` (Không bao giờ khởi động lại container khi kết thúc).
-
-**Giải thích cơ chế ngầm:** Phù hợp cho các kiểu workload khác nhau: Web server/Microservice cần `Always`, Job tính toán lô ngắn hạn cần `OnFailure` hoặc `Never`.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `restartPolicy: Always` cho một Pod chạy script tính toán ngắn hạn làm Pod bị xoay vòng chạy lại mãi mãi sau khi xong.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  restartPolicy: OnFailure
-  containers:
-  - name: batch-job
-    image: busybox:1.36
-    command: ['sh', '-c', 'echo Done && exit 0']
-```
-
-Con số chốt: **3** giá trị `restartPolicy` chuẩn (`Always`, `OnFailure`, `Never`).
-
----
-
-**Nguyên lý cốt lõi:** Khi container bị crash liên tục, Kubelet áp dụng thuật toán lùi thời gian phạt Exponential Backoff Delay: bắt đầu từ 10 giây, nhân đôi sau mỗi lần sập (10s, 20s, 40s, 80s, 160s) và chạm trần tối đa **300 giây (5 phút)** trước khi thử khởi động lại tiếp theo.
-
-**Giải thích cơ chế ngầm:** Tránh việc một container bị lỗi làm kiệt quệ tài nguyên CPU/RAM của Node do Kubelet phải spawn process liên tục hàng trăm lần một phút.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc tại sao sửa xong lỗi trong DB rồi mà Pod ứng dụng vẫn phải đứng chờ vài phút mới tự restart lại.
-
-**Minh hoạ.**
-
-```bash
-# Xem thông báo CrashLoopBackOff và thời gian chờ restart tiếp theo
-kubectl describe pod app-pod | grep -i "Back-off"
-```
-
-Con số chốt: **300** giây (5 phút) là thời gian chờ phạt tối đa của trạng thái `CrashLoopBackOff`.
-
----
-
-### 1.4. Hai loại kết thúc: Graceful Shutdown (`SIGTERM` 30s) vs Cưỡng chế (`SIGKILL`) (4 phút)
-
-**Nguyên lý cốt lõi:** Quy trình xóa Pod ngắt êm đẹp (Graceful Shutdown) diễn ra theo đúng 2 bước trong khoảng thời gian `terminationGracePeriodSeconds` (mặc định **30 giây**): Bước 1 gửi tín hiệu `SIGTERM` (Signal 15) cho ứng dụng tự dọn dẹp kết nối; Bước 2 nếu hết 30s ứng dụng chưa dừng, Kubelet gửi tín hiệu cưỡng chế `SIGKILL` (Signal 9) tiêu diệt tiến trình lập tức.
-
-**Giải thích cơ chế ngầm:** Giúp ứng dụng Web hoàn tất các HTTP request dở dang, đóng kết nối database transaction an toàn mà không làm mất mát dữ liệu của người dùng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Đặt `terminationGracePeriodSeconds: 0` trên môi trường sản xuất cho các ứng dụng cơ sở dữ liệu/Web giao dịch tệp.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  terminationGracePeriodSeconds: 60
-  containers:
-  - name: db-app
-    image: postgres:16-alpine
-```
-
-Con số chốt: **30** giây là thời gian chờ Grace Period mặc định của Pod.
-
----
-
-**Nguyên lý cốt lõi:** Móc tiền kết thúc `lifecycle.preStop` được Kubelet thực thi TRƯỚC KHI tín hiệu `SIGTERM` được gửi tới container; thời gian chạy của `preStop` hook được tính gộp nằm trong tổng ngân sách `terminationGracePeriodSeconds`.
-
-**Giải thích cơ chế ngầm:** Cho phép chạy các lệnh tùy biến (như gỡ IP khỏi Service mesh, thông báo tới Nginx upstream) trước khi tiến trình ứng dụng nhận lệnh dừng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Viết script `preStop` chạy mất 40 giây nhưng để `terminationGracePeriodSeconds: 30` làm script bị ngắt giữa chừng do `SIGKILL`.
-
-**Minh hoạ.**
-
-```yaml
-containers:
-- name: web
-  image: nginx:1.27-alpine
-  lifecycle:
-    preStop:
-      exec:
-        command: ["/bin/sh", "-c", "nginx -s quit; sleep 5"]
-```
-
-Con số chốt: **1** lệnh `preStop` hook được chạy đầu tiên trước `SIGTERM`.
-
----
-
-## 8. Đưa vào cụm thật (4 phút)
-
-### Áp vào cụm đang chạy thì làm gì trước
-
-1. **Kiểm tra cờ `terminationGracePeriodSeconds` cho Pod quan trọng:** Tăng thời gian chờ lên 60s hoặc 120s cho các Pod DB/Stateful workload.
-2. **Luôn sử dụng `initContainers` để check dependency:** Giúp ứng dụng không bị crash loop khi khởi động trước các dịch vụ phụ thuộc (DB, Redis).
-3. **Phân tích exit code khi debug Pod hỏng:** Dùng `kubectl describe pod` đọc trường `Exit Code` để biết lý do chính xác (137 = OOM, 1 = App error).
-
-### Cái gì hỏng nếu áp thẳng lên prod
-
-- **Đặt `restartPolicy: Never` cho Pod ứng dụng Web Nginx:** Làm Pod chết luôn khi dính lỗi tạm thời mà không được Kubelet tự khởi động lại.
-- **Dùng lệnh xoá cưỡng chế `kubectl delete pod --force --grace-period=0` bừa bãi:** Làm gãy kết nối transaction của người dùng và hỏng dữ liệu ghi dở.
-- **Quy trình áp thử an toàn:**
-  - Viết `initContainers` test thử kết nối mạng `nc -z`.
-  - Thêm `preStop` hook ngủ 5 giây `sleep 5` để Nginx dọn dẹp connection.
-  - Test lệnh `kubectl delete pod` và quan sát log ngắt êm đẹp `SIGTERM`.
-
-### Đo trước — đo sau
-
-1. **Tỉ lệ lỗi 502 Bad Gateway khi Scaling/Rolling Update:** Giảm từ 5% xuống đúng 0% nhờ `preStop` hook và Graceful Shutdown.
-2. **Thời gian tự khôi phục ứng dụng:** Kubelet tự restart Pod bị crash trong < 10 giây.
-3. **Mức độ ổn định khởi động:** Giảm 100% việc Pod chính bị crash loop do thiếu kết nối DB nhờ `initContainers`.
-
-### Khi nào KHÔNG nên dùng
-
-- **Không kéo dài `terminationGracePeriodSeconds` quá lâu (như 3600s) cho Pod thông thường:** Làm chậm quy trình Rolling Update và Auto-scaling của cụm.
-- **Không lạm dụng quá nhiều `initContainers` nặng:** Làm tăng thời gian khởi động Pod (Startup Latency).
-
----
-
-### 1.6. Bẫy hay gặp (2 phút)
-
-| # | Bẫy hay gặp | Vì sao dính bẫy | Làm đúng là (kèm tên lệnh / con số) |
-|---|---|---|---|
-| 1 | Thắc mắc vì sao Pod bị exit code 137 | Container vượt quá giới hạn RAM limit (OOMKilled) | Tăng `resources.limits.memory` trong Pod spec |
-| 2 | Đặt `restartPolicy: Always` cho Job tính toán ngắn hạn | Job chạy xong exit 0 nhưng Kubelet vẫn restart lại mãi mãi | Đặt `restartPolicy: OnFailure` hoặc `Never` cho Job |
-| 3 | Pod bị kẹt ở trạng thái `Init:0/1` vĩnh viễn | `initContainer` chạy tiến trình ngầm không chịu thoát exit 0 | Đảm bảo script trong `initContainer` phải kết thúc exit 0 |
-| 4 | Viết script `preStop` hook chạy lâu hơn `terminationGracePeriodSeconds` | Script `preStop` bị ngắt giữa chừng do SIGKILL | Tăng `terminationGracePeriodSeconds` lớn hơn thời gian chạy `preStop` |
-| 5 | Dùng lệnh `kubectl delete pod --force --grace-period=0` bừa bãi | Xoá Pod lập tức không qua Graceful Shutdown gây hỏng dữ liệu | Chỉ dùng `--force` khi node bị sập hẳn không thể khôi phục |
-| 6 | Nhầm lẫn giữa Pod Phase `Pending` và Container State `Waiting` | `Pending` là trạng thái toàn Pod; `Waiting` là trạng thái 1 container | Dùng `kubectl describe pod` để xem chi tiết cả 2 |
-| 7 | Thắc mắc tại sao Pod bị kẹt `CrashLoopBackOff` tận 5 phút mới restart | Thuật toán Exponential Backoff nén thời gian phạt tối đa 300s | Kiểm tra sửa lỗi code hoặc tài nguyên để thoát Backoff |
-| 8 | Khai báo `initContainers` cùng cấp với `containers` trong YAML | Sai cấu trúc thụt lùi YAML schema của Pod spec | Khai báo `spec.initContainers` là mảng riêng biệt |
-| 9 | Ứng dụng không bắt tín hiệu `SIGTERM` trong container (PID 1 problem) | Tiến trình chạy dạng shell script `CMD sh -c` không forward signal | Dùng `exec` hoặc init system mỏng (tini) cho PID 1 |
-| 10 | Bị mất log của container cũ vừa bị crash | Lệnh `kubectl logs` mặc định chỉ xem container hiện tại | Truyền cờ `kubectl logs -p` (`--previous`) xem log container cũ |
-| 11 | Thắc mắc vì sao main container không chịu chạy | 1 trong các `initContainers` bị sập | Sửa lỗi `initContainer` để thoát exit 0 |
-| 12 | Đặt `terminationGracePeriodSeconds: 0` cho Pod Database | Database bị cúp điện đột ngột làm hỏng tệp dữ liệu đĩa | Giữ Grace Period tối thiểu 60s cho các Pod lưu trữ |
-
----
-
-## §10. Tóm tắt (2 phút)
-
-```mermaid
-graph TD
-    A["Vòng đời Pod: 5 Phases (Pending -> Running -> Succeeded/Failed)"] --> B["Khởi động: initContainers (Chạy tuần tự, bắt buộc Exit 0)"]
-    B --> C["Vận hành: Main Containers + restartPolicy (Always/OnFailure/Never)"]
-    C --> D["Sự cố: Exponential Backoff (Phạt tối đa 300s CrashLoopBackOff)"]
-    D --> E["Kết thúc: Graceful Shutdown (SIGTERM -> 30s Grace Period -> SIGKILL)"]
-
-    style A fill:none,stroke:#333,stroke-width:2px
-    style B fill:none,stroke:#333,stroke-width:2px
-    style E fill:none,stroke:#333,stroke-width:2px
-```
-
-### Năm điều phải nhớ
-
-1. **5 Pod Phases:** `Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`.
-2. **Quy tắc `initContainers`:** Chạy tuần tự 100%, container trước thoát exit 0 thì container sau mới chạy; hỏng 1 initContainer là main containers dừng hoàn toàn.
-3. **Ý nghĩa Exit Code:** Exit 0 (Success), Exit 1 (App Error), Exit 137 (OOMKilled / SIGKILL), Exit 143 (SIGTERM).
-4. **3 chính sách `restartPolicy`:** `Always` (mặc định), `OnFailure`, `Never`; phạt CrashLoopBackOff tối đa 300s (5 phút).
-5. **Quy trình ngắt êm đẹp:** Gửi `SIGTERM` (Signal 15) -> Chờ `terminationGracePeriodSeconds` (mặc định 30s) -> Gửi `SIGKILL` (Signal 9).
-
----
-
-## §11. Câu hỏi tự kiểm tra
-
-1. Liệt kê đúng 5 trạng thái vòng đời (Pod Phases) cấp cao của một Pod Kubernetes.
-2. Container Exit Code 137 có ý nghĩa là gì và nguyên nhân phổ biến nhất gây ra exit code này?
-3. Trình bày sự khác nhau về thứ tự khởi chạy và điều kiện hoàn thành giữa `initContainers` và `containers` chính trong Pod spec.
-4. Điều gì xảy ra đối với các main containers khi một `initContainer` bị sập exit code 1?
-5. Trình bày 3 chính sách khởi động lại `restartPolicy` trong Pod spec và cho biết chính sách mặc định là gì.
-6. Trạng thái `CrashLoopBackOff` là gì và thời gian nén phạt tối đa của thuật toán Exponential Backoff là bao nhiêu giây?
-7. Quy trình 2 bước xóa Pod ngắt êm đẹp (Graceful Shutdown) diễn ra như thế nào với 2 tín hiệu Linux nào?
-8. Thời gian chờ Grace Period mặc định (`terminationGracePeriodSeconds`) trong Pod spec là bao nhiêu giây?
-9. Móc tiền kết thúc `lifecycle.preStop` được Kubelet thực thi vào thời điểm nào và thời gian chạy của nó được tính vào đâu?
-10. Cờ nào được dùng trong lệnh `kubectl logs` để xem lại nhật ký của một container vừa bị crash trước đó?
-11. Hai chế độ hỏng (1 im lặng do initContainer chạy ngầm không exit 0 làm kẹt Pod, 1 âm thầm do hỏng data vì để grace period 0) là gì?
-12. Khi nào thì mới nên sử dụng cờ cưỡng chế xoá Pod `--force --grace-period=0`?
-
-### Đáp án
-
-1. 5 trạng thái: `Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`.
-2. Exit Code 137 nghĩa là tiến trình bị tiêu diệt do tín hiệu SIGKILL (128 + 9); nguyên nhân phổ biến nhất là bị Kernel diệt do vượt quá giới hạn RAM limit (OOMKilled).
-3. `initContainers` chạy tuần tự từng cái một và bắt buộc phải kết thúc exit 0; `containers` chính khởi chạy đồng thời song song và chạy liên tục.
-4. Các main containers sẽ KHÔNG BAO GIỜ được khởi chạy; Kubelet sẽ liên tục restart initContainer bị sập theo restartPolicy.
-5. 3 chính sách: `Always` (mặc định), `OnFailure`, `Never`.
-6. Trạng thái Kubelet tạm dừng restart container bị crash liên tục; thời gian nén phạt tối đa là 300 giây (5 phút).
-7. Bước 1 gửi `SIGTERM` (Signal 15) cho ứng dụng dọn dẹp kết nối; Bước 2 nếu hết Grace Period chưa dừng thì gửi `SIGKILL` (Signal 9) tiêu diệt tiến trình.
-8. Mặc định là 30 giây.
-9. Thực thi TRƯỚC KHI tín hiệu `SIGTERM` được gửi; thời gian chạy của `preStop` được tính gộp nằm trong tổng `terminationGracePeriodSeconds`.
-10. Cờ `-p` (hoặc `--previous`).
-11. Chế độ 1: Viết script trong initContainer chạy daemon ngầm làm Pod kẹt ở `Init:0/1`; Chế độ 2: Đặt Grace Period = 0 cho Database làm cúp điện đứt kết nối hỏng tệp dữ liệu.
-12. Chỉ dùng khi node chứa Pod bị ngắt kết nối/sập hoàn toàn và không thể tự phục hồi qua API Server.
-
----
-
-## §12. Tài liệu tham khảo
-
-| Nguồn tài liệu | Phiên bản Kubernetes áp dụng | Nội dung chính |
-|---|---|---|
-| Official Docs: Pod Lifecycle & Phases | Kubernetes v1.35 | Trạng thái Pod Phases, Container States và Exit Codes |
-| Official Docs: Init Containers | Kubernetes v1.35 | Cơ chế khởi tạo tuần tự và cấu hình initContainers |
-| File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
-
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
 > [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên cụm Kubernetes 1.30+ tiêu chuẩn (hoặc cụm kind/kubeadm lab). Hãy đảm bảo ngữ cảnh dòng lệnh `kubectl config current-context` đã trỏ chính xác vào cụm thực hành trước khi thực thi.
-
-## Khối thực hành — 120 phút
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm chứng BẰNG LỆNH) |
-|---|---|---|
-| TH1 | Tạo Pod `init-pod` chứa `initContainers` chuẩn | `kubectl get pod init-pod -n dev` ở trạng thái `Running` |
-| TH2 | Khảo sát các mã thoát Exit Code (Exit 0, Exit 1, Exit 137) | Tệp `exit-codes-report.txt` ghi đủ thông tin exit code |
-| TH3 | Cấu hình Pod `batch-pod` với `restartPolicy: OnFailure` / `Never` | `kubectl get pod batch-pod -n dev` ở trạng thái `Completed` |
-| TH4 | Cấu hình `terminationGracePeriodSeconds` và `preStop` hook ngắt êm | `kubectl describe pod graceful-pod -n dev` chứa `preStop` hook |
-| TH5 | Trích xuất log cũ của container bị crash qua `kubectl logs -p` | Log container trước đó được ghi ra tệp |
-| TH6 | Xác minh kịch bản vòng đời Pod với script tự động | Script kiểm tra 100% Lifecycle OK |
-| TH7 | Nộp đủ 4 hiện vật vào portfolio | Thư mục `k8s-portfolio/buoi-14/` chứa đủ 4 file md/yaml/sh |
+> **Mục tiêu kỹ thuật & Trọng tâm CKA**:
+> - Nắm vững 5 trạng thái `PodPhase` và 4 điều kiện cốt lõi `PodConditions` (`PodScheduled`, `Initialized`, `ContainersReady`, `Ready`).
+> - Cấu hình và debug chuỗi `initContainers` khởi tạo môi trường (chờ DB, tải assets).
+> - Phân biệt chính xác và cấu hình chuẩn xác bộ 3 Probes: `startupProbe`, `livenessProbe`, `readinessProbe`.
+> - Hiểu rõ sự khác biệt giữa các phương thức probe: `httpGet`, `tcpSocket`, `exec`, `grpc`.
+> - Thiết kế quy trình dừng êm không rớt request (Zero Downtime) bằng `preStop` hook và `terminationGracePeriodSeconds`.
 
 ---
 
-## L1. Điều kiện tiên quyết về môi trường
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Vòng Đời Của Pod
 
-| # | Kiểm tra điều kiện | Câu lệnh kiểm tra | Kết quả kỳ vọng |
-|---|---|---|---|
-| 1 | Cụm `kubeadm` 3 node đang ở v1.35 | `kubectl get nodes` | Hiển thị 3 node `cp-01`, `worker-01`, `worker-02` `Ready` |
-| 2 | Kubeconfig trỏ context `kubeadm` | `kubectl config current-context` | In ra đúng `kubeadm` |
-| 3 | Namespace `dev` sẵn sàng | `kubectl get ns dev` | Namespace `dev` ở trạng thái Active |
-| 4 | Thư mục hiện vật đã sẵn sàng | `mkdir -p k8s-portfolio/buoi-14` | Thư mục được tạo thành công |
-| 5 | Lệnh `kubectl logs -p` sẵn sàng | `kubectl logs --help` | Hiển thị hướng dẫn cờ `--previous` |
+Pod không phải là một tiến trình đơn lẻ mà là một môi trường thực thi nguyên tử (Atomic Execution Unit) đóng gói một hoặc nhiều container chia sẻ chung Network Namespace (cùng IP, port space) và Storage Volumes.
 
-```bash
-# Kiểm tra môi trường bắt buộc trước khi thực hiện bài lab
-kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUONG — ĐẠT" || echo "CHECKPOINT MOI TRUONG — LỖI (Trỏ sai context)"
-```
+Vòng đời của Pod được điều phối bởi **Kubelet** trên Node và được phản ánh liên tục về `kube-apiserver` thông qua chu trình điều hòa (Reconciliation).
 
----
-
-## L2. Kiến trúc bài lab
+### 1.1. Sơ Đồ Toàn Cảnh Vòng Đời Khởi Động & Dừng Của Pod
 
 ```mermaid
-graph TD
-    subgraph Init_Lab ["Chặng 1: InitContainers Sequential Flow"]
-        INIT1["1. initContainer: check-db (Exit 0)"] --> INIT2["2. initContainer: prep-config (Exit 0)"]
-        INIT2 --> MAIN["3. Main Container: app (Running)"]
-    end
+flowchart TD
+    classDef phase fill:none,stroke:#0284c7,stroke-width:2px,color:#0284c7;
+    classDef init fill:none,stroke:#d97706,stroke-width:2px,color:#d97706;
+    classDef run fill:none,stroke:#16a34a,stroke-width:2px,color:#16a34a;
+    classDef term fill:none,stroke:#dc2626,stroke-width:2px,color:#dc2626;
 
-    subgraph Exit_Lab ["Chặng 2: RestartPolicy & Exit Codes"]
-        BATCH["4. Pod batch-pod (restartPolicy: OnFailure)"] --> COMPLETED["Status: Succeeded / Completed (Exit 0)"]
-        CRASH["5. Pod crash-pod (Exit 1 / Exit 137)"] --> BACKOFF["State: CrashLoopBackOff / OOMKilled"]
-    end
+    Start(["1. Khởi tạo Pod Spec"]) --> Pending["Phase: PENDING<br>(Scheduler gán Node, Kubelet kéo Image, Mount Volumes)"]:::phase
+    
+    Pending --> InitSeq["2. Chạy initContainers tuần tự (Container 1 -> Container 2)"]:::init
+    InitSeq -- "Thất bại (Exit != 0)" --> RestartInit{"restartPolicy?"}
+    RestartInit -- "Always / OnFailure" --> InitSeq
+    RestartInit -- "Never" --> FailedPhase["Phase: FAILED"]:::term
 
-    subgraph Graceful_Lab ["Chặng 3: Graceful Shutdown"]
-        DEL_POD["6. kubectl delete pod graceful-pod"] --> PRESTOP["PreStop Hook: nginx -s quit; sleep 5"]
-        PRESTOP --> SIGTERM["Signal: SIGTERM (Signal 15)"]
-        SIGTERM --> TIMEOUT["30s Grace Period -> SIGKILL (Signal 9)"]
-    end
+    InitSeq -- "Tất cả Init xong (Exit 0)" --> AppStart["3. Khởi chạy song song các App Containers"]:::run
+    
+    AppStart --> PostStart["Chạy postStart Hook (Bất đồng bộ)"]
+    AppStart --> StartupCheck{"Có startupProbe?"}
 
-    Init_Lab --> Exit_Lab --> Graceful_Lab
+    StartupCheck -- "Có" --> ExecStartup["Thực hiện startupProbe"]
+    ExecStartup -- "Chưa đạt" --> ExecStartup
+    ExecStartup -- "Đạt thành công" --> ActiveProbes["4. Kích hoạt song song Liveness & Readiness Probes"]:::run
+    StartupCheck -- "Không" --> ActiveProbes
 
-    style Init_Lab fill:none,stroke:#f57c00,stroke-width:2px
-    style Exit_Lab fill:none,stroke:#0288d1,stroke-width:2px
-    style Graceful_Lab fill:none,stroke:#388e3c,stroke-width:2px
+    ActiveProbes --> Running["Phase: RUNNING<br>Readiness PASS -> Thêm vào Endpoints"]:::run
+
+    Running --> TermSignal["5. Nhận lệnh Xóa (kubectl delete pod)"]:::term
+    TermSignal --> PreStop["Chạy preStop Hook & Gỡ Pod khỏi Service Endpoints"]:::term
+    PreStop --> SigTerm["Gửi tín hiệu SIGTERM (PID 1)"]:::term
+    SigTerm --> GracePeriod{"Quá terminationGracePeriodSeconds (30s)?"}
+    GracePeriod -- "Chưa xong" --> SigKill["Gửi SIGKILL (Cưỡng chế dừng)"]:::term
+    GracePeriod -- "Đã kết thúc an toàn" --> SucceededPhase["Phase: SUCCEEDED / TERMINATED"]:::phase
+```
+
+### 1.2. Giải Mã 4 Điều Kiện Cốt Lõi (Pod Conditions)
+
+Khi chạy `kubectl describe pod <name>`, mục `Conditions` thể hiện tiến trình vượt qua các cột mốc kỹ thuật:
+
+1. **PodScheduled**: Pod đã được `kube-scheduler` gán thành công vào một Node cụ thể.
+2. **Initialized**: Toàn bộ các `initContainers` đã chạy xong thành công (Exit Code 0).
+3. **ContainersReady**: Tất cả các app containers trong Pod đã vượt qua kỳ kiểm tra `startupProbe` và sẵn sàng.
+4. **Ready**: Pod đã vượt qua `readinessProbe` và được phép nhận lưu lượng mạng từ Kubernetes Service / Ingress.
+
+---
+
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
+
+Bảng phân biệt chi tiết giữa 3 loại Probe trong Kubernetes:
+
+| Tiêu Chí Kỹ Thuật | Startup Probe | Liveness Probe | Readiness Probe |
+| :--- | :--- | :--- | :--- |
+| **Mục đích chính** | Chờ ứng dụng khởi động xong (Booting) | Phát hiện Deadlock/Treo ứng dụng | Xác định ứng dụng sẵn sàng nhận traffic |
+| **Hành động khi Thất bại**| Giết và khởi động lại Container | Giết và khởi động lại Container | **KHÔNG** giết Pod; Chỉ gỡ khỏi Service Endpoints |
+| **Tần suất kiểm tra** | Chạy liên tục lúc boot; Tự tắt khi PASS | Chạy định kỳ trong suốt vòng đời Pod | Chạy định kỳ trong suốt vòng đời Pod |
+| **Tác động tới Probe khác**| Vô hiệu hóa Liveness/Readiness đến khi PASS| Chờ Startup Probe pass mới bắt đầu | Chờ Startup Probe pass mới bắt đầu |
+| **Cơ chế kiểm tra** | `httpGet`, `tcpSocket`, `exec`, `grpc` | `httpGet`, `tcpSocket`, `exec`, `grpc` | `httpGet`, `tcpSocket`, `exec`, `grpc` |
+| **Tham số then chốt** | `failureThreshold * periodSeconds` | `failureThreshold`, `periodSeconds` | `failureThreshold`, `successThreshold` |
+| **Kịch bản điển hình** | Java/Spring Boot tải cache lúc boot (2-3 phút)| Ứng dụng bị leak memory, CPU thread lock| Ứng dụng đang quá tải (DB connection pool đầy) |
+
+---
+
+## 3. Cấu Trúc Khai Báo Manifest & Chi Tiết Vòng Đời
+
+### 3.1. Pod Manifest Hoàn Chỉnh với InitContainer, Probes & Graceful Shutdown
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: enterprise-web-app
+  namespace: production
+  labels:
+    app: web
+spec:
+  terminationGracePeriodSeconds: 60 # Cho phép tối đa 60 giây để xử lý xong request
+  restartPolicy: Always
+
+  # 1. Khối InitContainers: Chạy tuần tự kiểm tra Database trước khi app chạy
+  initContainers:
+    - name: wait-for-db
+      image: busybox:1.36
+      command: ['sh', '-c', 'until nc -z -w 2 postgres-service.production.svc.cluster.local 5432; do echo "Waiting for DB..."; sleep 2; done']
+
+  # 2. Khối Containers Chính
+  containers:
+    - name: web-server
+      image: myorg/payment-api:v2.1.0
+      ports:
+        - containerPort: 8080
+
+      # Lifecycle Hooks
+      lifecycle:
+        postStart:
+          exec:
+            command: ["/bin/sh", "-c", "echo App Started at $(date) >> /var/log/app.log"]
+        preStop:
+          exec:
+            command: ["/bin/sh", "-c", "sleep 15"] # Cho phép EndpointSlice gỡ IP trước khi ngắt tiến trình
+
+      # Bộ 3 Probes
+      startupProbe:
+        httpGet:
+          path: /healthz/startup
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        failureThreshold: 20 # Cho phép tối đa 5 + 20*5 = 105 giây để boot
+
+      livenessProbe:
+        httpGet:
+          path: /healthz/liveness
+          port: 8080
+        periodSeconds: 10
+        timeoutSeconds: 2
+        failureThreshold: 3
+
+      readinessProbe:
+        httpGet:
+          path: /healthz/readiness
+          port: 8080
+        periodSeconds: 5
+        successThreshold: 1
+        failureThreshold: 2
 ```
 
 ---
 
-## L3. Bước 1 — Khởi tạo Pod có `initContainers` kiểm tra tiền đề (30 phút)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Sự Cố Probes & CrashLoopBackOff
 
-### Thao tác 1.1: Tạo Pod `init-pod` chứa `initContainers` khởi chạy tuần tự
+### Tình huống 1: Liveness Probe sai cấu hình gây khởi động lại vô tận (Liveness Cascade Failure)
+
+Hệ thống Backend bị quá tải lưu lượng (Spike Traffic). CPU chạm ngưỡng 100%, endpoint `/healthz` phản hồi chậm 2.5 giây. Liveness Probe có `timeoutSeconds: 1` coi đây là thất bại và lập tức gửi tín hiệu giết container. Container mới sinh ra lại tiếp tục bị nghẽn và bị giết tiếp, tạo ra chuỗi sụp đổ dây chuyền (Cascading Failure).
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Warning  Unhealthy  12s (x3 over 32s)  kubelet            Liveness probe failed: Get "http://10.244.1.45:8080/healthz": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+  Normal   Killing    12s                kubelet            Container web-server failed liveness probe, will be restarted
+```
+
+### 5-Whys Root Cause Analysis:
+1. **Tại sao Kubelet liên tục restart Pod?** -> Liveness probe thất bại 3 lần liên tiếp.
+2. **Tại sao Liveness probe thất bại?** -> Timeout request vượt quá 1 giây do CPU bận xử lý request người dùng.
+3. **Ứng dụng có thực sự bị deadlock hay crash không?** -> Không, ứng dụng chỉ đang xử lý chậm do tải cao.
+4. **Tại sao lại dùng Liveness Probe để đo tải?** -> Lập trình viên nhầm lẫn giữa Liveness (sống/chết) và Readiness (có tải nổi hay không).
+5. **Giải pháp khắc phục là gì?** -> Tách biệt endpoint: Liveness Probe chỉ kiểm tra internal thread/memory nhẹ nhàng, Readiness Probe kiểm tra kết nối DB và tải. Tăng `timeoutSeconds` và `periodSeconds`.
+
+```diff
+       livenessProbe:
+         httpGet:
+-          path: /api/v1/deep-health-check # Endpoint nặng truy vấn DB
++          path: /healthz/live             # Endpoint nhẹ trả về HTTP 200 tức thì
+-        timeoutSeconds: 1
++        timeoutSeconds: 3
+-        periodSeconds: 5
++        periodSeconds: 15
+```
+
+---
+
+### Tình huống 2: Mất kết nối khách hàng (HTTP 502 Bad Gateway) khi Scale Down Pod
+
+Khi Deployment giảm số lượng replicas hoặc thực hiện Rolling Update, Pod bị xóa ngay lập tức. Client đang gửi request nhận mã lỗi HTTP 502 hoặc kết nối bị Reset đột ngột (Connection Reset by Peer).
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+# Log NGINX Ingress Controller:
+2026/09/16 02:40:15 [error] 1421#1421: *89121 connect() failed (111: Connection refused) 
+while connecting to upstream, client: 203.0.113.195, server: api.company.com, 
+request: "POST /v1/checkout HTTP/2.0", upstream: "http://10.244.2.88:8080/v1/checkout"
+```
+
+> [!WARNING]
+> Bản chất vấn đề: Việc gửi tín hiệu `SIGTERM` dừng Container trên Node và việc gỡ Endpoint IP trên `kube-proxy`/`Ingress` là **hai luồng bất đồng bộ song song**. Nếu ứng dụng dừng ngay trong khi Ingress chưa kịp cập nhật bảng định tuyến iptables, Ingress vẫn chuyển request đến Pod đã chết!
+> **Giải pháp**: Luôn khai báo `preStop: exec: command: ["sleep", "15"]` để trì hoãn việc gửi `SIGTERM`, đảm bảo Ingress có đủ thời gian gỡ IP ra khỏi upstream pool.
+
+---
+
+### Tình huống 3: Lỗi Exit Code 137 (OOMKilled) trong InitContainer
+
+Một `initContainer` thực hiện giải nén tệp zip lớn vào Shared Volume nhưng bị giới hạn bộ nhớ `resources.limits.memory: 64Mi`.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+State:          Waiting
+  Reason:       CrashLoopBackOff
+Last State:     Terminated
+  Reason:       OOMKilled
+  Exit Code:    137
+```
+
+Nguyên nhân: Mã thoát 137 = 128 + 9 (`SIGKILL`), chứng minh Kubelet đã cưỡng chế tiêu diệt tiến trình do vi phạm vượt quá Memory Limit của cgroups.
+
+---
+
+## 5. Hands-on Lab: Triển Khai & Kiểm Định Vòng Đời Pod (8 Bước)
+
+Bảng tổng hợp 8 bước thực hành:
+
+| Bước | Thao Tác | Mục Tiêu Kỹ Thuật | Lệnh / Công Cụ |
+| :--- | :--- | :--- | :--- |
+| **1** | Tạo Namespace thử nghiệm | Cô lập môi trường thực hành | `kubectl create ns lifecycle-lab` |
+| **2** | Triển khai Pod có InitContainer | Kiểm tra cơ chế chờ tuần tự | `kubectl apply -f init-pod.yaml` |
+| **3** | Quan sát trạng thái Init:0/1 | Kiểm tra Pod bị block bởi InitContainer | `kubectl get pods -w` |
+| **4** | Mở khóa InitContainer | Tạo điều kiện thỏa mãn để Init pass | `kubectl run mock-db ...` |
+| **5** | Triển khai Pod với Probes | Cấu hình Startup, Liveness, Readiness | `kubectl apply -f probe-pod.yaml` |
+| **6** | Giả lập lỗi Readiness Probe | Quan sát Pod bị gỡ khỏi Endpoints | `kubectl exec -- rm /tmp/ready` |
+| **7** | Giả lập lỗi Liveness Probe | Quan sát Kubelet tự động restart container | `kubectl exec -- rm /tmp/healthy` |
+| **8** | Kiểm định Graceful Shutdown | Theo dõi tiến trình preStop và SIGTERM | `kubectl delete pod --now` |
+
+---
+
+### Bước 1: Khởi tạo Namespace
 
 ```bash
-# 1. Tạo tệp YAML init-pod.yaml
-cat << 'EOF' > k8s-portfolio/buoi-14/init-pod.yaml
+kubectl create namespace lifecycle-lab
+```
+
+---
+
+### Bước 2 & 3: Triển khai Pod có InitContainer phụ thuộc Database
+
+Tạo Pod chờ Service `database-svc` xuất hiện:
+
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: init-pod
-  namespace: dev
+  name: app-with-init
+  namespace: lifecycle-lab
 spec:
   initContainers:
-  - name: init-service
-    image: busybox:1.36
-    command: ['sh', '-c', 'echo Init Service Started && sleep 2 && exit 0']
-  - name: init-mydb
-    image: busybox:1.36
-    command: ['sh', '-c', 'echo Init DB Started && sleep 2 && exit 0']
+    - name: check-db-ready
+      image: busybox:1.36
+      command: ['sh', '-c', 'until nc -z -w 2 database-svc 3306; do echo "Chờ database..."; sleep 2; done']
   containers:
-  - name: app-container
-    image: nginx:1.27-alpine
-    ports:
-    - containerPort: 80
+    - name: main-app
+      image: nginx:1.24
 EOF
-
-# 2. Áp dụng tệp YAML và chờ Pod ở trạng thái Running
-kubectl apply -f k8s-portfolio/buoi-14/init-pod.yaml
-kubectl wait --for=condition=Ready pod/init-pod -n dev --timeout=30s
 ```
 
-**CHECKPOINT 1 — Pod init-pod được khởi tạo thành công và đạt trạng thái Running.**
+Kiểm tra trạng thái Pod:
 
 ```bash
-kubectl get pod init-pod -n dev -o jsonpath='{.status.phase}' | grep -qx "Running" && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
+kubectl get pods -n lifecycle-lab
 ```
 
-**CHECKPOINT 2 — Cả 2 initContainers init-service và init-mydb đều kết thúc exit code 0.**
-
-```bash
-kubectl get pod init-pod -n dev -o jsonpath='{.status.initContainerStatuses[*].state.terminated.exitCode}' | grep -qx "0 0" && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
+Output hiển thị Pod bị dừng ở giai đoạn Init:
+```text
+NAME            READY   STATUS     RESTARTS   AGE
+app-with-init   0/1     Init:0/1   0          25s
 ```
 
 ---
 
-## L4. Bước 2 — Khảo sát các mã thoát Exit Code và `restartPolicy` (30 phút)
+### Bước 4: Khởi tạo Mock Database Service để giải phóng InitContainer
 
-### Thao tác 2.1: Tạo Pod `batch-pod` với `restartPolicy: OnFailure` và khảo sát exit code
+Tạo Pod và Service đại diện cho database:
 
 ```bash
-# 1. Tạo tệp batch-pod.yaml cho Job ngắn hạn
-cat << 'EOF' > k8s-portfolio/buoi-14/batch-pod.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: batch-pod
-  namespace: dev
-spec:
-  restartPolicy: OnFailure
-  containers:
-  - name: batch-job
-    image: busybox:1.36
-    command: ['sh', '-c', 'echo Processing batch data... && sleep 2 && exit 0']
-EOF
-
-kubectl apply -f k8s-portfolio/buoi-14/batch-pod.yaml
-sleep 5
-
-# 2. Ghi báo cáo exit codes
-cat << 'EOF' > /tmp/exit-codes-report.txt
-CONTAINER EXIT CODES REPORT:
-- Exit Code 0: Success (Hoàn thành công việc thành công)
-- Exit Code 1: Application Error (Lỗi ứng dụng bên trong)
-- Exit Code 137: OOMKilled / SIGKILL (Vượt quá RAM limit hoặc bị diệt cưỡng chế)
-- Exit Code 143: SIGTERM (Dừng êm đẹp Graceful Shutdown)
-EOF
-
-cp /tmp/exit-codes-report.txt k8s-portfolio/buoi-14/exit-codes-report.txt
+kubectl run database-svc --image=nginx:alpine --port=3306 -n lifecycle-lab --expose
 ```
 
-**CHECKPOINT 3 — Pod batch-pod kết thúc thành công với trạng thái Succeeded / Completed.**
+Quan sát Pod `app-with-init` tự động chuyển từ `Init:0/1` sang `PodInitializing` và đạt trạng thái `Running`:
 
 ```bash
-kubectl get pod batch-pod -n dev -o jsonpath='{.status.phase}' | grep -qx "Succeeded" && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
+kubectl get pods -n lifecycle-lab
 ```
 
-**CHECKPOINT 4 — Tệp exit-codes-report.txt ghi đủ 4 mã exit code chính.**
-
-```bash
-grep -q "Exit Code 137" k8s-portfolio/buoi-14/exit-codes-report.txt && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
-
-**CHECKPOINT 5 — CA ĐỐI CHỨNG: initContainer bị sập exit code 1 làm Pod bị kẹt ở trạng thái Init:CrashLoopBackOff.**
-
-```bash
-cat << EOF | kubectl apply -f - >/dev/null 2>&1
-apiVersion: v1
-kind: Pod
-metadata:
-  name: bad-init-pod
-  namespace: dev
-spec:
-  initContainers:
-  - name: bad-init
-    image: busybox:1.36
-    command: ['sh', '-c', 'exit 1']
-  containers:
-  - name: main
-    image: nginx:1.27-alpine
-EOF
-sleep 3
-kubectl get pod bad-init-pod -n dev -o jsonpath='{.status.initContainerStatuses[0].state.waiting.reason}' | grep -Ei "CrashLoopBackOff|ImagePullBackOff" >/dev/null && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — ĐẠT"
+Output:
+```text
+NAME            READY   STATUS    RESTARTS   AGE
+app-with-init   1/1     Running   0          90s
+database-svc    1/1     Running   0          15s
 ```
 
 ---
 
-## L5. Bước 3 — Cấu hình Graceful Shutdown (`preStop` hook & Grace Period) (30 phút)
-
-### Thao tác 3.1: Tạo Pod `graceful-pod` chứa `preStop` hook và `terminationGracePeriodSeconds`
+### Bước 5: Triển khai Pod với Liveness và Readiness Probes dựa trên tệp cờ
 
 ```bash
-# 1. Tạo tệp graceful-pod.yaml
-cat << 'EOF' > k8s-portfolio/buoi-14/graceful-pod.yaml
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: graceful-pod
-  namespace: dev
+  name: probe-test-app
+  namespace: lifecycle-lab
+  labels:
+    app: probe-demo
 spec:
-  terminationGracePeriodSeconds: 45
   containers:
-  - name: web
-    image: nginx:1.27-alpine
-    lifecycle:
-      preStop:
+    - name: test-container
+      image: busybox:1.36
+      command:
+        - /bin/sh
+        - -c
+        - touch /tmp/healthy /tmp/ready; sleep 3600
+      livenessProbe:
         exec:
-          command: ["/bin/sh", "-c", "echo PreStop Executed && sleep 5"]
+          command:
+            - cat
+            - /tmp/healthy
+        initialDelaySeconds: 5
+        periodSeconds: 5
+      readinessProbe:
+        exec:
+          command:
+            - cat
+            - /tmp/ready
+        initialDelaySeconds: 5
+        periodSeconds: 5
 EOF
-
-kubectl apply -f k8s-portfolio/buoi-14/graceful-pod.yaml
-kubectl wait --for=condition=Ready pod/graceful-pod -n dev --timeout=30s
-```
-
-**CHECKPOINT 6 — Pod graceful-pod được cấu hình terminationGracePeriodSeconds = 45.**
-
-```bash
-kubectl get pod graceful-pod -n dev -o jsonpath='{.spec.terminationGracePeriodSeconds}' | grep -qx "45" && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
-
-**CHECKPOINT 7 — Container web trong graceful-pod có cấu hình preStop lifecycle hook.**
-
-```bash
-kubectl get pod graceful-pod -n dev -o jsonpath='{.spec.containers[0].lifecycle.preStop.exec.command}' | grep -q "PreStop" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
-
-**CHECKPOINT 8 — CA ĐỐI CHỨNG: Pod có restartPolicy: Never dừng exit 0 không bao giờ tự restart.**
-
-```bash
-kubectl get pod batch-pod -n dev -o jsonpath='{.spec.restartPolicy}' | grep -qx "OnFailure" && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
 ```
 
 ---
 
-## L6. Bước 4 — Trích xuất log cũ `kubectl logs -p` và kiểm thử (20 phút)
+### Bước 6: Giả lập lỗi Readiness Probe
 
-### Thao tác 4.1: Kiểm tra cờ `kubectl logs -p` xem log container trước khi crash
+Tạo Service liên kết với Pod và kiểm tra Endpoints:
 
 ```bash
-# 1. Tạo Pod crash-pod cố tình crash để sinh log previous
-cat << 'EOF' > /tmp/crash-pod.yaml
+kubectl expose pod probe-test-app --port=80 -n lifecycle-lab
+kubectl get endpoints probe-test-app -n lifecycle-lab
+```
+
+Xóa tệp `/tmp/ready` để kích hoạt lỗi Readiness:
+
+```bash
+kubectl exec -n lifecycle-lab probe-test-app -- rm -f /tmp/ready
+sleep 7
+kubectl get pod probe-test-app -n lifecycle-lab
+kubectl get endpoints probe-test-app -n lifecycle-lab
+```
+
+Output xác nhận Pod chuyển sang `0/1 READY` nhưng **KHÔNG** bị restart, và Endpoints trở thành `<none>`:
+```text
+NAME             READY   STATUS    RESTARTS   AGE
+probe-test-app   0/1     Running   0          2m
+
+NAME             ENDPOINTS   AGE
+probe-test-app   <none>      45s
+```
+
+---
+
+### Bước 7: Giả lập lỗi Liveness Probe
+
+Xóa tệp `/tmp/healthy` để ép Kubelet tiêu diệt container:
+
+```bash
+kubectl exec -n lifecycle-lab probe-test-app -- rm -f /tmp/healthy
+sleep 15
+kubectl get pod probe-test-app -n lifecycle-lab
+```
+
+Output ghi nhận số lần RESTARTS tăng lên 1:
+```text
+NAME             READY   STATUS    RESTARTS     AGE
+probe-test-app   1/1     Running   1 (10s ago)  3m
+```
+
+---
+
+### Bước 8: Kiểm định Graceful Shutdown
+
+Tạo Pod có `preStop` hook ghi log trước khi tắt:
+
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: crash-pod
-  namespace: dev
+  name: graceful-app
+  namespace: lifecycle-lab
 spec:
+  terminationGracePeriodSeconds: 30
   containers:
-  - name: crasher
-    image: busybox:1.36
-    command: ['sh', '-c', 'echo App Started Before Crash && sleep 2 && exit 1']
+    - name: web
+      image: nginx:1.24
+      lifecycle:
+        preStop:
+          exec:
+            command: ["/bin/sh", "-c", "echo PreStop executed at $(date) > /dev/null; sleep 10"]
 EOF
-
-kubectl apply -f /tmp/crash-pod.yaml
-sleep 6
-
-# 2. Trích xuất log container cũ trước khi crash bằng cờ -p (--previous)
-kubectl logs crash-pod -n dev -p > /tmp/crash-previous.log 2>&1 || echo "App Started Before Crash" > /tmp/crash-previous.log
-cp /tmp/crash-previous.log k8s-portfolio/buoi-14/crash-previous.log
 ```
 
-**CHECKPOINT 9 — Cờ kubectl logs -p trích xuất thành công log container cũ.**
+Thực hiện xóa Pod và đo thời gian dừng:
 
 ```bash
-grep -q "App Started" k8s-portfolio/buoi-14/crash-previous.log && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
+time kubectl delete pod graceful-app -n lifecycle-lab
 ```
 
-**CHECKPOINT 10 — Pod crash-pod đang ở trạng thái CrashLoopBackOff hoặc Error.**
+Lệnh thực thi mất chính xác ~10-12 giây (đúng thời gian sleep của preStop) thay vì bị ngắt đột ngột.
 
-```bash
-kubectl get pod crash-pod -n dev -o jsonpath='{.status.containerStatuses[0].state.waiting.reason}' | grep -Ei "CrashLoopBackOff|Error" >/dev/null && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
+---
+
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
+
+<details class="qa-card">
+  <summary><b>Câu 1: Năm trạng thái Pod Phase trong Kubernetes là gì và trạng thái nào cho biết Pod đã hoàn thành công việc thành công?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Năm trạng thái Pod Phase bao gồm: <code>Pending</code>, <code>Running</code>, <code>Succeeded</code>, <code>Failed</code>, và <code>Unknown</code>.<br>
+    Trạng thái <b>Succeeded</b> thể hiện toàn bộ các container trong Pod đã kết thúc thành công với Exit Code 0 (thường gặp trong đối tượng Job hoặc CronJob) và sẽ không được khởi động lại.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 2: Các Init Container được thực thi theo cơ chế song song hay tuần tự? Nếu một Init Container bị lỗi thì điều gì xảy ra?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Các Init Container luôn được thực thi <b>tuần tự từng container một</b> theo đúng thứ tự khai báo trong mảng <code>initContainers</code>. Nếu một Init Container bị lỗi (Exit Code != 0), Kubelet sẽ khởi động lại Init Container đó liên tục theo <code>restartPolicy</code> của Pod (trừ khi đặt <code>restartPolicy: Never</code> thì Pod sẽ chuyển sang trạng thái <code>Failed</code>). Các container chính sẽ không bao giờ được khởi động cho đến khi toàn bộ Init Containers hoàn tất thành công.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 3: Điểm khác biệt quan trọng nhất giữa Liveness Probe và Readiness Probe là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>Liveness Probe:</b> Khi thất bại, Kubelet sẽ <b>tiêu diệt (kill)</b> và khởi động lại Container đó theo <code>restartPolicy</code>. Dùng để khắc phục sự cố treo ứng dụng/deadlock.</li>
+      <li><b>Readiness Probe:</b> Khi thất bại, Kubelet <b>KHÔNG khởi động lại</b> Container mà chỉ thông báo gỡ địa chỉ IP của Pod ra khỏi bảng <b>Endpoints/EndpointSlice</b> của các Service liên quan, ngăn không cho gửi request mới vào Pod cho đến khi probe thành công trở lại.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 4: Startup Probe giải quyết bài toán gì cho các ứng dụng legacy hoặc ứng dụng khởi động chậm?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Startup Probe tạo một khoảng đệm an toàn lúc khởi động. Trong suốt thời gian Startup Probe chưa thành công (được kiểm soát bởi <code>failureThreshold * periodSeconds</code>), toàn bộ các kiểm tra của Liveness Probe và Readiness Probe sẽ bị <b>tạm hoãn kích hoạt</b>. Điều này ngăn chặn việc Liveness Probe ngộ nhận ứng dụng bị treo và gửi lệnh giết sớm khi ứng dụng chỉ đơn thuần đang tải cấu hình hoặc nạp dữ liệu bộ nhớ.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 5: Cơ chế CrashLoopBackOff hoạt động như thế nào khi container liên tục thoát với mã lỗi?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Khi một container bị crash liên tục, Kubelet sẽ áp dụng cơ chế trì hoãn số mũ (Exponential Back-off Delay) trước mỗi lần khởi động lại tiếp theo: 10 giây, 20 giây, 40 giây, 80 giây, 160 giây và tối đa là <b>300 giây (5 phút)</b>. Nếu container chạy ổn định liên tục trong 10 phút, bộ đếm backoff sẽ được reset về 0.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 6: Trình tự các bước diễn ra khi một Pod nhận lệnh xóa (Graceful Shutdown) là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li>1. Pod chuyển sang trạng thái <code>Terminating</code> và bị gỡ khỏi Service Endpoints.</li>
+      <li>2. Kubelet thực thi <code>preStop</code> hook (nếu có).</li>
+      <li>3. Kubelet gửi tín hiệu <code>SIGTERM</code> tới tiến trình chính (PID 1) trong container.</li>
+      <li>4. Kubelet đếm ngược khoảng thời gian <code>terminationGracePeriodSeconds</code> (mặc định 30 giây).</li>
+      <li>5. Nếu tiến trình chưa kết thúc khi hết thời gian, Kubelet gửi tín hiệu cưỡng chế <code>SIGKILL</code>.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 7: Tại sao cần sử dụng preStop hook chứa lệnh sleep 10-15s trong môi trường Production?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Do tính chất phân tán bất đồng bộ, việc gỡ IP của Pod khỏi bảng định tuyến của Ingress Controller và kube-proxy (iptables/IPVS) mất từ 1 đến vài giây. Việc chèn <code>preStop: exec: command: ["sleep", "15"]</code> giữ cho container vẫn phản hồi các request đang trên đường bay (in-flight requests) trong lúc chờ các thành phần mạng hoàn tất cập nhật, ngăn chặn hoàn toàn lỗi HTTP 502/Connection Refused đối với người dùng.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 8: Ý nghĩa của mã thoát Exit Code 137 và Exit Code 143 khi xem trạng thái Container là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>Exit Code 137:</b> 128 + 9 = Nhận tín hiệu <code>SIGKILL</code> (Thường do OOMKilled - hết RAM hoặc do hết thời gian Grace Period bị Kubelet ép tắt).</li>
+      <li><b>Exit Code 143:</b> 128 + 15 = Nhận tín hiệu <code>SIGTERM</code> và tiến trình đã dừng êm đẹp theo yêu cầu từ hệ điều hành/Kubelet.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 9: Bốn cơ chế kiểm tra (Probe Handlers) được hỗ trợ trong Kubernetes là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>httpGet:</b> Gửi request HTTP GET tới IP của Pod theo đường dẫn và cổng chỉ định (thành công nếu mã phản hồi từ 200 đến 399).</li>
+      <li><b>tcpSocket:</b> Kiểm tra mở kết nối TCP tới cổng chỉ định trên Pod (thành công nếu port đang mở).</li>
+      <li><b>exec:</b> Thực thi một lệnh shell bên trong Container (thành công nếu Exit Code bằng 0).</li>
+      <li><b>grpc:</b> Gửi yêu cầu gRPC health checking theo chuẩn gRPC Health Checking Protocol.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 10: Tài nguyên CPU và Memory của Pod được tính toán như thế nào khi có sự hiện diện của nhiều Init Containers?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Tài nguyên Effective Request/Limit của Pod bằng <b>giá trị lớn nhất</b> giữa:<br>
+    1. Giá trị Request/Limit cao nhất trong số các <code>initContainers</code> riêng lẻ.<br>
+    2. Tổng giá trị Request/Limit của tất cả các <code>app containers</code> chính chạy song song.<br>
+    Vì Init Containers chạy tuần tự nên bộ nhớ của chúng không cộng dồn với nhau.
+  </div>
+</details>
+
+---
+
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+
+```mermaid
+mindmap
+  root((Pod Lifecycle))
+    Pod Phases
+      Pending (Scheduling & Pulling)
+      Running (Active Workload)
+      Succeeded (Jobs / Exit 0)
+      Failed (Crash / Exit != 0)
+    Khoi Dong Tuan Tu
+      initContainers (Chay tuan tu)
+      postStart Hook (Bat dong bo)
+      startupProbe (Bao ve boot cham)
+    Dinh Ky Giam Sat
+      livenessProbe (Restart khi treo)
+      readinessProbe (Traffic control)
+    Dung Em An Toan
+      preStop Hook (Delay Ingress)
+      SIGTERM -> 30s -> SIGKILL
+      Zero Downtime
 ```
 
-**CHECKPOINT 11 — Lệnh delete pod graceful-pod thực thi ngắt êm đẹp thành công.**
-
-```bash
-kubectl delete pod graceful-pod -n dev --wait=false >/dev/null 2>&1 && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
-
-**CHECKPOINT 12 — 100% 3 node cp-01, worker-01, worker-02 duy trì trạng thái Ready.**
-
-```bash
-kubectl get nodes --no-headers | grep -c "Ready" | grep -qx "3" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
-
----
-
-## L7. Nộp hiện vật và dọn dẹp (10 phút)
-
-### Thao tác 7.1: Gom hiện vật nộp bài
-
-```bash
-# 1. Tạo tệp verify-pod-lifecycle.sh
-cat << 'EOF' > k8s-portfolio/buoi-14/verify-pod-lifecycle.sh
-#!/bin/bash
-# Script kiểm tra cấu hình vòng đời Pod, initContainers và Graceful Shutdown
-
-INIT_PHASE=$(kubectl get pod init-pod -n dev -o jsonpath='{.status.phase}')
-BATCH_PHASE=$(kubectl get pod batch-pod -n dev -o jsonpath='{.status.phase}')
-REPORT_CHECK=$(grep -q "Exit Code 137" k8s-portfolio/buoi-14/exit-codes-report.txt && echo "OK")
-
-if [ "$INIT_PHASE" == "Running" ] && [ "$BATCH_PHASE" == "Succeeded" ] && [ "$REPORT_CHECK" == "OK" ]; then
-    echo "VERIFY POD LIFECYCLE — ĐẠT (InitContainers & Exit Codes OK)"
-else
-    echo "VERIFY POD LIFECYCLE — LỖI (InitPhase: $INIT_PHASE, BatchPhase: $BATCH_PHASE, Report: $REPORT_CHECK)"
-fi
-EOF
-
-chmod +x k8s-portfolio/buoi-14/verify-pod-lifecycle.sh
-./k8s-portfolio/buoi-14/verify-pod-lifecycle.sh
-
-# 2. Tạo tệp nhat-ky-buoi-14.md
-cat << 'EOF' > k8s-portfolio/buoi-14/nhat-ky-buoi-14.md
-# NHẬT KÝ THU HOẠCH BUỔI 14
-
-1. Cơ chế initContainers:
-   - Khởi chạy tuần tự 100%, container trước exit 0 thì container sau mới chạy.
-   - Hỏng 1 initContainer làm main containers dừng hoàn toàn.
-
-2. Ý nghĩa Exit Codes:
-   - Exit 0: Success; Exit 1: App Error; Exit 137: OOMKilled / SIGKILL; Exit 143: SIGTERM.
-
-3. Graceful Shutdown & preStop hook:
-   - Kubelet chạy preStop hook -> gửi SIGTERM -> chờ terminationGracePeriodSeconds (30s) -> gửi SIGKILL.
-EOF
-
-# 3. Dọn dẹp tệp tạm
-rm -f /tmp/exit-codes-report.txt /tmp/crash-pod.yaml /tmp/crash-previous.log
-kubectl delete pod bad-init-pod crash-pod -n dev --ignore-not-found=true >/dev/null 2>&1
-```
-
-**CHECKPOINT 13 — Đủ 4 tệp hiện vật trong thư mục portfolio.**
-
-```bash
-[ -f k8s-portfolio/buoi-14/init-pod.yaml ] && [ -f k8s-portfolio/buoi-14/batch-pod.yaml ] && [ -f k8s-portfolio/buoi-14/verify-pod-lifecycle.sh ] && [ -f k8s-portfolio/buoi-14/nhat-ky-buoi-14.md ] && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
-
----
-
-## L8. Xử lý sự cố thường gặp trong lab
-
-| # | Triệu chứng lỗi | Nguyên nhân khả dĩ | Cách xử lý sửa lỗi |
-|---|---|---|---|
-| 1 | Pod bị kẹt ở `Init:0/2` vĩnh viễn | `initContainer` 1 chạy tiến trình ngầm không chịu thoát exit 0 | Sửa script trong `initContainer` để thoát exit 0 |
-| 2 | Lỗi `Exit Code 137` xuất hiện trong `kubectl describe pod` | Container bị tiêu diệt do vượt quá RAM limit (OOMKilled) | Tăng giới hạn `resources.limits.memory` trong Pod spec |
-| 3 | Lệnh `kubectl logs` báo `container is in waiting state` | Container chưa chạy hoặc đã bị sập | Truyền cờ `kubectl logs -p` để xem log của container cũ |
-| 4 | Pod bị kẹt ở trạng thái `Terminating` lâu bất thường | Script `preStop` hook hoặc Grace Period quá dài | Kiểm tra script `preStop` hoặc giảm `terminationGracePeriodSeconds` |
-| 5 | Job Pod bị xoay vòng khởi động lại vĩnh viễn sau khi xong | Đặt nhầm `restartPolicy: Always` cho Job | Đổi `restartPolicy: OnFailure` hoặc `Never` trong Pod spec |
-| 6 | Script `preStop` bị ngắt giữa chừng không chạy xong | `terminationGracePeriodSeconds` ngắn hơn thời gian chạy preStop | Tăng `terminationGracePeriodSeconds` lớn hơn thời gian preStop |
-| 7 | Pod bị kẹt `CrashLoopBackOff` và phải chờ 5 phút mới restart | Thuật toán Exponential Backoff nén thời gian phạt tối đa 300s | Sửa lỗi code/cấu hình rồi xoá Pod để Kubelet recreate ngay |
-| 8 | Lỗi YAML `unknown field "initContainers"` | Khai báo `initContainers` không nằm dưới `spec:` | Khai báo `spec.initContainers` đúng cấu trúc thụt lùi YAML |
-| 9 | `kubectl delete pod` bị treo terminal | Cờ wait mặc định chờ Grace Period | Thêm cờ `--wait=false` nếu muốn trả về terminal ngay |
-| 10 | Container không nhận được tín hiệu `SIGTERM` (PID 1 problem) | Tiến trình chạy qua `sh -c` làm shell nuốt signal | Dùng cú pháp mảng `command: ["/app"]` để app chạy PID 1 |
-| 11 | Pod báo `ImagePullBackOff` ở `initContainer` | Nhầm tên image trong `initContainers` | Đổi tên image sang image mỏng chuẩn `busybox:1.36` |
-| 12 | Thắc mắc vì sao main container không được tạo | `initContainer` bị crash exit code 1 | Dùng `kubectl logs <pod> -c <init-name>` sửa lỗi init |
-| 13 | Lỗi `permission denied` khi chạy script preStop | Script trong preStop chưa được cấp quyền execute | Thêm `chmod +x` hoặc gọi qua `/bin/sh -c` |
-| 14 | Script `verify-pod-lifecycle.sh` báo lỗi | Vẫn chưa dọn dẹp các Pod thử nghiệm cũ | Chạy lại Thao tác 7.1 dọn dẹp tệp tạm |
-
----
-
-## L9. Bài tập mở rộng
-
-1. **BT1 — Khảo sát Native Sidecar Containers (K8s 1.28+):** Thêm cờ `restartPolicy: Always` vào một `initContainer` và quan sát hành vi chạy song song với main container.
-2. **BT2 — Giả lập sự cố OOMKilled Exit Code 137:** Tạo Pod chạy lệnh `python -c "a=''*10**9"` với `memory limit: 50Mi` và trích xuất exit code 137.
-3. **BT3 — Viết `preStop` hook gửi thông báo webhook:** Cấu hình `preStop` hook gọi lệnh `curl -X POST http://alert-service/pod-stopping` trước khi dừng.
-4. **BT4 — So sánh `restartPolicy: OnFailure` vs `Never`:** Tạo 2 Pod chạy script `exit 1` với 2 chính sách khác nhau và quan sát số lần `RESTARTS` trong `kubectl get pods`.
-5. **BT5 — Khảo sát cờ `kubectl delete pod --force --grace-period=0`:** Thử nghiệm xóa cưỡng chế một Pod bị treo và so sánh thời gian phản hồi.
-6. **BT6 — Phân tích chi tiết trường `lastState` trong `kubectl get pod -o json`:** Trích xuất thông tin `exitCode`, `finishedAt`, `startedAt` của container cũ vừa bị crash.
-
----
-
-## L10. Hiện vật nộp và tiêu chí chấm điểm
-
-### Bảng điểm đánh giá bài lab
-
-| Hạng mục hiện vật | Yêu cầu kĩ thuật | Điểm tối đa |
-|---|---|---|
-| `init-pod.yaml` | Tệp YAML Pod chứa `initContainers` chuẩn | 25 điểm |
-| `exit-codes-report.txt` | Báo cáo trích xuất đủ 4 mã Exit Code (0, 1, 137, 143) | 25 điểm |
-| `verify-pod-lifecycle.sh` | Script bash chạy thành công, xác minh Pod Lifecycle OK | 25 điểm |
-| `nhat-ky-buoi-14.md` | Trả lời đủ 3 câu thu hoạch, phân biệt rõ Graceful Shutdown vs Force | 15 điểm |
-| CHECKPOINT 1–13 | Tất cả 13 checkpoint tự động đều in chữ `ĐẠT` | 10 điểm |
-| **Tổng điểm** | | **100 điểm** |
-
-### Các trường hợp trừ điểm
-
-- Trừ **20 điểm**: Nếu script hoặc câu lệnh sử dụng công cụ `jq` (vi phạm quy tắc môi trường thi).
-- Trừ **15 điểm**: Nếu lạm dụng lệnh cưỡng chế `--force --grace-period=0` trong kịch bản bình thường.
-- Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-14/`.
-- Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
-
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-
-## V1. Cách tiến hành
-
-1. **Thời lượng và hình thức:** Khối vấn đáp diễn ra trong đúng **20 phút**. Giảng viên (hoặc bạn học đóng vai Trưởng nhóm kỹ thuật / Senior DevOps) đưa ra lần lượt từng câu hỏi trong V2.
-2. **Quy tắc chấm điểm:**
-   - Mỗi câu hỏi được chấm theo thang điểm 4 mức: **0 điểm** (trả lời sai hoặc không biết); **1 điểm** (trả lời được bề nổi nhưng thiếu cơ chế); **2 điểm** (trả lời đúng cơ chế cốt lõi); **3 điểm** (trả lời đúng cơ chế, nêu được con số vận hành và mở rộng được câu hỏi đào sâu).
-   - **Quy tắc trần điểm riêng của Buổi 14:**
-     - Trả lời Câu 1 mà không nêu đủ 5 trạng thái Pod Phase (`Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`) thì **trần điểm câu đó là 1**.
-     - Trả lời Câu 7 mà không phân tích được quy trình 2 bước Graceful Shutdown (`SIGTERM` -> 30s Grace Period -> `SIGKILL`) thì **trần điểm câu đó là 1**.
-3. **Mục tiêu đạt được:** Học viên đạt từ **27 / 36 điểm** trở lên là ĐẠT phần vấn đáp của buổi.
-
----
-
----
-
-## V2. Bộ câu hỏi phỏng vấn thực chiến
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Container Exit Code 137 có ý nghĩa là gì và nguyên nhân phổ biến nhất gây ra exit code này trên môi trường sản xuất?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa:</b> Exit Code 137 nghĩa là container bị tiêu diệt bởi tín hiệu cưỡng chế <b style="color: var(--accent-primary);"><code>SIGKILL</code> (Signal 9)</b> (128 + 9 = 137).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân phổ biến nhất:</b> Container bị Linux Kernel Out-Of-Memory Killer diệt do sử dụng bộ nhớ RAM vượt quá giới hạn <b style="color: var(--accent-primary);"><code>resources.limits.memory</code></b> khai báo trong Pod spec (sự cố <b style="color: var(--accent-primary);">OOMKilled</b>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân thứ hai:</b> Pod bị xoá và ứng dụng không chịu dừng sau khi hết 30 giây Grace Period, buộc Kubelet phải gửi <code>SIGKILL</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Exit Code 137 là do sai cú pháp code ứng dụng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được OOMKilled nhưng không giải thích được phép toán Signal 9 (128 + 9 = 137) và việc vượt limit RAM.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác tín hiệu SIGKILL (Signal 9 = 137) và sự cố OOMKilled do vượt memory limit.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc xem <code>lastState.terminated.reason</code> trong <code>kubectl describe</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu container bị thoát với Exit Code 143 thì nguyên nhân là gì? *(Đáp án: Exit Code 143 = 128 + 15 SIGTERM, tức là container dừng êm đẹp theo lệnh Graceful Shutdown).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Trình bày sự khác nhau về thứ tự khởi chạy và điều kiện hoàn thành giữa <code>initContainers</code> và <code>containers</code> chính trong Pod spec.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>initContainers</code> (Container khởi tạo):</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khởi chạy <b style="color: var(--accent-primary);">tuần tự từng cái một</b> theo đúng thứ tự khai báo trong mảng YAML.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Container trước BẮT BUỘC phải <b style="color: var(--accent-primary);">kết thúc thành công (<code>exit code 0</code>)</b> 100% thì container tiếp theo mới được khởi chạy.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>containers</code> (Container chính):</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khởi chạy <b style="color: var(--accent-primary);">đồng thời song song</b> sau khi tất cả <code>initContainers</code> đã hoàn tất.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chạy liên tục suốt vòng đời của Pod phục vụ lưu lượng người dùng.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo initContainers và containers chạy song song cùng lúc.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được initContainers chạy trước nhưng không nêu được tính chất tuần tự 100% và điều kiện bắt buộc thoát exit 0.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác tính tuần tự + thoát exit 0 của initContainers vs tính song song + chạy liên tục của main containers.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu thêm tính năng Native Sidecar Containers (Restartable Init) ở K8s 1.28+.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Ứng dụng chính có những ca sử dụng tiêu chuẩn nào dành cho <code>initContainers</code>? *(Đáp án: Chờ Database/Redis ready qua <code>nc -z</code>, tải tệp cấu hình/cert, biến đổi schema DB).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Điều gì xảy ra đối với các main containers khi một <code>initContainer</code> bị sập exit code 1?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Các main containers <b style="color: var(--accent-primary);">KHÔNG BAO GIỜ ĐƯỢC KHỞI TẠO HOẶC CHẠY</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod bị kẹt ở trạng thái <code>Init:CrashLoopBackOff</code> (hoặc <code>Init:Error</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b> Kubelet sẽ liên tục khởi động lại <code>initContainer</code> bị sập theo <code>restartPolicy</code> của Pod cho tới khi <code>initContainer</code> đó thoát exit code 0. Nếu không bao giờ exit 0, Pod sẽ đứng chờ vĩnh viễn.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo main container vẫn chạy bình thường.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được main container không chạy nhưng không giải thích được trạng thái <code>Init:CrashLoopBackOff</code> và việc Kubelet restart initContainer.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác việc main containers bị chặn 100% và Pod bị kẹt ở <code>Init:CrashLoopBackOff</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl logs <pod> -c <init-name></code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để xem log của 1 <code>initContainer</code> cụ thể khi Pod bị kẹt <code>Init:Error</code>? *(Đáp án: Dùng lệnh <code>kubectl logs <pod-name> -c <init-container-name></code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Trình bày 3 chính sách khởi động lại <code>restartPolicy</code> trong Pod spec và cho biết chính sách mặc định là gì.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Always</code> (Mặc định): Kubelet luôn tự động khởi động lại container bất kể exit code nào (dù 0 hay 1). Phù hợp cho Web/Microservices.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>OnFailure</code>: Kubelet chỉ khởi động lại container khi nó kết thúc thất bại (exit code khác 0). Nếu exit 0 thì dừng hẳn. Phù hợp cho Batch Jobs.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>Never</code>: Kubelet không bao giờ khởi động lại container khi nó kết thúc (bất kể exit code 0 hay 1). Phù hợp cho các script chạy 1 lần duy nhất.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ 3 chính sách.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 3 tên nhưng không giải thích được hành vi với exit code 0 vs exit code khác 0 hoặc quên cờ mặc định <code>Always</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 3 chính sách <code>Always</code> (mặc định), <code>OnFailure</code>, <code>Never</code> và ứng dụng cho từng loại workload.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng cấu hình YAML Pod spec.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu một Pod chạy Nginx Web Server mà đặt <code>restartPolicy: Never</code> thì khi Nginx crash exit 1 chuyện gì xảy ra? *(Đáp án: Pod chuyển sang trạng thái Failed/Error và chết luôn, Kubelet không restart lại Nginx).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Trạng thái <code>CrashLoopBackOff</code> là gì và thời gian nén phạt tối đa của thuật toán Exponential Backoff là bao nhiêu giây?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Định nghĩa:</b> <code>CrashLoopBackOff</code> là trạng thái Kubelet tạm dừng việc khởi động lại một container liên tục bị sập, nhằm tránh việc sập liên tục làm quá tải CPU/RAM của Node.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thời gian nén phạt:</b> Áp dụng thuật toán lùi thời gian Exponential Backoff Delay (bắt đầu từ 10s, nhân đôi thành 20s, 40s, 80s, 160s) và chạm trần tối đa <b style="color: var(--accent-primary);">300 giây (5 phút)</b>. Sau mỗi 5 phút, Kubelet mới thử khởi động lại container 1 lần tiếp theo.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo CrashLoopBackOff là do thiếu đĩa.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Giải thích đúng trạng thái sập liên tục nhưng không nhớ con số thời gian phạt tối đa 300 giây (5 phút).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác trạng thái CrashLoopBackOff và con số phạt tối đa 300s (5 phút) của thuật toán Exponential Backoff.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách reset đếm phạt bằng cách xoá Pod recreate lại.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để thoát khỏi thời gian phạt 5 phút ngay lập tức sau khi đã sửa xong lỗi ứng dụng? *(Đáp án: Xoá Pod bằng <code>kubectl delete pod</code> để Deployment tự spawn Pod mới reset lại bộ đếm Backoff).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Quy trình 2 bước xóa Pod ngắt êm đẹp (Graceful Shutdown) diễn ra như thế nào với 2 tín hiệu Linux nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Quy trình diễn ra trong ngân sách thời gian <code>terminationGracePeriodSeconds</code> (mặc định <b style="color: var(--accent-primary);">30 giây</b>):</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 1 (Ngắt êm đẹp):</b> Kubelet gửi tín hiệu <b style="color: var(--accent-primary);"><code>SIGTERM</code> (Signal 15)</b> tới tiến trình PID 1 trong container. Ứng dụng nhận signal, tự đóng database connection, dừng nhận HTTP request mới và hoàn tất request dở dang. (Nếu có <code>preStop</code> hook thì preStop chạy trước <code>SIGTERM</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bước 2 (Cưỡng chế tiêu diệt):</b> Nếu hết 30s Grace Period mà tiến trình vẫn chưa thoát, Kubelet gửi tín hiệu cưỡng chế <b style="color: var(--accent-primary);"><code>SIGKILL</code> (Signal 9)</b> tiêu diệt tiến trình lập tức khỏi Kernel.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Kubelet xoá Pod ngay lập tức bằng SIGKILL.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được 2 bước nhưng không nhớ chính xác 2 tín hiệu <code>SIGTERM</code> (Signal 15) và <code>SIGKILL</code> (Signal 9) kèm con số 30s Grace Period (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác quy trình 2 bước: <code>SIGTERM</code> (15) -> 30s Grace Period -> <code>SIGKILL</code> (9).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân tích vấn đề PID 1 trong container nếu ứng dụng chạy qua shell script <code>sh -c</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu tiến trình ứng dụng trong container không bắt được tín hiệu <code>SIGTERM</code> (do chạy dạng <code>sh -c</code> làm PID 1 nuốt signal) thì chuyện gì xảy ra khi xoá Pod? *(Đáp án: Pod sẽ đứng chờ đúng 30 giây rồi bị diệt bằng <code>SIGKILL</code> exit code 137).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Móc tiền kết thúc <code>lifecycle.preStop</code> được Kubelet thực thi vào thời điểm nào và thời gian chạy của nó được tính vào đâu?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thời điểm thực thi:</b> Móc <code>preStop</code> được Kubelet chạy <b style="color: var(--accent-primary);">TRƯỚC KHI tín hiệu <code>SIGTERM</code> được gửi</b> tới container.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tính toán thời gian:</b> Thời gian chạy của <code>preStop</code> hook <b style="color: var(--accent-primary);">được tính gộp nằm trong tổng ngân sách <code>terminationGracePeriodSeconds</code></b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lưu ý:</b> Nếu script <code>preStop</code> chạy mất 20s và <code>terminationGracePeriodSeconds: 30</code>, ứng dụng chỉ còn đúng 10s để dọn dẹp sau khi nhận <code>SIGTERM</code> trước khi dính <code>SIGKILL</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo preStop chạy sau khi SIGTERM đã gửi xong.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời chạy trước SIGTERM nhưng không nêu được việc tính gộp thời gian vào tổng <code>terminationGracePeriodSeconds</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác preStop chạy trước SIGTERM và thời gian chạy tính gộp trong <code>terminationGracePeriodSeconds</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc cấu hình <code>nginx -s quit; sleep 5</code> trong preStop.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Ứng dụng phổ biến nhất của <code>preStop</code> hook trong các Pod Web Nginx là gì? *(Đáp án: Chạy <code>sleep 5</code> hoặc <code>nginx -s quit</code> để chờ EndpointSlice cập nhật gỡ IP Pod khỏi Service trước khi dừng Nginx).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Cờ nào được dùng trong lệnh <code>kubectl logs</code> để xem lại nhật ký của một container vừa bị crash trước đó?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ chuẩn: <b style="color: var(--accent-primary);"><code>-p</code></b> (hoặc <b style="color: var(--accent-primary);"><code>--previous</code></b>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh:</b> <code>kubectl logs <pod-name> -c <container-name> -p</code></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa:</b> Khi container bị crash và được Kubelet restart lại, lệnh <code>kubectl logs</code> mặc định sẽ chỉ xem log của container MỚI đang chạy. Cờ <code>-p</code> cho phép trích xuất log của container CŨ vừa bị sập trước đó để chẩn đoán nguyên nhân.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ cờ <code>-p</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được cờ <code>-p</code> nhưng không giải thích được sự khác nhau giữa log container hiện tại và log container cũ (<code>--previous</code>).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cờ <code>-p</code> / <code>--previous</code> dùng để trích xuất log của container bị crash trước đó.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh trích xuất log trong bài lab.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu container chưa từng bị restart lần nào mà gõ <code>kubectl logs -p</code> thì điều gì xảy ra? *(Đáp án: API Server trả về lỗi <code>previous terminated container not found</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Khi nào thì mới nên sử dụng cờ cưỡng chế xoá Pod <code>--force --grace-period=0</code>?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ nên dùng lệnh <code>kubectl delete pod <pod-name> --force --grace-period=0</code> trong trường hợp <b style="color: var(--accent-primary);">Node chứa Pod bị ngắt kết nối/sập hoàn toàn (Node NotReady / Unknown)</b> và không thể tự phục hồi.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Rủi ro khi lạm dụng:</b> Lệnh này xóa lập tức đối tượng Pod khỏi etcd mà không chờ Kubelet xác nhận. Nếu Node vẫn đang chạy âm thầm, Pod cũ vẫn đang hoạt động trong khi StatefulSet đã spawn Pod mới, dẫn đến sự cố <b style="color: var(--accent-primary);">Split-Brain và hỏng tệp dữ liệu đĩa (Data Corruption)</b>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo dùng <code>--force</code> mỗi khi xóa Pod cho nhanh.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được dùng khi Node hỏng nhưng không phân tích được rủi ro Data Corruption và Split-Brain nếu Node vẫn đang âm thầm chạy.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác trường hợp Node sập hẳn và phân tích nguy cơ Split-Brain/Data Corruption nếu lạm dụng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với tài nguyên StatefulSet và PersistentVolume.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Đối với đối tượng nào trong Kubernetes thì việc lạm dụng <code>--force --grace-period=0</code> gây nguy hiểm nhất? *(Đáp án: Đối với đối tượng StatefulSet lưu trữ cơ sở dữ liệu).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Tại sao khai báo <code>initContainers</code> có tác dụng chạy daemon ngầm (như <code>nginx</code> hoặc <code>sleep infinity</code>) lại làm cho Pod bị kẹt vĩnh viễn?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Vì quy tắc bất biến của <code>initContainers</code> quy định: <b style="color: var(--accent-primary);"><code>initContainer</code> trước BẮT BUỘC phải kết thúc hoàn toàn và thoát với exit code 0</b> thì tiến trình khởi tạo mới được coi là hoàn tất.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu <code>initContainer</code> chạy một tiến trình ngầm không bao giờ dừng (như daemon Web server hoặc <code>sleep infinity</code>), nó sẽ <b style="color: var(--accent-primary);">không bao giờ thoát exit 0</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hệ quả:</b> Pod bị kẹt ở trạng thái <code>Init:0/1</code> mãi mãi, và các main containers sẽ không bao giờ được khởi tạo.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo initContainer chạy daemon ngầm là bình thường.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời kẹt Pod nhưng không giải thích được nguyên tắc bắt buộc phải thoát exit 0 của initContainer.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác nguyên tắc bắt buộc thoát exit 0 của initContainer làm daemon ngầm gây kẹt <code>Init:0/1</code> vĩnh viễn.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra giải pháp chuyển sang Native Sidecar Container (K8s 1.28+).</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Muốn chạy daemon ngầm song song trước main container mà không làm kẹt Pod từ K8s 1.28+ thì dùng cờ gì? *(Đáp án: Khai báo <code>restartPolicy: Always</code> bên trong initContainer đó).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Nêu 2 chế độ hỏng (1 im lặng do initContainer chạy ngầm không exit 0 làm kẹt Pod, 1 âm thầm do hỏng data vì để grace period 0) và cách phát hiện/khắc phục.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Pod kẹt <code>Init:0/1</code> do initContainer chạy daemon ngầm):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Pod tạo xong đứng trơ trọi ở <code>Init:0/1</code>, main container Nginx không chịu khởi động.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Chạy <code>kubectl describe pod</code> thấy initContainer đang <code>Running</code> daemon ngầm không thoát exit 0.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa script initContainer để thoát <code>exit 0</code> sau khi hoàn thành công việc.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Hỏng dữ liệu Database do để <code>terminationGracePeriodSeconds: 0</code>):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Xóa Pod Database, Pod bị diệt ngay lập tức bằng SIGKILL, làm đứt kết nối transaction và hỏng file DB trên đĩa.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Đọc Pod spec thấy <code>terminationGracePeriodSeconds: 0</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Đặt Grace Period tối thiểu 60s và loại bỏ cờ <code>--force</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân initContainer daemon ngầm và Grace Period = 0 (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi debug 1 Pod bị kẹt ở <code>Init:0/1</code>, câu lệnh đầu tiên cần gõ là gì? *(Đáp án: Lệnh <code>kubectl describe pod <pod-name></code> để xem initContainer nào đang đứng).*
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"Một Pod Kubernetes trải qua 5 trạng thái vòng đời Phase: <code>Pending</code>, <code>Running</code>, <code>Succeeded</code>, <code>Failed</code>, <code>Unknown</code>."*
-2. *"<code>initContainers</code> khởi chạy tuần tự 100% và bắt buộc phải kết thúc exit code 0 thì các main containers mới được phép khởi động."*
-3. *"Exit Code 137 phản ánh sự cố OOMKilled do container vượt RAM limit (SIGKILL 9); Exit Code 143 phản ánh quy trình ngắt êm đẹp SIGTERM 15."*
-4. *"Kubelet điều khiển tự khôi phục container qua <code>restartPolicy</code> (<code>Always</code>, <code>OnFailure</code>, <code>Never</code>) và nén thời gian phạt CrashLoopBackOff tối đa 300s (5 phút)."*
-5. *"Quy trình Graceful Shutdown diễn ra trong 30s Grace Period: chạy <code>preStop</code> hook -> gửi <code>SIGTERM</code> (15) -> chờ hết Grace Period -> gửi <code>SIGKILL</code> (9)."*
-
----</div>
-</div>
-</details>
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"Một Pod Kubernetes trải qua 5 trạng thái vòng đời Phase: `Pending`, `Running`, `Succeeded`, `Failed`, `Unknown`."*
-2. *"`initContainers` khởi chạy tuần tự 100% và bắt buộc phải kết thúc exit code 0 thì các main containers mới được phép khởi động."*
-3. *"Exit Code 137 phản ánh sự cố OOMKilled do container vượt RAM limit (SIGKILL 9); Exit Code 143 phản ánh quy trình ngắt êm đẹp SIGTERM 15."*
-4. *"Kubelet điều khiển tự khôi phục container qua `restartPolicy` (`Always`, `OnFailure`, `Never`) và nén thời gian phạt CrashLoopBackOff tối đa 300s (5 phút)."*
-5. *"Quy trình Graceful Shutdown diễn ra trong 30s Grace Period: chạy `preStop` hook -> gửi `SIGTERM` (15) -> chờ hết Grace Period -> gửi `SIGKILL` (9)."*
-
----
-
-## 4. Đề Thi Thực Hành Bấm Giờ & Thử Thách Tốc Độ (Exam Speed Challenge)
+Hiểu sâu sắc vòng đời của Pod và làm chủ kỹ thuật thiết lập Probes cùng Graceful Shutdown là nền tảng sống còn để xây dựng các hệ thống dịch vụ có tính ổn định cao và không gây gián đoạn người dùng khi cập nhật phần mềm.
 
 > [!TIP]
-> **CHIẾN THUẬT PHÒNG THI THỰC CHIẾN:**
-> Đặt đồng hồ bấm giờ đúng thời lượng quy định, đọc kỹ yêu cầu namespace và kiểm tra trạng thái cuối cùng của cụm bằng `kubectl get -o jsonpath` trước khi nộp bài.
-
-## T0. Vì sao có khối này (1 phút)
-
-Khối luyện đề bấm giờ 30 phút rèn luyện cho học viên phản xạ cấu hình mảng `initContainers`, lựa chọn chính xác `restartPolicy` cho các loại workload, thiết lập `terminationGracePeriodSeconds` và `preStop` hook ngắt êm đẹp, cùng kỹ thuật trích xuất log container cũ bằng cờ `kubectl logs -p` trong kỳ thi CKA và CKAD.
-
-Buổi 14 phủ miền trọng điểm của 2 kỳ thi:
-- `CKA · Workloads & Scheduling` (Trọng số 15 %)
-- `CKAD · Application Design and Build` (Trọng số 20 %)
-
-Các câu hỏi được thiết kế theo đúng chuẩn bài thi CKA/CKAD thực tế: yêu cầu thí sinh thao tác trực tiếp với Pod spec, thiết lập đúng thứ tự chạy của initContainers, xử lý exit codes và chẩn đoán sự cố container mà KHÔNG được dùng `jq`.
-
----
-
-## T1. Luật chơi (1 phút)
-
-1. **Đồng hồ bấm giờ:** Tổng thời gian làm 4 câu hỏi là **900 giây (15 phút)**. Thời gian còn lại (15 phút) dành cho việc đọc luật, đối soát và tự chấm điểm bằng script.
-2. **Tài liệu được mở:** Chỉ được phép mở 1 tab duy nhất tài liệu chính thức `https://kubernetes.io/docs/`. KHÔNG được tìm kiếm Google hay StackOverflow.
-3. **Môi trường làm việc:** Làm việc trực tiếp trên terminal với context `kubeadm`.
-4. **Quy tắc thi hành về công cụ:** Máy thi **KHÔNG cài sẵn `jq`**. Mọi câu hỏi trích xuất dữ liệu BẮT BUỘC dùng đường gõ bash (`grep`/`awk`/`sed`) hoặc `kubectl jsonpath`.
-5. **Cách chấm:** Chấm dựa trên trạng thái `Running`/`Succeeded` của Pod, cấu hình `initContainers`, `restartPolicy` và nội dung log trích xuất. Ngưỡng ĐẠT của buổi là **66 / 100 điểm** (theo đúng chuẩn CKA/CKAD).
-
----
-
-## T2. Bộ câu hỏi kiểu đề thi
-
-### Câu T2.1. Khởi tạo Pod init-pod với initContainer kiểm tra kết nối — 210 giây
-
-**Bối cảnh:**
-Triển khai Pod ứng dụng cần chạy container khởi tạo trước để chuẩn bị môi trường.
-
-**Yêu cầu:**
-1. Tạo Namespace `dev` (nếu chưa có).
-2. Tạo Pod tên `init-pod` trong Namespace `dev` sử dụng image `nginx:1.27-alpine`.
-3. Khai báo mảng `spec.initContainers` chứa 1 initContainer tên `init-touch` dùng image `busybox:1.36` chạy lệnh `touch /tmp/ready && exit 0`.
-4. Chờ Pod ở trạng thái `Running` và ghi trạng thái Pod Phase vào tệp `/tmp/ans-t21-phase.txt`.
-
-**Thang điểm bộ phận:**
-- Khai báo đúng `initContainers` khởi chạy thành công exit 0: **15 điểm**.
-- Pod đạt trạng thái `Running` và ghi file `/tmp/ans-t21-phase.txt`: **10 điểm**.
-
----
-
-### Câu T2.2. Cấu hình Pod batch-pod với restartPolicy OnFailure — 240 giây
-
-**Bối cảnh:**
-Triển khai một Pod thực hiện công việc tính toán lô ngắn hạn.
-
-**Yêu cầu:**
-1. Tạo Pod tên `batch-pod` trong Namespace `dev` sử dụng image `busybox:1.36`.
-2. Khai báo `command: ['sh', '-c', 'echo Batch Job Executed && exit 0']`.
-3. Cấu hình `restartPolicy: OnFailure` trong Pod spec.
-4. Chờ Pod hoàn thành và ghi trạng thái Pod Phase vào tệp `/tmp/ans-t22-job.txt`.
-
-**Thang điểm bộ phận:**
-- Đặt đúng `restartPolicy: OnFailure` trong Pod spec: **15 điểm**.
-- Pod kết thúc thành công `Succeeded` và ghi file `/tmp/ans-t22-job.txt`: **15 điểm**.
-
----
-
-### Câu T2.3. Cấu hình Graceful Shutdown terminationGracePeriodSeconds và preStop — 210 giây
-
-**Bối cảnh:**
-Thiết lập quy trình ngắt êm đẹp cho Pod ứng dụng giao dịch.
-
-**Yêu cầu:**
-1. Tạo Pod tên `graceful-pod` trong Namespace `dev` sử dụng image `nginx:1.27-alpine`.
-2. Cấu hình `terminationGracePeriodSeconds: 40` trong Pod spec.
-3. Khai báo `lifecycle.preStop.exec.command: ["/bin/sh", "-c", "sleep 3"]` cho container `web`.
-4. Ghi cấu hình `terminationGracePeriodSeconds` vào tệp `/tmp/ans-t23-grace.txt`.
-
-**Thang điểm bộ phận:**
-- Cấu hình đúng `terminationGracePeriodSeconds: 40`: **10 điểm**.
-- Khai báo đúng `preStop` hook và ghi file `/tmp/ans-t23-grace.txt`: **10 điểm**.
-
----
-
-### Câu T2.4. Trích xuất log container cũ bị crash bằng cờ previous — 240 giây
-
-**Bối cảnh:**
-Chẩn đoán nguyên nhân sập của container cũ vừa bị Kubelet restart.
-
-**Yêu cầu:**
-1. Tạo Pod tên `crash-test` trong Namespace `dev` sử dụng image `busybox:1.36` chạy lệnh `echo Log Before Crash && exit 1`.
-2. Chờ Kubelet restart container (sau khoảng 5–8 giây).
-3. Sử dụng cờ `kubectl logs crash-test -n dev -p` (hoặc `--previous`) trích xuất log của container cũ.
-4. Ghi nội dung log trích xuất vào tệp `/tmp/ans-t24-log.txt`.
-
-**Thang điểm bộ phận:**
-- Trích xuất thành công log container cũ bằng cờ `-p`: **15 điểm**.
-- Ghi nhận nội dung log vào file `/tmp/ans-t24-log.txt`: **10 điểm**.
-
----
-
-## T3. Lời giải chuẩn
-
-#### Lời giải câu T2.1: Đường gõ ngắn nhất (Ước lượng: 40 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Tạo ns dev và apply Pod init-pod
-kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: init-pod
-  namespace: dev
-spec:
-  initContainers:
-  - name: init-touch
-    image: busybox:1.36
-    command: ['sh', '-c', 'touch /tmp/ready && exit 0']
-  containers:
-  - name: app
-    image: nginx:1.27-alpine
-EOF
-
-# Thao tác 2: Chờ Running và ghi phase vào file
-kubectl wait --for=condition=Ready pod/init-pod -n dev --timeout=30s
-kubectl get pod init-pod -n dev -o jsonpath='{.status.phase}' > /tmp/ans-t21-phase.txt
-```
-
-#### Lời giải câu T2.2: Đường gõ ngắn nhất (Ước lượng: 35 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Apply batch-pod với restartPolicy OnFailure
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: batch-pod
-  namespace: dev
-spec:
-  restartPolicy: OnFailure
-  containers:
-  - name: batch
-    image: busybox:1.36
-    command: ['sh', '-c', 'echo Batch Job Executed && exit 0']
-EOF
-
-# Thao tác 2: Chờ Succeeded và ghi phase vào file
-sleep 5
-kubectl get pod batch-pod -n dev -o jsonpath='{.status.phase}' > /tmp/ans-t22-job.txt
-```
-
-#### Lời giải câu T2.3: Đường gõ ngắn nhất (Ước lượng: 40 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Apply graceful-pod với grace 40s và preStop
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: graceful-pod
-  namespace: dev
-spec:
-  terminationGracePeriodSeconds: 40
-  containers:
-  - name: web
-    image: nginx:1.27-alpine
-    lifecycle:
-      preStop:
-        exec:
-          command: ["/bin/sh", "-c", "sleep 3"]
-EOF
-
-# Thao tác 2: Ghi grace period vào file
-kubectl get pod graceful-pod -n dev -o jsonpath='{.spec.terminationGracePeriodSeconds}' > /tmp/ans-t23-grace.txt
-```
-
-#### Lời giải câu T2.4: Đường gõ ngắn nhất (Ước lượng: 35 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Apply crash-test
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: crash-test
-  namespace: dev
-spec:
-  containers:
-  - name: crasher
-    image: busybox:1.36
-    command: ['sh', '-c', 'echo Log Before Crash && exit 1']
-EOF
-
-# Thao tác 2: Chờ crash và trích xuất logs -p ghi file
-sleep 6
-kubectl logs crash-test -n dev -p > /tmp/ans-t24-log.txt 2>&1 || echo "Log Before Crash" > /tmp/ans-t24-log.txt
-```
-
-
-
----
-
-## T4. Bẫy mất điểm
-
-| # | Bẫy mất điểm hay gặp | Mất bao nhiêu điểm | Dấu hiệu nhận ra ngay |
-|---|---|---|---|
-| 1 | `initContainer` chạy tiến trình ngầm không exit 0 ở câu T2.1 | 25 điểm câu T2.1 | Pod bị kẹt ở trạng thái `Init:0/1` mãi mãi |
-| 2 | Đặt `restartPolicy: Always` mặc định ở câu T2.2 | 20 điểm câu T2.2 | Pod batch-pod liên tục bị restart lại sau khi exit 0 |
-| 3 | Quên cờ `-p` (`--previous`) khi xem log ở câu T2.4 | 15 điểm câu T2.4 | Output báo `container is in waiting state` |
-| 4 | Sử dụng `jq` để parse output `kubectl get pod` | 25 điểm (mất trọn câu T2.1) | Output báo `bash: jq: command not found` |
-| 5 | Quên cờ `-n dev` khi thao tác với Pod | 20 điểm câu T2.1 | Pod bị tạo nhầm trong Namespace `default` |
-| 6 | Thụt lùi tab/space sai cấu trúc `lifecycle.preStop` ở câu T2.3 | 15 điểm câu T2.3 | YAML parser báo lỗi invalid schema |
-
----
-
-## T5. Bảng tự chấm
-
-| Câu | Chứng chỉ · Miền | Ngân sách | Điểm tối đa | Điểm đạt được |
-|---|---|---|---|---|
-| T2.1 | `CKA · Workloads` / `CKAD` | 210s | 25 | |
-| T2.2 | `CKA · Workloads` / `CKAD` | 240s | 30 | |
-| T2.3 | `CKA · Workloads` / `CKAD` | 210s | 20 | |
-| T2.4 | `CKA · Workloads` / `CKAD` | 240s | 25 | |
-| **Tổng** | | **900s (15')** | **100** | **Ngưỡng ĐẠT: ≥ 66 điểm** |
-
-### Đoạn mã chấm tự động (Automated Grading Script)
-
-Copy và dán đoạn script bash dưới đây để tự động chấm điểm bài thi của Buổi 14:
-
-```bash
-#!/bin/bash
-# Script tự động chấm điểm khối Ô thi Buổi 14
-
-SCORE=0
-
-echo "=== BẮT ĐẦU CHẤM ĐIỂM BUỔI 14 ==="
-
-# 1. Chấm câu T2.1
-if [ "$(kubectl get pod init-pod -n dev -o jsonpath='{.status.phase}' 2>/dev/null)" == "Running" ] && grep -qx "Running" /tmp/ans-t21-phase.txt; then
-    echo "Câu T2.1: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.1: LỖI (0/25 điểm)"
-fi
-
-# 2. Chấm câu T2.2
-if [ "$(kubectl get pod batch-pod -n dev -o jsonpath='{.status.phase}' 2>/dev/null)" == "Succeeded" ] && grep -qx "Succeeded" /tmp/ans-t22-job.txt; then
-    echo "Câu T2.2: ĐẠT (+30 điểm)"
-    SCORE=$((SCORE + 30))
-else
-    echo "Câu T2.2: LỖI (0/30 điểm)"
-fi
-
-# 3. Chấm câu T2.3
-if [ "$(kubectl get pod graceful-pod -n dev -o jsonpath='{.spec.terminationGracePeriodSeconds}' 2>/dev/null)" == "40" ]; then
-    echo "Câu T2.3: ĐẠT (+20 điểm)"
-    SCORE=$((SCORE + 20))
-else
-    echo "Câu T2.3: LỖI (0/20 điểm)"
-fi
-
-# 4. Chấm câu T2.4
-if [ -s /tmp/ans-t24-log.txt ] && grep -q "Log Before Crash" /tmp/ans-t24-log.txt; then
-    echo "Câu T2.4: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.4: LỖI (0/25 điểm)"
-fi
-
-echo "=================================="
-echo "TỔNG ĐIỂM: $SCORE / 100"
-if [ "$SCORE" -ge 66 ]; then
-    echo "KẾT QUẢ: ĐẠT CHUẨN CKA/CKAD (≥ 66 điểm)"
-else
-    echo "KẾT QUẢ: CHƯA ĐẠT (Cần tối thiểu 66 điểm)"
-fi
-```
-
----
-
-## T6. Kho lệnh rút gọn của buổi
-
-```bash
-# 1. Trích xuất Pod Phase của tất cả Pods
-kubectl get pods -n <namespace> -o jsonpath='{.items[*].status.phase}'
-
-# 2. Trích xuất Exit Code của container đã dừng trong Pod
-kubectl get pod <pod-name> -n <namespace> -o jsonpath='{.status.containerStatuses[*].lastState.terminated.exitCode}'
-
-# 3. Trích xuất log của container cũ bị crash trước đó
-kubectl logs <pod-name> -c <container-name> -n <namespace> -p
-
-# 4. Trích xuất log của 1 initContainer cụ thể
-kubectl logs <pod-name> -c <init-container-name> -n <namespace>
-
-# 5. Xoá cưỡng chế Pod khẩn cấp ngắt Grace Period
-kubectl delete pod <pod-name> -n <namespace> --force --grace-period=0
-```
-
-
----
-
-## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
-
-> [!TIP]
-> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
-> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 15] Quản Trị Deployment & ReplicaSet: Chiến Lược RollingUpdate, MaxSurge/MaxUnavailable & Rollback An Toàn](cka-15-15-deployment-replicaset-rollout.html).
-
+> **Bài học tiếp theo**: Trong [Bài 15: Quản Trị Workload Cấp Cao: Deployment, ReplicaSet & Chiến Lược Rollout / Rollback Không Downtime](cka-15-15-deployment-replicaset-rollout.html), chúng ta sẽ tìm hiểu cơ chế hoạt động của Deployment Controller, giải phẫu thuật toán RollingUpdate vs Recreate, và kỹ thuật rollback tức thì trong kỳ thi CKA.
 {% endraw %}

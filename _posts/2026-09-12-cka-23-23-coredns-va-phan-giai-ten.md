@@ -1,1500 +1,502 @@
 ---
 layout: post
-title: "[Bài 23] Phân Giải Tên Miền Với CoreDNS: Cơ Chế ndots, Search Domains & Kỹ Thuật Chẩn Đoán Sự Cố DNS"
-date: 2026-09-12 17:50:00 +0700
-categories: [CKA]
-tags:
-  - CKA
-  - Kubernetes
-  - ClusterAdmin
-  - LinuxFoundation
-  - DevOps
-  - Part-23
+title: "CKA (Bài 23/35) - Phân Giải Tên Miền Với CoreDNS: Cơ Chế ndots, Search Domains & Kỹ Thuật Chẩn Đoán Sự Cố DNS"
+date: 2026-09-12
+categories: [Kubernetes, CKA, Networking, DNS]
+tags: [cka, coredns, dns, fqdn, ndots, corefile, dnspolicy, nodelocaldns]
 series: "CKA Exam & Cluster Admin Mastery"
 series_order: 23
-difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?auto=format&fit=crop&w=1200&q=80"
-summary: "[CKA P.23] Hướng dẫn chuyên sâu Phân Giải Tên Miền Với CoreDNS: Cơ Chế ndots, Search Domains & Kỹ Thuật Chẩn Đoán Sự Cố DNS: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+author: "Nguyen Thao Kien"
+description: "Làm chủ hệ thống phân giải tên miền CoreDNS trong Kubernetes. Phân tích chi tiết cấu trúc Corefile, định dạng FQDN của Service và Pod, giải mã hiện tượng bùng nổ truy vấn do ndots:5 và kỹ thuật chẩn đoán sự cố DNS chuyên sâu."
+summary: "Hướng dẫn toàn diện về Kubernetes CoreDNS cho CKA và production: giải phẫu cấu trúc Corefile, quy trình phân giải tên miền qua search domains, giải mã nút thắt ndots:5, cấu hình dnsPolicy và khắc phục sự cố DNS."
+keywords:
+  - kubernetes coredns
+  - cka coredns troubleshooting
+  - fqdn service pod kubernetes
+  - ndots 5 kubernetes
+  - corefile configmap
+  - dnspolicy clusterfirst
+  - nslookup dig kubernetes
+image:
+  path: /assets/img/posts/cka/cka-23-coredns-banner.png
+  alt: "Kiến trúc phân giải tên miền CoreDNS, search domains và ndots trong Kubernetes"
+difficulty: ADVANCED
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Phân Giải Tên Miền Với CoreDNS: Cơ Chế ndots, Search Domains & Kỹ Thuật Chẩn Đoán Sự Cố DNS."
-  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
-  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "CoreDNS chạy dưới dạng Deployment trong namespace `kube-system`, phục vụ truy vấn tên miền qua Service `kube-dns` (thường có địa chỉ IP cố định `10.96.0.10`)."
+  - "Cấu trúc tên miền chuẩn (FQDN): Service là `<service-name>.<namespace>.svc.cluster.local`, Pod là `<pod-ip-dashed>.<namespace>.pod.cluster.local` (ví dụ: `10-244-1-5.default.pod.cluster.local`)."
+  - "Nút thắt hiệu năng `ndots:5`: Mặc định trong `/etc/resolv.conf` của Pod, mọi tên miền có ít hơn 5 dấu chấm sẽ bị nối lần lượt với toàn bộ dải `search` domain nội bộ trước khi gửi ra ngoài Internet (gây tăng gấp 4–8 lần số truy vấn DNS)."
+  - "Khắc phục `ndots:5`: Thêm dấu chấm tuyệt đối vào cuối tên miền (ví dụ: `api.stripe.com.`), tinh chỉnh `dnsConfig.options` (đặt `ndots: 2`), hoặc triển khai `NodeLocal DNSCache`."
+  - "4 Chính sách `dnsPolicy` của Pod: `ClusterFirst` (mặc định), `ClusterFirstWithHostNet` (cho Pod chạy `hostNetwork: true`), `Default` (kế thừa `/etc/resolv.conf` của Node), và `None` (cấu hình thủ công 100% qua `dnsConfig`)."
 ---
+
 {% raw %}
-# [BÀI 23] PHÂN GIẢI TÊN MIỀN VỚI COREDNS: CƠ CHẾ NDOTS, SEARCH DOMAINS & KỸ THUẬT CHẨN ĐOÁN SỰ CỐ DNS
-
-Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
-
-Bài viết chuyên sâu này sẽ đồng hành cùng bạn giải mã toàn diện bức tranh kiến trúc, phân tích các đánh đổi kỹ thuật thực chiến (Engineering Trade-offs), cung cấp bài thực hành Lab từng bước và bộ câu hỏi phỏng vấn chuẩn Architect / Lead Engineer.
-
----
-
-## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
-| # | Câu hỏi ôn tập | Đáp án chuẩn ngắn gọn (chứa con số / tên lệnh) |
-|---|---|---|
-| 1 | Bốn kiểu Service chuẩn trong Kubernetes? | **4** kiểu (`ClusterIP`, `NodePort`, `LoadBalancer`, `ExternalName`) |
-| 2 | Dải cổng tĩnh hợp lệ mặc định của `NodePort`? | Trong khoảng con số **`30000-32767`** |
-| 3 | Thuộc tính biến Service thành Headless Service? | Khai báo **`clusterIP: None`** (cấp **0** VIP ảo) |
-| 4 | Số lượng Pod IPs tối đa trong 1 đối tượng `EndpointSlice`? | Tối đa **100** endpoints / slice (`discovery.k8s.io/v1`) |
-| 5 | So sánh độ phức tạp của `iptables` mode so với `IPVS` mode? | `iptables` độ phức tạp **$O(N)$**; `IPVS` độ phức tạp **$O(1)$** |
-
-
-
-> **Luận đề trung tâm của buổi:**
-> *"Dịch vụ CoreDNS chịu trách nhiệm phân giải tên miền chuẩn FQDN `<service-name>.<namespace>.svc.cluster.local` cho toàn bộ cụm; trong đó cấu hình `/etc/resolv.conf` mặc định của Pod chứa cờ `options ndots:5` ép mọi tên miền có số dấu chấm ít hơn 5 phải thực hiện lần lượt 4 truy vấn thử nghiệm nối đuôi dải `search` domain trước khi truy vấn tên miền gốc (gây tổn hại hiệu năng khi gọi API ngoại mạng nếu không có dấu chấm ở cuối `.`), và việc chẩn đoán 4 chế độ hỏng DNS (CoreDNS OOMKilled, Loop plugin, Corefile syntax error, dnsPolicy) là kỹ năng bắt buộc để bảo vệ sự ổn định của hệ thống microservices."*
-
-**Bảng kết quả các buổi trước được dùng lại:**
-
-| Kết quả / Công cụ | Nguồn gốc | Áp dụng vào buổi này |
-|---|---|---|
-| Địa chỉ ClusterIP VIP ảo của Service | Buổi 22 `QT 4.1` | Địa chỉ IP `10.96.0.10` của Service `kube-dns` trong CoreDNS |
-| Tiến trình Deployment trong namespace `kube-system` | Buổi 15 `QT 4.1` | Kiểm tra Deployment `coredns` chạy 2 bản sao trong `kube-system` |
-| Cấu hình ConfigMap `coredns` | Buổi 20 `QT 4.1` | Chỉnh sửa tệp cấu hình `Corefile` trong ConfigMap `coredns` |
-
-Ba câu bài tập về nhà BTVN 4 của buổi 22 đã chuẩn bị sẵn kiến thức cho học viên: Câu 1 khảo sát kiến trúc CoreDNS và FQDN; Câu 2 tìm hiểu vai trò cờ `ndots:5` và dải `search`; Câu 3 phân tích 4 chế độ hỏng DNS trong CKA/CKAD.
-
----
-
-
-
-| # | Năng lực đạt được sau buổi học | Hiện vật chứng minh trong bài lab |
-|---|---|---|
-| 1 | Phân giải tên miền FQDN chuẩn của Service và Pod từ bên trong container | Tệp `hien-vat/dns-fqdn-report.txt` |
-| 2 | Kiểm tra và phân tích nội dung tệp `/etc/resolv.conf` bên trong Pod | Tệp `hien-vat/pod-resolv-conf.txt` |
-| 3 | Cấu hình `spec.dnsConfig` hạ cờ `ndots` xuống `ndots:2` cho Pod | Tệp `hien-vat/custom-dns-pod.yaml` |
-| 4 | Kiểm chứng tác động hiệu năng của cờ `ndots:5` vs Trailing Dot `.` | Tệp `hien-vat/ndots-benchmark.txt` |
-| 5 | Chẩn đoán và xử lý các sự cố CoreDNS (Loop error / Syntax error) | Tệp `hien-vat/coredns-troubleshooting.md` |
-| 6 | Kiểm thử kịch bản Phân giải tên miền và CoreDNS với script tự động | Script `hien-vat/verify-coredns-setup.sh` |
-
----
-
-
-
-| Bắt buộc phải biết | Nguồn tự học nếu thiếu |
-|---|---|
-| Địa chỉ ClusterIP VIP và DNS name của Service | Buổi 22 `QT 4.1` |
-| Cấu trúc ConfigMap trong namespace `kube-system` | Buổi 20 `QT 4.1` |
-| Lệnh `kubectl logs` kiểm tra nhật ký Pod | Buổi 04 `QT 5.1` |
-
----
-
-
-
-
-
-| # | Thuật ngữ tiếng Việt | Tiếng Anh tương đương | Ghi chú chuẩn hoá trong thân bài |
-|---|---|---|---|
-| 1 | Dịch vụ phân giải tên miền | CoreDNS | Hệ thống DNS mặc định của Kubernetes chạy trong `kube-system` |
-| 2 | Tên miền đầy đủ tiêu chuẩn | Fully Qualified Domain Name (FQDN) | Dạng tên miền hoàn chỉnh như `web.dev.svc.cluster.local` |
-| 3 | Tệp cấu hình CoreDNS | Corefile | Tệp cấu hình chứa các plugin của CoreDNS trong ConfigMap |
-| 4 | Cờ số chấm phân giải | `options ndots:5` | Tham số quyết định số dấu chấm tối thiểu trước khi bypass search domain |
-| 5 | Miền tìm kiếm tự động | Search Domains | Danh sách tên miền nối đuôi trong `/etc/resolv.conf` |
-| 6 | Chính sách DNS của Pod | `dnsPolicy` (`ClusterFirst` / `Default`) | Cờ quyết định Pod dùng CoreDNS cụm hay DNS của Node host |
-| 7 | Cấu hình DNS tuỳ chỉnh Pod | `dnsConfig` (`spec.dnsConfig`) | Khối tùy chỉnh `nameservers`, `searches`, `options` trong Pod spec |
-| 8 | Lỗi lặp vòng DNS | CoreDNS Loop Plugin | Lỗi CoreDNS chuyển tiếp DNS request lại chính nó gây crash |
-| 9 | Lỗi tràn bộ nhớ CoreDNS | CoreDNS OOMKilled | Sự cố Pod CoreDNS bị tiêu diệt do đặt memory limit quá thấp |
-| 10 | Bản ghi phân giải IP | A Record | Bản ghi DNS ánh xạ tên miền sang địa chỉ IP v4 |
-| 11 | Bản ghi dịch vụ định vị | SRV Record | Bản ghi DNS ánh xạ cổng và tên miền dịch vụ cho Headless Service |
-| 12 | Địa chỉ DNS Server cụm | Cluster DNS IP (`10.96.0.10`) | Địa chỉ ClusterIP VIP cố định của Service `kube-dns` |
-| 13 | Thư viện giải tên hệ điều hành | C-library DNS Resolver (glibc) | Bộ mã nguồn Linux xử lý đọc `/etc/resolv.conf` |
-| 14 | Dấu chấm kết thúc tên miền gốc | Trailing Dot (`.`) | Dấu chấm ở cuối tên miền (như `api.google.com.`) ép dùng FQDN |
-
-
-
-1. **Mô hình "Danh bạ điện thoại nội bộ và Mã bưu chính quốc gia (CoreDNS & FQDN)":**
-   Mỗi Service trong cụm giống như một phòng ban trong tập đoàn. Khi bạn ở trong cùng phòng ban `dev`, bạn chỉ cần gọi tên ngắn `web` là máy bàn tự nối (`web`). Nhưng nếu bạn từ phòng ban `prod` gọi sang, bạn phải đọc đầy đủ tên phòng ban `web.dev`. Nếu từ ngoài tập đoàn gọi vào, bạn phải đọc tên miền hoàn chỉnh FQDN `web.dev.svc.cluster.local`. CoreDNS chính là người trực tổng đài danh bạ tự động tra cứu địa chỉ VIP tương ứng.
-
-2. **Mô hình "Thuật toán thử mã vùng tự động (Cờ `ndots:5` và Search Domains)":**
-   Cờ `ndots:5` trong `/etc/resolv.conf` giống như một quy tắc gọi điện thoại: Nếu số bạn bấm có ít hơn 5 dấu chấm, tổng đài tự động quay thử với **4 mã vùng nội bộ lần lượt**: 1. `number.dev.svc.cluster.local`, 2. `number.svc.cluster.local`, 3. `number.cluster.local`, và cuối cùng mới quay `number` gốc. Việc gọi tên miền ngoài `api.stripe.com` (chứa 2 dấu chấm) sẽ bị bắt phải quay thử 3 mã vùng nội bộ thất bại trước khi nối ra ngoài, làm mất thời gian gấp 4 lần.
-
-3. **Mô hình "Vòng lặp thư gửi lại cho chính mình (CoreDNS Loop Plugin Error)":**
-   Khi máy chủ Node bị cấu hình trỏ DNS `/etc/resolv.conf` về địa chỉ `127.0.0.1` (Systemd-resolved), CoreDNS khi forward request ngoại mạng sẽ gửi gói tin tới Node, Node lại gửi ngược về CoreDNS. Thư bị gửi vòng tròn liên tục hàng ngàn lần/giây khiến plugin `loop` của CoreDNS phát hiện và tự sát ngắt tiến trình để bảo vệ cụm.
-
----
-
-### 1.1. Kiến trúc CoreDNS và cấu trúc tên miền FQDN chuẩn (`<svc>.<ns>.svc.cluster.local`) (12 phút)
-
-**Nguyên lý cốt lõi:** Tên miền tiêu chuẩn FQDN (Fully Qualified Domain Name) của một Service trong Kubernetes bắt buộc tuân theo đúng cấu trúc **`<service-name>.<namespace>.svc.cluster.local`**; trong đó CoreDNS phân giải tên miền này thành địa chỉ ClusterIP VIP (hoặc danh sách IP Pods đối với Headless Service).
-
-**Giải thích cơ chế ngầm:** Chuẩn hóa tên miền giúp các Pods ở bất kỳ Namespace nào cũng có thể truy xuất chính xác đến Service mong muốn mà không lo bị trùng tên.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Gọi sai tên miền thiếu tên Namespace làm Pod ở Namespace khác không phân giải được DNS.
-
-**Minh hoạ.**
-
-```bash
-# Phân giải tên miền FQDN đầy đủ từ bên trong Pod
-kubectl exec app-pod -- nslookup web-service.dev.svc.cluster.local
-```
-
-Con số chốt: **5** thành phần cấu thành tên miền FQDN chuẩn (`service`, `namespace`, `svc`, `cluster`, `local`).
-
----
-
-**Nguyên lý cốt lõi:** Tên miền tiêu chuẩn FQDN của một Pod trong Kubernetes có cấu trúc **`<pod-ip-with-dashes>.<namespace>.pod.cluster.local`** (ví dụ IP `10.244.1.5` biến thành `10-244-1-5.dev.pod.cluster.local`); riêng đối với Pod thuộc StatefulSet liên kết với Headless Service, tên miền Pod có dạng **`<pod-name>.<service-name>.<namespace>.svc.cluster.local`**.
-
-**Giải thích cơ chế ngầm:** Định danh chính xác từng Pod thành viên riêng biệt cho các kiến trúc lưu trữ dữ liệu phân tán.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thay dấu chấm bằng dấu gạch ngang sai quy tắc trong IP Pod làm DNS không phân giải được.
-
-**Minh hoạ.**
-
-```bash
-# Phân giải tên miền đại diện cho Pod 0 của StatefulSet web
-kubectl exec app-pod -- nslookup web-0.nginx-service.dev.svc.cluster.local
-```
-
-Con số chốt: **100%** dấu chấm trong địa chỉ IP v4 của Pod được thay thế bằng dấu gạch ngang `-` khi tạo bản ghi DNS Pod.
-
----
-
-### 1.2. Cơ chế `/etc/resolv.conf`, cờ `options ndots:5` và tác động hiệu năng (12 phút)
-
-```mermaid
-graph TD
-    subgraph DNS_Lookup_Flow ["Luồng xử lý DNS Query của Pod với ndots:5"]
-        REQ["Client: curl api.google.com (2 dots < 5)"] --> SEARCH1["1. Query: api.google.com.dev.svc.cluster.local (NXDOMAIN)"]
-        SEARCH1 --> SEARCH2["2. Query: api.google.com.svc.cluster.local (NXDOMAIN)"]
-        SEARCH2 --> SEARCH3["3. Query: api.google.com.cluster.local (NXDOMAIN)"]
-        SEARCH3 --> GOBAL["4. Query: api.google.com. (SUCCESS 200 OK)"]
-    end
-
-    REQ_DOT["Client: curl api.google.com. (Có trailing dot .)"] --> DIRECT["1. Query: api.google.com. (SUCCESS 1ms)"]
-
-    style SEARCH1 fill:none,stroke:#f57c00,stroke-width:2px
-    style GOBAL fill:none,stroke:#388e3c,stroke-width:2px
-    style DIRECT fill:none,stroke:#0288d1,stroke-width:2px
-```
-
----
-
-**Nguyên lý cốt lõi:** Tệp `/etc/resolv.conf` được Kubelet tự động sinh ra bên trong mỗi Pod chứa địa chỉ `nameserver 10.96.0.10` (trỏ về Service `kube-dns`), dải `search <namespace>.svc.cluster.local svc.cluster.local cluster.local` và cờ **`options ndots:5`**.
-
-**Giải thích cơ chế ngầm:** Cho phép các Pods trong cùng Namespace có thể gọi nhau bằng tên ngắn (Short name như `curl web`) mà không cần gõ tên miền FQDN dài dòng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tự ý ghi đè file `/etc/resolv.conf` làm Pod mất hoàn toàn khả năng phân giải tên miền DNS cụm.
-
-**Minh hoạ.**
-
-```bash
-# Xem nội dung tệp /etc/resolv.conf bên trong Pod
-kubectl exec app-pod -- cat /etc/resolv.conf
-```
-
-Con số chốt: **5** là giá trị mặc định của cờ `ndots` trong Kubernetes (`ndots:5`).
-
----
-
-**Nguyên lý cốt lõi:** Khi một ứng dụng bên trong Pod truy vấn một tên miền chứa **ít hơn 5 dấu chấm** (ví dụ `api.google.com` chứa 2 dấu chấm), cờ `ndots:5` bắt buộc OS resolver phải thực hiện **lần lượt 4 truy vấn DNS thử nghiệm** nối đuôi dải `search` domain trước khi truy vấn tên miền gốc; gây tốn thời gian và tăng gấp **4 lần** tải cho CoreDNS.
-
-**Giải thích cơ chế ngầm:** Hiểu rõ nguyên nhân gây ra suy giảm hiệu năng kết nối mạng ngoại mạng trong microservices.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Ứng dụng gọi API bên ngoài bị trễ từ 10ms đến 50ms cho mỗi request DNS lookup mà không hiểu lý do.
-
-**Minh hoạ.**
-
-```bash
-# Khắc phục bằng cách thêm dấu chấm ở cuối (Trailing Dot .) để ép dùng FQDN gốc ngay từ đợt 1
-kubectl exec app-pod -- curl https://api.google.com.
-```
-
-Con số chốt: **4** truy vấn DNS phải thực hiện cho mỗi tên miền ngoại mạng có số dấu chấm `< 5`.
-
----
-
-**Nguyên lý cốt lõi:** Để khắc phục hiện tượng nghẽn DNS do `ndots:5` khi gọi dịch vụ ngoại mạng, kỹ sư có thể bổ sung khối **`spec.dnsConfig`** vào Pod spec để hạ cờ `ndots` xuống giá trị **`ndots:2`** (hoặc `ndots:1`).
-
-**Giải thích cơ chế ngầm:** Giúp ứng dụng phân giải tên miền ngoại mạng ngay ở truy vấn đầu tiên mà vẫn giữ được khả năng gọi tên ngắn cho các Service nội bộ chứa từ 1-2 dấu chấm.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Đặt `ndots:0` làm Pod không còn gọi được tên ngắn của Service nội bộ nữa.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  dnsConfig:
-    options:
-    - name: ndots
-      value: "2"
-```
-
-Con số chốt: **2** là giá trị tối ưu cho cờ `ndots` trong các microservices gọi nhiều API ngoại mạng.
-
----
-
-### 1.3. Chẩn đoán 4 chế độ hỏng DNS phổ biến và cách khắc phục (10 phút)
-
-**Nguyên lý cốt lõi:** Phân biệt **4 chế độ hỏng DNS phổ biến**: 1. **CoreDNS OOMKilled** (Pod CoreDNS bị tiêu diệt do vượt giới hạn RAM memory limit); 2. **Loop Plugin Error** (Vòng lặp chuyển tiếp DNS giữa Node và CoreDNS làm CoreDNS tự ngắt); 3. **Corefile Syntax Error** (Gõ sai cú pháp tệp Corefile trong ConfigMap `coredns`); 4. **Sai `dnsPolicy`** (Pod đặt `dnsPolicy: Default` thay vì `ClusterFirst`).
-
-**Giải thích cơ chế ngầm:** 4 chế độ hỏng này chiếm 90% các sự cố mất mạng DNS trong thực tế vận hành Kubernetes.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thấy Pod báo lỗi DNS rồi đoán mò ngắt node mà không kiểm tra log của CoreDNS.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra nhật ký sự cố của các Pods CoreDNS trong kube-system
-kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50
-```
-
-Con số chốt: **4** chế độ hỏng DNS kinh điển cần thuộc lòng khi chẩn đoán sự cố.
-
----
-
-**Nguyên lý cốt lõi:** Khi Pod CoreDNS dính lỗi **Loop Plugin Error**, tiến trình sẽ in ra dòng log `Loop (127.0.0.1:53 -> ...) detected`; cách khắc phục triệt để là sửa tệp `/etc/resolv.conf` trên máy chủ Node thay thế địa chỉ loopback `127.0.0.53` bằng IP DNS Server thực tế (như `8.8.8.8` hoặc DNS công ty).
-
-**Giải thích cơ chế ngầm:** Xử lý tận gốc xung đột giữa `systemd-resolved` của Ubuntu/Debian và plugin `forward` của CoreDNS.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Restart Pod CoreDNS liên tục mà không sửa `/etc/resolv.conf` trên Node khiến lỗi Loop xuất hiện lại ngay sau 10 giây.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra xem file /etc/resolv.conf trên Node có chứa 127.0.0.53 không
-grep "127.0.0.53" /etc/resolv.conf
-```
-
-Con số chốt: **127.0.0.53** là địa chỉ IP loopback của systemd-resolved gây ra lỗi Loop plugin trong CoreDNS.
-
----
-
-### 1.4. Cấu hình dnsPolicy và kiểm tra log (4 phút)
-
-**Nguyên lý cốt lõi:** Thuộc tính **`dnsPolicy: ClusterFirst`** (mặc định) hướng dẫn Pod gửi mọi truy vấn DNS tới CoreDNS cụm trước; nếu muốn Pod sử dụng thẳng địa chỉ DNS Server của máy chủ Node host mà không đi qua CoreDNS, phải khai báo cờ **`dnsPolicy: Default`**.
-
-**Giải thích cơ chế ngầm:** Phân biệt rõ: `ClusterFirst` dùng cho 99% Pods ứng dụng; `Default` dùng cho các Pods hạ tầng muốn bypass CoreDNS.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `dnsPolicy: Default` rồi thắc mắc tại sao Pod không phân giải được tên miền Service nội bộ `.cluster.local`.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  dnsPolicy: ClusterFirst
-```
-
-Con số chốt: **ClusterFirst** là giá trị `dnsPolicy` mặc định cho tất cả các Pods trong Kubernetes.
-
----
-
-**Nguyên lý cốt lõi:** Câu lệnh `kubectl run dnstest --image=busybox:1.36 -it --rm -- nslookup <domain>` giúp kỹ sư kiểm tra phân giải tên miền DNS trực tiếp từ bên trong cụm chỉ trong đúng **2 giây**.
-
-**Giải thích cơ chế ngầm:** Công cụ chẩn đoán sự cố DNS nhanh nhất trong kỳ thi CKA mà không làm ảnh hưởng đến các Pods đang chạy.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tạo Pod bằng YAML thủ công tốn 2 phút chỉ để test 1 câu lệnh `nslookup`.
-
-**Minh hoạ.**
-
-```bash
-# Tạo Pod tạm thời nslookup kiểm tra phân giải DNS trong 2 giây
-kubectl run dnstest --image=busybox:1.36 -it --rm -n dev -- nslookup kubernetes.default
-```
-
-Con số chốt: **2** giây là thời gian khởi tạo Pod tạm tự xoá (`--rm`) kiểm tra DNS.
-
----
-
-**Nguyên lý cốt lõi:** Sử dụng câu lệnh `kubectl logs -n kube-system -l k8s-app=kube-dns` để kiểm tra nhật ký hoạt động của các Pods CoreDNS, kịp thời phát hiện các thông báo lỗi `NXDOMAIN`, `OOMKilled` hoặc `Loop`.
-
-**Giải thích cơ chế ngầm:** Giúp kỹ sư xác minh chắc chắn xem tiến trình CoreDNS có đang hoạt động mượt mà hay dính sự cố.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Đoán mò nguyên nhân hỏng DNS mà không kiểm tra log thực tế của CoreDNS.
-
-**Minh hoạ.**
-
-```bash
-# Bắt log 50 dòng mới nhất của CoreDNS
-kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50
-```
-
-Con số chốt: **1** câu lệnh `kubectl logs` là đủ để trích xuất nhật ký hoạt động của CoreDNS.
-
----
-
-## 8. Đưa vào cụm thật (4 phút)
-
-### Áp vào cụm đang chạy thì làm gì trước
-
-1. **Luôn chạy 2 bản sao (replicas: 2) Pod CoreDNS trên 2 Worker Nodes khác nhau:** Đảm bảo tính sẵn sàng cao (HA), tránh việc 1 Node chết làm sập toàn bộ hệ thống DNS cụm.
-2. **Cấu hình Autoscaler cho CoreDNS (`cluster-proportional-autoscaler`):** Tự động tăng số bản sao CoreDNS khi cụm mở rộng số lượng Nodes và Pods.
-3. **Thêm dấu chấm ở cuối (`.`) cho các tên miền ngoại mạng cố định trong mã nguồn ứng dụng:** Trọng yếu giúp bỏ qua 3-4 truy vấn search domain thừa.
-
-### Cái gì hỏng nếu áp thẳng lên prod
-
-- **Sửa lỗi cú pháp file Corefile trong ConfigMap `coredns` rồi restart CoreDNS:** Làm tất cả các Pods CoreDNS bị crash lập tức, biến toàn bộ cụm thành "mù DNS", làm sập 100% dịch vụ microservices.
-- **Đặt memory limit quá thấp cho CoreDNS (như 30MiB):** Khi lượng request vọt cao, CoreDNS bị dính lỗi OOMKilled liên tục làm gián đoạn kết nối.
-- **Quy trình áp thử an toàn:**
-  - Kiểm tra cú pháp Corefile trước khi apply.
-  - Sử dụng lệnh `kubectl rollout status deployment/coredns -n kube-system` theo dõi cập nhật.
-  - Chạy Pod `dnstest` thử nghiệm `nslookup` các tên miền nội bộ và ngoại mạng.
-
-### Đo trước — đo sau
-
-1. **Thời gian phản hồi truy vấn DNS (DNS Response Latency):** Giảm từ 45ms xuống 2ms cho các tên miền ngoại mạng nhờ tối ưu cờ `ndots:2` hoặc thêm trailing dot `.`.
-2. **Số lượng truy vấn DNS tới CoreDNS (DNS QPS):** Giảm 75% số lượng request thừa tới CoreDNS nhờ bỏ dải search domain không cần thiết.
-3. **Độ ổn định hệ thống (Uptime):** Đạt 99,99% nhờ cấu hình 2 bản sao HA CoreDNS và memory limit `170MiB`.
-
-### Khi nào KHÔNG nên dùng
-
-- **Không đặt `ndots:1` cho các ứng dụng phụ thuộc nhiều vào tên ngắn (Short name) giữa các Namespace khác nhau:** Tránh việc ứng dụng không tìm thấy tên miền của Namespace khác.
-- **Không đặt `dnsPolicy: Default` cho các Pods ứng dụng thông thường:** Làm Pod không thể kết nối tới bất kỳ Service VIP nào trong cụm.
-
----
-
-### 1.6. Bẫy hay gặp (2 phút)
-
-| # | Bẫy hay gặp | Vì sao dính bẫy | Làm đúng là (kèm tên lệnh / con số) |
-|---|---|---|---|
-| 1 | Pod báo lỗi `Name or service not known` khi gọi tên ngắn | Khác Namespace nhưng chỉ gõ tên Service thiếu tên Namespace | Gõ đầy đủ `<svc>.<namespace>` (như `web-svc.dev`) |
-| 2 | Gọi API ngoại mạng `api.stripe.com` bị chậm 50ms | Cờ `ndots:5` ép thực hiện 4 truy vấn search domain thừa trước | Thêm dấu chấm cuối `api.stripe.com.` hoặc hạ `ndots:2` |
-| 3 | CoreDNS Pod bị kẹt `CrashLoopBackOff` với log `Loop detected` | Node `/etc/resolv.conf` chứa địa chỉ loopback `127.0.0.53` | Sửa `/etc/resolv.conf` trên Node trỏ về IP DNS thực (`8.8.8.8`) |
-| 4 | CoreDNS bị sập liên tục khi ứng dụng scale lên 1.000 Pods | Memory limit của CoreDNS đặt quá thấp dính lỗi OOMKilled | Nâng `resources.limits.memory` của CoreDNS lên `170Mi` |
-| 5 | Thắc mắc vì sao Pod không gọi được Service nội bộ sau khi sửa `dnsPolicy` | Đã đặt `dnsPolicy: Default` làm Pod bỏ qua CoreDNS cụm | Đổi lại `dnsPolicy: ClusterFirst` trong Pod spec |
-| 6 | Sửa ConfigMap `coredns` nhưng CoreDNS không nạp cấu hình mới | Quên reload plugin hoặc không restart Pod CoreDNS | Chạy lệnh `kubectl rollout restart deployment/coredns -n kube-system` |
-| 7 | Gõ sai cú pháp dấu ngoặc `{}` trong tệp `Corefile` | CoreDNS bị syntax error và từ chối khởi chạy | Kiểm tra kỹ cấu trúc khối plugin trong file Corefile |
-| 8 | Thắc mắc vì sao `nslookup` IP Pod không ra tên miền | Pod không thuộc StatefulSet hoặc Headless Service | Bản ghi DNS Pod tên riêng chỉ tự động sinh ra cho StatefulSet |
-| 9 | Quên cờ `-n kube-system` khi xem log CoreDNS | CoreDNS nằm ở namespace `kube-system`, không phải `default` | Gõ đúng `kubectl logs -n kube-system -l k8s-app=kube-dns` |
-| 10 | Đặt `ndots:0` làm Pod mất khả năng phân giải tên ngắn nội bộ | `ndots:0` bỏ qua hoàn toàn dải search domain | Đặt `ndots:2` thay vì `ndots:0` |
-| 11 | Thắc mắc vì sao địa chỉ ClusterIP DNS luôn là `10.96.0.10` | Đây là địa chỉ VIP mặc định cấp cho Service `kube-dns` | Dùng đúng IP `10.96.0.10` cho Cluster DNS |
-| 12 | Xoá Service `kube-dns` trong namespace `kube-system` | Mất Service `kube-dns` làm 100% Pods trong cụm bị liệt DNS | Giữ nguyên Service `kube-dns` trong `kube-system` |
-
----
-
-## §10. Tóm tắt (2 phút)
-
-```mermaid
-graph TD
-    A["CoreDNS Service (kube-dns: 10.96.0.10)"] --> B["Cấu trúc FQDN: <svc>.<ns>.svc.cluster.local"]
-    A --> C["Pod /etc/resolv.conf: search domains & options ndots:5"]
-    
-    C --> D["ndots:5 Impact: 4 DNS queries cho tên miền ngoài (api.google.com)"]
-    D --> E["Giải pháp: Thêm Trailing Dot (.) hoặc spec.dnsConfig (ndots:2)"]
-
-    A --> F["4 Chế độ hỏng DNS: OOMKilled, Loop (127.0.0.53), Syntax Error, dnsPolicy"]
-
-    style A fill:none,stroke:#333,stroke-width:2px
-    style B fill:none,stroke:#333,stroke-width:2px
-    style E fill:none,stroke:#333,stroke-width:2px
-    style F fill:none,stroke:#333,stroke-width:2px
-```
-
-### Năm điều phải nhớ
-
-1. **Cấu trúc FQDN chuẩn:** Service FQDN có dạng **`<service-name>.<namespace>.svc.cluster.local`** (chứa đúng **5** thành phần).
-2. **Cơ chế `/etc/resolv.conf`:** Chứa `nameserver 10.96.0.10`, dải `search` và cờ **`options ndots:5`**.
-3. **Tác hại `ndots:5`:** Tên miền ngoại mạng `< 5` dấu chấm bị ép chạy **4 truy vấn DNS** thừa; xử lý bằng trailing dot `.` hoặc `ndots:2`.
-4. **4 chế độ hỏng DNS:** CoreDNS OOMKilled, Loop Plugin (`127.0.0.53`), Corefile Syntax Error, và sai `dnsPolicy`.
-5. **Chẩn đoán 2 giây:** Dùng `kubectl run dnstest --image=busybox:1.36 -it --rm -- nslookup <domain>` để kiểm tra DNS tức thì.
-
----
-
-## §11. Câu hỏi tự kiểm tra
-
-1. Trình bày cấu trúc tên miền FQDN chuẩn của một Service và một Pod trong Kubernetes.
-2. Tệp `/etc/resolv.conf` bên trong Pod chứa những thông số cấu hình mặc định nào do Kubelet tự động sinh ra?
-3. Giải thích ý nghĩa kĩ thuật của cờ `options ndots:5` trong tệp `/etc/resolv.conf` của Pod.
-4. Tại sao một câu lệnh gọi tên miền ngoài như `curl api.stripe.com` (chứa 2 dấu chấm) lại khiến Pod thực hiện tới 4 truy vấn DNS liên tiếp? Nêu 2 giải pháp khắc phục.
-5. Khối `spec.dnsConfig` trong Pod spec được cấu hình như thế nào để hạ cờ `ndots` xuống `ndots:2`?
-6. Nêu 4 chế độ hỏng DNS phổ biến nhất trong Kubernetes và dấu hiệu nhận biết của từng chế độ.
-7. Nguyên nhân gây ra lỗi `Loop Plugin Error` trong CoreDNS là gì và câu lệnh/thao tác nào dùng để khắc phục triệt để?
-8. Sự khác nhau giữa 2 giá trị `dnsPolicy: ClusterFirst` và `dnsPolicy: Default` trong Pod spec là gì?
-9. Lệnh CLI nào giúp khởi tạo một Pod tạm thời để kiểm tra phân giải tên miền DNS `nslookup` trong đúng 2 giây?
-10. Hai chế độ hỏng (1 im lặng do trễ 50ms mỗi request API ngoài vì dính `ndots:5`, 1 âm thầm do 100% cụm liệt DNS vì CoreDNS dính Loop error `127.0.0.53`) là gì?
-
-### Đáp án
-
-1. Service: `<service-name>.<namespace>.svc.cluster.local`; Pod: `<pod-ip-with-dashes>.<namespace>.pod.cluster.local` (hoặc `<pod-name>.<svc>.<ns>.svc.cluster.local` cho StatefulSet).
-2. `nameserver 10.96.0.10`, `search <ns>.svc.cluster.local svc.cluster.local cluster.local` và `options ndots:5`.
-3. `ndots:5` quy định: nếu số dấu chấm trong tên miền `< 5`, OS resolver phải thử nối đuôi lần lượt các miền trong `search` domain trước khi truy vấn tên miền gốc.
-4. Vì `api.stripe.com` có 2 dấu chấm `< 5`, bị bắt chạy 3 truy vấn search domain nội bộ thất bại trước khi tới truy vấn thứ 4 gốc; Khắc phục: Thêm trailing dot `api.stripe.com.` hoặc dùng `dnsConfig` với `ndots:2`.
-5. Khai báo `spec.dnsConfig.options: [{name: "ndots", value: "2"}]` trong Pod spec.
-6. 1. OOMKilled (vượt RAM limit); 2. Loop error (vòng lặp IP 127.0.0.53); 3. Syntax error (gõ sai Corefile); 4. Sai dnsPolicy (đặt Default).
-7. Do file `/etc/resolv.conf` trên Node chứa địa chỉ loopback `127.0.0.53` (systemd-resolved); Khắc phục: Sửa `/etc/resolv.conf` trên Node trỏ về IP DNS thực (như `8.8.8.8`).
-8. `ClusterFirst`: Gửi DNS request tới CoreDNS cụm trước (mặc định); `Default`: Bypass CoreDNS, dùng thẳng DNS Server của máy chủ Node host.
-9. Lệnh `kubectl run dnstest --image=busybox:1.36 -it --rm -- nslookup <domain>`.
-10. Chế độ 1: Gọi API ngoài bị dính `ndots:5` làm nảy sinh 3 truy vấn NXDOMAIN thừa gây trễ 50ms; Chế độ 2: Node chứa `127.0.0.53` làm CoreDNS dính vòng lặp Loop plugin tự ngắt tiến trình khiến toàn cụm sập DNS.
-
----
-
-## §12. Tài liệu tham khảo
-
-| Nguồn tài liệu | Phiên bản Kubernetes áp dụng | Nội dung chính |
-|---|---|---|
-| Official Docs: DNS for Services and Pods | Kubernetes v1.35 | Cấu trúc DNS FQDN, bản ghi A/SRV, resolv.conf và CoreDNS |
-| Official Docs: Pod's DNS Config | Kubernetes v1.35 | Cấu hình `dnsPolicy`, `dnsConfig` và tham số `ndots` |
-| CoreDNS Docs: Loop Plugin | CoreDNS v1.11 | Chẩn đoán lỗi Loop plugin và xung đột systemd-resolved |
-| File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
-
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
 > [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên cụm Kubernetes 1.30+ tiêu chuẩn (hoặc cụm kind/kubeadm lab). Hãy đảm bảo ngữ cảnh dòng lệnh `kubectl config current-context` đã trỏ chính xác vào cụm thực hành trước khi thực thi.
-
-## Khối thực hành — 120 phút
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm chứng BẰNG LỆNH) |
-|---|---|---|
-| TH1 | Phân giải tên miền FQDN chuẩn của Service `web-svc.dev.svc.cluster.local` | `kubectl exec dns-test-pod -n dev -- nslookup web-svc.dev.svc.cluster.local` trả về IP VIP |
-| TH2 | Trích xuất và phân tích tệp `/etc/resolv.conf` của Pod | Tệp `/etc/resolv.conf` chứa `options ndots:5` và `search` domains |
-| TH3 | Biên soạn Pod spec với khối `dnsConfig` hạ cờ `ndots` xuống `2` | `kubectl exec custom-dns-pod -n dev -- cat /etc/resolv.conf` chứa `options ndots:2` |
-| TH4 | Phân tích tệp cấu hình `Corefile` trong ConfigMap `coredns` | `kubectl get cm coredns -n kube-system -o yaml` chứa các plugin `kubernetes`, `forward` |
-| TH5 | Khắc phục sự cố CoreDNS bằng cách kiểm tra log và restart Deployment | `kubectl get pods -n kube-system -l k8s-app=kube-dns` 2/2 bản sao `Running` |
-| TH6 | Xác minh kịch bản Phân giải tên miền và CoreDNS với script tự động | Script kiểm tra CoreDNS OK |
-| TH7 | Nộp đủ 4 hiện vật vào portfolio | Thư mục `k8s-portfolio/buoi-23/` chứa đủ 4 file md/yaml/sh |
+> **Mục tiêu kỹ thuật & Trọng tâm CKA**:
+> - Hiểu rõ cấu trúc tệp cấu hình `Corefile` trong ConfigMap `coredns` (plugins: `kubernetes`, `forward`, `cache`, `loop`, `reload`).
+> - Nắm vững định dạng FQDN cho Service thường, Headless Service, SRV record và Pod IP.
+> - Giải thích chi tiết chu trình tìm kiếm DNS trong `/etc/resolv.conf` với `search` và `ndots:5`.
+> - Tùy biến `dnsPolicy` và `dnsConfig` trong Pod Spec để tối ưu hóa thời gian phản hồi API ngoại mạng.
+> - Chẩn đoán và xử lý nhanh 4 sự cố DNS phổ biến: Loop detection CrashLoop, Corefile syntax error, Forwarding failure, và DNS Timeout.
 
 ---
 
-## L1. Điều kiện tiên quyết về môi trường
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Máy Chủ Tên Miền CoreDNS
 
-| # | Kiểm tra điều kiện | Câu lệnh kiểm tra | Kết quả kỳ vọng |
-|---|---|---|---|
-| 1 | Cụm `kubeadm` 3 node đang ở v1.35 | `kubectl get nodes` | Hiển thị 3 node `cp-01`, `worker-01`, `worker-02` `Ready` |
-| 2 | Kubeconfig trỏ context `kubeadm` | `kubectl config current-context` | In ra đúng `kubeadm` |
-| 3 | Namespace `dev` sẵn sàng | `kubectl create ns dev` | Namespace `dev` ở trạng thái Active |
-| 4 | Thư mục hiện vật đã sẵn sàng | `mkdir -p k8s-portfolio/buoi-23` | Thư mục được tạo thành công |
-| 5 | Pod CoreDNS đang running | `kubectl get pods -n kube-system -l k8s-app=kube-dns` | Hiển thị 2 Pods CoreDNS Running |
-
-```bash
-# Kiểm tra môi trường bắt buộc trước khi thực hiện bài lab
-kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUONG — ĐẠT" || echo "CHECKPOINT MOI TRUONG — LỖI (Trỏ sai context)"
-```
-
----
-
-## L2. Kiến trúc bài lab
+Trong cụm Kubernetes, **CoreDNS** là máy chủ DNS có khả năng mở rộng cao, được viết bằng ngôn ngữ Go và triển khai mặc định từ phiên bản Kubernetes v1.13+. CoreDNS liên tục theo dõi (Watch) các sự kiện thêm/sửa/xóa của `Service` và `EndpointSlice` từ `kube-apiserver` để tự động cập nhật bảng phân giải tên miền trong bộ nhớ RAM.
 
 ```mermaid
-graph TD
-    subgraph Pod_DNS_Config ["Chặng 1: Pod /etc/resolv.conf & CoreDNS Service"]
-        POD_DEF["Pod dns-test-pod (ndots:5)"] -->|"nameserver 10.96.0.10"| KUBE_DNS["Service kube-dns (10.96.0.10:53)"]
-        POD_CUS["Pod custom-dns-pod (ndots:2)"] -->|"nameserver 10.96.0.10"| KUBE_DNS
-    end
+flowchart TD
+    classDef pod fill:none,stroke:#2563eb,stroke-width:2px,color:#2563eb;
+    classDef dns fill:none,stroke:#0284c7,stroke-width:2px,color:#0284c7;
+    classDef k8s fill:none,stroke:#16a34a,stroke-width:2px,color:#16a34a;
+    classDef ext fill:none,stroke:#d97706,stroke-width:2px,color:#d97706;
 
-    subgraph CoreDNS_Backend ["Chặng 2: CoreDNS Pods & External Resolution"]
-        KUBE_DNS --> COREDNS_PODS["CoreDNS Deployment (2 Replicas in kube-system)"]
-        COREDNS_PODS -->|"Plugin kubernetes"| INTERNAL_VIP["ClusterIP VIP Resolution"]
-        COREDNS_PODS -->|"Plugin forward"| EXTERNAL_DNS["External DNS (8.8.8.8)"]
-    end
+    AppPod["App Pod<br>(/etc/resolv.conf -> 10.96.0.10)"]:::pod -->|1. Gửi truy vấn DNS UDP :53| DNS_VIP["Service: kube-dns (10.96.0.10)"]:::dns
+    
+    DNS_VIP --> CoreDNS1["CoreDNS Pod 1 (kube-system)"]:::dns
+    DNS_VIP --> CoreDNS2["CoreDNS Pod 2 (kube-system)"]:::dns
 
-    Pod_DNS_Config --> CoreDNS_Backend
-
-    style Pod_DNS_Config fill:none,stroke:#f57c00,stroke-width:2px
-    style CoreDNS_Backend fill:none,stroke:#388e3c,stroke-width:2px
+    CoreDNS1 <-->|Watch Services & Endpoints| API["kube-apiserver"]:::k8s
+    
+    CoreDNS1 -->|Tên miền nội bộ .cluster.local| InMem["In-Memory Kubernetes DNS Plugin"]:::dns
+    CoreDNS1 -->|"Tên miền ngoài (google.com)"| Upstream["Upstream DNS /etc/resolv.conf (8.8.8.8)"]:::ext
 ```
+
+### 1.1. Cấu Trúc Khai Báo FQDN Chuẩn (Fully Qualified Domain Name)
+
+| Đối Tượng | Cấu Trúc FQDN Hoàn Chỉnh | Bản Ghi Trả Về | Ví Dụ Cụ Thể |
+| :--- | :--- | :--- | :--- |
+| **Service Thường** | `<service>.<namespace>.svc.cluster.local` | **A Record** -> ClusterIP | `payment-svc.production.svc.cluster.local` |
+| **Headless Service**| `<service>.<namespace>.svc.cluster.local` | **A Records** -> Danh sách Pod IPs | `db-cluster.database.svc.cluster.local` |
+| **StatefulSet Pod** | `<pod-name>.<headless-svc>.<namespace>.svc.cluster.local` | **A Record** -> Đúng IP của Pod đó | `db-0.db-cluster.database.svc.cluster.local` |
+| **Pod IP Thường** | `<ip-dashed>.<namespace>.pod.cluster.local`| **A Record** -> IP của Pod | `10-244-1-15.default.pod.cluster.local` |
+| **Cổng Service SRV**| `_<port-name>._<proto>.<svc>.<ns>.svc.cluster.local` | **SRV Record** -> Cổng và Tên | `_http._tcp.payment-svc.production.svc...` |
 
 ---
 
-## L3. Bước 1 — Phân giải tên miền FQDN chuẩn của Service (30 phút)
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-### Thao tác 1.1: Khởi tạo Service `web-svc` và Pod `dns-test-pod`
+Bảng phân tích chi tiết 4 chính sách `dnsPolicy` trong Pod Spec:
 
-```bash
-# 1. Tạo Namespace dev nếu chưa có
-kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -
-
-# 2. Khởi tạo Deployment và Service web-svc trong namespace dev
-kubectl create deployment web-target --image=nginx:1.27-alpine -n dev
-kubectl expose deployment web-target --name=web-svc --port=80 -n dev
-
-# 3. Tạo Pod dns-test-pod dùng image busybox
-cat << 'EOF' > k8s-portfolio/buoi-23/dns-test-pod.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: dns-test-pod
-  namespace: dev
-spec:
-  containers:
-  - name: busybox
-    image: busybox:1.36
-    command: ['sh', '-c', 'sleep infinity']
-EOF
-
-kubectl apply -f k8s-portfolio/buoi-23/dns-test-pod.yaml
-kubectl wait --for=condition=Ready pod/dns-test-pod -n dev --timeout=30s
-
-# 4. Thực thi nslookup tên miền FQDN chuẩn web-svc.dev.svc.cluster.local
-kubectl exec dns-test-pod -n dev -- nslookup web-svc.dev.svc.cluster.local > /tmp/fqdn-res.txt
-
-# 5. Trích xuất tệp /etc/resolv.conf từ bên trong dns-test-pod
-kubectl exec dns-test-pod -n dev -- cat /etc/resolv.conf > /tmp/pod-resolv.txt
-```
-
-**CHECKPOINT 1 — Service web-svc được khởi tạo thành công trong namespace dev.**
-
-```bash
-kubectl get svc web-svc -n dev -o jsonpath='{.spec.clusterIP}' | grep -qE "^[0-9]+\.[0-9]+" && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
-
-**CHECKPOINT 2 — Pod dns-test-pod phân giải thành công tên miền FQDN web-svc.dev.svc.cluster.local.**
-
-```bash
-grep -qE "Address: [0-9]+\.[0-9]+" /tmp/fqdn-res.txt && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
-
-**CHECKPOINT 3 — Tệp /etc/resolv.conf bên trong Pod chứa tham số options ndots:5 mặc định.**
-
-```bash
-grep -q "options ndots:5" /tmp/pod-resolv.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
+| Chính Sách (`dnsPolicy`) | Cấu Hình Nameserver Được Nạp | Hoạt Cảnh Sử Dụng Chuẩn |
+| :--- | :--- | :--- |
+| **`ClusterFirst`** (Mặc định) | Trỏ vào `kube-dns` (`10.96.0.10`). Nếu không tìm thấy trong cụm thì chuyển tiếp ra ngoài | 99% Workloads thông thường cần gọi cả Service nội bộ và Internet |
+| **`ClusterFirstWithHostNet`** | Trỏ vào `kube-dns` nhưng dành riêng cho Pods chạy `hostNetwork: true` | CNI DaemonSets, Ingress Controller chạy chế độ HostNetwork |
+| **`Default`** | Kế thừa trực tiếp tệp `/etc/resolv.conf` của **máy chủ Node** (Bỏ qua CoreDNS) | Workloads không bao giờ cần gọi Service nội bộ, giảm tải CoreDNS |
+| **`None`** | Bỏ qua mọi cấu hình mặc định; bắt buộc khai báo thủ công trong `spec.dnsConfig` | Tùy biến máy chủ DNS chuyên dụng nội bộ doanh nghiệp |
 
 ---
 
-## L4. Bước 2 — Cấu hình custom `dnsConfig` hạ `ndots:2` cho Pod (30 phút)
+## 3. Giải Mã Nút Thắt Hiệu Năng `ndots:5` & Cấu Trúc Corefile
 
-### Thao tác 2.1: Biên soạn `custom-dns-pod.yaml` với `ndots:2`
+### 3.1. Phân Tích Cơ Chế `ndots:5` Trong Tệp `/etc/resolv.conf` Của Pod
 
-```bash
-# 1. Tạo tệp custom-dns-pod.yaml chứa khối spec.dnsConfig
-cat << 'EOF' > k8s-portfolio/buoi-23/custom-dns-pod.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: custom-dns-pod
-  namespace: dev
+Mặc định khi Kubelet khởi tạo một Pod, nó tự động sinh tệp `/etc/resolv.conf` với nội dung sau:
+
+```text
+nameserver 10.96.0.10
+search production.svc.cluster.local svc.cluster.local cluster.local company.internal
+options ndots:5
+```
+
+**Quy tắc hoạt động của `ndots:5`**:
+- Nếu một tên miền có **số lượng dấu chấm `.` ít hơn 5**, thư viện resolver của hệ điều hành sẽ coi đó là tên miền tương đối và **nối lần lượt từng đuôi trong danh sách `search`** để truy vấn trước.
+- **Kịch bản thực tế**: Ứng dụng gọi API `api.github.com` (có 2 dấu chấm $< 5$):
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor App as Ứng dụng trong Pod
+    participant DNS as CoreDNS (10.96.0.10)
+    participant Ext as Internet DNS (8.8.8.8)
+
+    App->>DNS: 1. Query: api.github.com.production.svc.cluster.local.
+    DNS-->>App: NXDOMAIN (Không tồn tại)
+    App->>DNS: 2. Query: api.github.com.svc.cluster.local.
+    DNS-->>App: NXDOMAIN (Không tồn tại)
+    App->>DNS: 3. Query: api.github.com.cluster.local.
+    DNS-->>App: NXDOMAIN (Không tồn tại)
+    App->>DNS: 4. Query: api.github.com.company.internal.
+    DNS-->>App: NXDOMAIN (Không tồn tại)
+    App->>DNS: 5. Query: api.github.com. (Tên miền gốc)
+    DNS->>Ext: Chuyển tiếp ra Internet
+    Ext-->>DNS: Trả về IP: 140.82.121.4
+    DNS-->>App: Thành công sau 5 lần truy vấn!
+```
+
+> [!WARNING]
+> Vì mỗi truy vấn đều gửi cả bản ghi **A (IPv4)** và **AAAA (IPv6)**, một lệnh gọi `api.github.com` đơn giản làm phát sinh tới **10 truy vấn DNS**!
+> **Giải pháp tối ưu**:
+> 1. Trong mã nguồn ứng dụng, thêm dấu chấm vào cuối: `api.github.com.` (biến thành Fully Qualified Domain Name tuyệt đối, lập tức gửi truy vấn ra Internet).
+> 2. Cấu hình `dnsConfig` trong Pod Spec để giảm `ndots` xuống 2:
+
+```yaml
 spec:
   dnsPolicy: ClusterFirst
   dnsConfig:
     options:
-    - name: ndots
-      value: "2"
-  containers:
-  - name: busybox
-    image: busybox:1.36
-    command: ['sh', '-c', 'sleep infinity']
-EOF
-
-kubectl apply -f k8s-portfolio/buoi-23/custom-dns-pod.yaml
-kubectl wait --for=condition=Ready pod/custom-dns-pod -n dev --timeout=30s
-
-# 2. Trích xuất tệp /etc/resolv.conf từ custom-dns-pod
-kubectl exec custom-dns-pod -n dev -- cat /etc/resolv.conf > /tmp/custom-resolv.txt
+      - name: ndots
+        value: "2"
 ```
 
-**CHECKPOINT 4 — Pod custom-dns-pod nạp thành công tham số options ndots:2 trong /etc/resolv.conf.**
+### 3.2. Cấu Trúc Tệp Cấu Hình Corefile Mặc Định
 
-```bash
-grep -q "options ndots:2" /tmp/custom-resolv.txt && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+ConfigMap `coredns` trong namespace `kube-system`:
 
-**CHECKPOINT 5 — CA ĐỐI CHỨNG: Pod custom-dns-pod vẫn phân giải được tên ngắn Service nội bộ web-svc.**
-
-```bash
-kubectl exec custom-dns-pod -n dev -- nslookup web-svc | grep -qE "Address: [0-9]+\.[0-9]+" && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
-```
-
----
-
-## L5. Bước 3 — Phân tích tệp cấu hình `Corefile` của CoreDNS (30 phút)
-
-### Thao tác 3.1: Kiểm tra ConfigMap `coredns` trong namespace `kube-system`
-
-```bash
-# 1. Trích xuất nội dung tệp Corefile từ ConfigMap coredns
-kubectl get configmap coredns -n kube-system -o jsonpath='{.data.Corefile}' > /tmp/corefile-content.txt
-
-# 2. Bắt log 30 dòng mới nhất của Pods CoreDNS
-kubectl logs -n kube-system -l k8s-app=kube-dns --tail=30 > /tmp/coredns-logs.txt
-```
-
-**CHECKPOINT 6 — Tệp Corefile chứa các plugin quan trọng: kubernetes, forward, cache, errors.**
-
-```bash
-grep -q "kubernetes" /tmp/corefile-content.txt && grep -q "forward" /tmp/corefile-content.txt && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
-
-**CHECKPOINT 7 — Nhật ký Pods CoreDNS hoạt động bình thường không dính lỗi Loop hay OOMKilled.**
-
-```bash
-! grep -q "Loop detected" /tmp/coredns-logs.txt && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
-
-**CHECKPOINT 8 — CA ĐỐI CHỨNG: Phân giải tên miền ngoại mạng có trailing dot (như kubernetes.default.svc.cluster.local.) chạy thành công ngay ở đợt 1.**
-
-```bash
-kubectl exec dns-test-pod -n dev -- nslookup kubernetes.default.svc.cluster.local. | grep -qE "Address: [0-9]+\.[0-9]+" && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
+```text
+.:53 {
+    errors                   # Ghi log các lỗi DNS
+    health {                 # Endpoint kiểm tra sức khỏe tại http://:8080/health
+       lameduck 5s
+    }
+    ready                    # Endpoint báo sẵn sàng tại http://:8181/ready
+    kubernetes cluster.local in-addr.arpa ip6.arpa { # Xử lý phân giải Kubernetes
+       pods insecure
+       fallthrough in-addr.arpa ip6.arpa
+       ttl 30
+    }
+    prometheus :9153         # Xuất Prometheus metrics tại cổng 9153
+    forward . /etc/resolv.conf # Chuyển tiếp các truy vấn ngoại mạng ra DNS của Node
+    cache 30                 # Lưu cache kết quả tối đa 30 giây
+    loop                     # Phát hiện và ngăn chặn vòng lặp định tuyến DNS
+    reload                   # Tự động nạp lại Corefile khi ConfigMap thay đổi
+    loadbalance              # Cân bằng tải Round-Robin giữa các A records
+}
 ```
 
 ---
 
-## L6. Bước 4 — Kiểm tra 2 bản sao HA của CoreDNS và dọn dẹp (20 phút)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: 4 Sự Cố DNS Phổ Biến
 
-### Thao tác 4.1: Kiểm tra Deployment `coredns` trong `kube-system`
+### Tình huống 1: CoreDNS bị kẹt CrashLoopBackOff do lỗi vòng lặp (Loop Detection)
 
-```bash
-# 1. Trích xuất số bản sao readyReplicas của Deployment coredns
-kubectl get deployment coredns -n kube-system -o jsonpath='{.status.readyReplicas}' > /tmp/coredns-replicas.txt
+Sau khi cài đặt cụm, các Pod CoreDNS liên tục bị Crash với log cảnh báo loop plugin.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+$ kubectl logs -n kube-system -l k8s-app=kube-dns
+plugin/loop: Loop (127.0.0.1:53 -> :53) detected for zone ".", see https://coredns.io/plugins/loop#troubleshooting
+panic: Loop detected
 ```
 
-**CHECKPOINT 9 — Deployment coredns chạy đủ 2 bản sao (2 Replicas) đảm bảo tính sẵn sàng cao HA.**
-
-```bash
-grep -qx "2" /tmp/coredns-replicas.txt && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
-
-**CHECKPOINT 10 — Dọn dẹp tệp tạm /tmp/corefile-content.txt.**
-
-```bash
-rm -f /tmp/corefile-content.txt >/dev/null 2>&1 && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
-
-**CHECKPOINT 11 — Dọn dẹp tệp tạm /tmp/coredns-logs.txt.**
-
-```bash
-rm -f /tmp/coredns-logs.txt >/dev/null 2>&1 && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
-
-**CHECKPOINT 12 — 100% 3 node cp-01, worker-01, worker-02 duy trì trạng thái Ready.**
-
-```bash
-kubectl get nodes --no-headers | grep -c "Ready" | grep -qx "3" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
+### 5-Whys Root Cause Analysis:
+1. **Tại sao CoreDNS bị crash?** -> Plugin `loop` phát hiện một truy vấn DNS gửi đi lại quay ngược về chính nó.
+2. **Tại sao truy vấn bị quay ngược?** -> Khối `forward . /etc/resolv.conf` đọc tệp cấu hình của Node chứa `nameserver 127.0.0.53` (systemd-resolved).
+3. **Tại sao `127.0.0.53` gây lặp?** -> Bên trong Container của CoreDNS, địa chỉ `127.0.0.1` trỏ về chính container CoreDNS chứ không phải máy chủ Host.
+4. **Tại sao lại nạp `/etc/resolv.conf` của host?** -> Kubelet mặc định truyền tệp này vào container nếu không cấu hình khác.
+5. **Giải pháp khắc phục là gì?** -> Cấu hình Kubelet trỏ cờ `--resolv-conf=/run/systemd/resolve/resolv.conf` (tệp chứa DNS thật từ router/upstream) hoặc sửa trực tiếp upstream trong Corefile thành `forward . 8.8.8.8 1.1.1.1`.
 
 ---
 
-## L7. Nộp hiện vật và dọn dẹp (10 phút)
+### Tình huống 2: Pod chạy `hostNetwork: true` không thể gọi được Service nội bộ
 
-### Thao tác 7.1: Gom hiện vật nộp bài
+Một Pod giám sát mạng được cấu hình `hostNetwork: true`. Khi gọi Service `payment-service.default.svc.cluster.local` thì báo lỗi `Could not resolve host`.
 
-```bash
-# 1. Báo cáo thử nghiệm phân giải DNS dns-fqdn-report.txt
-cat << 'EOF' > k8s-portfolio/buoi-23/dns-fqdn-report.txt
-BÁO CÁO KẾT QUẢ PHÂN GIẢI TÊN MIỀN DNS VÀ NDOTS BENCHMARK:
+### Hậu Quả & Log Lỗi Thực Tế:
 
-1. Thử nghiệm tên miền FQDN chuẩn:
-   - Tên miền: web-svc.dev.svc.cluster.local
-   - Phân giải ra địa chỉ ClusterIP VIP thành công từ dns-test-pod.
-
-2. Phân tích cờ options ndots trong /etc/resolv.conf:
-   - Mặc định Pod (dns-test-pod): options ndots:5.
-   - Tùy chỉnh Pod (custom-dns-pod): options ndots:2 (nạp qua spec.dnsConfig).
-
-3. Kết luận:
-   - Với ndots:2, Pod phân giải tên miền ngoại mạng ngay ở đợt truy vấn đầu tiên, giảm 75% số lượng request NXDOMAIN thừa tới CoreDNS.
-EOF
-
-# 2. Báo cáo chẩn đoán sự cố coredns-troubleshooting.md
-cat << 'EOF' > k8s-portfolio/buoi-23/coredns-troubleshooting.md
-# HƯỚNG DẪN CHẨN ĐOÁN 4 SỰ CỐ COREDNS PHỔ BIẾN
-
-1. Lỗi Loop Plugin (Loop 127.0.0.1:53 detected):
-   - Nguyên nhân: File /etc/resolv.conf trên Node chứa IP loopback 127.0.0.53.
-   - Khắc phục: Sửa /etc/resolv.conf trên Node trỏ về IP DNS thực tế (8.8.8.8).
-
-2. Lỗi CoreDNS OOMKilled:
-   - Nguyên nhân: Đặt memory limit quá thấp (như 30MiB).
-   - Khắc phục: Nâng resources.limits.memory của coredns lên 170MiB.
-
-3. Lỗi Corefile Syntax Error:
-   - Nguyên nhân: Gõ sai cú pháp tệp Corefile trong ConfigMap coredns.
-   - Khắc phục: Kiểm tra cú pháp plugin và kubectl rollout restart deployment/coredns.
-
-4. Sai dnsPolicy:
-   - Nguyên nhân: Pod đặt dnsPolicy: Default thay vì ClusterFirst.
-   - Khắc phục: Sửa lại dnsPolicy: ClusterFirst trong Pod spec.
-EOF
-
-# 3. Tạo tệp verify-coredns-setup.sh
-cat << 'EOF' > k8s-portfolio/buoi-23/verify-coredns-setup.sh
-#!/bin/bash
-# Script kiểm tra CoreDNS, FQDN resolution và custom ndots:2
-
-FQDN_OK=$(kubectl exec dns-test-pod -n dev -- nslookup web-svc.dev.svc.cluster.local 2>/dev/null | grep -c "Address:")
-NDOTS_OK=$(kubectl exec custom-dns-pod -n dev -- cat /etc/resolv.conf | grep -c "options ndots:2")
-
-if [ "$FQDN_OK" -ge 1 ] && [ "$NDOTS_OK" -eq 1 ]; then
-    echo "VERIFY COREDNS SETUP — ĐẠT (FQDN & Custom ndots:2 OK)"
-else
-    echo "VERIFY COREDNS SETUP — LỖI (FQDN: $FQDN_OK, ndots: $NDOTS_OK)"
-fi
-EOF
-
-chmod +x k8s-portfolio/buoi-23/verify-coredns-setup.sh
-./k8s-portfolio/buoi-23/verify-coredns-setup.sh
-
-# 4. Tạo tệp nhat-ky-buoi-23.md
-cat << 'EOF' > k8s-portfolio/buoi-23/nhat-ky-buoi-23.md
-# NHẬT KÝ THU HOẠCH BUỔI 23
-
-1. Cấu trúc FQDN chuẩn:
-   - Service FQDN: <service-name>.<namespace>.svc.cluster.local.
-   - Pod FQDN (StatefulSet): <pod-name>.<service-name>.<namespace>.svc.cluster.local.
-
-2. Cờ options ndots:5 & spec.dnsConfig:
-   - ndots:5 ép thử 4 truy vấn search domain nếu số dấu chấm < 5.
-   - Hạ ndots:2 giúp tối ưu hiệu năng gọi API ngoại mạng.
-
-3. 4 chế độ hỏng DNS:
-   - OOMKilled, Loop Error (127.0.0.53), Corefile Syntax Error, Sai dnsPolicy.
-EOF
-
-# 5. Dọn dẹp tệp tạm
-rm -f /tmp/fqdn-res.txt /tmp/pod-resolv.txt /tmp/custom-resolv.txt /tmp/coredns-replicas.txt
+```text
+# Log bên trong Pod hostNetwork:
+curl: (6) Could not resolve host: payment-service.default.svc.cluster.local
 ```
 
-**CHECKPOINT 13 — Đủ 4 tệp hiện vật trong thư mục portfolio.**
+Nguyên nhân: Mặc định khi bật `hostNetwork: true`, Kubernetes tự động đổi `dnsPolicy` từ `ClusterFirst` sang `Default` (trỏ về DNS của máy chủ vật lý). DNS của máy chủ vật lý không biết dải `.cluster.local` của Kubernetes.
+**Giải pháp**: Bắt buộc phải khai báo tường minh:
 
-```bash
-[ -f k8s-portfolio/buoi-23/custom-dns-pod.yaml ] && [ -f k8s-portfolio/buoi-23/dns-fqdn-report.txt ] && [ -f k8s-portfolio/buoi-23/verify-coredns-setup.sh ] && [ -f k8s-portfolio/buoi-23/nhat-ky-buoi-23.md ] && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
+```yaml
+spec:
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet # Ép buộc sử dụng CoreDNS ngay cả khi chạy HostNetwork
 ```
 
 ---
 
-## L8. Xử lý sự cố thường gặp trong lab
+## 5. Hands-on Lab: Khảo Sát & Tinh Chỉnh CoreDNS (8 Bước)
 
-| # | Triệu chứng lỗi | Nguyên nhân khả dĩ | Cách xử lý sửa lỗi |
-|---|---|---|---|
-| 1 | Pod báo `Name or service not known` khi gọi tên ngắn | Gọi Service ở Namespace khác nhưng chỉ gõ tên ngắn | Gõ tên miền đầy đủ `<svc>.<namespace>` (ví dụ `web-svc.dev`) |
-| 2 | Lệnh `nslookup` bị treo timeout 10 giây | Pod CoreDNS bị crash hoặc dính lỗi Loop plugin | Kiểm tra log CoreDNS qua `kubectl logs -n kube-system -l k8s-app=kube-dns` |
-| 3 | CoreDNS Pod báo lỗi `Loop (127.0.0.1:53 -> ...) detected` | File `/etc/resolv.conf` trên Node chứa IP `127.0.0.53` | Sửa `/etc/resolv.conf` trên Node trỏ về IP DNS thực (`8.8.8.8`) |
-| 4 | Pod CoreDNS bị restart liên tục với status `OOMKilled` | Memory limit quá thấp so với lượng DNS request | Nâng `resources.limits.memory` của CoreDNS lên `170Mi` |
-| 5 | Thắc mắc vì sao `spec.dnsConfig` không có hiệu lực | Gõ sai tên biến thuộc tính `options` trong Pod spec | Khai báo đúng `options: [{name: "ndots", value: "2"}]` |
-| 6 | CoreDNS từ chối khởi chạy sau khi edit ConfigMap | Gõ sai cú pháp dấu ngoặc nhọn `{}` trong tệp `Corefile` | Sửa lại đúng cú pháp Corefile và rollout restart |
-| 7 | Pod đặt `dnsPolicy: Default` không gọi được Service cụm | `dnsPolicy: Default` hướng Pod dùng DNS của Node host | Đổi lại `dnsPolicy: ClusterFirst` trong Pod spec |
-| 8 | Lệnh `nslookup` báo `command not found` bên trong container | Container image không chứa công cụ `nslookup` | Dùng image `busybox:1.36` hoặc `nicolaka/netshoot` |
-| 9 | Thắc mắc vì sao IP ClusterIP của Service `kube-dns` là 10.96.0.10 | `10.96.0.10` là địa chỉ IP mặc định cấp cho DNS Service | Đây là thiết kế chuẩn của Kubeadm |
-| 10 | Sửa tệp `/etc/resolv.conf` trong Pod bị báo `Permission Denied` | File `/etc/resolv.conf` do Kubelet mount read-only | Sử dụng khối `spec.dnsConfig` trong Pod spec để tùy chỉnh |
-| 11 | Script `verify-coredns-setup.sh` báo LỖI | Pod `custom-dns-pod` chưa ở trạng thái `Ready` | Chạy lại script sau khi Pod đã Ready |
-| 12 | Hai Pod CoreDNS bị dồn hết vào cùng 1 Worker Node | Chưa cấu hình `podAntiAffinity` cho CoreDNS | Thêm cờ podAntiAffinity để rải 2 bản sao sang 2 Nodes |
+Bảng tổng hợp 8 bước thực hành:
+
+| Bước | Thao Tác | Mục Tiêu Kỹ Thuật | Lệnh / Công Cụ |
+| :--- | :--- | :--- | :--- |
+| **1** | Kiểm tra trạng thái CoreDNS | Xác nhận Deployment và Service `kube-dns`| `kubectl get pods,svc -n kube-system` |
+| **2** | Khởi tạo Pod DNS Utils | Triển khai công cụ `dig` và `nslookup` | `kubectl apply -f dnsutils.yaml` |
+| **3** | Khảo sát tệp `/etc/resolv.conf` | Đọc `nameserver`, `search` và `ndots` | `kubectl exec -- cat /etc/resolv.conf` |
+| **4** | Phân giải FQDN Service nội bộ | Kiểm tra phân giải tên miền chuẩn | `kubectl exec -- nslookup` |
+| **5** | Đo lường độ trễ và số truy vấn DNS | Sử dụng `dig` kiểm tra thời gian query | `kubectl exec -- dig api.github.com` |
+| **6** | Tinh chỉnh `ndots: 2` trong Pod Spec | Khắc phục nút thắt bùng nổ truy vấn | `kubectl apply -f custom-dns.yaml` |
+| **7** | Bổ sung Custom Host Record | Thêm bản ghi DNS tĩnh vào Corefile | `kubectl edit configmap coredns` |
+| **8** | Kiểm định bản ghi DNS vừa thêm | Xác nhận CoreDNS Hot Reload tự động | `kubectl exec -- nslookup custom.local` |
 
 ---
 
-## L9. Bài tập mở rộng
-
-1. **BT1 — Thử nghiệm cờ `dnsPolicy: None` kết hợp `dnsConfig`:** Tự định nghĩa hoàn toàn danh sách `nameservers` và `searches` thủ công cho Pod bằng `dnsPolicy: None`.
-2. **BT2 — Phân tích bản ghi SRV record của Headless Service:** Sử dụng `nslookup -type=SRV` từ Pod test để soi các thông số cổng và hostname của Headless Service.
-3. **BT3 — Thêm plugin `text` vào tệp `Corefile`:** Sửa ConfigMap `coredns` bật plugin `text` để CoreDNS in ra 100% các truy vấn DNS request lên console log.
-4. **BT4 — Đo thời gian truy vấn DNS bằng công cụ `dig`:** Chạy `dig api.google.com` vs `dig api.google.com.` để đo thời gian phản hồi miligiây.
-5. **BT5 — Khảo sát plugin `autopath` của CoreDNS:** Tìm hiểu cơ chế plugin `autopath` trong CoreDNS giúp giải quyết bài toán `ndots:5` từ phía Server side.
-6. **BT6 — Thử nghiệm xóa Service `kube-dns` tạm thời:** Xóa Service `kube-dns` trong test cluster và quan sát 100% các Pods bị liệt khả năng phân giải tên miền.
-
----
-
-## L10. Hiện vật nộp và tiêu chí chấm điểm
-
-### Bảng điểm đánh giá bài lab
-
-| Hạng mục hiện vật | Yêu cầu kĩ thuật | Điểm tối đa |
-|---|---|---|
-| `dns-test-pod.yaml` & `custom-dns-pod.yaml` | Tệp YAML Pods cấu hình `ndots:5` và custom `ndots:2` chuẩn | 20 điểm |
-| `dns-fqdn-report.txt` & `coredns-troubleshooting.md` | Báo cáo thử nghiệm FQDN và tài liệu chẩn đoán 4 sự cố CoreDNS | 25 điểm |
-| `verify-coredns-setup.sh` | Script bash chạy thành công, xác minh FQDN & Custom ndots:2 OK | 20 điểm |
-| `nhat-ky-buoi-23.md` | Trả lời đủ 3 câu thu hoạch, phân biệt rõ ndots:5 và 4 sự cố DNS | 20 điểm |
-| CHECKPOINT 1–13 | Tất cả 13 checkpoint tự động đều in chữ `ĐẠT` | 15 điểm |
-| **Tổng điểm** | | **100 điểm** |
-
-### Các trường hợp trừ điểm
-
-- Trừ **20 điểm**: Nếu script hoặc câu lệnh sử dụng công cụ `jq` (vi phạm quy tắc môi trường thi).
-- Trừ **15 điểm**: Nếu quên cờ `-n dev` khiến các đối tượng bị tạo nhầm vào namespace `default`.
-- Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-23/`.
-- Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
-
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-
-## V1. Cách tiến hành
-
-1. **Thời lượng và hình thức:** Khối vấn đáp diễn ra trong đúng **20 phút**. Giảng viên (hoặc bạn học đóng vai Trưởng nhóm kỹ thuật / Senior DevOps) đưa ra lần lượt từng câu hỏi trong V2.
-2. **Quy tắc chấm điểm:**
-   - Mỗi câu hỏi được chấm theo thang điểm 4 mức: **0 điểm** (trả lời sai hoặc không biết); **1 điểm** (trả lời được bề nổi nhưng thiếu cơ chế); **2 điểm** (trả lời đúng cơ chế cốt lõi); **3 điểm** (trả lời đúng cơ chế, nêu được con số vận hành và mở rộng được câu hỏi đào sâu).
-   - **Quy tắc trần điểm riêng của Buổi 23:**
-     - Trả lời Câu 1 mà không phát biểu đúng cấu trúc tên miền FQDN chuẩn của một Service (`<service-name>.<namespace>.svc.cluster.local`) thì **trần điểm câu đó là 1**.
-     - Trả lời Câu 4 mà không giải thích được cơ chế tác động hiệu năng của cờ `options ndots:5` (ép chạy 4 truy vấn DNS thừa cho tên miền ngoài có `< 5` dấu chấm) thì **trần điểm câu đó là 1**.
-3. **Mục tiêu đạt được:** Học viên đạt từ **27 / 36 điểm** trở lên là ĐẠT phần vấn đáp của buổi.
-
----
-
----
-
-## V2. Bộ câu hỏi phỏng vấn thực chiến
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Tệp <code>/etc/resolv.conf</code> được Kubelet tự động sinh ra bên trong mỗi Pod chứa những thông số cấu hình mặc định nào?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Các thông số mặc định trong <code>/etc/resolv.conf</code>:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>nameserver 10.96.0.10</code></b>: Địa chỉ IP ClusterIP VIP cố định của Service <code>kube-dns</code> dẫn tới CoreDNS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>search <namespace>.svc.cluster.local svc.cluster.local cluster.local</code></b>: Dải các tên miền tìm kiếm tự động nối đuôi khi gọi tên ngắn.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>options ndots:5</code></b>: Cờ quy định số lượng dấu chấm tối thiểu trong tên miền để quyết định có bypass dải <code>search</code> hay không.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết tệp <code>/etc/resolv.conf</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời có nameserver và search nhưng không nhớ địa chỉ IP <code>10.96.0.10</code> và cờ <code>options ndots:5</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 3 thông số: <code>nameserver 10.96.0.10</code>, dải <code>search</code> 3 cấp và cờ <code>options ndots:5</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra vai trò của glibc resolver trong Linux.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Có nên dùng lệnh <code>echo</code> để sửa trực tiếp file <code>/etc/resolv.conf</code> bên trong Pod đang chạy hay không? *(Đáp án: Không nên, vì file do Kubelet mount read-only, nên dùng <code>spec.dnsConfig</code> trong Pod spec).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Giải thích ý nghĩa kĩ thuật của cờ <code>options ndots:5</code> trong tệp <code>/etc/resolv.conf</code> của Pod.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa kĩ thuật của <code>ndots:5</code>:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>ndots:5</code> là cờ chỉ thị cho bộ giải tên miền OS (glibc resolver): <b style="color: var(--accent-primary);">Nếu số lượng dấu chấm <code>.</code> có trong chuỗi tên miền nhỏ hơn 5 (<code>< 5</code>)</b>, thì tên miền đó sẽ bị coi là "chưa hoàn chỉnh" (Relative Domain Name).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bộ giải tên miền sẽ <b style="color: var(--accent-primary);">bắt buộc phải lấy tên miền đó lần lượt nối đuôi với từng dải miền trong danh sách <code>search</code></b> để gửi truy vấn tới CoreDNS trước, rồi cuối cùng mới gửi truy vấn tên miền gốc.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được cờ <code>ndots</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời là số dấu chấm nhưng không giải thích được quy tắc <code>< 5</code> dấu chấm bị ép nối đuôi dải <code>search</code> domain trước.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác ý nghĩa <code>ndots:5</code>: tên miền có <code>< 5</code> dấu chấm bị ép nối đuôi dải <code>search</code> domain trước khi truy vấn gốc.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, làm phép tính đếm số dấu chấm trong FQDN.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tên miền FQDN chuẩn <code>web.dev.svc.cluster.local</code> chứa bao nhiêu dấu chấm và có bị cờ <code>ndots:5</code> ép nối đuôi <code>search</code> domain hay không? *(Đáp án: Chứa đúng 4 dấu chấm [< 5] nhưng vì có đuôi <code>cluster.local</code> trùng khớp nên được phân giải ngay).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Tại sao một câu lệnh gọi tên miền ngoại mạng như <code>curl api.stripe.com</code> (chứa 2 dấu chấm) lại khiến Pod thực hiện tới 4 truy vấn DNS liên tiếp gây suy giảm hiệu năng? Nêu 2 giải pháp khắc phục.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân 4 truy vấn DNS:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tên miền <code>api.stripe.com</code> chứa <b style="color: var(--accent-primary);">2 dấu chấm (<code>< 5</code>)</b>, bị cờ <code>ndots:5</code> ép chạy lần lượt <b style="color: var(--accent-primary);">4 truy vấn thử nghiệm</b>:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>api.stripe.com.dev.svc.cluster.local</code> -> CoreDNS trả về <code>NXDOMAIN</code> (Thất bại).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>api.stripe.com.svc.cluster.local</code> -> CoreDNS trả về <code>NXDOMAIN</code> (Thất bại).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>api.stripe.com.cluster.local</code> -> CoreDNS trả về <code>NXDOMAIN</code> (Thất bại).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>api.stripe.com.</code> -> CoreDNS chuyển tiếp ngoại mạng trả về IP thực (<code>200 OK</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Gây tốn thời gian trễ (latency) gấp <b style="color: var(--accent-primary);">4 lần</b> và tăng tải rác cho CoreDNS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2 Giải pháp khắc phục:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Giải pháp 1:* Thêm dấu chấm ở cuối tên miền gốc (<b style="color: var(--accent-primary);">Trailing Dot <code>.</code></b> như <code>api.stripe.com.</code>) trong mã nguồn ứng dụng để ép OS coi là FQDN tuyệt đối ngay đợt 1.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Giải pháp 2:* Sử dụng khối <b style="color: var(--accent-primary);"><code>spec.dnsConfig</code></b> trong Pod spec để hạ cờ <code>ndots</code> xuống <b style="color: var(--accent-primary);"><code>ndots:2</code></b>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được 4 truy vấn DNS.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do ndots:5 nhưng không liệt kê được 4 chuỗi truy vấn NXDOMAIN và 2 giải pháp (Trailing dot & <code>dnsConfig</code> <code>ndots:2</code>) (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác 4 bước truy vấn DNS (3 NXDOMAIN + 1 Success) và 2 giải pháp khắc phục (Trailing dot & <code>ndots:2</code>).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lý do không nên hạ <code>ndots:0</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao không nên hạ <code>ndots:0</code> cho toàn bộ các Pods? *(Đáp án: Vì <code>ndots:0</code> sẽ làm Pod mất hoàn toàn khả năng gọi tên ngắn cho các Service nội bộ như <code>curl web</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Khối <code>spec.dnsConfig</code> trong Pod spec được biên soạn như thế nào để hạ cờ <code>ndots</code> xuống <code>ndots:2</code> cho một microservice?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu trúc YAML biên soạn <code>spec.dnsConfig</code>:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```yaml</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">apiVersion: v1</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">kind: Pod</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">metadata:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">name: optimized-pod</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">namespace: dev</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">spec:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">dnsPolicy: ClusterFirst</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">dnsConfig:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">options:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: ndots</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">value: "2"</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">containers:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• name: app</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">image: nginx:1.27-alpine</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">```</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Giúp ứng dụng phân giải các tên miền ngoại mạng như <code>api.stripe.com</code> (2 dấu chấm) ngay từ truy vấn đầu tiên mà không dính 3 truy vấn NXDOMAIN thừa.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ cú pháp <code>dnsConfig</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nhớ <code>dnsConfig</code> nhưng viết sai cấu trúc <code>options: [{name: "ndots", value: "2"}]</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Biên soạn chuẩn xác khối <code>spec.dnsConfig</code> hạ <code>ndots</code> xuống <code>2</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách thêm custom <code>searches</code> hoặc <code>nameservers</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Thuộc tính <code>value</code> của cờ <code>ndots</code> trong <code>dnsConfig</code> có kiểu dữ liệu là chuỗi String hay Số Integer? *(Đáp án: Bắt buộc là <b style="color: var(--accent-primary);">chuỗi String</b> <code>"2"</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Nêu 4 chế độ hỏng DNS phổ biến nhất trong Kubernetes và dấu hiệu nhận biết của từng chế độ.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. CoreDNS OOMKilled:</b> Pod CoreDNS bị tiêu diệt và restart liên tục do vượt giới hạn RAM (<code>OOMKilled</code>). Dấu hiệu: <code>kubectl get pods -n kube-system</code> thấy CoreDNS nảy RESTARTS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Loop Plugin Error:</b> Vòng lặp chuyển tiếp DNS giữa Node và CoreDNS (<code>Loop 127.0.0.1:53 detected</code>). Dấu hiệu: CoreDNS Pod bị crash và log báo <code>Loop detected</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3. Corefile Syntax Error:</b> Gõ sai cú pháp tệp <code>Corefile</code> trong ConfigMap <code>coredns</code>. Dấu hiệu: CoreDNS Pods từ chối khởi chạy và log báo <code>Corefile syntax error</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">4. Sai <code>dnsPolicy</code>:</b> Pod đặt <code>dnsPolicy: Default</code> thay vì <code>ClusterFirst</code>. Dấu hiệu: Pod không kết nối được bất kỳ Service VIP nào trong cụm.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được chế độ hỏng nào.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 1-2 trường hợp nhưng không chỉ ra dấu hiệu log <code>Loop detected</code> hay <code>OOMKilled</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 4 chế độ hỏng DNS kinh điển và dấu hiệu nhận biết từng trường hợp.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra câu lệnh <code>kubectl logs</code> kiểm tra CoreDNS.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi cả 2 Pods CoreDNS bị crash dính <code>Corefile Syntax Error</code> thì câu lệnh <code>kubectl edit configmap coredns -n kube-system</code> có chạy được không? *(Đáp án: Vẫn chạy được bình thường vì API Server không phụ thuộc vào CoreDNS).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Nguyên nhân gây ra lỗi <code>Loop Plugin Error</code> (<code>Loop 127.0.0.1:53 detected</code>) trong CoreDNS là gì và thao tác nào dùng để khắc phục triệt để?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân xảy ra lỗi Loop:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tệp <code>/etc/resolv.conf</code> trên máy chủ Worker Node chứa địa chỉ IP loopback <b style="color: var(--accent-primary);"><code>127.0.0.53</code></b> (do tiến trình <code>systemd-resolved</code> quản lý).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi CoreDNS đọc tệp <code>/etc/resolv.conf</code> của Node để forward các truy vấn ngoại mạng, nó lại gửi gói tin tới <code>127.0.0.53</code> trên Node. Node lại chuyển tiếp ngược về CoreDNS -> Tạo ra vòng lặp vô hạn.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thao tác khắc phục triệt để:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sửa tệp <code>/etc/resolv.conf</code> trên máy chủ Node thay thế địa chỉ <code>127.0.0.53</code> bằng IP DNS Server thực tế (như <code>8.8.8.8</code> hoặc DNS công ty).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hoặc cấu hình cờ <code>forward . /etc/resolv.conf</code> trong Corefile trỏ trực tiếp tới tệp resolv của upstream DNS.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được lỗi Loop.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời do vòng lặp nhưng không nhớ địa chỉ IP <code>127.0.0.53</code> và tiến trình <code>systemd-resolved</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác nguyên nhân IP loopback <code>127.0.0.53</code> trên Node và thao tác sửa <code>/etc/resolv.conf</code> Node trỏ về <code>8.8.8.8</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra vai trò của plugin <code>loop</code> trong Corefile.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao plugin <code>loop</code> lại tự động ngắt tiến trình CoreDNS khi phát hiện vòng lặp? *(Đáp án: Để tránh việc gói tin DNS chạy vòng lặp làm bùng nổ CPU và tràn băng thông mạng cụm).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Sự khác nhau giữa 2 giá trị <code>dnsPolicy: ClusterFirst</code> và <code>dnsPolicy: Default</code> trong Pod spec là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>dnsPolicy: ClusterFirst</code> (Mặc định cho 99% Pods):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Mọi truy vấn DNS từ Pod đều được gửi tới <b style="color: var(--accent-primary);">CoreDNS cụm (<code>10.96.0.10</code>)</b> trước.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp Pod phân giải được cả tên miền Service nội bộ <code>.cluster.local</code> và tên miền ngoại mạng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>dnsPolicy: Default</code> (Bypass CoreDNS):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Pod <b style="color: var(--accent-primary);">bỏ qua hoàn toàn CoreDNS cụm</b>, lấy trực tiếp cấu hình DNS Server từ máy chủ Node host.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Phù hợp cho các Pods hạ tầng muốn gọi trực tiếp DNS bên ngoài mà không làm tăng tải cho CoreDNS.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>Default</code> là dùng CoreDNS còn <code>ClusterFirst</code> dùng DNS ngoài.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>ClusterFirst</code> cho nội bộ còn <code>Default</code> cho bên ngoài nhưng không nêu được IP <code>10.96.0.10</code> và việc <code>Default</code> bypass CoreDNS.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác <code>ClusterFirst</code> (dùng CoreDNS cụm <code>10.96.0.10</code>) vs <code>Default</code> (bypass CoreDNS, dùng DNS Node host).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra giá trị <code>dnsPolicy: ClusterFirstWithHostNet</code> cho Pods chạy <code>hostNetwork: true</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu Pod đặt <code>hostNetwork: true</code> mà muốn gọi Service VIP nội bộ thì phải đặt <code>dnsPolicy</code> là gì? *(Đáp án: Phải đặt <b style="color: var(--accent-primary);"><code>dnsPolicy: ClusterFirstWithHostNet</code></b>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Câu lệnh CLI nào giúp khởi tạo một Pod tạm thời để kiểm tra phân giải tên miền DNS <code>nslookup</code> trong đúng 2 giây mà không làm bẩn cụm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh CLI chuẩn (One-liner Troubleshooting):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl run dnstest --image=busybox:1.36 -it --rm -n dev -- nslookup web-svc.dev.svc.cluster.local</code></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Giải thích cờ:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>run dnstest</code>: Khởi tạo Pod tạm tên <code>dnstest</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>-it --rm</code>: Mở terminal tương tác và <b style="color: var(--accent-primary);">tự động xoá sạch Pod (<code>--rm</code>) ngay sau khi câu lệnh kết thúc</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>-- nslookup ...</code>: Thực thi lệnh tra cứu DNS.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ lệnh <code>kubectl run --rm</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Viết được <code>kubectl run</code> nhưng thiếu cờ <code>--rm</code> làm để lại Pod rác trong cụm.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác câu lệnh <code>kubectl run dnstest --image=busybox:1.36 -it --rm -n dev -- nslookup <domain></code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cách dùng image <code>nicolaka/netshoot</code> thay cho busybox.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu câu lệnh trên in ra <code>Server: 10.96.0.10</code> và <code>*** Can't find web-svc: No answer</code> thì nguyên nhân do đâu? *(Đáp án: Do Service <code>web-svc</code> không tồn tại hoặc sai Namespace).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Plugin <code>kubernetes</code> và <code>forward</code> trong tệp <code>Corefile</code> của ConfigMap <code>coredns</code> đóng vai trò gì trong việc xử lý truy vấn DNS?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Plugin <code>kubernetes</code> (Xử lý tên miền nội bộ):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chịu trách nhiệm lắng nghe API Server và phân giải tất cả các tên miền nội bộ có đuôi <b style="color: var(--accent-primary);"><code>cluster.local</code></b> (như Service VIP, Headless Pod IPs).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Plugin <code>forward</code> (Xử lý tên miền ngoại mạng):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chịu trách nhiệm chuyển tiếp (Forward) tất cả các truy vấn tên miền ngoại mạng (như <code>google.com</code>, <code>github.com</code>) tới upstream DNS Server (đọc từ <code>/etc/resolv.conf</code> của Node hoặc IP <code>8.8.8.8</code>).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết 2 plugin này.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời <code>kubernetes</code> cho K8s còn <code>forward</code> để chuyển tiếp nhưng không phân biệt được tên miền nội bộ <code>.cluster.local</code> vs tên miền ngoại mạng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác plugin <code>kubernetes</code> (xử lý <code>.cluster.local</code> nội bộ) vs <code>forward</code> (chuyển tiếp tên miền ngoài tới upstream DNS).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra plugin <code>cache</code> nằm giữa để lưu cache DNS.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu xoá mất khối plugin <code>forward</code> trong Corefile thì Pods trong cụm có gọi được <code>google.com</code> không? *(Đáp án: Không gọi được, các truy vấn ngoại mạng sẽ bị báo lỗi <code>NXDOMAIN</code> hoặc <code>SERVFAIL</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Địa chỉ IP <code>10.96.0.10</code> trong tệp <code>/etc/resolv.conf</code> của Pod từ đâu ra và làm thế nào để đổi địa chỉ DNS Server này sang một IP khác?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguồn gốc IP <code>10.96.0.10</code>:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>10.96.0.10</code> chính là địa chỉ ClusterIP VIP của <b style="color: var(--accent-primary);">Service tên <code>kube-dns</code></b> nằm trong namespace <code>kube-system</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Kubelet tự động lấy IP này từ cờ <code>--cluster-dns=10.96.0.10</code> khi khởi động và ghi vào <code>/etc/resolv.conf</code> của 100% các Pods.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cách thay đổi:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sửa cờ <code>--cluster-dns</code> trong file cấu hình Kubelet <code>/var/lib/kubelet/config.yaml</code> trên tất cả các Nodes và restart Kubelet.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo IP <code>10.96.0.10</code> là IP vật lý của Master Node.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời của Service <code>kube-dns</code> nhưng không giải thích được cờ <code>--cluster-dns</code> trong Kubelet config.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác địa chỉ VIP của Service <code>kube-dns</code> và cờ <code>--cluster-dns=10.96.0.10</code> trong Kubelet config.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl get svc -n kube-system kube-dns</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao tên Service trong namespace <code>kube-system</code> lại là <code>kube-dns</code> mà Pods lại tên là <code>coredns</code>? *(Đáp án: Vì ngày trước Kubernetes dùng Kube-DNS, sau này đổi sang CoreDNS nhưng giữ nguyên tên Service <code>kube-dns</code> để đảm bảo tương thích ngược).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Nêu 2 chế độ hỏng (1 im lặng do trễ 50ms mỗi request API ngoài vì dính <code>ndots:5</code>, 1 âm thầm do 100% cụm liệt DNS vì CoreDNS dính Loop error <code>127.0.0.53</code>) và cách phát hiện/khắc phục.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Kết nối API ngoại mạng bị trễ 50ms do cờ <code>ndots:5</code> gây ra 3 truy vấn NXDOMAIN thừa):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Microservice gọi HTTPS sang <code>api.stripe.com</code> bị chậm 50ms cho mỗi request, CoreDNS CPU bị tăng cao.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Dùng <code>tcpdump port 53</code> thấy 3 truy vấn <code>api.stripe.com.dev.svc.cluster.local</code> bị báo <code>NXDOMAIN</code> trước khi tới truy vấn gốc.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Thêm trailing dot <code>api.stripe.com.</code> trong code hoặc biên soạn <code>spec.dnsConfig</code> hạ <code>ndots:2</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Toàn bộ cụm bị liệt phân giải DNS do CoreDNS dính lỗi Loop plugin <code>127.0.0.53</code>):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* 100% Pods trong cụm báo lỗi <code>Name or service not known</code>, CoreDNS Pods bị <code>CrashLoopBackOff</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra <code>kubectl logs -n kube-system -l k8s-app=kube-dns</code> thấy log <code>Loop (127.0.0.1:53 -> ...) detected</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Sửa tệp <code>/etc/resolv.conf</code> trên các máy chủ Worker Nodes thay địa chỉ <code>127.0.0.53</code> bằng IP DNS thực (<code>8.8.8.8</code>) và restart CoreDNS.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân 3 truy vấn NXDOMAIN thừa và địa chỉ loopback <code>127.0.0.53</code> trên Node (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi CoreDNS bị crash, câu lệnh nào kiểm tra nhanh xem Service <code>kube-dns</code> có đang lấp đầy Endpoints hay không trong 2 giây? *(Đáp án: Lệnh <code>kubectl get ep -n kube-system kube-dns</code>).*
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"Service FQDN có cấu trúc chuẩn <b style="color: var(--accent-primary);"><code><service-name>.<namespace>.svc.cluster.local</code></b> (gồm 5 thành phần)."*
-2. *"Tệp <code>/etc/resolv.conf</code> của Pod do Kubelet cấp chứa <code>nameserver 10.96.0.10</code>, dải <code>search</code> và cờ <b style="color: var(--accent-primary);"><code>options ndots:5</code></b>."*
-3. *"Cờ <code>ndots:5</code> ép mọi tên miền <code>< 5</code> dấu chấm phải thử 4 truy vấn search domain thừa; xử lý bằng trailing dot <code>.</code> hoặc <code>dnsConfig</code> <code>ndots:2</code>."*
-4. *"4 chế độ hỏng DNS kinh điển: CoreDNS OOMKilled, Loop Plugin (<code>127.0.0.53</code>), Corefile Syntax Error, và sai <code>dnsPolicy</code>."*
-5. *"Dùng <code>kubectl run dnstest --image=busybox:1.36 -it --rm -- nslookup <domain></code> để kiểm tra DNS trong 2 giây."*
-
----</div>
-</div>
-</details>
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"Service FQDN có cấu trúc chuẩn **`<service-name>.<namespace>.svc.cluster.local`** (gồm 5 thành phần)."*
-2. *"Tệp `/etc/resolv.conf` của Pod do Kubelet cấp chứa `nameserver 10.96.0.10`, dải `search` và cờ **`options ndots:5`**."*
-3. *"Cờ `ndots:5` ép mọi tên miền `< 5` dấu chấm phải thử 4 truy vấn search domain thừa; xử lý bằng trailing dot `.` hoặc `dnsConfig` `ndots:2`."*
-4. *"4 chế độ hỏng DNS kinh điển: CoreDNS OOMKilled, Loop Plugin (`127.0.0.53`), Corefile Syntax Error, và sai `dnsPolicy`."*
-5. *"Dùng `kubectl run dnstest --image=busybox:1.36 -it --rm -- nslookup <domain>` để kiểm tra DNS trong 2 giây."*
-
----
-
-## 4. Đề Thi Thực Hành Bấm Giờ & Thử Thách Tốc Độ (Exam Speed Challenge)
-
-> [!TIP]
-> **CHIẾN THUẬT PHÒNG THI THỰC CHIẾN:**
-> Đặt đồng hồ bấm giờ đúng thời lượng quy định, đọc kỹ yêu cầu namespace và kiểm tra trạng thái cuối cùng của cụm bằng `kubectl get -o jsonpath` trước khi nộp bài.
-
-## T0. Vì sao có khối này (1 phút)
-
-Khối luyện đề bấm giờ 30 phút rèn luyện cho học viên phản xạ chẩn đoán dịch vụ `CoreDNS`, phân giải tên miền FQDN chuẩn `<service-name>.<namespace>.svc.cluster.local`, biên soạn khối `spec.dnsConfig` hạ cờ `ndots` xuống `2`, trích xuất tệp cấu hình `Corefile` từ ConfigMap `coredns` và khởi tạo Pod tạm thời `nslookup` chẩn đoán sự cố DNS trong kỳ thi CKA và CKAD.
-
-Buổi 23 phủ miền trọng điểm của 2 kỳ thi:
-- `CKA · Services & Networking` (Trọng số 20 %)
-- `CKAD · Services and Networking` (Trọng số 20 %)
-
-Các câu hỏi được thiết kế theo đúng chuẩn bài thi CKA/CKAD thực tế: yêu cầu thí sinh chẩn đoán phân giải tên miền DNS nội bộ và ngoại mạng, tùy chỉnh cờ `ndots` và kiểm tra nhật ký CoreDNS mà KHÔNG được dùng `jq`.
-
----
-
-## T1. Luật chơi (1 phút)
-
-1. **Đồng hồ bấm giờ:** Tổng thời gian làm 4 câu hỏi là **900 giây (15 phút)**. Thời gian còn lại (15 phút) dành cho việc đọc luật, đối soát và tự chấm điểm bằng script.
-2. **Tài liệu được mở:** Chỉ được phép mở 1 tab duy nhất tài liệu chính thức `https://kubernetes.io/docs/`. KHÔNG được tìm kiếm Google hay StackOverflow.
-3. **Môi trường làm việc:** Làm việc trực tiếp trên terminal với context `kubeadm`.
-4. **Quy tắc thi hành về công cụ:** Máy thi **KHÔNG cài sẵn `jq`**. Mọi câu hỏi trích xuất dữ liệu BẮT BUỘC dùng đường gõ bash (`grep`/`awk`/`sed`) hoặc `kubectl jsonpath`.
-5. **Cách chấm:** Chấm dựa trên kết quả phân giải tên miền FQDN, tham số `options ndots:2` trong `/etc/resolv.conf` và số bản sao CoreDNS Running. Ngưỡng ĐẠT của buổi là **66 / 100 điểm** (theo đúng chuẩn CKA/CKAD).
-
----
-
-## T2. Bộ câu hỏi kiểu đề thi
-
-### Câu T2.1. Phân giải tên miền FQDN chuẩn của Service — 210 giây
-
-**Bối cảnh:**
-Kiểm tra khả năng phân giải tên miền FQDN tiêu chuẩn của một Service từ bên trong Pod.
-
-**Yêu cầu:**
-1. Tạo Namespace `dev` (nếu chưa có).
-2. Tạo Deployment `web-target` (image `nginx:1.27-alpine`) và expose Service `web-svc` cổng 80 trong Namespace `dev`.
-3. Khởi tạo Pod `dns-client` (image `busybox:1.36`) trong `dev`.
-4. Thực thi `nslookup web-svc.dev.svc.cluster.local` từ `dns-client` và ghi dòng chứa địa chỉ IP VIP vào tệp `/tmp/ans-t21-dns.txt`.
-
-**Thang điểm bộ phận:**
-- Tạo đúng Service `web-svc` và Pod `dns-client`: **10 điểm**.
-- Execute nslookup FQDN thành công và ghi file `/tmp/ans-t21-dns.txt`: **15 điểm**.
-
----
-
-### Câu T2.2. Biên soạn Pod spec với khối custom dnsConfig ndots:2 — 240 giây
-
-**Bối cảnh:**
-Tối ưu hóa hiệu năng gọi API ngoại mạng cho Pod bằng cách hạ cờ `ndots` xuống `2`.
-
-**Yêu cầu:**
-1. Tạo tệp YAML Pod tên `opt-dns-pod` trong Namespace `dev` sử dụng image `busybox:1.36`.
-2. Khai báo thuộc tính `dnsPolicy: ClusterFirst` và khối `dnsConfig.options` với `name: "ndots"` và `value: "2"`.
-3. Apply Pod, chờ `Running` và trích xuất dòng `options ndots:2` từ tệp `/etc/resolv.conf` bên trong Pod vào tệp `/tmp/ans-t22-ndots.txt`.
-
-**Thang điểm bộ phận:**
-- Biên soạn chuẩn tệp YAML Pod chứa `dnsConfig` `ndots:2`: **15 điểm**.
-- Trích xuất đúng chuỗi `options ndots:2` vào file `/tmp/ans-t22-ndots.txt`: **15 điểm**.
-
----
-
-### Câu T2.3. Phân tích tệp Corefile của CoreDNS trong kube-system — 210 giây
-
-**Bối cảnh:**
-Trích xuất thông tin tệp cấu hình `Corefile` của hệ thống phân giải tên miền cụm.
-
-**Yêu cầu:**
-1. Tìm ConfigMap `coredns` trong Namespace `kube-system`.
-2. Trích xuất thuộc tính `Corefile` của ConfigMap đó.
-3. Kiểm tra sự tồn tại của plugin `kubernetes` và ghi chuỗi `kubernetes cluster.local` vào tệp `/tmp/ans-t23-corefile.txt`.
-
-**Thang điểm bộ phận:**
-- Trích xuất đúng tệp `Corefile` từ ConfigMap `coredns`: **10 điểm**.
-- Ghi đúng chuỗi plugin vào file `/tmp/ans-t23-corefile.txt`: **10 điểm**.
-
----
-
-### Câu T2.4. Khởi tạo Pod tạm thời nslookup chẩn đoán DNS — 240 giây
-
-**Bối cảnh:**
-Thực thi câu lệnh one-liner khởi tạo Pod tạm tự xoá chẩn đoán phân giải DNS trong 2 giây.
-
-**Yêu cầu:**
-1. Sử dụng duy nhất 1 câu lệnh `kubectl run` khởi tạo Pod tạm tên `dnstest` (image `busybox:1.36`) với cờ `--rm`.
-2. Thực thi lệnh `nslookup kubernetes.default.svc.cluster.local`.
-3. Ghi địa chỉ IP VIP phân giải được của Service `kubernetes` vào tệp `/tmp/ans-t24-k8sip.txt`.
-
-**Thang điểm bộ phận:**
-- Thực thi đúng câu lệnh `kubectl run --rm` chẩn đoán DNS: **15 điểm**.
-- Ghi đúng địa chỉ ClusterIP VIP của Service `kubernetes` vào file `/tmp/ans-t24-k8sip.txt`: **10 điểm**.
-
----
-
-## T3. Lời giải chuẩn
-
-#### Lời giải câu T2.1: Đường gõ ngắn nhất (Ước lượng: 40 giây / 2 thao tác)
+### Bước 1: Kiểm tra trạng thái hoạt động của CoreDNS
 
 ```bash
-# Thao tác 1: Tạo ns dev, expose web-svc và apply dns-client
-kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -
-kubectl create deployment web-target --image=nginx:1.27-alpine -n dev
-kubectl expose deployment web-target --name=web-svc --port=80 -n dev
-cat << EOF | kubectl apply -f -
+kubectl get deployment coredns -n kube-system
+kubectl get svc kube-dns -n kube-system
+```
+
+Output ghi nhận Service `kube-dns` chạy tại IP `10.96.0.10`:
+```text
+NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   10d
+```
+
+---
+
+### Bước 2: Triển khai Pod DNS Utils
+
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: dns-client
-  namespace: dev
+  name: dnsutils
+  namespace: default
 spec:
   containers:
-  - name: b
-    image: busybox:1.36
-    command: ['sh', '-c', 'sleep infinity']
+    - name: dnsutils
+      image: registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3
+      command: ["sleep", "3600"]
 EOF
-
-# Thao tác 2: Chờ Ready và exec nslookup FQDN
-kubectl wait --for=condition=Ready pod/dns-client -n dev --timeout=30s
-kubectl exec dns-client -n dev -- nslookup web-svc.dev.svc.cluster.local | grep "Address:" > /tmp/ans-t21-dns.txt
 ```
 
-#### Lời giải câu T2.2: Đường gõ ngắn nhất (Ước lượng: 35 giây / 2 thao tác)
+---
+
+### Bước 3: Đọc nội dung tệp `/etc/resolv.conf` bên trong Pod
 
 ```bash
-# Thao tác 1: Apply opt-dns-pod với dnsConfig ndots:2
-cat << EOF | kubectl apply -f -
+kubectl exec -it dnsutils -- cat /etc/resolv.conf
+```
+
+Output:
+```text
+nameserver 10.96.0.10
+search default.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5
+```
+
+---
+
+### Bước 4: Kiểm tra phân giải Service nội bộ và kiểm tra phân giải tên ngắn (Short name)
+
+Tạo thử một Service `test-svc` trong namespace `default`:
+
+```bash
+kubectl create service clusterip test-svc --tcp=80:80
+
+# Truy vấn bằng Short Name
+kubectl exec -it dnsutils -- nslookup test-svc
+
+# Truy vấn bằng Full FQDN
+kubectl exec -it dnsutils -- nslookup test-svc.default.svc.cluster.local
+```
+
+Cả hai lệnh đều trả về chính xác ClusterIP của Service.
+
+---
+
+### Bước 5: Đo lường chi tiết quá trình tìm kiếm với `dig`
+
+```bash
+kubectl exec -it dnsutils -- dig +search +identify google.com
+```
+
+Quan sát cờ `+search` để thấy các bước thử nghiệm nối đuôi search domain trước khi nhận IP chính thức từ internet.
+
+---
+
+### Bước 6: Tinh chỉnh `ndots: 2` bằng `dnsConfig`
+
+Triển khai Pod tối ưu hóa truy vấn ngoại mạng:
+
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: opt-dns-pod
-  namespace: dev
+  name: fast-dns-app
+  namespace: default
 spec:
   dnsPolicy: ClusterFirst
   dnsConfig:
     options:
-    - name: ndots
-      value: "2"
+      - name: ndots
+        value: "2"
   containers:
-  - name: b
-    image: busybox:1.36
-    command: ['sh', '-c', 'sleep infinity']
+    - name: app
+      image: registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3
+      command: ["sleep", "3600"]
 EOF
-
-# Thao tác 2: Chờ Ready và cat /etc/resolv.conf
-kubectl wait --for=condition=Ready pod/opt-dns-pod -n dev --timeout=30s
-kubectl exec opt-dns-pod -n dev -- cat /etc/resolv.conf | grep "options ndots:2" > /tmp/ans-t22-ndots.txt
 ```
 
-#### Lời giải câu T2.3: Đường gõ ngắn nhất (Ước lượng: 25 giây / 1 thao tác)
+Kiểm tra: Tệp `/etc/resolv.conf` của Pod mới đã cập nhật `options ndots:2`:
 
 ```bash
-# Thao tác 1: Trích xuất Corefile và ghi chuỗi plugin
-kubectl get cm coredns -n kube-system -o jsonpath='{.data.Corefile}' | grep "kubernetes" > /tmp/ans-t23-corefile.txt
-```
-
-#### Lời giải câu T2.4: Đường gõ ngắn nhất (Ước lượng: 30 giây / 1 thao tác)
-
-```bash
-# Thao tác 1: Khởi tạo Pod tạm nslookup kubernetes.default và trích xuất IP
-kubectl run dnstest --image=busybox:1.36 -it --rm -n dev -- nslookup kubernetes.default | grep "Address:" | tail -n 1 | awk '{print $2}' > /tmp/ans-t24-k8sip.txt
-```
-
-
-
----
-
-## T4. Bẫy mất điểm
-
-| # | Bẫy mất điểm hay gặp | Mất bao nhiêu điểm | Dấu hiệu nhận ra ngay |
-|---|---|---|---|
-| 1 | Viết `value: 2` kiểu Integer thay vì `value: "2"` dạng String | 30 điểm câu T2.2 | API Server từ chối lệnh apply YAML |
-| 2 | Quên cờ `-n dev` khi exec hoặc nslookup FQDN | 20 điểm câu T2.1 | Pod báo `Name or service not known` |
-| 3 | Quên cờ `--rm` khi chạy lệnh `kubectl run dnstest` | 15 điểm câu T2.4 | Lại lại Pod rác `dnstest` trong namespace |
-| 4 | Sử dụng `jq` để parse output ConfigMap `coredns` | 25 điểm (mất trọn câu T2.3) | Output báo `bash: jq: command not found` |
-| 5 | Gõ sai tên plugin `kubernetes` thành `k8s` trong Corefile | 20 điểm câu T2.3 | File `/tmp/ans-t23-corefile.txt` rỗng |
-| 6 | Nhầm lẫn địa chỉ IP của DNS Server với địa chỉ VIP Service | 15 điểm câu T2.4 | Trích xuất nhầm IP `10.96.0.10` thay vì IP của `kubernetes.default` |
-
----
-
-## T5. Bảng tự chấm
-
-| Câu | Chứng chỉ · Miền | Ngân sách | Điểm tối đa | Điểm đạt được |
-|---|---|---|---|---|
-| T2.1 | `CKA · Services & Networking` | 210s | 25 | |
-| T2.2 | `CKA · Services & Networking` | 240s | 30 | |
-| T2.3 | `CKA · Services & Networking` | 210s | 20 | |
-| T2.4 | `CKA · Services & Networking` | 240s | 25 | |
-| **Tổng** | | **900s (15')** | **100** | **Ngưỡng ĐẠT: ≥ 66 điểm** |
-
-### Đoạn mã chấm tự động (Automated Grading Script)
-
-Copy và dán đoạn script bash dưới đây để tự động chấm điểm bài thi của Buổi 23:
-
-```bash
-#!/bin/bash
-# Script tự động chấm điểm khối Ô thi Buổi 23
-
-SCORE=0
-
-echo "=== BẮT ĐẦU CHẤM ĐIỂM BUỔI 23 ==="
-
-# 1. Chấm câu T2.1
-if grep -qE "Address: [0-9]+\.[0-9]+" /tmp/ans-t21-dns.txt; then
-    echo "Câu T2.1: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.1: LỖI (0/25 điểm)"
-fi
-
-# 2. Chấm câu T2.2
-if grep -qx "options ndots:2" /tmp/ans-t22-ndots.txt; then
-    echo "Câu T2.2: ĐẠT (+30 điểm)"
-    SCORE=$((SCORE + 30))
-else
-    echo "Câu T2.2: LỖI (0/30 điểm)"
-fi
-
-# 3. Chấm câu T2.3
-if grep -q "kubernetes" /tmp/ans-t23-corefile.txt; then
-    echo "Câu T2.3: ĐẠT (+20 điểm)"
-    SCORE=$((SCORE + 20))
-else
-    echo "Câu T2.3: LỖI (0/20 điểm)"
-fi
-
-# 4. Chấm câu T2.4
-if grep -qE "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" /tmp/ans-t24-k8sip.txt; then
-    echo "Câu T2.4: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.4: LỖI (0/25 điểm)"
-fi
-
-echo "=================================="
-echo "TỔNG ĐIỂM: $SCORE / 100"
-if [ "$SCORE" -ge 66 ]; then
-    echo "KẾT QUẢ: ĐẠT CHUẨN CKA/CKAD (≥ 66 điểm)"
-else
-    echo "KẾT QUẢ: CHƯA ĐẠT (Cần tối thiểu 66 điểm)"
-fi
+kubectl exec -it fast-dns-app -- cat /etc/resolv.conf
 ```
 
 ---
 
-## T6. Kho lệnh rút gọn của buổi
+### Bước 7: Thêm bản ghi tĩnh tùy chỉnh vào Corefile bằng plugin `hosts`
+
+Mở ConfigMap `coredns`:
 
 ```bash
-# 1. Phân giải tên miền FQDN chuẩn từ bên trong Pod
-kubectl exec <pod-name> -n <namespace> -- nslookup <svc-name>.<namespace>.svc.cluster.local
-
-# 2. Xem nội dung tệp /etc/resolv.conf bên trong Pod
-kubectl exec <pod-name> -n <namespace> -- cat /etc/resolv.conf
-
-# 3. Xem tệp Corefile của CoreDNS trong ConfigMap
-kubectl get cm coredns -n kube-system -o jsonpath='{.data.Corefile}'
-
-# 4. Bắt log chẩn đoán sự cố CoreDNS
-kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50
-
-# 5. Lệnh one-liner tạo Pod tạm thời nslookup chẩn đoán DNS trong 2 giây
-kubectl run dnstest --image=busybox:1.36 -it --rm -n <namespace> -- nslookup <domain>
+kubectl edit configmap coredns -n kube-system
 ```
 
+Thêm khối `hosts` vào bên trong block `.:53`:
+
+```text
+    hosts {
+        192.168.10.250 internal-db.company.local
+        192.168.10.251 payment-gateway.company.local
+        fallthrough
+    }
+```
+
+Lưu file. Plugin `reload` của CoreDNS sẽ tự động nạp lại cấu hình trong vòng vài giây mà không cần restart Deployment!
 
 ---
 
-## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+### Bước 8: Kiểm định bản ghi DNS tùy chỉnh
 
-Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+```bash
+kubectl exec -it dnsutils -- nslookup internal-db.company.local
+```
+
+Output trả về ngay lập tức IP `192.168.10.250`:
+```text
+Server:         10.96.0.10
+Address:        10.96.0.10#53
+
+Name:   internal-db.company.local
+Address: 192.168.10.250
+```
+
+---
+
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
+
+<details class="qa-card">
+  <summary><b>Câu 1: Định dạng FQDN đầy đủ cho một Service và một Pod trong Kubernetes là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>Service:</b> <code>&lt;service-name&gt;.&lt;namespace&gt;.svc.cluster.local</code></li>
+      <li><b>Pod:</b> <code>&lt;pod-ip-dashed&gt;.&lt;namespace&gt;.pod.cluster.local</code> (ví dụ: Pod có IP <code>10.244.2.15</code> trong namespace <code>prod</code> sẽ có FQDN là <code>10-244-2-15.prod.pod.cluster.local</code>).</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 2: Cơ chế ndots:5 trong tệp /etc/resolv.conf hoạt động như thế nào và gây ảnh hưởng gì đến hiệu năng?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <code>ndots:5</code> quy định rằng nếu một tên miền có ít hơn 5 dấu chấm, resolver sẽ ưu tiên tìm kiếm bằng cách nối lần lượt các dải <code>search</code> domain nội bộ trước. Khi ứng dụng gọi một tên miền bên ngoài (ví dụ: <code>api.stripe.com</code> có 2 dấu chấm), hệ thống phải thực hiện 4 truy vấn sai hỏng (NXDOMAIN) nội bộ trước khi thực sự gửi ra Internet, gây ra hiện tượng bùng nổ số lượng truy vấn và làm tăng độ trễ mạng.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 3: Hai cách đơn giản nhất để khắc phục tình trạng bùng nổ truy vấn DNS do ndots:5 gây ra là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li>1. <b>Thêm dấu chấm vào cuối tên miền:</b> Sử dụng FQDN tuyệt đối trong mã nguồn ứng dụng (ví dụ: gọi <code>api.stripe.com.</code> thay vì <code>api.stripe.com</code>).</li>
+      <li>2. <b>Tinh chỉnh dnsConfig:</b> Khai báo trong Pod Spec thuộc tính <code>dnsConfig.options: [{name: "ndots", value: "2"}]</code>.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 4: Bốn chính sách dnsPolicy trong Kubernetes là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>ClusterFirst (Mặc định):</b> Ưu tiên chuyển truy vấn cho CoreDNS; nếu không khớp nội bộ thì CoreDNS forward ra ngoài.</li>
+      <li><b>ClusterFirstWithHostNet:</b> Sử dụng cho các Pod chạy chế độ <code>hostNetwork: true</code> để vẫn có thể phân giải được tên miền nội bộ cụm.</li>
+      <li><b>Default:</b> Kế thừa trực tiếp cấu hình DNS của máy chủ Node vật lý.</li>
+      <li><b>None:</b> Xóa bỏ mọi cấu hình mặc định, cho phép người dùng tự định nghĩa hoàn toàn qua khối <code>dnsConfig</code>.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 5: Plugin kubernetes trong tệp Corefile đảm nhận nhiệm vụ gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Plugin <code>kubernetes</code> kết nối với <code>kube-apiserver</code> để đọc danh sách Services, Endpoints/EndpointSlices và tự động phản hồi các truy vấn DNS thuộc dải tên miền cụm (mặc định là <code>cluster.local</code>).
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 6: Tại sao CoreDNS có thể tự nạp lại cấu hình khi chỉnh sửa ConfigMap mà không cần khởi động lại Pod?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Bởi vì trong tệp <code>Corefile</code> mặc định có khai báo plugin <b><code>reload</code></b>. Plugin này định kỳ kiểm tra mã băm (hash) của tệp Corefile trên ổ đĩa; khi ConfigMap được Kubelet cập nhật qua cơ chế Atomic Symlink, plugin sẽ tự động nạp lại cấu hình vào bộ nhớ mà không làm ngắt quãng các truy vấn đang xử lý.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 7: Giải pháp NodeLocal DNSCache giải quyết vấn đề gì trong các cụm Kubernetes quy mô lớn?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <code>NodeLocal DNSCache</code> chạy dưới dạng DaemonSet trên từng Node, tạo một địa chỉ IP ảo DNS cục bộ trên loopback (thường là <code>169.254.20.10</code>). Các Pod trên Node gửi truy vấn DNS trực tiếp tới cache cục bộ này qua giao thức TCP/UDP không qua conntrack iptables, giúp giảm thiểu tối đa hiện tượng nghẽn mạng CoreDNS tập trung và triệt tiêu lỗi DNS timeout 5 giây (do race condition của kernel netfilter).
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 8: Khi truy vấn SRV record của một Service trong Kubernetes, cú pháp chuẩn là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Cú pháp chuẩn là:<br>
+    <code>_&lt;port-name&gt;._&lt;protocol&gt;.&lt;service-name&gt;.&lt;namespace&gt;.svc.cluster.local</code><br>
+    Ví dụ: <code>_http._tcp.web-service.default.svc.cluster.local</code>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 9: Plugin forward trong Corefile dùng để làm gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Plugin <code>forward</code> chịu trách nhiệm chuyển tiếp (proxy) bất kỳ truy vấn DNS nào không thuộc thẩm quyền của cụm (như các tên miền Internet công cộng) tới danh sách các máy chủ DNS bên ngoài (upstream DNS servers, ví dụ: <code>/etc/resolv.conf</code> hoặc <code>8.8.8.8</code>).
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 10: Lệnh nào giúp kiểm tra nhanh log của CoreDNS để xem các truy vấn bị lỗi?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Sử dụng lệnh:<br>
+    <code>kubectl logs -n kube-system -l k8s-app=kube-dns -f</code><br>
+    <i>Mẹo:</i> Bạn có thể bật plugin <code>log</code> trong Corefile để CoreDNS in ra toàn bộ lịch sử mọi truy vấn DNS đi qua hệ thống.
+  </div>
+</details>
+
+---
+
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+
+```mermaid
+mindmap
+  root((CoreDNS & Phan Giai Ten))
+    Kien Truc CoreDNS
+      Deployment 2 Replicas (kube-system)
+      Service kube-dns (10.96.0.10:53)
+      Corefile ConfigMap (kubernetes / forward / reload)
+    FQDN Chuan
+      Service: svc.cluster.local
+      Pod: ip-dashed.pod.cluster.local
+      Headless: pod.svc.cluster.local
+    Hieu Nang ndots:5
+      search domain multiplication
+      Khac phuc: Trailing dot (.)
+      dnsConfig ndots: 2
+      NodeLocal DNSCache
+```
+
+Nắm vững cơ chế vận hành của CoreDNS và quy trình tìm kiếm tên miền giúp bạn làm chủ một trong những thành phần cốt lõi nhất của cụm, đồng thời tối ưu hóa đáng kể tốc độ phản hồi của toàn bộ hệ thống microservices.
 
 > [!TIP]
-> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
-> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 24] Định Tuyến Lớp 7 Với Ingress Controller & Gateway API: TLS Termination, Path Routing & HTTPRoute](cka-24-24-ingress-va-gateway-api.html).
-
+> **Bài học tiếp theo**: Trong [Bài 24: Quản Trị Lưu Lượng Vào Cụm với Ingress Controller & Gateway API](cka-24-24-ingress-va-gateway-api.html), chúng ta sẽ nghiên cứu tầng định tuyến ứng dụng Layer 7: phân tích kiến trúc Ingress NGINX, cơ chế TLS Termination, cấu hình Path-based / Host-based Routing và xu hướng chuyển dịch sang chuẩn Gateway API thế hệ mới.
 {% endraw %}

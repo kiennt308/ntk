@@ -3,12 +3,7 @@ layout: post
 title: "[Bài 04] Học Đa Phương Thức (Multimodal Learning): Chiến Lược Hợp Nhất Early, Late, Hybrid Fusion & Cross-Attention"
 date: 2026-09-16 11:00:00 +0700
 categories: [EEG]
-tags:
-  - EEG
-  - MultimodalLearning
-  - CrossAttention
-  - SensorFusion
-  - Part-04
+tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
 series: "EEG & Emotion Recognition AI"
 series_order: 4
 difficulty: Advanced

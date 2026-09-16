@@ -3,12 +3,7 @@ layout: post
 title: "[Bài 02] Xử Lý Tín Hiệu Y Sinh Cơ Bản: Bộ Lọc Số, Khử Nhiễu ICA, Biến Đổi Sóng Con Wavelet & Trích Xuất Đặc Trưng"
 date: 2026-09-16 09:00:00 +0700
 categories: [EEG]
-tags:
-  - EEG
-  - SignalProcessing
-  - Denoising
-  - BiomedicalSignal
-  - Part-02
+tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
 series: "EEG & Emotion Recognition AI"
 series_order: 2
 difficulty: Intermediate

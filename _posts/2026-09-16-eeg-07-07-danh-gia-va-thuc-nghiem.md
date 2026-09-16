@@ -3,12 +3,7 @@ layout: post
 title: "[Bài 07] Đánh Giá & Thực Nghiệm: Cross-Validation Subject-Independent, Metrics F1/AUC, Ablation Study & Phân Tích Thống Kê"
 date: 2026-09-16 14:00:00 +0700
 categories: [EEG]
-tags:
-  - EEG
-  - Benchmark
-  - StatisticalTesting
-  - AblationStudy
-  - Part-07
+tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
 series: "EEG & Emotion Recognition AI"
 series_order: 7
 difficulty: Advanced

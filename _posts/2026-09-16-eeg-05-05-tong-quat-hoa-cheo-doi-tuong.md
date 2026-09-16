@@ -3,12 +3,7 @@ layout: post
 title: "[Bài 05] Tổng Quát Hóa Chéo Đối Tượng (Cross-Subject Generalization): Domain Adaptation, DANN, MMD & Contrastive Learning"
 date: 2026-09-16 12:00:00 +0700
 categories: [EEG]
-tags:
-  - EEG
-  - DomainAdaptation
-  - ContrastiveLearning
-  - TransferLearning
-  - Part-05
+tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
 series: "EEG & Emotion Recognition AI"
 series_order: 5
 difficulty: Advanced

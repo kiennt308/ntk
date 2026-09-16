@@ -1,1579 +1,508 @@
 ---
 layout: post
-title: "[Bài 18] Quản Trị Tài Nguyên Điện Toán: Requests, Limits, QoS Classes (Guaranteed/Burstable), CFS Throttling & OOMKill"
-date: 2026-09-12 18:40:00 +0700
-categories: [CKA]
-tags:
-  - CKA
-  - Kubernetes
-  - ClusterAdmin
-  - LinuxFoundation
-  - DevOps
-  - Part-18
+title: "CKA (Bài 18/35) - Quản Trị Tài Nguyên Điện Toán: Requests, Limits, QoS Classes (Guaranteed/Burstable), CFS Throttling & OOMKill"
+date: 2026-09-12
+categories: [Kubernetes, CKA, Performance, Linux-Internals]
+tags: [cka, requests, limits, qos, guaranteed, burstable, besteffort, cfs-throttling, oomkill, cgroups]
 series: "CKA Exam & Cluster Admin Mastery"
 series_order: 18
-difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?auto=format&fit=crop&w=1200&q=80"
-summary: "[CKA P.18] Hướng dẫn chuyên sâu Quản Trị Tài Nguyên Điện Toán: Requests, Limits, QoS Classes (Guaranteed/Burstable), CFS Throttling & OOMKill: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+author: "Nguyen Thao Kien"
+description: "Làm chủ cơ chế quản lý tài nguyên tính toán trong Kubernetes. Phân tích chi tiết Requests vs Limits, phân loại 3 lớp QoS Classes (Guaranteed, Burstable, BestEffort), cơ chế Linux cgroups, hiện tượng CPU CFS Throttling và chẩn đoán lỗi OOMKilled (Exit Code 137)."
+summary: "Hướng dẫn toàn diện về quản trị tài nguyên tính toán Kubernetes cho CKA và production: giải phẫu Requests vs Limits, quy tắc phân lớp QoS, Linux cgroups v1/v2, CPU CFS Throttling, và xử lý sự cố OOMKilled."
+keywords:
+  - kubernetes requests vs limits
+  - cka qos classes
+  - guaranteed burstable besteffort
+  - cpu cfs throttling kubernetes
+  - oomkilled exit code 137
+  - limitrange resourcequota
+  - linux cgroups kubernetes
+image:
+  path: /assets/img/posts/cka/cka-18-resources-qos-banner.png
+  alt: "Kiến trúc Quản lý Tài nguyên Kubernetes, QoS Classes và Linux cgroups"
+difficulty: ADVANCED
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Quản Trị Tài Nguyên Điện Toán: Requests, Limits, QoS Classes (Guaranteed/Burstable), CFS Throttling & OOMKill."
-  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
-  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "`resources.requests` là mức tài nguyên cam kết tối thiểu dùng để `kube-scheduler` tính toán lập lịch; `resources.limits` là mức trần tối đa mà tiến trình được phép tiêu thụ do Linux cgroups thực thi."
+  - "Kubernetes tự động phân loại 3 lớp chất lượng dịch vụ QoS: `Guaranteed` (Requests == Limits cho mọi container), `Burstable` (có khai báo Requests nhưng < Limits), và `BestEffort` (không khai báo bất kỳ Request/Limit nào)."
+  - "Tài nguyên nén được (Compressible - CPU): Vượt quá Limit chỉ dẫn đến việc bị bóp nghẽn thời gian thực thi (CFS Throttling), ứng dụng chạy chậm lại nhưng KHÔNG BAO GIỜ bị tiêu diệt."
+  - "Tài nguyên không nén được (Incompressible - Memory): Vượt quá Limit sẽ lập tức kích hoạt Linux Kernel OOM-Killer tiêu diệt tiến trình với lỗi `OOMKilled` (Exit Code 137)."
+  - "Thứ tự trục xuất (Eviction Order) khi Node bị cạn kiệt RAM (`MemoryPressure`): `BestEffort` bị tiêu diệt đầu tiên -> `Burstable` (tiêu thụ vượt request) -> `Guaranteed` được bảo vệ an toàn cao nhất."
 ---
+
 {% raw %}
-# [BÀI 18] QUẢN TRỊ TÀI NGUYÊN ĐIỆN TOÁN: REQUESTS, LIMITS, QOS CLASSES (GUARANTEED/BURSTABLE), CFS THROTTLING & OOMKILL
-
-Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
-
-Bài viết chuyên sâu này sẽ đồng hành cùng bạn giải mã toàn diện bức tranh kiến trúc, phân tích các đánh đổi kỹ thuật thực chiến (Engineering Trade-offs), cung cấp bài thực hành Lab từng bước và bộ câu hỏi phỏng vấn chuẩn Architect / Lead Engineer.
-
----
-
-## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
-| # | Câu hỏi ôn tập | Đáp án chuẩn ngắn gọn (chứa con số / tên lệnh) |
-|---|---|---|
-| 1 | Hai giai đoạn gán Pod của Kube-Scheduler? | Giai đoạn 1 **Filtering** (Lọc) và Giai đoạn 2 **Scoring** (Chấm điểm **0-10**) |
-| 2 | Thuộc tính gán cứng Pod vào Node bypass Kube-Scheduler? | Thuộc tính `spec.nodeName` (bỏ qua **100%** Kube-Scheduler) |
-| 3 | Toán tử logic hỗ trợ trong `nodeAffinity`? | **6** toán tử (`In`, `NotIn`, `Exists`, `DoesNotExist`, `Gt`, `Lt`) |
-| 4 | Trọng số ưu tiên `weight` trong `nodeAffinity` luật mềm? | Giá trị số nguyên từ **1 đến 100** |
-| 5 | Lệnh xoá một Taint khỏi Node? | `kubectl taint nodes <node> key=value:Effect-` (thêm **1** dấu trừ `-` ở cuối) |
-
-
-
-> **Luận đề trung tâm của buổi:**
-> *"Khai báo tài nguyên tính toán `resources.requests` (mức cam kết tối thiểu) và `resources.limits` (mức trần tối đa) cho CPU và Memory là cơ sở để Kubelet tự động phân loại ba lớp chất lượng dịch vụ QoS Classes (Guaranteed, Burstable, BestEffort); trong đó việc vượt quá trần CPU chỉ dẫn đến hiện tượng bóp hiệu năng CFS Throttling (chậm tiến trình nhưng không chết), trong khi việc vượt quá trần Memory lập tức kích hoạt Linux Kernel tiêu diệt container với lỗi OOMKilled (Exit Code 137)."*
-
-**Bảng kết quả các buổi trước được dùng lại:**
-
-| Kết quả / Công cụ | Nguồn gốc | Áp dụng vào buổi này |
-|---|---|---|
-| Mã thoát Exit Code 137 OOMKilled | Buổi 14 `QT 4.2` | Giải thích cơ chế Linux Kernel OOM Killer diệt tiến trình vượt limit RAM |
-| Kỹ thuật tạo YAML imperative `--dry-run=client -o yaml` | Buổi 04 `QT 5.1` | Tạo nhanh mẫu Pod có khai báo resources |
-| Quản lý tài nguyên Kubelet và cờ `--eviction-hard` | Buổi 06 `QT 4.1` | Cơ chế Kubelet Eviction Manager trục xuất Pods khi Node nén RAM |
-
-Ba câu bài tập về nhà BTVN 4 của buổi 17 đã chuẩn bị sẵn kiến thức cho học viên: Câu 1 phân biệt `resources.requests` vs `resources.limits`; Câu 2 khảo sát quy tắc phân loại 3 lớp QoS Classes (`Guaranteed`, `Burstable`, `BestEffort`); Câu 3 tìm hiểu sự khác biệt giữa CPU CFS Throttling và Memory OOMKilled Exit Code 137.
-
----
-
-
-
-| # | Năng lực đạt được sau buổi học | Hiện vật chứng minh trong bài lab |
-|---|---|---|
-| 1 | Khai báo chính xác CPU/RAM Requests & Limits cho Pod | Tệp `hien-vat/guaranteed-pod.yaml` |
-| 2 | Phân tích và kiểm chứng 3 lớp QoS Class tự động của Kubelet | Tệp `hien-vat/burstable-pod.yaml` |
-| 3 | Thực hành gây hiện tượng OOMKilled (Exit Code 137) khi RAM vượt limit | Tệp `hien-vat/oomkilled-pod.yaml` |
-| 4 | Cấu hình `ResourceQuota` và `LimitRange` quản lý tài nguyên Namespace | Tệp `hien-vat/namespace-quota.yaml` |
-| 5 | Sử dụng lệnh `kubectl top` quan sát chỉ số tiêu thụ CPU/RAM thời gian thực | Tệp `hien-vat/metrics-report.txt` |
-| 6 | Kiểm thử kịch bản quản lý tài nguyên và OOMKilled với script tự động | Script `hien-vat/verify-resource-qos.sh` |
-
----
-
-
-
-| Bắt buộc phải biết | Nguồn tự học nếu thiếu |
-|---|---|
-| Cấu trúc tệp YAML Pod spec và container definition | Buổi 14 `QT 4.1` |
-| Mã thoát Exit Code 137 và vòng đời Pod | Buổi 14 `QT 4.2` |
-| Lệnh kiểm tra tài nguyên Node `kubectl describe node` | Buổi 06 `QT 4.1` |
-
----
-
-
-
-
-
-| # | Thuật ngữ tiếng Việt | Tiếng Anh tương đương | Ghi chú chuẩn hoá trong thân bài |
-|---|---|---|---|
-| 1 | Mức tài nguyên yêu cầu cam kết | Resource Requests (`resources.requests`) | Mức CPU/RAM tối thiểu Kube-Scheduler dùng để gán Node |
-| 2 | Mức trần tài nguyên tối đa | Resource Limits (`resources.limits`) | Mức CPU/RAM tối đa Kubelet/Kernel cho phép Pod sử dụng |
-| 3 | Đơn vị vi nhân CPU | CPU Millicores (`100m = 0,1 CPU`) | Đơn vị đo lường CPU (1000m tương đương 1 vCPU core) |
-| 4 | Lớp chất lượng dịch vụ | Quality of Service Class (QoS Class) | Phân loại ưu tiên của Pod (`Guaranteed`, `Burstable`, `BestEffort`) |
-| 5 | Lớp bảo đảm tuyệt đối | Guaranteed QoS Class | Lớp QoS khi 100% containers có request = limit cho cả CPU và RAM |
-| 6 | Lớp linh hoạt tài nguyên | Burstable QoS Class | Lớp QoS khi Pod có request < limit hoặc chỉ khai báo 1 trong 2 |
-| 7 | Lớp nỗ lực tối đa | BestEffort QoS Class | Lớp QoS khi Pod hoàn toàn KHÔNG khai báo request lẫn limit |
-| 8 | Bóp hiệu năng vi xử lý | CPU CFS Throttling | Cơ chế Linux Kernel làm chậm tiến trình CPU khi chạm trần limit |
-| 9 | Tiêu diệt tiến trình tràn bộ nhớ | OOMKilled (Out Of Memory Killed) | Cơ chế Kernel diệt container exit code 137 khi RAM vượt limit |
-| 10 | Trục xuất Pod do cạn tài nguyên | Pod Eviction | Hành động Kubelet xoá Pods khi Node rơi vào trạng thái nén tài nguyên |
-| 11 | Điểm số ưu tiên tiêu diệt | OOMScore Adjust (`oom_score_adj`) | Chỉ số Linux Kernel dùng để chọn Pod bị diệt trước (-997 đến 1000) |
-| 12 | Xem chỉ số tài nguyên thời gian thực | Resource Metrics (`kubectl top`) | Lệnh truy vấn CPU/RAM thực tế từ metrics-server |
-| 13 | Quản lý hạn ngạch tài nguyên | ResourceQuota | Đối tượng giới hạn tổng CPU/RAM được dùng trong 1 Namespace |
-| 14 | Mức tài nguyên mặc định | LimitRange | Đối tượng tự động gán request/limit mặc định cho Pod thiếu cấu hình |
-
-
-
-1. **Mô hình "Tiền đặt cọc phòng và Hạn mức thẻ tín dụng (Requests vs Limits)":**
-   `requests` giống như Tiền đặt cọc giữ chỗ phòng khách sạn: Kube-Scheduler kiểm tra xem Node có đủ phòng cọc không mới cho bạn vào. `limits` giống như Hạn mức thẻ tín dụng: Bạn có thể tiêu xài linh hoạt trong ngày, nhưng chạm trần hạn mức là ngân hàng ngắt thẻ ngay lập tức.
-
-2. **Mô hình "Hạng vé máy bay Thương gia, Phổ thông và Vé đứng giá rẻ (Guaranteed vs Burstable vs BestEffort)":**
-   `Guaranteed` là Vé thương gia (được cam kết ghế riêng 100%, không bao giờ bị đuổi khỏi máy bay). `Burstable` là Vé phổ thông (được ngồi ghế tiêu chuẩn, có thể nâng hạng nếu thừa chỗ, nhưng bị cắt dịch vụ trước vé thương gia). `BestEffort` là Vé đứng giá rẻ (không có ghế cố định, khi máy bay quá tải RAM là bị phi hành đoàn mời xuống máy bay đầu tiên).
-
-3. **Mô hình "Dòng chảy vòi nước bóp nhỏ vs Cầu dao điện sập nguồn (CFS Throttling vs OOMKilled)":**
-   Vượt trần CPU giống như vòi nước bị vặn nhỏ lại (`CFS Throttling`): Dòng nước chảy chậm đi làm ứng dụng xử lý lâu hơn, nhưng vòi nước không bị hỏng. Vượt trần RAM giống như bị sập cầu dao điện (`OOMKilled`): Điện ngắt phụt lập tức, container bị Kernel tiêu diệt ngay tại chỗ với Exit Code 137.
-
----
-
-### 1.1. Phân biệt `resources.requests` và `resources.limits` (CPU millicores vs Memory bytes) (12 phút)
-
-**Nguyên lý cốt lõi:** Thuộc tính `resources.requests` được Kube-Scheduler sử dụng trong giai đoạn Lọc (Filtering) để tìm Node có đủ dung lượng tài nguyên nhàn rỗi; trong khi `resources.limits` được Kubelet và Linux Kernel áp dụng để kiểm soát trần tài nguyên tối đa mà Pod được phép tiêu thụ trong quá trình chạy.
-
-**Giải thích cơ chế ngầm:** Tách biệt nhiệm vụ: `requests` giúp lập lịch không bị quá tải Node, `limits` giúp bảo vệ các Pods khác trên cùng Node không bị chiếm đoạt tài nguyên.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `limits` nhưng quên `requests` làm Kubelet tự động gán `requests = limits` gây lãng phí dung lượng nhàn rỗi của Node.
-
-**Minh hoạ.**
-
-```yaml
-resources:
-  requests:
-    cpu: "250m"
-    memory: "256Mi"
-  limits:
-    cpu: "500m"
-    memory: "512Mi"
-```
-
-Con số chốt: **250m** tương đương đúng **0,25 vCPU core** (1000m = 1 CPU core).
-
----
-
-**Nguyên lý cốt lõi:** Đơn vị tài nguyên CPU được đo bằng millicores (ví dụ `100m` = `0,1 CPU`), là tài nguyên có thể chia nhỏ và tái sử dụng (Compressible resource); trong khi Memory được đo bằng bytes (ví dụ `256Mi`, `1Gi`), là tài nguyên cố định không thể nén (Incompressible resource).
-
-**Giải thích cơ chế ngầm:** Tính chất vật lý khác nhau: CPU có thể chia lát thời gian (Time-slicing), còn RAM khi đã cấp phát cho tiến trình thì không thể đòi lại nếu tiến trình không tự giải phóng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng dấu chấm thập phân thiếu chữ `m` (như ghi `100` thay vì `100m` làm Kubernetes hiểu là 100 CPU cores).
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra tổng tài nguyên requests và limits trên từng Node
-kubectl describe node worker-01 | grep -A 8 "Allocated resources"
-```
-
-Con số chốt: **1000m** millicores bằng chính xác **1** CPU vCPU core.
-
----
-
-### 1.2. Ba lớp chất lượng dịch vụ QoS Classes (`Guaranteed`, `Burstable`, `BestEffort`) (12 phút)
-
-```mermaid
-graph TD
-    subgraph QoS_Derivation ["Quy tắc phân loại QoS Classes của Kubelet"]
-        REQ_LIMIT_EQUAL["100% Containers: requests == limits (CPU & RAM)"] --> GUARANTEED["QoS Class: Guaranteed (Ưu tiên bảo vệ cao nhất)"]
-        REQ_LESS_LIMIT["Có requests < limits HOẶC chỉ khai báo 1 trong 2"] --> BURSTABLE["QoS Class: Burstable (Ưu tiên bảo vệ trung bình)"]
-        NO_REQ_LIMIT["100% Containers: KHÔNG khai báo requests lẫn limits"] --> BESTEFFORT["QoS Class: BestEffort (Bị trục xuất đầu tiên)"]
-    end
-
-    style GUARANTEED fill:none,stroke:#388e3c,stroke-width:2px
-    style BURSTABLE fill:none,stroke:#0288d1,stroke-width:2px
-    style BESTEFFORT fill:none,stroke:#f57c00,stroke-width:2px
-```
-
----
-
-**Nguyên lý cốt lõi:** Kubelet tự động phân loại Pod vào đúng **1 trong 3 lớp QoS Class**: `Guaranteed` (khi 100% container trong Pod có `requests == limits` cho cả CPU lẫn RAM), `BestEffort` (khi 100% container KHÔNG khai báo bất kỳ requests hay limits nào), và `Burstable` (tất cả các trường hợp còn lại).
-
-**Giải thích cơ chế ngầm:** Giúp Kubelet Eviction Manager quyết định thứ tự ưu tiên tiêu diệt/trục xuất Pods khi Node bị rơi vào tình trạng nén bộ nhớ RAM (Node Memory Pressure).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `requests.cpu == limits.cpu` nhưng quên khai báo `requests.memory` làm Pod bị rơi xuống lớp `Burstable` thay vì `Guaranteed`.
-
-**Minh hoạ.**
-
-```bash
-# Trích xuất QoS Class tự động của Pod từ status
-kubectl get pod app-pod -o jsonpath='{.status.qosClass}'
-```
-
-Con số chốt: **3** lớp QoS Class chính thức trong Kubernetes (`Guaranteed`, `Burstable`, `BestEffort`).
-
----
-
-**Nguyên lý cốt lõi:** Khi Node rơi vào tình trạng cạn kiệt bộ nhớ RAM (Node Memory Pressure), Kubelet Eviction Manager và Linux Kernel OOM Killer sẽ thực hiện trục xuất/tiêu diệt Pods theo đúng thứ tự ưu tiên: tiêu diệt Pods lớp `BestEffort` trước tiên, sau đó tới lớp `Burstable`, và cuối cùng mới đụng tới lớp `Guaranteed`.
-
-**Giải thích cơ chế ngầm:** Bảo vệ các Pods quan trọng trên production (đã trả cọc 100% tài nguyên `Guaranteed`) không bị ảnh hưởng bởi các Pods tạp vụ chạy lén chiếm RAM.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Để Pod Database ở lớp `BestEffort` làm Database bị Kubelet diệt đầu tiên khi cụm bị thiếu RAM.
-
-**Minh hoạ.**
-
-```bash
-# Xem chỉ số OOMScore Adjust của container (Guaranteed = -997, BestEffort = 1000)
-cat /proc/<pid>/oom_score_adj
-```
-
-Con số chốt: **1** lớp `BestEffort` luôn luôn là đối tượng bị tiêu diệt/trục xuất đầu tiên khi Node nén RAM.
-
----
-
-### 1.3. Hai cơ chế xử lý vượt trần: CPU CFS Throttling (Bóp) vs Memory OOMKilled (Diệt) (10 phút)
-
-**Nguyên lý cốt lõi:** Khi một container tiêu thụ CPU vượt quá trần `limits.cpu`, Linux Kernel áp dụng cơ chế Completely Fair Scheduler (CFS) Quota để **bóp hiệu năng (CFS Throttling)** làm tiến trình chạy chậm lại; container KHÔNG BAO GIỜ bị tiêu diệt hay bị khởi động lại do vượt quá CPU limit.
-
-**Giải thích cơ chế ngầm:** CPU là tài nguyên có thể nén (Compressible resource). Việc hoãn thời gian xử lý các chu kỳ CPU (CPU cycles) giúp bảo vệ Node mà không làm sập tiến trình ứng dụng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc tại sao Pod bị đơ chậm phản hồi HTTP request nhưng `kubectl get pods` vẫn thấy status `Running` và `RESTARTS = 0`.
-
-**Minh hoạ.**
-
-```bash
-# Trích xuất số chu kỳ CPU bị bóp throttling trong container
-cat /sys/fs/cgroup/cpu/cpu.stat | grep nr_throttled
-```
-
-Con số chốt: **0** lần container bị restart do dính hiện tượng CPU CFS Throttling.
-
----
-
-**Nguyên lý cốt lõi:** Khi một container tiêu thụ bộ nhớ RAM vượt quá trần `limits.memory`, Linux Kernel OOM Killer sẽ lập tức **tiêu diệt tiến trình container đó (OOMKilled)** và trả về mã thoát **Exit Code 137**; Kubelet sẽ khởi động lại container theo `restartPolicy` của Pod.
-
-**Giải thích cơ chế ngầm:** RAM là tài nguyên không thể nén (Incompressible resource). Nếu không diệt tiến trình tràn RAM, Kernel trên Node sẽ bị Kernel Panic làm sập toàn bộ máy chủ vật lý.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Pod liên tục tăng số lần `RESTARTS` và trong `kubectl describe pod` xuất hiện thông điệp `OOMKilled: true (exit code 137)`.
-
-**Minh hoạ.**
-
-```bash
-# Trích xuất lý do dính OOMKilled của container cũ trong Pod
-kubectl get pod app-pod -o jsonpath='{.status.containerStatuses[0].lastState.terminated.reason}'
-```
-
-Con số chốt: **137** là mã Exit Code bất biến của sự cố container bị tiêu diệt do OOMKilled.
-
----
-
-### 1.4. Quản lý hạn ngạch Namespace và truy vấn chỉ số tài nguyên (4 phút)
-
-**Nguyên lý cốt lõi:** Sử dụng đối tượng `ResourceQuota` trong Namespace để thiết lập hạn ngạch trần tổng CPU và Memory mà tất cả các Pods trong Namespace đó được phép khai báo tiêu thụ.
-
-**Giải thích cơ chế ngầm:** Ngăn chặn một Namespace (như `dev`) chiếm dụng toàn bộ tài nguyên phần cứng của cụm chung.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> API Server từ chối lệnh `apply` Pod mới với thông báo `exceeded quota`.
-
-**Minh hoạ.**
-
-```yaml
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: compute-quota
-  namespace: dev
-spec:
-  hard:
-    requests.cpu: "2"
-    requests.memory: 2Gi
-    limits.cpu: "4"
-    limits.memory: 4Gi
-```
-
-Con số chốt: **4** thuộc tính tài nguyên chính (`requests.cpu`, `requests.memory`, `limits.cpu`, `limits.memory`) quản lý trong ResourceQuota.
-
----
-
-**Nguyên lý cốt lõi:** Sử dụng đối tượng `LimitRange` để tự động gán giá trị `requests` và `limits` mặc định cho bất kỳ Pod nào được tạo trong Namespace mà quên không khai báo khối `resources`.
-
-**Giải thích cơ chế ngầm:** Đảm bảo 100% các Pods trong Namespace đều có khai báo tài nguyên, tránh tình trạng xuất hiện Pods lớp `BestEffort` ngoài ý muốn.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Pod tạo ra tự động có khối `resources` dù file YAML gốc không hề khai báo.
-
-**Minh hoạ.**
-
-```yaml
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: mem-limit-range
-  namespace: dev
-spec:
-  limits:
-  - default:
-      memory: 512Mi
-    defaultRequest:
-      memory: 256Mi
-    type: Container
-```
-
-Con số chốt: **2** cấu hình mặc định (`default` cho limit và `defaultRequest` cho request) trong LimitRange.
-
----
-
-**Nguyên lý cốt lõi:** Lệnh `kubectl top pods` và `kubectl top nodes` truy vấn trực tiếp từ add-on `metrics-server` để xem chỉ số tiêu thụ CPU/RAM thời gian thực của các đối tượng trong cụm.
-
-**Giải thích cơ chế ngầm:** Giúp kỹ sư DevOps đối soát giữa mức khai báo trong YAML vs mức tiêu thụ thực tế để điều chỉnh `requests` và `limits` hợp lý.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy lệnh `kubectl top` bị báo lỗi `Metrics API not available`.
-
-**Minh hoạ.**
-
-```bash
-# Xem chỉ số CPU/RAM tiêu thụ của các Pods trong namespace dev
-kubectl top pods -n dev
-```
-
-Con số chốt: **1** add-on `metrics-server` bắt buộc phải chạy để phục vụ lệnh `kubectl top`.
-
----
-
-## 8. Đưa vào cụm thật (4 phút)
-
-### Áp vào cụm đang chạy thì làm gì trước
-
-1. **Luôn khai báo đủ cả Requests và Limits cho tất cả Pods production:** Giúp ứng dụng đạt lớp `Guaranteed` hoặc `Burstable` an toàn.
-2. **Cài đặt `metrics-server` để sử dụng lệnh `kubectl top`:** Giúp kỹ sư quan sát chính xác mức tiêu thụ CPU/RAM thực tế trước khi đặt số liệu requests/limits.
-3. **Sử dụng `LimitRange` và `ResourceQuota` cho từng Namespace:** Tự động gán cấu hình mặc định cho các Pods thiếu khai báo tài nguyên.
-
-### Cái gì hỏng nếu áp thẳng lên prod
-
-- **Đặt `limits.memory` quá sát mức chạy tĩnh của ứng dụng:** Làm ứng dụng bị OOMKilled liên tục mỗi khi có đợt lưu lượng truy cập tăng đột biến (Traffic Spike).
-- **Đặt `limits.cpu` quá thấp cho ứng dụng Java/Node.js:** Làm ứng dụng bị CFS Throttling nặng nề, thời gian khởi động (Startup Time) kéo dài từ 5 giây lên 3 phút.
-- **Quy trình áp thử an toàn:**
-  - Chạy `kubectl top pod` theo dõi 24h trên môi trường Staging.
-  - Đặt `requests.memory` = Mức trung bình 24h; đặt `limits.memory` = 1,5 x Mức đỉnh (Peak).
-  - Đặt `requests.cpu` = Mức trung bình; để `limits.cpu` gấp 2 lần hoặc không đặt limit CPU nếu muốn burst tự do.
-
-### Đo trước — đo sau
-
-1. **Tỉ lệ sập ứng dụng do OOMKilled:** Giảm 99% nhờ đặt `limits.memory` đúng mức Peak + 50% buffer.
-2. **Độ trễ phản hồi HTTP Response Time:** Đạt mức tối ưu nhờ loại bỏ hiện tượng CPU CFS Throttling.
-3. **Mức độ tối ưu hạ tầng cụm:** Tăng 40% mật độ Pods (Pod Density) trên mỗi Node nhờ khai báo `requests` sát thực tế.
-
-### Khi nào KHÔNG nên dùng
-
-- **Không đặt `limits.cpu` quá khắt khe cho các tác vụ cần bùng nổ CPU ngắn hạn (CPU Bursting):** Nên bỏ hẳn `limits.cpu` hoặc đặt rộng để ứng dụng tận dụng CPU rảnh của Node.
-- **Không để Pods hoàn toàn thiếu `requests` và `limits` (BestEffort) trên môi trường sản xuất:** Tránh nguy cơ bị Kubelet tiêu diệt đầu tiên khi Node nén RAM.
-
----
-
-### 1.6. Bẫy hay gặp (4 phút)
-
-| # | Bẫy hay gặp | Vì sao dính bẫy | Làm đúng là (kèm tên lệnh / con số) |
-|---|---|---|---|
-| 1 | Thắc mắc vì sao Pod bị exit code 137 OOMKilled | Tiến trình tiêu thụ RAM vượt quá trần `limits.memory` | Tăng `resources.limits.memory` trong Pod spec |
-| 2 | Nhầm lẫn đơn vị CPU `100m` với `100` | Ghi `100` làm Kubernetes hiểu là 100 vCPU cores | Gõ đúng `100m` (100 millicores = 0,1 CPU) |
-| 3 | Nhầm lẫn đơn vị RAM Megabytes `M` với Mebibytes `Mi` | `100M` (hệ thập phân 10^6) khác `100Mi` (hệ nhị phân 2^20) | Sử dụng đơn vị chuẩn nhị phân `Mi` và `Gi` trong YAML |
-| 4 | Đặt `limits.memory` nhỏ hơn `requests.memory` | Vi phạm quy tắc bất biến: limit phải lớn hơn hoặc bằng request | API Server từ chối lệnh apply: đảm bảo `limits >= requests` |
-| 5 | Thắc mắc vì sao Pod không đạt lớp `Guaranteed` | Quên khai báo 1 trong 4 chỉ số (chỉ khai báo CPU mà quên RAM) | Đảm bảo 100% container có `requests == limits` cho cả CPU & RAM |
-| 6 | Ứng dụng chạy chậm như rùa nhưng Pod không báo lỗi gì | Ứng dụng bị bóp hiệu năng CPU CFS Throttling do vượt limit CPU | Tăng `limits.cpu` hoặc bỏ hẳn limit CPU |
-| 7 | Lệnh `kubectl top` báo `error: Metrics API not available` | Cụm chưa cài đặt hoặc chưa chạy `metrics-server` | Cài đặt `metrics-server` cho cụm Kubernetes |
-| 8 | Pod bị kẹt ở trạng thái `Pending` mặc định dù Node còn thừa RAM | Kube-Scheduler dựa trên `requests` chứ không dựa trên RAM thực tế | Kiểm tra tổng `requests` trên Node đã vượt quá Allocatable |
-| 9 | Pod lớp `BestEffort` bị chết bất ngờ lúc rạng sáng | Kubelet Eviction Manager diệt Pod BestEffort do Node nén RAM | Bổ sung `requests` và `limits` cho Pod để lên lớp Burstable/Guaranteed |
-| 10 | Quên cờ `-c` khi xem log container bị OOMKilled trong Pod multi-container | Lệnh `kubectl logs` xem nhầm container khác đang running | Gõ đúng `kubectl logs <pod> -c <container-name> -p` |
-| 11 | Đặt `requests` bằng đúng `limits` cho CPU làm lãng phí CPU | CPU là tài nguyên nén được, không cần đặt request quá cao | Đặt `requests.cpu` thấp hơn `limits.cpu` để tận dụng burst |
-| 12 | Thắc mắc vì sao Pod bị Kubelet Eviction mà không thấy Exit Code 137 | Eviction do Kubelet chủ động xoá Pod; OOMKilled do Kernel diệt | Xem lý do trong `kubectl describe pod` mục Message |
-
----
-
-## §10. Tóm tắt (2 phút)
-
-```mermaid
-graph TD
-    A["Tài nguyên Kubernetes: CPU & Memory"] --> B["requests: Cam kết tối thiểu (Scheduler dùng Lọc Node)"]
-    A --> C["limits: Mức trần tối đa (Kubelet & Kernel thực thi)"]
-    
-    B --> D["QoS Classes: Guaranteed (req==lim) -> Burstable -> BestEffort (no req/lim)"]
-    C --> E["Vượt CPU Limit: CFS Throttling (Chậm tiến trình - RESTARTS=0)"]
-    C --> F["Vượt RAM Limit: OOMKilled (Kernel diệt container - Exit Code 137)"]
-
-    style A fill:none,stroke:#333,stroke-width:2px
-    style D fill:none,stroke:#333,stroke-width:2px
-    style E fill:none,stroke:#333,stroke-width:2px
-    style F fill:none,stroke:#333,stroke-width:2px
-```
-
-### Năm điều phải nhớ
-
-1. **Requests vs Limits:** `requests` dành cho Kube-Scheduler chọn Node; `limits` dành cho Kubelet/Kernel kiểm soát trần.
-2. **Đơn vị chuẩn:** CPU đo bằng millicores (`100m = 0,1 CPU`); RAM đo bằng bytes nhị phân (`Mi`, `Gi`).
-3. **Phân loại 3 QoS Classes:** `Guaranteed` (`requests == limits` 100%), `BestEffort` (0% req/lim), `Burstable` (trường hợp còn lại).
-4. **Cơ chế bóp CPU:** Vượt `limits.cpu` chỉ dính **CFS Throttling** (chậm tiến trình, RESTARTS = 0).
-5. **Cơ chế diệt RAM:** Vượt `limits.memory` lập tức dính **OOMKilled (Exit Code 137)**; Pod lớp `BestEffort` bị Kubelet trục xuất đầu tiên khi Node nén RAM.
-
----
-
-## §11. Câu hỏi tự kiểm tra
-
-1. Sự khác nhau cốt lõi về vai trò giữa `resources.requests` và `resources.limits` trong Kubernetes là gì?
-2. Đơn vị `500m` CPU tương đương với bao nhiêu vCPU core? Đơn vị `1Gi` RAM bằng bao nhiêu Megabytes?
-3. Trình bày quy tắc Kubelet dùng để tự động phân loại một Pod vào lớp `Guaranteed QoS Class`.
-4. Khi nào một Pod được Kubelet xếp vào lớp `BestEffort QoS Class`?
-5. Điều gì xảy ra với một container khi tiến trình bên trong tiêu thụ CPU vượt quá trần `resources.limits.cpu`?
-6. Điều gì xảy ra với một container khi tiến trình bên trong tiêu thụ bộ nhớ RAM vượt quá trần `resources.limits.memory`?
-7. Mã thoát Exit Code bất biến của sự cố OOMKilled là con số nào và do thành phần nào tiêu diệt?
-8. Khi Node bị cạn kiệt bộ nhớ RAM (Node Memory Pressure), Kubelet Eviction Manager sẽ trục xuất các Pods theo thứ tự lớp QoS nào?
-9. Lệnh `kubectl top pods` và `kubectl top nodes` yêu cầu thành phần add-on nào phải được cài đặt trên cụm?
-10. Tại sao việc đặt `resources.limits.memory` quá sát mức RAM tĩnh của ứng dụng lại là một bẫy nguy hiểm trên production?
-11. Hai chế độ hỏng (1 im lặng do app chạy chậm như rùa vì dính CPU Throttling, 1 âm thầm do DB bị diệt đầu tiên vì dính BestEffort) là gì?
-12. Tại sao API Server sẽ từ chối file YAML nếu bạn khai báo `limits.memory: 128Mi` và `requests.memory: 256Mi`?
-
-### Đáp án
-
-1. `requests` được Scheduler dùng để lọc chọn Node đủ cọc; `limits` được Kubelet/Kernel dùng để kiểm soát trần tối đa.
-2. `500m` CPU = 0,5 vCPU core (1/2 core); `1Gi` RAM = 1024 Mebibytes (hệ nhị phân 2^20).
-3. Khi 100% container trong Pod có khai báo đầy đủ cả CPU và RAM, và `requests == limits` 100%.
-4. Khi 100% container trong Pod hoàn toàn KHÔNG khai báo bất kỳ `requests` lẫn `limits` nào.
-5. Container dính hiện tượng CPU CFS Throttling: Tiến trình bị Kernel bóp chậm lại nhưng KHÔNG bị tiêu diệt hay restart.
-6. Tiến trình container bị Linux Kernel OOM Killer tiêu diệt ngay lập tức và Kubelet restart lại container.
-7. Exit Code 137; do Linux Kernel OOM Killer tiêu diệt.
-8. Trục xuất Pods lớp `BestEffort` trước tiên -> lớp `Burstable` -> cuối cùng mới đến lớp `Guaranteed`.
-9. Yêu cầu add-on `metrics-server` phải đang chạy trên cụm.
-10. Vì khi lưu lượng truy cập tăng đột biến (Traffic Spike), RAM ứng dụng tăng nhẹ vượt limit sẽ làm container bị OOMKilled sập ngay.
-11. Chế độ 1: Đặt CPU limit quá thấp làm app bị CFS Throttling đơ chậm nhưng RESTARTS vẫn bằng 0; Chế độ 2: Đặt DB ở lớp BestEffort làm DB bị Kubelet trục xuất đầu tiên khi Node cạn RAM.
-12. Vì vi phạm quy tắc bất biến của Kubernetes: `limits` bắt buộc phải lớn hơn hoặc bằng `requests`.
-
----
-
-## §12. Tài liệu tham khảo
-
-| Nguồn tài liệu | Phiên bản Kubernetes áp dụng | Nội dung chính |
-|---|---|---|
-| Official Docs: Resource Management for Pods | Kubernetes v1.35 | Quản lý CPU/Memory requests, limits và units |
-| Official Docs: Pod Quality of Service Classes | Kubernetes v1.35 | Quy tắc phân loại Guaranteed, Burstable và BestEffort |
-| Official Docs: Node Pressure Eviction | Kubernetes v1.35 | Cơ chế Kubelet Eviction Manager và OOMScore Adjust |
-| File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
-
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
 > [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên cụm Kubernetes 1.30+ tiêu chuẩn (hoặc cụm kind/kubeadm lab). Hãy đảm bảo ngữ cảnh dòng lệnh `kubectl config current-context` đã trỏ chính xác vào cụm thực hành trước khi thực thi.
-
-## Khối thực hành — 120 phút
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm chứng BẰNG LỆNH) |
-|---|---|---|
-| TH1 | Khai báo Pod đạt chuẩn QoS Class `Guaranteed` | `kubectl get pod guaranteed-pod -n dev -o jsonpath='{.status.qosClass}'` in ra `Guaranteed` |
-| TH2 | Khai báo Pod đạt chuẩn QoS Class `Burstable` | `kubectl get pod burstable-pod -n dev -o jsonpath='{.status.qosClass}'` in ra `Burstable` |
-| TH3 | Thực hành tạo Pod bị `OOMKilled` (Exit Code 137) | `kubectl get pod oomkilled-pod -n dev` hiển thị `OOMKilled` hoặc `ExitCode: 137` |
-| TH4 | Khởi tạo `ResourceQuota` và `LimitRange` trong Namespace `dev` | `kubectl get resourcequota compute-quota -n dev` ở trạng thái Active |
-| TH5 | Kiểm tra chỉ số tiêu thụ tài nguyên thực tế với `kubectl top` | Lệnh `kubectl top pods -n dev` thực thi thành công |
-| TH6 | Xác minh kịch bản tài nguyên CPU/RAM và QoS Class với script tự động | Script kiểm tra Resource & QoS OK |
-| TH7 | Nộp đủ 4 hiện vật vào portfolio | Thư mục `k8s-portfolio/buoi-18/` chứa đủ 4 file md/yaml/sh |
+> **Mục tiêu kỹ thuật & Trọng tâm CKA**:
+> - Hiểu rõ đơn vị tính toán CPU (Millicores `m`) và Memory (Mebibytes `Mi`, Gibibytes `Gi`).
+> - Nắm vững thuật toán gán tự động 3 lớp QoS: `Guaranteed`, `Burstable`, `BestEffort`.
+> - Phân tích cơ chế giới hạn tầng thấp của Linux cgroups: `cpu.shares`, `cpu.cfs_quota_us`, và `memory.max`.
+> - Thiết lập `LimitRange` (giá trị mặc định/trần theo Pod) và `ResourceQuota` (tổng hạn mức theo Namespace).
+> - Chẩn đoán và xử lý triệt để hai sự cố hiệu năng kinh điển: CPU Throttling và Memory OOMKilled 137.
 
 ---
 
-## L1. Điều kiện tiên quyết về môi trường
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Requests vs Limits & cgroups
 
-| # | Kiểm tra điều kiện | Câu lệnh kiểm tra | Kết quả kỳ vọng |
-|---|---|---|---|
-| 1 | Cụm `kubeadm` 3 node đang ở v1.35 | `kubectl get nodes` | Hiển thị 3 node `cp-01`, `worker-01`, `worker-02` `Ready` |
-| 2 | Kubeconfig trỏ context `kubeadm` | `kubectl config current-context` | In ra đúng `kubeadm` |
-| 3 | Namespace `dev` sẵn sàng | `kubectl get ns dev` | Namespace `dev` ở trạng thái Active |
-| 4 | Thư mục hiện vật đã sẵn sàng | `mkdir -p k8s-portfolio/buoi-18` | Thư mục được tạo thành công |
-| 5 | Lệnh `kubectl top` sẵn sàng | `kubectl top nodes` | Hiển thị thông số CPU/RAM các Node |
-
-```bash
-# Kiểm tra môi trường bắt buộc trước khi thực hiện bài lab
-kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUONG — ĐẠT" || echo "CHECKPOINT MOI TRUONG — LỖI (Trỏ sai context)"
-```
-
----
-
-## L2. Kiến trúc bài lab
+Mỗi container trong Pod tiêu thụ hai loại tài nguyên tính toán chính: **CPU** (tính toán) và **Memory** (bộ nhớ RAM). Cách Kubernetes và Linux Kernel quản lý hai loại tài nguyên này có sự khác biệt bản chất:
 
 ```mermaid
-graph TD
-    subgraph Resource_K8s ["Chặng 1: Guaranteed & Burstable QoS"]
-        G_POD["Pod guaranteed-pod (requests == limits: CPU 100m, RAM 128Mi)"] --> G_QOS["QoS Class: Guaranteed"]
-        B_POD["Pod burstable-pod (requests < limits: CPU 100m < 200m)"] --> B_QOS["QoS Class: Burstable"]
+flowchart TD
+    classDef req fill:none,stroke:#0284c7,stroke-width:2px,color:#0284c7;
+    classDef lim fill:none,stroke:#d97706,stroke-width:2px,color:#d97706;
+    classDef act fill:none,stroke:#16a34a,stroke-width:2px,color:#16a34a;
+    classDef kill fill:none,stroke:#dc2626,stroke-width:2px,color:#dc2626;
+
+    K8sResource["Khai báo Resources trong Pod Spec"] --> ReqBlock["resources.requests<br>(Mức cam kết tối thiểu)"]:::req
+    K8sResource --> LimBlock["resources.limits<br>(Mức trần tối đa)"]:::lim
+
+    ReqBlock --> Sched["kube-scheduler lọc Node có đủ Node Allocatable"]:::req
+    ReqBlock --> CPUShare["Linux cgroups: cpu.shares (Chia sẻ tỷ lệ CPU)"]:::req
+
+    LimBlock --> CPULim["CPU Limit: cgroups CFS Bandwidth Controller<br>(cpu.cfs_quota_us / cpu.cfs_period_us)"]:::lim
+    LimBlock --> MemLim["Memory Limit: cgroups memory.max<br>(Giới hạn RAM cứng)"]:::lim
+
+    CPULim -- "Vượt quá Limit" --> CFSThrottling["CPU CFS THROTTLING<br>(Bị bóp nghẽn CPU, chậm ứng dụng, KHÔNG CHẾT)"]:::act
+    MemLim -- "Vượt quá Limit" --> KernelOOM["LINUX KERNEL OOM-KILLER<br>(Gửi SIGKILL 9 -> Exit Code 137 OOMKilled)"]:::kill
+```
+
+### 1.1. Đơn Vị Đo Lường Chuẩn Trong Kubernetes
+
+1. **CPU (Compressible Resource)**:
+   - $1\text{ CPU Core} = 1000\text{m (Millicores)}$.
+   - $250\text{m} = 0.25\text{ CPU core}$ (tương đương 25% thời gian xử lý của 1 core logic trên máy chủ).
+   - CPU là tài nguyên **nén được**: Khi hệ thống thiếu hụt CPU, các tiến trình chỉ bị xếp hàng đợi (Throttled) chứ không bị hủy.
+2. **Memory (Incompressible Resource)**:
+   - Sử dụng tiền tố nhị phân: $1\text{ Ki} = 1024\text{ Bytes}$, $1\text{ Mi} = 1024\text{ Ki}$, $1\text{ Gi} = 1024\text{ Mi}$.
+   - Tránh dùng tiền tố thập phân ($1\text{ M} = 1000\text{ K}$) để tránh sai số tính toán.
+   - Memory là tài nguyên **không thể nén**: Khi đã cấp phát RAM cho một tiến trình, hệ điều hành không thể thu hồi lại mà không tiêu diệt tiến trình đó.
+
+---
+
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
+
+Bảng đối chiếu chi tiết 3 lớp chất lượng dịch vụ QoS Classes:
+
+| Tiêu Chí Kỹ Thuật | Guaranteed | Burstable | BestEffort |
+| :--- | :--- | :--- | :--- |
+| **Điều kiện phân lớp** | 100% Containers có `requests == limits` cho cả CPU & RAM (>0)| Có ít nhất 1 Request/Limit nhưng không thỏa Guaranteed | Không khai báo bất kỳ Request hay Limit nào |
+| **Giá trị oom_score_adj** | Cố định **-997** (Được bảo vệ tối đa) | Biến thiên từ **2 đến 999** (Tỷ lệ theo RAM request)| Cố định **1000** (Dễ bị diệt nhất) |
+| **Độ ưu tiên giữ lại khi thiếu RAM**| Cao nhất (Chỉ bị kill khi không còn Pod nào khác)| Trung bình (Bị kill nếu xài vượt quá request) | Thấp nhất (Bị kill đầu tiên ngay khi Node thiếu RAM)|
+| **Hiện tượng CFS Throttling** | Có thể xảy ra nếu CPU chạm Limit | Có thể xảy ra nếu CPU chạm Limit | Không bị Throttling (Ăn tối đa CPU nhàn rỗi)|
+| **Độ ổn định hiệu năng (SLA)**| Rất cao, ổn định tuyệt đối | Khá, có thể bị biến động độ trễ | Không cam kết, hiệu năng trồi sụt |
+| **Ứng dụng điển hình** | Production DB, Payment API, Core Gateway | Web App thông thường, Microservices, Worker| Batch Job thử nghiệm, Dev/Test sandbox |
+
+```mermaid
+graph LR
+    subgraph EvictionOrder ["Thứ Tự Trục Xuất Khi Node Cạn Kiệt RAM (MemoryPressure)"]
+        BE["1. BestEffort<br>(oom_score_adj: 1000)<br>BỊ TRỤC XUẤT ĐẦU TIÊN"]
+        BU["2. Burstable<br>(oom_score_adj: 2 - 999)<br>BỊ TRỤC XUẤT NẾU VƯỢT REQUEST"]
+        GU["3. Guaranteed<br>(oom_score_adj: -997)<br>ĐƯỢC BẢO VỆ CUỐI CÙNG"]
+        
+        BE --> BU --> GU
     end
 
-    subgraph OOM_Testing ["Chặng 2: Memory OOMKilled (Exit Code 137)"]
-        OOM_POD["Pod oomkilled-pod (limit RAM: 64Mi)"] --> ALLOC["Chạy script ngốn 100MB RAM"]
-        ALLOC --> KERNEL_KILL["Linux Kernel OOM Killer (Exit Code 137)"]
-    end
-
-    subgraph Quota_Lab ["Chặng 3: Namespace ResourceQuota & LimitRange"]
-        QUOTA["ResourceQuota: compute-quota (limits.memory: 2Gi)"] --> NS_DEV["Namespace dev"]
-        LIMITR["LimitRange: default-limits (default RAM limit: 256Mi)"] --> NS_DEV
-    end
-
-    Resource_K8s --> OOM_Testing --> Quota_Lab
-
-    style Resource_K8s fill:none,stroke:#388e3c,stroke-width:2px
-    style OOM_Testing fill:none,stroke:#e53935,stroke-width:2px
-    style Quota_Lab fill:none,stroke:#0288d1,stroke-width:2px
+    classDef beStyle fill:none,stroke:#dc2626,stroke-width:2px,color:#dc2626;
+    classDef buStyle fill:none,stroke:#d97706,stroke-width:2px,color:#d97706;
+    classDef guStyle fill:none,stroke:#16a34a,stroke-width:2px,color:#16a34a;
+    class BE beStyle;
+    class BU buStyle;
+    class GU guStyle;
 ```
 
 ---
 
-## L3. Bước 1 — Khai báo Pod đạt chuẩn QoS Class `Guaranteed` và `Burstable` (30 phút)
+## 3. Cấu Trúc Khai Báo Manifest & Chi Tiết Quản Trị Namespace
 
-### Thao tác 1.1: Tạo `guaranteed-pod` và `burstable-pod`
+### 3.1. Pod Manifest Thuộc Lớp Guaranteed
 
-```bash
-# 1. Tạo Namespace dev nếu chưa có
-kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -
-
-# 2. Tạo tệp guaranteed-pod.yaml (100% requests == limits cho cả CPU & RAM)
-cat << 'EOF' > k8s-portfolio/buoi-18/guaranteed-pod.yaml
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: guaranteed-pod
-  namespace: dev
+  name: guaranteed-payment-engine
+  namespace: production
 spec:
   containers:
-  - name: app
-    image: nginx:1.27-alpine
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "100m"
-        memory: "128Mi"
-EOF
-
-kubectl apply -f k8s-portfolio/buoi-18/guaranteed-pod.yaml
-kubectl wait --for=condition=Ready pod/guaranteed-pod -n dev --timeout=30s
-
-# 3. Tạo tệp burstable-pod.yaml (requests < limits)
-cat << 'EOF' > k8s-portfolio/buoi-18/burstable-pod.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: burstable-pod
-  namespace: dev
-spec:
-  containers:
-  - name: app
-    image: nginx:1.27-alpine
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "200m"
-        memory: "256Mi"
-EOF
-
-kubectl apply -f k8s-portfolio/buoi-18/burstable-pod.yaml
-kubectl wait --for=condition=Ready pod/burstable-pod -n dev --timeout=30s
-
-# 4. Trích xuất QoS Class tự động của 2 Pods
-kubectl get pod guaranteed-pod -n dev -o jsonpath='{.status.qosClass}' > /tmp/g-qos.txt
-kubectl get pod burstable-pod -n dev -o jsonpath='{.status.qosClass}' > /tmp/b-qos.txt
+    - name: app
+      image: registry.k8s.io/pause:3.9
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        limits:
+          cpu: "500m"  # Khớp chính xác với request
+          memory: "1Gi" # Khớp chính xác với request
 ```
 
-**CHECKPOINT 1 — Pod guaranteed-pod được Kubelet phân loại chính xác vào lớp Guaranteed QoS Class.**
+### 3.2. Cấu Hình LimitRange & ResourceQuota Trong Namespace
 
-```bash
-grep -qx "Guaranteed" /tmp/g-qos.txt && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
-
-**CHECKPOINT 2 — Pod burstable-pod được Kubelet phân loại chính xác vào lớp Burstable QoS Class.**
-
-```bash
-grep -qx "Burstable" /tmp/b-qos.txt && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
-
----
-
-## L4. Bước 2 — Thực hành gây sự cố `OOMKilled` (Exit Code 137) khi RAM vượt limit (30 phút)
-
-### Thao tác 2.1: Tạo `oomkilled-pod` với `limits.memory: 64Mi` và script ngốn 100MB RAM
-
-```bash
-# 1. Tạo tệp oomkilled-pod.yaml
-cat << 'EOF' > k8s-portfolio/buoi-18/oomkilled-pod.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: oomkilled-pod
-  namespace: dev
-spec:
-  restartPolicy: Never
-  containers:
-  - name: memory-eater
-    image: busybox:1.36
-    command: ['sh', '-c', 'tail /dev/zero | head -c 100M | tail']
-    resources:
-      limits:
-        memory: "64Mi"
-EOF
-
-# 2. Áp dụng tệp YAML và chờ Linux Kernel OOM Killer tiêu diệt container
-kubectl apply -f k8s-portfolio/buoi-18/oomkilled-pod.yaml
-sleep 6
-
-# 3. Trích xuất mã thoát Exit Code và lý do bị tiêu diệt
-kubectl get pod oomkilled-pod -n dev -o jsonpath='{.status.containerStatuses[0].state.terminated.exitCode}' > /tmp/oom-code.txt
-kubectl get pod oomkilled-pod -n dev -o jsonpath='{.status.containerStatuses[0].state.terminated.reason}' > /tmp/oom-reason.txt
-```
-
-**CHECKPOINT 3 — Pod oomkilled-pod bị Linux Kernel tiêu diệt với đúng mã thoát Exit Code 137.**
-
-```bash
-grep -qx "137" /tmp/oom-code.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
-
-**CHECKPOINT 4 — Lý do kết thúc container trong status được ghi nhận chuẩn xác là OOMKilled.**
-
-```bash
-grep -qx "OOMKilled" /tmp/oom-reason.txt && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
-
-**CHECKPOINT 5 — CA ĐỐI CHỨNG: Đặt limits.memory (32Mi) nhỏ hơn requests.memory (64Mi) sẽ bị API Server từ chối.**
-
-```bash
-cat << EOF | kubectl apply -f - >/dev/null 2>&1
-apiVersion: v1
-kind: Pod
-metadata:
-  name: bad-resource-pod
-  namespace: dev
-spec:
-  containers:
-  - name: app
-    image: busybox:1.36
-    resources:
-      requests:
-        memory: "64Mi"
-      limits:
-        memory: "32Mi"
-EOF
-kubectl get pod bad-resource-pod -n dev >/dev/null 2>&1 || echo "CHECKPOINT 5 — ĐẠT"
-```
-
----
-
-## L5. Bước 3 — Khởi tạo `ResourceQuota` và `LimitRange` trong Namespace `dev` (30 phút)
-
-### Thao tác 3.1: Tạo đối tượng `compute-quota` và `default-limits`
-
-```bash
-# 1. Tạo tệp namespace-quota.yaml
-cat << 'EOF' > k8s-portfolio/buoi-18/namespace-quota.yaml
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: compute-quota
-  namespace: dev
-spec:
-  hard:
-    requests.cpu: "2"
-    requests.memory: 2Gi
-    limits.cpu: "4"
-    limits.memory: 4Gi
----
+```yaml
 apiVersion: v1
 kind: LimitRange
 metadata:
   name: default-limits
-  namespace: dev
+  namespace: production
 spec:
   limits:
-  - default:
-      cpu: "500m"
-      memory: "512Mi"
-    defaultRequest:
-      cpu: "200m"
-      memory: "256Mi"
-    type: Container
-EOF
-
-kubectl apply -f k8s-portfolio/buoi-18/namespace-quota.yaml
-
-# 2. Trích xuất thuộc tính hard limits của ResourceQuota
-kubectl get resourcequota compute-quota -n dev -o jsonpath='{.spec.hard.limits\.memory}' > /tmp/quota-lim.txt
-```
-
-**CHECKPOINT 6 — Đối tượng ResourceQuota compute-quota khởi tạo thành công với limits.memory = 4Gi.**
-
-```bash
-grep -qx "4Gi" /tmp/quota-lim.txt && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
-
-**CHECKPOINT 7 — Đối tượng LimitRange default-limits được gán thành công vào namespace dev.**
-
-```bash
-kubectl get limitrange default-limits -n dev -o jsonpath='{.spec.limits[0].default.memory}' | grep -qx "512Mi" && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
-
-**CHECKPOINT 8 — CA ĐỐI CHỨNG: Tạo Pod thiếu resources trong namespace có LimitRange sẽ tự động nhận giá trị mặc định.**
-
-```bash
-cat << EOF | kubectl apply -f - >/dev/null 2>&1
-apiVersion: v1
-kind: Pod
-metadata:
-  name: auto-limit-pod
-  namespace: dev
-spec:
-  containers:
-  - name: app
-    image: nginx:1.27-alpine
-EOF
-kubectl wait --for=condition=Ready pod/auto-limit-pod -n dev --timeout=30s >/dev/null 2>&1
-kubectl get pod auto-limit-pod -n dev -o jsonpath='{.spec.containers[0].resources.limits.memory}' | grep -qx "512Mi" && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
-
----
-
-## L6. Bước 4 — Kiểm tra chỉ số tiêu thụ tài nguyên với `kubectl top` và dọn dẹp (20 phút)
-
-### Thao tác 4.1: Chạy `kubectl top` trích xuất chỉ số thực tế
-
-```bash
-# 1. Trích xuất chỉ số tài nguyên thực tế của các Pods vào tệp metrics-report.txt
-kubectl top pods -n dev > k8s-portfolio/buoi-18/metrics-report.txt 2>/dev/null || echo "metrics-server optional" > k8s-portfolio/buoi-18/metrics-report.txt
-
-# 2. Trích xuất trạng thái Allocatable CPU trên node worker-01
-kubectl get node worker-01 -o jsonpath='{.status.allocatable.cpu}' > /tmp/alloc-cpu.txt
-```
-
-**CHECKPOINT 9 — Lệnh trích xuất chỉ số metrics-report.txt tồn tại trong thư mục portfolio.**
-
-```bash
-[ -f k8s-portfolio/buoi-18/metrics-report.txt ] && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
-
-**CHECKPOINT 10 — Node worker-01 báo cáo số lượng Allocatable CPU thành công.**
-
-```bash
-[ -s /tmp/alloc-cpu.txt ] && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
-
-**CHECKPOINT 11 — Dọn dẹp các Pods thử nghiệm oomkilled-pod và auto-limit-pod.**
-
-```bash
-kubectl delete pod oomkilled-pod auto-limit-pod -n dev --ignore-not-found=true >/dev/null 2>&1 && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
-
-**CHECKPOINT 12 — 100% 3 node cp-01, worker-01, worker-02 duy trì trạng thái Ready.**
-
-```bash
-kubectl get nodes --no-headers | grep -c "Ready" | grep -qx "3" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
-
----
-
-## L7. Nộp hiện vật và dọn dẹp (10 phút)
-
-### Thao tác 7.1: Gom hiện vật nộp bài
-
-```bash
-# 1. Tạo tệp verify-resource-qos.sh
-cat << 'EOF' > k8s-portfolio/buoi-18/verify-resource-qos.sh
-#!/bin/bash
-# Script kiểm tra tài nguyên CPU/RAM, QoS Class và ResourceQuota
-
-G_QOS=$(kubectl get pod guaranteed-pod -n dev -o jsonpath='{.status.qosClass}')
-B_QOS=$(kubectl get pod burstable-pod -n dev -o jsonpath='{.status.qosClass}')
-QUOTA_MEM=$(kubectl get resourcequota compute-quota -n dev -o jsonpath='{.spec.hard.limits\.memory}')
-
-if [ "$G_QOS" == "Guaranteed" ] && [ "$B_QOS" == "Burstable" ] && [ "$QUOTA_MEM" == "4Gi" ]; then
-    echo "VERIFY RESOURCE QOS — ĐẠT (Guaranteed, Burstable & ResourceQuota OK)"
-else
-    echo "VERIFY RESOURCE QOS — LỖI (Guaranteed: $G_QOS, Burstable: $B_QOS, Quota: $QUOTA_MEM)"
-fi
-EOF
-
-chmod +x k8s-portfolio/buoi-18/verify-resource-qos.sh
-./k8s-portfolio/buoi-18/verify-resource-qos.sh
-
-# 2. Tạo tệp nhat-ky-buoi-18.md
-cat << 'EOF' > k8s-portfolio/buoi-18/nhat-ky-buoi-18.md
-# NHẬT KÝ THU HOẠCH BUỔI 18
-
-1. Requests vs Limits & QoS Classes:
-   - requests được Kube-Scheduler dùng chọn Node; limits kiểm soát trần tài nguyên.
-   - Guaranteed (100% req == lim CPU & RAM); Burstable (req < lim); BestEffort (không khai báo).
-
-2. CFS Throttling vs OOMKilled:
-   - Vượt CPU limit dính CFS Throttling (chậm tiến trình - RESTARTS = 0).
-   - Vượt RAM limit dính OOMKilled (Linux Kernel diệt container - Exit Code 137).
-
-3. ResourceQuota & LimitRange:
-   - ResourceQuota áp hạn ngạch trần cho toàn bộ Namespace.
-   - LimitRange tự động gán request/limit mặc định cho Pods thiếu cấu hình.
-EOF
-
-# 3. Dọn dẹp tệp tạm
-rm -f /tmp/g-qos.txt /tmp/b-qos.txt /tmp/oom-code.txt /tmp/oom-reason.txt /tmp/quota-lim.txt /tmp/alloc-cpu.txt
-```
-
-**CHECKPOINT 13 — Đủ 4 tệp hiện vật trong thư mục portfolio.**
-
-```bash
-[ -f k8s-portfolio/buoi-18/guaranteed-pod.yaml ] && [ -f k8s-portfolio/buoi-18/oomkilled-pod.yaml ] && [ -f k8s-portfolio/buoi-18/verify-resource-qos.sh ] && [ -f k8s-portfolio/buoi-18/nhat-ky-buoi-18.md ] && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
-
----
-
-## L8. Xử lý sự cố thường gặp trong lab
-
-| # | Triệu chứng lỗi | Nguyên nhân khả dĩ | Cách xử lý sửa lỗi |
-|---|---|---|---|
-| 1 | Lỗi `limits.memory` nhỏ hơn `requests.memory` khi apply | Vi phạm quy tắc bất biến limit >= request | Đảm bảo `limits.memory` lớn hơn hoặc bằng `requests.memory` |
-| 2 | Lỗi `exceeded quota` khi apply Pod mới vào namespace dev | Tổng tài nguyên tiêu thụ vượt trần `ResourceQuota` | Tăng trần `ResourceQuota` hoặc giảm `requests` của Pod |
-| 3 | Lỗi `metrics-server not running` khi chạy `kubectl top` | Cụm chưa khởi chạy `metrics-server` add-on | Cài đặt `metrics-server` hoặc bỏ qua bước kiểm tra top |
-| 4 | Pod bị kẹt ở trạng thái `Pending` do `Insufficient memory` | Total `requests.memory` trên Pod lớn hơn RAM nhàn rỗi của Node | Giảm `requests.memory` xuống mức phù hợp |
-| 5 | Pod tự động nhận khối `resources` dù file YAML không khai báo | Namespace đang áp dụng đối tượng `LimitRange` | Đọc cấu hình `LimitRange` để biết giá trị mặc định |
-| 6 | Container bị restart liên tục với lý do `OOMKilled` | Tiến trình trong container tiêu thụ RAM vượt trần limit | Tăng `limits.memory` trong Pod spec |
-| 7 | Pod bị xếp nhầm lớp `Burstable` thay vì `Guaranteed` | Quên khai báo CPU hoặc RAM cho 1 container trong Pod | Đảm bảo 100% container có `requests == limits` cả CPU & RAM |
-| 8 | Lỗi đơn vị `100` CPU làm Pod kẹt `Pending` | Viết thiếu chữ `m` làm Kubelet hiểu là 100 CPU cores | Gõ đúng `100m` (100 millicores) |
-| 9 | Thắc mắc vì sao `kubectl describe pod` không thấy log OOMKilled cũ | Container đã bị restart tạo bản sao mới | Gõ cờ `-p` (`--previous`) khi dùng `kubectl logs` |
-| 10 | Ứng dụng phản hồi cực chậm nhưng `RESTARTS` vẫn bằng 0 | Ứng dụng dính hiện tượng CPU CFS Throttling | Tăng `limits.cpu` hoặc bỏ hẳn CPU limit |
-| 11 | Pod bị Kubelet Eviction do Node nén RAM | Pod nằm ở lớp `BestEffort` nên bị diệt đầu tiên | Bổ sung `requests` và `limits` để nâng cấp lớp QoS |
-| 12 | Script `verify-resource-qos.sh` báo lỗi | Vẫn chưa apply đủ Pods `guaranteed-pod` và `burstable-pod` | Chạy lại `kubectl apply -f` các tệp YAML tương ứng |
-
----
-
-## L9. Bài tập mở rộng
-
-1. **BT1 — Thử nghiệm CPU CFS Throttling với `stress` tool:** Tạo Pod chạy lệnh `stress --cpu 4` với `limits.cpu: 500m` và quan sát chỉ số `nr_throttled` trong cgroup.
-2. **BT2 — Cấu hình `LimitRange` cho max/min tài nguyên:** Tạo `LimitRange` quy định `max.memory: 1Gi` và `min.memory: 64Mi` để chặn các Pods khai báo RAM quá lớn/bé.
-3. **BT3 — Khai báo `ResourceQuota` cho số lượng Pods:** Cấu hình `ResourceQuota` giới hạn tối đa `pods: "5"` trong namespace `dev`.
-4. **BT4 — Thử nghiệm Pod multi-container với QoS Guaranteed:** Tạo Pod chứa 2 containers và đảm bảo cả 2 containers đều có `requests == limits` để đạt lớp `Guaranteed`.
-5. **BT5 — Khảo sát file `oom_score_adj` trong Linux Kernel:** `exec` vào Pods thuộc 3 lớp QoS khác nhau và so sánh điểm số `oom_score_adj` (-997 vs 1000).
-6. **BT6 — Sử dụng `kubectl top` với cờ `--sort-by=memory`:** Trích xuất danh sách các Pods đang tiêu thụ bộ nhớ RAM cao nhất cụm.
-
----
-
-## L10. Hiện vật nộp và tiêu chí chấm điểm
-
-### Bảng điểm đánh giá bài lab
-
-| Hạng mục hiện vật | Yêu cầu kĩ thuật | Điểm tối đa |
-|---|---|---|
-| `guaranteed-pod.yaml` | Tệp YAML Pod đạt chuẩn QoS Class Guaranteed | 25 điểm |
-| `oomkilled-pod.yaml` | Tệp YAML Pod bị OOMKilled Exit Code 137 chuẩn xác | 25 điểm |
-| `verify-resource-qos.sh` | Script bash chạy thành công, xác minh Guaranteed, Burstable & Quota OK | 25 điểm |
-| `nhat-ky-buoi-18.md` | Trả lời đủ 3 câu thu hoạch, phân biệt rõ Requests vs Limits vs QoS | 15 điểm |
-| CHECKPOINT 1–13 | Tất cả 13 checkpoint tự động đều in chữ `ĐẠT` | 10 điểm |
-| **Tổng điểm** | | **100 điểm** |
-
-### Các trường hợp trừ điểm
-
-- Trừ **20 điểm**: Nếu script hoặc câu lệnh sử dụng công cụ `jq` (vi phạm quy tắc môi trường thi).
-- Trừ **15 điểm**: Nếu quên cờ `-n dev` khiến các đối tượng bị tạo nhầm vào namespace `default`.
-- Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-18/`.
-- Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
-
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-
-## V1. Cách tiến hành
-
-1. **Thời lượng và hình thức:** Khối vấn đáp diễn ra trong đúng **20 phút**. Giảng viên (hoặc bạn học đóng vai Trưởng nhóm kỹ thuật / Senior DevOps) đưa ra lần lượt từng câu hỏi trong V2.
-2. **Quy tắc chấm điểm:**
-   - Mỗi câu hỏi được chấm theo thang điểm 4 mức: **0 điểm** (trả lời sai hoặc không biết); **1 điểm** (trả lời được bề nổi nhưng thiếu cơ chế); **2 điểm** (trả lời đúng cơ chế cốt lõi); **3 điểm** (trả lời đúng cơ chế, nêu được con số vận hành và mở rộng được câu hỏi đào sâu).
-   - **Quy tắc trần điểm riêng của Buổi 18:**
-     - Trả lời Câu 1 mà không phân biệt được `requests` (dùng cho Kube-Scheduler gán Node) vs `limits` (dùng cho Kubelet/Kernel kiểm soát trần) thì **trần điểm câu đó là 1**.
-     - Trả lời Câu 4 mà không trình bày được quy tắc Kubelet phân loại 3 lớp QoS Class (`Guaranteed`, `Burstable`, `BestEffort`) và thứ tự bị trục xuất khi Node nén RAM thì **trần điểm câu đó là 1**.
-3. **Mục tiêu đạt được:** Học viên đạt từ **27 / 36 điểm** trở lên là ĐẠT phần vấn đáp của buổi.
-
----
-
----
-
-## V2. Bộ câu hỏi phỏng vấn thực chiến
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Giải thích ý nghĩa của đơn vị CPU Millicores (ví dụ <code>250m</code>) và đơn vị RAM Mebibytes (<code>256Mi</code>) trong Pod spec.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Đơn vị CPU Millicores (<code>m</code>):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>1000m</code></b> (1000 millicores) tương đương chính xác với <b style="color: var(--accent-primary);">1 vCPU core</b> (hoặc 1 hyperthread) trên máy chủ.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>250m</code></b> = <b style="color: var(--accent-primary);">0,25 vCPU core</b> (bằng 1/4 năng lực của 1 CPU core). CPU là tài nguyên có thể nén được (Compressible resource).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Đơn vị RAM Mebibytes (<code>Mi</code>):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>256Mi</code></b> = 256 Mebibytes theo hệ nhị phân <b style="color: var(--accent-primary);">(2^20 bytes)</b>. Phân biệt với <code>256M</code> (Megabytes theo hệ thập phân 10^6 bytes).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• RAM là tài nguyên không thể nén được (Incompressible resource).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 250m là 250 megabytes CPU.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời được millicores và mebibytes nhưng không nêu được con số <code>1000m = 1 CPU core</code> và sự khác nhau giữa Compressible vs Incompressible resource.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>1000m = 1 vCPU core</code>, <code>250m = 0,25 core</code> và RAM nhị phân <code>Mi</code> vs <code>M</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ cách đọc chỉ sốAllocatable trên Node.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khai báo <code>cpu: "0.5"</code> trong Pod spec có giá trị bằng bao nhiêu millicores? *(Đáp án: Bằng chính xác <code>500m</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Trình bày quy tắc Kubelet dùng để tự động phân loại một Pod vào lớp <code>Guaranteed QoS Class</code>.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Điều kiện bắt buộc để đạt <code>Guaranteed QoS Class</code>:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">TẤT CẢ (100%) các container</b> trong Pod (bao gồm cả initContainers và app containers) đều phải khai báo đầy đủ cả CPU lẫn Memory.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Với mỗi loại tài nguyên (CPU và RAM) của từng container, <b style="color: var(--accent-primary);"><code>requests</code> phải bằng chính xác <code>limits</code></b> (<code>requests.cpu == limits.cpu</code> VÀ <code>requests.memory == limits.memory</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa:</b> Đây là lớp QoS có mức độ ưu tiên bảo vệ cao nhất, không bao giờ bị Kubelet Eviction Manager trục xuất trừ khi Node bị đứt hoàn toàn.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết quy tắc Guaranteed.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời request bằng limit nhưng không khẳng định phải áp dụng cho 100% container và cho cả 2 loại tài nguyên CPU & RAM.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 điều kiện: 100% container khai báo đủ CPU/RAM và <code>requests == limits</code> 100%.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra điểm số <code>oom_score_adj = -997</code> của lớp Guaranteed.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu một Pod có 2 container, container 1 có <code>req == lim</code>, container 2 chỉ có <code>req < lim</code> thì Pod đó đạt lớp QoS nào? *(Đáp án: Đạt lớp <code>Burstable QoS Class</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Trình bày thứ tự bị trục xuất (Eviction) hoặc tiêu diệt (OOMKilled) của 3 lớp QoS Class (<code>Guaranteed</code>, <code>Burstable</code>, <code>BestEffort</code>) khi Node bị cạn kiệt bộ nhớ RAM.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân:</b> Khi Node rơi vào tình trạng Node Memory Pressure, Kubelet Eviction Manager và Linux Kernel OOM Killer phải trục xuất/diệt Pods để giải phóng RAM cho Node.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thứ tự ưu tiên bị tiêu diệt:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>BestEffort</code> (Bị diệt đầu tiên):</b> Do hoàn toàn KHÔNG khai báo cọc tài nguyên nào, các Pods này bị tiêu diệt/trục xuất trước tiên.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Burstable</code> (Bị diệt thứ hai):</b> Các Pods có tỷ lệ tiêu thụ RAM thực tế vượt quá <code>requests.memory</code> nhiều nhất sẽ bị tiêu diệt tiếp theo.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Guaranteed</code> (Bị diệt cuối cùng):</b> Chỉ bị tiêu diệt khi toàn bộ các Pods BestEffort và Burstable đã bị dọn sạch mà Node vẫn thiếu RAM.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo lớp Guaranteed bị diệt đầu tiên.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được BestEffort bị diệt trước nhưng không giải thích được lý do cọc tài nguyên và tiêu chí vượt request của Burstable (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác thứ tự diệt: <code>BestEffort</code> -> <code>Burstable</code> (tiêu thụ vượt request) -> <code>Guaranteed</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ chỉ số <code>oom_score_adj</code> trong Linux Kernel.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao không nên để các Pods cơ sở dữ liệu (Database) ở lớp <code>BestEffort</code> trên môi trường sản xuất? *(Đáp án: Vì khi Node thiếu RAM, Database sẽ bị Kubelet tiêu diệt đầu tiên gây mất mát/hỏng dữ liệu).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Hiện tượng <code>CPU CFS Throttling</code> là gì? Khi container tiêu thụ CPU vượt trần <code>limits.cpu</code> thì nó có bị tiêu diệt hay restart không?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hiện tượng CPU CFS Throttling:</b> Khi container dùng vượt quá mức CPU limit, Linux Kernel áp dụng cơ chế Completely Fair Scheduler (CFS) Quota để <b style="color: var(--accent-primary);">bóp nhỏ băng thông thời gian CPU (CPU cycles)</b> của container trong các khoảng chu kỳ period (như 100ms).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hành vi tiến trình:</b> Tiến trình trong container bị <b style="color: var(--accent-primary);">bóp chậm lại</b> (thời gian xử lý kéo dài hơn), nhưng <b style="color: var(--accent-primary);">KHÔNG BAO GIỜ bị tiêu diệt (Kill)</b> hay bị khởi động lại (Restart). Chỉ số <code>RESTARTS</code> của Pod vẫn bằng <b style="color: var(--accent-primary);">0</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Ý nghĩa:</b> CPU là tài nguyên có thể nén (Compressible resource), hoãn chu kỳ xử lý không làm hỏng trạng thái ứng dụng.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo vượt CPU limit sẽ bị exit code 137 restart Pod.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời chạy chậm lại nhưng không giải thích được cơ chế Linux Kernel CFS Quota bóp chu kỳ thời gian và khẳng định <code>RESTARTS = 0</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế Linux Kernel CFS Throttling bóp chậm tiến trình và khẳng định KHÔNG bị kill hay restart (<code>RESTARTS = 0</code>).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra tệp <code>/sys/fs/cgroup/cpu/cpu.stat</code> để kiểm tra <code>nr_throttled</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để phát hiện một Pod đang bị đơ chậm do CFS Throttling khi <code>kubectl get pods</code> vẫn thấy status <code>Running</code>? *(Đáp án: Dùng lệnh <code>kubectl top pod</code> xem CPU hoặc kiểm tra chỉ số <code>nr_throttled</code> trong cgroup/Prometheus).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Sự cố <code>OOMKilled</code> là gì? Mã thoát bất biến của sự cố này là gì và thành phần nào trực tiếp tiêu diệt tiến trình?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Sự cố <code>OOMKilled</code> (Out Of Memory Killed):</b> Xảy ra khi tiến trình bên trong container cấp phát dung lượng bộ nhớ RAM vượt quá trần <b style="color: var(--accent-primary);"><code>resources.limits.memory</code></b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thành phần tiêu diệt:</b> Do trực tiếp <b style="color: var(--accent-primary);">Linux Kernel OOM Killer</b> trên Host máy chủ vật lý phát hiện và gửi tín hiệu <code>SIGKILL</code> tiêu diệt tiến trình ngay lập tức để bảo vệ Kernel.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Mã thoát bất biến:</b> Trả về đúng mã <b style="color: var(--accent-primary);">Exit Code 137</b> (128 + SIGKILL 9). Kubelet ghi nhận <code>reason: OOMKilled</code> trong status và restart lại container.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo OOMKilled do Kube-Scheduler tiêu diệt exit code 0.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được tràn RAM bị diệt nhưng không nhớ mã thoát Exit Code 137 và thành phần Linux Kernel OOM Killer.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác sự cố OOMKilled do Linux Kernel OOM Killer diệt tiến trình vượt RAM limit với Exit Code 137.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, phân biệt OOMKilled do vượt Limit vs OOMKilled do Kubelet Eviction khi Node hết RAM.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao lại là con số 137 mà không phải số khác? *(Đáp án: Vì tín hiệu <code>SIGKILL</code> có giá trị là 9, theo chuẩn POSIX Linux exit code = 128 + 9 = 137).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Vai trò của đối tượng <code>ResourceQuota</code> trong Kubernetes Namespace là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò:</b> <code>ResourceQuota</code> cung cấp cơ chế giới hạn <b style="color: var(--accent-primary);">tổng lượng tài nguyên tối đa (CPU, RAM, số lượng Pods/PVCs)</b> mà TẤT CẢ các đối tượng trong cùng một Namespace được phép tiêu thụ.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Ngăn chặn tình trạng một đội phát triển (như đội <code>dev</code>) vô tình deploy quá nhiều Pods làm cạn kiệt tài nguyên của cụm dùng chung.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hành vi khi vượt Quota:</b> API Server từ chối ngay lập tức lệnh <code>apply</code> / <code>create</code> Pod mới với thông điệp <code>exceeded quota</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ ResourceQuota.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời giới hạn tài nguyên nhưng không phân biệt được ResourceQuota áp dụng cho cả Namespace vs LimitRange áp dụng cho từng Pod.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác vai trò áp hạn ngạch trần tổng CPU/RAM cho toàn bộ Namespace của ResourceQuota.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ file YAML ResourceQuota chứa <code>hard.requests.cpu</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu một Namespace đã được cài <code>ResourceQuota</code> mà bạn apply 1 Pod KHÔNG khai báo <code>requests</code> thì chuyện gì xảy ra? *(Đáp án: API Server từ chối lệnh apply và bắt buộc Pod phải khai báo <code>requests</code> hoặc phải có <code>LimitRange</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Vai trò của đối tượng <code>LimitRange</code> trong Kubernetes Namespace là gì?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò:</b> <code>LimitRange</code> cung cấp cơ chế <b style="color: var(--accent-primary);">tự động gán giá trị <code>requests</code> và <code>limits</code> mặc định</b> (qua <code>default</code> và <code>defaultRequest</code>) cho bất kỳ Pod nào được tạo trong Namespace mà quên không khai báo khối <code>resources</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng bổ sung:</b> Giới hạn mức min/max CPU/RAM mà một Pod đơn lẻ được phép khai báo trong Namespace đó.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lợi ích:</b> Đảm bảo không có Pod nào bị rơi xuống lớp <code>BestEffort</code> ngoài ý muốn do kỹ sư quên viết khối <code>resources</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết LimitRange.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời gán mặc định nhưng không nêu được các thuộc tính <code>default</code> và <code>defaultRequest</code> trong spec.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác vai trò tự động gán request/limit mặc định cho Pod thiếu cấu hình và giới hạn min/max Pod.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra cơ chế Mutating Admission Webhook của LimitRange.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi bạn apply Pod thiếu <code>resources</code> vào Namespace có <code>LimitRange</code>, lệnh <code>kubectl get pod -o yaml</code> có hiển thị khối <code>resources</code> không? *(Đáp án: Có, khối <code>resources</code> được tự động chèn thêm vào YAML Pod spec).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Lệnh <code>kubectl top pods</code> và <code>kubectl top nodes</code> lấy dữ liệu từ đâu và yêu cầu add-on nào phải được cài đặt trên cụm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguồn dữ liệu:</b> Lệnh <code>kubectl top</code> truy vấn các chỉ số đo đạc CPU/RAM tiêu thụ thời gian thực thông qua đường dẫn <b style="color: var(--accent-primary);">Metrics API (<code>metrics.k8s.io</code>)</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Add-on bắt buộc:</b> Cụm Kubernetes BẮT BUỘC phải được cài đặt thành phần <b style="color: var(--accent-primary);"><code>metrics-server</code></b> (thu thập chỉ số từ Kubelet Summary API trên các Node).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nếu thiếu <code>metrics-server</code>:</b> Lệnh <code>kubectl top</code> sẽ thất bại với thông báo <code>error: Metrics API not available</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo <code>kubectl top</code> lấy dữ liệu từ etcd.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời lấy chỉ số CPU/RAM nhưng không nhớ tên add-on bắt buộc <code>metrics-server</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác nguồn dữ liệu Metrics API và add-on bắt buộc <code>metrics-server</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng cờ <code>--kubelet-insecure-tls</code> khi cài metrics-server trên kubeadm.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh nào giúp sắp xếp danh sách Pods theo mức tiêu thụ bộ nhớ RAM giảm dần? *(Đáp án: Lệnh <code>kubectl top pods --sort-by=memory</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tại sao việc đặt <code>resources.limits.memory</code> quá sát mức tiêu thụ RAM tĩnh của ứng dụng lại là một bẫy nguy hiểm trên môi trường sản xuất?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Nguyên nhân:</b> Khác với CPU có thể nén được, bộ nhớ RAM là tài nguyên cứng. Khi lưu lượng truy cập (Traffic) tăng đột biến, ứng dụng cần tạm thời cấp phát thêm bộ nhớ RAM để xử lý bộ đệm (Buffers/Caches).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hậu quả:</b> Nếu đặt <code>limits.memory</code> quá sát mức tĩnh (ví dụ app tĩnh dùng 200Mi mà đặt limit 210Mi), khi RAM vượt 210Mi dù chỉ 1MB, Linux Kernel OOM Killer sẽ <b style="color: var(--accent-primary);">tiêu diệt container ngay lập tức (OOMKilled exit code 137)</b> làm sập dịch vụ sản xuất.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc an toàn:</b> Đặt <code>limits.memory</code> = Mức đỉnh thực tế (Peak) + <b style="color: var(--accent-primary);">30% đến 50% dung lượng dự phòng (Buffer)</b>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo đặt limit sát RAM tĩnh là tối ưu nhất.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được bị sập app nhưng không giải thích được hiện tượng Traffic Spike cấp phát RAM đệm và quy tắc buffer 30-50%.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác nguy cơ OOMKilled exit code 137 khi có Traffic Spike và khuyến nghị đặt buffer RAM 30-50%.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, liên hệ với hành vi của JVM Java Garbage Collection.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Với ứng dụng Java, thông số JVM <code>-Xmx</code> nên đặt nhỏ hơn hay lớn hơn <code>limits.memory</code> của Kubernetes? *(Đáp án: Bắt buộc <code>-Xmx</code> phải nhỏ hơn <code>limits.memory</code> khoảng 25% để dành RAM cho Off-Heap/Metaspace).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Tại sao API Server sẽ từ chối file YAML nếu bạn khai báo <code>limits.memory: 128Mi</code> và <code>requests.memory: 256Mi</code>?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Quy tắc bất biến:</b> Trong Kubernetes, mức trần tài nguyên tối đa (<code>limits</code>) <b style="color: var(--accent-primary);">BẮT BUỘC phải lớn hơn hoặc bằng</b> mức tài nguyên cam kết tối thiểu (<code>requests</code>) (<code>limits >= requests</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do logic:</b> Khai báo mức trần nhỏ hơn mức cọc tối thiểu là sự vô lý về mặt toán học và quản lý tài nguyên.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thông báo lỗi:</b> API Server thực hiện schema validation và từ chối lệnh apply ngay tại cổng vào với lỗi: <code>spec.containers[0].resources.requests: Invalid value: "256Mi": must be less than or equal to memory limit</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo khai báo như vậy chạy bình thường.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời bị từ chối nhưng không giải thích được quy tắc bất biến <code>limits >= requests</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác quy tắc bất biến <code>limits >= requests</code> và thông báo lỗi validation từ API Server.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra quy tắc tương tự áp dụng cho CPU.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu chỉ khai báo <code>requests.memory: 256Mi</code> mà không khai báo <code>limits.memory</code> thì API Server có chấp nhận không? *(Đáp án: Hoàn toàn chấp nhận, lúc này container không bị giới hạn trần RAM limit).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Nêu 2 chế độ hỏng (1 im lặng do app chạy chậm như rùa vì dính CPU Throttling, 1 âm thầm do DB bị diệt đầu tiên vì dính BestEffort) và cách phát hiện/khắc phục.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - App đơ chậm phản hồi HTTP do dính CPU CFS Throttling):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Trang web phản hồi cực chậm (latency tăng từ 50ms lên 5s), nhưng <code>kubectl get pods</code> vẫn thấy status <code>Running</code> và <code>RESTARTS = 0</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra <code>kubectl top pod</code> thấy CPU chạm 100% limit; đọc chỉ số <code>nr_throttled</code> trong cgroup.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Tăng <code>limits.cpu</code> hoặc bỏ hẳn limit CPU cho ứng dụng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Pod Database bị Kubelet tiêu diệt đầu tiên do ở lớp <code>BestEffort</code>):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Đêm rạng sáng cụm bị thiếu RAM nhẹ, Pod Database bị Kubelet diệt bất ngờ làm gián đoạn hệ thống.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl get pod db-pod -o jsonpath='{.status.qosClass}'</code> thấy báo <code>BestEffort</code> do thiếu khối <code>resources</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Khai báo đầy đủ <code>requests</code> và <code>limits</code> bằng nhau cho Database để nâng cấp lên lớp <code>Guaranteed</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân CPU CFS Throttling (<code>RESTARTS = 0</code>) và BestEffort QoS Class bị diệt đầu (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi một Pod bị dính OOMKilled, câu lệnh nào xem lại được log của lần chạy trước ngay trước khi bị diệt? *(Đáp án: Lệnh <code>kubectl logs <pod-name> --previous</code> hoặc <code>-p</code>).*
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"<code>requests</code> được Kube-Scheduler dùng để Lọc Node cọc tài nguyên; <code>limits</code> được Kubelet và Linux Kernel dùng để siết trần tối đa."*
-2. *"Kubelet phân loại 3 lớp QoS Class: <code>Guaranteed</code> (100% req == lim CPU & RAM), <code>Burstable</code> (req < lim), và <code>BestEffort</code> (0% req/lim)."*
-3. *"Khi Node nén RAM, Pods lớp <code>BestEffort</code> luôn luôn là đối tượng bị Kubelet Eviction Manager tiêu diệt/trục xuất đầu tiên."*
-4. *"Vượt trần CPU chỉ dính <code>CPU CFS Throttling</code> (bóp chậm tiến trình, RESTARTS = 0); vượt trần RAM lập tức dính <code>OOMKilled</code> (Linux Kernel diệt container exit code 137)."*
-5. *"<code>ResourceQuota</code> áp hạn ngạch trần cho toàn Namespace; <code>LimitRange</code> tự động gán request/limit mặc định cho Pods thiếu cấu hình."*
-
----</div>
-</div>
-</details>
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"`requests` được Kube-Scheduler dùng để Lọc Node cọc tài nguyên; `limits` được Kubelet và Linux Kernel dùng để siết trần tối đa."*
-2. *"Kubelet phân loại 3 lớp QoS Class: `Guaranteed` (100% req == lim CPU & RAM), `Burstable` (req < lim), và `BestEffort` (0% req/lim)."*
-3. *"Khi Node nén RAM, Pods lớp `BestEffort` luôn luôn là đối tượng bị Kubelet Eviction Manager tiêu diệt/trục xuất đầu tiên."*
-4. *"Vượt trần CPU chỉ dính `CPU CFS Throttling` (bóp chậm tiến trình, RESTARTS = 0); vượt trần RAM lập tức dính `OOMKilled` (Linux Kernel diệt container exit code 137)."*
-5. *"`ResourceQuota` áp hạn ngạch trần cho toàn Namespace; `LimitRange` tự động gán request/limit mặc định cho Pods thiếu cấu hình."*
-
----
-
-## 4. Đề Thi Thực Hành Bấm Giờ & Thử Thách Tốc Độ (Exam Speed Challenge)
-
-> [!TIP]
-> **CHIẾN THUẬT PHÒNG THI THỰC CHIẾN:**
-> Đặt đồng hồ bấm giờ đúng thời lượng quy định, đọc kỹ yêu cầu namespace và kiểm tra trạng thái cuối cùng của cụm bằng `kubectl get -o jsonpath` trước khi nộp bài.
-
-## T0. Vì sao có khối này (1 phút)
-
-Khối luyện đề bấm giờ 30 phút rèn luyện cho học viên phản xạ khai báo tài nguyên CPU/RAM Requests & Limits chính xác, điều khiển Kubelet phân loại Pods vào đúng các lớp `QoS Classes` (`Guaranteed`, `Burstable`), xử lý sự cố tràn RAM `OOMKilled` (Exit Code 137), và thiết lập đối tượng `ResourceQuota` / `LimitRange` quản lý hạn ngạch Namespace trong kỳ thi CKA và CKAD.
-
-Buổi 18 phủ miền trọng điểm của 2 kỳ thi:
-- `CKA · Workloads & Scheduling` (Trọng số 15 %)
-- `CKAD · Application Environment, Configuration and Security` (Trọng số 15 %)
-
-Các câu hỏi được thiết kế theo đúng chuẩn bài thi CKA/CKAD thực tế: yêu cầu thí sinh cấu hình chính xác đơn vị millicores/bytes, xác minh QoS Class và khắc phục lỗi `OOMKilled` mà KHÔNG được dùng `jq`.
-
----
-
-## T1. Luật chơi (1 phút)
-
-1. **Đồng hồ bấm giờ:** Tổng thời gian làm 4 câu hỏi là **900 giây (15 phút)**. Thời gian còn lại (15 phút) dành cho việc đọc luật, đối soát và tự chấm điểm bằng script.
-2. **Tài liệu được mở:** Chỉ được phép mở 1 tab duy nhất tài liệu chính thức `https://kubernetes.io/docs/`. KHÔNG được tìm kiếm Google hay StackOverflow.
-3. **Môi trường làm việc:** Làm việc trực tiếp trên terminal với context `kubeadm`.
-4. **Quy tắc thi hành về công cụ:** Máy thi **KHÔNG cài sẵn `jq`**. Mọi câu hỏi trích xuất dữ liệu BẮT BUỘC dùng đường gõ bash (`grep`/`awk`/`sed`) hoặc `kubectl jsonpath`.
-5. **Cách chấm:** Chấm dựa trên thuộc tính `status.qosClass` của Pod, sự xuất hiện của mã thoát `137` và cấu hình `ResourceQuota` trong Namespace. Ngưỡng ĐẠT của buổi là **66 / 100 điểm** (theo đúng chuẩn CKA/CKAD).
-
----
-
-## T2. Bộ câu hỏi kiểu đề thi
-
-### Câu T2.1. Khai báo Pod đạt chuẩn QoS Class Guaranteed — 210 giây
-
-**Bối cảnh:**
-Cấu hình Pod chạy ứng dụng quan trọng đạt lớp bảo vệ cao nhất `Guaranteed QoS Class`.
-
-**Yêu cầu:**
-1. Tạo Namespace `dev` (nếu chưa có).
-2. Tạo Pod tên `guaranteed-pod` trong Namespace `dev` sử dụng image `nginx:1.27-alpine`.
-3. Khai báo khối `resources` chứa `requests` và `limits` bằng nhau: CPU `100m`, Memory `128Mi`.
-4. Chờ Pod `Running` và ghi trạng thái `status.qosClass` vào tệp `/tmp/ans-t21-qos.txt`.
-
-**Thang điểm bộ phận:**
-- Khai báo đúng `requests == limits` 100% cho cả CPU và RAM: **15 điểm**.
-- Pod đạt lớp `Guaranteed` và ghi file `/tmp/ans-t21-qos.txt`: **10 điểm**.
-
----
-
-### Câu T2.2. Khai báo Pod đạt chuẩn QoS Class Burstable — 240 giây
-
-**Bối cảnh:**
-Cấu hình Pod có khả năng linh hoạt bùng nổ tài nguyên `Burstable QoS Class`.
-
-**Yêu cầu:**
-1. Tạo Pod tên `burstable-pod` trong Namespace `dev` sử dụng image `nginx:1.27-alpine`.
-2. Khai báo `requests`: CPU `100m`, Memory `128Mi` và `limits`: CPU `200m`, Memory `256Mi`.
-3. Chờ Pod `Running` và ghi trạng thái `status.qosClass` vào tệp `/tmp/ans-t22-qos.txt`.
-4. Kiểm tra đảm bảo Pod đạt lớp `Burstable`.
-
-**Thang điểm bộ phận:**
-- Khai báo đúng `requests < limits`: **15 điểm**.
-- Pod đạt lớp `Burstable` và ghi file `/tmp/ans-t22-qos.txt`: **15 điểm**.
-
----
-
-### Câu T2.3. Tạo Pod thử nghiệm bị OOMKilled exit code 137 — 210 giây
-
-**Bối cảnh:**
-Kiểm thử phản ứng của Linux Kernel OOM Killer khi container tiêu thụ bộ nhớ RAM vượt trần.
-
-**Yêu cầu:**
-1. Tạo Pod tên `oomkilled-pod` trong Namespace `dev` sử dụng image `busybox:1.36` với `restartPolicy: Never`.
-2. Khai báo `limits.memory: 64Mi` và `command: ['sh', '-c', 'tail /dev/zero | head -c 100M | tail']`.
-3. Chờ container bị tiêu diệt và ghi mã thoát Exit Code vào tệp `/tmp/ans-t23-code.txt`.
-4. Kiểm tra mã thoát ghi trong file khớp với `137`.
-
-**Thang điểm bộ phận:**
-- Khai báo Pod vượt limit RAM làm dính OOMKilled: **10 điểm**.
-- Container bị diệt với Exit Code 137 và ghi file `/tmp/ans-t23-code.txt`: **10 điểm**.
-
----
-
-### Câu T2.4. Khởi tạo ResourceQuota và LimitRange trong Namespace — 240 giây
-
-**Bối cảnh:**
-Thiết lập hạn ngạch tài nguyên trần và giá trị mặc định cho Namespace `dev`.
-
-**Yêu cầu:**
-1. Tạo ResourceQuota tên `compute-quota` trong Namespace `dev` với `limits.memory: 4Gi` và `limits.cpu: "4"`.
-2. Tạo LimitRange tên `default-limits` trong Namespace `dev` với `default.memory: 512Mi` và `defaultRequest.memory: 256Mi`.
-3. Trích xuất giá trị `limits.memory` của ResourceQuota vào tệp `/tmp/ans-t24-quota.txt`.
-
-**Thang điểm bộ phận:**
-- Tạo đúng ResourceQuota và LimitRange trong Namespace `dev`: **15 điểm**.
-- Trích xuất đúng `limits.memory` vào `/tmp/ans-t24-quota.txt`: **10 điểm**.
-
----
-
-## T3. Lời giải chuẩn
-
-#### Lời giải câu T2.1: Đường gõ ngắn nhất (Ước lượng: 40 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Tạo ns dev và apply guaranteed-pod YAML
-kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: guaranteed-pod
-  namespace: dev
-spec:
-  containers:
-  - name: app
-    image: nginx:1.27-alpine
-    resources:
-      requests:
+    - type: Container
+      default: # Giới hạn mặc định nếu không khai báo
+        cpu: "500m"
+        memory: "512Mi"
+      defaultRequest: # Request mặc định nếu không khai báo
         cpu: "100m"
         memory: "128Mi"
-      limits:
-        cpu: "100m"
-        memory: "128Mi"
-EOF
-
-# Thao tác 2: Chờ Running và ghi qosClass vào file
-kubectl wait --for=condition=Ready pod/guaranteed-pod -n dev --timeout=30s
-kubectl get pod guaranteed-pod -n dev -o jsonpath='{.status.qosClass}' > /tmp/ans-t21-qos.txt
-```
-
-#### Lời giải câu T2.2: Đường gõ ngắn nhất (Ước lượng: 40 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Apply burstable-pod YAML
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: burstable-pod
-  namespace: dev
-spec:
-  containers:
-  - name: app
-    image: nginx:1.27-alpine
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "200m"
-        memory: "256Mi"
-EOF
-
-# Thao tác 2: Chờ Running và ghi qosClass vào file
-kubectl wait --for=condition=Ready pod/burstable-pod -n dev --timeout=30s
-kubectl get pod burstable-pod -n dev -o jsonpath='{.status.qosClass}' > /tmp/ans-t22-qos.txt
-```
-
-#### Lời giải câu T2.3: Đường gõ ngắn nhất (Ước lượng: 40 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Apply oomkilled-pod YAML
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Pod
-metadata:
-  name: oomkilled-pod
-  namespace: dev
-spec:
-  restartPolicy: Never
-  containers:
-  - name: memory-eater
-    image: busybox:1.36
-    command: ['sh', '-c', 'tail /dev/zero | head -c 100M | tail']
-    resources:
-      limits:
+      max: # Mức trần tối đa cho phép của 1 container
+        cpu: "2"
+        memory: "4Gi"
+      min: # Mức sàn tối thiểu của 1 container
+        cpu: "50m"
         memory: "64Mi"
-EOF
-
-# Thao tác 2: Chờ OOMKilled và ghi exitCode vào file
-sleep 6
-kubectl get pod oomkilled-pod -n dev -o jsonpath='{.status.containerStatuses[0].state.terminated.exitCode}' > /tmp/ans-t23-code.txt
-```
-
-#### Lời giải câu T2.4: Đường gõ ngắn nhất (Ước lượng: 45 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Apply ResourceQuota & LimitRange YAML
-cat << EOF | kubectl apply -f -
+---
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: compute-quota
-  namespace: dev
+  name: namespace-quota
+  namespace: production
 spec:
   hard:
-    limits.cpu: "4"
-    limits.memory: 4Gi
+    requests.cpu: "10"
+    requests.memory: "20Gi"
+    limits.cpu: "20"
+    limits.memory: "40Gi"
+    pods: "30"
+```
+
 ---
+
+## 4. Phân Tích Cạm Bẫy Thực Chiến: CFS Throttling & Lỗi OOMKilled 137
+
+### Tình huống 1: Ứng dụng phản hồi cực chậm (High Latency) do CPU CFS Throttling
+
+Một ứng dụng Node.js/Java xử lý giao dịch thương mại điện tử được cấu hình `resources.limits.cpu: "500m"`. Khi lưu lượng tăng nhẹ, CPU tổng thể của Node chỉ ở mức 30%, nhưng thời gian phản hồi API (p99 latency) tăng vọt từ 50ms lên 2500ms mà không có bất kỳ log lỗi nào.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+# Kiểm tra số chu kỳ bị bóp nghẽn bên trong cgroups container:
+$ kubectl exec -it payment-api -- cat /sys/fs/cgroup/cpu/cpu.stat
+nr_periods 10240
+nr_throttled 7820   # 76% số chu kỳ CPU bị bóp nghẽn!
+throttled_time 452109823412 # Tổng thời gian tiến trình bị ép dừng xử lý
+```
+
+### 5-Whys Root Cause Analysis:
+1. **Tại sao p99 latency tăng vọt?** -> Tiến trình ứng dụng bị dừng thực thi định kỳ bởi Kernel.
+2. **Tại sao tiến trình bị dừng trong khi CPU của Node còn thừa?** -> CFS Bandwidth Controller của Linux cgroups áp đặt hạn ngạch theo chu kỳ (mỗi chu kỳ 100ms chỉ cho phép dùng 50ms CPU).
+3. **Tại sao ứng dụng chạm trần trong chu kỳ ngắn?** -> Ứng dụng đa luồng (Multi-threaded) kích hoạt nhiều thread đồng thời lúc nhận request, tiêu thụ hết hạn ngạch quota 50ms trong 10ms đầu tiên của chu kỳ, và bị Kernel ép "đóng băng" 90ms còn lại của chu kỳ đó.
+4. **Tại sao lại đặt CPU Limit quá sát?** -> Đội ngũ hiểu nhầm CPU limit hoạt động như một bộ điều tiết mềm.
+5. **Giải pháp chuẩn ngành là gì?** -> Tăng CPU limits hoặc **bỏ hoàn toàn CPU Limits** (chỉ đặt CPU Requests) đối với các ứng dụng nhạy cảm về độ trễ, chỉ áp dụng Memory Limits.
+
+---
+
+### Tình huống 2: Pod bị tiêu diệt đột ngột với Exit Code 137 (OOMKilled)
+
+Một tiến trình Python thực hiện báo cáo dữ liệu lớn vượt quá `resources.limits.memory: 256Mi`. Container bị giết lập tức giữa chừng.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+$ kubectl get pod report-worker
+NAME            READY   STATUS      RESTARTS      AGE
+report-worker   0/1     OOMKilled   1 (10s ago)   1m
+
+$ kubectl describe pod report-worker
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+```
+
+> [!WARNING]
+> Khi gặp Exit Code 137, hãy kiểm tra hai khả năng:
+> 1. `Last State Reason: OOMKilled` -> Container tiêu thụ vượt quá Memory Limit trong Pod Spec.
+> 2. `Last State Reason: Error (hoặc không ghi OOMKilled)` nhưng Exit Code 137 -> Toàn bộ Node bị cạn kiệt RAM và Kubelet Eviction Manager đã can thiệp gửi `SIGKILL` để bảo vệ Node.
+
+---
+
+## 5. Hands-on Lab: Triển Khai & Kiểm Định QoS / Resources (8 Bước)
+
+Bảng tổng hợp 8 bước thực hành:
+
+| Bước | Thao Tác | Mục Tiêu Kỹ Thuật | Lệnh / Công Cụ |
+| :--- | :--- | :--- | :--- |
+| **1** | Khởi tạo Namespace Lab | Chuẩn bị môi trường thử nghiệm | `kubectl create ns qos-lab` |
+| **2** | Áp dụng LimitRange & Quota | Ràng buộc trần tài nguyên namespace | `kubectl apply -f limits.yaml` |
+| **3** | Triển khai Pod Guaranteed | Kiểm tra phân loại QoS Guaranteed | `kubectl apply -f guaranteed.yaml` |
+| **4** | Triển khai Pod Burstable | Kiểm tra phân loại QoS Burstable | `kubectl apply -f burstable.yaml` |
+| **5** | Triển khai Pod BestEffort | Kiểm tra phân loại QoS BestEffort | `kubectl apply -f besteffort.yaml` |
+| **6** | Truy vấn QoS Class qua jsonpath | Xác minh tự động phân loại của K8s | `kubectl get pod -o jsonpath` |
+| **7** | Giả lập rò rỉ RAM (OOMKilled 137)| Ép container tiêu thụ vượt RAM Limit | `kubectl run mem-stress` |
+| **8** | Chẩn đoán Log Sự Cố OOM | Đọc sự kiện kernel và restart | `kubectl describe pod` |
+
+---
+
+### Bước 1 & 2: Khởi tạo Namespace và áp dụng LimitRange
+
+```bash
+kubectl create namespace qos-lab
+
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: LimitRange
 metadata:
-  name: default-limits
-  namespace: dev
+  name: qos-limits
+  namespace: qos-lab
 spec:
   limits:
-  - default:
-      memory: 512Mi
-    defaultRequest:
-      memory: 256Mi
-    type: Container
+    - type: Container
+      defaultRequest:
+        cpu: "100m"
+        memory: "100Mi"
+      default:
+        cpu: "200m"
+        memory: "200Mi"
 EOF
-
-# Thao tác 2: Ghi limits.memory của Quota vào file
-kubectl get resourcequota compute-quota -n dev -o jsonpath='{.spec.hard.limits\.memory}' > /tmp/ans-t24-quota.txt
 ```
 
-
-
 ---
 
-## T4. Bẫy mất điểm
-
-| # | Bẫy mất điểm hay gặp | Mất bao nhiêu điểm | Dấu hiệu nhận ra ngay |
-|---|---|---|---|
-| 1 | Khai báo `limits.memory` nhỏ hơn `requests.memory` ở câu T2.2 | 30 điểm câu T2.2 | API Server từ chối file YAML do sai quy tắc |
-| 2 | Quên khai báo CPU hoặc RAM làm Pod bị rơi khỏi lớp `Guaranteed` | 15 điểm câu T2.1 | `qosClass` báo `Burstable` thay vì `Guaranteed` |
-| 3 | Nhầm lẫn đơn vị RAM Megabytes `M` với Mebibytes `Mi` | 15 điểm câu T2.1 | Trích xuất RAM báo sai đơn vị |
-| 4 | Sử dụng `jq` để parse output `kubectl get pod` | 25 điểm (mất trọn câu T2.1) | Output báo `bash: jq: command not found` |
-| 5 | Quên cờ `-n dev` khi thao tác với Pods/Quotas | 20 điểm câu T2.1 | Đối tượng bị tạo nhầm trong Namespace `default` |
-| 6 | Nhầm lẫn giữa Exit Code 137 (OOMKilled) với Exit Code 0 | 20 điểm câu T2.3 | Container không bị Kernel diệt do lệnh không ngốn RAM |
-
----
-
-## T5. Bảng tự chấm
-
-| Câu | Chứng chỉ · Miền | Ngân sách | Điểm tối đa | Điểm đạt được |
-|---|---|---|---|---|
-| T2.1 | `CKA · Workloads` / `CKAD` | 210s | 25 | |
-| T2.2 | `CKA · Workloads` / `CKAD` | 240s | 30 | |
-| T2.3 | `CKA · Workloads` / `CKAD` | 210s | 20 | |
-| T2.4 | `CKA · Workloads` / `CKAD` | 240s | 25 | |
-| **Tổng** | | **900s (15')** | **100** | **Ngưỡng ĐẠT: ≥ 66 điểm** |
-
-### Đoạn mã chấm tự động (Automated Grading Script)
-
-Copy và dán đoạn script bash dưới đây để tự động chấm điểm bài thi của Buổi 18:
+### Bước 3: Triển khai Pod Guaranteed
 
 ```bash
-#!/bin/bash
-# Script tự động chấm điểm khối Ô thi Buổi 18
-
-SCORE=0
-
-echo "=== BẮT ĐẦU CHẤM ĐIỂM BUỔI 18 ==="
-
-# 1. Chấm câu T2.1
-if [ "$(kubectl get pod guaranteed-pod -n dev -o jsonpath='{.status.qosClass}' 2>/dev/null)" == "Guaranteed" ] && grep -qx "Guaranteed" /tmp/ans-t21-qos.txt; then
-    echo "Câu T2.1: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.1: LỖI (0/25 điểm)"
-fi
-
-# 2. Chấm câu T2.2
-if [ "$(kubectl get pod burstable-pod -n dev -o jsonpath='{.status.qosClass}' 2>/dev/null)" == "Burstable" ] && grep -qx "Burstable" /tmp/ans-t22-qos.txt; then
-    echo "Câu T2.2: ĐẠT (+30 điểm)"
-    SCORE=$((SCORE + 30))
-else
-    echo "Câu T2.2: LỖI (0/30 điểm)"
-fi
-
-# 3. Chấm câu T2.3
-if [ "$(kubectl get pod oomkilled-pod -n dev -o jsonpath='{.status.containerStatuses[0].state.terminated.exitCode}' 2>/dev/null)" == "137" ] && grep -qx "137" /tmp/ans-t23-code.txt; then
-    echo "Câu T2.3: ĐẠT (+20 điểm)"
-    SCORE=$((SCORE + 20))
-else
-    echo "Câu T2.3: LỖI (0/20 điểm)"
-fi
-
-# 4. Chấm câu T2.4
-if [ "$(kubectl get resourcequota compute-quota -n dev -o jsonpath='{.spec.hard.limits\.memory}' 2>/dev/null)" == "4Gi" ] && grep -qx "4Gi" /tmp/ans-t24-quota.txt; then
-    echo "Câu T2.4: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.4: LỖI (0/25 điểm)"
-fi
-
-echo "=================================="
-echo "TỔNG ĐIỂM: $SCORE / 100"
-if [ "$SCORE" -ge 66 ]; then
-    echo "KẾT QUẢ: ĐẠT CHUẨN CKA/CKAD (≥ 66 điểm)"
-else
-    echo "KẾT QUẢ: CHƯA ĐẠT (Cần tối thiểu 66 điểm)"
-fi
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-guaranteed
+  namespace: qos-lab
+spec:
+  containers:
+    - name: app
+      image: registry.k8s.io/pause:3.9
+      resources:
+        requests:
+          cpu: "150m"
+          memory: "150Mi"
+        limits:
+          cpu: "150m"
+          memory: "150Mi"
+EOF
 ```
 
 ---
 
-## T6. Kho lệnh rút gọn của buổi
+### Bước 4: Triển khai Pod Burstable
 
 ```bash
-# 1. Trích xuất QoS Class tự động của Pod
-kubectl get pod <pod-name> -n <namespace> -o jsonpath='{.status.qosClass}'
-
-# 2. Xem lý do bị tiêu diệt và mã thoát Exit Code của container cũ
-kubectl get pod <pod-name> -n <namespace> -o jsonpath='{.status.containerStatuses[0].lastState.terminated.reason}'
-
-# 3. Trích xuất chỉ số CPU/RAMAllocatable trên Node
-kubectl describe node <node-name> | grep -A 8 "Allocated resources"
-
-# 4. Truy vấn chỉ số tiêu thụ CPU/RAM thời gian thực qua metrics-server
-kubectl top pods -n <namespace>
-kubectl top nodes
-
-# 5. Xem thông tin ResourceQuota đang áp dụng trong Namespace
-kubectl get resourcequota -n <namespace>
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-burstable
+  namespace: qos-lab
+spec:
+  containers:
+    - name: app
+      image: registry.k8s.io/pause:3.9
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "50Mi"
+        limits:
+          cpu: "200m"
+          memory: "150Mi"
+EOF
 ```
-
 
 ---
 
-## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+### Bước 5: Triển khai Pod BestEffort (Vượt qua LimitRange bằng cách tạo ở namespace default)
 
-Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-besteffort
+  namespace: default
+spec:
+  containers:
+    - name: app
+      image: registry.k8s.io/pause:3.9
+EOF
+```
+
+---
+
+### Bước 6: Kiểm tra chính xác QoS Class được gán tự động
+
+```bash
+kubectl get pod pod-guaranteed -n qos-lab -o jsonpath='{.metadata.name}{": "}{.status.qosClass}{"\n"}'
+kubectl get pod pod-burstable -n qos-lab -o jsonpath='{.metadata.name}{": "}{.status.qosClass}{"\n"}'
+kubectl get pod pod-besteffort -n default -o jsonpath='{.metadata.name}{": "}{.status.qosClass}{"\n"}'
+```
+
+Output chuẩn mực:
+```text
+pod-guaranteed: Guaranteed
+pod-burstable: Burstable
+pod-besteffort: BestEffort
+```
+
+---
+
+### Bước 7: Kích hoạt sự cố OOMKilled bằng công cụ `polinux/stress`
+
+Khởi chạy container bị giới hạn RAM 50Mi nhưng ép phân bổ 150Mi RAM:
+
+```bash
+kubectl run mem-hog \
+  --image=polinux/stress \
+  --namespace=qos-lab \
+  --limits='memory=50Mi,cpu=100m' \
+  --requests='memory=50Mi,cpu=100m' \
+  --restart=Never \
+  -- stress --vm 1 --vm-bytes 150M --vm-hang 1
+```
+
+---
+
+### Bước 8: Chẩn đoán trạng thái Pod và xác nhận mã Exit Code 137
+
+```bash
+sleep 5
+kubectl get pod mem-hog -n qos-lab
+kubectl describe pod mem-hog -n qos-lab | grep -E "Reason:|Exit Code:"
+```
+
+Output xác nhận sự can thiệp của Linux OOM-Killer:
+```text
+NAME      READY   STATUS      RESTARTS   AGE
+mem-hog   0/1     OOMKilled   0          10s
+
+    Reason:       OOMKilled
+    Exit Code:    137
+```
+
+---
+
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
+
+<details class="qa-card">
+  <summary><b>Câu 1: Điểm khác biệt cốt lõi trong mục đích sử dụng giữa resources.requests và resources.limits là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>resources.requests:</b> Là mức tài nguyên tối thiểu mà Pod cam kết cần để hoạt động. <code>kube-scheduler</code> sử dụng giá trị này để tìm Node còn đủ dung lượng (Node Allocatable) để lập lịch gán Pod.</li>
+      <li><b>resources.limits:</b> Là mức trần tài nguyên tối đa mà container được phép tiêu thụ. Linux Kernel cgroups sẽ thực thi giới hạn này trong suốt quá trình container vận hành.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 2: Điều kiện chính xác để một Pod được Kubernetes phân loại vào lớp QoS Guaranteed là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Pod được xếp vào lớp <b>Guaranteed</b> khi và chỉ khi:<br>
+    1. Mọi container trong Pod (bao gồm cả Init Containers) đều phải khai báo cả CPU và Memory.<br>
+    2. Đối với từng container, giá trị <code>requests.cpu == limits.cpu</code> và <code>requests.memory == limits.memory</code> (và giá trị phải lớn hơn 0).
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 3: Điều gì xảy ra khi một container tiêu thụ CPU vượt quá giá trị CPU Limit đã khai báo?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Do CPU là tài nguyên có thể nén được (Compressible), container <b>KHÔNG bị tiêu diệt hay khởi động lại</b>. Thay vào đó, Linux CFS Bandwidth Controller sẽ kích hoạt cơ chế <b>CFS Throttling</b> (bóp nghẽn thời gian CPU), khiến các luồng xử lý của ứng dụng bị trì hoãn, làm tăng thời gian phản hồi (latency) nhưng tiến trình vẫn tiếp tục sống.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 4: Điều gì xảy ra khi một container tiêu thụ Memory vượt quá giá trị Memory Limit đã khai báo?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Do Memory là tài nguyên không thể nén (Incompressible), Linux Kernel OOM-Killer sẽ lập tức can thiệp gửi tín hiệu <code>SIGKILL</code> (Signal 9) tiêu diệt tiến trình vi phạm, trả về trạng thái <b>OOMKilled</b> với mã thoát <b>Exit Code 137</b> (128 + 9). Kubelet sau đó sẽ khởi động lại container theo <code>restartPolicy</code>.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 5: Khi một Node bị cạn kiệt RAM (MemoryPressure), Kubelet Eviction Manager sẽ lựa chọn Pod nào để trục xuất đầu tiên?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Kubelet sẽ trục xuất các Pod theo thứ tự ưu tiên từ lớp bảo vệ thấp nhất đến cao nhất:<br>
+    1. <b>BestEffort</b> (oom_score_adj: 1000) bị tiêu diệt đầu tiên.<br>
+    2. <b>Burstable</b> (oom_score_adj từ 2 đến 999) đang tiêu thụ bộ nhớ vượt quá mức request đã cam kết.<br>
+    3. <b>Guaranteed</b> (oom_score_adj: -997) được bảo vệ tối đa và chỉ bị tiêu diệt khi không còn Pod nào thuộc hai lớp trên.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 6: Đơn vị 100m CPU trong Kubernetes tương đương với bao nhiêu tài nguyên vi xử lý?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <code>100m</code> là 100 millicores, tương đương với <b>0.1 CPU core</b> (hay 10% năng lực tính toán của một core CPU logic trên máy chủ).
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 7: Đối tượng LimitRange đóng vai trò gì trong quản trị tài nguyên Namespace?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <code>LimitRange</code> thiết lập các chính sách tài nguyên cho từng Pod/Container riêng lẻ trong một Namespace: tự động gán giá trị Request/Limit mặc định (<code>default</code>, <code>defaultRequest</code>) nếu người dùng quên khai báo, đồng thời áp đặt mức sàn tối thiểu (<code>min</code>) và mức trần tối đa (<code>max</code>) cho phép.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 8: Đối tượng ResourceQuota đóng vai trò gì và nếu một Namespace có ResourceQuota thì người dùng bắt buộc phải làm gì khi tạo Pod?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <code>ResourceQuota</code> giới hạn <b>tổng mức tiêu thụ tài nguyên gộp</b> (tổng CPU, tổng RAM, tổng số Pod/PVC) của toàn bộ Namespace. Khi một Namespace đã cấu hình ResourceQuota cho CPU/RAM, mọi Pod tạo trong Namespace đó <b>bắt buộc phải khai báo trường requests/limits tương ứng</b> (hoặc phải có LimitRange hỗ trợ gán mặc định), nếu không API Server sẽ từ chối tạo Pod.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 9: Tại sao nhiều chuyên gia khuyến nghị KHÔNG NÊN đặt CPU Limits cho các ứng dụng Microservices nhạy cảm về độ trễ?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Bởi vì thuật toán Linux CFS Bandwidth Controller phân chia hạn ngạch theo chu kỳ cố định 100ms. Các ứng dụng đa luồng (như Java, Node.js, Go) thường phát sinh các đợt tải đột biến ngắn hạn (CPU burst) trong vài mili-giây đầu của chu kỳ, làm cạn kiệt quota và bị Kernel ép đóng băng xử lý trong thời gian còn lại của chu kỳ, gây ra hiện tượng tăng đột biến độ trễ p99 dù CPU của cả máy chủ vẫn đang rất rảnh rỗi.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 10: File hệ thống Linux nào trong cgroups cho phép kỹ sư kiểm tra trực tiếp số lần container bị bóp nghẽn CPU (Throttled)?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li>Với cgroups v1: <code>/sys/fs/cgroup/cpu/cpu.stat</code> (quan sát thông số <code>nr_throttled</code> và <code>throttled_time</code>).</li>
+      <li>Với cgroups v2: <code>/sys/fs/cgroup/cpu.stat</code> (quan sát thông số <code>nr_throttled</code> và <code>throttled_usec</code>).</li>
+    </ul>
+  </div>
+</details>
+
+---
+
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
+
+```mermaid
+mindmap
+  root((Quan Tri Tai Nguyen))
+    Requests vs Limits
+      Requests (Scheduler / Node Allocatable)
+      Limits (cgroups Enforcement)
+    3 Lop QoS Classes
+      Guaranteed (Req == Lim)
+      Burstable (Req < Lim)
+      BestEffort (0 Req / 0 Lim)
+    Hanh Vi Tieu Thu
+      CPU -> CFS Throttling (Cham, khong chet)
+      Memory -> OOMKilled 137 (SIGKILL)
+    Chinh Sach Namespace
+      LimitRange (Default / Min / Max)
+      ResourceQuota (Tong han muc)
+```
+
+Nắm vững cơ chế cấp phát tài nguyên tính toán và kiểm soát QoS Classes là chìa khóa then chốt để đảm bảo SLA dịch vụ, ngăn chặn hiện tượng lãng phí hạ tầng hoặc sập cụm do hiệu ứng lây lan tài nguyên (Noisy Neighbor).
 
 > [!TIP]
-> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
-> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 19] Tự Động Co Giãn Tài Nguyên: Horizontal Pod Autoscaler (HPA), Metrics-Server & Giới Hạn Scaling](cka-19-19-autoscaling-hpa-va-cluster.html).
-
+> **Bài học tiếp theo**: Trong [Bài 19: Tự Động Co Giãn Ngang HPA, Metrics Server & Cluster Autoscaler](cka-19-19-autoscaling-hpa-va-cluster.html), chúng ta sẽ khám phá cơ chế tự động điều chỉnh quy mô hạ tầng: từ việc mở rộng Pods dựa trên CPU/Memory metrics qua HPA đến việc co giãn máy chủ vật lý qua Cluster Autoscaler.
 {% endraw %}

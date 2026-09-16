@@ -1,1443 +1,471 @@
 ---
 layout: post
-title: "[Bài 27] Container Storage Interface (CSI) & StorageClass: Cấp Phát Động (Dynamic Provisioning) & Mở Rộng Dung Lượng"
-date: 2026-09-12 17:10:00 +0700
-categories: [CKA]
-tags:
-  - CKA
-  - Kubernetes
-  - ClusterAdmin
-  - LinuxFoundation
-  - DevOps
-  - Part-27
+title: "CKA (Bài 27/35) - Container Storage Interface (CSI) & StorageClass: Cấp Phát Động (Dynamic Provisioning) & Mở Rộng Dung Lượng"
+date: 2026-09-12
+categories: [Kubernetes, CKA, Storage, CSI]
+tags: [cka, storageclass, csi, dynamic-provisioning, volume-expansion, waitforfirstconsumer, storage]
 series: "CKA Exam & Cluster Admin Mastery"
 series_order: 27
-difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
-summary: "[CKA P.27] Hướng dẫn chuyên sâu Container Storage Interface (CSI) & StorageClass: Cấp Phát Động (Dynamic Provisioning) & Mở Rộng Dung Lượng: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+author: "Nguyen Thao Kien"
+description: "Làm chủ cơ chế cấp phát lưu trữ tự động trong Kubernetes. Phân tích kiến trúc Container Storage Interface (CSI), cấu hình StorageClass chuẩn, tham số then chốt volumeBindingMode (WaitForFirstConsumer vs Immediate), kỹ thuật mở rộng dung lượng PVC online và gán StorageClass mặc định."
+summary: "Hướng dẫn toàn diện về StorageClass và CSI cho CKA và production: giải phẫu cơ chế Dynamic Provisioning, kiến trúc CSI Sidecars, giải quyết sự cố lệch vùng với WaitForFirstConsumer, và mở rộng dung lượng ổ đĩa trực tuyến."
+keywords:
+  - kubernetes storageclass
+  - cka csi storage
+  - dynamic volume provisioning
+  - waitforfirstconsumer kubernetes
+  - allowvolumeexpansion true
+  - default storageclass annotation
+  - expand pvc online
+image:
+  path: /assets/img/posts/cka/cka-27-storageclass-csi-banner.png
+  alt: "Kiến trúc Kubernetes StorageClass, CSI Plugins và cơ chế Cấp phát động Dynamic Provisioning"
+difficulty: ADVANCED
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Container Storage Interface (CSI) & StorageClass: Cấp Phát Động (Dynamic Provisioning) & Mở Rộng Dung Lượng."
-  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
-  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "StorageClass tự động hóa quá trình tạo đĩa (Dynamic Provisioning): Ngay khi có PVC yêu cầu, StorageClass gọi CSI Driver để sinh ra PersistentVolume (PV) tương ứng trên Cloud/SAN mà không cần Quản trị viên can thiệp thủ công."
+  - "Kiến trúc CSI (Container Storage Interface): Tách rời mã nguồn lưu trữ ra khỏi Kubernetes Core (Out-of-tree) thông qua các Sidecar chuẩn (`external-provisioner`, `external-attacher`, `external-resizer`, `node-driver-registrar`)."
+  - "`volumeBindingMode: WaitForFirstConsumer` giải quyết triệt để sự cố lệch vùng (Topology Mismatch): Trì hoãn việc tạo đĩa cho tới khi Pod được xếp lịch xuống Node cụ thể, đảm bảo ổ đĩa Cloud luôn được tạo cùng Availability Zone với Node chạy Pod."
+  - "`allowVolumeExpansion: true` cho phép mở rộng tăng dung lượng PVC trực tuyến (Online Expansion) bằng cách sửa trực tiếp `spec.resources.requests.storage` mà không cần xóa Pod (Lưu ý: Kubernetes KHÔNG hỗ trợ thu nhỏ dung lượng đĩa)."
+  - "Đánh dấu StorageClass mặc định: Sử dụng annotation `storageclass.kubernetes.io/is-default-class: \"true\"` trên StorageClass để tự động áp dụng cho mọi PVC không khai báo `storageClassName`."
 ---
+
 {% raw %}
-# [BÀI 27] CONTAINER STORAGE INTERFACE (CSI) & STORAGECLASS: CẤP PHÁT ĐỘNG (DYNAMIC PROVISIONING) & MỞ RỘNG DUNG LƯỢNG
-
-Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
-
-Bài viết chuyên sâu này sẽ đồng hành cùng bạn giải mã toàn diện bức tranh kiến trúc, phân tích các đánh đổi kỹ thuật thực chiến (Engineering Trade-offs), cung cấp bài thực hành Lab từng bước và bộ câu hỏi phỏng vấn chuẩn Architect / Lead Engineer.
-
----
-
-## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
-| # | Câu hỏi ôn tập | Đáp án chuẩn ngắn gọn |
-|---|---|---|
-| 1 | Phân biệt phạm vi quản lý của tài nguyên PV và PVC trong cụm? | PV là **`Cluster-scoped`** (do Admin tạo), PVC là **`Namespace-scoped`** (do Dev tạo) |
-| 2 | Hai điều kiện kỹ thuật bắt buộc để PVC bind được vào PV tĩnh là gì? | Dung lượng PV **`>=`** PVC và **`accessModes`** của PVC phải là tập con của PV |
-| 3 | Trạng thái của PV khi xóa PVC tương ứng có `reclaimPolicy: Retain` là gì? | Trạng thái **`Released`** (dữ liệu vẫn còn nguyên trên đĩa) |
-| 4 | Lệnh CLI nào dùng để gỡ thuộc tính `claimRef` nhằm tái sử dụng PV bị Released? | **`kubectl patch pv <pv-name> -p '{"spec":{"claimRef":null}}'`** |
-| 5 | Loại Volume nào gắn liền với vòng đời Pod và bị xóa sạch khi Pod ngưng? | Volume **`emptyDir`** |
-
-
-
-> **"StorageClass đóng vai trò là khuôn mẫu định nghĩa loại lưu trữ và nhà cung cấp đĩa (Provisioner) giúp tự động hóa quá trình tạo PersistentVolume (Dynamic Provisioning) ngay khi có PersistentVolumeClaim xuất hiện; trong đó kiến trúc giao tiếp chuẩn CSI (Container Storage Interface) chịu trách nhiệm kết nối Kubernetes Control Plane với các hệ thống đĩa bên ngoài, chế độ `volumeBindingMode: WaitForFirstConsumer` trì hoãn việc cấp phát đĩa cho tới khi Pod được xếp lịch xuống Node cụ thể để tránh lỗi lệch vùng lưu trữ, và thuộc tính `allowVolumeExpansion: true` cho phép mở rộng dung lượng đĩa PVC trực tuyến mà không cần dừng dịch vụ."**
-
-**Kết quả từ các buổi trước được sử dụng lại:**
-
-| Kết quả / Công cụ | Buổi + số hiệu `QT` | Dùng ở đâu trong buổi này |
-|---|---|---|
-| Khái niệm PV, PVC và cơ chế Binding | Buổi 26 `QT 5.1` | Nền tảng để nâng cấp từ bind thủ công lên Dynamic Provisioning |
-| Ràng buộc đặt Pod của Scheduler | Buổi 17 `QT 4.1` | Kết hợp với `volumeBindingMode: WaitForFirstConsumer` |
-| Quản lý tài nguyên mặc định Annotation | Buổi 04 `QT 4.1` | Đặt StorageClass mặc định qua annotation `storageclass.kubernetes.io/is-default-class` |
-
----
-
-
-
-| # | Kỹ năng thực hiện được | Hiện vật chứng minh |
-|---|---|---|
-| 1 | Biên soạn tệp YAML StorageClass hỗ trợ Dynamic Provisioning | Tệp YAML StorageClass với `provisioner` và `parameters` |
-| 2 | Đặt StorageClass mặc định cho toàn cụm bằng Annotation | Lệnh `kubectl get sc` hiển thị `(default)` bên cạnh tên StorageClass |
-| 3 | Cấu hình chế độ `volumeBindingMode: WaitForFirstConsumer` tránh lệch Topology | PVC giữ `Pending` cho đến khi Pod được xếp lịch xuống Node |
-| 4 | Thực hiện tăng dung lượng ổ đĩa PVC trực tuyến (Online Volume Resizing) | Dung lượng PVC chuyển từ `1Gi` lên `3Gi` thành công khi Pod đang chạy |
-| 5 | Chẩn đoán các sự cố gRPC giữa Kubernetes và CSI Driver qua log sidecar | Bản thu thập log từ `csi-provisioner` và `csi-node-driver-registrar` |
-
----
-
-
-
-| Kiến thức tiên quyết | Nguồn tự học nếu thiếu |
-|---|---|
-| Khái niệm vòng đời PV, PVC, accessModes và reclaimPolicy | Buổi 26 (`QT 5.1`, `QT 6.1`) |
-| Nguyên lý hoạt động của DaemonSet trên Worker Node | Buổi 16 (`QT 4.1`) |
-| Cơ chế gán nhãn Annotation trên đối tượng Kubernetes | Buổi 04 (`QT 4.1`) |
-
----
-
-
-
-### 3.1. Thuật ngữ Việt–Anh
-
-| # | Thuật ngữ tiếng Việt | Tiếng Anh tương đương | Ghi chú chuẩn hoá trong thân bài |
-|---|---|---|---|
-| 1 | Lớp lưu trữ | StorageClass (`kind: StorageClass`) | Tài nguyên khai báo khuôn mẫu tạo đĩa tự động |
-| 2 | Cấp phát động | Dynamic Provisioning | Cơ chế tự tạo PV khi PVC xuất hiện qua StorageClass |
-| 3 | Nhà cấp phát đĩa | Provisioner | Trình điều khiển đĩa (ví dụ `rancher.io/local-path`, `ebs.csi.aws.com`) |
-| 4 | Giao diện lưu trữ container | CSI (Container Storage Interface) | Chuẩn kết nối giữa K8s và hệ thống đĩa bên ngoài |
-| 5 | Chế độ gắn đĩa | `volumeBindingMode` | `Immediate` (gắn ngay) hoặc `WaitForFirstConsumer` (chờ Pod) |
-| 6 | Mở rộng đĩa | Volume Expansion | Thuộc tính `allowVolumeExpansion: true` |
-| 7 | Đĩa mặc định | Default StorageClass | Annotation `storageclass.kubernetes.io/is-default-class: "true"` |
-| 8 | Tiền xử lý đĩa Node | CSI Node Plugin | DaemonSet chạy trên Worker Node thực hiện mount/format đĩa |
-| 9 | Bộ điều khiển CSI | CSI Controller Plugin | Deployment chạy trên Control Plane quản lý lifecycle đĩa |
-| 10 | Đĩa theo vùng | Topology-Aware Storage | Lưu trữ đĩa phụ thuộc vị trí địa lý/AZ/Node |
-| 11 | Tham số hạ tầng | `parameters` | Khai báo loại đĩa, iops, mã hóa riêng của provider |
-| 12 | Định dạng lại hệ tập tin | Filesystem Resizing | Thao tác mở rộng partition đĩa bên trong OS (`resize2fs`, `xfs_growfs`) |
-| 13 | Sidecar CSI hỗ trợ | CSI External Attacher / Provisioner | Các tiến trình sidecar lắng nghe K8s API để gọi CSI driver |
-| 14 | Mở rộng trực tuyến | Online Resizing | Mở rộng PVC khi Pod vẫn đang mount và chạy |
-
-
-
-Mô hình nhà máy cấp phát tự động: StorageClass là hợp đồng đặt hàng, CSI Driver là robot nhà máy tự sản xuất PV đĩa vật lý ngay khi Lập trình viên gửi yêu cầu PVC.
-
----
-
-### 1.1. Khái niệm StorageClass và cơ chế cấp phát động (12 phút)
-
-**Nguyên lý cốt lõi:** Dynamic Provisioning xảy ra khi PVC khai báo `storageClassName` khớp với tên một `StorageClass` đang tồn tại; hệ thống tự động sinh PV tương ứng mà Admin không cần can thiệp.
-
-**Giải thích cơ chế ngầm:** Trong mô hình tĩnh, Admin phải đoán trước nhu cầu và tạo thủ công hàng trăm PV. Trong mô hình động, khi PVC được apply, Controller của StorageClass sẽ gọi API của nhà cung cấp lưu trữ (AWS, GCP, Ceph) để khởi tạo đĩa thật, sau đó tự động tạo đối tượng PV trong Kubernetes và bind thẳng vào PVC.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> PVC khai báo `storageClassName: fast-disk` nhưng trên cụm chưa cài đặt Provisioner tương ứng. PVC bị kẹt ở trạng thái `Pending` với sự kiện `warning ProvisioningFailed`.
-
-**Minh hoạ.**
-
-```yaml
-# Định nghĩa StorageClass dùng local-path
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: local-path
-provisioner: rancher.io/local-path
-volumeBindingMode: WaitForFirstConsumer
-reclaimPolicy: Delete
----
-# PVC xin 2Gi tự động kích hoạt tạo PV
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pvc-dynamic
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 2Gi
-```
-
-**Nguyên lý cốt lõi:** Mỗi cụm Kubernetes chỉ nên có tối đa **1 StorageClass** được đánh dấu mặc định (`is-default-class: "true"`); nếu không có StorageClass nào mặc định và PVC không khai báo `storageClassName`, PVC sẽ rơi vào kẹt `Pending`.
-
-**Giải thích cơ chế ngầm:** Khi Lập trình viên tạo PVC mà không điền trường `storageClassName`, Kubernetes Admission Controller sẽ tìm StorageClass có annotation `storageclass.kubernetes.io/is-default-class: "true"` để gán tự động. Nếu có 2 StorageClass cùng mang cờ mặc định, hệ thống sẽ chọn ngẫu nhiên gây không nhất quán hạ tầng.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tạo PVC không ghi `storageClassName`, PVC kẹt `Pending` mãi mãi do cụm thiếu StorageClass mặc định.
-
-**Minh hoạ.**
-
-```bash
-# Đặt StorageClass local-path làm mặc định của cụm
-kubectl annotate storageclass local-path storageclass.kubernetes.io/is-default-class="true" --overwrite
-
-# Kiểm tra cờ default
-kubectl get sc
-# NAME                 PROVISIONER              RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-# local-path (default) rancher.io/local-path   Delete          WaitForFirstConsumer   false                  10m
-```
-
----
-
-### 1.2. Kiến trúc Container Storage Interface (CSI) và các sidecar container (12 phút)
-
-**Nguyên lý cốt lõi:** Kiến trúc CSI tách biệt hoàn toàn mã nguồn Kubernetes core khỏi Storage Driver, giao tiếp qua gRPC socket; gồm 2 thành phần chính: CSI Controller (cấp cụm) và CSI Node Plugin (cấp Node).
-
-**Giải thích cơ chế ngầm:** Trước khi có CSI (thời in-tree volume), mọi mã nguồn kết nối đĩa (AWS EBS, GCP PD) đều nằm trong nhân Kubernetes `k8s.io/kubernetes`. Mỗi lần hãng đĩa cập nhật driver phải biên dịch lại toàn bộ Kubernetes. Với CSI, các nhà sản xuất đĩa chỉ cần phát triển một Container Image tuân thủ giao diện gRPC tiêu chuẩn của CNCF.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Sửa tệp cấu hình đĩa nhưng quên restart CSI Node Plugin DaemonSet trên Worker Node, làm Kubelet không mount được đĩa mới vào Pod.
-
-**Minh hoạ.**
-
-```mermaid
-graph TD
-    subgraph Kubernetes Control Plane
-        APIServer[API Server]
-        ExternalProvisioner[csi-provisioner sidecar]
-        ExternalAttacher[csi-attacher sidecar]
-    end
-    
-    subgraph CSI Driver
-        CSIController[CSI Controller Plugin - Deployment]
-        CSINode[CSI Node Plugin - DaemonSet privileged]
-    end
-    
-    APIServer <-->|"Watch PVC"| ExternalProvisioner
-    ExternalProvisioner <-->|"gRPC"| CSIController
-    CSIController -->|"Create Storage Disk"| CloudStorage[Cloud / SAN / Local Storage]
-    
-    APIServer <-->|"Watch VolumeAttachment"| ExternalAttacher
-    ExternalAttacher <-->|"gRPC"| CSIController
-    
-    CSINode <-->|"Mount / Format Disk"| WorkerNodeDisk[Worker Node Filesystem]
-```
-
-**Nguyên lý cốt lõi:** CSI Node Plugin bắt buộc chạy dưới dạng `DaemonSet` trên mọi Worker Node với quyền `privileged: true` để thực hiện các câu lệnh mount/format đĩa ở tầng nhân OS.
-
-**Giải thích cơ chế ngầm:** Thao tác mount đĩa vật lý (`mount /dev/sdb /var/lib/kubelet/...`) và format hệ tập tin (`mkfs.ext4`) đòi hỏi truy cập trực tiếp vào các thiết bị khối (Block Devices) nằm trong thư mục `/dev` của Node mẹ. Container thường không có quyền này trừ khi bật `privileged: true`.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Pod bị kẹt ở trạng thái `ContainerCreating` với sự kiện `MountVolume.SetUp failed for volume: permission denied`. Đọc log CSI Node Plugin thấy báo lỗi không thể truy cập `/dev`.
-
-**Minh hoạ.**
-
-```yaml
-# Mảnh tệp DaemonSet của CSI Node Plugin bắt buộc có privileged
-spec:
-  containers:
-    - name: csi-node-driver
-      image: driver-csi:v1.0.0
-      securityContext:
-        privileged: true # BẮT BUỘC ĐỂ MOUNT ĐĨA TẦNG OS!
-      volumeMounts:
-        - mountPath: /dev
-          name: dev
-```
-
----
-
-### 1.3. Chế độ `volumeBindingMode` và mở rộng dung lượng đĩa (10 phút)
-
-**Nguyên lý cốt lõi:** Chế độ `volumeBindingMode: Immediate` sẽ tạo PV và bind ngay khi PVC được tạo; chế độ `WaitForFirstConsumer` sẽ hoãn tạo PV cho tới khi Pod sử dụng PVC đó được Scheduler chọn xong Node.
-
-**Giải thích cơ chế ngầm:** Với `Immediate`, PV được tạo tức thì ngay khi `kubectl apply -f pvc.yaml`. Nhưng nếu đĩa đó là đĩa cục bộ (Local SAN) nằm ở Worker 01, mà sau đó Scheduler lại xếp Pod chạy sang Worker 02 (do Worker 01 hết CPU), Pod sẽ không thể chạy được do không mount được đĩa từ xa.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng `Immediate` cho đĩa cục bộ, Pod rơi vào lỗi `node(s) had volume node affinity conflict`.
-
-**Minh hoạ.**
-
-```yaml
-# Cấu hình chuẩn cho đĩa cục bộ hoặc đĩa Cloud theo zone
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: local-storage
-provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer # Trì hoãn bind cho tới khi biết Node của Pod
-```
-
-**Nguyên lý cốt lõi:** Với các đĩa đính kèm theo Node (Local Storage, AWS EBS theo Availability Zone), bắt buộc phải dùng `volumeBindingMode: WaitForFirstConsumer` để tránh lỗi lệch Topology.
-
-**Giải thích cơ chế ngầm:** Ổ đĩa AWS EBS ở Zone `us-east-1a` không thể đính kèm vào máy ảo EC2 ở Zone `us-east-1b`. Khi hoãn tạo PV cho đến khi Pod được xếp Node, Kubernetes sẽ truyền thông tin Zone của Node được chọn vào câu lệnh gọi CSI Provisioner để tạo đĩa ở đúng Zone đó.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Pod bị kẹt `ContainerCreating`, log ghi `Volume is in zone us-east-1a but node is in us-east-1b`.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra sự kiện khi dùng WaitForFirstConsumer: PVC sẽ ở trạng thái Pending có chủ đích
-kubectl get pvc pvc-delayed
-# NAME          STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-# pvc-delayed   Pending                                      local-delayed  5s
-# (Sẽ chuyển sang Bound ngay khi Pod được apply!)
-```
-
-**Nguyên lý cốt lõi:** Mở rộng PVC trực tuyến đòi hỏi StorageClass phải có `allowVolumeExpansion: true`; thao tác tăng dung lượng chỉ sửa `spec.resources.requests.storage` của PVC (không thể giảm dung lượng đĩa).
-
-**Giải thích cơ chế ngầm:** Hệ thống đĩa vật lý và hệ tập tin (ext4/xfs) chỉ hỗ trợ mở rộng không gian lưu trữ mà không hỗ trợ thu nhỏ an toàn mà không làm hỏng dữ liệu. Kubernetes chặn toàn bộ thao tác hạ dung lượng đĩa ở mức API Validation.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Sửa tệp YAML PVC hạ dung lượng từ `10Gi` xuống `5Gi`. Lệnh `kubectl apply` báo lỗi ngay lập tức: `field is immutable: capacity cannot be decreased`.
-
-**Minh hoạ.**
-
-```yaml
-# StorageClass cho phép mở rộng
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: expandable-sc
-provisioner: rancher.io/local-path
-allowVolumeExpansion: true # CHO PHÉP MỞ RỘNG DUNG LƯỢNG
----
-# Sửa PVC tăng dung lượng từ 2Gi lên 10Gi
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: my-pvc
-spec:
-  resources:
-    requests:
-      storage: 10Gi # ĐÚNG (TĂNG ĐƯỢC, KHÔNG GIẢM ĐƯỢC)
-```
-
-**Nguyên lý cốt lõi:** Quá trình mở rộng đĩa gồm 2 chặng: mở rộng đĩa vật lý (Cloud/Storage Provider) và mở rộng hệ tập tin (Filesystem); chặng 2 chỉ hoàn tất khi Pod mount đĩa đó được khởi động lại hoặc kích hoạt online resize.
-
-**Giải thích cơ chế ngầm:** Khi sửa PVC lên 10Gi, CSI Controller gọi AWS/Storage Provider nới rộng đĩa ảo lên 10Gi trước (chặng 1). Nhưng hệ tập tin ext4/xfs bên trong đĩa vẫn chứa bảng chỉ mục ở mức 2Gi cũ. Kubelet cần chạy lệnh `resize2fs` hoặc `xfs_growfs` trên Node để mở rộng partition hệ tập tin (chặng 2).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> `kubectl get pvc` báo `10Gi` nhưng chạy `df -h` bên trong Pod vẫn báo ổ đĩa chỉ có `2Gi`. Ngay dưới status PVC xuất hiện condition `FileSystemResizePending`.
-
-**Minh hoạ.**
-
-```bash
-# Sửa dung lượng trực tuyến
-kubectl patch pvc my-pvc -p '{"spec":{"resources":{"requests":{"storage":"10Gi"}}}}'
-
-# Kiểm tra điều kiện chờ resize hệ tập tin
-kubectl describe pvc my-pvc
-# Conditions:
-#   Type                      Status
-#   FileSystemResizePending   True (Waiting for user to restart pod or kubelet to online resize)
-```
-
----
-
-### 1.4. Đưa vào cụm thật (4 phút)
-
-**Nguyên lý cốt lõi:** Muốn đổi StorageClass mặc định của cụm, phải gỡ annotation `is-default-class` ở StorageClass cũ trước khi gắn sang StorageClass mới để tránh xung đột.
-
-**Giải thích cơ chế ngầm:** Nếu gán đồng thời 2 StorageClass làm default, các PVC mới tạo không chỉ định `storageClassName` sẽ nhận được lỗi mơ hồ và không thể tự động cấp phát PV.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy `kubectl get sc` thấy có 2 dòng cùng hiện `(default)`. Các PVC mới bị kẹt `Pending`.
-
-**Minh hoạ.**
-
-```bash
-# Gỡ cờ default của SC cũ trước khi gán cho SC mới
-kubectl annotate storageclass old-sc storageclass.kubernetes.io/is-default-class-
-kubectl annotate storageclass new-sc storageclass.kubernetes.io/is-default-class="true" --overwrite
-```
-
-**Áp vào cụm đang chạy thì làm gì trước:**
-1. Rà soát danh sách StorageClass hiện có qua `kubectl get sc`.
-2. Kiểm tra cờ `ALLOWVOLUMEEXPANSION` của các StorageClass Production, bật `true` cho các đĩa database.
-3. Đảm bảo toàn bộ StorageClass cho đĩa cục bộ hoặc đĩa Cloud vùng đều đặt `volumeBindingMode: WaitForFirstConsumer`.
-
-**Cái gì hỏng nếu áp thẳng lên prod:**
-- Đổi `volumeBindingMode` từ `WaitForFirstConsumer` sang `Immediate` trên StorageClass đang dùng cho StatefulSet nhiều zone sẽ làm gãy luồng khởi tạo Pod mới khi zone bị nghẽn.
-- Thao tác resize đĩa trực tuyến có thể gây tăng IOPS đột biến trên SAN/Storage Array trong vài phút.
-
-**Đo trước — đo sau:**
-- Đo thời gian tạo đĩa tự động từ khi apply PVC đến khi PV ở trạng thái `Bound` (thường 3–10 giây tùy cloud provider).
-- Đo dung lượng hệ tập tin bên trong Pod bằng `kubectl exec <pod> -- df -h <mount-path>` trước và sau khi resize.
-
-**Khi nào KHÔNG nên dùng:**
-- Không bật Dynamic Provisioning tự do không giới hạn trên các cụm dùng chung nhiều đội mà không đi kèm với `ResourceQuota` (xem Buổi 42). Dev có thể xả script tạo hàng nghìn PVC làm cạn kiệt tài nguyên đĩa của cụm.
-
----
-
-### 1.5. Bẫy hay gặp (2 phút)
-
-| Bẫy hay gặp | Vì sao dính | Làm đúng là |
-|---|---|---|
-| 1. PVC kẹt `Pending` do không có StorageClass mặc định | Quên không gán annotation `is-default-class` | Chạy lệnh `kubectl annotate sc <name> storageclass.kubernetes.io/is-default-class="true"` |
-| 2. Có 2 StorageClass cùng mang nhãn mặc định | Đặt cờ default cho SC mới mà quên gỡ SC cũ | Gỡ cờ SC cũ trước: `kubectl annotate sc <old-sc> storageclass.kubernetes.io/is-default-class-` |
-| 3. Pod lệch Zone với ổ đĩa | Dùng `volumeBindingMode: Immediate` cho đĩa Cloud/Local | Luôn dùng `volumeBindingMode: WaitForFirstConsumer` cho đĩa phụ thuộc Topology |
-| 4. Không mở rộng được PVC | StorageClass không bật `allowVolumeExpansion: true` | Sửa StorageClass thêm `allowVolumeExpansion: true` trước khi patch PVC |
-| 5. Cố tình sửa hạ dung lượng PVC | Thói quen nghĩ rằng PVC sửa được 2 chiều như CPU/RAM | Chỉ được phép tăng dung lượng đĩa, không bao giờ được giảm |
-| 6. Sửa PVC thành công nhưng `df -h` trong Pod không tăng | Chưa hoàn tất chặng 2 (mở rộng hệ tập tin) | Restart Pod hoặc đợi Kubelet hoàn tất online filesystem resize |
-| 7. Gõ sai tên `provisioner` trong StorageClass | Viết hoa nhầm hoặc gõ sai chuỗi driver name | Copy chính xác tên Provisioner từ tài liệu của nhà cung cấp đĩa |
-| 8. Lỗi CSI Controller không tạo được đĩa Cloud | ServiceAccount của CSI thiếu quyền IAM trên Cloud | Kiểm tra IAM role và secret credential gắn cho CSI Controller |
-| 9. Sửa `storageClassName` của PVC đang ở trạng thái Bound | Trường `storageClassName` là immutable sau khi đã Bind | Xóa PVC và tạo lại nếu buộc phải đổi StorageClass |
-| 10. CSI Node Plugin bị crashloop trên Worker Node | Mới nâng cấp nhân OS Linux nhưng driver CSI chưa tương thích | Cập nhật bản ảnh CSI Node Plugin mới nhất tương thích với K8s v1.35 |
-| 11. Nhầm lẫn giữa `reclaimPolicy` của SC và PV | Cho rằng SC ghi đè được PV tĩnh có sẵn | SC chỉ áp dụng `reclaimPolicy` cho các PV tự động sinh ra |
-| 12. Quên cấp quyền `privileged` cho CSI Node Plugin | Tạo DaemonSet custom CSI driver không bật securityContext | Khai báo `securityContext.privileged: true` trong DaemonSet spec |
-
----
-
-### 1.6. Tóm tắt (2 phút)
-
-```mermaid
-graph TD
-    PVC[PVC yêu cầu 10Gi] -->|"Chỉ định storageClassName"| SC[StorageClass]
-    SC -->|"Gọi API"| CSI[CSI Provisioner Plugin]
-    CSI -->|"Cấp đĩa vật lý"| Disk[Cloud / SAN / Local Disk]
-    Disk -->|"Tự động tạo"| PV[PV tự sinh pvc-xxxx 10Gi]
-    PV <-->|"Bound tự động"| PVC
-    
-    subgraph Resizing Workflow
-        EditPVC[Patch PVC 10Gi -> 20Gi] -->|"Chặng 1"| ResizeDisk[CSI Resize Cloud Disk]
-        ResizeDisk -->|"Chặng 2"| ResizeFS[Kubelet resize2fs / xfs_growfs inside Container]
-    end
-```
-
-**Năm điều phải nhớ:**
-1. **Dynamic Provisioning** giải phóng Admin khỏi việc tạo PV thủ công bằng cách tự động sinh PV qua `StorageClass`.
-2. **Chỉ có tối đa 1 Default StorageClass** trong cụm để xử lý các PVC không chỉ định SC.
-3. **`volumeBindingMode: WaitForFirstConsumer`** là bắt buộc cho đĩa cục bộ/Zone để tránh lỗi lệch Topology.
-4. **Mở rộng PVC** chỉ có thể **TĂNG**, không thể **GIẢM**, và đòi hỏi SC có `allowVolumeExpansion: true`.
-5. **Quá trình resize PVC** gồm 2 chặng: đĩa vật lý (Cloud) và hệ tập tin (FS resize).
-
----
-
-## §10. Câu hỏi tự kiểm tra (5 phút)
-
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Static Provisioning đòi hỏi Admin tạo PV trước thủ công. Dynamic Provisioning tự động sinh PV qua StorageClass khi PVC xuất hiện.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<code>kubectl annotate storageclass <sc-name> storageclass.kubernetes.io/is-default-class="true"</code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Để hoãn tạo PV đến khi Scheduler chọn xong Node cho Pod, tránh trường hợp đĩa tạo ở Node A nhưng Pod bị xếp sang Node B.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-StorageClass phải có trường <code>allowVolumeExpansion: true</code>.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Không. Dung lượng PVC chỉ có thể tăng, không bao giờ được giảm do giới hạn của hệ tập tin.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-CSI Controller Plugin (chạy ở Control Plane) và CSI Node Plugin (chạy dưới dạng DaemonSet trên các Worker Node).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Vì nó phải thực thi các lệnh mount và format đĩa trực tiếp trên thiết bị khối thuộc thư mục <code>/dev</code> của Node mẹ.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Do mới hoàn tất chặng 1 (mở rộng đĩa Cloud) nhưng chưa hoàn tất chặng 2 (mở rộng hệ tập tin filesystem).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Chứa các tham số cấu hình riêng do từng nhà cung cấp lưu trữ quy định (loại đĩa SSD/HDD, IOPS, mã hóa đĩa).
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-PVC sẽ bị kẹt ở trạng thái <code>Pending</code> và báo lỗi không tìm thấy StorageClass.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-Khai báo cụ thể <code>storageClassName: ""</code> (xâu rỗng) trong spec của PVC.
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-<code>Immediate</code> (tạo và bind PV ngay khi có PVC) và <code>WaitForFirstConsumer</code> (trì hoãn chờ đến khi Pod có Node).
-</div>
-</details>
-
----
-
-## §11. Tài liệu tham khảo
-
-| Nguồn | Địa chỉ URL | Ghi chú |
-|---|---|---|
-| Trang chủ StorageClasses | `https://kubernetes.io/docs/concepts/storage/storage-classes/` | Phiên bản Kubernetes v1.35 |
-| Kubernetes CSI Specification | `https://kubernetes-csi.github.io/docs/` | Chuẩn giao diện Container Storage Interface |
-
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
 > [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên cụm Kubernetes 1.30+ tiêu chuẩn (hoặc cụm kind/kubeadm lab). Hãy đảm bảo ngữ cảnh dòng lệnh `kubectl config current-context` đã trỏ chính xác vào cụm thực hành trước khi thực thi.
-
-## Khối thực hành — 120 phút
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| Mã tiêu chí | Nội dung tiêu chí | Lệnh kiểm chứng | Kết quả kỳ vọng |
-|---|---|---|---|
-| TH1 | Cài đặt `local-path-provisioner` thành công | `kubectl get pod -n local-path-storage -o jsonpath='{.items[0].status.phase}'` | In ra `Running` |
-| TH2 | StorageClass `local-path` xuất hiện trong cụm | `kubectl get sc local-path -o jsonpath='{.metadata.name}'` | In ra `local-path` |
-| TH3 | Đặt `local-path` làm StorageClass mặc định | `kubectl get sc local-path -o jsonpath='{.metadata.annotations.storageclass\.kubernetes\.io/is-default-class}'` | In ra `true` |
-| TH4 | PVC tự động nhận StorageClass mặc định và Bound | `kubectl get pvc pvc-dynamic-1 -n lab27 -o jsonpath='{.status.phase}'` | In ra `Bound` |
-| TH5 | PV tự động sinh ra với tiền tố `pvc-` | `kubectl get pv -o jsonpath='{.items[?(@.spec.claimRef.name=="pvc-dynamic-1")].metadata.name}'` | Khác rỗng và chứa `pvc-` |
-| TH6 | Tạo StorageClass `sc-wait` có `WaitForFirstConsumer` | `kubectl get sc sc-wait -o jsonpath='{.volumeBindingMode}'` | In ra `WaitForFirstConsumer` |
-| TH7 | PVC `pvc-wait` ở trạng thái `Pending` khi chưa có Pod | `kubectl get pvc pvc-wait -n lab27 -o jsonpath='{.status.phase}'` | In ra `Pending` |
-| TH8 | PVC `pvc-wait` chuyển sang `Bound` ngay khi Pod được gán | `kubectl get pvc pvc-wait -n lab27 -o jsonpath='{.status.phase}'` | In ra `Bound` |
-| TH9 | StorageClass `sc-expand` bật `allowVolumeExpansion` | `kubectl get sc sc-expand -o jsonpath='{.allowVolumeExpansion}'` | In ra `true` |
-| TH10 | PVC `pvc-expand` khởi tạo ban đầu `1Gi` | `kubectl get pvc pvc-expand -n lab27 -o jsonpath='{.status.capacity.storage}'` | In ra `1Gi` |
-| TH11 | Resize PVC `pvc-expand` trực tuyến lên `3Gi` thành công | `kubectl get pvc pvc-expand -n lab27 -o jsonpath='{.spec.resources.requests.storage}'` | In ra `3Gi` |
-| TH12 | Dung lượng dung nạp thực tế đạt `3Gi` | `kubectl get pvc pvc-expand -n lab27 -o jsonpath='{.status.capacity.storage}'` | In ra `3Gi` |
-| TH13 | Dọn dẹp sạch sẽ tài nguyên lab27 | `kubectl get namespace lab27` | Báo lỗi `NotFound` |
+> **Mục tiêu kỹ thuật & Trọng tâm CKA**:
+> - Hiểu rõ sự tiến hóa từ In-tree Volume Plugins sang chuẩn Out-of-tree Container Storage Interface (CSI).
+> - Cấu hình StorageClass hỗ trợ Dynamic Provisioning với các tham số `provisioner`, `parameters`, `reclaimPolicy`.
+> - Phân biệt bản chất và ứng dụng của `volumeBindingMode: Immediate` vs `WaitForFirstConsumer`.
+> - Thực hiện mở rộng dung lượng PVC trực tiếp trên cụm đang chạy và kiểm tra việc tự động resize Filesystem.
+> - Thiết lập và chuyển đổi StorageClass mặc định của cụm Kubernetes.
 
 ---
 
-## L1. Điều kiện tiên quyết về môi trường
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Cấp Phát Động & Chuẩn CSI
 
-| Kiểm tra | Lệnh thực hiện | Kết quả kỳ vọng |
-|---|---|---|
-| Cụm Kubernetes ba node | `kubectl get nodes` | `cp-01`, `worker-01`, `worker-02` ở trạng thái `Ready` |
-| Context đúng môi trường lab | `kubectl config current-context` | Đúng context cụm `kubeadm` |
-| Quyền Cluster Admin | `kubectl auth can-i create storageclass` | In ra `yes` |
+Trong mô hình cấp phát tĩnh (Static Provisioning ở Bài 26), Quản trị viên phải dự đoán trước và tạo sẵn hàng loạt PV với các mức dung lượng 5Gi, 10Gi, 20Gi. Phương pháp này bộc lộ nhiều điểm yếu: tốn công sức quản trị, lãng phí tài nguyên và không thể tự động co giãn theo CI/CD pipelines.
 
----
-
-## L2. Kiến trúc bài lab
+**Cấp Phát Động (Dynamic Provisioning)** thông qua **StorageClass** giải quyết triệt để vấn đề này:
 
 ```mermaid
-graph TD
-    subgraph Kubernetes Cluster
-        SCDefault["StorageClass: local-path (default)"]
-        SCWait["StorageClass: sc-wait (WaitForFirstConsumer)"]
-        SCExpand["StorageClass: sc-expand (allowVolumeExpansion: true)"]
-        
-        Provisioner["Local Path Provisioner (Deployment)"]
-    end
+flowchart TD
+    classDef dev fill:none,stroke:#7c3aed,stroke-width:2px,color:#7c3aed;
+    classDef sc fill:none,stroke:#0284c7,stroke-width:2px,color:#0284c7;
+    classDef csi fill:none,stroke:#d97706,stroke-width:2px,color:#d97706;
+    classDef cloud fill:none,stroke:#16a34a,stroke-width:2px,color:#16a34a;
+
+    Dev["Lập trình viên tạo PVC<br>(storageClassName: fast-ssd, 20Gi)"]:::dev --> API["kube-apiserver"]
     
-    PVC1["pvc-dynamic-1 (Auto Default)"] -->|"Requests"| SCDefault
-    SCDefault -->|"Triggers"| Provisioner
-    Provisioner -->|"Creates PV"| PV1["PV Auto-generated"]
-    PV1 <-->|"Bound"| PVC1
+    API --> SC["StorageClass: fast-ssd<br>(provisioner: ebs.csi.aws.com)"]:::sc
     
-    PVCWait["pvc-wait"] -->|"Requests"| SCWait
-    SCWait -.->|"Delay until Pod scheduled"| PodWait["pod-wait"]
+    SC --> CSI_Prov["CSI External-Provisioner Sidecar"]:::csi
     
-    PVCExpand["pvc-expand (1Gi -> 3Gi)"] -->|"Requests"| SCExpand
+    CSI_Prov -->|Gọi gRPC: CreateVolume| CloudAPI["Cloud Storage API / SAN Array<br>(Tạo ổ đĩa EBS gp3 20Gi)"]:::cloud
+    
+    CloudAPI -- "Trả về VolumeID" --> CSI_Prov
+    CSI_Prov -->|Tự động tạo đối tượng PV trên cụm| PV["PersistentVolume (PV) mới tạo"]:::sc
+    PV <-->|Tự động Bind 1:1| Dev
 ```
+
+### 1.1. Kiến Trúc CSI (Container Storage Interface)
+
+CSI là chuẩn mở tiêu chuẩn công nghiệp (Industry Standard) cho phép các nhà cung cấp lưu trữ (AWS, Google Cloud, Azure, Dell EMC, NetApp, Ceph) phát triển driver độc lập mà không cần nhúng mã nguồn vào Kubernetes Core:
+
+1. **Controller Plugin (Deployment)**: Chạy trên Control Plane, gồm các container sidecar:
+   - `csi-provisioner`: Lắng nghe PVC và tạo/xóa đĩa trên Cloud Storage API.
+   - `csi-attacher`: Gắn (Attach) hoặc Tháo (Detach) ổ đĩa vào máy chủ Node.
+   - `csi-resizer`: Mở rộng dung lượng đĩa khi PVC tăng size.
+2. **Node Plugin (DaemonSet)**: Chạy trên từng Worker Node:
+   - `node-driver-registrar`: Đăng ký driver với Kubelet.
+   - `csi-node`: Format định dạng tệp (ext4/xfs) và mount ổ đĩa vào thư mục của Pod (`NodeStageVolume`, `NodePublishVolume`).
 
 ---
 
-## L3. Bước 1: Cài đặt Provisioner và cấu hình StorageClass mặc định (30 phút)
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-### Thao tác 1.1: Tạo Namespace `lab27` và cài đặt `local-path-provisioner`
+Bảng phân tích sự khác nhau giữa hai chế độ `volumeBindingMode`:
 
-```bash
-kubectl create namespace lab27
-kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.30/deploy/local-path-storage.yaml
+| Tiêu Chí Kỹ Thuật | Immediate (Mặc định) | WaitForFirstConsumer (Khuyến nghị) |
+| :--- | :--- | :--- |
+| **Thời điểm tạo PV** | Ngay lập tức khi tạo PVC | Trì hoãn cho tới khi có Pod sử dụng PVC xuất hiện |
+| **Nhận biết vị trí Node** | **Không** (Tạo đĩa ở Zone ngẫu nhiên trên Cloud)| **Có** (Chờ Scheduler chọn Node xong mới tạo đĩa)|
+| **Nguy cơ lỗi Topology** | Rất cao (Đĩa tạo ở `us-east-1a`, Pod chạy ở `us-east-1b`)| **Triệt tiêu 100% lỗi lệch Zone** |
+| **Độ trễ gắn Pod** | Nhanh hơn lúc tạo Pod (vì đĩa đã có sẵn) | Chậm hơn vài giây ở lần khởi chạy Pod đầu tiên |
+| **Loại lưu trữ bắt buộc** | Đĩa chia sẻ đa vùng (NFS, EFS) | **Block Storage gắn trực tiếp** (EBS, Local Disk, Ceph RBD)|
+
+---
+
+## 3. Cấu Trúc Khai Báo Manifest & Chi Tiết Mở Rộng Dung Lượng
+
+### 3.1. StorageClass Manifest Chuẩn Doanh Nghiệp
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: premium-ssd-sc
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true" # Đặt làm StorageClass mặc định
+provisioner: ebs.csi.aws.com # Tên CSI driver phụ trách
+volumeBindingMode: WaitForFirstConsumer # Tránh lỗi lệch Availability Zone
+allowVolumeExpansion: true # Cho phép mở rộng đĩa online
+reclaimPolicy: Delete # Xóa đĩa trên Cloud khi xóa PVC (hoặc Retain)
+parameters:
+  type: gp3
+  iops: "3000"
+  throughput: "125"
+  encrypted: "true"
 ```
 
-**CHECKPOINT 1 — Kiểm tra local-path-provisioner chạy thành công.**
+### 3.2. Khai Báo PVC Tiêu Thụ StorageClass & Quy Trình Mở Rộng Dung Lượng
 
-```bash
-kubectl get pod -n local-path-storage -l app=local-path-provisioner -o jsonpath='{.items[0].status.phase}' | grep -qx Running && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
-
-**CHECKPOINT 2 — Kiểm tra StorageClass `local-path` xuất hiện.**
-
-```bash
-kubectl get sc local-path -o jsonpath='{.metadata.name}' | grep -qx local-path && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
-
-### Thao tác 1.2: Cấu hình StorageClass `local-path` làm mặc định
-
-```bash
-kubectl annotate storageclass local-path storageclass.kubernetes.io/is-default-class="true" --overwrite
-```
-
-**CHECKPOINT 3 — Kiểm tra annotation mặc định.**
-
-```bash
-kubectl get sc local-path -o jsonpath='{.metadata.annotations.storageclass\.kubernetes\.io/is-default-class}' | grep -qx true && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
-
-### Thao tác 1.3: Thử nghiệm Dynamic Provisioning với PVC không chỉ định SC
-
-```bash
-cat <<EOF | kubectl apply -f -
+```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-dynamic-1
-  namespace: lab27
+  name: mysql-data-pvc
+  namespace: database
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: premium-ssd-sc
   resources:
     requests:
-      storage: 2Gi
-EOF
+      storage: 10Gi # Ban đầu cấp 10Gi
 ```
 
-**CHECKPOINT 4 — Kiểm tra PVC `pvc-dynamic-1` tự động Bound.**
+Quy trình mở rộng trực tuyến (Online Expansion) lên 20Gi:
+1. Chạy lệnh: `kubectl patch pvc mysql-data-pvc -n database -p '{"spec":{"resources":{"requests":{"storage":"20Gi"}}}}'`
+2. `csi-resizer` gọi Cloud API tăng kích thước đĩa vật lý.
+3. Kubelet trên Node tự động gọi `resize2fs` (ext4) hoặc `xfs_growfs` (xfs) để mở rộng Filesystem bên trong Container **mà không cần dừng Pod**.
 
-```bash
-kubectl get pvc pvc-dynamic-1 -n lab27 -o jsonpath='{.status.phase}' | grep -qx Bound && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as Kỹ sư DevOps
+    participant API as kube-apiserver
+    participant Resizer as CSI External-Resizer
+    participant Cloud as AWS / Cloud API
+    participant Kubelet as Node Kubelet
 
-**CHECKPOINT 5 — Xác minh PV được tự động tạo ra.**
-
-```bash
-PV_NAME=$(kubectl get pvc pvc-dynamic-1 -n lab27 -o jsonpath='{.spec.volumeName}')
-kubectl get pv "$PV_NAME" -o jsonpath='{.spec.storageClassName}' | grep -qx local-path && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — LỖI"
+    Dev->>API: kubectl patch PVC (10Gi -> 20Gi)
+    API->>Resizer: Thông báo PVC Spec Storage thay đổi
+    Resizer->>Cloud: Gọi API mở rộng Block Device lên 20Gi
+    Cloud-->>Resizer: Mở rộng đĩa vật lý thành công
+    Resizer->>API: Cập nhật PV Capacity = 20Gi, gán Condition FileSystemResizePending
+    API->>Kubelet: Kubelet phát hiện Volume cần mở rộng Filesystem
+    Kubelet->>Kubelet: Thực thi resize2fs / xfs_growfs trực tuyến trên Node
+    Kubelet->>API: Cập nhật PVC Status Capacity = 20Gi (Hoàn tất 100%)
 ```
 
 ---
 
-## L4. Bước 2: Thử nghiệm chế độ `volumeBindingMode: WaitForFirstConsumer` (30 phút)
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Sự Cố Topology Mismatch & Lỗi Cấp Phát
 
-### Thao tác 2.1: Tạo StorageClass `sc-wait`
+### Tình huống 1: Lỗi `volume node affinity conflict` do dùng `volumeBindingMode: Immediate`
+
+Một cụm Kubernetes chạy trên AWS đa vùng (Multi-AZ: `us-east-1a`, `us-east-1b`). Kỹ sư tạo PVC với StorageClass có `volumeBindingMode: Immediate`. Ổ đĩa EBS được tạo ngay lập tức tại zone `us-east-1a`. Sau đó, Kube-Scheduler xếp lịch Pod chạy trên một Worker Node nằm ở zone `us-east-1b` (do zone 1a đang hết CPU).
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+$ kubectl get pods -n database
+NAME          READY   STATUS   RESTARTS   AGE
+mysql-app-0   0/1     Pending  0          3m
+
+$ kubectl describe pod mysql-app-0 -n database
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  15s   default-scheduler  0/3 nodes are available: 1 node(s) had volume node affinity conflict, 2 node(s) had untolerated taint.
+```
+
+### 5-Whys Root Cause Analysis:
+1. **Tại sao Pod bị kẹt Pending?** -> Scheduler không thể gán Pod vào Node ở zone `us-east-1b`.
+2. **Tại sao không gán được?** -> Ổ đĩa EBS đã bị gắn chặt (Topology Affined) vào zone `us-east-1a`.
+3. **Tại sao đĩa lại nằm ở zone 1a?** -> StorageClass sử dụng chế độ mặc định `volumeBindingMode: Immediate`, tạo đĩa ngay khi có PVC mà không biết Pod sẽ chạy ở đâu.
+4. **Tại sao Node ở zone 1a không chạy Pod?** -> Node ở zone 1a đã hết tài nguyên CPU.
+5. **Giải pháp khắc phục triệt để là gì?** -> Luôn cấu hình **`volumeBindingMode: WaitForFirstConsumer`** trong StorageClass.
+
+---
+
+### Tình huống 2: Cố tình thu nhỏ dung lượng PVC (Downsizing Unsupported)
+
+Kỹ sư lỡ tay sửa dung lượng PVC từ 50Gi xuống 20Gi (`kubectl patch pvc ... storage=20Gi`).
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+The PersistentVolumeClaim "mysql-data-pvc" is invalid: 
+spec.resources.requests.storage: Forbidden: field can not be less than previous value
+```
+
+> [!WARNING]
+> Hầu hết các hệ thống tệp tin Linux (ext4, xfs) và các nhà cung cấp Cloud Storage **KHÔNG HỖ TRỢ thu nhỏ dung lượng trực tuyến** vì nguy cơ làm hỏng cấu trúc phân vùng và mất mát dữ liệu. Kubernetes chặn hoàn toàn việc giảm `storage` ngay tại tầng API Validation. Muốn giảm dung lượng, bắt buộc phải tạo PVC mới dung lượng nhỏ hơn và tự migrate dữ liệu sang.
+
+---
+
+## 5. Hands-on Lab: Cấp Phát Động & Mở Rộng Ổ Đĩa Trực Tuyến (8 Bước)
+
+Bảng tổng hợp 8 bước thực hành:
+
+| Bước | Thao Tác | Mục Tiêu Kỹ Thuật | Lệnh / Công Cụ |
+| :--- | :--- | :--- | :--- |
+| **1** | Khảo sát StorageClass hiện có | Kiểm tra danh sách provisioner | `kubectl get sc` |
+| **2** | Tạo Custom StorageClass | Cấu hình `WaitForFirstConsumer` & Expansion | `kubectl apply -f sc.yaml` |
+| **3** | Khởi tạo PVC Cấp phát động | Yêu cầu 1Gi dung lượng | `kubectl apply -f dynamic-pvc.yaml` |
+| **4** | Xác nhận PVC ở trạng thái `Pending`| Chứng minh cơ chế WaitForFirstConsumer | `kubectl get pvc` |
+| **5** | Triển khai Pod sử dụng PVC | Kích hoạt Kubelet tạo PV tự động | `kubectl apply -f app-pod.yaml` |
+| **6** | Xác nhận PV được tạo và `Bound` | Kiểm tra chu trình Dynamic Provisioning | `kubectl get pv,pvc` |
+| **7** | Mở rộng dung lượng PVC lên 3Gi | Thực hiện Online Volume Expansion | `kubectl patch pvc` |
+| **8** | Kiểm định Filesystem trong Container| Xác nhận dung lượng đĩa thực tế tăng | `kubectl exec -- df -h` |
+
+---
+
+### Bước 1 & 2: Tạo StorageClass hỗ trợ mở rộng đĩa và trì hoãn binding
 
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: sc-wait
-provisioner: rancher.io/local-path
+  name: local-expandable-sc
+provisioner: rancher.io/local-path # Hoặc provisioner CSI của cụm lab
 volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
 reclaimPolicy: Delete
 EOF
 ```
 
-**CHECKPOINT 6 — Kiểm tra StorageClass `sc-wait`.**
+---
 
-```bash
-kubectl get sc sc-wait -o jsonpath='{.volumeBindingMode}' | grep -qx WaitForFirstConsumer && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
-
-### Thao tác 2.2: Tạo PVC `pvc-wait` dùng `sc-wait`
+### Bước 3: Tạo PersistentVolumeClaim yêu cầu 1Gi
 
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-wait
-  namespace: lab27
+  name: dynamic-pvc-demo
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: sc-wait
+  storageClassName: local-expandable-sc
   resources:
     requests:
       storage: 1Gi
 EOF
 ```
 
-**CHECKPOINT 7 — Kiểm tra PVC `pvc-wait` bị hoãn ở trạng thái Pending.**
+---
+
+### Bước 4: Quan sát PVC giữ trạng thái `Pending` (Đúng theo thiết kế)
 
 ```bash
-kubectl get pvc pvc-wait -n lab27 -o jsonpath='{.status.phase}' | grep -qx Pending && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
+kubectl get pvc dynamic-pvc-demo
 ```
 
-### Thao tác 2.3: Triển khai Pod `pod-wait` để kích hoạt bind PVC
+Output:
+```text
+NAME               STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS          AGE
+dynamic-pvc-demo   Pending                                      local-expandable-sc   15s
+```
+
+PVC chưa tạo PV vì đang chờ Pod đầu tiên xuất hiện để xác định Node.
+
+---
+
+### Bước 5: Triển khai Pod tiêu thụ PVC
 
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-wait
-  namespace: lab27
+  name: dynamic-storage-app
+  namespace: default
 spec:
   containers:
-    - name: web
-      image: nginx:alpine
+    - name: writer
+      image: busybox:1.36
+      command: ["sleep", "3600"]
       volumeMounts:
-        - mountPath: /usr/share/nginx/html
-          name: data-vol
+        - name: data-vol
+          mountPath: /data
   volumes:
     - name: data-vol
       persistentVolumeClaim:
-        claimName: pvc-wait
+        claimName: dynamic-pvc-demo
 EOF
 ```
 
-**CHECKPOINT 8 — Xác minh PVC `pvc-wait` chuyển sang Bound.**
+---
+
+### Bước 6: Xác nhận PV tự động sinh ra và chuyển sang `Bound`
 
 ```bash
-kubectl get pvc pvc-wait -n lab27 -o jsonpath='{.status.phase}' | grep -qx Bound && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
+sleep 10
+kubectl get pvc dynamic-pvc-demo
+kubectl get pv
+```
+
+Output xác nhận PV được tự động sinh ra với tiền tố `pvc-...` và chuyển sang `Bound`:
+```text
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM
+pvc-a78b9c12-34ef-5678-90ab-cdef12345678   1Gi        RWO            Delete           Bound    default/dynamic-pvc-demo
 ```
 
 ---
 
-## L5. Bước 3: Thực hành mở rộng dung lượng PVC trực tuyến (30 phút)
+### Bước 7: Mở rộng dung lượng PVC từ 1Gi lên 3Gi trực tuyến
 
-### Thao tác 3.1: Tạo StorageClass `sc-expand` hỗ trợ mở rộng đĩa
+Thực thi lệnh patch tăng kích thước lưu trữ:
 
 ```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: sc-expand
-provisioner: rancher.io/local-path
-allowVolumeExpansion: true
-volumeBindingMode: Immediate
-EOF
+kubectl patch pvc dynamic-pvc-demo -p '{"spec":{"resources":{"requests":{"storage":"3Gi"}}}}'
 ```
 
-**CHECKPOINT 9 — Kiểm tra cờ `allowVolumeExpansion`.**
+Kiểm tra trạng thái PVC:
 
 ```bash
-kubectl get sc sc-expand -o jsonpath='{.allowVolumeExpansion}' | grep -qx true && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
+kubectl get pvc dynamic-pvc-demo
 ```
 
-### Thao tác 3.2: Tạo PVC `pvc-expand` 1Gi và Pod `app-expand`
-
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pvc-expand
-  namespace: lab27
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: sc-expand
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: app-expand
-  namespace: lab27
-spec:
-  containers:
-    - name: app
-      image: nginx:alpine
-      volumeMounts:
-        - mountPath: /data
-          name: vol
-  volumes:
-    - name: vol
-      persistentVolumeClaim:
-        claimName: pvc-expand
-EOF
-```
-
-**CHECKPOINT 10 — Kiểm tra dung lượng ban đầu 1Gi.**
-
-```bash
-kubectl get pvc pvc-expand -n lab27 -o jsonpath='{.status.capacity.storage}' | grep -qx 1Gi && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
-
-### Thao tác 3.3: Patch mở rộng dung lượng PVC lên 3Gi trực tuyến
-
-```bash
-kubectl patch pvc pvc-expand -n lab27 -p '{"spec":{"resources":{"requests":{"storage":"3Gi"}}}}'
-```
-
-**CHECKPOINT 11 — Xác minh Yêu cầu dung lượng mới 3Gi trong spec.**
-
-```bash
-kubectl get pvc pvc-expand -n lab27 -o jsonpath='{.spec.resources.requests.storage}' | grep -qx 3Gi && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
-
-**CHECKPOINT 12 — Kiểm tra Dung lượng thực tế chuyển sang 3Gi.**
-
-```bash
-kubectl get pvc pvc-expand -n lab27 -o jsonpath='{.status.capacity.storage}' | grep -qx 3Gi && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
+Output xác nhận dung lượng PVC đã mở rộng thành `3Gi`:
+```text
+NAME               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS
+dynamic-pvc-demo   Bound    pvc-a78b9c12-34ef-5678-90ab-cdef12345678   3Gi        RWO            local-expandable-sc
 ```
 
 ---
 
-## L6. Bước 4: Chẩn đoán sự cố CSI và Dọn dẹp (20 phút)
-
-### Thao tác 4.1: Kiểm tra log của CSI Provisioner sidecar
+### Bước 8: Kiểm tra dung lượng hệ thống tệp tin bên trong Container
 
 ```bash
-kubectl logs -n local-path-storage -l app=local-path-provisioner --tail=20
+kubectl exec -it dynamic-storage-app -- df -h /data
 ```
 
-### Thao tác 4.2: Dọn dẹp toàn bộ tài nguyên lab27
-
-```bash
-kubectl delete namespace lab27
-kubectl delete sc sc-wait sc-expand
-kubectl delete -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.30/deploy/local-path-storage.yaml
-```
-
-**CHECKPOINT 13 — Xác minh đã xóa sạch Namespace lab27.**
-
-```bash
-kubectl get namespace lab27 2>&1 | grep -q "NotFound" && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
+Output xác nhận Filesystem đã tự động nở rộng lên ~3.0G mà Pod không hề bị dừng:
+```text
+Filesystem                Size      Used Available Use% Mounted on
+/dev/sdX                  2.9G     12.0M      2.8G   1% /data
 ```
 
 ---
 
-## L7. Nộp hiện vật và dọn dẹp (10 phút)
-
-Thu thập các tệp YAML StorageClass và ảnh chụp kết quả kiểm tra `kubectl get sc` đính kèm vào báo cáo nộp bài.
-
----
-
-## L8. Xử lý sự cố thường gặp trong lab
-
-| Triệu chứng lỗi | Nguyên nhân gốc rễ | Cách sửa triệt để |
-|---|---|---|
-| 1. `local-path-provisioner` bị kẹt `ImagePullBackOff` | Mạng không kết nối được GitHub/DockerHub | Kéo ảnh thủ công hoặc mirror ảnh vào registry nội bộ |
-| 2. PVC `Pending` với lỗi `no default storage class` | Cụm chưa có SC nào được đánh dấu default | Chạy lệnh `kubectl annotate sc <name> storageclass.kubernetes.io/is-default-class="true"` |
-| 3. PVC `pvc-wait` không Bound mặc dù đã chờ lâu | Chưa tạo Pod mount PVC đó | Tạo Pod mount PVC để kích hoạt `WaitForFirstConsumer` |
-| 4. Lỗi `ignoring storageClass: allowVolumeExpansion is false` | Cố tình patch PVC mở rộng khi SC chưa bật cờ | Thêm `allowVolumeExpansion: true` vào tệp YAML StorageClass |
-| 5. Lỗi `field is immutable: capacity cannot be decreased` | Thử giảm dung lượng PVC | Chỉ được điều chỉnh tăng dung lượng, không bao giờ được giảm |
-| 6. Pod kẹt `ContainerCreating` khi dùng local-path | Thư mục lưu trữ trên Worker Node bị đầy | Kiểm tra dung lượng đĩa `df -h /opt/local-path-provisioner` |
-| 7. Cụm có 2 SC cùng hiện `(default)` | Đặt cờ default mới mà chưa gỡ cờ cũ | Gỡ cờ SC cũ qua lệnh `kubectl annotate sc <old> storageclass.kubernetes.io/is-default-class-` |
-| 8. Lỗi `VolumePluginNotFound` | Tên `provisioner` trong SC bị gõ sai | Đối chiếu tên Provisioner chính xác với controller đang chạy |
-| 9. PVC resize kẹt `FileSystemResizePending` | Kubelet chưa thực hiện online filesystem resize | Restart Pod để buộc Kubelet chạy `resize2fs` trên mount point |
-| 10. `kubectl delete sc` bị treo | Vẫn còn PV/PVC đang tham chiếu StorageClass đó | Xóa toàn bộ PVC sử dụng SC đó trước khi xóa SC |
-| 11. Không thể tải manifest local-path | Lỗi DNS hoặc firewall chặn GitHub | Tải trước tệp YAML về đĩa cục bộ rồi `kubectl apply -f` |
-| 12. Lỗi `volume node affinity conflict` | Dùng `volumeBindingMode: Immediate` trên local storage | Chuyển sang `volumeBindingMode: WaitForFirstConsumer` |
-| 13. Sửa SC không có hiệu lực với PV cũ | StorageClass thay đổi tham số không áp dụng retroactively | Các PV đã sinh ra giữ nguyên cấu hình cũ |
-| 14. Lỗi RBAC của CSI Provisioner | ServiceAccount của provisioner thiếu ClusterRoleBinding | Apply lại tệp RBAC manifest đi kèm provisioner |
-
----
-
-## L9. Bài tập mở rộng
-
-- **BT1:** Tạo StorageClass `fast-ssd` tự định nghĩa với `reclaimPolicy: Retain` và `volumeBindingMode: WaitForFirstConsumer`.
-- **BT2:** Viết script Bash tự động kiểm tra xem cụm có đúng 1 Default StorageClass hay không và cảnh báo nếu có 0 hoặc >1.
-- **BT3:** Thực hành mở rộng dung lượng đĩa trực tuyến từ `5Gi` lên `20Gi` cho một PVC đang phục vụ ứng dụng MySQL.
-- **BT4:** Tìm hiểu cấu hình `topologies` trong StorageClass để giới hạn đĩa chỉ được tạo ở các Node mang nhãn `topology.kubernetes.io/zone=us-east-1a`.
-- **BT5:** Cài đặt nfs-subdir-external-provisioner và cấu hình Dynamic Provisioning qua máy chủ NFS.
-- **BT6:** So sánh thời gian đáp ứng khi cấp phát đĩa động giữa `Immediate` và `WaitForFirstConsumer`.
-
----
-
-## L10. Hiện vật nộp và tiêu chí chấm điểm
-
-| Hạng mục hiện vật | Tiêu chí chấm điểm đạt | Thang điểm |
-|---|---|---|
-| Tệp YAML StorageClasses | Khai báo chính xác các thuộc tính `provisioner`, `volumeBindingMode`, `allowVolumeExpansion` | 30 điểm |
-| Nhật ký thực thi 13 Checkpoint | Chạy thành công 100 % các checkpoint in ra `ĐẠT` | 40 điểm |
-| Bằng chứng resize PVC trực tuyến | Nhật ký `kubectl describe pvc` chứng minh dung lượng tăng từ 1Gi lên 3Gi | 20 điểm |
-| Báo cáo bài tập mở rộng | Trả lời đầy đủ câu hỏi bài tập BT1 và BT2 | 10 điểm |
-| **Tổng điểm** | | **100 điểm** |
-
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-
-## V1. Cách tiến hành
-
-Giảng viên hoặc bạn học chọn ngẫu nhiên các câu hỏi trong bộ 12 câu dưới đây. Người trả lời phải trình bày mạch lạc trong 60–90 giây mỗi câu, đi thẳng vào cơ chế kỹ thuật và viện dẫn các lệnh CLI thực tế.
-
----
-
----
-
-## V2. Bộ câu hỏi phỏng vấn thực chiến
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Ý nghĩa và sự khác biệt giữa hai chế độ <code>volumeBindingMode: Immediate</code> và <code>WaitForFirstConsumer</code> trong StorageClass là gì?</span>
+  <summary><b>Câu 1: StorageClass trong Kubernetes giải quyết bài toán gì vượt trội hơn mô hình cấp phát tĩnh?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    StorageClass cung cấp cơ chế <b>Cấp phát động (Dynamic Provisioning)</b>: thay vì Quản trị viên phải tạo trước hàng loạt PersistentVolume thủ công, StorageClass tự động gọi API của nhà cung cấp đĩa (thông qua CSI Driver) để tạo ổ đĩa thực tế ngay khi có PersistentVolumeClaim xuất hiện, giúp tự động hóa 100% quy trình cấp phát lưu trữ.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>Immediate</code> tự động tạo PV và bind với PVC ngay khi PVC được khởi tạo (không quan tâm Pod). <code>WaitForFirstConsumer</code> hoãn việc tạo PV cho tới khi có Pod mount PVC đó và được Scheduler chọn xong Node, giúp tránh lỗi đĩa bị tạo ở sai Zone/Node so với vị trí xếp lịch của Pod.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Trả lời sai hoặc không hiểu từ tiếng Anh.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Immediate làm ngay, WaitForFirstConsumer chờ Pod nhưng không giải thích được lý do.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được lý do hoãn bind nhưng không đề cập tới vấn đề Topology / Zone / Local Storage.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Giải thích chính xác cơ chế của 2 chế độ và bài toán rủi ro lệch Topology mà <code>WaitForFirstConsumer</code> giải quyết.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Khi dùng <code>WaitForFirstConsumer</code>, trước khi có Pod thì PVC ở trạng thái gì? — Ở trạng thái <code>Pending</code> có chủ đích).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Làm thế nào để cấu hình một StorageClass làm mặc định (Default StorageClass) cho toàn bộ cụm Kubernetes?</span>
+  <summary><b>Câu 2: Tại sao chế độ volumeBindingMode: WaitForFirstConsumer được khuyến nghị sử dụng hơn chế độ Immediate?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Chế độ <code>WaitForFirstConsumer</code> trì hoãn việc cấp phát đĩa cho tới khi Pod sử dụng PVC được <code>kube-scheduler</code> chọn xong Node chạy. Điều này đảm bảo ổ đĩa vật lý (như AWS EBS) luôn được tạo chính xác tại cùng một Availability Zone với Node mà Pod sẽ cư ngụ, triệt tiêu hoàn toàn sự cố <b>Topology Mismatch</b> (lỗi lệch vùng).
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Gán annotation <code>storageclass.kubernetes.io/is-default-class: "true"</code> vào đối tượng StorageClass đó bằng lệnh <code>kubectl annotate storageclass <sc-name> storageclass.kubernetes.io/is-default-class="true"</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nhớ tên annotation.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được gán nhãn label thay vì annotation.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng cờ annotation nhưng không nhớ lệnh kubectl chính xác.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày chính xác tên annotation và câu lệnh CLI hoàn chỉnh.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cụm có 2 StorageClass cùng mang cờ default thì chuyện gì xảy ra? — PVC không chỉ định storageClassName sẽ bị lỗi không biết chọn cái nào hoặc chọn ngẫu nhiên, cần gỡ cờ 1 bên).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Kiến trúc CSI (Container Storage Interface) gồm những thành phần plugin chính nào và chúng chạy ở đâu trong cụm?</span>
+  <summary><b>Câu 3: Thuộc tính nào trong StorageClass cho phép người dùng tăng dung lượng của PVC sau khi đã tạo?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Thuộc tính <b><code>allowVolumeExpansion: true</code></b>. Nếu thuộc tính này bị đặt là <code>false</code> hoặc không khai báo, mọi thao tác sửa đổi trường <code>spec.resources.requests.storage</code> trên PVC sẽ bị API Server từ chối.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Gồm 2 thành phần chính: <b style="color: var(--accent-primary);">CSI Controller Plugin</b> chạy dưới dạng Deployment ở Control Plane (lắng nghe K8s API để tạo/xóa đĩa ở hạ tầng cloud) và <b style="color: var(--accent-primary);">CSI Node Plugin</b> chạy dưới dạng DaemonSet trên mọi Worker Node (thực hiện mount/format đĩa ở tầng OS).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không nêu được tên các thành phần CSI.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được CSI Controller và Node Plugin nhưng không chỉ ra loại workload (Deployment vs DaemonSet).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng loại workload nhưng chưa giải thích rõ chức năng từng bên.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích đầy đủ vị trí triển khai, loại workload và chức năng của từng thành phần CSI.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Các sidecar container như csi-provisioner hay csi-attacher làm nhiệm vụ gì? — Chúng lắng nghe sự kiện K8s API và dịch thành các cuộc gọi gRPC tiêu chuẩn tới CSI driver).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Điều kiện gì ở tầng StorageClass và PVC để có thể mở rộng dung lượng ổ đĩa trực tuyến (Online Volume Expansion)?</span>
+  <summary><b>Câu 4: Annotation nào dùng để thiết lập một StorageClass làm StorageClass mặc định của toàn cụm?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Sử dụng annotation:<br>
+    <code>storageclass.kubernetes.io/is-default-class: "true"</code><br>
+    Khi có annotation này, bất kỳ PVC nào tạo ra mà không khai báo trường <code>storageClassName</code> sẽ tự động sử dụng StorageClass này.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">StorageClass phải khai báo thuộc tính <code>allowVolumeExpansion: true</code>. Sau đó, ta chỉ cần chỉnh sửa trường <code>spec.resources.requests.storage</code> của PVC lên dung lượng lớn hơn.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không biết cờ allowVolumeExpansion.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được cờ allowVolumeExpansion nhưng không biết cách sửa PVC.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu đúng cờ và cách sửa PVC nhưng không nhấn mạnh là chỉ được TĂNG dung lượng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Trình bày đầy đủ cờ SC, cách patch PVC và nguyên tắc bất biến chỉ được tăng không được giảm.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu cố tình sửa giảm dung lượng PVC thì K8s phản hồi thế nào? — Báo lỗi immutable field, API từ chối cập nhật).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Hai chặng kỹ thuật của quá trình mở rộng dung lượng PVC (Volume Expansion) diễn ra như thế nào?</span>
+  <summary><b>Câu 5: Chuẩn giao tiếp CSI (Container Storage Interface) mang lại lợi ích gì so với các In-tree Volume Plugins cũ?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    CSI tách rời mã nguồn của các nhà cung cấp lưu trữ ra khỏi mã nguồn lõi của Kubernetes (Out-of-tree). Điều này cho phép các hãng lưu trữ có thể cập nhật, vá lỗi và phát hành driver mới độc lập theo chu kỳ riêng mà không cần chờ đợi các bản phát hành chính thức của Kubernetes Core, đồng thời giảm thiểu rủi ro bảo mật cho <code>kube-controller-manager</code>.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chặng 1 là <b style="color: var(--accent-primary);">Mở rộng đĩa vật lý</b> (CSI Controller gọi Storage Provider nới rộng khối đĩa). Chặng 2 là <b style="color: var(--accent-primary);">Mở rộng hệ tập tin</b> (Kubelet chạy <code>resize2fs</code> hoặc <code>xfs_growfs</code> trên Node để nới rộng partition bên trong OS).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng sửa PVC là đĩa tự to ra ngay lập tức.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được có 2 chặng nhưng không phân biệt được đĩa vật lý vs hệ tập tin.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Phân biệt được 2 chặng nhưng không nêu được vai trò của Kubelet ở chặng 2.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chi tiết luồng xử lý từ CSI Controller chặng 1 đến Kubelet chặng 2.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu chặng 1 xong mà chặng 2 chưa xong thì trạng thái PVC xuất hiện condition gì? — Condition <code>FileSystemResizePending</code>).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Tại sao CSI Node Plugin lại bắt buộc phải cấu hình <code>securityContext.privileged: true</code>?</span>
+  <summary><b>Câu 6: Ba container sidecar chuẩn chạy kèm trong một triển khai CSI Controller Plugin là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>csi-provisioner:</b> Lắng nghe sự kiện PVC để tạo và xóa đĩa trên hệ thống lưu trữ bên ngoài.</li>
+      <li><b>csi-attacher:</b> Thực hiện thao tác gắn (Attach) và tháo (Detach) đĩa vào máy chủ Node.</li>
+      <li><b>csi-resizer:</b> Theo dõi việc tăng dung lượng PVC để gọi API mở rộng kích thước đĩa vật lý.</li>
+    </ul>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì CSI Node Plugin chạy trong container nhưng phải thực thi các câu lệnh Linux trực tiếp thao tác trên các thiết bị khối (Block Devices) thuộc thư mục <code>/dev</code> của Node mẹ để thực hiện <code>mount</code> và <code>format</code> đĩa.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được lý do privileged.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được để có quyền root nhưng chưa gắn với thao tác mount đĩa Node mẹ.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích chính xác quyền truy cập thiết bị khối <code>/dev</code> và lệnh mount ở tầng OS.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu không bật privileged thì Pod ứng dụng có mount được đĩa không? — Không, CSI Node Plugin sẽ crash hoặc báo lỗi permission denied khi nhận lệnh mount).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Trường <code>parameters</code> trong định nghĩa StorageClass dùng để làm gì?</span>
+  <summary><b>Câu 7: Có thể thu nhỏ (shrink/downsize) dung lượng của một PVC đang chạy không và tại sao?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <b>KHÔNG THỂ</b>. Kubernetes và hầu hết các hệ điều hành Linux (ext4, xfs) không hỗ trợ thu nhỏ dung lượng trực tuyến vì nguy cơ làm hỏng bảng phân vùng và mất mát dữ liệu. Kubernetes API Server sẽ chặn hoàn toàn mọi yêu cầu giảm dung lượng lưu trữ trong PVC.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Chứa các tham số cấu hình riêng biệt do nhà cung cấp lưu trữ (Provisioner) quy định, ví dụ: loại đĩa (<code>type: gp3</code>), số IOPS (<code>iops: "3000"</code>), hay mã hóa đĩa (<code>encrypted: "true"</code>).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được mục đích trường parameters.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được là cấu hình đĩa nhưng không đưa được ví dụ cụ thể.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Giải thích đúng ý nghĩa tuỳ biến theo từng provider và nêu các ví dụ thông số đĩa thực tế.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Kubernetes Core có kiểm tra cú pháp bên trong trường parameters không? — Không, Kubernetes chỉ chuyển tiếp toàn bộ dictionary này cho CSI driver xử lý).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Làm thế nào để ép một PVC không dùng StorageClass mặc định mà buộc phải bind vào một PV được tạo thủ công (Static PV)?</span>
+  <summary><b>Câu 8: Giá trị reclaimPolicy trong StorageClass mặc định là gì nếu không khai báo rõ ràng?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Mặc định là <b><code>Delete</code></b> (đối với các PV được tạo động qua StorageClass). Khi PVC bị xóa, PV và toàn bộ dữ liệu trên ổ đĩa vật lý của nhà cung cấp Cloud sẽ tự động bị xóa theo.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Khai báo trường <code>storageClassName: ""</code> (xâu rỗng) trong tệp YAML định nghĩa PVC. Điều này vô hiệu hóa hoàn toàn cơ chế gán StorageClass mặc định và ngăn chặn Dynamic Provisioning.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Cho rằng chỉ cần bỏ trống trường <code>storageClassName</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được điền xâu rỗng <code>""</code> nhưng không giải thích được sự khác biệt với việc bỏ quên không khai báo.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích rõ ràng sự khác biệt giữa bỏ quên (dẫn tới nhận SC default) và điền xâu rỗng (tắt SC default).</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu PV tĩnh có <code>storageClassName: manual</code> thì PVC cần khai báo thế nào? — Khai báo <code>storageClassName: manual</code> cho khớp tên).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Tại sao không nên dùng <code>volumeBindingMode: Immediate</code> cho các loại ổ đĩa gắn cục bộ (Local Storage)?</span>
+  <summary><b>Câu 9: Khi mở rộng dung lượng PVC thành công, tại sao cần kiểm tra cả dung lượng Filesystem bằng lệnh df -h bên trong Pod?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Bởi vì việc mở rộng gồm 2 giai đoạn: (1) Mở rộng kích thước khối đĩa vật lý (Block Device Size) trên Cloud, và (2) Mở rộng hệ thống tệp tin (Filesystem Resize) trên Node. Kiểm tra bằng <code>df -h</code> đảm bảo Kubelet đã hoàn tất bước 2 và ứng dụng thực sự có thể ghi thêm dữ liệu vào không gian mới.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Vì <code>Immediate</code> sẽ ép tạo PV ngay lập tức trên một Node ngẫu nhiên khi PVC xuất hiện. Nếu sau đó Pod được Scheduler xếp chạy sang Node khác do thiếu CPU/RAM, Pod sẽ bị kẹt vĩnh viễn vì không thể mount đĩa từ xa.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Không giải thích được nguy cơ kẹt Pod.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được Pod không chạy được nhưng không giải thích được cơ chế Scheduler.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích sâu sắc sự lệch pha giữa quyết định tạo đĩa của SC và quyết định xếp lịch Pod của Scheduler.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Lỗi hiển thị khi xảy ra sự cố này là gì? — Lỗi <code>node(s) had volume node affinity conflict</code>).
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Sự khác nhau giữa <code>reclaimPolicy</code> được khai báo trong StorageClass và <code>reclaimPolicy</code> nằm trong PV là gì?</span>
+  <summary><b>Câu 10: Nếu cụm có 2 StorageClass cùng được gắn annotation is-default-class: "true" thì điều gì xảy ra?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Khi có nhiều hơn 1 StorageClass mặc định, Kubernetes Admission Controller sẽ <b>từ chối tự động gán</b> cho các PVC không khai báo <code>storageClassName</code> và trả về lỗi, buộc người dùng phải chỉ định tường minh tên StorageClass cần dùng.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>reclaimPolicy</code> trong StorageClass là cấu hình mẫu để áp dụng tự động cho các PV <b style="color: var(--accent-primary);">được sinh ra từ SC đó</b>. <code>reclaimPolicy</code> trong PV là thuộc tính thực tế điều khiển hành vi của ổ đĩa cụ thể đó khi PVC bị xóa.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Nhầm tưởng hai cái là một.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được SC là mẫu, PV là thật nhưng chưa rõ thời điểm áp dụng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Phân tích mạch lạc cơ chế kế thừa thuộc tính từ StorageClass sang PV tự động sinh ra.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Sau khi PV được sinh ra từ SC, ta có thể patch đổi reclaimPolicy của riêng PV đó không? — Hoàn toàn được).
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Cách nhanh nhất để chẩn đoán nguyên nhân khi một PVC dùng StorageClass bị kẹt ở trạng thái <code>Pending</code>?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">Bước 1: <code>kubectl describe pvc <pvc-name></code> xem mục Events. Bước 2: Kiểm tra trạng thái StorageClass và Provisioner pod. Bước 3: Xem log của CSI Provisioner sidecar pod bằng lệnh <code>kubectl logs -n <csi-namespace> -l app=<provisioner-label></code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 0đ: Chỉ biết trả lời chung chung xem log.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 1đ: Nêu được lệnh <code>kubectl describe pvc</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2đ: Nêu được describe pvc và xem log pod ứng dụng (sai pod log).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 3đ: Nêu chuẩn xác luồng 3 bước chẩn đoán từ PVC Events tới log của CSI Provisioner container.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> (Nếu describe pvc báo <code>storageclass.storage.k8s.io "fast" not found</code> thì sửa thế nào? — Tạo StorageClass tên <code>fast</code> hoặc sửa tên storageClassName trong PVC).
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. <b style="color: var(--accent-primary);">"Dynamic Provisioning thông qua StorageClass giúp tự động hóa 100 % vòng đời ổ đĩa vật lý, giải phóng quản trị viên khỏi các thao tác thủ công cấp đĩa."</b>
-2. <b style="color: var(--accent-primary);">"Kiến trúc chuẩn CSI tách biệt hoàn toàn Storage Driver khỏi nhân Kubernetes, cho phép tích hợp linh hoạt mọi giải pháp lưu trữ qua giao diện gRPC tiêu chuẩn."</b>
-3. <b style="color: var(--accent-primary);">"Chế độ <code>volumeBindingMode: WaitForFirstConsumer</code> là bắt buộc đối với đĩa cục bộ hoặc đĩa Cloud theo vùng để đảm bảo đĩa được tạo đúng ở Node mà Pod được xếp lịch."</b>
-4. <b style="color: var(--accent-primary);">"Mở rộng dung lượng đĩa PVC trực tuyến đòi hỏi cờ <code>allowVolumeExpansion: true</code> và gồm 2 chặng: nới rộng đĩa ở hạ tầng cloud và nới rộng hệ tập tin ở Kubelet."</b>
-
----</div>
-</div>
 </details>
 
 ---
 
-## V3. Câu chốt để nói khi phỏng vấn
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-1. **"Dynamic Provisioning thông qua StorageClass giúp tự động hóa 100 % vòng đời ổ đĩa vật lý, giải phóng quản trị viên khỏi các thao tác thủ công cấp đĩa."**
-2. **"Kiến trúc chuẩn CSI tách biệt hoàn toàn Storage Driver khỏi nhân Kubernetes, cho phép tích hợp linh hoạt mọi giải pháp lưu trữ qua giao diện gRPC tiêu chuẩn."**
-3. **"Chế độ `volumeBindingMode: WaitForFirstConsumer` là bắt buộc đối với đĩa cục bộ hoặc đĩa Cloud theo vùng để đảm bảo đĩa được tạo đúng ở Node mà Pod được xếp lịch."**
-4. **"Mở rộng dung lượng đĩa PVC trực tuyến đòi hỏi cờ `allowVolumeExpansion: true` và gồm 2 chặng: nới rộng đĩa ở hạ tầng cloud và nới rộng hệ tập tin ở Kubelet."**
+```mermaid
+mindmap
+  root((StorageClass & CSI))
+    Cap Phat Dong
+      Dynamic Provisioning (Tu dong 100%)
+      provisioner (CSI Drivers)
+      storageclass.kubernetes.io/is-default-class
+    volumeBindingMode
+      Immediate (Tao dia ngay)
+      WaitForFirstConsumer (Cho Scheduler chon Node -> Chon dung Zone)
+    Mo Rong Dung Luong
+      allowVolumeExpansion: true
+      Online Resize (Tang duoc, khong giam duoc)
+      resize2fs / xfs_growfs
+    Kien Truc CSI
+      Controller (csi-provisioner / attacher / resizer)
+      Node Plugin (NodeStage / NodePublish)
+```
 
----
-
-## 4. Đề Thi Thực Hành Bấm Giờ & Thử Thách Tốc Độ (Exam Speed Challenge)
+Nắm vững cơ chế cấp phát động với StorageClass và chuẩn CSI là nền tảng tối quan trọng giúp bạn tự tin vận hành các cơ sở dữ liệu phân tán quy mô lớn và vượt qua mọi câu hỏi thực hành lưu trữ trong kỳ thi CKA.
 
 > [!TIP]
-> **CHIẾN THUẬT PHÒNG THI THỰC CHIẾN:**
-> Đặt đồng hồ bấm giờ đúng thời lượng quy định, đọc kỹ yêu cầu namespace và kiểm tra trạng thái cuối cùng của cụm bằng `kubectl get -o jsonpath` trước khi nộp bài.
-
-## T0. Vì sao có khối này
-
-Khối luyện đề giúp học viên rèn luyện phản xạ gõ lệnh dưới sức ép thời gian thực tế của kỳ thi CKA và CKAD. Nội dung đề phủ miền curriculum **`CKA · Storage` (10 %)** và **`CKA · Cluster Architecture` (25 %)**. Tổng thời gian làm bài và tự chấm là đúng 30 phút (1.800 giây).
-
----
-
-## T1. Luật chơi
-
-1. Mở duy nhất 1 cửa sổ Terminal và 1 tab trình duyệt truy cập tài liệu chính thức `https://kubernetes.io/docs/`.
-2. Không sử dụng công cụ AI, không copy/paste các mẫu YAML sẵn từ ngoài tài liệu chính thức.
-3. Sử dụng tối đa các alias rút gọn (`k` cho `kubectl`, `$do` cho `--dry-run=client -o yaml`).
-4. Tổng thời gian thực hiện 4 câu: **21 phút** (1.260 giây). Thời gian tự chấm bằng script: **9 phút** (540 giây).
-
----
-
-## T2. Bốn câu kiểu đề thi
-
-### Câu T2.1 — CKA · Storage — 300 giây
-Đánh dấu StorageClass `local-path` sẵn có làm StorageClass mặc định (Default StorageClass) của cụm Kubernetes bằng câu lệnh cờ annotation.
-
-### Câu T2.2 — CKA · Storage — 300 giây
-Tạo một StorageClass mới đặt tên là `local-delayed`:
-- Trình cấp phát đĩa (`provisioner`): `rancher.io/local-path`
-- Chế độ gắn đĩa (`volumeBindingMode`): `WaitForFirstConsumer`
-- Chính sách thu hồi (`reclaimPolicy`): `Delete`
-- Cho phép mở rộng đĩa (`allowVolumeExpansion`): `true`
-
-### Câu T2.3 — CKA · Storage — 300 giây
-Tạo một PersistentVolumeClaim đặt tên là `pvc-auto` nằm trong Namespace `prod`:
-- Dung lượng yêu cầu (`requests.storage`): `2Gi`
-- Chế độ truy cập (`accessModes`): `ReadWriteOnce`
-- Không chỉ định trường `storageClassName` trong file spec (để nó tự động nhận StorageClass mặc định).
-- Xác minh PVC chuyển sang trạng thái `Bound`.
-
-### Câu T2.4 — CKA · Storage — 360 giây
-Thực hiện mở rộng dung lượng trực tuyến cho PVC `pvc-expandable` trong Namespace `prod` từ `1Gi` lên `4Gi`.
-- Bối cảnh: PVC đang được đính kèm bởi Pod `app-worker` đang ở trạng thái `Running`.
-- Yêu cầu: Điều chỉnh cấu hình PVC để dung lượng đĩa mở rộng lên `4Gi` mà không cần xóa Pod hay gián đoạn ứng dụng.
-
----
-
-## T3. Lời giải chuẩn (Đường gõ ngắn nhất)
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-kubectl annotate storageclass local-path storageclass.kubernetes.io/is-default-class="true" --overwrite
-```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: local-delayed
-provisioner: rancher.io/local-path
-volumeBindingMode: WaitForFirstConsumer
-reclaimPolicy: Delete
-allowVolumeExpansion: true
-EOF
-```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-kubectl create ns prod --dry-run=client -o yaml | kubectl apply -f -
-
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pvc-auto
-  namespace: prod
-spec:
-  accessModes:
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• ReadWriteOnce</div>
-  resources:
-    requests:
-      storage: 2Gi
-EOF
-```
-</div>
-</details>
-
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  
-```bash
-kubectl patch pvc pvc-expandable -n prod -p '{"spec":{"resources":{"requests":{"storage":"4Gi"}}}}'
-```
-
----
-</div>
-</details>
-
-## T4. Bẫy mất điểm
-
-| Bẫy hay gặp | Mất bao nhiêu điểm | Dấu hiệu nhận ra ngay |
-|---|---|---|
-| 1. Quên cờ `--overwrite` khi annotate StorageClass | Mất 25 điểm (Câu 1) | Lệnh báo lỗi `already has a value` |
-| 2. Gõ sai từ khóa `WaitForFirstConsumer` | Mất 25 điểm (Câu 2) | Lệnh `kubectl apply` từ chối do sai enum value |
-| 3. Điền nhầm `storageClassName: ""` thay vì bỏ trống | Mất 25 điểm (Câu 3) | PVC bị kẹt ở trạng thái `Pending` do tắt SC default |
-| 4. Xóa Pod `app-worker` để resize đĩa | Mất 15 điểm (Câu 4) | Ứng dụng bị gián đoạn ngắt kết nối |
-| 5. Quên cờ `allowVolumeExpansion: true` ở SC | Mất 25 điểm (Câu 2) | PVC không mở rộng được |
-| 6. Sửa nhầm dung lượng giảm xuống thay vì tăng lên | Mất 25 điểm (Câu 4) | API báo lỗi immutable field |
-
----
-
-## T5. Bảng tự chấm và Script chấm điểm tự động
-
-### Đoạn script tự kiểm tra và in điểm (Không phụ thuộc vào `jq`)
-
-```bash
-#!/bin/bash
-SCORE=0
-
-echo "=== KẾT QUẢ TỰ CHẤM BÀI Ô THI BUỔI 27 ==="
-
-# Kiểm câu 1
-DEF_SC=$(kubectl get sc local-path -o jsonpath='{.metadata.annotations.storageclass\.kubernetes\.io/is-default-class}' 2>/dev/null)
-if [ "$DEF_SC" == "true" ]; then
-    echo "Câu 1: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 1: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 2
-BIND_MODE=$(kubectl get sc local-delayed -o jsonpath='{.volumeBindingMode}' 2>/dev/null)
-ALLOW_EXP=$(kubectl get sc local-delayed -o jsonpath='{.allowVolumeExpansion}' 2>/dev/null)
-if [ "$BIND_MODE" == "WaitForFirstConsumer" ] && [ "$ALLOW_EXP" == "true" ]; then
-    echo "Câu 2: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 2: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 3
-AUTO_STATUS=$(kubectl get pvc pvc-auto -n prod -o jsonpath='{.status.phase}' 2>/dev/null)
-if [ "$AUTO_STATUS" == "Bound" ]; then
-    echo "Câu 3: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 3: THẤT BẠI (0đ)"
-fi
-
-# Kiểm câu 4
-EXP_SIZE=$(kubectl get pvc pvc-expandable -n prod -o jsonpath='{.spec.resources.requests.storage}' 2>/dev/null)
-if [ "$EXP_SIZE" == "4Gi" ]; then
-    echo "Câu 4: ĐẠT (+25đ)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu 4: THẤT BẠI (0đ)"
-fi
-
-echo "=========================================="
-echo "TỔNG ĐIỂM: $SCORE / 100"
-if [ $SCORE -ge 75 ]; then
-    echo "ĐÁNH GIÁ: ĐẠT NGƯỠNG AN TOÀN KỲ THI CKA"
-else
-    echo "ĐÁNH GIÁ: CHƯA ĐẠT - CẦN LUYỆN LẠI"
-fi
-```
-
----
-
-## T6. Kho lệnh rút gọn của buổi
-
-```bash
-# Đặt StorageClass mặc định nhanh
-kubectl annotate sc <name> storageclass.kubernetes.io/is-default-class="true" --overwrite
-
-# Gỡ cờ StorageClass mặc định
-kubectl annotate sc <name> storageclass.kubernetes.io/is-default-class-
-
-# Patch resize PVC nhanh trên 1 dòng
-kubectl patch pvc <pvc-name> -n <ns> -p '{"spec":{"resources":{"requests":{"storage":"5Gi"}}}}'
-
-# Xem nhanh cờ allowVolumeExpansion của toàn bộ SC
-kubectl get sc -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.allowVolumeExpansion}{"\n"}{end}'
-```
-
-
----
-
-## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
-
-> [!TIP]
-> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
-> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 28] Quy Trình Chẩn Đoán & Gỡ Lỗi Bốn Tầng (4-Tier Troubleshooting): Cụm, Node, Workload và Mạng](cka-28-28-chan-doan-bon-tang.html).
-
+> **Bài học tiếp theo**: Trong [Bài 28: Phương Pháp Chẩn Đoán Sự Cố 4 Tầng Kubernetes (App, Pod, Node, Cluster)](cka-28-28-chan-doan-bon-tang.html), chúng ta sẽ bước vào chuyên đề Sửa Chữa & Khắc Phục Sự Cố (Troubleshooting): xây dựng tư duy chẩn đoán hệ thống theo 4 tầng phân lớp khoa học, làm chủ quy trình phân tích nhật ký lỗi và xử lý nhanh các tình huống cụm tê liệt.
 {% endraw %}

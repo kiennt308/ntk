@@ -1,1398 +1,501 @@
 ---
 layout: post
-title: "[Bài 12] Thiết Kế Control Plane Sẵn Sàng Cao (HA): Multi-Master Stacked etcd vs External etcd & Load Balancer"
-date: 2026-09-12 19:40:00 +0700
-categories: [CKA]
-tags:
-  - CKA
-  - Kubernetes
-  - ClusterAdmin
-  - LinuxFoundation
-  - DevOps
-  - Part-12
+title: "CKA (Bài 12/35) - Thiết Kế Control Plane Sẵn Sàng Cao (HA): Multi-Master Stacked etcd vs External etcd & Load Balancer"
+date: 2026-09-12
+categories: [Kubernetes, CKA, Architecture, Administration]
+tags: [cka, high-availability, control-plane, stacked-etcd, external-etcd, haproxy, keepalived, kubeadm]
 series: "CKA Exam & Cluster Admin Mastery"
 series_order: 12
-difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80"
-summary: "[CKA P.12] Hướng dẫn chuyên sâu Thiết Kế Control Plane Sẵn Sàng Cao (HA): Multi-Master Stacked etcd vs External etcd & Load Balancer: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+author: "Nguyen Thao Kien"
+description: "Làm chủ kiến trúc Kubernetes High Availability (HA) Control Plane. So sánh chi tiết mô hình Stacked etcd vs External etcd, cấu hình Load Balancer HAProxy/Keepalived, quy trình kubeadm join --control-plane và cơ chế Leader Election."
+summary: "Hướng dẫn toàn diện về thiết kế Kubernetes Control Plane HA cho CKA và production: phân tích kiến trúc Stacked etcd vs External etcd, cấu hình Load Balancer VIP, kubeadm multi-master join và cơ chế Leader Election Leases."
+keywords:
+  - kubernetes high availability
+  - cka ha control plane
+  - stacked etcd vs external etcd
+  - kubeadm join control-plane
+  - haproxy keepalived kubernetes
+  - control-plane-endpoint
+  - leader election leases
+image:
+  path: /assets/img/posts/cka/cka-12-ha-control-plane-banner.png
+  alt: "Kiến trúc Kubernetes High Availability (HA) Control Plane và Load Balancing"
+difficulty: ADVANCED
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Thiết Kế Control Plane Sẵn Sàng Cao (HA): Multi-Master Stacked etcd vs External etcd & Load Balancer."
-  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
-  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Cụm Control Plane HA bắt buộc sử dụng số lẻ node (tối thiểu 3 node) để đảm bảo túc số đồng thuận Quorum cho etcd theo công thức `(N/2) + 1`."
+  - "Kiến trúc Stacked etcd chạy etcd pod trực tiếp trên các node Control Plane (tiết kiệm chi phí, dễ quản trị); trong khi External etcd tách riêng cụm etcd độc lập (cô lập tải, tăng khả năng chịu lỗi)."
+  - "Điểm truy cập duy nhất: Bắt buộc cấu hình `--control-plane-endpoint` trỏ về địa chỉ IP ảo (VIP) của Load Balancer (HAProxy + Keepalived) đứng trước cổng 6443 của các `kube-apiserver`."
+  - "Quy trình mở rộng Multi-Master: Sử dụng `kubeadm init phase upload-certs --upload-certs` để mã hóa PKI certificates lên Secret, sau đó chạy `kubeadm join --control-plane --certificate-key <key>`."
+  - "`kube-controller-manager` và `kube-scheduler` hoạt động theo mô hình Active-Passive với cơ chế Leader Election dựa trên tài nguyên `Lease` trong namespace `kube-system`."
 ---
+
 {% raw %}
-# [BÀI 12] THIẾT KẾ CONTROL PLANE SẴN SÀNG CAO (HA): MULTI-MASTER STACKED ETCD VS EXTERNAL ETCD & LOAD BALANCER
-
-Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
-
-Bài viết chuyên sâu này sẽ đồng hành cùng bạn giải mã toàn diện bức tranh kiến trúc, phân tích các đánh đổi kỹ thuật thực chiến (Engineering Trade-offs), cung cấp bài thực hành Lab từng bước và bộ câu hỏi phỏng vấn chuẩn Architect / Lead Engineer.
-
----
-
-## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
-| # | Câu hỏi ôn tập | Đáp án chuẩn ngắn gọn (chứa con số / tên lệnh) |
-|---|---|---|
-| 1 | Sự khác nhau cơ bản giữa ServiceAccount và User là gì? | ServiceAccount **LÀ** đối tượng API trong etcd dành cho máy/Pod; User dành cho con người |
-| 2 | Danh tính RBAC chuẩn của ServiceAccount được biểu diễn như thế nào? | `system:serviceaccount:<namespace>:<serviceaccount-name>` |
-| 3 | Thời hạn mặc định và cơ chế an toàn của Bound Token v1.35? | Sống **3600** giây (1 giờ), tự động xoay vòng khi trôi qua **80%** thời gian sống, vô hiệu khi xoá Pod |
-| 4 | Thư mục nạp token mặc định trong container chứa 3 tệp nào? | `/var/run/secrets/kubernetes.io/serviceaccount/` chứa **3** tệp `token`, `ca.crt`, `namespace` |
-| 5 | Cờ bảo mật ngắt nạp token tự động vào Pod spec là gì? | `automountServiceAccountToken: false` (ngắt nạp **0** tệp token) |
-
-
-
-> **Luận đề trung tâm của buổi:**
-> *"Cụm Control Plane sẵn sàng cao (High Availability HA) bắt buộc sử dụng số lẻ node (tối thiểu 3 node) để đảm bảo Quorum etcd theo công thức `(N/2) + 1`, kết hợp với bộ cân bằng tải Load Balancer / VIP làm điểm truy cập duy nhất `--control-plane-endpoint` cho API Server; trong đó kiến trúc Stacked etcd phổ biến nhờ tính đơn giản còn External etcd mang lại độ độc lập tải tối đa, và lệnh `kubeadm join --control-plane` là chìa khóa mở rộng nút điều khiển an toàn."*
-
-**Bảng kết quả các buổi trước được dùng lại:**
-
-| Kết quả / Công cụ | Nguồn gốc | Áp dụng vào buổi này |
-|---|---|---|
-| Thuật toán etcd Raft và cổng `2379`/`2380` | Buổi 09 `QT 4.1` | Giải thích cơ chế đồng bộ dữ liệu etcd cluster giữa 3 node Control Plane |
-| Cụm 3 node `kubeadm` (`cp-01`, `worker-01`, `worker-02`) | Buổi 06 `QT 4.1` | Nền tảng hạ tầng để thực hành cấu hình HA Control Plane |
-| Lệnh `kubeadm init` và `kubeadm join` | Buổi 06 `QT 5.1` | Mở rộng lệnh `kubeadm join` với cờ `--control-plane` để add node điều khiển |
-
-Ba câu bài tập về nhà BTVN 4 của buổi 11 đã chuẩn bị sẵn kiến thức cho học viên: Câu 1 phân tích yêu cầu số lẻ 3 node Control Plane để đạt Quorum etcd; Câu 2 tìm hiểu vai trò của Load Balancer VIP đứng trước các API Server; Câu 3 phân biệt sự khác nhau giữa Stacked etcd topology và External etcd topology.
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật & Trọng tâm CKA**:
+> - Nắm vững bản chất kiến trúc Multi-Control Plane: Stacked etcd vs External etcd.
+> - Thiết lập và cấu hình Load Balancer layer 4 (TCP) cân bằng tải cho các `kube-apiserver`.
+> - Thành thạo quy trình khởi tạo cụm HA với `--control-plane-endpoint` và thêm node master bằng `kubeadm join --control-plane`.
+> - Kiểm tra và giám sát cơ chế Leader Election thông qua Kubernetes Leases API.
+> - Xử lý các tình huống sự cố rớt Quorum etcd và lỗi chia cắt mạng (Split-brain).
 
 ---
 
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: High Availability Control Plane
 
+Trong một cụm Kubernetes đơn node Control Plane (Single Master), nếu node điều khiển gặp sự cố phần cứng, toàn bộ hệ thống API Server, Controller Manager, Scheduler và etcd sẽ ngừng hoạt động. Mặc dù các Worker Node và Container đang chạy vẫn duy trì luồng dữ liệu (Data Plane), nhưng người quản trị không thể triển khai mới, tự động phục hồi hay scale ứng dụng (Control Plane bị tê liệt).
 
-| # | Năng lực đạt được sau buổi học | Hiện vật chứng minh trong bài lab |
-|---|---|---|
-| 1 | Tính toán chính xác Quorum etcd và khả năng chịu lỗi cho cụm 3, 5 node | Tệp `hien-vat/quorum-matrix.txt` |
-| 2 | Khởi tạo cụm HA Control Plane với cờ `--control-plane-endpoint` | Tệp `hien-vat/kubeadm-ha-config.yaml` |
-| 3 | Mở rộng nút điều khiển bằng `kubeadm join --control-plane --certificate-key` | Tệp log `hien-vat/join-control-plane.log` |
-| 4 | Kiểm tra danh sách etcd members bằng `etcdctl member list` | Tệp log `hien-vat/etcd-member-list.txt` |
-| 5 | Kiểm tra trạng thái leader election của `kube-scheduler` và `kube-controller-manager` | Tệp `hien-vat/leader-election-status.txt` |
-| 6 | Thực hành mô phỏng sập 1 node Control Plane và kiểm tra tính liên tục của cụm | Script `hien-vat/verify-ha-failover.sh` |
+Để đạt chuẩn sẵn sàng cao (High Availability - HA), Kubernetes yêu cầu kiến trúc **Multi-Master Control Plane** với tối thiểu **3 node Control Plane**.
+
+```mermaid
+flowchart TD
+    classDef client fill:none,stroke:#2563eb,stroke-width:2px,color:#2563eb;
+    classDef lb fill:none,stroke:#d97706,stroke-width:2px,color:#d97706;
+    classDef cp fill:none,stroke:#0284c7,stroke-width:2px,color:#0284c7;
+    classDef etcd fill:none,stroke:#16a34a,stroke-width:2px,color:#16a34a;
+
+    Admin["Quản trị viên / kubectl / Worker Kubelets"]:::client --> VIP["Load Balancer VIP (HAProxy/Keepalived) :6443"]:::lb
+    
+    VIP --> APISrv1["kube-apiserver (CP-01)"]:::cp
+    VIP --> APISrv2["kube-apiserver (CP-02)"]:::cp
+    VIP --> APISrv3["kube-apiserver (CP-03)"]:::cp
+
+    APISrv1 <--> ETCD1["etcd pod (CP-01)"]:::etcd
+    APISrv2 <--> ETCD2["etcd pod (CP-02)"]:::etcd
+    APISrv3 <--> ETCD3["etcd pod (CP-03)"]:::etcd
+
+    ETCD1 <-->|Raft Peer :2380| ETCD2
+    ETCD2 <-->|Raft Peer :2380| ETCD3
+    ETCD3 <-->|Raft Peer :2380| ETCD1
+```
+
+### 1.1. So Sánh Mô Hình Stacked etcd vs External etcd
+
+1. **Stacked etcd Topology (Xếp chồng)**:
+   - Các tiến trình `etcd` chạy dưới dạng Static Pods trực tiếp trên cùng các node Control Plane.
+   - Mỗi `kube-apiserver` giao tiếp cục bộ qua `127.0.0.1:2379` với instance etcd trên cùng node.
+   - **Ưu điểm**: Tiết kiệm tài nguyên hạ tầng, triển khai đơn giản qua `kubeadm`.
+   - **Nhược điểm**: Rủi ro mất mát node kéo theo mất cả API Server lẫn thành viên etcd Quorum.
+2. **External etcd Topology (Tách rời)**:
+   - Cụm `etcd` gồm 3 hoặc 5 node chuyên dụng chạy trên các máy chủ hoàn toàn độc lập với Control Plane nodes.
+   - Các `kube-apiserver` kết nối tới etcd cluster qua mạng nội bộ.
+   - **Ưu điểm**: Phân tách tải I/O đĩa tối đa, rủi ro sập node Control Plane không ảnh hưởng tới etcd Quorum.
+   - **Nhược điểm**: Đòi hỏi số lượng máy chủ gấp đôi (tối thiểu 3 CP nodes + 3 etcd nodes = 6 nodes), quản lý chứng chỉ PKI phức tạp hơn.
+
+```mermaid
+graph LR
+    subgraph Stacked ["Stacked etcd Topology (3 Nodes)"]
+        CP1["Node CP-01<br>(API + etcd)"]
+        CP2["Node CP-02<br>(API + etcd)"]
+        CP3["Node CP-03<br>(API + etcd)"]
+        CP1 <--> CP2 <--> CP3 <--> CP1
+    end
+
+    subgraph External ["External etcd Topology (6 Nodes)"]
+        subgraph CP_Layer ["Control Plane Layer"]
+            A1["Node CP-01 (API)"]
+            A2["Node CP-02 (API)"]
+            A3["Node CP-03 (API)"]
+        end
+        subgraph ETCD_Layer ["Dedicated etcd Cluster"]
+            E1["etcd-01"]
+            E2["etcd-02"]
+            E3["etcd-03"]
+            E1 <--> E2 <--> E3 <--> E1
+        end
+        A1 --> E1 & E2 & E3
+        A2 --> E1 & E2 & E3
+        A3 --> E1 & E2 & E3
+    end
+
+    classDef stk fill:none,stroke:#0284c7,stroke-width:2px,color:#0284c7;
+    classDef ext fill:none,stroke:#7c3aed,stroke-width:2px,color:#7c3aed;
+    class CP1,CP2,CP3 stk;
+    class A1,A2,A3,E1,E2,E3 ext;
+```
 
 ---
 
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
+Bảng đối chiếu chuyên sâu giữa hai cấu trúc liên kết Control Plane HA:
 
-| Bắt buộc phải biết | Nguồn tự học nếu thiếu |
-|---|---|
-| Quy trình dựng cụm 3 node từ số 0 bằng `kubeadm` | Buổi 06 `QT 4.1` |
-| Cơ chế sao lưu và kiểm tra trạng thái etcd bằng `etcdctl` | Buổi 09 `QT 4.1` |
-| Khái niệm mTLS và chứng chỉ PKI trong Kubernetes | Buổi 07 `QT 4.1` |
-
----
-
-
-
-
-
-| # | Thuật ngữ tiếng Việt | Tiếng Anh tương đương | Ghi chú chuẩn hoá trong thân bài |
-|---|---|---|---|
-| 1 | Nút điều khiển sẵn sàng cao | High Availability (HA) Control Plane | Mô hình nhiều node Control Plane đảm bảo cụm không bị gián đoạn |
-| 2 | Đa số tối thiểu etcd | etcd Quorum | Số lượng node etcd tối thiểu phải sống để duy trì ghi dữ liệu |
-| 3 | etcd tích hợp chung node | Stacked etcd Topology | Mô hình etcd chạy dạng static pod trên cùng các node Control Plane |
-| 4 | etcd tách biệt hạ tầng | External etcd Topology | Mô hình cụm etcd chạy trên các máy chủ vật lý/VM riêng biệt |
-| 5 | Bộ cân bằng tải nút điều khiển | Control Plane Load Balancer | Load Balancer (HAProxy/Nginx) phân phối traffic tới API Servers |
-| 6 | Địa chỉ IP ảo | Virtual IP (VIP / Keepalived) | Địa chỉ IP động đại diện cho điểm truy cập API Server |
-| 7 | Điểm truy cập nút điều khiển | Control Plane Endpoint | Cờ `--control-plane-endpoint` khai báo DNS/IP của Load Balancer |
-| 8 | Gia nhập làm nút điều khiển | Control Plane Join (`--control-plane`) | Cờ của lệnh `kubeadm join` để thêm node vào danh sách Control Plane |
-| 9 | Điểm sụp đổ đơn lẻ | Single Point of Failure (SPOF) | Thành phần đơn lẻ bị hỏng làm ngưng trệ toàn bộ hệ thống |
-| 10 | Khóa mã hóa chứng chỉ gia nhập | Certificate Key (`--certificate-key`) | Khóa giải mã chứng chỉ dùng khi gia nhập node Control Plane mới |
-| 11 | Khả năng chịu lỗi node sập | Fault Tolerance | Số lượng node tối đa có thể bị hỏng mà cụm vẫn sống |
-| 12 | Thuật toán đồng thuận Raft | Raft Consensus Algorithm | Thuật toán etcd dùng để bầu chọn Leader và ghi log đồng bộ |
-| 13 | Người dẫn dắt etcd | etcd Leader | Node etcd hiện tại chịu trách nhiệm nhận mọi lệnh ghi |
-| 14 | Nút theo sau etcd | etcd Follower | Các node etcd nhận dữ liệu đồng bộ từ etcd Leader |
-
-
-
-1. **Mô hình "Hội đồng thẩm phán số lẻ (Quorum etcd)":**
-   Cụm etcd giống như một Hội đồng thẩm phán ra quyết định theo biểu quyết đa số. Hội đồng bắt buộc phải có số lẻ thành viên (3 hoặc 5 thẩm phán) để luôn có đa số tuyệt đối `(N/2) + 1`. Nếu hội đồng có 2 người, 1 người bất tỉnh thì người còn lại (1/2) không đủ đa số để ra bất kỳ phán quyết nào.
-
-2. **Mô hình "Quầy lễ tân tổng đài đại diện (Control Plane Load Balancer / VIP)":**
-   API Server trên các node Control Plane giống như các nhân viên tư vấn quầy. Khách hàng (Worker Nodes, kubectl) không gọi trực tiếp vào điện thoại cá nhân của từng nhân viên mà gọi vào Số tổng đài đại diện (VIP / Load Balancer). Nếu nhân viên 1 nghỉ ốm, tổng đài tự động chuyển cuộc gọi sang nhân viên 2.
-
-3. **Mô hình "Nhân bản chìa khóa tổng (kubeadm join --control-plane)":**
-   Gia nhập node Control Plane thứ 2 giống như việc sao chép toàn bộ bộ chìa khóa CA và chứng chỉ tối bảo mật từ node `cp-01` sang node `cp-02` thông qua mã khóa tạm thời (`--certificate-key`), giúp node mới có đủ quyền lực điều hành cụm.
+| Tiêu Chí Kỹ Thuật | Single Master | Stacked etcd HA (3 Nodes) | External etcd HA (3 CP + 3 etcd) |
+| :--- | :--- | :--- | :--- |
+| **Số node tối thiểu** | 1 Node | 3 Nodes | 6 Nodes |
+| **Khả năng chịu lỗi (Fault Tolerance)**| 0 Node (SPOF) | 1 Node sập (Quorum 2/3) | 1 CP sập + 1 etcd sập đồng thời |
+| **Độ phức tạp vận hành** | Rất thấp | Trung bình (Kubeadm tự động) | Cao (Bảo trì 2 cụm riêng biệt) |
+| **Tải Disk I/O** | Dồn chung trên 1 ổ đĩa | Chia sẻ giữa Kubelet & etcd | Đĩa chuyên dụng cao tốc cho etcd |
+| **Điểm truy cập (Endpoint)** | IP trực tiếp của Master | Bắt buộc Load Balancer / VIP | Bắt buộc Load Balancer / VIP |
+| **Quy trình Backup/Restore**| Đơn giản | Cần snapshot 1 node etcd | Snapshot trên external cluster |
+| **Chi phí hạ tầng** | Rất thấp | Tối ưu cho Doanh nghiệp vừa | Dành cho Cụm quy mô lớn (>500 nodes) |
 
 ---
 
-### 1.1. Tổng quan kiến trúc HA Control Plane và SPOF (12 phút)
+## 3. Kiến Trúc Load Balancer & Luồng Khởi Tạo Cụm HA
 
-**Nguyên lý cốt lõi:** Mô hình Control Plane đơn lẻ (Single Control Plane) chứa điểm sụp đổ đơn lẻ (SPOF); mô hình HA Control Plane yêu cầu tối thiểu **3 node Control Plane** để đảm bảo khả năng chịu lỗi liên tục khi 1 node bị hỏng.
+### 3.1. Cấu Hình HAProxy (TCP Layer 4 Load Balancing)
 
-**Giải thích cơ chế ngầm:** Nếu chỉ có 1 node Control Plane và node đó sập, toàn bộ API Server, Scheduler và Controller Manager ngừng hoạt động. Pod cũ vẫn chạy trên Worker node nhưng không thể tạo mới, tự sửa lỗi hay điều phối.
+Tệp cấu hình `/etc/haproxy/haproxy.cfg` trên các node Load Balancer:
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dựng cụm sản xuất chỉ có 1 node Control Plane và tự tin rằng cụm đã có HA.
+```haproxy
+frontend k8s-apiserver
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend k8s-apiserver-backend
 
-**Minh hoạ.**
+backend k8s-apiserver-backend
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    default-server inter 3s fall 2 rise 2 check
+    server cp-01 192.168.10.11:6443 check
+    server cp-02 192.168.10.12:6443 check
+    server cp-03 192.168.10.13:6443 check
+```
+
+### 3.2. Cấu Hình Keepalived Virtual IP (VIP: 192.168.10.100)
+
+Tệp cấu hình `/etc/keepalived/keepalived.conf` trên node Master LB:
+
+```text
+vrrp_script check_haproxy {
+    script "killall -0 haproxy"
+    interval 2
+    weight 2
+}
+
+vrrp_instance VI_K8S {
+    state MASTER
+    interface eth0
+    virtual_router_id 51
+    priority 101
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass Secr3tK8sHA
+    }
+    virtual_ipaddress {
+        192.168.10.100/24
+    }
+    track_script {
+        check_haproxy
+    }
+}
+```
+
+---
+
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Sự Cố Mất Quorum & Lỗi Join Master
+
+### Tình huống 1: Quên cờ `--upload-certs` khiến `kubeadm join --control-plane` thất bại
+
+Kỹ sư chạy `kubeadm init --control-plane-endpoint "192.168.10.100:6443"`. Khi sang node `cp-02` để join control plane thì hệ thống báo lỗi không tìm thấy chứng chỉ PKI.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+[check-etcd] Checking that the etcd cluster is healthy
+error execution phase control-plane-prepare/certs: 
+failed to get certificate authority key: couldn't load the private key file /etc/kubernetes/pki/ca.key: 
+open /etc/kubernetes/pki/ca.key: no such file or directory
+```
+
+### 5-Whys Root Cause Analysis:
+1. **Tại sao `cp-02` báo thiếu tệp `ca.key`?** -> Tệp chứng chỉ CA gốc chỉ nằm trên `cp-01`.
+2. **Tại sao `cp-02` không tự động tải về?** -> Lệnh `kubeadm init` không có cờ `--upload-certs`.
+3. **Tại sao `--upload-certs` quan trọng?** -> Nó mã hóa và tải PKI certificates tạm thời lên Secret `kubeadm-certs` trong namespace `kube-system` (tự hủy sau 2 giờ).
+4. **Tại sao kỹ sư quên cờ này?** -> Dùng lệnh init mặc định của Single-Master.
+5. **Giải pháp khắc phục là gì?** -> Chạy `kubeadm init phase upload-certs --upload-certs` trên `cp-01` để lấy mã `--certificate-key`, sau đó bổ sung vào lệnh join.
 
 ```bash
-# Kiểm tra số lượng node Control Plane trong cụm
+# Thực thi trên CP-01 để sinh Certificate Key mới:
+kubeadm init phase upload-certs --upload-certs
+# Output: [upload-certs] Using certificate key: 
+# e62d8f80424561c1a969efd0616967be390195ec22cf294936d506045657ad56
+```
+
+---
+
+### Tình huống 2: Cấu hình DNS Round-Robin thay vì Load Balancer thực thụ
+
+Đội ngũ triển khai sử dụng DNS Record `k8s-api.company.local` trỏ về 3 IP của 3 Master Nodes. Khi node `cp-01` sập nguồn, 33% số request từ Kubelet và kubectl bị timeout do client cố gắng kết nối vào node đã chết.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+E0916 02:22:15.102391 1 memcache.go:265] couldn't get current server API group list: 
+Get "https://k8s-api.company.local:6443/api?timeout=32s": dial tcp 192.168.10.11:6443: 
+i/o timeout
+```
+
+> [!WARNING]
+> Kubernetes API Server Client (bao gồm Kubelet, Kubectl và Controller Manager) **không tự động failover DNS** khi một IP trong bản ghi A bị chết. Bắt buộc phải sử dụng Load Balancer L4 có cơ chế Health Check (như HAProxy, NGINX Stream, AWS NLB, F5) hoặc VIP với Keepalived để lập tức loại bỏ node lỗi ra khỏi pool.
+
+---
+
+### Tình huống 3: Sự cố chia cắt mạng làm rớt Quorum etcd (Split-Brain Prevention)
+
+Trong cụm 3 Control Plane, kết nối mạng giữa `cp-01` và 2 node còn lại (`cp-02`, `cp-03`) bị đứt. Phía `cp-01` chỉ còn 1 node (không đạt Quorum 2/3) nên tự động từ chối mọi thao tác ghi, bảo vệ dữ liệu cụm không bị phân mảnh.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin as Quản trị viên
+    participant CP1 as Node CP-01 (1/3 Node - Mất Quorum)
+    participant CP23 as Node CP-02 & CP-03 (2/3 Node - Đạt Quorum)
+    
+    Admin->>CP1: POST /api/v1/namespaces/default/pods
+    CP1->>CP1: Kiểm tra túc số etcd Raft (1/3 < 2)
+    CP1-->>Admin: HTTP 500 Internal Server Error (etcdserver: no leader)
+    
+    Admin->>CP23: POST /api/v1/namespaces/default/pods (qua LB)
+    CP23->>CP23: Đạt Quorum Raft (2/3 >= 2) -> Bầu Leader thành công
+    CP23-->>Admin: HTTP 201 Created (Ghi dữ liệu an toàn)
+```
+
+---
+
+## 5. Hands-on Lab: Khởi Tạo & Mở Rộng Cụm Multi-Master (8 Bước)
+
+Bảng tổng hợp 8 bước thực hành:
+
+| Bước | Thao Tác | Mục Tiêu Kỹ Thuật | Lệnh / Công Cụ |
+| :--- | :--- | :--- | :--- |
+| **1** | Cấu hình Load Balancer HAProxy | Thiết lập L4 TCP proxy cho API Server | `systemctl restart haproxy` |
+| **2** | Cấu hình Keepalived Virtual IP | Tạo địa chỉ VIP 192.168.10.100 | `systemctl restart keepalived` |
+| **3** | Khởi tạo Master đầu tiên (CP-01) | Init cụm với control-plane-endpoint | `kubeadm init --control-plane-endpoint` |
+| **4** | Cài đặt CNI Plugin | Kích hoạt mạng Pod Flannel/Calico | `kubectl apply -f calico.yaml` |
+| **5** | Trích xuất Certificate Key & Token | Chuẩn bị lệnh join cho Master tiếp theo | `kubeadm init phase upload-certs` |
+| **6** | Gia nhập Node Master thứ 2 (CP-02) | Mở rộng Control Plane lên 2 node | `kubeadm join --control-plane` |
+| **7** | Gia nhập Node Master thứ 3 (CP-03) | Hoàn tất Quorum 3 node etcd | `kubeadm join --control-plane` |
+| **8** | Kiểm định Leader Election & Leases | Xác thực phân bổ Leader trong cụm | `kubectl get leases -n kube-system` |
+
+---
+
+### Bước 1 & 2: Xác nhận Load Balancer và VIP hoạt động
+
+Trên máy chủ Load Balancer, kiểm tra trạng thái VIP:
+
+```bash
+ip addr show eth0 | grep "192.168.10.100"
+```
+
+Output:
+```text
+inet 192.168.10.100/24 scope global secondary eth0
+```
+
+---
+
+### Bước 3: Khởi tạo Control Plane Node đầu tiên (CP-01)
+
+Thực thi `kubeadm init` kèm tham số `--control-plane-endpoint` và `--upload-certs`:
+
+```bash
+sudo kubeadm init \
+  --control-plane-endpoint "192.168.10.100:6443" \
+  --upload-certs \
+  --pod-network-cidr=10.244.0.0/16
+```
+
+Lưu lại thông báo lệnh join ở cuối output, đặc biệt là phần có cờ `--control-plane --certificate-key`.
+
+---
+
+### Bước 4: Thiết lập kubeconfig và cài đặt CNI
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Cài đặt Calico CNI
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calico.yaml
+```
+
+---
+
+### Bước 5: Sinh lại Token và Certificate Key nếu bị hết hạn
+
+Trong trường hợp tham gia sau 2 giờ, trên `cp-01` chạy lệnh sau để sinh bộ thông số mới:
+
+```bash
+# 1. Tạo certificate-key mới
+CERT_KEY=$(sudo kubeadm init phase upload-certs --upload-certs | tail -n 1)
+
+# 2. Tạo token join mới
+JOIN_CMD=$(kubeadm token create --print-join-command)
+
+echo "$JOIN_CMD --control-plane --certificate-key $CERT_KEY"
+```
+
+---
+
+### Bước 6 & 7: Gia nhập `cp-02` và `cp-03` vào Control Plane
+
+Trên các node `cp-02` và `cp-03`, thực thi lệnh join vừa tạo:
+
+```bash
+sudo kubeadm join 192.168.10.100:6443 \
+  --token abcdef.0123456789abcdef \
+  --discovery-token-ca-cert-hash sha256:7b49f... \
+  --control-plane \
+  --certificate-key e62d8f80424561c1a969efd0616967be390195ec22cf294936d506045657ad56
+```
+
+---
+
+### Bước 8: Kiểm tra trạng thái Nodes và Leader Election Leases
+
+Quay lại `cp-01`, kiểm tra danh sách Control Plane nodes:
+
+```bash
 kubectl get nodes -l node-role.kubernetes.io/control-plane
 ```
 
-Con số chốt: **3** node Control Plane là số lượng tối thiểu để đạt cấu hình sẵn sàng cao HA.
-
----
-
-**Nguyên lý cốt lõi:** Mọi thành phần Control Plane trong mô hình HA đều chạy ở chế độ nhiều bản sao: API Server chạy chế độ Active-Active (song song qua Load Balancer), trong khi Scheduler và Controller Manager chạy chế độ Active-Passive chọn Leader qua cờ `--leader-elect=true`.
-
-**Giải thích cơ chế ngầm:** API Server là stateless nên có thể xử lý yêu cầu song song từ nhiều node. Scheduler và Controller Manager làm nhiệm vụ ra quyết định ghi nên bắt buộc chỉ có 1 Leader hoạt động tại một thời điểm để tránh xung đột điều phối.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc tại sao cả 3 node Control Plane đều chạy kube-scheduler nhưng chỉ có 1 node thực sự điều phối Pod.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra cờ leader-elect trên kube-scheduler static pod manifest
-grep -i "leader-elect" /etc/kubernetes/manifests/kube-scheduler.yaml
+Output chuẩn 3 node Master:
+```text
+NAME      STATUS   ROLES           AGE     VERSION
+cp-01     Ready    control-plane   15m     v1.30.0
+cp-02     Ready    control-plane   8m      v1.30.0
+cp-03     Ready    control-plane   4m      v1.30.0
 ```
 
-Con số chốt: **1** Leader duy nhất nắm quyền điều phối tại một thời điểm cho Scheduler và Controller Manager.
+Kiểm tra đối tượng Leader Election Lease trong namespace `kube-system`:
+
+```bash
+kubectl get leases -n kube-system
+```
+
+Output xác nhận Leader đang nắm giữ quyền điều phối:
+```text
+NAME                      HOLDER   AGE
+kube-controller-manager   cp-01    16m
+kube-scheduler            cp-02    16m
+```
 
 ---
 
-### 1.2. Nguyên lý Quorum etcd và quy tắc số lẻ node (3, 5, 7) (12 phút)
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
+
+<details class="qa-card">
+  <summary><b>Câu 1: Tại sao cụm etcd trong mô hình Control Plane HA luôn cần số lượng node lẻ (3, 5, 7)?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    etcd sử dụng thuật toán đồng thuận Raft yêu cầu đạt túc số đa số (Quorum) theo công thức <code>(N/2) + 1</code>. Một cụm 3 node chịu được 1 node sập (Quorum = 2), một cụm 4 node cũng chỉ chịu được 1 node sập (Quorum = 3) nhưng tốn thêm tài nguyên và tăng chi phí đồng bộ mạng. Do đó, số lượng lẻ là phương án tối ưu nhất về khả năng chịu lỗi và chi phí.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 2: Tham số --control-plane-endpoint trong lệnh kubeadm init có vai trò gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Tham số này xác định địa chỉ IP/DNS duy nhất và cổng của Load Balancer đứng trước toàn bộ cụm Control Plane. Địa chỉ này được nhúng trực tiếp vào chứng chỉ PKI (SANs) và các tệp cấu hình Kubeconfig của toàn bộ Worker Nodes và Master Nodes để đảm bảo liên lạc không bị phụ thuộc vào một IP Master đơn lẻ.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 3: Cơ chế hoạt động của kube-scheduler và kube-controller-manager trong mô hình Multi-Master là Active-Active hay Active-Passive?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Cả hai thành phần này hoạt động theo mô hình <b>Active-Passive (Lead-Follower)</b> thông qua cơ chế <b>Leader Election</b> (sử dụng tài nguyên <code>Lease</code> trong namespace <code>kube-system</code>). Tại một thời điểm chỉ có 1 instance thực thi điều phối/lập lịch để tránh xung đột quyết định, các instance còn lại ở chế độ Standby sẵn sàng tiếp quản khi Leader gặp sự cố.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 4: Cờ --upload-certs trong kubeadm init thực hiện nhiệm vụ gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Cờ này mã hóa toàn bộ chứng chỉ và khóa của Control Plane (như <code>ca.key</code>, <code>etcd/ca.key</code>, <code>sa.key</code>) bằng một khóa bí mật (Certificate Key) và tải lên lưu tạm trong đối tượng Secret <code>kubeadm-certs</code> tại namespace <code>kube-system</code>. Secret này tự động bị xóa sau 2 giờ để đảm bảo an toàn.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 5: Khi một node Control Plane trong mô hình Stacked etcd 3 node bị hỏng vĩnh viễn, các bước khôi phục chuẩn là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li>1. Sử dụng <code>etcdctl member remove &lt;member-id&gt;</code> để xóa node lỗi ra khỏi Quorum etcd.</li>
+      <li>2. Xóa node khỏi Kubernetes API bằng <code>kubectl delete node &lt;node-name&gt;</code>.</li>
+      <li>3. Chuẩn bị node mới, tạo certificate key mới bằng <code>kubeadm init phase upload-certs --upload-certs</code>.</li>
+      <li>4. Thực thi <code>kubeadm join --control-plane</code> từ node mới để gia nhập lại cụm.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 6: Tại sao không nên cấu hình kube-apiserver theo mô hình Active-Passive?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <code>kube-apiserver</code> là dịch vụ <b>Stateless (Không lưu trạng thái)</b>. Toàn bộ trạng thái của cụm được lưu trữ trong etcd. Do đó, tất cả các instance của API Server có thể và nên hoạt động đồng thời theo mô hình <b>Active-Active</b> đằng sau Load Balancer để chia tải và phản hồi song song.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 7: Cần mở những cổng mạng (Firewall Ports) nào giữa các node Control Plane trong mô hình Stacked HA?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>6443:</b> Kubernetes API Server</li>
+      <li><b>2379-2380:</b> etcd server client API &amp; etcd peer communication</li>
+      <li><b>10250:</b> Kubelet API</li>
+      <li><b>10259:</b> kube-scheduler</li>
+      <li><b>10257:</b> kube-controller-manager</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 8: Đối tượng API nào trong Kubernetes quản lý việc chuyển giao Leader khi Controller Manager chính bị crash?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Đối tượng <b>Lease</b> thuộc API Group <code>coordination.k8s.io/v1</code> nằm trong namespace <code>kube-system</code>. Leader định kỳ cập nhật trường <code>renewTime</code>. Nếu sau khoảng thời gian gia hạn (thường là 15 giây) không nhận được heartbeat, một instance khác sẽ cạnh tranh quyền và cập nhật trường <code>holderIdentity</code> để trở thành Leader mới.
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 9: Điểm khác biệt giữa HAProxy Layer 4 (TCP Mode) và Layer 7 (HTTP Mode) khi làm Load Balancer cho API Server là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>Layer 4 (TCP):</b> Chuyển tiếp trực tiếp gói tin TLS mã hóa nguyên vẹn đến API Server mà không cần giải mã SSL trên Load Balancer. Đây là cấu hình chuẩn bắt buộc để duy trì xác thực mTLS và Client Certificate.</li>
+      <li><b>Layer 7 (HTTP):</b> Cần giải mã SSL Termination trên Load Balancer, làm phức tạp việc xác thực mTLS giữa Kubelet/Client và API Server.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="qa-card">
+  <summary><b>Câu 10: Nếu cụm 3 node Stacked etcd bị sập 2 node cùng lúc, cụm có còn ghi được dữ liệu mới không và cách khắc phục khẩn cấp là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Cụm <b>KHÔNG</b> thể ghi dữ liệu mới vì chỉ còn 1/3 node (mất Quorum 2/3). Để khắc phục khẩn cấp, quản trị viên phải can thiệp trực tiếp vào node còn sống duy nhất, chỉnh sửa cấu hình etcd bằng cờ <code>--force-new-cluster</code> để tái lập Quorum 1 node từ dữ liệu hiện tại, sau đó mới tiến hành join thêm các node mới.
+  </div>
+</details>
+
+---
+
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
 ```mermaid
-graph TD
-    subgraph Stacked_Topology ["Mô hình 1: Stacked etcd (Khuyên dùng cho CKA)"]
-        CP1["Control Plane 01 (API Server + etcd 1)"] <--> CP2["Control Plane 02 (API Server + etcd 2)"]
-        CP2 <--> CP3["Control Plane 03 (API Server + etcd 3)"]
-        CP3 <--> CP1
-        LB1["Load Balancer / VIP: 192.168.1.100:6443"] --> CP1
-        LB1 --> CP2
-        LB1 --> CP3
-    end
-
-    subgraph External_Topology ["Mô hình 2: External etcd (Độc lập hạ tầng)"]
-        EXT1["etcd Node 1"] <--> EXT2["etcd Node 2"]
-        EXT2 <--> EXT3["etcd Node 3"]
-        EXT3 <--> EXT1
-    end
-
-    style Stacked_Topology fill:none,stroke:#f57c00,stroke-width:2px
-    style External_Topology fill:none,stroke:#0288d1,stroke-width:2px
+mindmap
+  root((HA Control Plane))
+    Kien Truc Topo
+      Stacked etcd (3 Nodes tien loi)
+      External etcd (Tach roi, sieu ben)
+      Quorum = N/2 + 1
+    Can Bang Tai
+      Load Balancer L4 TCP
+      Virtual IP VIP Keepalived
+      --control-plane-endpoint
+    Van Hanh Kubeadm
+      --upload-certs (Secret kubeadm-certs)
+      kubeadm join --control-plane
+      Leader Election Leases
 ```
 
----
-
-**Nguyên lý cốt lõi:** Số lượng node trong cụm etcd bắt buộc phải là **số lẻ (3, 5, 7)** để tối ưu khả năng chịu lỗi (Fault Tolerance); đa số tối thiểu Quorum để cụm ghi dữ liệu được tính theo công thức: `Quorum = (N / 2) + 1` (lấy phần nguyên).
-
-**Giải thích cơ chế ngầm:** Cụm 3 node có Quorum = 2 (chịu lỗi sập 1 node). Cụm 4 node có Quorum = 3 (chỉ chịu lỗi sập 1 node, giống hệt cụm 3 node nhưng tốn chi phí và tăng nguy cơ sập do chia đôi mạng Network Partition).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thiết kế cụm etcd có 2 hoặc 4 node và thắc mắc tại sao cụm 4 node không chịu lỗi tốt hơn cụm 3 node.
-
-**Minh hoạ.**
-
-```bash
-# Bảng Quorum etcd:
-# 1 node -> Quorum 1 -> Chịu lỗi 0 node
-# 3 node -> Quorum 2 -> Chịu lỗi 1 node
-# 5 node -> Quorum 3 -> Chịu lỗi 2 node
-```
-
-Con số chốt: **2** node phải sống tối thiểu trong cụm etcd 3 node để đạt Quorum.
-
----
-
-**Nguyên lý cốt lõi:** Khi cụm etcd bị mất Quorum (ví dụ sập 2/3 node), etcd sẽ lập tức chuyển sang chế độ Read-Only (chỉ cho đọc, cấm ghi); mọi thao tác `kubectl create`, `apply`, `delete` đều bị API Server từ chối.
-
-**Giải thích cơ chế ngầm:** Ngăn chặn tình trạng sai lệch dữ liệu (Split-Brain). API Server không thể ghi dữ liệu mới khi etcd không đạt đủ số lượng biểu quyết đa số.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Thắc mắc tại sao lệnh `kubectl get pods` vẫn chạy được nhưng `kubectl create pod` lại báo lỗi `etcdserver: leader changed` hoặc `context deadline exceeded`.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra trạng thái health của cụm etcd 3 node
-etcdctl endpoint health --endpoints=https://10.0.0.10:2379,https://10.0.0.11:2379,https://10.0.0.12:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/peer.crt --key=/etc/kubernetes/pki/etcd/peer.key
-```
-
-Con số chốt: **100%** các lệnh ghi bị chặn khi etcd mất Quorum.
-
----
-
-**Nguyên lý cốt lõi:** Trong cụm etcd 3 node, việc bầu chọn etcd Leader diễn ra hoàn toàn tự động qua thuật toán đồng thuận Raft; khi node Leader hiện tại bị ngắt kết nối, 2 node Follower còn lại lập tự tổ chức bầu chọn Leader mới trong thời gian < 1 giây.
-
-**Giải thích cơ chế ngầm:** Thuật toán Raft đảm bảo tính sẵn sàng cao mà không cần can thiệp thủ công từ quản trị viên.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tự động dùng script ngoài cố định node Leader etcd gây lỗi xung đột Raft.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra etcd Leader hiện tại trong cụm
-etcdctl endpoint status --write-out=table
-```
-
-Con số chốt: **1** giây là thời gian tối đa để etcd bầu chọn Leader mới.
-
----
-
-### 1.3. So sánh Stacked etcd topology vs External etcd topology (10 phút)
-
-**Nguyên lý cốt lõi:** Mô hình Stacked etcd chạy etcd dạng Static Pod trực tiếp trên cùng các node Control Plane giúp tiết kiệm máy chủ và đơn giản hoá việc triển khai bằng `kubeadm`; mô hình External etcd tách cụm etcd ra các máy chủ riêng biệt giúp cô lập tài nguyên RAM/CPU và tăng độ tin cậy.
-
-**Giải thích cơ chế ngầm:** Với các cụm vừa và nhỏ (dưới 500 node), Stacked etcd là lựa chọn tiêu chuẩn được CNCF khuyên dùng cho CKA. Các tập đoàn lớn ưu tiên External etcd để tránh việc API Server ngốn hết IOPS đĩa của etcd.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Lúng túng không biết chọn mô hình etcd nào khi làm bài thi CKA hoặc thiết kế hạ tầng công ty.
-
-**Minh hoạ.**
-
-```bash
-# Kiểm tra etcd pod đang chạy dạng stacked trên control plane
-kubectl get pods -n kube-system -l component=etcd
-```
-
-Con số chốt: **2** mô hình kiến trúc etcd chính (`Stacked` và `External`).
-
----
-
-**Nguyên lý cốt lõi:** Trong mô hình External etcd, việc giao tiếp giữa API Server và cụm etcd độc lập bắt buộc sử dụng mTLS qua các chứng chỉ cert/key khai báo trong cờ `--etcd-servers`, `--etcd-cafile`, `--etcd-certfile`, `--etcd-keyfile` của API Server manifest.
-
-**Giải thích cơ chế ngầm:** Tách rời etcd yêu cầu bảo mật đường truyền tuyệt đối trên hạ tầng mạng riêng. API Server chỉ kết nối tới etcd khi có chứng chỉ client hợp lệ do etcd CA ký.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo thiếu chứng chỉ mTLS làm API Server không thể kết nối tới cụm External etcd.
-
-**Minh hoạ.**
-
-```bash
-# Trích xuất cờ etcd-servers từ API Server manifest
-grep -i "etcd-servers" /etc/kubernetes/manifests/kube-apiserver.yaml
-```
-
-Con số chốt: **4** cờ cấu hình etcd bắt buộc trên API Server manifest (`servers`, `cafile`, `certfile`, `keyfile`).
-
----
-
-### 1.4. Cấu hình Load Balancer VIP và cờ `--control-plane-endpoint` (4 phút)
-
-**Nguyên lý cốt lõi:** Bắt buộc phải khởi tạo cụm HA bằng cờ `--control-plane-endpoint="<IP-or-Domain>:<Port>"` trỏ tới địa chỉ VIP/Load Balancer TRƯỚC KHI thực hiện gia nhập các node Control Plane khác.
-
-**Giải thích cơ chế ngầm:** Cờ này ghi địa chỉ endpoint dùng chung vào `kubelet.conf` và chứng chỉ TLS SANs của API Server. Nếu không truyền cờ này lúc `kubeadm init`, Kubelet của Worker nodes sẽ trỏ cứng vào IP của node `cp-01` duy nhất, làm mất tác dụng của HA Load Balancer.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy `kubeadm init` không có cờ `--control-plane-endpoint`, sau đó cố `kubeadm join --control-plane` làm node mới không kết nối được.
-
-**Minh hoạ.**
-
-```bash
-# Khởi tạo node control plane đầu tiên với endpoint Load Balancer VIP
-kubeadm init --control-plane-endpoint "192.168.1.100:6443" --upload-certs
-```
-
-Con số chốt: **6443** là cổng mặc định của API Server trên Load Balancer.
-
----
-
-**Nguyên lý cốt lõi:** Lệnh gia nhập node Control Plane mới bắt buộc phải chứa cờ `--control-plane` và cờ `--certificate-key` (hoặc dùng `kubeadm init phase upload-certs --upload-certs` để tự động chia sẻ chứng chỉ mã hóa).
-
-**Giải thích cơ chế ngầm:** Cờ `--control-plane` báo cho `kubeadm` biết node này sẽ chạy API Server/etcd chứ không phải Worker node. Cờ `--certificate-key` dùng để giải mã bộ chứng chỉ CA được đẩy lên Secret tạm thời `kubeadm-certs` trong Namespace `kube-system`.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Quên cờ `--control-plane` làm node mới bị join nhầm thành Worker node thông thường.
-
-**Minh hoạ.**
-
-```bash
-# Gia nhập node Control Plane thứ hai vào cụm HA
-kubeadm join 192.168.1.100:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> --control-plane --certificate-key <key>
-```
-
-Con số chốt: **2** cờ bắt buộc khi join node Control Plane mới (`--control-plane` và `--certificate-key`).
-
----
-
-### 1.5. Đưa vào cụm thật (4 phút)
-
-### Áp vào cụm đang chạy thì làm gì trước
-
-1. **Dựng bộ cân bằng tải Load Balancer (HAProxy/Keepalived VIP) trước:** Đảm bảo VIP (ví dụ `192.168.1.100:6443`) phản hồi ping và chuyển tiếp traffic tới các node Control Plane.
-2. **Khởi tạo node `cp-01` với `--upload-certs`:** Lưu lại lệnh `kubeadm join` chứa `--control-plane` và `--certificate-key`.
-3. **Gia nhập `cp-02` và `cp-03` tuần tự:** Không join đồng thời 2 node Control Plane cùng lúc để tránh xung đột etcd Raft membership.
-
-### Cái gì hỏng nếu áp thẳng lên prod
-
-- **Đặt số lượng node Control Plane là số chẵn (2 hoặc 4 node):** Giảm khả năng chịu lỗi và tăng nguy cơ đứt Quorum etcd.
-- **Quên truyền `--control-plane-endpoint` lúc `kubeadm init`:** Phải đập đi dựng lại toàn bộ cụm vì chứng chỉ API Server bị thiếu IP SANs của Load Balancer.
-- **Quy trình áp thử an toàn:**
-  - Kiểm tra kết nối Load Balancer: `nc -zv 192.168.1.100 6443`.
-  - Chạy `kubeadm init --control-plane-endpoint="192.168.1.100:6443" --upload-certs`.
-  - Join `cp-02`, kiểm tra `kubectl get nodes`. Join `cp-03`, kiểm tra etcd member list.
-
-### Đo trước — đo sau
-
-1. **Số lượng etcd members:** Tăng từ 1 member lên đúng 3 members (`etcdctl member list`).
-2. **Trạng thái sẵn sàng:** Tắt nguồn thử 1 node Control Plane bất kỳ (`cp-01`), cụm vẫn thực hiện lệnh `kubectl get pods` bình thường qua 2 node còn lại.
-3. **Thời gian khôi phục failover:** Đạt < 3 giây chuyển mạch tự động trên Load Balancer.
-
-### Khi nào KHÔNG nên dùng
-
-- **Không dựng HA Control Plane cho môi trường Dev/Test cá nhân:** Tốn gấp 3 lần tài nguyên CPU/RAM không cần thiết.
-- **Không dùng Stacked etcd trên các ổ đĩa HDD tốc độ chậm:** etcd yêu cầu ổ SSD/NVMe IOPS cao để duy trì sync Quorum Raft.
-
----
-
-### 1.6. Bẫy hay gặp (2 phút)
-
-| # | Bẫy hay gặp | Vì sao dính bẫy | Làm đúng là (kèm tên lệnh / con số) |
-|---|---|---|---|
-| 1 | Dựng cụm HA với 2 node Control Plane | Vi phạm nguyên tắc Quorum số lẻ (`Quorum = 2`, sập 1 node là mất Quorum) | Dựng tối thiểu đúng **3** node Control Plane |
-| 2 | Quên cờ `--control-plane-endpoint` lúc `kubeadm init` | Kubeconfig và cert bị trỏ cứng vào IP node 1 duy nhất | Luôn truyền `--control-plane-endpoint="<VIP>:6443"` |
-| 3 | Quên cờ `--control-plane` khi gõ `kubeadm join` | Node mới bị biến thành Worker node thay vì Control Plane | Thêm cờ `--control-plane` vào lệnh join |
-| 4 | Khóa mã hóa `--certificate-key` hết hạn sau 2 tiếng | Secret `kubeadm-certs` tự dọn dẹp sau 2 giờ | Chạy `kubeadm init phase upload-certs --upload-certs` tạo key mới |
-| 5 | Join 2 node Control Plane cùng một lúc | Xung đột bầu chọn Raft etcd member | Join tuần tự từng node một, chờ `Ready` mới join node tiếp theo |
-| 6 | Dùng Load Balancer layer 7 (HTTP) làm lỗi mTLS | API Server yêu cầu mTLS passthrough ở Layer 4 (TCP) | Cấu hình Load Balancer ở chế độ **TCP Stream Passthrough** (port 6443) |
-| 7 | Nhầm lẫn giữa Stacked etcd và External etcd | Không phân biệt được etcd chạy trên CP hay trên máy riêng | Nhớ Stacked = cùng node, External = máy riêng |
-| 8 | Thắc mắc vì sao etcd báo `leader changed` liên tục | Đĩa ghi etcd quá chậm (HDD/SATA latency cao) | Dùng đĩa SSD/NVMe có latency fdatasync < 10ms |
-| 9 | Quên mở cổng `2380` giữa các node Control Plane | etcd peer sync bị chặn bởi firewall/iptables | Mở cổng `2380/TCP` cho etcd peer communication |
-| 10 | Không kiểm tra `etcdctl member list` sau khi join | Node CP đã Ready nhưng etcd member chưa join đủ 3 | Chạy `etcdctl member list` xác nhận đủ 3 endpoints |
-| 11 | Rút nguồn 2 node Control Plane cùng lúc và thắc mắc tại sao cụm chết | Cụm 3 node chỉ chịu lỗi sập tối đa 1 node | Giữ tối thiểu 2/3 node sống để bảo vệ Quorum |
-| 12 | Sửa nhầm `hostPath` etcd trên node CP 2 trỏ về CP 1 | Làm etcd node 2 đọc trùng dữ liệu node 1 gây corrupt | Đảm bảo tệp etcd manifest độc lập trên từng node |
-
----
-
-## §10. Tóm tắt (2 phút)
-
-```mermaid
-graph TD
-    A["Tạo VIP / Load Balancer: 192.168.1.100:6443"] --> B["cp-01: kubeadm init --control-plane-endpoint --upload-certs"]
-    B --> C["cp-02: kubeadm join --control-plane --certificate-key"]
-    C --> D["cp-03: kubeadm join --control-plane --certificate-key"]
-    D --> E["Cụm HA 3 Nodes OK: Quorum 2/3, chịu lỗi sập 1 node"]
-
-    style A fill:none,stroke:#333,stroke-width:2px
-    style B fill:none,stroke:#333,stroke-width:2px
-    style E fill:none,stroke:#333,stroke-width:2px
-```
-
-### Năm điều phải nhớ
-
-1. **Nguyên tắc số lẻ Quorum:** Cụm etcd HA bắt buộc phải có 3, 5, hoặc 7 node; cụm 3 node có Quorum = 2 (chịu lỗi sập 1 node).
-2. **Active-Active vs Active-Passive:** API Server chạy Active-Active qua Load Balancer; Scheduler và Controller Manager chạy Active-Passive chọn 1 Leader qua `--leader-elect=true`.
-3. **Chìa khóa `--control-plane-endpoint`:** Bắt buộc truyền cờ này lúc `kubeadm init` trỏ tới IP/Domain của Load Balancer VIP.
-4. **Hai cờ gia nhập Control Plane:** `kubeadm join <VIP>:6443 ... --control-plane --certificate-key <key>`.
-5. **Stacked vs External etcd:** Stacked etcd chạy static pod cùng node Control Plane (chuẩn CKA); External etcd tách riêng máy chủ.
-
----
-
-## §11. Câu hỏi tự kiểm tra
-
-1. Vì sao cụm HA Control Plane bắt buộc phải sử dụng số lượng node Control Plane là số lẻ (3, 5 node) mà không dùng số chẵn (2, 4 node)?
-2. Công thức tính Quorum etcd tối thiểu để cụm duy trì quyền ghi dữ liệu là gì?
-3. Phân biệt trạng thái hoạt động (Active-Active vs Active-Passive) giữa API Server và Scheduler/Controller Manager trong cụm HA.
-4. Cờ `--control-plane-endpoint` trong lệnh `kubeadm init` có tác dụng gì và tại sao bắt buộc phải truyền cờ này?
-5. Phân biệt sự khác nhau giữa kiến trúc Stacked etcd topology và External etcd topology.
-6. Hai cờ bắt buộc nào phải có trong câu lệnh `kubeadm join` để gia nhập một node mới làm Control Plane?
-7. Nếu 1 trong 3 node Control Plane trong cụm HA 3 node bị sập hoàn toàn thì chuyện gì xảy ra với các thao tác `kubectl`?
-8. Điều gì xảy ra đối với cụm khi 2 trong 3 node Control Plane bị sập đồng thời (mất Quorum etcd)?
-9. Lệnh nào giúp kiểm tra danh sách tất cả các etcd members đang tham gia cụm đồng bộ?
-10. Tại sao Load Balancer đứng trước các API Server bắt buộc phải cấu hình ở Layer 4 (TCP Stream Passthrough) mà không dùng Layer 7 (HTTP)?
-11. Hai chế độ hỏng (1 im lặng do quên --control-plane-endpoint, 1 âm thầm do sập etcd Quorum vì dính số chẵn 2 node) là gì?
-12. Khóa mã hóa `--certificate-key` dùng khi join node Control Plane mới có thời hạn mặc định là bao lâu và làm sao để tạo lại key mới?
-
-### Đáp án
-
-1. Vì số lẻ tối ưu khả năng chịu lỗi tốt nhất theo thuật toán Raft; cụm 4 node có Quorum = 3 (chịu lỗi 1 node, giống hệt cụm 3 node nhưng tốn chi phí và tăng rủi ro đứt mạng).
-2. Công thức Quorum = `(N / 2) + 1` (lấy phần nguyên).
-3. API Server chạy Active-Active (xử lý song song qua Load Balancer); Scheduler và Controller Manager chạy Active-Passive (1 Leader duy nhất qua `--leader-elect=true`).
-4. Khai báo địa chỉ VIP/Domain của Load Balancer làm điểm truy cập duy nhất; bắt buộc để ghi vào cert SANs và kubelet.conf.
-5. Stacked etcd chạy etcd dạng static pod cùng node CP; External etcd tách etcd chạy trên các máy chủ vật lý/VM riêng biệt.
-6. Hai cờ: `--control-plane` và `--certificate-key <key>`.
-7. Cụm vẫn hoạt động bình thường 100% vì 2 node còn lại đủ Quorum (2/3) để xử lý ghi/đọc dữ liệu.
-8. etcd chuyển sang chế độ Read-Only (chỉ cho đọc); mọi thao tác ghi (`create`, `apply`, `delete`) đều bị chặn do đứt Quorum.
-9. Lệnh `etcdctl member list --endpoints=... --cacert=... --cert=... --key=...`.
-10. Vì giao tiếp giữa client và API Server sử dụng mTLS end-to-end; Load Balancer Layer 4 giữ nguyên mã hoá TLS mà không cần giải mã HTTPS.
-11. Chế độ 1: Quên --control-plane-endpoint làm Kubelet trỏ cứng IP CP1 duy nhất, mất tác dụng HA khi CP1 sập; Chế độ 2: Thiết kế 2 node CP làm sập 1 node là cụm đứt Quorum hoàn toàn.
-12. Thời hạn mặc định là 2 giờ (7200 giây); tạo lại key mới bằng lệnh `kubeadm init phase upload-certs --upload-certs`.
-
----
-
-## §12. Tài liệu tham khảo
-
-| Nguồn tài liệu | Phiên bản Kubernetes áp dụng | Nội dung chính |
-|---|---|---|
-| Official Docs: Creating Highly Available Clusters with kubeadm | Kubernetes v1.35 | Hướng dẫn dựng HA Control Plane với Stacked etcd |
-| Official Docs: Options for Highly Available Topology | Kubernetes v1.35 | Phân tích Stacked etcd vs External etcd topology |
-| File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
-
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
-> [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên cụm Kubernetes 1.30+ tiêu chuẩn (hoặc cụm kind/kubeadm lab). Hãy đảm bảo ngữ cảnh dòng lệnh `kubectl config current-context` đã trỏ chính xác vào cụm thực hành trước khi thực thi.
-
-## Khối thực hành — 120 phút
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm chứng BẰNG LỆNH) |
-|---|---|---|
-| TH1 | Khai báo cấu hình `kubeadm init` HA với `--control-plane-endpoint` | Tệp `kubeadm-ha-config.yaml` được khởi tạo chuẩn |
-| TH2 | Upload chứng chỉ mã hóa và tạo `--certificate-key` mới | Lệnh `kubeadm init phase upload-certs` in ra chuỗi 64 ký tự hash |
-| TH3 | Khảo sát danh sách etcd members và Quorum 3 node | `etcdctl member list` hiển thị đủ 3 etcd endpoints active |
-| TH4 | Kiểm tra trạng thái Active-Passive Leader của `kube-scheduler` | `kubectl get lease -n kube-system` in ra thông tin leader hiện tại |
-| TH5 | Mô phỏng đứt Quorum etcd và xác nhận cơ chế Read-Only | Lệnh `create` bị từ chối khi chỉ còn 1 etcd active |
-| TH6 | Xác minh kịch bản failover HA Control Plane với script tự động | Script bash kiểm tra 100% HA Status OK |
-| TH7 | Nộp đủ 4 hiện vật vào portfolio | Thư mục `k8s-portfolio/buoi-12/` chứa đủ 4 file md/yaml/sh |
-
----
-
-## L1. Điều kiện tiên quyết về môi trường
-
-| # | Kiểm tra điều kiện | Câu lệnh kiểm tra | Kết quả kỳ vọng |
-|---|---|---|---|
-| 1 | Cụm `kubeadm` 3 node đang ở v1.35 | `kubectl get nodes` | Hiển thị 3 node `cp-01`, `worker-01`, `worker-02` `Ready` |
-| 2 | Kubeconfig trỏ context `kubeadm` | `kubectl config current-context` | In ra đúng `kubeadm` |
-| 3 | etcdctl sẵn sàng với cờ TLS | `etcdctl version` | Hiển thị etcdctl v3.5+ |
-| 4 | Thư mục hiện vật đã sẵn sàng | `mkdir -p k8s-portfolio/buoi-12` | Thư mục được tạo thành công |
-| 5 | Quyền cluster-admin của người thực hành | `kubectl auth can-i '*' '*'` | In ra `yes` |
-
-```bash
-# Kiểm tra môi trường bắt buộc trước khi thực hiện bài lab
-kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUONG — ĐẠT" || echo "CHECKPOINT MOI TRUONG — LỖI (Trỏ sai context)"
-```
-
----
-
-## L2. Kiến trúc bài lab
-
-```mermaid
-graph TD
-    subgraph HA_Control_Plane ["Kiến trúc HA Control Plane (3 Nodes)"]
-        VIP["Load Balancer VIP / Endpoint: 192.168.1.100:6443"] --> API1["cp-01 API Server (Active)"]
-        VIP --> API2["cp-02 API Server (Active)"]
-        VIP --> API3["cp-03 API Server (Active)"]
-        
-        API1 <--> ETCD1["etcd Member 1"]
-        API2 <--> ETCD2["etcd Member 2"]
-        API3 <--> ETCD3["etcd Member 3"]
-        
-        ETCD1 <--> ETCD2
-        ETCD2 <--> ETCD3
-        ETCD3 <--> ETCD1
-    end
-
-    style HA_Control_Plane fill:none,stroke:#f57c00,stroke-width:2px
-    style VIP fill:none,stroke:#0288d1,stroke-width:2px
-```
-
----
-
-## L3. Bước 1 — Cấu hình `kubeadm init` HA và upload chứng chỉ (`upload-certs`) (30 phút)
-
-### Thao tác 1.1: Tạo file cấu hình `kubeadm` HA và sinh khóa mã hóa chứng chỉ
-
-```bash
-# 1. Tạo tệp cấu hình InitConfiguration với controlPlaneEndpoint
-cat << 'EOF' > k8s-portfolio/buoi-12/kubeadm-ha-config.yaml
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: InitConfiguration
-localAPIEndpoint:
-  advertiseAddress: "10.0.0.10"
-  bindPort: 6443
----
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: ClusterConfiguration
-kubernetesVersion: "v1.35.0"
-controlPlaneEndpoint: "192.168.1.100:6443"
-networking:
-  podSubnet: "10.244.0.0/16"
-EOF
-
-# 2. Sinh khóa certificate-key mới bằng lệnh upload-certs
-kubeadm init phase upload-certs --upload-certs > /tmp/cert-key.txt 2>&1 || echo "c8e6c9388e3c0288d1f57c00ffe0b2f9f3332pxc8e6c9388e3c0288d1f57c00ffe0b2" > /tmp/cert-key.txt
-```
-
-**CHECKPOINT 1 — Tệp cấu hình kubeadm-ha-config.yaml chứa đúng controlPlaneEndpoint.**
-
-```bash
-grep -q "controlPlaneEndpoint" k8s-portfolio/buoi-12/kubeadm-ha-config.yaml && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
-
-**CHECKPOINT 2 — Lệnh upload-certs sinh khóa certificate-key thành công.**
-
-```bash
-[ -s /tmp/cert-key.txt ] && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
-
----
-
-## L4. Bước 2 — Khảo sát Quorum etcd và trạng thái 3 node etcd (30 phút)
-
-### Thao tác 2.1: Truy vấn danh sách etcd members và bảng ma trận Quorum
-
-```bash
-# 1. Kiểm tra danh sách etcd members trong cụm hiện tại
-ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt --key=/etc/kubernetes/pki/etcd/healthcheck-client.key member list > /tmp/etcd-members.txt
-
-# 2. Tạo tệp ma trận Quorum etcd
-cat << 'EOF' > k8s-portfolio/buoi-12/quorum-matrix.txt
-BẢNG TÍNH QUORUM ETCD VÀ KHẢ NĂNG CHỊU LỖI:
-- Cụm 1 Node: Quorum = 1 -> Chịu lỗi = 0 Node
-- Cụm 2 Nodes: Quorum = 2 -> Chịu lỗi = 0 Node (Rủi ro sập Quorum cao)
-- Cụm 3 Nodes: Quorum = 2 -> Chịu lỗi = 1 Node (Chuẩn sản xuất HA)
-- Cụm 4 Nodes: Quorum = 3 -> Chịu lỗi = 1 Node (Không tăng khả năng chịu lỗi)
-- Cụm 5 Nodes: Quorum = 3 -> Chịu lỗi = 2 Nodes (Chuẩn tập đoàn lớn)
-EOF
-```
-
-**CHECKPOINT 3 — Tệp etcd-members.txt ghi nhận danh sách etcd member thành công.**
-
-```bash
-[ -s /tmp/etcd-members.txt ] && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
-
-**CHECKPOINT 4 — Tệp quorum-matrix.txt ghi đủ 5 dòng ma trận tính Quorum etcd.**
-
-```bash
-grep -q "Cụm 3 Nodes: Quorum = 2" k8s-portfolio/buoi-12/quorum-matrix.txt && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
-
-**CHECKPOINT 5 — CA ĐỐI CHỨNG: Khi etcd sập không đạt Quorum (mô phỏng 0/1 endpoint active), API Server từ chối lệnh create.**
-
-```bash
-ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:23799 endpoint health 2>&1 | grep -Ei "connection refused|context deadline" >/dev/null && echo "CHECKPOINT 5 — ĐẠT" || echo "CHECKPOINT 5 — ĐẠT"
-```
-
----
-
-## L5. Bước 3 — Kiểm tra cơ chế Leader Election của Scheduler & Controller Manager (30 phút)
-
-### Thao tác 5.1: Khảo sát đối tượng Lease của `kube-scheduler` trong Namespace `kube-system`
-
-```bash
-# 1. Truy vấn Leader hiện tại của kube-scheduler
-kubectl get lease kube-scheduler -n kube-system -o yaml > /tmp/scheduler-lease.yaml
-
-# 2. Truy vấn Leader hiện tại của kube-controller-manager
-kubectl get lease kube-controller-manager -n kube-system -o yaml > /tmp/controller-lease.yaml
-
-# 3. Ghi kết quả thông tin Leader hiện tại vào hiện vật
-cat << EOF > /tmp/leader-election-status.txt
-LEADER ELECTION STATUS:
-- kube-scheduler Leader: $(grep holderIdentity /tmp/scheduler-lease.yaml | awk '{print $2}')
-- kube-controller-manager Leader: $(grep holderIdentity /tmp/controller-lease.yaml | awk '{print $2}')
-EOF
-```
-
-**CHECKPOINT 6 — Đối tượng Lease kube-scheduler tồn tại trong Namespace kube-system.**
-
-```bash
-kubectl get lease kube-scheduler -n kube-system >/dev/null 2>&1 && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
-
-**CHECKPOINT 7 — Tệp leader-election-status.txt ghi nhận thông tin Leader hiện tại.**
-
-```bash
-grep -q "kube-scheduler Leader" /tmp/leader-election-status.txt && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
-
-**CHECKPOINT 8 — CA ĐỐI CHỨNG: Gia nhập node mới bằng kubeadm join mà quên cờ --control-plane sẽ làm node bị join thành Worker.**
-
-```bash
-kubeadm join --help | grep -q "\-\-control-plane" && echo "CHECKPOINT 8 — ĐẠT" || echo "CHECKPOINT 8 — LỖI"
-```
-
----
-
-## L6. Bước 4 — Kiểm thử kịch bản Failover và xác minh HA Control Plane (20 phút)
-
-### Thao tác 6.1: Mô phỏng kiểm tra tính liên tục của API Server
-
-```bash
-# 1. Ghi log giả lập lệnh join node control plane 2
-cat << 'EOF' > /tmp/join-control-plane.log
-RUNNING CONTROL PLANE JOIN SIMULATION:
-1. Fetching control-plane-endpoint 192.168.1.100:6443
-2. Downloading PKI certificates with --certificate-key
-3. Initializing static pods: kube-apiserver, kube-scheduler, kube-controller-manager, etcd
-4. Joined control-plane node cp-02 successfully.
-EOF
-
-# 2. Kiểm tra cờ leader-elect trên 100% static pod manifests
-grep -q "leader-elect=true" /etc/kubernetes/manifests/kube-scheduler.yaml && echo "Leader-Elect: OK" > /tmp/ha-check.txt
-```
-
-**CHECKPOINT 9 — Static pod manifest kube-scheduler bật cờ --leader-elect=true.**
-
-```bash
-grep -q "Leader-Elect: OK" /tmp/ha-check.txt && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
-
-**CHECKPOINT 10 — Cụm duy trì ít nhất 1 node Control Plane Ready.**
-
-```bash
-kubectl get nodes -l node-role.kubernetes.io/control-plane --no-headers | grep -q "Ready" && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
-
-**CHECKPOINT 11 — Lệnh kubectl auth can-i test thành công trên API Server.**
-
-```bash
-kubectl auth can-i get nodes | grep -qx "yes" && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
-
-**CHECKPOINT 12 — 100% 3 node cp-01, worker-01, worker-02 duy trì trạng thái Ready.**
-
-```bash
-kubectl get nodes --no-headers | grep -c "Ready" | grep -qx "3" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
-```
-
----
-
-## L7. Nộp hiện vật và dọn dẹp (10 phút)
-
-### Thao tác 7.1: Gom hiện vật nộp bài
-
-```bash
-# 1. Copy các file log vào thư mục portfolio
-cp /tmp/etcd-members.txt k8s-portfolio/buoi-12/etcd-member-list.txt 2>/dev/null || echo "etcd member list logged" > k8s-portfolio/buoi-12/etcd-member-list.txt
-cp /tmp/join-control-plane.log k8s-portfolio/buoi-12/join-control-plane.log 2>/dev/null || true
-cp /tmp/leader-election-status.txt k8s-portfolio/buoi-12/leader-election-status.txt 2>/dev/null || true
-
-# 2. Tạo tệp verify-ha-failover.sh
-cat << 'EOF' > k8s-portfolio/buoi-12/verify-ha-failover.sh
-#!/bin/bash
-# Script kiểm tra cấu hình HA Control Plane và etcd Quorum
-
-EP_CHECK=$(grep -q "controlPlaneEndpoint" k8s-portfolio/buoi-12/kubeadm-ha-config.yaml && echo "OK")
-QUORUM_CHECK=$(grep -q "Cụm 3 Nodes" k8s-portfolio/buoi-12/quorum-matrix.txt && echo "OK")
-API_CHECK=$(kubectl auth can-i get nodes 2>/dev/null)
-
-if [ "$EP_CHECK" == "OK" ] && [ "$QUORUM_CHECK" == "OK" ] && [ "$API_CHECK" == "yes" ]; then
-    echo "VERIFY HA FAILOVER — ĐẠT (HA Control Plane & Quorum Matrix OK)"
-else
-    echo "VERIFY HA FAILOVER — LỖI (Endpoint: $EP_CHECK, Quorum: $QUORUM_CHECK, API: $API_CHECK)"
-fi
-EOF
-
-chmod +x k8s-portfolio/buoi-12/verify-ha-failover.sh
-./k8s-portfolio/buoi-12/verify-ha-failover.sh
-
-# 3. Tạo tệp nhat-ky-buoi-12.md
-cat << 'EOF' > k8s-portfolio/buoi-12/nhat-ky-buoi-12.md
-# NHẬT KÝ THU HOẠCH BUỔI 12
-
-1. Quy tắc Quorum etcd số lẻ:
-   - Cụm HA 3 node etcd có Quorum = 2, chịu lỗi sập tối đa 1 node.
-   - Sập 2/3 node làm etcd chuyển sang Read-Only (chặn mọi lệnh ghi).
-
-2. Cờ --control-plane-endpoint:
-   - Bắt buộc truyền lúc kubeadm init trỏ vào IP VIP/Load Balancer (port 6443) để ghi cert SANs.
-
-3. Hai cờ gia nhập node Control Plane mới:
-   - kubeadm join <VIP>:6443 --control-plane --certificate-key <key>
-EOF
-
-# 4. Dọn dẹp tệp tạm
-rm -f /tmp/cert-key.txt /tmp/etcd-members.txt /tmp/scheduler-lease.yaml /tmp/controller-lease.yaml /tmp/leader-election-status.txt /tmp/join-control-plane.log /tmp/ha-check.txt
-```
-
-**CHECKPOINT 13 — Đủ 4 tệp hiện vật trong thư mục portfolio.**
-
-```bash
-[ -f k8s-portfolio/buoi-12/kubeadm-ha-config.yaml ] && [ -f k8s-portfolio/buoi-12/quorum-matrix.txt ] && [ -f k8s-portfolio/buoi-12/verify-ha-failover.sh ] && [ -f k8s-portfolio/buoi-12/nhat-ky-buoi-12.md ] && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
-```
-
----
-
-## L8. Xử lý sự cố thường gặp trong lab
-
-| # | Triệu chứng lỗi | Nguyên nhân khả dĩ | Cách xử lý sửa lỗi |
-|---|---|---|---|
-| 1 | Lỗi `kubeadm join` thất bại do hết hạn `--certificate-key` | Khóa mã hóa Secret `kubeadm-certs` tự dọn dẹp sau 2 giờ | Chạy `kubeadm init phase upload-certs --upload-certs` lấy key mới |
-| 2 | Lệnh `kubectl` báo `connection refused` khi node CP1 sập | Quên truyền cờ `--control-plane-endpoint` lúc init | Đập đi dựng lại cụm và truyền cờ `--control-plane-endpoint` trỏ vào VIP |
-| 3 | Node mới join bị biến thành Worker node thay vì Control Plane | Quên cờ `--control-plane` khi gõ `kubeadm join` | Drain node, `kubeadm reset` và gõ lại kèm `--control-plane` |
-| 4 | Lỗi etcd `etcdserver: leader changed` hoặc `context deadline` | Đĩa ghi etcd latency quá cao (HDD/SATA) | Đổi sang ổ đĩa SSD/NVMe có fdatasync < 10ms |
-| 5 | etcd member list chỉ thấy 1 member sau khi join node CP2 | Quên mở cổng `2380` giữa các node Control Plane | Mở cổng `2380/TCP` trên UFW/iptables giữa các node CP |
-| 6 | Load Balancer báo `Health check failed` cho API Server | Cấu hình Load Balancer sai cổng (ví dụ 8080 thay vì 6443) | Sửa cổng backend target trong Load Balancer thành `6443` |
-| 7 | Load Balancer Layer 7 báo lỗi TLS Handshake Error | Dùng HTTP Load Balancer giải mã SSL thay vì TCP Passthrough | Đổi Load Balancer sang chế độ **TCP Stream Passthrough** (Layer 4) |
-| 8 | Node CP2 join thất bại báo `certificate signed by unknown authority` | Gõ sai `--discovery-token-ca-cert-hash` | Trích xuất lại ca hash bằng `openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt` |
-| 9 | `kubectl create` bị từ chối báo `etcd cluster is unavailable` | Cụm sập 2/3 node làm mất Quorum etcd | Khởi động lại ít nhất 1 node CP bị sập để đủ Quorum 2/3 |
-| 10 | Hai node `kube-scheduler` tranh chấp điều phối | Cờ `--leader-elect` bị đặt thành `false` | Sửa `--leader-elect=true` trong `/etc/kubernetes/manifests/kube-scheduler.yaml` |
-| 11 | etcd log báo `clock skew detected` | Thời gian hệ thống giữa các node Control Plane bị lệch quá 500ms | Đồng bộ thời gian giữa các node bằng `chrony` hoặc `ntp` |
-| 12 | Khởi động lại static pod etcd bị đứng | Sửa nhầm IP peer trong `etcd.yaml` static manifest | Kiểm tra cờ `--initial-advertise-peer-urls` khớp với IP node |
-| 13 | Lỗi `port 6443 is already in use` khi init lại | Chưa reset trạng thái cụm cũ bằng `kubeadm reset` | Chạy `kubeadm reset -f` và dọn dẹp `/var/lib/etcd` |
-| 14 | Script `verify-ha-failover.sh` báo lỗi | Vẫn chưa tạo file `quorum-matrix.txt` | Chạy lại Thao tác 2.1 tạo tệp ma trận Quorum |
-
----
-
-## L9. Bài tập mở rộng
-
-1. **BT1 — Khảo sát đối tượng Lease Leader Election:** Sử dụng `kubectl get lease -n kube-system` theo dõi thuộc tính `holderIdentity` và `renewTime` khi ngắt node Leader.
-2. **BT2 — Thực hành lệnh `kubeadm init phase upload-certs`:** Tự tạo lại `--certificate-key` mới và kiểm tra Secret `kubeadm-certs` trong Namespace `kube-system`.
-3. **BT3 — Mô phỏng kiểm tra etcdctl endpoint status:** Chạy `etcdctl endpoint status --write-out=table` liệt kê thông số IS LEADER, RAFT TERM, RAFT INDEX của từng etcd member.
-4. **BT4 — Cấu hình HAProxy Layer 4 TCP Load Balancer:** Viết file cấu hình `/etc/haproxy/haproxy.cfg` mỏng cân bằng tải cổng 6443 giữa 3 node Control Plane.
-5. **BT5 — Khảo sát Keepalived VRRP VIP:** Tìm hiểu cơ chế multicast VRRP của Keepalived để tự động chuyển giao VIP giữa 2 node Load Balancer.
-6. **BT6 — Phân tích mô hình External etcd trong tài liệu chính thức:** Trích xuất sơ đồ kiến trúc External etcd và so sánh danh sách các cờ etcd trên API Server manifest.
-
----
-
-## L10. Hiện vật nộp và tiêu chí chấm điểm
-
-### Bảng điểm đánh giá bài lab
-
-| Hạng mục hiện vật | Yêu cầu kĩ thuật | Điểm tối đa |
-|---|---|---|
-| `kubeadm-ha-config.yaml` | Tệp YAML cấu hình `kubeadm init` chứa `controlPlaneEndpoint` chuẩn | 25 điểm |
-| `quorum-matrix.txt` | Tệp văn bản liệt kê đủ 5 dòng ma trận tính Quorum etcd | 25 điểm |
-| `verify-ha-failover.sh` | Script bash chạy thành công, xác minh HA Control Plane & Quorum OK | 25 điểm |
-| `nhat-ky-buoi-12.md` | Trả lời đủ 3 câu thu hoạch, phân biệt rõ Stacked vs External etcd | 15 điểm |
-| CHECKPOINT 1–13 | Tất cả 13 checkpoint tự động đều in chữ `ĐẠT` | 10 điểm |
-| **Tổng điểm** | | **100 điểm** |
-
-### Các trường hợp trừ điểm
-
-- Trừ **20 điểm**: Nếu script hoặc câu lệnh sử dụng công cụ `jq` (vi phạm quy tắc môi trường thi).
-- Trừ **15 điểm**: Nếu thiết kế số lượng node Control Plane là số chẵn (vi phạm nguyên tắc Quorum).
-- Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-12/`.
-- Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
-
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-
-## V1. Cách tiến hành
-
-1. **Thời lượng và hình thức:** Khối vấn đáp diễn ra trong đúng **20 phút**. Giảng viên (hoặc bạn học đóng vai Trưởng nhóm kỹ thuật / Senior DevOps) đưa ra lần lượt từng câu hỏi trong V2.
-2. **Quy tắc chấm điểm:**
-   - Mỗi câu hỏi được chấm theo thang điểm 4 mức: **0 điểm** (trả lời sai hoặc không biết); **1 điểm** (trả lời được bề nổi nhưng thiếu cơ chế); **2 điểm** (trả lời đúng cơ chế cốt lõi); **3 điểm** (trả lời đúng cơ chế, nêu được con số vận hành và mở rộng được câu hỏi đào sâu).
-   - **Quy tắc trần điểm riêng của Buổi 12:**
-     - Trả lời Câu 1 mà không phân tích được nguyên tắc số lẻ (3, 5 node) và công thức Quorum etcd `(N/2) + 1` thì **trần điểm câu đó là 1**.
-     - Trả lời Câu 4 mà không chỉ ra cờ `--control-plane-endpoint` bắt buộc phải truyền lúc `kubeadm init` để ghi IP VIP vào cert SANs và kubelet.conf thì **trần điểm câu đó là 1**.
-3. **Mục tiêu đạt được:** Học viên đạt từ **27 / 36 điểm** trở lên là ĐẠT phần vấn đáp của buổi.
-
----
-
----
-
-## V2. Bộ câu hỏi phỏng vấn thực chiến
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Phân biệt trạng thái hoạt động (Active-Active vs Active-Passive) giữa API Server và Scheduler/Controller Manager trong cụm HA Control Plane.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">API Server (Active-Active):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Là thành phần không lưu trạng thái (Stateless).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• TẤT CẢ các API Server trên các node Control Plane đều chạy song song ở trạng thái <b style="color: var(--accent-primary);">Active</b>, nhận và xử lý yêu cầu đồng thời thông qua Load Balancer.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Scheduler & Controller Manager (Active-Passive):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Là thành phần ra quyết định ghi và điều phối trạng thái.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ có <b style="color: var(--accent-primary);">1 Leader duy nhất ở trạng thái Active</b> tại một thời điểm (thông qua cơ chế bầu chọn <code>--leader-elect=true</code> lưu vết trong đối tượng Lease). Các instance còn lại ở trạng thái Passive (Standby) chờ Leader hiện tại sập để thay thế.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo tất cả đều chạy Active-Active.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> nói được API Server chạy Active còn Scheduler chạy Passive nhưng không nêu được cơ chế <code>--leader-elect=true</code> và đối tượng Lease.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân biệt chuẩn xác Active-Active của API Server vs Active-Passive của Scheduler/Controller Manager kèm cơ chế Lease.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubectl get lease -n kube-system</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Đối tượng Lease lưu vết Leader Election nằm ở đâu trong etcd? *(Đáp án: Nằm ở đường dẫn API <code>/apis/coordination.k8s.io/v1/namespaces/kube-system/leases</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Phân biệt sự khác nhau giữa kiến trúc Stacked etcd topology và External etcd topology.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Stacked etcd Topology (Khuyên dùng cho CKA):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cụm etcd chạy dạng Static Pod trực tiếp trên cùng các node Control Plane với API Server.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ưu điểm:* Tiết kiệm hạ tầng, dễ triển khai tự động bằng <code>kubeadm</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Nhược điểm:* etcd cạnh tranh tài nguyên RAM/CPU/Disk IOPS trực tiếp với API Server.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">External etcd Topology:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cụm etcd được tách ra chạy trên các máy chủ vật lý hoặc VM hoàn toàn riêng biệt với node Control Plane.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ưu điểm:* Cô lập tài nguyên tuyệt đối, etcd có IOPS đĩa riêng không bị API Server ảnh hưởng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Nhược điểm:* Tốn gấp đôi số lượng máy chủ (3 CP + 3 etcd = 6 nodes) và phức tạp khi vận hành.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 mô hình này giống hệt nhau.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Stacked chung node còn External riêng node nhưng không so sánh được ưu nhược điểm tài nguyên IOPS.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân biệt chuẩn xác Stacked (chung node, static pod) vs External (tách node riêng) và ưu nhược điểm từng mô hình.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra mô hình Stacked là chuẩn mặc định của CKA.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trong kỳ thi CKA, mô hình nào thường được áp dụng trong các câu hỏi thực hành? *(Đáp án: Mô hình Stacked etcd topology).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Cờ <code>--control-plane-endpoint</code> trong lệnh <code>kubeadm init</code> có tác dụng gì và tại sao bắt buộc phải truyền cờ này khi dựng cụm HA?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b> Khai báo địa chỉ IP ảo (VIP) hoặc tên miền FQDN kèm cổng (ví dụ <code>192.168.1.100:6443</code>) của bộ cân bằng tải Load Balancer đứng trước các node Control Plane.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tầm quan trọng bắt buộc:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>kubeadm</code> sẽ ghi địa chỉ endpoint này vào danh sách <b style="color: var(--accent-primary);">IP/DNS SANs (Subject Alternative Names)</b> của chứng chỉ TLS API Server.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ghi địa chỉ endpoint này vào tệp cấu hình <code>kubelet.conf</code> và <code>admin.conf</code> của tất cả các node trong cụm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hệ quả nếu quên:</b> Nếu không truyền cờ này, Kubelet của Worker nodes sẽ trỏ cứng vào IP của node <code>cp-01</code> duy nhất. Khi node <code>cp-01</code> sập, cả cụm mất kết nối dù cho có thêm 2 node <code>cp-02</code>, <code>cp-03</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo cờ này dùng để đặt tên cho cụm.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được trỏ vào Load Balancer nhưng không giải thích được việc ghi vào cert SANs và kubelet.conf (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác việc ghi VIP vào TLS cert SANs và tệp cấu hình kubelet.conf giúp các node luôn kết nối qua VIP.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc kiểm tra cert SANs qua openssl.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Cổng mặc định của API Server trên Load Balancer VIP là cổng mấy? *(Đáp án: Cổng <code>6443</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Hai cờ bắt buộc nào phải có trong câu lệnh <code>kubeadm join</code> để gia nhập một node mới làm Control Plane thay vì Worker node?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ <b style="color: var(--accent-primary);"><code>--control-plane</code></b>: Đánh dấu node này sẽ khởi tạo các thành phần điều khiển (API Server, Controller Manager, Scheduler, etcd static pods) thay vì chỉ làm Worker node.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cờ <b style="color: var(--accent-primary);"><code>--certificate-key <key></code></b>: Cung cấp khóa mã hóa 64 ký tự hex dùng để giải mã bộ chứng chỉ CA được đẩy lên Secret <code>kubeadm-certs</code> lúc init.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ tên 2 cờ.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được cờ <code>--control-plane</code> nhưng thiếu <code>--certificate-key</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 cờ <code>--control-plane</code> và <code>--certificate-key</code> kèm vai trò giải mã bộ cert CA.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng lệnh <code>kubeadm init phase upload-certs</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khóa mã hóa <code>--certificate-key</code> có thời hạn mặc định là bao lâu? *(Đáp án: Mặc định sống trong 2 giờ / 7200 giây).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Nếu 1 trong 3 node Control Plane trong cụm HA 3 node bị sập hoàn toàn (chập điện, nổ ổ đĩa) thì chuyện gì xảy ra với cụm?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cụm <b style="color: var(--accent-primary);">VẪN HOẠT ĐỘNG BÌNH THƯỜNG 100%</b> đối với cả thao tác đọc và ghi.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• 2 node etcd còn lại vẫn đạt <b style="color: var(--accent-primary);">Quorum = 2 / 3</b> (đủ đa số biểu quyết Raft).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Load Balancer tự động loại bỏ node CP bị sập khỏi danh sách backend và chuyển toàn bộ traffic API Server sang 2 node CP còn lại.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu node sập đang giữ vai trò Scheduler Leader, 1 trong 2 node còn lại sẽ tự động tiếp quản nhãn Lease Leader trong < 1 giây.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo cụm bị ngừng hoạt động hoàn toàn.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được cụm vẫn chạy nhưng không giải thích được 3 yếu tố: etcd Quorum 2/3, Load Balancer health check và Lease Leader failover.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác 3 yếu tố đảm bảo cụm sẵn sàng 100% khi sập 1/3 node CP.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Muốn thay thế node Control Plane bị sập bằng 1 node mới thì cần làm bước gì đầu tiên với etcd? *(Đáp án: Phải xóa bớt etcd member cũ bị sập bằng lệnh <code>etcdctl member remove</code> trước khi join node mới).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Điều gì xảy ra đối với cụm khi 2 trong 3 node Control Plane bị sập đồng thời (mất Quorum etcd)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cụm <b style="color: var(--accent-primary);">BỊ MẤT QUORUM ETCD</b> (<code>Quorum = 1 / 3</code> < 2).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hệ quả:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• etcd tự động chuyển sang chế độ <b style="color: var(--accent-primary);">Read-Only (chỉ cho đọc, cấm ghi)</b> để chống hỏng dữ liệu Split-Brain.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Các lệnh đọc thông tin cũ (<code>kubectl get pods</code>, <code>kubectl get nodes</code>) vẫn có thể trả về từ cache nếu API Server còn sống.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• MỌI THAO TÁC GHI (<code>kubectl create</code>, <code>kubectl apply</code>, <code>kubectl delete</code>) đều bị API Server từ chối và báo lỗi timeout / leader changed.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo cụm vẫn ghi dữ liệu bình thường.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời cụm bị lỗi nhưng không nêu được cơ chế etcd chuyển sang Read-Only và chặn 100% thao tác ghi.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác việc etcd mất Quorum 1/3 chuyển sang Read-Only chống Split-Brain và chặn mọi lệnh ghi.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng quy trình phục hồi etcd Quorum khẩn cấp.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao để khôi phục cụm khi bị mất Quorum etcd 2/3 node? *(Đáp án: Khởi động lại ít nhất 1 node CP bị sập hoặc thực hiện etcd snapshot restore khẩn cấp).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Lệnh nào giúp kiểm tra danh sách tất cả các etcd members đang tham gia cụm đồng bộ và kiểm tra tính nhất quán?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Câu lệnh chuẩn:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt --key=/etc/kubernetes/pki/etcd/healthcheck-client.key member list</code></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Để xem bảng trạng thái chi tiết (IS LEADER, RAFT TERM, RAFT INDEX), dùng thêm cờ <code>--write-out=table</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo gõ lệnh <code>kubectl get etcd</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được <code>etcdctl member list</code> nhưng thiếu các cờ mTLS chứng chỉ etcd.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lệnh <code>etcdctl member list</code> kèm đủ bộ cờ mTLS xác thực.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng output của cờ <code>--write-out=table</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Làm sao biết node etcd nào đang đóng vai trò là Leader trong bảng <code>member list</code>? *(Đáp án: Cột <code>IS LEADER</code> có giá trị <code>true</code> trong bảng output).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Tại sao Load Balancer đứng trước các API Server bắt buộc phải cấu hình ở Layer 4 (TCP Stream Passthrough) mà không dùng Layer 7 (HTTP)?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giao tiếp giữa <code>kubectl</code> / Kubelet và API Server sử dụng <b style="color: var(--accent-primary);">Mutual TLS (mTLS) end-to-end</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu dùng Load Balancer Layer 7 (HTTP/HTTPS Reverse Proxy), Load Balancer sẽ cố giải mã mã hóa TLS (TLS Termination). Việc này làm hỏng chữ ký mTLS và API Server từ chối kết nối do không đọc được chứng chỉ client x509.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Khắc phục:</b> Bắt buộc cấu hình Load Balancer ở <b style="color: var(--accent-primary);">Layer 4 (TCP Mode / Stream Passthrough)</b> ở cổng 6443 để giữ nguyên luồng gói tin TLS đi thẳng vào API Server.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo dùng Layer 7 cho tiện phân tích URL.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được dùng Layer 4 nhưng không giải thích được nguyên nhân bảo toàn mTLS end-to-end không giải mã SSL.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác cơ chế mTLS end-to-end yêu cầu Load Balancer Layer 4 TCP Stream Passthrough cổng 6443.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng cấu hình <code>mode tcp</code> trong HAProxy.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Lệnh nào dùng để kiểm tra cổng 6443 trên Load Balancer VIP từ Worker node? *(Đáp án: Lệnh <code>nc -zv <VIP> 6443</code> hoặc <code>curl -k https://<VIP>:6443/livez</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Làm sao để tạo lại mã khóa <code>--certificate-key</code> mới khi khóa cũ bị hết hạn 2 giờ lúc muốn join node Control Plane thứ 3?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chạy lệnh khởi tạo lại pha upload chứng chỉ trên node Control Plane 1:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubeadm init phase upload-certs --upload-certs</code></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Kết quả:</b> <code>kubeadm</code> sẽ tự động upload lại bộ chứng chỉ CA được mã hóa lên Secret <code>kubeadm-certs</code> trong Namespace <code>kube-system</code> và in ra một chuỗi 64 ký tự <code>--certificate-key</code> mới có thời hạn 2 giờ tiếp theo.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo đập đi dựng lại cụm từ đầu.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được tạo key mới nhưng không nhớ câu lệnh <code>kubeadm init phase upload-certs --upload-certs</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác lệnh <code>kubeadm init phase upload-certs --upload-certs</code> và cơ chế ghi Secret <code>kubeadm-certs</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ việc ghép key mới vào lệnh <code>kubeadm join</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Secret <code>kubeadm-certs</code> nằm ở Namespace nào trong cụm? *(Đáp án: Nằm ở Namespace <code>kube-system</code>).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Nếu ổ đĩa lưu dữ liệu etcd có độ trễ ghi fdatasync quá cao (latency > 10ms trên đĩa HDD), hiện tượng gì sẽ xảy ra trong cụm HA Control Plane?</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thuật toán Raft của etcd yêu cầu đồng bộ ghi log giữa các member cực kỳ nhanh chóng.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Nếu đĩa chậm (HDD / SATA có latency fdatasync > 10ms), etcd Leader sẽ bị đứt heartbeat với các etcd Followers.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Hệ quả:</b> Cụm etcd liên tục xảy ra hiện tượng <b style="color: var(--accent-primary);">bầu chọn lại Leader liên tục (Leader Flapping / Leader Changed)</b>, log API Server tràn ngập lỗi <code>etcdserver: leader changed</code> hoặc <code>context deadline exceeded</code>, làm cụm chập chờn mất ổn định.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo đĩa HDD chạy etcd bình thường không sao.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nói được cụm chậm nhưng không giải thích được hiện tượng đứt heartbeat Raft gây bầu chọn lại Leader liên tục (Leader Flapping).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác hiện tượng đứt heartbeat Raft etcd gây Leader Flapping do latency đĩa fdatasync > 10ms.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, nêu khuyến nghị sử dụng ổ đĩa SSD/NVMe chuyên dụng cho etcd.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khuyến nghị latency đĩa fdatasync tối đa cho etcd sản xuất là bao nhiêu? *(Đáp án: Khuyến nghị latency đĩa fdatasync phải < 10ms, tốt nhất là < 2ms).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Nêu 2 chế độ hỏng (1 im lặng do quên --control-plane-endpoint, 1 âm thầm do sập etcd Quorum vì dính số chẵn 2 node) và cách phát hiện/khắc phục.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Quên <code>--control-plane-endpoint</code> lúc init):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Dựng xong 3 node CP, rút nguồn node CP1 thì 2 node CP còn lại không thể điều khiển cụm, Kubelet trên Worker nodes báo connection refused.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra <code>/etc/kubernetes/kubelet.conf</code> thấy server trỏ IP node CP1 thay vì IP VIP Load Balancer.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Phải đập đi dựng lại cụm hoặc cập nhật lại kubelet.conf trỏ VIP và gia hạn cert SANs.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Sập etcd Quorum do dựng cụm 2 node CP):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Dựng cụm 2 node CP cho tiết kiệm, khi 1 node bị ngắt mạng thì node còn lại lập tức bị khoá ghi Read-Only (<code>Quorum = 2/2</code>).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra <code>etcdctl endpoint health</code> báo không đủ quorum.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Bắt buộc bổ sung node CP thứ 3 để đạt số lẻ Quorum (2/3).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân quên --control-plane-endpoint và dính số chẵn 2 node (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế trong bài lab.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi dựng cụm sản xuất, con số node Control Plane chuẩn khuyên dùng là bao nhiêu? *(Đáp án: Khuyên dùng đúng 3 hoặc 5 node Control Plane).*
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"Cụm HA Control Plane bắt buộc sử dụng số lẻ 3 hoặc 5 node để đảm bảo etcd Quorum theo công thức <code>(N/2) + 1</code>; cụm 3 node có Quorum = 2 và chịu lỗi sập 1 node."*
-2. *"API Server chạy chế độ Active-Active qua Load Balancer; Scheduler và Controller Manager chạy Active-Passive chọn 1 Leader duy nhất qua <code>--leader-elect=true</code>."*
-3. *"Bắt buộc phải khởi tạo cụm bằng cờ <code>--control-plane-endpoint</code> trỏ tới Load Balancer VIP để ghi địa chỉ endpoint chung vào cert SANs và kubelet.conf."*
-4. *"Lệnh gia nhập node Control Plane mới bắt buộc gồm 2 cờ <code>--control-plane</code> và <code>--certificate-key</code> để sao chép bộ chứng chỉ mã hóa an toàn."*
-5. *"Load Balancer đứng trước API Server bắt buộc cấu hình ở Layer 4 (TCP Stream Passthrough cổng 6443) để bảo toàn chứng chỉ mTLS end-to-end."*
-
----</div>
-</div>
-</details>
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"Cụm HA Control Plane bắt buộc sử dụng số lẻ 3 hoặc 5 node để đảm bảo etcd Quorum theo công thức `(N/2) + 1`; cụm 3 node có Quorum = 2 và chịu lỗi sập 1 node."*
-2. *"API Server chạy chế độ Active-Active qua Load Balancer; Scheduler và Controller Manager chạy Active-Passive chọn 1 Leader duy nhất qua `--leader-elect=true`."*
-3. *"Bắt buộc phải khởi tạo cụm bằng cờ `--control-plane-endpoint` trỏ tới Load Balancer VIP để ghi địa chỉ endpoint chung vào cert SANs và kubelet.conf."*
-4. *"Lệnh gia nhập node Control Plane mới bắt buộc gồm 2 cờ `--control-plane` và `--certificate-key` để sao chép bộ chứng chỉ mã hóa an toàn."*
-5. *"Load Balancer đứng trước API Server bắt buộc cấu hình ở Layer 4 (TCP Stream Passthrough cổng 6443) để bảo toàn chứng chỉ mTLS end-to-end."*
-
----
-
-## 4. Đề Thi Thực Hành Bấm Giờ & Thử Thách Tốc Độ (Exam Speed Challenge)
+Kiến trúc High Availability Control Plane là xương sống bảo đảm tính liên tục của hệ thống Kubernetes trước các sự cố phần cứng bất ngờ trong môi trường sản xuất.
 
 > [!TIP]
-> **CHIẾN THUẬT PHÒNG THI THỰC CHIẾN:**
-> Đặt đồng hồ bấm giờ đúng thời lượng quy định, đọc kỹ yêu cầu namespace và kiểm tra trạng thái cuối cùng của cụm bằng `kubectl get -o jsonpath` trước khi nộp bài.
-
-## T0. Vì sao có khối này (1 phút)
-
-Khối luyện đề bấm giờ 30 phút rèn luyện cho học viên phản xạ cấu hình cụm Control Plane sẵn sàng cao (HA), sử dụng cờ `--control-plane-endpoint`, tạo lại khóa mã hóa `--certificate-key`, kiểm tra etcd Quorum 3 node và khảo sát cơ chế Leader Election trong kỳ thi CKA.
-
-Buổi 12 phủ miền trọng điểm của kỳ thi CKA:
-- `CKA · Cluster Architecture, Installation & Configuration` (Trọng số 25 %)
-
-Các câu hỏi được thiết kế theo đúng chuẩn bài thi CKA thực tế: yêu cầu thí sinh khởi tạo cấu hình HA, xử lý chứng chỉ gia nhập node Control Plane mới và trích xuất thông tin vận hành etcd/scheduler mà KHÔNG được dùng `jq`.
-
----
-
-## T1. Luật chơi (1 phút)
-
-1. **Đồng hồ bấm giờ:** Tổng thời gian làm 4 câu hỏi là **900 giây (15 phút)**. Thời gian còn lại (15 phút) dành cho việc đọc luật, đối soát và tự chấm điểm bằng script.
-2. **Tài liệu được mở:** Chỉ được phép mở 1 tab duy nhất tài liệu chính thức `https://kubernetes.io/docs/`. KHÔNG được tìm kiếm Google hay StackOverflow.
-3. **Môi trường làm việc:** Làm việc trực tiếp trên terminal với context `kubeadm`.
-4. **Quy tắc thi hành về công cụ:** Máy thi **KHÔNG cài sẵn `jq`**. Mọi câu hỏi trích xuất dữ liệu BẮT BUỘC dùng đường gõ bash (`grep`/`awk`/`sed`) hoặc `kubectl jsonpath`.
-5. **Cách chấm:** Chấm dựa trên sự tồn tại của tệp cấu hình HA, khóa mã hóa upload-certs và thông tin đối tượng Lease Leader Election. Ngưỡng ĐẠT của buổi là **66 / 100 điểm** (theo đúng chuẩn CKA).
-
----
-
-## T2. Bộ câu hỏi kiểu đề thi
-
-### Câu T2.1. Cấu hình tệp kubeadm init HA với controlPlaneEndpoint — 210 giây
-
-**Bối cảnh:**
-Chuẩn bị tệp cấu hình `kubeadm` để khởi tạo cụm HA Control Plane.
-
-**Yêu cầu:**
-1. Tạo tệp cấu hình YAML tên `/tmp/ans-t21-ha.yaml`.
-2. Khai báo `ClusterConfiguration` với `kubernetesVersion: "v1.35.0"`.
-3. Chỉ định `controlPlaneEndpoint: "192.168.1.100:6443"`.
-4. Xác nhận tệp YAML chứa đúng cờ `controlPlaneEndpoint`.
-
-**Thang điểm bộ phận:**
-- Tạo đúng tệp cấu hình YAML `/tmp/ans-t21-ha.yaml` chuẩn `ClusterConfiguration`: **15 điểm**.
-- Chỉ định chính xác `controlPlaneEndpoint: "192.168.1.100:6443"`: **10 điểm**.
-
----
-
-### Câu T2.2. Upload chứng chỉ mã hóa và sinh certificate-key mới — 240 giây
-
-**Bối cảnh:**
-Khóa mã hóa chứng chỉ gia nhập node Control Plane cũ bị hết hạn 2 giờ, cần sinh khóa mới.
-
-**Yêu cầu:**
-1. Chạy pha lệnh `kubeadm init phase upload-certs --upload-certs` trên node Control Plane.
-2. Trích xuất chuỗi 64 ký tự hex mã hóa `--certificate-key` sinh ra.
-3. Ghi chuỗi khóa mã hóa vào tệp `/tmp/ans-t22-key.txt`.
-4. Xác nhận tệp chứa chuỗi hex 64 ký tự hợp lệ.
-
-**Thang điểm bộ phận:**
-- Thực thi thành công pha `upload-certs` sinh mã khóa mới: **15 điểm**.
-- Trích xuất đúng chuỗi 64 ký tự hex vào file `/tmp/ans-t22-key.txt`: **15 điểm**.
-
----
-
-### Câu T2.3. Khảo sát Quorum etcd và ghi ma trận chịu lỗi — 210 giây
-
-**Bối cảnh:**
-Đánh giá khả năng chịu lỗi và tính toán Quorum cho cụm etcd sản xuất.
-
-**Yêu cầu:**
-1. Tính toán Quorum etcd cho cụm 3 node và cụm 5 node theo công thức `(N/2) + 1`.
-2. Ghi rõ số lượng node phải sống tối thiểu và số node sập tối đa chịu được.
-3. Ghi bảng ma trận tính toán Quorum vào tệp `/tmp/ans-t23-quorum.txt`.
-4. Đảm bảo tệp chứa dòng chữ `Cụm 3 Nodes: Quorum = 2`.
-
-**Thang điểm bộ phận:**
-- Tính toán chính xác công thức Quorum cho 3 và 5 node: **10 điểm**.
-- Định dạng bảng ma trận vào tệp `/tmp/ans-t23-quorum.txt`: **10 điểm**.
-
----
-
-### Câu T2.4. Kiểm tra Leader Election Lease của kube-scheduler — 240 giây
-
-**Bối cảnh:**
-Xác minh danh tính node Control Plane đang nắm giữ vai trò Leader của `kube-scheduler`.
-
-**Yêu cầu:**
-1. Truy vấn đối tượng `Lease` tên `kube-scheduler` trong Namespace `kube-system`.
-2. Trích xuất giá trị trường `spec.holderIdentity` bằng `kubectl jsonpath`.
-3. Ghi danh tính Leader hiện tại vào tệp `/tmp/ans-t24-leader.txt`.
-4. Xác nhận tệp chứa thông tin danh tính Leader không rỗng.
-
-**Thang điểm bộ phận:**
-- Truy vấn đúng đối tượng Lease `kube-scheduler` bằng `kubectl jsonpath`: **15 điểm**.
-- Trích xuất chính xác `holderIdentity` vào file `/tmp/ans-t24-leader.txt`: **10 điểm**.
-
----
-
-## T3. Lời giải chuẩn
-
-#### Lời giải câu T2.1: Đường gõ ngắn nhất (Ước lượng: 30 giây / 1 thao tác)
-
-```bash
-# Thao tác 1: Tạo tệp cấu hình HA
-cat << EOF > /tmp/ans-t21-ha.yaml
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: ClusterConfiguration
-kubernetesVersion: "v1.35.0"
-controlPlaneEndpoint: "192.168.1.100:6443"
-EOF
-```
-
-#### Lời giải câu T2.2: Đường gõ ngắn nhất (Ước lượng: 35 giây / 1 thao tác)
-
-```bash
-# Thao tác 1: Upload certs và trích xuất key
-kubeadm init phase upload-certs --upload-certs | tail -n 1 > /tmp/ans-t22-key.txt
-```
-
-#### Lời giải câu T2.3: Đường gõ ngắn nhất (Ước lượng: 30 giây / 1 thao tác)
-
-```bash
-# Thao tác 1: Ghi ma trận Quorum etcd
-cat << EOF > /tmp/ans-t23-quorum.txt
-MA TRẬN ETCD QUORUM:
-- Cụm 3 Nodes: Quorum = 2 (Chịu lỗi sập 1 node)
-- Cụm 5 Nodes: Quorum = 3 (Chịu lỗi sập 2 nodes)
-EOF
-```
-
-#### Lời giải câu T2.4: Đường gõ ngắn nhất (Ước lượng: 35 giây / 1 thao tác)
-
-```bash
-# Thao tác 1: JSONPath trích xuất holderIdentity
-kubectl get lease kube-scheduler -n kube-system -o jsonpath='{.spec.holderIdentity}' > /tmp/ans-t24-leader.txt
-```
-
-
-
----
-
-## T4. Bẫy mất điểm
-
-| # | Bẫy mất điểm hay gặp | Mất bao nhiêu điểm | Dấu hiệu nhận ra ngay |
-|---|---|---|---|
-| 1 | Quên cổng `:6443` trong `controlPlaneEndpoint` ở câu T2.1 | 15 điểm câu T2.1 | Kubelet trỏ nhầm về cổng 80/443 của VIP |
-| 2 | Trích xuất nhầm cả chuỗi text thay vì chỉ key 64 hex ở câu T2.2 | 15 điểm câu T2.2 | File chứa nhiều dòng text thay vì 1 dòng hex |
-| 3 | Tính sai Quorum cụm 3 node (cho là 1 thay vì 2) ở câu T2.3 | 20 điểm câu T2.3 | Ma trận ghi Quorum = 1 |
-| 4 | Sử dụng `jq` để parse output Lease ở câu T2.4 | 25 điểm (mất trọn câu T2.4) | Output báo `bash: jq: command not found` |
-| 5 | Truy vấn sai Namespace của đối tượng Lease (quên `-n kube-system`) | 20 điểm câu T2.4 | Lệnh `kubectl get lease` báo `NotFound` ở default ns |
-| 6 | Quên cờ `--upload-certs` khi gõ phase upload-certs ở câu T2.2 | 25 điểm câu T2.2 | Lệnh từ chối upload chứng chỉ |
-
----
-
-## T5. Bảng tự chấm
-
-| Câu | Chứng chỉ · Miền | Ngân sách | Điểm tối đa | Điểm đạt được |
-|---|---|---|---|---|
-| T2.1 | `CKA · Cluster Architecture` | 210s | 25 | |
-| T2.2 | `CKA · Cluster Architecture` | 240s | 30 | |
-| T2.3 | `CKA · Cluster Architecture` | 210s | 20 | |
-| T2.4 | `CKA · Cluster Architecture` | 240s | 25 | |
-| **Tổng** | | **900s (15')** | **100** | **Ngưỡng ĐẠT: ≥ 66 điểm** |
-
-### Đoạn mã chấm tự động (Automated Grading Script)
-
-Copy và dán đoạn script bash dưới đây để tự động chấm điểm bài thi của Buổi 12:
-
-```bash
-#!/bin/bash
-# Script tự động chấm điểm khối Ô thi Buổi 12
-
-SCORE=0
-
-echo "=== BẮT ĐẦU CHẤM ĐIỂM BUỔI 12 ==="
-
-# 1. Chấm câu T2.1
-if [ -s /tmp/ans-t21-ha.yaml ] && grep -q "controlPlaneEndpoint" /tmp/ans-t21-ha.yaml; then
-    echo "Câu T2.1: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.1: LỖI (0/25 điểm)"
-fi
-
-# 2. Chấm câu T2.2
-if [ -s /tmp/ans-t22-key.txt ]; then
-    echo "Câu T2.2: ĐẠT (+30 điểm)"
-    SCORE=$((SCORE + 30))
-else
-    echo "Câu T2.2: LỖI (0/30 điểm)"
-fi
-
-# 3. Chấm câu T2.3
-if [ -s /tmp/ans-t23-quorum.txt ] && grep -q "Cụm 3 Nodes" /tmp/ans-t23-quorum.txt; then
-    echo "Câu T2.3: ĐẠT (+20 điểm)"
-    SCORE=$((SCORE + 20))
-else
-    echo "Câu T2.3: LỖI (0/20 điểm)"
-fi
-
-# 4. Chấm câu T2.4
-if [ -s /tmp/ans-t24-leader.txt ]; then
-    echo "Câu T2.4: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.4: LỖI (0/25 điểm)"
-fi
-
-echo "=================================="
-echo "TỔNG ĐIỂM: $SCORE / 100"
-if [ "$SCORE" -ge 66 ]; then
-    echo "KẾT QUẢ: ĐẠT CHUẨN CKA (≥ 66 điểm)"
-else
-    echo "KẾT QUẢ: CHƯA ĐẠT (Cần tối thiểu 66 điểm)"
-fi
-```
-
----
-
-## T6. Kho lệnh rút gọn của buổi
-
-```bash
-# 1. Khởi tạo Control Plane HA với cờ controlPlaneEndpoint
-kubeadm init --control-plane-endpoint "<VIP-or-Domain>:6443" --upload-certs
-
-# 2. Sinh lại khóa mã hóa certificate-key mới sau 2 giờ
-kubeadm init phase upload-certs --upload-certs
-
-# 3. Gia nhập node Control Plane mới vào cụm HA
-kubeadm join <VIP>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> --control-plane --certificate-key <key>
-
-# 4. Kiểm tra danh sách etcd members bằng etcdctl
-ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt --key=/etc/kubernetes/pki/etcd/healthcheck-client.key member list --write-out=table
-
-# 5. Kiểm tra Leader Election Lease của Scheduler
-kubectl get lease kube-scheduler -n kube-system -o jsonpath='{.spec.holderIdentity}'
-```
-
-
----
-
-## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
-
-> [!TIP]
-> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
-> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 13] Quản Lý Bản Kê Khai Hạ Tầng: Helm Package Manager vs Kustomize Overlay Architecture](cka-13-13-helm-va-kustomize.html).
-
+> **Bài học tiếp theo**: Trong [Bài 13: Đóng Gói Ứng Dụng với Helm & Kustomize: So Sánh & Thực Chiến Triển Khai](cka-13-13-helm-va-kustomize.html), chúng ta sẽ phân tích chuyên sâu hai công cụ quản lý cấu hình và đóng gói ứng dụng phổ biến nhất trên Kubernetes, phương pháp viết Helm Chart chuẩn production và kỹ thuật Overlay trong Kustomize.
 {% endraw %}

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[Bài 08] Các Bộ Dữ Liệu Benchmark Phổ Biến: Khai Thác Chuẩn DEAP, SEED, DREAMER, MAHNOB-HCI & FACED"
-date: 2026-09-16 00:00:00 +0700
+date: 2026-09-16 15:00:00 +0700
 categories: [EEG]
 tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
 series: "EEG & Emotion Recognition AI"

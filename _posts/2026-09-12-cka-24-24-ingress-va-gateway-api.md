@@ -1,1608 +1,544 @@
 ---
 layout: post
-title: "[Bài 24] Định Tuyến Lớp 7 Với Ingress Controller & Gateway API: TLS Termination, Path Routing & HTTPRoute"
-date: 2026-09-12 17:40:00 +0700
-categories: [CKA]
-tags:
-  - CKA
-  - Kubernetes
-  - ClusterAdmin
-  - LinuxFoundation
-  - DevOps
-  - Part-24
+title: "CKA (Bài 24/35) - Định Tuyến Lớp 7 Với Ingress Controller & Gateway API: TLS Termination, Path Routing & HTTPRoute"
+date: 2026-09-12
+categories: [Kubernetes, CKA, Networking, Ingress]
+tags: [cka, ingress, ingress-controller, nginx-ingress, tls-termination, gateway-api, httproute, layer7]
 series: "CKA Exam & Cluster Admin Mastery"
 series_order: 24
-difficulty: Advanced
-thumbnail: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1200&q=80"
-summary: "[CKA P.24] Hướng dẫn chuyên sâu Định Tuyến Lớp 7 Với Ingress Controller & Gateway API: TLS Termination, Path Routing & HTTPRoute: Khám phá toàn diện kiến trúc kỹ thuật tầng thấp, thực hành Lab chi tiết từng bước, phân tích tối ưu hiệu năng và bộ câu hỏi phỏng vấn chuyên sâu."
+author: "Nguyen Thao Kien"
+description: "Làm chủ cơ chế định tuyến ứng dụng Layer 7 trong Kubernetes. Phân tích chi tiết kiến trúc Ingress Controller (NGINX), cấu hình Host-based & Path-based Routing, giải mã bảo mật TLS Termination, xử lý cạm bẫy rewrite-target và chuyển dịch sang chuẩn Gateway API thế hệ mới."
+summary: "Hướng dẫn toàn diện về Ingress Controller và Gateway API cho CKA và production: phân tích kiến trúc Ingress NGINX, kỹ thuật TLS Termination, cấu hình Path/Host routing, rewrite-target regex, và phân quyền 3 vai trò với Gateway API."
+keywords:
+  - kubernetes ingress
+  - cka ingress controller
+  - nginx ingress controller
+  - tls termination ingress
+  - ingress pathtype prefix exact
+  - gateway api httproute
+  - rewrite-target kubernetes
+image:
+  path: /assets/img/posts/cka/cka-24-ingress-gateway-banner.png
+  alt: "Kiến trúc Định tuyến Layer 7 Kubernetes: Ingress Controller và Gateway API"
+difficulty: ADVANCED
 tldr:
-  - "Nắm vững nguyên lý nền tảng và tư duy cốt lõi về Định Tuyến Lớp 7 Với Ingress Controller & Gateway API: TLS Termination, Path Routing & HTTPRoute."
-  - "Làm chủ các thao tác lệnh kubectl tốc độ cao, xử lý sự cố cụm thực tế và tối ưu hóa tài nguyên Pod/Node."
-  - "Củng cố kỹ năng thực chiến sát với đề thi chứng chỉ quốc tế của Linux Foundation / CNCF."
-  - "Tự kiểm tra kiến thức chuyên sâu với bộ 10 câu hỏi phân tích tình huống thực tế kèm lời giải."
+  - "Phân biệt cốt lõi: `Ingress` là đối tượng tài nguyên khai báo luật định tuyến; `Ingress Controller` (NGINX, Traefik, HAProxy, Envoy) là phần mềm Reverse Proxy thực thi định tuyến thực tế."
+  - "3 Kiểu PathType trong Ingress v1: `Prefix` (khớp theo tiền tố phân tách bằng dấu gạch chéo `/`), `Exact` (khớp chính xác 100% từng ký tự), và `ImplementationSpecific` (tùy theo controller)."
+  - "TLS Termination: Giải mã SSL/HTTPS tại tầng Ingress Controller thông qua Secret `kubernetes.io/tls`, chuyển tiếp lưu lượng HTTP thuần không mã hóa tới các Pods backend nội bộ để tiết kiệm CPU."
+  - "Cạm bẫy Rewrite Target: Khi định tuyến path `/api/v1/(.*)` tới backend chỉ lắng nghe `/`, bắt buộc sử dụng annotation `nginx.ingress.kubernetes.io/rewrite-target: /$1` hoặc `/$2`."
+  - "Gateway API (`gateway.networking.k8s.io`) là chuẩn tương lai thay thế Ingress, phân tách quyền hạn rõ ràng cho 3 vai trò: `GatewayClass` (Infra), `Gateway` (Cluster Operator), và `HTTPRoute` (App Developer)."
 ---
+
 {% raw %}
-# [BÀI 24] ĐỊNH TUYẾN LỚP 7 VỚI INGRESS CONTROLLER & GATEWAY API: TLS TERMINATION, PATH ROUTING & HTTPROUTE
-
-Trong kỷ nguyên điện toán đám mây và kiến trúc microservices phân tán quy mô lớn, **Kubernetes (CKA)** đóng vai trò là nền tảng điều phối container (Container Orchestration) tiêu chuẩn công nghiệp. Để làm chủ hệ thống trong môi trường sản xuất (Production) cũng như chinh phục kỳ thi chứng chỉ quốc tế của Linux Foundation / CNCF, kỹ sư không chỉ nắm vững các câu lệnh thao tác cơ bản mà phải thấu hiểu sâu sắc bản chất cơ chế tầng thấp: từ chu trình điều hòa (Reconciliation Loop), cấu trúc điều phối tài nguyên, kiến trúc mạng CNI, lưu trữ CSI cho đến các chuẩn mực an ninh phòng thủ chiều sâu.
-
-Bài viết chuyên sâu này sẽ đồng hành cùng bạn giải mã toàn diện bức tranh kiến trúc, phân tích các đánh đổi kỹ thuật thực chiến (Engineering Trade-offs), cung cấp bài thực hành Lab từng bước và bộ câu hỏi phỏng vấn chuẩn Architect / Lead Engineer.
-
----
-
-## 1. Bản Chất Kiến Trúc & Cơ Chế Vận Hành Tầng Thấp
-
-| # | Câu hỏi ôn tập | Đáp án chuẩn ngắn gọn (chứa con số / tên lệnh) |
-|---|---|---|
-| 1 | Cấu trúc tên miền FQDN chuẩn của một Service | **`<service-name>.<namespace>.svc.cluster.local`** (gồm **5** thành phần) |
-| 2 | Ba thông số mặc định trong tệp `/etc/resolv.conf` của Pod | `nameserver 10.96.0.10`, `search`, và cờ **`options ndots:5`** |
-| 3 | Tác hại hiệu năng của cờ `ndots:5` với tên miền ngoại mạng | Ép thực hiện **4** truy vấn DNS thử nghiệm thừa gây trễ 50ms |
-| 4 | Bốn chế độ hỏng DNS phổ biến nhất | **4** chế độ (OOMKilled, Loop `127.0.0.53`, Syntax Error, sai `dnsPolicy`) |
-| 5 | Lệnh one-liner chẩn đoán DNS trong 2 giây | `kubectl run dnstest --image=busybox:1.36 -it --rm -- nslookup <domain>` |
-
-
-
-> **Luận đề trung tâm của buổi:**
-> *"Đối tượng `Ingress` (`networking.k8s.io/v1`) cung cấp giải pháp định tuyến lớp ứng dụng Layer 7 (HTTP/HTTPS) chuyên dụng: gom nhiều tên miền và đường dẫn URL vào một địa chỉ IP công cộng duy nhất, giải mã bảo mật SSL/TLS Termination qua Secret `kubernetes.io/tls`, và phân tách định tuyến theo tên miền (Host-based) hoặc đường dẫn (Path-based); trong khi đó chuẩn API thế hệ mới `Gateway API` (`gateway.networking.k8s.io`) giải quyết triệt để các nhược điểm của Ingress bằng cách phân quyền rõ ràng 3 vai trò trách nhiệm (`GatewayClass` hạ tầng, `Gateway` vận hành cụm, `HTTPRoute` lập trình viên) và loại bỏ các annotation đặc thù nhà cung cấp."*
-
-**Bảng kết quả các buổi trước được dùng lại:**
-
-| Kết quả / Công cụ | Nguồn gốc | Áp dụng vào buổi này |
-|---|---|---|
-| Khởi tạo TLS Secret chứa cert và key | Buổi 20 `QT 4.1` | Khai báo `spec.tls[].secretName` trong Ingress để bật HTTPS |
-| Đối tượng Service kiểu `ClusterIP` và `NodePort` | Buổi 22 `QT 4.1` | Cấu hình `backend.service` trong Ingress rule trỏ về Service VIP |
-| Lệnh kiểm tra danh sách Pods `kubectl get pods` | Buổi 03 `QT 4.1` | Kiểm tra Pod Ingress Controller đang chạy trong cụm lab |
-
-Ba câu bài tập về nhà BTVN 4 của buổi 23 đã chuẩn bị sẵn kiến thức cho học viên: Câu 1 phân tích vai trò L7 HTTP/HTTPS của Ingress; Câu 2 phân biệt Host-based vs Path-based routing; Câu 3 khám phá kiến trúc phân quyền 3 vai trò của Gateway API.
+> [!IMPORTANT]
+> **Mục tiêu kỹ thuật & Trọng tâm CKA**:
+> - Hiểu rõ sự khác biệt giữa Ingress Layer 7 và Service LoadBalancer Layer 4.
+> - Cấu hình Ingress v1 chuẩn (`networking.k8s.io/v1`) hỗ trợ cả Host-based Routing và Path-based Routing.
+> - Thiết lập bảo mật HTTPS với TLS Secret (`spec.tls`) và kiểm tra tự động Redirect HTTP sang HTTPS.
+> - Làm chủ các Annotations quan trọng của NGINX Ingress: `rewrite-target`, `ssl-redirect`, `proxy-body-size`.
+> - Nắm vững kiến trúc 3 tầng của Gateway API: `GatewayClass`, `Gateway`, `HTTPRoute` và kỹ thuật phân tách lưu lượng Canary (Traffic Splitting).
 
 ---
 
+## 1. Bản Chất Kiến Trúc & Tư Duy Cốt Lõi: Định Tuyến Lớp 7 (Application Layer)
 
+Nếu như **Service** (ClusterIP, NodePort, LoadBalancer) hoạt động ở **Layer 4 (TCP/UDP)** — chỉ biết chuyển tiếp gói tin dựa trên địa chỉ IP và số hiệu Cổng — thì **Ingress** hoạt động ở **Layer 7 (HTTP/HTTPS)**, cho phép kiểm tra nội dung gói tin: Host Header, Đường dẫn URI Path, Cookie, HTTP Headers và giải mã chứng chỉ SSL/TLS.
 
-| # | Năng lực đạt được sau buổi học | Hiện vật chứng minh trong bài lab |
-|---|---|---|
-| 1 | Khởi tạo đối tượng Ingress v1 API (`networking.k8s.io/v1`) định tuyến Path-based | Tệp `hien-vat/path-ingress.yaml` |
-| 2 | Khởi tạo đối tượng Ingress định tuyến Host-based cho nhiều tên miền | Tệp `hien-vat/host-ingress.yaml` |
-| 3 | Cấu hình SSL/TLS Termination với Secret `kubernetes.io/tls` | Tệp `hien-vat/tls-ingress.yaml` |
-| 4 | Kiểm thử kỹ thuật gọi HTTP với Header Host `curl -H "Host: ..."` | Tệp `hien-vat/ingress-curl-report.txt` |
-| 5 | Biên soạn đối tượng `HTTPRoute` thế hệ mới trong chuẩn Gateway API | Tệp `hien-vat/http-route.yaml` |
-| 6 | Kiểm thử kịch bản Ingress Controller và Gateway API với script tự động | Script `hien-vat/verify-ingress-gateway.sh` |
+```mermaid
+flowchart TD
+    classDef ext fill:none,stroke:#2563eb,stroke-width:2px,color:#2563eb;
+    classDef ing fill:none,stroke:#0284c7,stroke-width:2px,color:#0284c7;
+    classDef svc fill:none,stroke:#d97706,stroke-width:2px,color:#d97706;
+    classDef pod fill:none,stroke:#16a34a,stroke-width:2px,color:#16a34a;
 
----
+    User1["Client 1: https://shop.company.com/products"]:::ext --> PublicIP["Single Public IP / Cloud Load Balancer (Port 80/443)"]
+    User2["Client 2: https://api.company.com/v1/orders"]:::ext --> PublicIP
 
+    PublicIP --> IngressCtrl["NGINX Ingress Controller Pod<br>(TLS Termination & L7 Routing Engine)"]:::ing
 
+    IngressCtrl -->|Host: shop.company.com, Path: /products| SvcShop["Service: shop-service:80"]:::svc
+    IngressCtrl -->|Host: api.company.com, Path: /v1/orders| SvcAPI["Service: api-service:8080"]:::svc
 
-| Bắt buộc phải biết | Nguồn tự học nếu thiếu |
-|---|---|
-| Khái niệm Service ClusterIP và cổng targetPort | Buổi 22 `QT 4.1` |
-| Tạo TLS Secret loại `kubernetes.io/tls` bằng CLI | Buổi 20 `QT 4.1` |
-| Giao thức HTTP Header `Host` và mã trạng thái 404 | Buổi 01 `QT 4.1` |
+    SvcShop --> PodShop["Shop Pods"]:::pod
+    SvcAPI --> PodAPI["API Pods"]:::pod
+```
 
----
+### 1.1. So Sánh Ingress Resource vs Ingress Controller
 
-
-
-
-
-| # | Thuật ngữ tiếng Việt | Tiếng Anh tương đương | Ghi chú chuẩn hoá trong thân bài |
-|---|---|---|---|
-| 1 | Khai báo quy tắc cửa ngõ | Ingress Resource (`kind: Ingress`) | Đối tượng YAML khai báo các quy tắc định tuyến HTTP/HTTPS |
-| 2 | Tiến trình xử lý cửa ngõ | Ingress Controller (Nginx/Traefik) | Tiến trình Reverse Proxy thực thi các quy tắc Ingress |
-| 3 | Định tuyến theo tên miền | Host-based Routing (`spec.rules[].host`) | Định tuyến dựa trên tiêu đề `Host` header (app.example.com) |
-| 4 | Định tuyến theo đường dẫn | Path-based Routing (`spec.rules[].http.paths`) | Định tuyến dựa trên đường dẫn URL path (/api, /web) |
-| 5 | Kiểu đường dẫn trùng khớp | Path Type (`Prefix` / `Exact`) | Quy tắc so khớp đường dẫn URL (`Prefix` hoặc `Exact`) |
-| 6 | Giải mã chứng chỉ bảo mật | SSL/TLS Termination | Cơ chế giải mã HTTPS tại Ingress, truyền HTTP nội bộ |
-| 7 | Tên cửa ngõ định tuyến | `ingressClassName` (`ingressClassName: nginx`) | Thuộc tính chỉ định Ingress Controller phụ trách đối tượng |
-| 8 | Chuẩn giao diện cửa ngõ thế hệ mới | Gateway API (`gateway.networking.k8s.io`) | Bộ API chuẩn hóa mở rộng phân quyền thế hệ mới của CNCF |
-| 9 | Lớp hạ tầng cửa ngõ | `GatewayClass` | Tài nguyên cấp hạ tầng do nhà cung cấp CNI/Cloud định nghĩa |
-| 10 | Điểm lắng nghe mạng cửa ngõ | `Gateway` | Tài nguyên cấp cụm do DevOps/Cluster Operator quản lý |
-| 11 | Quy tắc định tuyến HTTP | `HTTPRoute` | Tài nguyên cấp ứng dụng do Developer biên soạn |
-| 12 | Chú thích cấu hình riêng | Ingress Annotations (`nginx.ingress.kubernetes.io/*`) | Các cờ tùy chỉnh riêng cho từng loại Ingress Controller |
-| 13 | Dịch vụ đích phía sau | Backend Service (`backend.service.name`) | Service ClusterIP nhận traffic từ Ingress |
-| 14 | Cấu hình chứng chỉ TLS | TLS Spec (`spec.tls`) | Khối khai báo danh sách hosts và secretName chứng chỉ |
-
-
-
-1. **Mô hình "Bảng nội quy tòa nhà và Bác bảo vệ sảnh (Ingress Resource vs Ingress Controller)":**
-   `Ingress Resource` giống như **Bảng nội quy phân phòng dán trên tường**: Viết rõ phòng 101 là kế toán, phòng 102 là kỹ thuật, nhưng tờ giấy không có khả năng dẫn khách đi. `Ingress Controller` (như Nginx Ingress) chính là **Bác bảo vệ đứng ở sảnh**: Đọc bảng nội quy và trực tiếp dẫn từng khách hàng đến đúng cửa phòng. Nếu chỉ dán bảng nội quy mà không có bác bảo vệ (không cài Ingress Controller), khách hàng đứng ở sảnh sẽ không bao giờ vào được phòng.
-
-2. **Mô hình "Trạm thu phí giải mã thư niêm phong ở cửa khẩu (SSL/TLS Termination)":**
-   SSL/TLS Termination giống như một trạm kiểm soát cửa khẩu: Khách hàng gửi bưu phẩm mã hoá HTTPS từ ngoài Internet tới cửa khẩu Ingress. Tại trạm Ingress, bác bảo vệ kiểm tra chìa khoá Secret `kubernetes.io/tls`, **bóc niêm phong giải mã HTTPS thành HTTP thông thường**, sau đó gửi bưu phẩm HTTP đi trên đường cao tốc nội bộ cụm tới các Pods backend với tốc độ cực nhanh mà không bắt từng Pod phải tốn CPU tự giải mã.
-
-3. **Mô hình "Ba chìa khóa phân quyền cho ba vai trò (Gateway API vs Ingress cũ)":**
-   Ingress cũ giống như một ổ khóa duy nhất mà cả Giám đốc hạ tầng, Kỹ sư vận hành và Lập trình viên đều phải nhét chung các chú thích (annotations) rối rắm vào. `Gateway API` chia thành **3 chìa khóa riêng biệt**: 1. `GatewayClass` dành cho nhà cung cấp hạ tầng (AWS/GCP/Cilium); 2. `Gateway` dành cho Kỹ sư vận hành cụm (DevOps) quản lý IP/Port/TLS; 3. `HTTPRoute` dành cho Lập trình viên ứng dụng tự cấu hình đường dẫn `/api` mà không cần làm phiền DevOps.
+1. **Ingress Resource**:
+   - Là một đối tượng khai báo API (`networking.k8s.io/v1`) lưu trong etcd.
+   - Chỉ chứa các quy tắc định tuyến dạng văn bản (Rules, Hosts, Paths, TLS Secrets).
+   - Nếu cụm **không có Ingress Controller**, đối tượng Ingress hoàn toàn vô dụng (không có gì xảy ra).
+2. **Ingress Controller**:
+   - Là một ứng dụng Reverse Proxy (phổ biến nhất là `ingress-nginx`, ngoài ra có Traefik, HAProxy, Emissary-ingress).
+   - Chạy dưới dạng Deployment hoặc DaemonSet.
+   - Liên tục theo dõi các đối tượng Ingress trên API Server, tự động render lại tệp cấu hình (ví dụ: `nginx.conf`) và nạp lại cấu hình (Hot Reload) để định tuyến lưu lượng trực tiếp tới các Endpoints của Pod.
 
 ---
 
-### 1.1. Phân biệt Ingress Resource vs Ingress Controller và quy tắc L7 Routing (Host-based vs Path-based) (12 phút)
+## 2. Bảng Ma Trận So Sánh Kỹ Thuật Toàn Diện (Engineering Matrix)
 
-**Nguyên lý cốt lõi:** Đối tượng `Ingress` (`kind: Ingress` apiVersion `networking.k8s.io/v1`) chỉ là bản khai báo quy tắc định tuyến YAML; bắt buộc phải có một tiến trình **Ingress Controller** (như NGINX Ingress Controller, Traefik, HAProxy) chạy thực tế trong cụm để lắng nghe API Server và thực thi việc định tuyến Layer 7.
+Bảng phân tích so sánh chi tiết giữa Ingress truyền thống và Gateway API thế hệ mới:
 
-**Giải thích cơ chế ngầm:** Phân tách tuyệt đối giữa khai báo declarative cấu hình và tiến trình thực thi runtime.
+| Tiêu Chí Kỹ Thuật | Ingress API (`networking.k8s.io/v1`) | Gateway API (`gateway.networking.k8s.io`) |
+| :--- | :--- | :--- |
+| **Mô hình Quản trị** | Đơn nhất (Single Object cho mọi người)| **Phân quyền 3 vai trò** (Infra, Ops, Dev) |
+| **Tính năng Nâng cao** | Phụ thuộc hoàn toàn vào Annotations riêng của vendor | Tích hợp sẵn trong chuẩn (First-class citizen) |
+| **Định tuyến Giao thức** | Chỉ hỗ trợ HTTP và HTTPS | Hỗ trợ đa dạng: HTTP, gRPC, TCP, UDP, TLS passthrough |
+| **Hỗ trợ Canary / Traffic Split**| Rất phức tạp (Dùng nhiều Ingress + Canary annotation)| Hỗ trợ trực tiếp với trọng số `weight` trong `HTTPRoute` |
+| **Đa Namespace (Cross-namespace)**| Bị giới hạn trong 1 Namespace | Hỗ trợ định tuyến xuyên Namespace an toàn |
+| **Tính tương thích Vendor** | Khó chuyển đổi do dính chặt NGINX annotations | Chuẩn hóa toàn bộ, dễ dàng tráo đổi implementation |
 
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Tạo đối tượng Ingress thành công nhưng cột `ADDRESS` bị rỗng vĩnh viễn và không thể `curl` vào được do cụm chưa cài Ingress Controller.
+```mermaid
+graph TD
+    subgraph GatewayAPIModel ["Kiến Trúc Phân Quyền 3 Vai Trò Của Gateway API"]
+        GC["1. GatewayClass<br>(Do Nhà Cung Cấp Hạ Tầng / Infra Admin cấu hình)"]
+        GW["2. Gateway (Listeners, Ports, TLS)<br>(Do Quản Trị Cụm / Cluster Operator quản lý)"]
+        HR1["3. HTTPRoute (App A)<br>(Do Nhóm Dev 1 quản lý)"]
+        HR2["3. HTTPRoute (App B - Canary)<br>(Do Nhóm Dev 2 quản lý)"]
+        
+        GC --> GW
+        GW --> HR1
+        GW --> HR2
+    end
 
-**Minh hoạ.**
+    classDef gcStyle fill:none,stroke:#0284c7,stroke-width:2px,color:#0284c7;
+    classDef gwStyle fill:none,stroke:#7c3aed,stroke-width:2px,color:#7c3aed;
+    classDef hrStyle fill:none,stroke:#16a34a,stroke-width:2px,color:#16a34a;
+    class GC gcStyle;
+    class GW gwStyle;
+    class HR1,HR2 hrStyle;
+```
+
+---
+
+## 3. Cấu Trúc Khai Báo Manifest & Chi Tiết Định Tuyến
+
+### 3.1. Ingress Manifest Hoàn Chỉnh với Host-based, Path-based & TLS Termination
 
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app-ingress
-  namespace: dev
+  name: enterprise-ingress
+  namespace: production
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
 spec:
-  ingressClassName: nginx
-```
-
-Con số chốt: **1** Ingress Controller bắt buộc phải chạy trong cụm để đối tượng Ingress có hiệu lực.
-
----
-
-**Nguyên lý cốt lõi:** Phân biệt **2 kiểu định tuyến Layer 7 trong Ingress**: **Host-based Routing** (định tuyến theo tiêu đề `spec.rules[].host` như `app1.example.com` và `app2.example.com`) và **Path-based Routing** (định tuyến theo đường dẫn URL `spec.rules[].http.paths[].path` như `/api` và `/web` với `pathType: Prefix` hoặc `Exact`).
-
-**Giải thích cơ chế ngầm:** Tiết kiệm chi phí địa chỉ IP công cộng: cho phép gom hàng chục ứng dụng web vào chung một IP duy nhất.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `pathType: Prefix` nhưng thiếu dấu gạch chéo `/` đầu đường dẫn làm API Server từ chối lệnh apply.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  rules:
-  - host: app.example.com
-    http:
-      paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: api-service
-            port:
-              number: 80
-```
-
-Con số chốt: **2** kiểu định tuyến Layer 7 chính trong Ingress spec (Host-based và Path-based).
-
----
-
-### 1.2. Cơ chế giải mã SSL/TLS Termination với Secret `kubernetes.io/tls` (12 phút)
-
-```mermaid
-graph TD
-    subgraph External_World ["Ngoài Internet (Mã hoá HTTPS)"]
-        CLIENT["Client / Web Browser"] -->|"HTTPS / Port 443"| TLS_ING["Ingress Controller (Public IP)"]
-    end
-
-    subgraph Cluster_Internal ["Nội bộ Cụm (Giải mã HTTP)"]
-        TLS_ING -->|"1. Giải mã bằng Secret tls-secret"| DECRYPT["SSL/TLS Termination"]
-        DECRYPT -->|"2. Cleartext HTTP / Port 80"| SVC_API["Service: api-svc"]
-        DECRYPT -->|"2. Cleartext HTTP / Port 80"| SVC_WEB["Service: web-svc"]
-        SVC_API --> POD_API["Pod API (containerPort: 8080)"]
-        SVC_WEB --> POD_WEB["Pod Web (containerPort: 80)"]
-    end
-
-    style External_World fill:none,stroke:#f57c00,stroke-width:2px
-    style Cluster_Internal fill:none,stroke:#388e3c,stroke-width:2px
-```
-
----
-
-**Nguyên lý cốt lõi:** Khối **`spec.tls`** trong Ingress spec liên kết với một đối tượng Secret chuẩn loại **`kubernetes.io/tls`** (chứa đúng 2 key `tls.crt` và `tls.key`) để thực hiện cơ chế **SSL/TLS Termination** tại cửa ngõ Ingress: giải mã kết nối mã hoá HTTPS của khách hàng và truyền tiếp gói tin HTTP thông thường tới các Pods backend.
-
-**Giải thích cơ chế ngầm:** Giảm tải tài nguyên CPU xử lý giải mã SSL cho các Pods backend và tập trung quản lý chứng chỉ SSL tại một nơi duy nhất.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo `secretName` trong khối `spec.tls` trỏ tới một Secret loại `Opaque` làm Ingress Controller báo lỗi không tìm thấy TLS cert.
-
-**Minh hoạ.**
-
-```yaml
-spec:
+  ingressClassName: nginx # Khớp với IngressClass trên cụm
+  
+  # 1. Khối TLS Termination: Tự động giải mã SSL bằng Secret
   tls:
-  - hosts:
-    - app.example.com
-    secretName: app-tls-secret
+    - hosts:
+        - shop.company.com
+        - api.company.com
+      secretName: company-tls-secret # Secret loại kubernetes.io/tls
+
+  # 2. Khối Quy tắc Định tuyến (Rules)
+  rules:
+    # Host 1: shop.company.com
+    - host: shop.company.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shop-frontend-svc
+                port:
+                  number: 80
+
+    # Host 2: api.company.com (Path-based Routing)
+    - host: api.company.com
+      http:
+        paths:
+          - path: /orders
+            pathType: Prefix
+            backend:
+              service:
+                name: orders-api-svc
+                port:
+                  number: 8080
+          - path: /payments
+            pathType: Prefix
+            backend:
+              service:
+                name: payments-api-svc
+                port:
+                  number: 9000
 ```
 
-Con số chốt: **443** là cổng HTTPS mặc định lắng nghe SSL/TLS Termination tại Ingress Controller.
-
----
-
-**Nguyên lý cốt lõi:** Khi sử dụng cờ `pathType: Prefix` trong Ingress path, một đường dẫn `/api` sẽ so khớp và chuyển tiếp 100% các request bắt đầu bằng `/api`, `/api/`, `/api/v1/users`; trong khi `pathType: Exact` chỉ so khớp chính xác từng ký tự trùng khớp với `/api`.
-
-**Giải thích cơ chế ngầm:** Đảm bảo tính chính xác khi phân chia routing cho các ứng dụng microservices.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Dùng `Exact` cho đường dẫn ứng dụng làm các sub-path `/api/v1` bị trả về lỗi 404 Not Found.
-
-**Minh hoạ.**
-
-```yaml
-paths:
-- path: /api
-  pathType: Prefix
-```
-
-Con số chốt: **100%** các sub-paths được so khớp khi khai báo `pathType: Prefix`.
-
----
-
-### 1.3. Kiến trúc thế hệ mới Gateway API (`GatewayClass`, `Gateway`, `HTTPRoute`) (10 phút)
-
-**Nguyên lý cốt lõi:** Chuẩn API thế hệ mới **Gateway API** (`gateway.networking.k8s.io`) giải quyết triệt để các hạn chế của Ingress cũ bằng cách phân chia rõ ràng trách nhiệm cho **3 vai trò độc lập**: **`GatewayClass`** (do nhà cung cấp hạ tầng CNI/Cloud định nghĩa), **`Gateway`** (do Kỹ sư vận hành cụm DevOps quản lý IP/Port/TLS), và **`HTTPRoute`** (do Lập trình viên ứng dụng tự biên soạn rule routing).
-
-**Giải thích cơ chế ngầm:** Loại bỏ các annotation đặc thù nhà cung cấp (vendor lock-in) và cho phép phân quyền Role-based Access Control (RBAC) chuẩn hóa theo từng vai trò công việc.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Cố gõ hàng chục dòng annotation `nginx.ingress.kubernetes.io/*` rối rắm trong file Ingress thay vì chuyển sang dùng Gateway API.
-
-**Minh hoạ.**
+### 3.2. Cấu Hình Canary Deployment bằng Gateway API `HTTPRoute`
 
 ```yaml
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: app-route
-  namespace: dev
+  name: payment-route
+  namespace: production
 spec:
   parentRefs:
-  - name: prod-gateway
+    - name: production-gateway
+  hostnames:
+    - "pay.company.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /api
-    backendRefs:
-    - name: api-service
-      port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /checkout
+      backendRefs:
+        # 90% lưu lượng vào phiên bản hiện tại v1
+        - name: payment-svc-v1
+          port: 8080
+          weight: 90
+        # 10% lưu lượng vào phiên bản thử nghiệm Canary v2
+        - name: payment-svc-v2
+          port: 8080
+          weight: 10
 ```
-
-Con số chốt: **3** vai trò phân quyền cốt lõi trong kiến trúc Gateway API (`GatewayClass`, `Gateway`, `HTTPRoute`).
 
 ---
 
-**Nguyên lý cốt lõi:** Đối tượng `HTTPRoute` trong Gateway API liên kết với đối tượng `Gateway` thông qua thuộc tính **`parentRefs`**; cho phép Lập trình viên ứng dụng tự do gắn các quy tắc định tuyến HTTP vào cửa ngõ chung của công ty mà không cần xin quyền sửa đổi tài nguyên cấp cụm `Gateway`.
+## 4. Phân Tích Cạm Bẫy Thực Chiến: Sự Cố Rewrite-Target & Lỗi 404/502
 
-**Giải thích cơ chế ngầm:** Tăng tốc độ triển khai ứng dụng (CI/CD) và đảm bảo an toàn hạ tầng: Lập trình viên không thể vô tình sửa nhầm cổng hoặc chứng chỉ SSL của toàn cụm.
+### Tình huống 1: Trả về HTTP 404 do cấu hình sai `rewrite-target` với biểu thức Regex
+
+Lập trình viên muốn chuyển tiếp toàn bộ request từ `shop.com/api/v2/items` vào Service Backend. Backend chỉ lắng nghe tại đường dẫn gốc `/items`. Kỹ sư cấu hình `path: /api/v2` nhưng không dùng Rewrite, khiến NGINX gửi nguyên đường dẫn `/api/v2/items` vào Backend, gây ra lỗi 404 Not Found.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+# Log Client nhận 404:
+GET /api/v2/items HTTP/2.0
+Host: shop.com
+HTTP/2 404 Not Found
+
+# Log ứng dụng backend trong Pod:
+10.244.1.1 - [16/Sep/2026:04:00:12] "GET /api/v2/items HTTP/1.1" 404 152 "Cannot GET /api/v2/items"
+```
+
+### 5-Whys Root Cause Analysis:
+1. **Tại sao Backend trả về 404?** -> Backend không định nghĩa route `/api/v2/items`.
+2. **Backend mong muốn nhận route nào?** -> Route `/items`.
+3. **Tại sao Ingress không cắt bỏ tiền tố `/api/v2`?** -> Manifest Ingress thiếu cấu hình rewrite regex.
+4. **Cú pháp chuẩn của NGINX Ingress cho Regex Rewrite là gì?** -> Khai báo path dạng `/api/v2(/|$)(.*)` và annotation `rewrite-target: /$2`.
+5. **Giải pháp khắc phục là gì?** -> Cập nhật đúng cặp Path và Rewrite Target Regex.
+
+```diff
+ metadata:
+   annotations:
++    nginx.ingress.kubernetes.io/use-regex: "true"
++    nginx.ingress.kubernetes.io/rewrite-target: /$2
+ spec:
+   rules:
+     - http:
+         paths:
+-          - path: /api/v2
++          - path: /api/v2(/|$)(.*)
+             pathType: ImplementationSpecific
+```
+
+---
+
+### Tình huống 2: Ingress trả về mã lỗi HTTP 502 Bad Gateway
+
+Người dùng truy cập domain qua Ingress nhưng nhận mã lỗi 502 Bad Gateway.
+
+### Hậu Quả & Log Lỗi Thực Tế:
+
+```text
+# Log NGINX Ingress Controller:
+2026/09/16 04:05:22 [error] 482#482: *192831 connect() failed (111: Connection refused) 
+while connecting to upstream, client: 192.168.10.1, server: shop.company.com, 
+request: "GET / HTTP/2.0", upstream: "http://10.244.2.45:8080"
+```
 
 > [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Khai báo sai tên `Gateway` trong `parentRefs` làm `HTTPRoute` bị kẹt trạng thái `Detached`.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  parentRefs:
-  - name: external-gateway
-```
-
-Con số chốt: **1** thuộc tính `parentRefs` giúp gắn kết linh hoạt giữa `HTTPRoute` và `Gateway`.
+> Khi gặp lỗi **HTTP 502 Bad Gateway** tại Ingress, 95% nguyên nhân xuất phát từ việc **Ingress cấu hình sai `backend.service.port.number`**:
+> - Service khai báo `port: 80` và `targetPort: 3000`.
+> - Trong Ingress khai báo `port.number: 3000` (nhầm sang targetPort) thay vì phải trỏ vào đúng `port.number: 80` của Service!
+> Ingress Controller gửi request vào cổng 3000 của ClusterIP (vốn không tồn tại), dẫn đến lỗi Connection Refused (502).
 
 ---
 
-### 1.4. Cấu hình cờ ingressClassName và câu lệnh kiểm tra (4 phút)
+## 5. Hands-on Lab: Triển Khai & Kiểm Định Ingress Toàn Diện (8 Bước)
 
-**Nguyên lý cốt lõi:** Thuộc tính **`ingressClassName`** (như `ingressClassName: nginx`) trong Ingress spec thay thế cho annotation cũ `kubernetes.io/ingress.class`; đây là cờ bắt buộc giúp chỉ định chính xác Ingress Controller nào trong cụm sẽ chịu trách nhiệm xử lý đối tượng Ingress này.
+Bảng tổng hợp 8 bước thực hành:
 
-**Giải thích cơ chế ngầm:** Cho phép một cụm Kubernetes chạy song song nhiều loại Ingress Controller khác nhau (như Nginx cho public traffic, Traefik cho internal traffic).
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Quên thuộc tính `ingressClassName` làm Ingress bị bỏ rơi không Controller nào nhận.
-
-**Minh hoạ.**
-
-```yaml
-spec:
-  ingressClassName: nginx
-```
-
-Con số chốt: **1** thuộc tính `ingressClassName` chuẩn hoá việc chọn Ingress Controller từ Kubernetes v1.18+.
+| Bước | Thao Tác | Mục Tiêu Kỹ Thuật | Lệnh / Công Cụ |
+| :--- | :--- | :--- | :--- |
+| **1** | Cài đặt NGINX Ingress Controller | Triển khai bộ điều phối L7 | `kubectl apply -f ingress-nginx.yaml` |
+| **2** | Khởi tạo 2 Backend Deployments | Tạo dịch vụ `web-apple` và `web-banana` | `kubectl create deployment` |
+| **3** | Tạo Service ClusterIP cho 2 App | Cung cấp điểm kết nối cho Ingress | `kubectl expose deployment` |
+| **4** | Tự sinh Chứng Chỉ TLS & Secret | Tạo SSL Secret loại `kubernetes.io/tls` | `openssl`, `kubectl create secret tls` |
+| **5** | Khởi tạo Ingress v1 Hoàn Chỉnh | Thiết lập Host-based & Path Routing + TLS | `kubectl apply -f ingress.yaml` |
+| **6** | Kiểm tra phân bổ Ingress Address | Xác nhận Ingress nhận IP của Node | `kubectl get ingress` |
+| **7** | Kiểm thử Định tuyến Path-based | Thử nghiệm `/apple` và `/banana` | `curl -k -H "Host:..."` |
+| **8** | Kiểm định HTTPS Redirect & TLS | Xác nhận HTTP 308 Auto Redirect | `curl -k -I http://...` |
 
 ---
 
-**Nguyên lý cốt lõi:** Câu lệnh `kubectl get ingress,gateway,httproute -n <namespace>` giúp kỹ sư DevOps trích xuất đồng thời toàn bộ hạ tầng định tuyến L7 Ingress cũ và Gateway API mới chỉ trong đúng **2 giây**.
-
-**Giải thích cơ chế ngầm:** Kỹ thuật chẩn đoán sự cố Layer 7 nhanh trong CKA & CKAD: kiểm tra địa chỉ IP phơi ra tại cột `ADDRESS` hoặc `HOSTS`.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Chạy lệnh kiểm tra từng đối tượng riêng lẻ tốn thời gian thao tác trong kỳ thi bấm giờ.
-
-**Minh hoạ.**
+### Bước 1: Cài đặt NGINX Ingress Controller chính thức
 
 ```bash
-# Trích xuất danh sách Ingress và Gateway API trong namespace dev
-kubectl get ingress,gateway,httproute -n dev
-```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/cloud/deploy.yaml
 
-Con số chốt: **2** giây là thời gian trích xuất sạch toàn bộ hạ tầng định tuyến Layer 7 bằng đúng 1 câu lệnh.
+# Chờ Pod Ingress Controller chuyển sang Running
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=120s
+```
 
 ---
 
-**Nguyên lý cốt lõi:** Sử dụng câu lệnh `kubectl describe ingress <ingress-name>` để trích xuất nhanh địa chỉ IP công cộng trong mục `Address`, danh sách các quy tắc `Rules` (Host, Path, Backends) và trạng thái chứng chỉ SSL trong mục `TLS`.
-
-**Giải thích cơ chế ngầm:** Giúp kỹ sư xác minh tức thì xem Ingress Controller đã nạp đúng quy tắc routing và nhận chứng chỉ SSL hay chưa.
-
-> [!WARNING]
-> **CẠM BẪY THỰC CHIẾN:**
-> Loay hoay tìm địa chỉ IP của Ingress bằng các câu lệnh rườm rà.
-
-**Minh hoạ.**
+### Bước 2 & 3: Triển khai 2 ứng dụng Backend mẫu
 
 ```bash
-# Xem chi tiết cấu hình và trạng thái của Ingress app-ingress
-kubectl describe ingress app-ingress -n dev
+kubectl create namespace ingress-lab
+
+# App 1: Apple Web
+kubectl create deployment apple-app --image=hashicorp/http-echo --namespace=ingress-lab -- -text="Apple Backend Response"
+kubectl expose deployment apple-app --port=5678 --namespace=ingress-lab
+
+# App 2: Banana Web
+kubectl create deployment banana-app --image=hashicorp/http-echo --namespace=ingress-lab -- -text="Banana Backend Response"
+kubectl expose deployment banana-app --port=5678 --namespace=ingress-lab
 ```
 
-Con số chốt: **1** câu lệnh `kubectl describe ingress` là đủ để nắm toàn bộ trạng thái ghép nối của Ingress.
-
 ---
 
-## 8. Đưa vào cụm thật (4 phút)
-
-### Áp vào cụm đang chạy thì làm gì trước
-
-1. **Cài đặt NGINX Ingress Controller hoặc Cilium Gateway API Controller trước khi apply Ingress:** Đảm bảo có tiến trình Controller lắng nghe API.
-2. **Chuẩn bị sẵn Secret loại `kubernetes.io/tls` chứa chứng chỉ SSL hợp lệ:** Dùng cho các tên miền production HTTPS.
-3. **Cấu hình DNS A record hoặc file `/etc/hosts` local trỏ tên miền về IP của Ingress Controller:** Giúp máy client kiểm thử được Host-based routing.
-
-### Cái gì hỏng nếu áp thẳng lên prod
-
-- **Chỉnh sửa Ingress path gây ra xung đột trùng lặp (Path Conflict):** Làm request gọi tới ứng dụng A bị chuyển nhầm sang ứng dụng B gây ra lỗi lộ dữ liệu.
-- **Xoá Secret TLS khi Ingress đang chạy:** Làm toàn bộ các kết nối HTTPS bị sập lập tức với lỗi chứng chỉ không hợp lệ (SSL Certificate Error).
-- **Quy trình áp thử an toàn:**
-  - Apply file YAML Ingress trên môi trường staging.
-  - Sử dụng cờ `curl -H "Host: app.example.com" http://<Ingress-IP>/api` để kiểm thử từ terminal.
-  - Kiểm tra log của Ingress Controller Pod qua `kubectl logs -n ingress-nginx`.
-
-### Đo trước — đo sau
-
-1. **Số lượng địa chỉ IP công cộng (Public IPs):** Giảm từ 50 địa chỉ IP (mỗi app 1 LoadBalancer) xuống đúng 1 địa chỉ IP duy nhất nhờ gom vào Ingress L7.
-2. **Chi phí hạ tầng đám mây (Cloud Cost):** Tiết kiệm hàng ngàn USD/tháng nhờ giảm số lượng Cloud Load Balancer.
-3. **Thời gian triển khai đường dẫn mới (Deployment Time):** Giảm từ 15 phút xuống 5 giây nhờ Lập trình viên tự apply `HTTPRoute` trong Gateway API.
-
-### Khi nào KHÔNG nên dùng
-
-- **Không dùng Ingress Layer 7 cho các giao thức phi HTTP/HTTPS (như gRPC thuần, TCP/UDP socket, Database connection):** Nên dùng Service `LoadBalancer` / `NodePort` hoặc `GRPCRoute` trong Gateway API.
-- **Không tạo quá nhiều rule hoán đổi URL phức tạp (URL Rewrite) bằng annotation rối rắm:** Nên chuyển sang Gateway API `URLRewrite` filter.
-
----
-
-### 1.6. Bẫy hay gặp (2 phút)
-
-| # | Bẫy hay gặp | Vì sao dính bẫy | Làm đúng là (kèm tên lệnh / con số) |
-|---|---|---|---|
-| 1 | Ingress tạo thành công nhưng cột `ADDRESS` bị rỗng vĩnh viễn | Cụm chưa cài đặt bất kỳ tiến trình Ingress Controller nào | Cài đặt NGINX Ingress Controller bằng Helm hoặc Manifest |
-| 2 | Truy cập Ingress bằng IP bị lỗi 404 Not Found | Ingress đang cấu hình Host-based routing (`host: app.example.com`) | Thêm header `curl -H "Host: app.example.com"` hoặc sửa `/etc/hosts` |
-| 3 | Bật HTTPS nhưng trình duyệt báo lỗi `SSL Certificate Invalid` | Khai báo `secretName` trong `spec.tls` trỏ tới Secret không tồn tại | Tạo Secret loại `kubernetes.io/tls` chứa đúng cert và key |
-| 4 | Quên cờ `pathType: Prefix` trong Ingress path spec | Kubernetes v1.18+ bắt buộc 100% các path phải có `pathType` | Khai báo `pathType: Prefix` hoặc `Exact` cho mỗi path |
-| 5 | Thắc mắc vì sao `HTTPRoute` bị kẹt trạng thái `Detached` | Thuộc tính `parentRefs` gõ sai tên hoặc sai namespace của `Gateway` | Kiểm tra chính xác tên `Gateway` trong khối `parentRefs` |
-| 6 | Nhầm lẫn giữa `service.port.number` và `service.port.name` | `number` dành cho số cổng (80); `name` dành cho tên cổng (http) | Khai báo đúng `number: 80` hoặc `name: http` |
-| 7 | Cố gõ annotation cũ `kubernetes.io/ingress.class: nginx` | Annotation cũ đã bị thay thế hoàn toàn bằng `ingressClassName` | Sử dụng thuộc tính `ingressClassName: nginx` trong spec |
-| 8 | Định tuyến path `/api` nhưng ứng dụng backend nhận nguyên đường dẫn `/api/users` | Ứng dụng backend không có prefix `/api` gây lỗi 404 | Sử dụng annotation `rewrite-target: /$2` để rewrite path |
-| 9 | Quên cờ `hosts` trong khối `spec.tls` | Ingress không biết chứng chỉ TLS áp dụng cho tên miền nào | Khai báo mảng `hosts: [app.example.com]` trong khối `spec.tls` |
-| 10 | Tạo Secret TLS bằng type `Opaque` làm Ingress báo lỗi | Ingress yêu cầu 100% Secret TLS phải thuộc type `kubernetes.io/tls` | Tạo Secret bằng lệnh `kubectl create secret tls` |
-| 11 | Thắc mắc vì sao Gateway API chưa chạy trên cụm | Gateway API yêu cầu phải install CRDs (`gateway.networking.k8s.io`) trước | Apply bộ CRDs chính thức của Gateway API |
-| 12 | Đặt tên path không bắt đầu bằng dấu gạch chéo `/` | API Server từ chối lệnh apply do vi phạm quy tắc DNS path | Khai báo path luôn bắt đầu bằng dấu `/` (như `/api`) |
-
----
-
-## §10. Tóm tắt (2 phút)
-
-```mermaid
-graph TD
-    A["Layer 7 HTTP/HTTPS Routing"] --> B["1. Ingress API (networking.k8s.io/v1)"]
-    A --> C["2. Gateway API (gateway.networking.k8s.io)"]
-
-    B --> D["Host-based (app.example.com) & Path-based (/api, Prefix)"]
-    B --> E["SSL/TLS Termination (spec.tls -> Secret kubernetes.io/tls)"]
-    B --> F["Ingress Controller (NGINX Ingress) thực thi rules"]
-
-    C --> G["Phân quyền 3 vai trò: GatewayClass (Cloud), Gateway (DevOps), HTTPRoute (Dev)"]
-
-    style A fill:none,stroke:#333,stroke-width:2px
-    style B fill:none,stroke:#333,stroke-width:2px
-    style C fill:none,stroke:#333,stroke-width:2px
-    style G fill:none,stroke:#333,stroke-width:2px
-```
-
-### Năm điều phải nhớ
-
-1. **Resource vs Controller:** đối tượng `Ingress` chỉ là bản khai báo YAML; cần **Ingress Controller** (như Nginx) thực thi routing L7.
-2. **L7 Routing:** Hỗ trợ **Host-based** (`host: app.example.com`) và **Path-based** (`path: /api`, `pathType: Prefix`/`Exact`).
-3. **SSL/TLS Termination:** Khối `spec.tls` liên kết với Secret **`kubernetes.io/tls`** để giải mã HTTPS tại cửa ngõ Ingress (cổng 443).
-4. **`ingressClassName`:** Thuộc tính chuẩn hoá thay thế annotation cũ, chỉ định Ingress Controller phụ trách.
-5. **Gateway API thế hệ mới:** Phân quyền 3 vai trò độc lập (**`GatewayClass`** hạ tầng, **`Gateway`** DevOps, **`HTTPRoute`** Lập trình viên).
-
----
-
-## §11. Câu hỏi tự kiểm tra
-
-1. Phân biệt sự khác nhau giữa đối tượng Ingress Resource và tiến trình Ingress Controller trong Kubernetes.
-2. Trình bày sự khác nhau giữa 2 kỹ thuật định tuyến Layer 7: Host-based Routing và Path-based Routing trong Ingress spec.
-3. Sự khác nhau về mặt ý nghĩa so khớp giữa 2 giá trị `pathType: Prefix` và `pathType: Exact` là gì?
-4. Trình bày cơ chế giải mã SSL/TLS Termination tại cửa ngõ Ingress và cấu trúc bắt buộc của Secret `kubernetes.io/tls`.
-5. Thuộc tính `ingressClassName` trong Ingress spec đóng vai trò gì và thay thế cho annotation cũ nào?
-6. Nêu 3 vai trò phân quyền trách nhiệm độc lập trong kiến trúc chuẩn thế hệ mới Gateway API (`gateway.networking.k8s.io`).
-7. Tại sao Gateway API lại giải quyết triệt để các nhược điểm rối rắm của Ingress API cũ?
-8. Thuộc tính `parentRefs` trong `HTTPRoute` spec dùng để làm gì?
-9. Lệnh CLI nào giúp trích xuất đồng thời hạ tầng định tuyến Ingress và Gateway API trong đúng 2 giây?
-10. Hai chế độ hỏng (1 im lặng do Ingress cột ADDRESS rỗng vì thiếu Ingress Controller, 1 âm thầm do sập HTTPS vì trỏ sai Secret TLS type Opaque) là gì?
-
-### Đáp án
-
-1. Ingress Resource là tệp YAML khai báo quy tắc; Ingress Controller là tiến trình Reverse Proxy thực thi quy tắc đó.
-2. Host-based: Định tuyến theo tiêu đề `Host` header (`app1.example.com`); Path-based: Định tuyến theo đường dẫn URL (`/api`, `/web`).
-3. `Prefix`: So khớp 100% tất cả các sub-paths bắt đầu bằng chuỗi đó (`/api/v1`); `Exact`: So khớp chính xác từng ký tự trùng khớp (`/api`).
-4. Ingress đọc chứng chỉ từ Secret `kubernetes.io/tls` (chứa `tls.crt` & `tls.key`), giải mã HTTPS tại cổng 443 và truyền HTTP cleartext tới Pods backend.
-5. Chỉ định chính xác Ingress Controller phụ trách đối tượng; thay thế cho annotation cũ `kubernetes.io/ingress.class`.
-6. `GatewayClass` (nhà cung cấp hạ tầng), `Gateway` (Kỹ sư vận hành cụm DevOps), `HTTPRoute` (Lập trình viên ứng dụng).
-7. Loại bỏ các annotation đặc thù nhà cung cấp (vendor lock-in) và phân quyền RBAC rõ ràng cho từng vai trò công việc.
-8. Gắn kết đối tượng `HTTPRoute` của Lập trình viên vào cửa ngõ chung `Gateway` do DevOps quản lý.
-9. Lệnh `kubectl get ingress,gateway,httproute -n <namespace>`.
-10. Chế độ 1: Tạo Ingress nhưng cụm chưa cài Ingress Controller làm cột `ADDRESS` bị rỗng vĩnh viễn; Chế độ 2: Khai báo `secretName` trỏ tới Secret type `Opaque` làm Ingress Controller không đọc được cert gây sập kết nối HTTPS.
-
----
-
-## §12. Tài liệu tham khảo
-
-| Nguồn tài liệu | Phiên bản Kubernetes áp dụng | Nội dung chính |
-|---|---|---|
-| Official Docs: Ingress | Kubernetes v1.35 | Khái niệm Ingress, Ingress Controllers, Host/Path routing và TLS |
-| Official Docs: Gateway API | Kubernetes v1.35 | Chuẩn API thế hệ mới, GatewayClass, Gateway và HTTPRoute |
-| NGINX Ingress Controller | NGINX v1.10 | Cấu hình NGINX Ingress Controller, annotations và SSL termination |
-| File cấu hình phiên bản cục bộ | `labs/phien-ban.env` | Biến `K8S_VER=1.35`, `LAB_CONTEXT="kubeadm"` |
-
-
----
-
-## 2. Hướng Dẫn Thực Hành & Triển Khai Lab Chuẩn Production
-
-> [!IMPORTANT]
-> **YÊU CẦU MÔI TRƯỜNG THỰC HÀNH:**
-> Toàn bộ các bài thực hành dưới đây được thiết kế để chạy trực tiếp trên cụm Kubernetes 1.30+ tiêu chuẩn (hoặc cụm kind/kubeadm lab). Hãy đảm bảo ngữ cảnh dòng lệnh `kubectl config current-context` đã trỏ chính xác vào cụm thực hành trước khi thực thi.
-
-## Khối thực hành — 120 phút
-
-## L0. Mục tiêu thực hành và tiêu chí hoàn thành
-
-| # | Mục tiêu thực hành | Tiêu chí hoàn thành (Kiểm chứng BẰNG LỆNH) |
-|---|---|---|
-| TH1 | Khởi tạo 2 Deployments `api-app` và `web-app` kèm Service ClusterIP | `kubectl get svc -n dev` hiển thị 2 Services `api-svc` và `web-svc` |
-| TH2 | Khởi tạo Ingress Path-based routing phân chia `/api` và `/web` | `kubectl get ingress path-ingress -n dev` nạp `ingressClassName: nginx` |
-| TH3 | Khởi tạo Secret TLS `app-tls-secret` loại `kubernetes.io/tls` | `kubectl get secret app-tls-secret -n dev -o jsonpath='{.type}'` in ra `kubernetes.io/tls` |
-| TH4 | Khởi tạo Ingress Host-based và TLS Termination | `kubectl get ingress host-ingress -n dev` có khối `tls` nạp secret `app-tls-secret` |
-| TH5 | Khai báo đối tượng `HTTPRoute` thế hệ mới trong Gateway API | `kubectl get httproute app-route -n dev` nạp `parentRefs` trỏ về `prod-gateway` |
-| TH6 | Xác minh kịch bản Ingress Controller và Gateway API với script tự động | Script kiểm tra Ingress & Gateway API OK |
-| TH7 | Nộp đủ 4 hiện vật vào portfolio | Thư mục `k8s-portfolio/buoi-24/` chứa đủ 4 file md/yaml/sh |
-
----
-
-## L1. Điều kiện tiên quyết về môi trường
-
-| # | Kiểm tra điều kiện | Câu lệnh kiểm tra | Kết quả kỳ vọng |
-|---|---|---|---|
-| 1 | Cụm `kubeadm` 3 node đang ở v1.35 | `kubectl get nodes` | Hiển thị 3 node `cp-01`, `worker-01`, `worker-02` `Ready` |
-| 2 | Kubeconfig trỏ context `kubeadm` | `kubectl config current-context` | In ra đúng `kubeadm` |
-| 3 | Namespace `dev` sẵn sàng | `kubectl create ns dev` | Namespace `dev` ở trạng thái Active |
-| 4 | Thư mục hiện vật đã sẵn sàng | `mkdir -p k8s-portfolio/buoi-24` | Thư mục được tạo thành công |
-| 5 | Ingress Controller / CRDs sẵn sàng | `kubectl get ingressclass` | Hiển thị `ingressClassName: nginx` hoặc tương đương |
+### Bước 4: Tạo chứng chỉ SSL tự ký và lưu vào Kubernetes Secret
 
 ```bash
-# Kiểm tra môi trường bắt buộc trước khi thực hiện bài lab
-kubectl config current-context | grep -qx "kubeadm" && echo "CHECKPOINT MOI TRUONG — ĐẠT" || echo "CHECKPOINT MOI TRUONG — LỖI (Trỏ sai context)"
-```
-
----
-
-## L2. Kiến trúc bài lab
-
-```mermaid
-graph TD
-    subgraph Client_Requests ["Chặng 1: Client HTTP/HTTPS Requests"]
-        CLIENT1["Client (curl /api)"] -->|"HTTP / Path /api"| ING_PATH["Ingress: path-ingress"]
-        CLIENT2["Client (curl app.example.com)"] -->|"HTTPS / Host app.example.com"| ING_HOST["Ingress: host-ingress (TLS)"]
-        CLIENT3["Client (Gateway API)"] -->|"HTTP / HTTPRoute"| GWAY["HTTPRoute: app-route"]
-    end
-
-    subgraph Backend_Routing ["Chặng 2: Service ClusterIP Routing"]
-        ING_PATH --> SVC_API["Service: api-svc (Port 80)"]
-        ING_PATH --> SVC_WEB["Service: web-svc (Port 80)"]
-        ING_HOST --> SVC_WEB
-        GWAY --> SVC_API
-        SVC_API --> POD_API["Pod api-app (10.244.1.A:8080)"]
-        SVC_WEB --> POD_WEB["Pod web-app (10.244.2.B:80)"]
-    end
-
-    style Client_Requests fill:none,stroke:#f57c00,stroke-width:2px
-    style Backend_Routing fill:none,stroke:#388e3c,stroke-width:2px
-```
-
----
-
-## L3. Bước 1 — Khởi tạo Backend Deployments và Ingress Path-based (30 phút)
-
-### Thao tác 1.1: Khởi tạo Workloads và `path-ingress.yaml`
-
-```bash
-# 1. Tạo Namespace dev nếu chưa có
-kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -
-
-# 2. Khởi tạo 2 Deployments api-app và web-app kèm Services
-kubectl create deployment api-app --image=nginx:1.27-alpine -n dev
-kubectl expose deployment api-app --name=api-svc --port=80 -n dev
-
-kubectl create deployment web-app --image=nginx:1.27-alpine -n dev
-kubectl expose deployment web-app --name=web-svc --port=80 -n dev
-
-# 3. Tạo tệp path-ingress.yaml định tuyến Path-based
-cat << 'EOF' > k8s-portfolio/buoi-24/path-ingress.yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: path-ingress
-  namespace: dev
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: api-svc
-            port:
-              number: 80
-      - path: /web
-        pathType: Prefix
-        backend:
-          service:
-            name: web-svc
-            port:
-              number: 80
-EOF
-
-kubectl apply -f k8s-portfolio/buoi-24/path-ingress.yaml
-
-# 4. Trích xuất thuộc tính pathType của path-ingress
-kubectl get ingress path-ingress -n dev -o jsonpath='{.spec.rules[0].http.paths[0].pathType}' > /tmp/pathtype-val.txt
-```
-
-**CHECKPOINT 1 — Hai Services api-svc và web-svc được tạo thành công trong namespace dev.**
-
-```bash
-[ $(kubectl get svc api-svc web-svc -n dev --no-headers | wc -l) -eq 2 ] && echo "CHECKPOINT 1 — ĐẠT" || echo "CHECKPOINT 1 — LỖI"
-```
-
-**CHECKPOINT 2 — Đối tượng Ingress path-ingress được khởi tạo thành công với ingressClassName nginx.**
-
-```bash
-kubectl get ingress path-ingress -n dev -o jsonpath='{.spec.ingressClassName}' | grep -qx "nginx" && echo "CHECKPOINT 2 — ĐẠT" || echo "CHECKPOINT 2 — LỖI"
-```
-
-**CHECKPOINT 3 — Quy tắc pathType trong path-ingress được khai báo dạng Prefix chuẩn.**
-
-```bash
-grep -qx "Prefix" /tmp/pathtype-val.txt && echo "CHECKPOINT 3 — ĐẠT" || echo "CHECKPOINT 3 — LỖI"
-```
-
----
-
-## L4. Bước 2 — Khởi tạo Secret TLS và Ingress Host-based HTTPS (30 phút)
-
-### Thao tác 2.1: Tạo TLS Secret `app-tls-secret` và `host-ingress.yaml`
-
-```bash
-# 1. Tạo chứng chỉ SSL tự ký (Self-signed Cert) cho tên miền app.example.com
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout /tmp/tls.key -out /tmp/tls.crt \
-  -subj "/CN=app.example.com/O=DevOps" >/dev/null 2>&1
+  -subj "/CN=fruit.company.com/O=Enterprise"
 
-# 2. Khởi tạo Secret loại kubernetes.io/tls tên app-tls-secret
-kubectl create secret tls app-tls-secret \
-  --cert=/tmp/tls.crt --key=/tmp/tls.key -n dev \
-  --dry-run=client -o yaml | kubectl apply -f -
+kubectl create secret tls fruit-tls-secret \
+  --cert=/tmp/tls.crt \
+  --key=/tmp/tls.key \
+  --namespace=ingress-lab
+```
 
-# 3. Tạo tệp host-ingress.yaml định tuyến Host-based và TLS Termination
-cat << 'EOF' > k8s-portfolio/buoi-24/host-ingress.yaml
+---
+
+### Bước 5: Triển khai Ingress Manifest
+
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: host-ingress
-  namespace: dev
+  name: fruit-ingress
+  namespace: ingress-lab
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - app.example.com
-    secretName: app-tls-secret
+    - hosts:
+        - fruit.company.com
+      secretName: fruit-tls-secret
   rules:
-  - host: app.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web-svc
-            port:
-              number: 80
+    - host: fruit.company.com
+      http:
+        paths:
+          - path: /apple
+            pathType: Prefix
+            backend:
+              service:
+                name: apple-app
+                port:
+                  number: 5678
+          - path: /banana
+            pathType: Prefix
+            backend:
+              service:
+                name: banana-app
+                port:
+                  number: 5678
 EOF
-
-kubectl apply -f k8s-portfolio/buoi-24/host-ingress.yaml
-
-# 4. Trích xuất thuộc tính secretName từ host-ingress
-kubectl get ingress host-ingress -n dev -o jsonpath='{.spec.tls[0].secretName}' > /tmp/tls-secret-name.txt
-```
-
-**CHECKPOINT 4 — Secret app-tls-secret thuộc đúng loại kubernetes.io/tls chứa cert và key.**
-
-```bash
-kubectl get secret app-tls-secret -n dev -o jsonpath='{.type}' | grep -qx "kubernetes.io/tls" && echo "CHECKPOINT 4 — ĐẠT" || echo "CHECKPOINT 4 — LỖI"
-```
-
-**CHECKPOINT 5 — CA ĐỐI CHỨNG: Ingress gõ sai ingressClassName (như wrong-class) sẽ bị bỏ rơi không được Controller xử lý.**
-
-```bash
-cat << EOF | kubectl apply -f - >/dev/null 2>&1
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: bad-ingress
-  namespace: dev
-spec:
-  ingressClassName: wrong-class
-  rules:
-  - host: dummy.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web-svc
-            port:
-              number: 80
-EOF
-kubectl get ingress bad-ingress -n dev -o jsonpath='{.spec.ingressClassName}' | grep -qx "wrong-class" && echo "CHECKPOINT 5 — ĐẠT"
 ```
 
 ---
 
-## L5. Bước 3 — Khai báo đối tượng `HTTPRoute` trong chuẩn Gateway API (30 phút)
-
-### Thao tác 3.1: Biên soạn `http-route.yaml` thế hệ mới
+### Bước 6: Xác nhận trạng thái Ingress
 
 ```bash
-# 1. Tạo tệp http-route.yaml định tuyến Gateway API
-cat << 'EOF' > k8s-portfolio/buoi-24/http-route.yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: app-route
-  namespace: dev
-spec:
-  parentRefs:
-  - name: prod-gateway
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /api
-    backendRefs:
-    - name: api-svc
-      port: 80
-EOF
-
-kubectl apply -f k8s-portfolio/buoi-24/http-route.yaml --server-side >/dev/null 2>&1 || kubectl apply -f k8s-portfolio/buoi-24/http-route.yaml >/dev/null 2>&1 || true
-
-# 2. Trích xuất tên parentRefs từ file http-route.yaml
-grep -A 1 "parentRefs:" k8s-portfolio/buoi-24/http-route.yaml | grep "name:" | awk '{print $2}' > /tmp/parent-gateway.txt
+kubectl get ingress fruit-ingress -n ingress-lab
 ```
 
-**CHECKPOINT 6 — Đối tượng Ingress host-ingress nạp thành công secret app-tls-secret cho tên miền app.example.com.**
-
-```bash
-grep -qx "app-tls-secret" /tmp/tls-secret-name.txt && echo "CHECKPOINT 6 — ĐẠT" || echo "CHECKPOINT 6 — LỖI"
-```
-
-**CHECKPOINT 7 — Tệp http-route.yaml khai báo chuẩn thuộc tính parentRefs trỏ tới prod-gateway.**
-
-```bash
-grep -qx "prod-gateway" /tmp/parent-gateway.txt && echo "CHECKPOINT 7 — ĐẠT" || echo "CHECKPOINT 7 — LỖI"
-```
-
-**CHECKPOINT 8 — CA ĐỐI CHỨNG: Secret TLS chuẩn loại kubernetes.io/tls chứa đủ 2 key tls.crt và tls.key.**
-
-```bash
-kubectl get secret app-tls-secret -n dev -o jsonpath='{.data}' | grep -q "tls.crt" && grep -q "tls.key" && echo "CHECKPOINT 8 — ĐẠT"
+Output ghi nhận Ingress đã sẵn sàng và gắn với địa chỉ IP:
+```text
+NAME            CLASS   HOSTS               ADDRESS         PORTS     AGE
+fruit-ingress   nginx   fruit.company.com   192.168.10.11   80, 443   30s
 ```
 
 ---
 
-## L6. Bước 4 — Phân tích Ingress status và dọn dẹp (20 phút)
+### Bước 7: Kiểm thử định tuyến Path-based qua HTTPS với Host Header giả lập
 
-### Thao tác 4.1: Kiểm tra mô tả chi tiết Ingress bằng `kubectl describe`
+Lấy IP của Ingress Controller và gửi request:
 
 ```bash
-# 1. Trích xuất chi tiết Ingress host-ingress
-kubectl describe ingress host-ingress -n dev > /tmp/ingress-desc.txt
+INGRESS_IP=$(kubectl get ingress fruit-ingress -n ingress-lab -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+[ -z "$INGRESS_IP" ] && INGRESS_IP="127.0.0.1"
 
-# 2. Dọn dẹp bad-ingress thử nghiệm
-kubectl delete ingress bad-ingress -n dev --ignore-not-found=true >/dev/null 2>&1
-rm -f /tmp/tls.key /tmp/tls.crt
+# Kiểm tra đường dẫn /apple
+curl -k --resolve fruit.company.com:443:$INGRESS_IP https://fruit.company.com/apple
+
+# Kiểm tra đường dẫn /banana
+curl -k --resolve fruit.company.com:443:$INGRESS_IP https://fruit.company.com/banana
 ```
 
-**CHECKPOINT 9 — Mô tả Ingress host-ingress thể hiện đúng ghép nối Service web-svc cổng 80.**
-
-```bash
-grep -q "web-svc:80" /tmp/ingress-desc.txt && echo "CHECKPOINT 9 — ĐẠT" || echo "CHECKPOINT 9 — LỖI"
-```
-
-**CHECKPOINT 10 — Dọn dẹp tệp tạm /tmp/ingress-desc.txt.**
-
-```bash
-rm -f /tmp/ingress-desc.txt >/dev/null 2>&1 && echo "CHECKPOINT 10 — ĐẠT" || echo "CHECKPOINT 10 — LỖI"
-```
-
-**CHECKPOINT 11 — Dọn dẹp tệp tạm /tmp/parent-gateway.txt.**
-
-```bash
-rm -f /tmp/parent-gateway.txt >/dev/null 2>&1 && echo "CHECKPOINT 11 — ĐẠT" || echo "CHECKPOINT 11 — LỖI"
-```
-
-**CHECKPOINT 12 — 100% 3 node cp-01, worker-01, worker-02 duy trì trạng thái Ready.**
-
-```bash
-kubectl get nodes --no-headers | grep -c "Ready" | grep -qx "3" && echo "CHECKPOINT 12 — ĐẠT" || echo "CHECKPOINT 12 — LỖI"
+Output phản hồi chính xác từng Backend:
+```text
+Apple Backend Response
+Banana Backend Response
 ```
 
 ---
 
-## L7. Nộp hiện vật và dọn dẹp (10 phút)
+### Bước 8: Kiểm định cơ chế tự động chuyển hướng HTTP -> HTTPS (SSL Redirect)
 
-### Thao tác 7.1: Gom hiện vật nộp bài
+Gửi request HTTP thường ở cổng 80:
 
 ```bash
-# 1. Báo cáo thử nghiệm ingress-curl-report.txt
-cat << 'EOF' > k8s-portfolio/buoi-24/ingress-curl-report.txt
-BÁO CÁO KẾT QUẢ KHIỂM THỬ INGRESS L7 VÀ TLS TERMINATION:
-
-1. Thử nghiệm Path-based Ingress (path-ingress):
-   - Đường dẫn /api chuyển tiếp chính xác tới api-svc (Port 80).
-   - Đường dẫn /web chuyển tiếp chính xác tới web-svc (Port 80).
-   - Thuộc tính ingressClassName: nginx nạp thành công.
-
-2. Thử nghiệm Host-based & TLS Termination (host-ingress):
-   - Tên miền: app.example.com.
-   - Chứng chỉ SSL: app-tls-secret (loại kubernetes.io/tls).
-   - Kết nối mã hoá HTTPS (Port 443) được Ingress Controller giải mã và chuyển tiếp HTTP cleartext tới web-svc.
-
-3. Gateway API (http-route.yaml):
-   - Phân chia 3 vai trò: GatewayClass, Gateway (prod-gateway), HTTPRoute (app-route).
-EOF
-
-# 2. Tạo tệp verify-ingress-gateway.sh
-cat << 'EOF' > k8s-portfolio/buoi-24/verify-ingress-gateway.sh
-#!/bin/bash
-# Script kiểm tra Ingress Path-based, TLS Secret và Gateway API HTTPRoute
-
-PATH_ING=$(kubectl get ingress path-ingress -n dev -o jsonpath='{.spec.ingressClassName}' 2>/dev/null)
-TLS_SEC=$(kubectl get secret app-tls-secret -n dev -o jsonpath='{.type}' 2>/dev/null)
-ROUTE_FILE="k8s-portfolio/buoi-24/http-route.yaml"
-
-if [ "$PATH_ING" == "nginx" ] && [ "$TLS_SEC" == "kubernetes.io/tls" ] && [ -f "$ROUTE_FILE" ]; then
-    echo "VERIFY INGRESS GATEWAY — ĐẠT (Path Ingress, TLS Secret & HTTPRoute OK)"
-else
-    echo "VERIFY INGRESS GATEWAY — LỖI (Ingress: $PATH_ING, Secret: $TLS_SEC)"
-fi
-EOF
-
-chmod +x k8s-portfolio/buoi-24/verify-ingress-gateway.sh
-./k8s-portfolio/buoi-24/verify-ingress-gateway.sh
-
-# 3. Tạo tệp nhat-ky-buoi-24.md
-cat << 'EOF' > k8s-portfolio/buoi-24/nhat-ky-buoi-24.md
-# NHẬT KÝ THU HOẠCH BUỔI 24
-
-1. Ingress Resource vs Ingress Controller:
-   - Ingress Resource chỉ là file YAML khai báo quy tắc L7.
-   - Ingress Controller (Nginx/Traefik) mới là tiến trình thực thi routing.
-
-2. SSL/TLS Termination & kubernetes.io/tls:
-   - Ingress giải mã HTTPS tại cửa ngõ (Port 443) dùng Secret kubernetes.io/tls (tls.crt & tls.key).
-
-3. Kiến trúc Gateway API thế hệ mới:
-   - Phân quyền 3 vai trò: GatewayClass (hạ tầng), Gateway (DevOps), HTTPRoute (Lập trình viên).
-EOF
-
-# 4. Dọn dẹp tệp tạm
-rm -f /tmp/pathtype-val.txt /tmp/tls-secret-name.txt
+curl -I --resolve fruit.company.com:80:$INGRESS_IP http://fruit.company.com/apple
 ```
 
-**CHECKPOINT 13 — Đủ 4 tệp hiện vật trong thư mục portfolio.**
-
-```bash
-[ -f k8s-portfolio/buoi-24/path-ingress.yaml ] && [ -f k8s-portfolio/buoi-24/ingress-curl-report.txt ] && [ -f k8s-portfolio/buoi-24/verify-ingress-gateway.sh ] && [ -f k8s-portfolio/buoi-24/nhat-ky-buoi-24.md ] && echo "CHECKPOINT 13 — ĐẠT" || echo "CHECKPOINT 13 — LỖI"
+Output xác nhận mã HTTP 308 Permanent Redirect sang HTTPS:
+```text
+HTTP/1.1 308 Permanent Redirect
+Location: https://fruit.company.com/apple
 ```
 
 ---
 
-## L8. Xử lý sự cố thường gặp trong lab
-
-| # | Triệu chứng lỗi | Nguyên nhân khả dĩ | Cách xử lý sửa lỗi |
-|---|---|---|---|
-| 1 | Ingress tạo thành công nhưng cột `ADDRESS` rỗng | Cụm chưa có tiến trình Ingress Controller chạy | Cài đặt NGINX Ingress Controller hoặc chọn `ingressClassName` đúng |
-| 2 | Truy cập Ingress bằng IP báo lỗi `404 Not Found` | Ingress cấu hình Host-based (`host: app.example.com`) | Dùng `curl -H "Host: app.example.com"` hoặc sửa file `/etc/hosts` |
-| 3 | Lệnh `kubectl create secret tls` báo lỗi thiếu file | Đường dẫn tới tệp cert/key không chính xác | Tạo lại cert qua `openssl` và chỉ đúng file `/tmp/tls.crt` |
-| 4 | Bật HTTPS nhưng kết nối bị lỗi `Certificate Error` | Khai báo `secretName` trong `spec.tls` trỏ sai tên Secret | Kiểm tra tên Secret qua `kubectl get secret -n dev` |
-| 5 | Lệnh `apply -f http-route.yaml` báo lỗi `CRD not found` | Cụm chưa cài đặt CRDs của Gateway API | Áp dụng cờ `--server-side` hoặc cài bộ CRDs Gateway API |
-| 6 | Thắc mắc vì sao `pathType: Prefix` không ăn đường dẫn con | Khai báo tên path không bắt đầu bằng dấu `/` | Đảm bảo tên path luôn bắt đầu bằng dấu `/` (như `/api`) |
-| 7 | Cố dùng annotation cũ `kubernetes.io/ingress.class` | Annotation cũ bị deprecated từ Kubernetes v1.18 | Chuyển sang thuộc tính chuẩn `spec.ingressClassName: nginx` |
-| 8 | Định tuyến path `/api` nhưng backend trả về HTTP 404 | App backend không xử lý prefix `/api` | Dùng annotation rewrite path `nginx.ingress.kubernetes.io/rewrite-target: /` |
-| 9 | Lệnh `openssl` báo lỗi command not found | Máy chưa cài công cụ `openssl` | Cài đặt `openssl` hoặc dùng cert test có sẵn |
-| 10 | Secret loại `Opaque` bị Ingress từ chối nạp TLS | Ingress bắt buộc Secret phải thuộc loại `kubernetes.io/tls` | Xoá Secret cũ và tạo lại bằng `kubectl create secret tls` |
-| 11 | Script `verify-ingress-gateway.sh` báo LỖI | Tệp `http-route.yaml` bị thiếu hoặc sai đường dẫn | Kiểm tra tệp `k8s-portfolio/buoi-24/http-route.yaml` |
-| 12 | Ingress Controller pod bị restart do OOMKilled | Memory limit của Ingress Controller quá thấp | Nâng `resources.limits.memory` cho Ingress Controller pod |
-
----
-
-## L9. Bài tập mở rộng
-
-1. **BT1 — Thử nghiệm annotation Rewrite Target:** Biên soạn Ingress path `/api` dán annotation `nginx.ingress.kubernetes.io/rewrite-target: /$2` để cắt bỏ prefix khi gọi backend.
-2. **BT2 — Cấu hình Ingress Redirect HTTP sang HTTPS:** Khai báo annotation `nginx.ingress.kubernetes.io/force-ssl-redirect: "true"` ép 100% traffic HTTP nhảy sang HTTPS.
-3. **BT3 — Thực hành tạo wildcard TLS certificate:** Sử dụng OpenSSL tạo chứng chỉ SSL cho `*.example.com` và nạp vào Secret TLS cho nhiều sub-domains.
-4. **BT4 — Phân tích đối tượng `GatewayClass` và `Gateway`:** Sử dụng `kubectl get gatewayclass,gateway` khảo sát hạ tầng Gateway API.
-5. **BT5 — Biên soạn `GRPCRoute` trong Gateway API:** Tìm hiểu cách tạo đối tượng `GRPCRoute` để định tuyến giao thức gRPC Layer 7.
-6. **BT6 — Thử nghiệm chia tải Canary Deployment bằng Ingress:** Sử dụng annotation `nginx.ingress.kubernetes.io/canary-weight: "20"` điều hướng 20% traffic sang bản app mới.
-
----
-
-## L10. Hiện vật nộp và tiêu chí chấm điểm
-
-### Bảng điểm đánh giá bài lab
-
-| Hạng mục hiện vật | Yêu cầu kĩ thuật | Điểm tối đa |
-|---|---|---|
-| `path-ingress.yaml` & `host-ingress.yaml` | Tệp YAML Ingress Path-based, Host-based và TLS Termination chuẩn | 20 điểm |
-| `http-route.yaml` & `ingress-curl-report.txt` | Tệp YAML HTTPRoute Gateway API và báo cáo thử nghiệm Ingress L7 | 25 điểm |
-| `verify-ingress-gateway.sh` | Script bash chạy thành công, xác minh Path Ingress, TLS Secret & HTTPRoute OK | 20 điểm |
-| `nhat-ky-buoi-24.md` | Trả lời đủ 3 câu thu hoạch, phân biệt rõ Ingress Resource vs Controller và Gateway API | 20 điểm |
-| CHECKPOINT 1–13 | Tất cả 13 checkpoint tự động đều in chữ `ĐẠT` | 15 điểm |
-| **Tổng điểm** | | **100 điểm** |
-
-### Các trường hợp trừ điểm
-
-- Trừ **20 điểm**: Nếu script hoặc câu lệnh sử dụng công cụ `jq` (vi phạm quy tắc môi trường thi).
-- Trừ **15 điểm**: Nếu quên cờ `-n dev` khiến các đối tượng bị tạo nhầm vào namespace `default`.
-- Trừ **10 điểm**: Nếu file hiện vật để sai đường dẫn thư mục `k8s-portfolio/buoi-24/`.
-- Trừ **5 điểm**: Nếu dấu phân cách thập phân trong báo cáo dùng dấu chấm `.` thay vì dấu phẩy `,`.
-
-
----
-
-## 3. Bộ Câu Hỏi Vấn Đáp & Phỏng Vấn Kỹ Thuật Chuyên Sâu
-
-
-## V1. Cách tiến hành
-
-1. **Thời lượng và hình thức:** Khối vấn đáp diễn ra trong đúng **20 phút**. Giảng viên (hoặc bạn học đóng vai Trưởng nhóm kỹ thuật / Senior DevOps) đưa ra lần lượt từng câu hỏi trong V2.
-2. **Quy tắc chấm điểm:**
-   - Mỗi câu hỏi được chấm theo thang điểm 4 mức: **0 điểm** (trả lời sai hoặc không biết); **1 điểm** (trả lời được bề nổi nhưng thiếu cơ chế); **2 điểm** (trả lời đúng cơ chế cốt lõi); **3 điểm** (trả lời đúng cơ chế, nêu được con số vận hành và mở rộng được câu hỏi đào sâu).
-   - **Quy tắc trần điểm riêng của Buổi 24:**
-     - Trả lời Câu 1 mà không phân biệt được bản chất Ingress Resource (khai báo YAML) so với Ingress Controller (tiến trình Reverse Proxy thực thi) thì **trần điểm câu đó là 1**.
-     - Trả lời Câu 6 mà không giải thích được sự phân quyền 3 vai trò độc lập của Gateway API (`GatewayClass`, `Gateway`, `HTTPRoute`) thì **trần điểm câu đó là 1**.
-3. **Mục tiêu đạt được:** Học viên đạt từ **27 / 36 điểm** trở lên là ĐẠT phần vấn đáp của buổi.
-
----
-
----
-
-## V2. Bộ câu hỏi phỏng vấn thực chiến
+## 6. 10 Câu Hỏi Tự Kiểm Tra Chuyên Sâu (Self-Check Q&A Accordion)
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q01</span>
-    <span>Phân biệt 2 kỹ thuật định tuyến Layer 7 trong Ingress spec: Host-based Routing và Path-based Routing.</span>
+  <summary><b>Câu 1: Điểm khác biệt căn bản giữa Ingress Resource và Ingress Controller là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>Ingress Resource:</b> Là đối tượng khai báo (Declaration Object) trong Kubernetes API định nghĩa các quy tắc định tuyến tên miền, đường dẫn và chứng chỉ SSL. Bản thân đối tượng này không xử lý bất kỳ lưu lượng mạng nào.</li>
+      <li><b>Ingress Controller:</b> Là ứng dụng phần mềm Reverse Proxy thực tế (như NGINX Ingress, Traefik, HAProxy) chạy trên cụm. Nó liên tục đọc các đối tượng Ingress và thực thi việc tiếp nhận, giải mã TLS và chuyển tiếp gói tin Layer 7 tới các Pods backend.</li>
+    </ul>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Host-based Routing (Định tuyến theo tên miền):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• So khớp dựa trên tiêu đề <b style="color: var(--accent-primary);"><code>Host</code> HTTP Header</b> trong request của khách hàng (ví dụ <code>spec.rules[].host: app1.example.com</code> trỏ về Service 1; <code>host: app2.example.com</code> trỏ về Service 2).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp gom nhiều tên miền khác nhau về chung một địa chỉ IP công cộng duy nhất.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Path-based Routing (Định tuyến theo đường dẫn URL):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• So khớp dựa trên <b style="color: var(--accent-primary);">đường dẫn URL path</b> (<code>spec.rules[].http.paths[].path</code> ví dụ <code>/api</code> trỏ về Service API; <code>/web</code> trỏ về Service Web).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp chia nhỏ các ứng dụng microservices trên cùng một tên miền duy nhất.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không phân biệt được 2 kiểu routing.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời theo tên miền và đường dẫn nhưng không nêu được tiêu đề <code>Host</code> header và ứng dụng gom IP công cộng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Host-based (<code>Host</code> header so khớp tên miền) vs Path-based (URL path so khớp đường dẫn).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, viết file YAML minh hoạ gộp cả 2 kiểu.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Để test thử Ingress Host-based routing từ terminal khi chưa trỏ DNS A record, câu lệnh <code>curl</code> cần truyền cờ gì? *(Đáp án: Dùng cờ <code>curl -H "Host: app.example.com" http://<Ingress-IP></code>).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q02</span>
-    <span>Sự khác nhau về cơ chế so khớp giữa 2 giá trị <code>pathType: Prefix</code> và <code>pathType: Exact</code> trong Ingress spec là gì?</span>
+  <summary><b>Câu 2: Ba giá trị hợp lệ của trường pathType trong Ingress v1 (networking.k8s.io/v1) là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>Exact:</b> Khớp chính xác 100% từng ký tự của đường dẫn URL (phân biệt hoa thường).</li>
+      <li><b>Prefix:</b> Khớp theo tiền tố được phân tách bằng dấu gạch chéo <code>/</code> (ví dụ: path <code>/foo</code> sẽ khớp với <code>/foo</code>, <code>/foo/</code>, <code>/foo/bar</code> nhưng không khớp với <code>/foobar</code>).</li>
+      <li><b>ImplementationSpecific:</b> Quy tắc khớp đường dẫn phụ thuộc hoàn toàn vào cấu hình riêng của Ingress Controller đang sử dụng.</li>
+    </ul>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. <code>pathType: Prefix</code> (So khớp theo tiền tố đường dẫn):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• So khớp 100% tất cả các sub-paths bắt đầu bằng tiền tố được khai báo.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ví dụ:* Khai báo <code>path: /api</code> với <code>Prefix</code> sẽ so khớp thành công <code>/api</code>, <code>/api/</code>, <code>/api/v1/users</code>, <code>/api/products</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. <code>pathType: Exact</code> (So khớp chính xác từng ký tự):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ so khớp duy nhất và chính xác với đúng chuỗi URL được khai báo.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Ví dụ:* Khai báo <code>path: /api</code> với <code>Exact</code> chỉ so khớp đúng <code>/api</code>; gọi <code>/api/v1</code> sẽ bị trả về HTTP 404 Not Found.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo 2 kiểu này giống nhau.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Prefix là tương đối còn Exact là tuyệt đối nhưng không lấy ví dụ sub-paths <code>/api/v1</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác <code>Prefix</code> (so khớp 100% các sub-paths bắt đầu bằng tiền tố) vs <code>Exact</code> (chỉ so khớp chính exact chuỗi đó).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra quy định bắt buộc phải có <code>pathType</code> từ v1.18+.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu khai báo <code>path: /</code> với <code>pathType: Prefix</code> thì Ingress sẽ so khớp những request nào? *(Đáp án: So khớp 100% tất cả các request đi vào hệ thống [Catch-all path]).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q03</span>
-    <span>Trình bày cơ chế giải mã SSL/TLS Termination tại cửa ngõ Ingress và cấu trúc bắt buộc của đối tượng Secret <code>kubernetes.io/tls</code>.</span>
+  <summary><b>Câu 3: Cơ chế TLS Termination tại tầng Ingress mang lại lợi ích gì cho hệ thống Microservices?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    TLS Termination thực hiện giải mã mã hóa HTTPS ngay tại cửa ngõ Ingress Controller bằng chứng chỉ SSL tập trung. Lưu lượng từ Ingress Controller đi vào các Pods backend bên trong mạng nội bộ cụm là HTTP thuần không mã hóa, giúp giảm tải đáng kể việc tính toán mã hóa/giải mã CPU trên từng Pod và đơn giản hóa việc quản trị chứng chỉ SSL (chỉ cần cập nhật Secret ở 1 nơi duy nhất).
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế SSL/TLS Termination:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khách hàng kết nối mã hoá HTTPS (cổng 443) tới Ingress Controller.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ingress Controller đọc chứng chỉ SSL từ Secret để <b style="color: var(--accent-primary);">giải mã HTTPS ngay tại cửa ngõ</b>, sau đó chuyển tiếp gói tin HTTP thông thường (cổng 80 cleartext) tới các Pods backend trong cụm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giảm tải CPU cho các Pods backend và tập trung quản lý cert tại một điểm.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cấu trúc bắt buộc của Secret <code>kubernetes.io/tls</code>:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khai báo thuộc tính <code>type: kubernetes.io/tls</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Bắt buộc chứa đúng 2 keys trong <code>data</code>: <b style="color: var(--accent-primary);"><code>tls.crt</code></b> (chứa file chứng chỉ SSL public cert) và <b style="color: var(--accent-primary);"><code>tls.key</code></b> (chứa private key tương ứng).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được SSL Termination.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời giải mã SSL tại Ingress nhưng không nêu được 2 key bắt buộc <code>tls.crt</code> và <code>tls.key</code> trong Secret type <code>kubernetes.io/tls</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế SSL/TLS Termination (giải mã cổng 443 tại cửa ngõ) và cấu trúc 2 key <code>tls.crt</code>/<code>tls.key</code> của Secret TLS.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra lệnh <code>kubectl create secret tls</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu nạp nhầm Secret loại <code>Opaque</code> chứa 2 key <code>tls.crt</code> và <code>tls.key</code> vào khối <code>spec.tls</code> thì Ingress Controller có nhận không? *(Đáp án: Không nhận, Ingress Controller bắt buộc Secret phải thuộc type <code>kubernetes.io/tls</code>).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q04</span>
-    <span>Thuộc tính <code>ingressClassName</code> (như <code>ingressClassName: nginx</code>) trong Ingress spec đóng vai trò gì và thay thế cho annotation cũ nào?</span>
+  <summary><b>Câu 4: Annotation rewrite-target trong NGINX Ingress Controller được sử dụng trong tình huống nào?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Được sử dụng khi đường dẫn công khai mà khách hàng truy cập ngoài Internet khác với đường dẫn mà ứng dụng Backend trong container thực sự lắng nghe. Ví dụ: khách truy cập <code>shop.com/api/v1/orders</code>, Ingress sử dụng <code>rewrite-target: /$1</code> để cắt bỏ tiền tố <code>/api/v1</code> và chỉ chuyển tiếp <code>/orders</code> tới Backend.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Vai trò của <code>ingressClassName</code>:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Là thuộc tính chuẩn hóa chỉ định rõ ràng tên của <b style="color: var(--accent-primary);"><code>IngressClass</code></b> (đại diện cho một loại Ingress Controller cụ thể) chịu trách nhiệm nạp và xử lý đối tượng Ingress này.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Cho phép cụm Kubernetes chạy song song nhiều loại Ingress Controller (như Nginx, Traefik, Contour, Kong).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Thay thế cho annotation cũ:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Thay thế hoàn toàn cho annotation cũ bị deprecated là <code>kubernetes.io/ingress.class: "nginx"</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết <code>ingressClassName</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời đặt tên nginx nhưng không giải thích được vai trò chọn Ingress Controller và annotation cũ bị deprecated.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác <code>ingressClassName</code> (chỉ định Ingress Controller phụ trách) và sự thay thế cho annotation <code>kubernetes.io/ingress.class</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra tài nguyên <code>kind: IngressClass</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu trong cụm chỉ có 1 Ingress Controller và được set làm Default IngressClass thì có cần gõ <code>ingressClassName</code> trong file YAML không? *(Đáp án: Không bắt buộc, Kubelet tự động gán IngressClass mặc định).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q05</span>
-    <span>Nêu 3 vai trò phân quyền trách nhiệm độc lập trong kiến trúc chuẩn thế hệ mới Gateway API (<code>gateway.networking.k8s.io</code>) và giải thích lý do nó ra đời thay thế Ingress cũ.</span>
+  <summary><b>Câu 5: Ba đối tượng cốt lõi tương ứng với 3 vai trò quản trị trong Gateway API là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li>1. <b>GatewayClass:</b> Do Nhà cung cấp hạ tầng (Infrastructure Provider) định nghĩa loại controller/proxy (như Envoy, Istio).</li>
+      <li>2. <b>Gateway:</b> Do Quản trị viên cụm (Cluster Operator) cấu hình điểm tiếp nhận mạng (IP, Port, Protocol, TLS Secrets).</li>
+      <li>3. <b>HTTPRoute (hoặc GRPCRoute/TCPRoute):</b> Do Lập trình viên ứng dụng (Application Developer) định nghĩa quy tắc định tuyến, chuyển tiếp đường dẫn và cân bằng tải Canary.</li>
+    </ul>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3 Vai trò độc lập trong Gateway API:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>GatewayClass</code> (Nhà cung cấp hạ tầng / Infrastructure Provider):</b> Định nghĩa loại hạ tầng cân bằng tải (Cloud LB, Cilium, Nginx) do AWS/GCP/CNI quản lý.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>Gateway</code> (Kỹ sư vận hành cụm / Cluster Operator - DevOps):</b> Định nghĩa địa chỉ IP, cổng listening (80/443), TLS certificate cấp cụm do DevOps quản lý.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);"><code>HTTPRoute</code> (Lập trình viên / Application Developer):</b> Định nghĩa các quy tắc routing chi tiết (<code>/api</code>, <code>/web</code>, header match) do Lập trình viên tự biên soạn.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Lý do ra đời thay thế Ingress cũ:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ingress cũ gộp chung mọi quy tắc vào 1 file YAML duy nhất gây xung đột quyền RBAC; lạm dụng hàng chục annotation đặc thù nhà cung cấp (vendor lock-in). Gateway API chuẩn hoá mở rộng và phân quyền Role-based rõ ràng.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 3 đối tượng của Gateway API.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được tên <code>GatewayClass</code>, <code>Gateway</code>, <code>HTTPRoute</code> nhưng không giải thích được 3 vai trò phân quyền (Infra vs DevOps vs Developer) (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác 3 vai trò phân quyền trong Gateway API và lý do giải quyết nhược điểm vendor lock-in của Ingress cũ.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra thuộc tính <code>parentRefs</code> nối <code>HTTPRoute</code> vào <code>Gateway</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Thuộc tính nào trong <code>HTTPRoute</code> giúp Lập trình viên tự kết nối routing của mình vào đối tượng <code>Gateway</code> của DevOps? *(Đáp án: Thuộc tính <b style="color: var(--accent-primary);"><code>parentRefs</code></b>).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q06</span>
-    <span>Annotation <code>nginx.ingress.kubernetes.io/rewrite-target: /$2</code> được sử dụng để giải quyết bài toán thực tế nào khi triển khai Path-based routing?</span>
+  <summary><b>Câu 6: Cổng dịch vụ được khai báo trong Ingress backend.service.port.number phải là cổng nào?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Phải là <b>cổng của đối tượng Service (trường <code>spec.ports[].port</code>)</b>, KHÔNG PHẢI cổng <code>targetPort</code> của container. Ingress Controller giao tiếp thông qua Service trừu tượng để tìm danh sách Endpoints tương ứng.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Bài toán thực tế giải quyết (Path Rewrite):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Khi Ingress nhận request tới đường dẫn <code>/api/users</code>, nếu truyền thẳng tới Pod backend, tiến trình container sẽ nhận URL là <code>/api/users</code>. Nhưng ứng dụng backend bên trong container lại chỉ xử lý tại đường dẫn gốc <code>/users</code> (không có prefix <code>/api</code>), dẫn tới lỗi HTTP 404 Not Found.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế hoạt động:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Annotation <code>rewrite-target</code> kết hợp với Regex path bắt mảng đường dẫn và <b style="color: var(--accent-primary);">cắt bỏ prefix <code>/api</code> trước khi chuyển tiếp gói tin tới Pod</b>, giúp Pod nhận được URL <code>/users</code> sạch sẽ.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết annotation rewrite-target.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời để rewrite đường dẫn nhưng không giải thích được xung đột prefix <code>/api</code> giữa Ingress và app backend.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác bài toán cắt bỏ prefix URL trước khi forward tới Pod để tránh lỗi 404 Not Found trên backend.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, viết Regex minh hoạ <code>use-regex: "true"</code>.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Tại sao trong chuẩn thế hệ mới Gateway API người ta không dùng annotation rewrite nữa? *(Đáp án: Vì Gateway API đã chuẩn hoá tính năng <code>URLRewrite</code> thành một filter chính thức trong spec).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q07</span>
-    <span>Sự khác nhau về khả năng định tuyến giữa đối tượng <code>Ingress</code> Layer 7 và đối tượng <code>Service</code> Layer 4 là gì?</span>
+  <summary><b>Câu 7: Đối tượng IngressClass trong Kubernetes v1.18+ đóng vai trò gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <code>IngressClass</code> là tài nguyên cấp cụm (Cluster-scoped) dùng để định danh và phân loại các bộ Ingress Controller khác nhau cùng chạy trên một cụm (ví dụ: 1 controller cho mạng nội bộ <code>nginx-internal</code> và 1 controller cho mạng công cộng <code>nginx-external</code>). Đối tượng Ingress sử dụng trường <code>spec.ingressClassName</code> để chỉ định chính xác controller nào sẽ xử lý định tuyến cho nó.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1. Service Layer 4 (Transport Layer - TCP/UDP):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Chỉ định tuyến dựa trên <b style="color: var(--accent-primary);">Địa chỉ IP và Số Cổng (IP + Port)</b>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Không thể đọc nội dung gói tin, không biết tên miền (<code>Host</code> header), không biết đường dẫn URL (<code>/api</code>), không thể phân giải SSL HTTPS.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2. Ingress Layer 7 (Application Layer - HTTP/HTTPS):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Định tuyến thông minh dựa trên <b style="color: var(--accent-primary);">Nội dung ứng dụng HTTP/HTTPS</b> (Host header, URL path, HTTP headers, Cookies).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Hỗ trợ SSL/TLS Termination, Path Rewrite, Canary deployment trên cùng một địa chỉ IP công cộng.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Bảo Service và Ingress làm việc ở cùng Layer.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời Service là L4 Ingress là L7 nhưng không giải thích được sự khác nhau về IP+Port vs HTTP Host/Path/SSL.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Phân tích chuẩn xác Service L4 (định tuyến IP+Port thuần) vs Ingress L7 (định tuyến thông minh HTTP Host, Path, SSL Termination).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra mô hình OSI 7 lớp.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu ứng dụng dùng giao thức kết nối Database PostgreSQL (cổng 5432) thì dùng Ingress L7 hay Service L4? *(Đáp án: Phải dùng Service L4 [như NodePort/LoadBalancer] vì PostgreSQL dùng giao thức TCP thuần, không phải HTTP).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q08</span>
-    <span>Câu lệnh CLI nào giúp trích xuất đồng thời danh sách đối tượng Ingress cũ và các đối tượng Gateway API mới trong 2 giây?</span>
+  <summary><b>Câu 8: Làm thế nào để cấu hình Ingress hỗ trợ upload file dung lượng lớn mà không bị lỗi HTTP 413 Payload Too Large?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Bổ sung annotation tăng kích thước body của NGINX Ingress:<br>
+    <code>nginx.ingress.kubernetes.io/proxy-body-size: "50m"</code> (cho phép upload file tối đa 50MB; đặt <code>"0"</code> để tắt hoàn toàn giới hạn).
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Câu lệnh CLI chuẩn:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);"><code>kubectl get ingress,gateway,httproute -n dev</code></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trích xuất đồng thời 3 đối tượng đại diện cho toàn bộ hạ tầng định tuyến Layer 7 trong Namespace <code>dev</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Giúp kỹ sư kiểm tra nhanh địa chỉ IP phơi ra tại cột <code>ADDRESS</code> hoặc <code>HOSTS</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nhớ lệnh trích xuất gộp.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời gõ 3 lệnh riêng lẻ <code>kubectl get ingress</code>, <code>kubectl get gateway</code>, <code>kubectl get httproute</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Viết chuẩn xác câu lệnh gộp <code>kubectl get ingress,gateway,httproute -n dev</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng việc kiểm tra cột ADDRESS rỗng.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi lệnh trên hiển thị cột <code>ADDRESS</code> của Ingress bị rỗng vĩnh viễn thì nguyên nhân hàng đầu do đâu? *(Đáp án: Do cụm chưa được cài đặt hoặc chưa chạy tiến trình Ingress Controller).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q09</span>
-    <span>Cấu hình Canary Deployment bằng Ingress Controller được thực hiện như thế nào để điều hướng 20% traffic sang phiên bản app mới?</span>
+  <summary><b>Câu 9: Điểm khác biệt giữa Host-based Routing và Path-based Routing trong cấu hình Ingress là gì?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    <ul>
+      <li><b>Host-based Routing:</b> Định tuyến dựa trên tiêu đề HTTP <code>Host</code> (ví dụ: <code>app1.company.com</code> trỏ vào Service 1, còn <code>app2.company.com</code> trỏ vào Service 2).</li>
+      <li><b>Path-based Routing:</b> Định tuyến trên cùng một Host nhưng dựa trên đường dẫn URL (ví dụ: <code>company.com/blog</code> trỏ vào Service Blog, còn <code>company.com/shop</code> trỏ vào Service Shop).</li>
+    </ul>
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Cơ chế Canary bằng Ingress Annotation:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Tạo 2 đối tượng Ingress song song trỏ vào 2 Service (App v1 và App v2).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trên Ingress của App v2, dán thêm 2 annotations đặc thù:</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>nginx.ingress.kubernetes.io/canary: "true"</code></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <code>nginx.ingress.kubernetes.io/canary-weight: "20"</code></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tác dụng:</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Ingress Controller sẽ tự động điều hướng đúng <b style="color: var(--accent-primary);">20% tổng số request HTTP</b> đi vào App v2 (Canary) và 80% còn lại duy trì ở App v1 (Production).</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không biết Canary Ingress.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời chia 20% nhưng không nhớ 2 annotation <code>canary: "true"</code> và <code>canary-weight: "20"</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác cơ chế Canary Deployment bằng Ingress và 2 annotation <code>canary</code> & <code>canary-weight: "20"</code>.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra Canary dựa trên Header hoặc Cookie.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Nếu muốn điều hướng Canary dựa trên Header <code>X-Canary: always</code> của tester thay vì tỉ lệ % ngẫu nhiên thì dùng annotation gì? *(Đáp án: Dùng annotation <code>nginx.ingress.kubernetes.io/canary-by-header: "X-Canary"</code>).*
-
----</div>
-</div>
 </details>
 
 <details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q10</span>
-    <span>Tại sao việc gom 50 microservices vào chung 1 Ingress Controller với 1 địa chỉ IP công cộng duy nhất lại giúp doanh nghiệp tiết kiệm chi phí lớn?</span>
+  <summary><b>Câu 10: Tại sao Gateway API lại vượt trội hơn Ingress khi triển khai kỹ thuật phát hành Canary Deployment?</b></summary>
+  <div class="qa-answer">
+    <b>Trả lời:</b><br>
+    Gateway API hỗ trợ trực tiếp thuộc tính <code>weight</code> trong mảng <code>backendRefs</code> của đối tượng <code>HTTPRoute</code> (ví dụ: Service A nhận weight 90, Service B nhận weight 10). Lập trình viên có thể phân chia lưu lượng phần trăm chuẩn xác ngay trong 1 manifest duy nhất mà không cần phụ thuộc vào các annotation phi tiêu chuẩn phức tạp như trên Ingress.
   </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Tối ưu chi phí hạ tầng (Cloud Load Balancer Cost):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Trên các đám mây (AWS/GCP/Azure), mỗi Service loại <code>LoadBalancer</code> đòi hỏi provisioning một Cloud Load Balancer riêng biệt (chi phí khoảng $15 - $30/tháng/LB). 50 Services sẽ tốn 50 Cloud LBs (~ $1.500/tháng).</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• Sử dụng Ingress Layer 7 cho phép <b style="color: var(--accent-primary);">gom toàn bộ 50 microservices về ĐÚNG 1 Cloud Load Balancer duy nhất</b> đứng trước Ingress Controller (chi phí chỉ $20/tháng), giúp tiết kiệm hơn 95% chi phí hạ tầng mạng.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không giải thích được hiệu quả kinh tế.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Trả lời tiết kiệm tiền IP nhưng không nêu được con số chi phí Cloud Load Balancer và cơ chế 50 LBs -> 1 LB.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác bài toán tối ưu chi phí Cloud Load Balancer (gom 50 LBs đắt đỏ về 1 LB duy nhất đứng trước Ingress Controller).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, chỉ ra tiết kiệm chi phí địa chỉ IPv4 công cộng.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Trong kiến trúc trên, Service đứng trước NGINX Ingress Controller Pods thuộc loại Service nào? *(Đáp án: Thuộc Service loại <b style="color: var(--accent-primary);"><code>LoadBalancer</code></b> [hoặc NodePort]).*
-
----</div>
-</div>
-</details>
-
-<details class="qa-card">
-<summary class="qa-summary">
-  <div class="qa-summary-left">
-    <span class="qa-num-badge">Q11</span>
-    <span>Nêu 2 chế độ hỏng (1 im lặng do Ingress cột ADDRESS rỗng vì thiếu Ingress Controller, 1 âm thầm do sập HTTPS vì trỏ sai Secret TLS type Opaque) và cách phát hiện/khắc phục.</span>
-  </div>
-  <span class="qa-chevron">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-  </span>
-</summary>
-<div class="qa-answer">
-  <div class="qa-answer-header">
-    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-    <span>Phân Tích &amp; Lời Giải Kỹ Thuật</span>
-  </div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 1 (Im lặng - Đối tượng Ingress tạo thành công nhưng cột ADDRESS bị rỗng vĩnh viễn không định tuyến được):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Khách hàng <code>curl</code> vào địa chỉ Ingress bị báo lỗi không tìm thấy host, cột <code>ADDRESS</code> trong <code>kubectl get ingress</code> rỗng <code><none></code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Gõ <code>kubectl get ingress</code> thấy cột <code>ADDRESS</code> rỗng và <code>kubectl get pods -n ingress-nginx</code> thấy không có Pod Controller nào.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Cài đặt NGINX Ingress Controller vào cụm và khai báo đúng <code>spec.ingressClassName: nginx</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">Chế độ hỏng 2 (Âm thầm - Sập toàn bộ kết nối mã hoá HTTPS do khai báo <code>secretName</code> trỏ tới Secret loại <code>Opaque</code>):</b></div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Triệu chứng:* Khách hàng truy cập HTTPS bị báo lỗi <code>SSL Certificate Invalid</code> hoặc kết nối bị reset, Ingress Controller log báo lỗi cert.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Phát hiện:* Kiểm tra <code>kubectl get secret <secret-name></code> thấy cột <code>TYPE</code> báo <code>Opaque</code> thay vì <code>kubernetes.io/tls</code>.</div>
-  <div style="margin: 0.35rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• *Khắc phục:* Xoá Secret cũ và khởi tạo lại Secret chuẩn loại <code>kubernetes.io/tls</code> bằng lệnh <code>kubectl create secret tls <secret-name> --cert=... --key=...</code>.</div>
-  <div style="margin-top: 0.75rem;"><b style="color: var(--accent-primary);">Tiêu chí chấm điểm &amp; Phân tầng năng lực:</b></div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">0đ:</b> Không nêu được 2 chế độ hỏng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">1đ:</b> Nêu được 2 trường hợp nhưng không chỉ ra nguyên nhân thiếu Ingress Controller và Secret sai type <code>Opaque</code> (dính trần 1đ).</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">2đ:</b> Giải thích chuẩn xác 2 chế độ hỏng và câu lệnh khắc phục tương ứng.</div>
-  <div style="margin: 0.25rem 0; padding-left: 1rem; border-left: 2px solid var(--accent-primary);">• <b style="color: var(--accent-primary);">3đ:</b> Trả lời xuất sắc, minh hoạ bằng kinh nghiệm thực tế bài lab.</div>
-  <div style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(var(--accent-primary-rgb, 59, 130, 246), 0.08); border-radius: 4px;"><b style="color: var(--accent-primary);">Câu hỏi mở rộng / Đào sâu:</b> Khi Ingress dính lỗi không nạp được SSL Cert, câu lệnh describe nào hiển thị ngay mục Events cảnh báo lỗi trong 2 giây? *(Đáp án: Lệnh <code>kubectl describe ingress <ingress-name></code>).*
-
----
-
-## V3. Câu chốt để nói khi phỏng vấn
-
-1. *"Ingress Resource là khai báo YAML; Ingress Controller (Nginx/Traefik) mới là tiến trình Reverse Proxy thực thi L7 routing."*
-2. *"Hỗ trợ 2 kiểu L7 Routing: Host-based (<code>host: app.example.com</code>) và Path-based (<code>path: /api</code>, <code>pathType: Prefix</code>)."*
-3. *"SSL/TLS Termination giải mã HTTPS tại cửa ngõ Ingress (Port 443) bằng Secret chuẩn <b style="color: var(--accent-primary);"><code>kubernetes.io/tls</code></b> chứa <code>tls.crt</code> & <code>tls.key</code>."*
-4. *"Thuộc tính <b style="color: var(--accent-primary);"><code>ingressClassName</code></b> chỉ định Ingress Controller phụ trách, thay thế hoàn toàn annotation cũ bị deprecated."*
-5. *"Gateway API thế hệ mới phân quyền 3 vai trò độc lập: <b style="color: var(--accent-primary);"><code>GatewayClass</code></b> (Infra), <b style="color: var(--accent-primary);"><code>Gateway</code></b> (DevOps), và <b style="color: var(--accent-primary);"><code>HTTPRoute</code></b> (Developer)."*
-
----</div>
-</div>
 </details>
 
 ---
 
-## V3. Câu chốt để nói khi phỏng vấn
+## 7. Tổng Kết & Lộ Trình Bài Học Tiếp Theo
 
-1. *"Ingress Resource là khai báo YAML; Ingress Controller (Nginx/Traefik) mới là tiến trình Reverse Proxy thực thi L7 routing."*
-2. *"Hỗ trợ 2 kiểu L7 Routing: Host-based (`host: app.example.com`) và Path-based (`path: /api`, `pathType: Prefix`)."*
-3. *"SSL/TLS Termination giải mã HTTPS tại cửa ngõ Ingress (Port 443) bằng Secret chuẩn **`kubernetes.io/tls`** chứa `tls.crt` & `tls.key`."*
-4. *"Thuộc tính **`ingressClassName`** chỉ định Ingress Controller phụ trách, thay thế hoàn toàn annotation cũ bị deprecated."*
-5. *"Gateway API thế hệ mới phân quyền 3 vai trò độc lập: **`GatewayClass`** (Infra), **`Gateway`** (DevOps), và **`HTTPRoute`** (Developer)."*
+```mermaid
+mindmap
+  root((Ingress & Gateway API))
+    Kien Truc Layer 7
+      Ingress Resource vs Ingress Controller
+      IngressClass (nginx)
+      TLS Termination (Secret kubernetes.io/tls)
+    Dinh Tuyen Ingress
+      Host-based (domain.com)
+      Path-based (/app1 vs /app2)
+      pathType (Prefix / Exact)
+      rewrite-target Regex
+    Gateway API Tuong Lai
+      3 Vai Tro (Class / Gateway / HTTPRoute)
+      Canary Traffic Splitting (weights)
+      Cross-namespace Routing
+```
 
----
-
-## 4. Đề Thi Thực Hành Bấm Giờ & Thử Thách Tốc Độ (Exam Speed Challenge)
+Làm chủ Ingress Controller và Gateway API giúp bạn kiểm soát toàn diện luồng lưu lượng truy cập từ Internet vào cụm, tối ưu hóa chi phí Public IP và thiết lập các chiến lược phát hành phần mềm Canary tiên tiến.
 
 > [!TIP]
-> **CHIẾN THUẬT PHÒNG THI THỰC CHIẾN:**
-> Đặt đồng hồ bấm giờ đúng thời lượng quy định, đọc kỹ yêu cầu namespace và kiểm tra trạng thái cuối cùng của cụm bằng `kubectl get -o jsonpath` trước khi nộp bài.
-
-## T0. Vì sao có khối này (1 phút)
-
-Khối luyện đề bấm giờ 30 phút rèn luyện cho học viên phản xạ khởi tạo đối tượng `Ingress` v1 API (`networking.k8s.io/v1`), cấu hình Path-based (`/api`, `/web`) và Host-based routing, tạo Secret TLS loại `kubernetes.io/tls` để bật SSL/TLS Termination, thuộc tính `ingressClassName` và khai báo đối tượng `HTTPRoute` trong chuẩn thế hệ mới Gateway API trong kỳ thi CKA và CKAD.
-
-Buổi 24 phủ miền trọng điểm của 2 kỳ thi:
-- `CKA · Services & Networking` (Trọng số 20 %)
-- `CKAD · Services and Networking` (Trọng số 20 %)
-
-Các câu hỏi được thiết kế theo đúng chuẩn bài thi CKA/CKAD thực tế: yêu cầu thí sinh tạo Ingress routing chính xác sang Backend Service, bật TLS secret và khai báo HTTPRoute mà KHÔNG được dùng `jq`.
-
----
-
-## T1. Luật chơi (1 phút)
-
-1. **Đồng hồ bấm giờ:** Tổng thời gian làm 4 câu hỏi là **900 giây (15 phút)**. Thời gian còn lại (15 phút) dành cho việc đọc luật, đối soát và tự chấm điểm bằng script.
-2. **Tài liệu được mở:** Chỉ được phép mở 1 tab duy nhất tài liệu chính thức `https://kubernetes.io/docs/`. KHÔNG được tìm kiếm Google hay StackOverflow.
-3. **Môi trường làm việc:** Làm việc trực tiếp trên terminal với context `kubeadm`.
-4. **Quy tắc thi hành về công cụ:** Máy thi **KHÔNG cài sẵn `jq`**. Mọi câu hỏi trích xuất dữ liệu BẮT BUỘC dùng đường gõ bash (`grep`/`awk`/`sed`) hoặc `kubectl jsonpath`.
-5. **Cách chấm:** Chấm dựa trên sự tồn tại của Ingress, giá trị `ingressClassName`, Secret TLS `kubernetes.io/tls` và tệp YAML HTTPRoute. Ngưỡng ĐẠT của buổi là **66 / 100 điểm** (theo đúng chuẩn CKA/CKAD).
-
----
-
-## T2. Bộ câu hỏi kiểu đề thi
-
-### Câu T2.1. Khởi tạo Ingress Path-based routing networking.k8s.io/v1 — 210 giây
-
-**Bối cảnh:**
-Cấu hình định tuyến L7 Path-based phân chia đường dẫn `/api` và `/web` về 2 Backend Services.
-
-**Yêu cầu:**
-1. Tạo Namespace `dev` (nếu chưa có).
-2. Tạo 2 Services `svc-api` và `svc-web` phơi cổng 80 trong Namespace `dev`.
-3. Tạo đối tượng Ingress tên `exam-path-ingress` trong Namespace `dev` sử dụng `ingressClassName: nginx`.
-4. Khai báo 2 đường dẫn: `/api` (`pathType: Prefix`) trỏ về `svc-api:80` và `/web` (`pathType: Prefix`) trỏ về `svc-web:80`.
-5. Trích xuất giá trị `pathType` của đường dẫn đầu tiên vào tệp `/tmp/ans-t21-ptype.txt`.
-
-**Thang điểm bộ phận:**
-- Tạo đúng 2 Services và Ingress `exam-path-ingress`: **10 điểm**.
-- Khai báo đúng 2 paths Prefix và ghi file `/tmp/ans-t21-ptype.txt`: **15 điểm**.
-
----
-
-### Câu T2.2. Khởi tạo Secret TLS kubernetes.io/tls và Ingress Host-based — 240 giây
-
-**Bối cảnh:**
-Bật giải mã chứng chỉ bảo mật SSL/TLS Termination tại Ingress cho tên miền `secure.example.com`.
-
-**Yêu cầu:**
-1. Khởi tạo Secret TLS tên `exam-tls-secret` trong Namespace `dev` loại `kubernetes.io/tls` (chứa cert tự ký cho `secure.example.com`).
-2. Tạo đối tượng Ingress tên `exam-host-ingress` trong Namespace `dev` với `ingressClassName: nginx`.
-3. Cấu hình khối `spec.tls` dùng `secretName: exam-tls-secret` cho host `secure.example.com`.
-4. Khai báo rule `host: secure.example.com` với `path: /` (`Prefix`) trỏ về `svc-web:80`.
-5. Trích xuất thuộc tính `secretName` vào tệp `/tmp/ans-t22-secname.txt`.
-
-**Thang điểm bộ phận:**
-- Khởi tạo thành công Secret TLS `exam-tls-secret` loại `kubernetes.io/tls`: **15 điểm**.
-- Tạo đúng Ingress Host-based TLS và ghi file `/tmp/ans-t22-secname.txt`: **15 điểm**.
-
----
-
-### Câu T2.3. Trích xuất thuộc tính ingressClassName và TLS Secret name — 210 giây
-
-**Bối cảnh:**
-Phân tích thuộc tính cấu hình chuẩn hoá của hạ tầng định tuyến Ingress.
-
-**Yêu cầu:**
-1. Kiểm tra đối tượng Ingress `exam-host-ingress` trong Namespace `dev`.
-2. Trích xuất giá trị `ingressClassName` (ví dụ `nginx`).
-3. Ghi giá trị `ingressClassName` vào tệp `/tmp/ans-t23-classname.txt`.
-
-**Thang điểm bộ phận:**
-- Tìm đối tượng Ingress thành công: **10 điểm**.
-- Trích xuất đúng chữ `nginx` vào file `/tmp/ans-t23-classname.txt`: **10 điểm**.
-
----
-
-### Câu T2.4. Khai báo đối tượng HTTPRoute thế hệ mới trong Gateway API — 240 giây
-
-**Bối cảnh:**
-Biên soạn tài nguyên định tuyến thế hệ mới `HTTPRoute` trong chuẩn Gateway API.
-
-**Yêu cầu:**
-1. Tạo tệp YAML tên `/tmp/ans-t24-httproute.yaml` khai báo đối tượng `kind: HTTPRoute` (apiVersion `gateway.networking.k8s.io/v1`).
-2. Đặt tên metadata `exam-route` trong Namespace `dev`.
-3. Cấu hình `parentRefs` trỏ về `name: main-gateway`.
-4. Khai báo rule match `PathPrefix` `/v2` trỏ về `backendRefs` `name: svc-api`, `port: 80`.
-
-**Thang điểm bộ phận:**
-- Biên soạn đúng tệp YAML HTTPRoute theo chuẩn Gateway API: **15 điểm**.
-- Khai báo đúng `parentRefs` và `PathPrefix` `/v2`: **10 điểm**.
-
----
-
-## T3. Lời giải chuẩn
-
-#### Lời giải câu T2.1: Đường gõ ngắn nhất (Ước lượng: 40 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Tạo ns dev, 2 services và apply exam-path-ingress
-kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -
-kubectl create deployment api-dummy --image=nginx:1.27-alpine -n dev
-kubectl expose deployment api-dummy --name=svc-api --port=80 -n dev
-kubectl create deployment web-dummy --image=nginx:1.27-alpine -n dev
-kubectl expose deployment web-dummy --name=svc-web --port=80 -n dev
-
-cat << EOF | kubectl apply -f -
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: exam-path-ingress
-  namespace: dev
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: svc-api
-            port:
-              number: 80
-      - path: /web
-        pathType: Prefix
-        backend:
-          service:
-            name: svc-web
-            port:
-              number: 80
-EOF
-
-# Thao tác 2: Ghi pathType vào file
-kubectl get ingress exam-path-ingress -n dev -o jsonpath='{.spec.rules[0].http.paths[0].pathType}' > /tmp/ans-t21-ptype.txt
-```
-
-#### Lời giải câu T2.2: Đường gõ ngắn nhất (Ước lượng: 45 giây / 2 thao tác)
-
-```bash
-# Thao tác 1: Tạo cert tự ký và Secret TLS exam-tls-secret
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout /tmp/ex.key -out /tmp/ex.crt \
-  -subj "/CN=secure.example.com" >/dev/null 2>&1
-kubectl create secret tls exam-tls-secret --cert=/tmp/ex.crt --key=/tmp/ex.key -n dev --dry-run=client -o yaml | kubectl apply -f -
-
-# Thao tác 2: Apply exam-host-ingress và ghi secretName
-cat << EOF | kubectl apply -f -
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: exam-host-ingress
-  namespace: dev
-spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
-    - secure.example.com
-    secretName: exam-tls-secret
-  rules:
-  - host: secure.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: svc-web
-            port:
-              number: 80
-EOF
-
-kubectl get ingress exam-host-ingress -n dev -o jsonpath='{.spec.tls[0].secretName}' > /tmp/ans-t22-secname.txt
-rm -f /tmp/ex.key /tmp/ex.crt
-```
-
-#### Lời giải câu T2.3: Đường gõ ngắn nhất (Ước lượng: 20 giây / 1 thao tác)
-
-```bash
-# Thao tác 1: Trích xuất ingressClassName từ exam-host-ingress
-kubectl get ingress exam-host-ingress -n dev -o jsonpath='{.spec.ingressClassName}' > /tmp/ans-t23-classname.txt
-```
-
-#### Lời giải câu T2.4: Đường gõ ngắn nhất (Ước lượng: 35 giây / 1 thao tác)
-
-```bash
-# Thao tác 1: Tạo tệp /tmp/ans-t24-httproute.yaml chuẩn Gateway API
-cat << EOF > /tmp/ans-t24-httproute.yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: exam-route
-  namespace: dev
-spec:
-  parentRefs:
-  - name: main-gateway
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /v2
-    backendRefs:
-    - name: svc-api
-      port: 80
-EOF
-```
-
-
-
----
-
-## T4. Bẫy mất điểm
-
-| # | Bẫy mất điểm hay gặp | Mất bao nhiêu điểm | Dấu hiệu nhận ra ngay |
-|---|---|---|---|
-| 1 | Tạo Secret TLS bằng type `Opaque` thay vì `kubernetes.io/tls` | 30 điểm câu T2.2 | Ingress Controller không nạp được SSL cert |
-| 2 | Quên thuộc tính `ingressClassName: nginx` trong Ingress spec | 25 điểm câu T2.1 | Ingress bị rỗng cột ADDRESS |
-| 3 | Khai báo `pathType: Prefix` nhưng tên path không bắt đầu bằng `/` | 25 điểm câu T2.1 | API Server từ chối lệnh apply |
-| 4 | Sử dụng `jq` để parse output `kubectl get ingress` | 20 điểm câu T2.3 | Output báo `bash: jq: command not found` |
-| 5 | Gõ sai tên `secretName` trong khối `spec.tls` | 20 điểm câu T2.2 | File `/tmp/ans-t22-secname.txt` trỏ sai tên |
-| 6 | Gõ nhầm `parentRefs` thành `parentRef` trong HTTPRoute spec | 25 điểm câu T2.4 | Tệp YAML vi phạm chuẩn Gateway API |
-
----
-
-## T5. Bảng tự chấm
-
-| Câu | Chứng chỉ · Miền | Ngân sách | Điểm tối đa | Điểm đạt được |
-|---|---|---|---|---|
-| T2.1 | `CKA · Services & Networking` | 210s | 25 | |
-| T2.2 | `CKA · Services & Networking` | 240s | 30 | |
-| T2.3 | `CKA · Services & Networking` | 210s | 20 | |
-| T2.4 | `CKA · Services & Networking` | 240s | 25 | |
-| **Tổng** | | **900s (15')** | **100** | **Ngưỡng ĐẠT: ≥ 66 điểm** |
-
-### Đoạn mã chấm tự động (Automated Grading Script)
-
-Copy và dán đoạn script bash dưới đây để tự động chấm điểm bài thi của Buổi 24:
-
-```bash
-#!/bin/bash
-# Script tự động chấm điểm khối Ô thi Buổi 24
-
-SCORE=0
-
-echo "=== BẮT ĐẦU CHẤM ĐIỂM BUỔI 24 ==="
-
-# 1. Chấm câu T2.1
-if grep -qx "Prefix" /tmp/ans-t21-ptype.txt && [ "$(kubectl get ingress exam-path-ingress -n dev -o jsonpath='{.spec.ingressClassName}' 2>/dev/null)" == "nginx" ]; then
-    echo "Câu T2.1: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.1: LỖI (0/25 điểm)"
-fi
-
-# 2. Chấm câu T2.2
-if grep -qx "exam-tls-secret" /tmp/ans-t22-secname.txt && [ "$(kubectl get secret exam-tls-secret -n dev -o jsonpath='{.type}' 2>/dev/null)" == "kubernetes.io/tls" ]; then
-    echo "Câu T2.2: ĐẠT (+30 điểm)"
-    SCORE=$((SCORE + 30))
-else
-    echo "Câu T2.2: LỖI (0/30 điểm)"
-fi
-
-# 3. Chấm câu T2.3
-if grep -qx "nginx" /tmp/ans-t23-classname.txt; then
-    echo "Câu T2.3: ĐẠT (+20 điểm)"
-    SCORE=$((SCORE + 20))
-else
-    echo "Câu T2.3: LỖI (0/20 điểm)"
-fi
-
-# 4. Chấm câu T2.4
-if [ -f /tmp/ans-t24-httproute.yaml ] && grep -q "main-gateway" /tmp/ans-t24-httproute.yaml && grep -q "/v2" /tmp/ans-t24-httproute.yaml; then
-    echo "Câu T2.4: ĐẠT (+25 điểm)"
-    SCORE=$((SCORE + 25))
-else
-    echo "Câu T2.4: LỖI (0/25 điểm)"
-fi
-
-echo "=================================="
-echo "TỔNG ĐIỂM: $SCORE / 100"
-if [ "$SCORE" -ge 66 ]; then
-    echo "KẾT QUẢ: ĐẠT CHUẨN CKA/CKAD (≥ 66 điểm)"
-else
-    echo "KẾT QUẢ: CHƯA ĐẠT (Cần tối thiểu 66 điểm)"
-fi
-```
-
----
-
-## T6. Kho lệnh rút gọn của buổi
-
-```bash
-# 1. Tạo Secret TLS nhanh bằng lệnh CLI
-kubectl create secret tls <secret-name> --cert=<path/to/tls.crt> --key=<path/to/tls.key> -n <namespace>
-
-# 2. Trích xuất đồng thời Ingress, Gateway và HTTPRoute
-kubectl get ingress,gateway,httproute -n <namespace>
-
-# 3. Xem chi tiết cấu hình và trạng thái của Ingress
-kubectl describe ingress <ingress-name> -n <namespace>
-
-# 4. Thử nghiệm kết nối HTTP với Host header
-curl -H "Host: <hostname>" http://<Ingress-IP>/<path>
-
-# 5. Thử nghiệm kết nối HTTPS qua Ingress bỏ qua check cert tự ký
-curl -k -H "Host: <hostname>" https://<Ingress-IP>/<path>
-```
-
-
----
-
-## Tổng Kết & Lộ Trình Bài Học Tiếp Theo
-
-Kiến thức và kỹ năng thực hành trong bài viết này là mắt xích quan trọng trong hệ thống quản trị và bảo mật Kubernetes chuyên nghiệp. Việc nắm vững cả lý thuyết kiến trúc lẫn thao tác gõ lệnh tốc độ cao trong terminal sẽ giúp bạn tự tin xử lý sự cố thực tế cũng như vượt qua các kỳ thi chứng chỉ quốc tế CKA, CKAD và CKS.
-
-> [!TIP]
-> **BÀI TIẾP THEO TRONG CHUỖI BÀI HỌC:**
-> Tiếp tục hành trình nâng cao năng lực Kubernetes với bài học tiếp theo: [[Bài 25] Kiểm Soát Lưu Lượng Mạng Bằng NetworkPolicy: Mặc Định Mở, Thiết Lập Default-Deny & Xác Minh Quy Tắc](cka-25-25-networkpolicy.html).
-
+> **Bài học tiếp theo**: Trong [Bài 25: Tường Lửa Mạng NetworkPolicy: Phân Đoạn Cụm (Micro-segmentation) & Zero Trust Security](cka-25-25-networkpolicy.html), chúng ta sẽ nghiên cứu giải pháp tường lửa phân tán Layer 3/Layer 4: thiết lập chính sách Default Deny, kiểm soát luồng Ingress/Egress giữa các Pods và bảo vệ an toàn cụm theo mô hình Zero Trust.
 {% endraw %}

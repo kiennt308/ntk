@@ -3,12 +3,7 @@ layout: post
 title: "[Bài 01] Tổng Quan Về Cảm Xúc & Tín Hiệu Y Sinh: Mô Hình Circumplex, Điện Não Đồ EEG, ECG & GSR"
 date: 2026-09-16 08:00:00 +0700
 categories: [EEG]
-tags:
-  - EEG
-  - EmotionRecognition
-  - DeepLearning
-  - BiomedicalSignal
-  - Part-01
+tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
 series: "EEG & Emotion Recognition AI"
 series_order: 1
 difficulty: Intermediate

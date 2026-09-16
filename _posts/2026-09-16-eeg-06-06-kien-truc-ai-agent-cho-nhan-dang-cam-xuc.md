@@ -3,12 +3,7 @@ layout: post
 title: "[Bài 06] Kiến Trúc AI Agent Cho Nhận Dạng Cảm Xúc Thời Gian Thực: Streaming Pipeline, Multi-Agent & Edge Deployment"
 date: 2026-09-16 13:00:00 +0700
 categories: [EEG]
-tags:
-  - EEG
-  - AIAgent
-  - MultiAgent
-  - StreamingPipeline
-  - Part-06
+tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
 series: "EEG & Emotion Recognition AI"
 series_order: 6
 difficulty: Advanced

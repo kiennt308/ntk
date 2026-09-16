@@ -3,12 +3,7 @@ layout: post
 title: "[Bài 03] Học Sâu Cho Tín Hiệu Y Sinh: Kiến Trúc CNN Không Gian-Thời Gian, BiLSTM, EEGNet & Vision Transformer"
 date: 2026-09-16 10:00:00 +0700
 categories: [EEG]
-tags:
-  - EEG
-  - DeepLearning
-  - EEGNet
-  - Transformer
-  - Part-03
+tags: [eeg, bci, deap-dataset, seed-dataset, dreamer, mahnob-hci, multimodal-datasets, data-loader]
 series: "EEG & Emotion Recognition AI"
 series_order: 3
 difficulty: Advanced
